@@ -1,10 +1,10 @@
 ---
 // Import the Layout component
-import PostHogLayout from '../layouts/PostHogLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import MarqueeSimple from '../components/MarqueeSimple.astro';
 ---
 
-<PostHogLayout title="MannyKnows - Business Solutions & Services">
+<BaseLayout title="MannyKnows - Business Solutions & Services">
 	<main class="relative bg-dark-primary text-white min-h-screen">
 		<!-- Background Gradient -->
 		<div class="absolute inset-0 bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary bg-300 animate-gradient-shift -z-10"></div>
@@ -342,7 +342,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 			</div>
 		</div>
 	</main>
-</PostHogLayout>
+</BaseLayout>
 
 <script>
 	// Optimized marquee implementation

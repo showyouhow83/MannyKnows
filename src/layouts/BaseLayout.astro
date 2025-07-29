@@ -1,5 +1,5 @@
 ---
-import PostHog from '../components/posthog.astro';
+import PostHogAnalytics from '../components/analytics/PostHogAnalytics.astro';
 
 export interface Props {
 	title: string;
@@ -12,7 +12,7 @@ const { title } = Astro.props;
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="MannyKnows - Professional business solutions for small businesses. Web development, digital marketing, and consulting services." />
+		<meta name="description" content="MannyKnows - Professional AI-powered business solutions. Transform your business with intelligent automation, data-driven insights, and cutting-edge AI services." />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
@@ -22,12 +22,8 @@ const { title } = Astro.props;
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 		
-		<!-- CSS Files -->
-		<link href="/Imported Styles/bootstrap.min.css" rel="stylesheet">
-		<link href="/Imported Styles/styles.min.css" rel="stylesheet">
-		
-		<!-- PostHog Analytics -->
-		<PostHog />
+		<!-- Analytics -->
+		<PostHogAnalytics />
 		
 		<title>{title}</title>
 	</head>
@@ -42,7 +38,7 @@ const { title } = Astro.props;
 			<div class="max-w-[1440px] mx-auto px-8 py-16">
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 					
-					<!-- Company Info -->
+					<!-- Business Info -->
 					<div class="lg:col-span-1">
 						<div class="mb-6">
 							<h3 class="text-3xl font-black text-white mb-4">
@@ -99,11 +95,11 @@ const { title } = Astro.props;
 						</ul>
 					</div>
 					
-					<!-- Company & Contact -->
+					<!-- Business & Contact -->
 					<div>
-						<h4 class="text-lg font-semibold text-white mb-6">Company</h4>
+						<h4 class="text-lg font-semibold text-white mb-6">Business</h4>
 						<ul class="space-y-3 mb-8">
-							<li><a href="/about" class="text-white/70 hover:text-primary-blue transition-colors duration-300">About Us</a></li>
+							<li><a href="/about" class="text-white/70 hover:text-primary-blue transition-colors duration-300">About</a></li>
 							<li><a href="/contact" class="text-white/70 hover:text-primary-blue transition-colors duration-300">Contact</a></li>
 							<li><a href="/careers" class="text-white/70 hover:text-primary-blue transition-colors duration-300">Careers</a></li>
 							<li><a href="/privacy" class="text-white/70 hover:text-primary-blue transition-colors duration-300">Privacy Policy</a></li>
@@ -139,9 +135,6 @@ const { title } = Astro.props;
 				</div>
 			</div>
 		</footer>
-		
-		<!-- JS Files -->
-		<script is:inline src="/Imported Styles/bootstrap.min.js"></script>
 	</body>
 </html>
 
@@ -241,8 +234,14 @@ const { title } = Astro.props;
 
 	/* Utility classes */
 	.container {
-		max-w: 1200px;
+		max-width: 1200px;
 		margin: 0 auto;
 		padding: 0 2rem;
+	}
+
+	/* Only keep the specific utility we actually use */
+	.mx-0 {
+		margin-right: 0 !important;
+		margin-left: 0 !important;
 	}
 </style>

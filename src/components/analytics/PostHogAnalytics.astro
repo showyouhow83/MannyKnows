@@ -1,0 +1,88 @@
+---
+// PostHog Analytics with Web Vitals Integration
+// This component handles all analytics tracking for the website including
+// Core Web Vitals metrics and custom event tracking
+
+const posthogKey = import.meta.env.POSTHOG_PROJECT_KEY;
+---
+
+<script is:inline define:vars={{ posthogKey }}>
+	// PostHog Configuration
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);var n=t;if("undefined"!=typeof e)try{n=t[e]}catch(t){console.warn("Failed to access property: " + e)}if("function"==typeof n)return function(){n.apply(t,arguments)}}function u(t){return function(){t.__SV&&console.warn("PostHog call ignored - integration not initialized")}}p=t.createElement("script"),r=t.getElementsByTagName("script")[0],p.type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(n=e).config=a,n.loaded=!1,n.bootstrap={},o=["init","identify","capture","page","register","unregister","group","track","reset","debug","feature_flags","on","off"],n.__SV=1;for(var c=0;c<o.length;c++){var l=o[c];e[l]=g(n,l)}r.parentNode.insertBefore(p,r)},e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	
+	// Initialize PostHog
+	posthog.init(
+		posthogKey,
+		{
+			api_host: 'https://us.i.posthog.com',
+			person_profiles: 'identified_only',
+			capture_pageview: true,
+			capture_pageleave: true,
+		}
+	);
+
+	// Web Vitals Integration
+	console.log('Loading web-vitals library...');
+	
+	// Load web-vitals from CDN
+	const script = document.createElement('script');
+	script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.umd.js';
+	script.onload = function() {
+		console.log('web-vitals library loaded successfully');
+		
+		if (typeof webVitals !== 'undefined') {
+			console.log('webVitals object available, setting up metrics...');
+			
+			// Capture Core Web Vitals
+			webVitals.getCLS(function(metric) {
+				console.log('CLS captured:', metric);
+				posthog.capture('$web_vitals', {
+					$web_vitals_CLS_value: metric.value,
+					$web_vitals_CLS_rating: metric.rating
+				});
+			});
+			
+			webVitals.getFID(function(metric) {
+				console.log('FID captured:', metric);
+				posthog.capture('$web_vitals', {
+					$web_vitals_FID_value: metric.value,
+					$web_vitals_FID_rating: metric.rating
+				});
+			});
+			
+			webVitals.getFCP(function(metric) {
+				console.log('FCP captured:', metric);
+				posthog.capture('$web_vitals', {
+					$web_vitals_FCP_value: metric.value,
+					$web_vitals_FCP_rating: metric.rating
+				});
+			});
+			
+			webVitals.getLCP(function(metric) {
+				console.log('LCP captured:', metric);
+				posthog.capture('$web_vitals', {
+					$web_vitals_LCP_value: metric.value,
+					$web_vitals_LCP_rating: metric.rating
+				});
+			});
+			
+			webVitals.getTTFB(function(metric) {
+				console.log('TTFB captured:', metric);
+				posthog.capture('$web_vitals', {
+					$web_vitals_TTFB_value: metric.value,
+					$web_vitals_TTFB_rating: metric.rating
+				});
+			});
+			
+			console.log('All Web Vitals metrics configured');
+		} else {
+			console.warn('webVitals object not available after script load');
+		}
+	};
+	
+	script.onerror = function() {
+		console.error('Failed to load web-vitals library');
+	};
+	
+	document.head.appendChild(script);
+</script>

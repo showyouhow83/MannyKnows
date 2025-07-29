@@ -11,8 +11,6 @@
   "dependencies": {
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.12.3",
-    "posthog-js": "^1.258.2",
-    "tailwindcss": "^3.4.17",
-    "web-vitals": "^5.0.3"
+    "tailwindcss": "^3.4.17"
   }
 }
