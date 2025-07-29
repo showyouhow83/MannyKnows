@@ -1,0 +1,164 @@
+---
+export interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="MannyKnows - Professional business solutions for small businesses. Web development, digital marketing, and consulting services." />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+		
+		<!-- CSS Files -->
+		<link href="/Imported Styles/bootstrap.min.css" rel="stylesheet">
+		<link href="/Imported Styles/styles.min.css" rel="stylesheet">
+		
+		<!-- PostHog Analytics -->
+		<script>
+			!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+			posthog.init('phc_YOUR_PROJECT_API_KEY',{api_host:'https://app.posthog.com'})
+		</script>
+		
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+		<footer>
+			<div class="footer-container">
+				<p>&copy; 2025 MannyKnows. All rights reserved.</p>
+				<p>Professional business solutions for small businesses.</p>
+			</div>
+		</footer>
+		
+		<!-- JS Files -->
+		<script is:inline src="/Imported Styles/bootstrap.min.js"></script>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--bs-body-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+		--bs-font-family-heading: 'Outfit', sans-serif;
+		--bs-body-font-size: 1rem;
+		--bs-body-font-weight: 400;
+		--bs-body-line-height: 1.5;
+		--bs-body-color: #ffffff;
+		--bs-body-bg: #1b1c1e;
+		--bs-body-text-align: left;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		height: 100%;
+	}
+
+	body {
+		margin: 0;
+		font-family: var(--bs-body-font-family);
+		font-size: var(--bs-body-font-size);
+		font-weight: var(--bs-body-font-weight);
+		line-height: var(--bs-body-line-height);
+		color: var(--bs-body-color);
+		text-align: var(--bs-body-text-align);
+		background-color: var(--bs-body-bg);
+		-webkit-text-size-adjust: 100%;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+		height: 100%;
+	}
+
+	/* Outfit font classes for titles */
+	.outfit-light {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 300;
+		font-style: normal;
+	}
+
+	.outfit-regular {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 400;
+		font-style: normal;
+	}
+
+	.outfit-medium {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 500;
+		font-style: normal;
+	}
+
+	.outfit-semibold {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 600;
+		font-style: normal;
+	}
+
+	.outfit-bold {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 700;
+		font-style: normal;
+	}
+
+	.outfit-extrabold {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 800;
+		font-style: normal;
+	}
+
+	.outfit-black {
+		font-family: "Outfit", sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 900;
+		font-style: normal;
+	}
+
+	/* Apply Outfit to all headings by default */
+	h1, h2, h3, h4, h5, h6 {
+		font-family: var(--bs-font-family-heading);
+		font-optical-sizing: auto;
+		font-style: normal;
+	}
+
+	/* Footer */
+	footer {
+		background: rgba(0, 0, 0, 0.5);
+		color: rgba(255, 255, 255, 0.9);
+		text-align: center;
+		padding: 2rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.footer-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	/* Utility classes */
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+</style>

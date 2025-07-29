@@ -1,0 +1,721 @@
+---
+// Import the Layout component
+import PostHogLayout from '../layouts/PostHogLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+---
+
+<PostHogLayout title="MannyKnows - Business Solutions & Services">
+	<main class="relative bg-dark-primary text-white min-h-screen">
+		<!-- Background Gradient -->
+		<div class="absolute inset-0 bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary bg-300 animate-gradient-shift -z-10"></div>
+
+		<!-- Marquee Announcement Section -->
+		<MarqueeSimple />
+
+		<!-- Navigation -->
+		<nav id="topNav" class="bg-transparent min-h-[7.75rem] relative">
+			<!-- Navigation border -->
+			<div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-primary-blue via-primary-pink to-primary-blue bg-200 animate-simple-gradient-flow"></div>
+			
+			<div class="max-w-[1440px] mx-auto px-8">
+				<div class="flex justify-between items-center w-full py-4">
+					<!-- Logo -->
+					<h1 class="text-5xl font-black m-0">
+						<a href="/" class="logo-gradient text-white font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative">MK</a>
+					</h1>
+
+					<!-- Navigation Menu -->
+					<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
+						<li><a href="#services" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
+						<li><a href="/process" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
+						<li><a href="/blog" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
+						<li><a href="/faqs" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
+						<li><a href="#about" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">About</a></li>
+						<li><a href="#contact" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Contact</a></li>
+					</ul>
+
+					<!-- Search Bar -->
+					<div class="relative flex items-center flex-1 mx-4">
+						<input type="search" placeholder="Search services..." class="bg-white/10 border border-white/20 rounded-lg py-3 pl-4 pr-10 text-white text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-white/60 focus:outline-none focus:border-primary-blue/50 focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
+						<button type="button" class="absolute right-2 bg-none border-none text-white/60 cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-white">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<circle cx="11" cy="11" r="8"></circle>
+								<path d="m21 21-4.35-4.35"></path>
+							</svg>
+						</button>
+					</div>
+
+					<!-- Navigation Actions -->
+					<div class="flex items-center gap-2 relative">
+						<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex items-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Instant Quote</a>
+						
+						<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+								<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+								<line x1="12" y1="19" x2="12" y2="23"/>
+								<line x1="8" y1="23" x2="16" y2="23"/>
+							</svg>
+							<!-- Tailwind Tooltip -->
+							<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+								Podcast Coming Soon
+								<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+							</div>
+						</button>
+
+						<button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle">
+							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 8V4H8"/>
+								<rect width="16" height="12" x="4" y="8" rx="2"/>
+								<path d="M2 14h2"/>
+								<path d="M20 14h2"/>
+								<path d="M15 13v2"/>
+								<path d="M9 13v2"/>
+							</svg>
+							<!-- Tailwind Tooltip -->
+							<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+								Talk to Us
+								<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+							</div>
+						</button>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Hero Section -->
+		<section class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center">
+			<div class="max-w-[1440px] mx-auto px-8">
+				<div class="max-w-4xl mx-auto">
+					<h1 class="text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight font-extrabold">
+						Business Solutions That <span class="bg-gradient-to-r from-primary-blue to-primary-pink bg-clip-text text-transparent">Actually Work</span>
+					</h1>
+					<p class="text-xl mb-10 text-white/80 leading-relaxed max-w-2xl mx-auto">
+						We help small businesses grow with simple, effective digital solutions. 
+						No complicated jargon, no over-promising – just results.
+					</p>
+					<div class="flex gap-4 justify-center flex-wrap mt-8">
+						<a href="#instant-quote" class="bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-1 hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Your Free Quote</a>
+						<button type="button" class="bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-200 text-white py-3 px-6 rounded-lg font-semibold text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-green-gradient-flow hover:scale-105 hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] h-12 flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer cursor-pointer" id="heroChatButton">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 8V4H8"/>
+								<rect width="16" height="12" x="4" y="8" rx="2"/>
+								<path d="M2 14h2"/>
+								<path d="M20 14h2"/>
+								<path d="M15 13v2"/>
+								<path d="M9 13v2"/>
+							</svg>
+							Chat with Us
+						</button>
+						<a href="#services" class="bg-gradient-to-b from-white/10 to-white/5 text-white py-3 px-6 border border-white/20 rounded-lg no-underline font-semibold text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:scale-105 hover:-translate-y-1 hover:from-white/20 hover:to-white/10 hover:text-white hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">View Our Services</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Services Preview Section -->
+		<section id="services" class="py-20 bg-white/5 backdrop-blur-lg">
+			<div class="max-w-[1440px] mx-auto px-8">
+				<div class="text-center mb-16">
+					<h2 class="text-4xl lg:text-5xl mb-6 text-white font-bold">AI-Powered Business Solutions</h2>
+					<p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">Transform your business with cutting-edge AI technology. From intelligent automation to data-driven insights, we deliver solutions that actually work.</p>
+				</div>
+				
+				<!-- Main AI Services Grid -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-16">
+					<!-- AI Chatbots & Virtual Assistants -->
+					<div class="group bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-blue-600/10 backdrop-blur-lg border border-blue-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-blue-500/15 hover:via-cyan-500/10 hover:to-blue-600/15 hover:border-blue-400/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<path d="M12 8V4H8"/>
+									<rect width="16" height="12" x="4" y="8" rx="2"/>
+									<path d="M2 14h2"/>
+									<path d="M20 14h2"/>
+									<path d="M15 13v2"/>
+									<path d="M9 13v2"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">AI Chatbots & Virtual Assistants</h3>
+						<p class="text-white/80 leading-relaxed mb-4">24/7 intelligent customer support that learns from every interaction. Reduce support costs by 60% while improving customer satisfaction.</p>
+						<div class="text-blue-400 text-sm font-medium">Customer Service • Lead Generation • FAQ Automation</div>
+					</div>
+
+					<!-- AI Content Creation -->
+					<div class="group bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-purple-600/10 backdrop-blur-lg border border-purple-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-purple-500/15 hover:via-pink-500/10 hover:to-purple-600/15 hover:border-purple-400/30 hover:shadow-[0_20px_50px_rgba(168,85,247,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+									<polyline points="14,2 14,8 20,8"/>
+									<line x1="16" y1="13" x2="8" y2="13"/>
+									<line x1="16" y1="17" x2="8" y2="17"/>
+									<polyline points="10,9 9,9 8,9"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">AI Content Creation</h3>
+						<p class="text-white/80 leading-relaxed mb-4">Generate high-quality blog posts, social media content, and marketing copy that engages your audience and drives conversions.</p>
+						<div class="text-purple-400 text-sm font-medium">Blog Writing • Social Media • Email Marketing</div>
+					</div>
+
+					<!-- Business Process Automation -->
+					<div class="group bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-lg border border-green-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-green-500/15 hover:via-emerald-500/10 hover:to-green-600/15 hover:border-green-400/30 hover:shadow-[0_20px_50px_rgba(34,197,94,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+									<rect x="7" y="7" width="3" height="9"/>
+									<rect x="14" y="7" width="3" height="5"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">Business Process Automation</h3>
+						<p class="text-white/80 leading-relaxed mb-4">Streamline repetitive tasks and workflows. Save 10+ hours per week while eliminating human error in your business processes.</p>
+						<div class="text-green-400 text-sm font-medium">Workflow Automation • Data Processing • Task Management</div>
+					</div>
+
+					<!-- AI Data Analytics -->
+					<div class="group bg-gradient-to-br from-orange-500/10 via-yellow-500/5 to-orange-600/10 backdrop-blur-lg border border-orange-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-orange-500/15 hover:via-yellow-500/10 hover:to-orange-600/15 hover:border-orange-400/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<line x1="18" y1="20" x2="18" y2="10"/>
+									<line x1="12" y1="20" x2="12" y2="4"/>
+									<line x1="6" y1="20" x2="6" y2="14"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">AI Data Analytics</h3>
+						<p class="text-white/80 leading-relaxed mb-4">Transform raw data into actionable insights. Predictive analytics that help you make smarter business decisions faster.</p>
+						<div class="text-orange-400 text-sm font-medium">Business Intelligence • Predictive Analytics • Reporting</div>
+					</div>
+
+					<!-- AI-Powered Websites -->
+					<div class="group bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-lg border border-indigo-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-indigo-500/15 hover:via-blue-500/10 hover:to-indigo-600/15 hover:border-indigo-400/30 hover:shadow-[0_20px_50px_rgba(99,102,241,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+									<line x1="8" y1="21" x2="16" y2="21"/>
+									<line x1="12" y1="17" x2="12" y2="21"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">AI-Powered Websites</h3>
+						<p class="text-white/80 leading-relaxed mb-4">Smart websites that adapt to your visitors, personalize content, and optimize conversion rates in real-time.</p>
+						<div class="text-indigo-400 text-sm font-medium">Personalization • A/B Testing • Conversion Optimization</div>
+					</div>
+
+					<!-- AI Training & Consulting -->
+					<div class="group bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-teal-600/10 backdrop-blur-lg border border-teal-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-teal-500/15 hover:via-cyan-500/10 hover:to-teal-600/15 hover:border-teal-400/30 hover:shadow-[0_20px_50px_rgba(20,184,166,0.3)]">
+						<div class="h-16 mb-6 flex items-center justify-center">
+							<div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+									<circle cx="12" cy="7" r="4"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl mb-4 text-white font-semibold">AI Training & Consulting</h3>
+						<p class="text-white/80 leading-relaxed mb-4">Comprehensive AI strategy and training to help your team leverage artificial intelligence effectively in your business.</p>
+						<div class="text-teal-400 text-sm font-medium">AI Strategy • Team Training • Implementation Support</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Floating Chat Box -->
+		<div id="chatBox" class="fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-white/10 via-white/5 to-white/10 border border-white/30 rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible">
+			<div class="flex justify-between items-center p-1.75 border-b border-white/30">
+				<h3 class="text-white m-0 text-lg font-semibold">💬 Talk to Us</h3>
+				<button type="button" class="group bg-none border-none text-white/60 cursor-pointer p-1 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-white/10 hover:text-white" id="chatBoxClose">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+			<div class="flex flex-col h-[calc(100%-64px)]">
+				<div class="flex-1 p-1.75 overflow-y-auto flex flex-col gap-2.5" id="chatBoxMessages">
+					<div class="flex gap-2.5 items-start">
+						<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+						<div class="bg-white/20 py-2.25 px-4 rounded-xl text-white leading-relaxed max-w-chat text-sm">
+							Hi! I'm MannyKnows AI assistant. I can help you learn about our services, get pricing information, or answer any questions about your business needs. What would you like to know?
+						</div>
+					</div>
+				</div>
+				<div class="flex gap-2 p-2.25 border-t border-white/30">
+					<input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 bg-white/20 border border-white/30 rounded-lg py-2 px-3 text-white text-sm transition-all duration-300 placeholder:text-white/60 focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]">
+					<button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="22" y1="2" x2="11" y2="13"></line>
+							<polygon points="22,2 15,22 11,13 2,9"></polygon>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Floating Dock Menu -->
+		<div id="floatingDock" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
+			<div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-2.25 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+				<div class="flex items-center gap-2">
+					<!-- MK Logo -->
+					<button type="button" class="dock-item group relative" data-tooltip="Home" onclick="window.location.href='/'">
+						<div class="w-12 h-12 bg-gradient-to-r from-primary-blue to-primary-pink rounded-xl flex items-center justify-center text-white font-black text-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1">
+							MK
+						</div>
+					</button>
+
+					<!-- Services -->
+					<button type="button" class="dock-item group relative" data-tooltip="Services" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
+						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<rect x="3" y="3" width="7" height="7"/>
+								<rect x="14" y="3" width="7" height="7"/>
+								<rect x="14" y="14" width="7" height="7"/>
+								<rect x="3" y="14" width="7" height="7"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Process -->
+					<button type="button" class="dock-item group relative" data-tooltip="Process" onclick="window.location.href='/process'">
+						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polyline points="9,11 12,14 22,4"/>
+								<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Blog -->
+					<button type="button" class="dock-item group relative" data-tooltip="Blog" onclick="window.location.href='/blog'">
+						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+								<polyline points="14,2 14,8 20,8"/>
+								<line x1="16" y1="13" x2="8" y2="13"/>
+								<line x1="16" y1="17" x2="8" y2="17"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- About -->
+					<button type="button" class="dock-item group relative" data-tooltip="About" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+								<circle cx="12" cy="7" r="4"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Podcast -->
+					<button type="button" class="dock-item group relative" data-tooltip="Podcast Coming Soon" id="dockPodcastButton">
+						<div class="w-12 h-12 bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-podcast-gradient-flow relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+								<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+								<line x1="12" y1="19" x2="12" y2="23"/>
+								<line x1="8" y1="23" x2="16" y2="23"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Chat -->
+					<button type="button" class="dock-item group relative" data-tooltip="Chat" id="dockChatToggle">
+						<div class="w-12 h-12 bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-green-gradient-flow relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 8V4H8"/>
+								<rect width="16" height="12" x="4" y="8" rx="2"/>
+								<path d="M2 14h2"/>
+								<path d="M20 14h2"/>
+								<path d="M15 13v2"/>
+								<path d="M9 13v2"/>
+							</svg>
+						</div>
+					</button>
+				</div>
+			</div>
+		</div>
+	</main>
+</PostHogLayout>
+
+<script>
+	// Optimized marquee implementation
+	function initMarquee() {
+		const marqueeContent = document.querySelector('.marquee-content');
+		if (!marqueeContent) return;
+
+		// Use CSS custom property for dynamic duration
+		const contentWidth = marqueeContent.scrollWidth;
+		const duration = Math.max(contentWidth / 50, 20); // Min 20s, max based on content
+		
+		document.documentElement.style.setProperty('--marquee-duration', `${duration}s`);
+	}
+
+	// Navigation visibility tracking
+	function initNavigationTracking() {
+		const topNav = document.getElementById('topNav');
+		const floatingDock = document.getElementById('floatingDock');
+		
+		if (!topNav || !floatingDock) return;
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					// Top nav is visible, hide floating dock
+					floatingDock.classList.add('translate-y-full', 'opacity-0');
+				} else {
+					// Top nav is not visible, show floating dock
+					floatingDock.classList.remove('translate-y-full', 'opacity-0');
+				}
+			});
+		}, {
+			threshold: 0.1
+		});
+
+		observer.observe(topNav);
+	}
+
+	// Chat Box functionality
+	function initChatBox() {
+		const chatBox = document.getElementById('chatBox');
+		const topChatToggle = document.getElementById('topChatToggle');
+		const dockChatToggle = document.getElementById('dockChatToggle');
+		const heroChatButton = document.getElementById('heroChatButton');
+		const chatBoxClose = document.getElementById('chatBoxClose');
+		const chatBoxInput = document.getElementById('chatBoxInput');
+		const chatBoxSend = document.getElementById('chatBoxSend');
+		const chatBoxMessages = document.getElementById('chatBoxMessages');
+
+		if (!chatBox) return;
+
+		let isOpen = false;
+
+		// Open chat box
+		const openChatBox = () => {
+			if (isOpen) return;
+			isOpen = true;
+			chatBox.classList.remove('scale-0', 'opacity-0', 'invisible');
+			chatBox.classList.add('scale-100', 'opacity-100', 'visible');
+			
+			// Track chat open event
+			if (typeof posthog !== 'undefined') {
+				posthog.capture('chat_opened', { location: 'website' });
+			}
+			
+			// Focus on input after chat opens
+			setTimeout(() => chatBoxInput?.focus(), 300);
+		};
+
+		// Close chat box
+		const closeChatBox = () => {
+			if (!isOpen) return;
+			isOpen = false;
+			chatBox.classList.add('scale-0', 'opacity-0', 'invisible');
+			chatBox.classList.remove('scale-100', 'opacity-100', 'visible');
+		};
+
+		// Event listeners
+		topChatToggle?.addEventListener('click', openChatBox);
+		dockChatToggle?.addEventListener('click', openChatBox);
+		heroChatButton?.addEventListener('click', openChatBox);
+		chatBoxClose?.addEventListener('click', closeChatBox);
+
+		// Close on Escape key
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && isOpen) {
+				closeChatBox();
+			}
+		});
+
+		// Send message functionality
+		const sendMessage = () => {
+			const message = chatBoxInput?.value.trim();
+			if (!message) return;
+
+			// Track message sent event
+			if (typeof posthog !== 'undefined') {
+				posthog.capture('chat_message_sent', { 
+					message_length: message.length,
+					location: 'website'
+				});
+			}
+
+			// Add user message
+			const userMessage = document.createElement('div');
+			userMessage.className = 'flex gap-2.5 items-start flex-row-reverse text-right';
+			userMessage.innerHTML = `
+				<div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-pink-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-sm">U</div>
+				<div class="bg-gradient-to-r from-blue-400 to-sky-500 text-white py-2.25 px-4 rounded-xl leading-relaxed max-w-chat text-sm">${message}</div>
+			`;
+			chatBoxMessages?.appendChild(userMessage);
+
+			// Clear input
+			if (chatBoxInput) chatBoxInput.value = '';
+
+			// Scroll to bottom
+			chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
+
+			// Simulate bot response
+			setTimeout(() => {
+				const botResponse = document.createElement('div');
+				botResponse.className = 'flex gap-2.5 items-start';
+				botResponse.innerHTML = `
+					<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+					<div class="bg-white/10 py-2.25 px-4 rounded-xl text-white leading-relaxed max-w-chat text-sm">Thanks for your message! I'm currently being set up to help you better. In the meantime, feel free to browse our services or contact us directly.</div>
+				`;
+				chatBoxMessages?.appendChild(botResponse);
+				chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
+			}, 1000);
+		};
+
+		// Send on button click
+		chatBoxSend?.addEventListener('click', sendMessage);
+
+		// Send on Enter key
+		chatBoxInput?.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				sendMessage();
+			}
+		});
+	}
+
+	// Podcast functionality
+	function initPodcast() {
+		const topPodcastButton = document.getElementById('topPodcastButton');
+		const dockPodcastButton = document.getElementById('dockPodcastButton');
+
+		const showPodcastMessage = () => {
+			// Track podcast interest
+			if (typeof posthog !== 'undefined') {
+				posthog.capture('podcast_interest', { 
+					location: 'coming_soon_click',
+					status: 'in_development'
+				});
+			}
+			alert('🎧 Podcast Coming Soon!\n\nOur podcast is currently in development. Stay tuned for updates!');
+		};
+
+		topPodcastButton?.addEventListener('click', showPodcastMessage);
+		dockPodcastButton?.addEventListener('click', showPodcastMessage);
+	}
+
+	// Dock tooltips
+	function initDockTooltips() {
+		const dockItems = document.querySelectorAll('.dock-item[data-tooltip]');
+		
+		dockItems.forEach(item => {
+			const tooltip = document.createElement('div');
+			tooltip.className = 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible transition-all duration-200 z-50 shadow-lg';
+			tooltip.textContent = item.getAttribute('data-tooltip');
+			
+			// Add arrow
+			const arrow = document.createElement('div');
+			arrow.className = 'absolute top-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-black';
+			tooltip.appendChild(arrow);
+			
+			item.appendChild(tooltip);
+			
+			item.addEventListener('mouseenter', () => {
+				tooltip.classList.remove('opacity-0', 'invisible');
+				tooltip.classList.add('opacity-100', 'visible');
+			});
+			
+			item.addEventListener('mouseleave', () => {
+				tooltip.classList.add('opacity-0', 'invisible');
+				tooltip.classList.remove('opacity-100', 'visible');
+			});
+		});
+	}
+
+	// Services section tracking
+	function initServicesTracking() {
+		// Track service card interactions
+		const serviceCards = document.querySelectorAll('#services .group');
+		serviceCards.forEach((card, index) => {
+			const serviceName = card.querySelector('h3')?.textContent || `Service ${index + 1}`;
+			
+			card.addEventListener('mouseenter', () => {
+				if (typeof posthog !== 'undefined') {
+					posthog.capture('service_card_hover', {
+						service_name: serviceName,
+						service_position: index + 1
+					});
+				}
+			});
+			
+			card.addEventListener('click', () => {
+				if (typeof posthog !== 'undefined') {
+					posthog.capture('service_card_click', {
+						service_name: serviceName,
+						service_position: index + 1
+					});
+				}
+			});
+		});
+
+		// Track CTA button clicks
+		const ctaButtons = document.querySelectorAll('#services a[href]');
+		ctaButtons.forEach(button => {
+			button.addEventListener('click', () => {
+				if (typeof posthog !== 'undefined') {
+					posthog.capture('services_cta_click', {
+						button_text: button.textContent,
+						button_href: button.getAttribute('href')
+					});
+				}
+			});
+		});
+	}
+
+	// Use passive event listeners for better performance
+	document.addEventListener('DOMContentLoaded', () => {
+		initMarquee();
+		initNavigationTracking();
+		initChatBox();
+		initPodcast();
+		initDockTooltips();
+		initServicesTracking();
+	}, { passive: true });
+	
+	window.addEventListener('resize', initMarquee, { passive: true });
+</script>
+
+<style>
+	/* Custom CSS for marquee animation and responsive behavior */
+	@media (max-width: 768px) {
+		.container {
+			@apply px-4;
+		}
+		
+		nav .flex {
+			@apply flex-col gap-4;
+		}
+		
+		nav ul {
+			@apply gap-6 flex-wrap justify-center;
+		}
+		
+		.nav-search {
+			@apply mx-0 order-1;
+		}
+		
+		.search-input {
+			@apply w-80 min-w-64;
+		}
+		
+		.nav-actions {
+			@apply -order-1 gap-3;
+		}
+		
+		.hero {
+			@apply py-10 pb-16 min-h-[calc(100vh-120px)];
+		}
+		
+		.hero h1 {
+			@apply text-4xl;
+		}
+		
+		.hero p {
+			@apply text-lg;
+		}
+		
+		.hero .flex {
+			@apply flex-col items-center;
+		}
+		
+		.btn-primary,
+		.btn-secondary {
+			@apply w-full max-w-xs;
+		}
+		
+		.services-grid {
+			@apply grid-cols-1 gap-6;
+		}
+		
+		.section-title {
+			@apply text-3xl;
+		}
+
+		#chatBox {
+			@apply w-full max-w-sm right-4 left-4 mx-auto h-[450px];
+		}
+
+		#floatingDock {
+			@apply bottom-4;
+		}
+	}
+
+	/* Pause marquee on hover */
+	.marquee-container:hover .animate-marquee {
+		animation-play-state: paused;
+	}
+
+	/* Custom gradient text selection */
+	::selection {
+		background: #ff4faa !important;
+		color: white !important;
+	}
+
+	::-moz-selection {
+		background: #ff4faa !important;
+		color: white !important;
+	}
+
+	/* Override for all elements */
+	*::selection {
+		background: #ff4faa !important;
+		color: white !important;
+	}
+
+	*::-moz-selection {
+		background: #ff4faa !important;
+		color: white !important;
+	}
+
+	/* Simple and reliable gradient hover effects */
+	.logo-gradient,
+	.nav-gradient {
+		background: linear-gradient(45deg, #10d1ff, #ff4faa);
+		background-size: 200% 200%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: white;
+		transition: all 0.5s ease;
+	}
+
+	.logo-gradient:hover,
+	.nav-gradient:hover {
+		-webkit-text-fill-color: transparent;
+		animation: gradient-shift 2s ease infinite;
+	}
+
+	/* Keyframe for gradient animation */
+	@keyframes gradient-shift {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+
+	/* Dock hover effects */
+	.dock-item:hover {
+		transform: translateY(-4px) scale(1.1);
+	}
+
+	/* Chat box animations */
+	#chatBox.scale-0 {
+		transform: scale(0);
+		transform-origin: bottom right;
+	}
+
+	#chatBox.scale-100 {
+		transform: scale(1);
+		transform-origin: bottom right;
+	}
+</style>

@@ -1,0 +1,40 @@
+/* Custom Chatbot Styles - Better Approach */
+
+/* If you still need any specific overrides for the chatbot, you can use more specific selectors */
+#chatBox .custom-padding {
+  padding: 0.45rem;
+}
+
+#chatBox .custom-small-padding {
+  padding: 0.55rem;
+}
+
+/* Chat message specific styles */
+.chat-message {
+  max-width: 85%;
+}
+
+/* Alternative: Use CSS custom properties for dynamic spacing */
+:root {
+  --chat-padding: 0.45rem;
+  --chat-small-padding: 0.55rem;
+  --chat-gap: 0.75rem;
+  --chat-max-width: 85%;
+}
+
+/* Apply to specific chat elements if needed */
+.chat-container {
+  gap: var(--chat-gap);
+}
+
+.chat-padding {
+  padding: var(--chat-padding);
+}
+
+.chat-small-padding {
+  padding: var(--chat-small-padding);
+}
+
+.chat-message-width {
+  max-width: var(--chat-max-width);
+}
