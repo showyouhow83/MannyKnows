@@ -31,6 +31,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 						<!-- Navigation Menu -->
 						<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
 							<li><a href="#services" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
+							<li><a href="#reviews" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Reviews</a></li>
 							<li><a href="/process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
 							<li><a href="/blog" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
 							<li><a href="/faqs" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
@@ -51,7 +52,10 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 
 						<!-- Navigation Actions -->
 						<div class="flex items-center gap-2 relative">
-							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex items-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">CLAIM FREE 360 PHOTO</a>
+							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+								<span class="text-sm font-semibold">FREE 360 PHOTO</span>
+								<span class="text-[10px] text-white/80 leading-none">CLAIM NOW</span>
+							</a>
 							
 							<!-- Theme Toggle -->
 							<ThemeToggle />
@@ -93,17 +97,13 @@ import ThemeToggle from '../components/ThemeToggle.astro';
             <!-- Hero Section -->
             <section id="hero" class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container">
                 <div class="max-w-[1440px] mx-auto px-8">
-                    <div class="max-w-4xl mx-auto">
-                        <h1 class="sf-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
-                            Scale your <span class="apple-gradient-text">Operations exponentially</span> with AI
+                    <div class="max-w-16xl mx-auto">
+                        <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
+                            Scale your <span class="apple-gradient-text">business operations</span> exponentially with AI
                         </h1>
                         <p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
 							Optimize your operations from end to end with intelligent AI. We automate critical tasks across your marketing, sales, and support workflows to boost productivity, cut costs, and drive scalable growth.
                         </p>
-                        <div class="flex gap-4 justify-center flex-wrap mt-8">
-                            <a href="#instant-quote" class="apple-button sf-semibold bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 no-underline text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">CLAIM FREE 360 PHOTO</a>
-                            <a href="#services" class="apple-button sf-semibold apple-focus bg-gradient-to-b from-black/10 dark:from-white/10 to-black/5 dark:to-white/5 text-text-light-primary dark:text-text-dark-primary py-3 px-6 border border-border-light dark:border-border-dark no-underline text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:from-black/20 dark:hover:from-white/20 hover:to-black/10 dark:hover:to-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-black/5 dark:before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">WHAT DOES MANNY KNOW</a>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -279,6 +279,363 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		</div>
 	</section>
 
+	<!-- Customer Reviews Section -->
+	<section id="reviews" class="relative py-24 bg-gradient-to-br from-gray-100/90 via-gray-50/95 to-white/98 dark:from-gray-800/90 dark:via-gray-900/95 dark:to-dark-primary border-t border-gray-200/50 dark:border-white/10 transition-colors duration-300">
+		<!-- Background Pattern -->
+		<div class="absolute inset-0 opacity-5 dark:opacity-10">
+			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-primary-pink/20 to-primary-blue/20 animate-gradient-shift"></div>
+		</div>
+
+		<div class="max-w-[1440px] mx-auto px-8 relative">
+			<!-- Section Header -->
+			<div class="text-center mb-16">
+				<h2 class="text-5xl md:text-6xl font-black text-text-light-primary dark:text-text-dark-primary mb-6 apple-headline">
+					<span class="bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-clip-text text-transparent">
+						Customer Success Stories
+					</span>
+				</h2>
+				<p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+					Discover how businesses like yours achieved remarkable growth with our AI-powered e-commerce solutions.
+				</p>
+			</div>
+
+			<!-- Reviews Carousel Container -->
+			<div class="relative mb-12">
+				<!-- Carousel Navigation -->
+				<div class="flex justify-center gap-4 mb-8">
+					<button id="prevReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<polyline points="15,18 9,12 15,6"/>
+						</svg>
+					</button>
+					<button id="nextReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<polyline points="9,18 15,12 9,6"/>
+						</svg>
+					</button>
+				</div>
+
+				<!-- Reviews Container -->
+				<div class="overflow-hidden rounded-2xl">
+					<div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
+						<!-- Review Card 1 - AI E-commerce Solutions -->
+						<div class="review-card min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(16,209,255,0.15)] hover:border-primary-blue/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"MannyKnows transformed our online store completely. Our conversion rates increased by 340% within 3 months, and the AI automation saves us 20+ hours weekly."
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-primary-blue to-primary-pink rounded-full flex items-center justify-center text-white font-bold text-lg">S</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Sarah Chen</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">CEO, TechStyle Boutique</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,79,170,0.15)] hover:border-primary-pink/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"The product photography service is incredible. Our product pages look professional and sales have doubled. The team understands e-commerce visual needs perfectly."
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-lg">M</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Marcus Rodriguez</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Founder, Outdoor Gear Co.</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(139,92,246,0.15)] hover:border-purple-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"Custom AI integration revolutionized our customer support. Response time dropped 90% while satisfaction scores hit all-time highs. Exceptional technical expertise."
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg">E</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Emily Watson</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">CTO, FashionForward</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Review Card Set 2 - Website Development & SEO -->
+						<div class="review-card min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(34,197,94,0.15)] hover:border-green-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"Our new website is blazing fast and converts like crazy. Mobile sales jumped 280% and our SEO rankings skyrocketed. Best investment we've made!"
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold text-lg">D</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">David Kim</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Owner, SportGear Plus</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(168,85,247,0.15)] hover:border-violet-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"The social media automation is phenomenal. Our engagement tripled and we're generating 5x more qualified leads. The analytics insights are game-changing."
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white font-bold text-lg">L</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Lisa Thompson</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Marketing Director, Beauty Bliss</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(245,101,101,0.15)] hover:border-red-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"Analytics & reporting gave us crystal clear insights into customer behavior. We optimized our funnel and saw a 420% increase in lifetime value!"
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">R</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Robert Chen</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">CEO, ElectroHub</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Review Card Set 3 - Additional Services -->
+						<div class="review-card min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(251,191,36,0.15)] hover:border-yellow-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"The inventory management system is a lifesaver. No more stockouts or overstock issues. Our operational efficiency improved by 85% overnight!"
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg">A</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Amanda Foster</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Operations Manager, HomeDecor Pro</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(59,130,246,0.15)] hover:border-blue-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"Customer service automation transformed our support. 24/7 intelligent responses, instant issue resolution. Customer satisfaction jumped to 98%!"
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">J</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">James Wilson</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Support Director, TechSolutions</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="group bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_60px_rgba(236,72,153,0.15)] hover:border-pink-500/30">
+								<div class="flex items-center gap-1 mb-4">
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+									<svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
+								</div>
+								<blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+									"The complete branding package elevated our entire business. Logo, colors, messaging - everything cohesive. Brand recognition increased 300%!"
+								</blockquote>
+								<div class="flex items-center gap-4">
+									<div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">N</div>
+									<div>
+										<div class="font-semibold text-text-light-primary dark:text-text-dark-primary">Nina Patel</div>
+										<div class="text-text-light-tertiary dark:text-text-dark-tertiary text-sm">Creative Director, ArtisanCrafts</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Dots Indicator -->
+				<div class="flex justify-center gap-2 mt-8">
+					<button class="carousel-dot w-3 h-3 rounded-full bg-primary-blue transition-all duration-300" data-slide="0"></button>
+					<button class="carousel-dot w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 transition-all duration-300" data-slide="1"></button>
+					<button class="carousel-dot w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 transition-all duration-300" data-slide="2"></button>
+				</div>
+			</div>
+
+			<!-- Stats Section -->
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+				<div class="text-center">
+					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">500+</div>
+					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Happy Clients</div>
+				</div>
+				<div class="text-center">
+					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">340%</div>
+					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Avg. Sales Increase</div>
+				</div>
+				<div class="text-center">
+					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">98%</div>
+					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Client Satisfaction</div>
+				</div>
+				<div class="text-center">
+					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">24/7</div>
+					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">AI Support</div>
+				</div>
+			</div>
+
+			<!-- Call to Action -->
+			<div class="text-center">
+				<a href="#contact" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-200 text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-gradient-shift">
+					<span>Join Our Success Stories</span>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
 		<!-- Floating Chat Box -->
 		<div id="chatBox" class="fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-black/10 dark:from-white/10 via-black/5 dark:via-white/5 to-black/10 dark:to-white/10 border border-border-light dark:border-border-dark rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible">
 			<div class="flex justify-between items-center p-1.75 border-b border-border-light dark:border-border-dark">
@@ -330,6 +687,15 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 								<rect x="14" y="3" width="7" height="7"/>
 								<rect x="14" y="14" width="7" height="7"/>
 								<rect x="3" y="14" width="7" height="7"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Reviews -->
+					<button type="button" class="dock-item group relative" data-tooltip="Reviews" onclick="document.getElementById('reviews').scrollIntoView({behavior: 'smooth'})">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
 							</svg>
 						</div>
 					</button>
@@ -627,6 +993,177 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		});
 	}
 
+	// Reviews section initialization
+	function initReviewsSection() {
+		// Carousel functionality
+		const container = document.getElementById('reviewsContainer');
+		const prevBtn = document.getElementById('prevReview');
+		const nextBtn = document.getElementById('nextReview');
+		const dots = document.querySelectorAll('.carousel-dot');
+		let currentSlide = 0;
+		const totalSlides = 3;
+
+		// Auto-slide functionality
+		let autoSlideInterval;
+
+		function updateCarousel() {
+			const translateX = -currentSlide * 100;
+			container.style.transform = `translateX(${translateX}%)`;
+			
+			// Update dots
+			dots.forEach((dot, index) => {
+				if (index === currentSlide) {
+					dot.classList.remove('bg-gray-300', 'dark:bg-gray-600');
+					dot.classList.add('bg-primary-blue');
+				} else {
+					dot.classList.remove('bg-primary-blue');
+					dot.classList.add('bg-gray-300', 'dark:bg-gray-600');
+				}
+			});
+		}
+
+		function nextSlide() {
+			currentSlide = (currentSlide + 1) % totalSlides;
+			updateCarousel();
+		}
+
+		function prevSlide() {
+			currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+			updateCarousel();
+		}
+
+		function goToSlide(index) {
+			currentSlide = index;
+			updateCarousel();
+		}
+
+		function startAutoSlide() {
+			autoSlideInterval = setInterval(nextSlide, 6000); // 6 seconds
+		}
+
+		function stopAutoSlide() {
+			clearInterval(autoSlideInterval);
+		}
+
+		// Event listeners
+		nextBtn.addEventListener('click', () => {
+			nextSlide();
+			stopAutoSlide();
+			setTimeout(startAutoSlide, 10000); // Resume after 10 seconds
+		});
+
+		prevBtn.addEventListener('click', () => {
+			prevSlide();
+			stopAutoSlide();
+			setTimeout(startAutoSlide, 10000);
+		});
+
+		dots.forEach((dot, index) => {
+			dot.addEventListener('click', () => {
+				goToSlide(index);
+				stopAutoSlide();
+				setTimeout(startAutoSlide, 10000);
+			});
+		});
+
+		// Pause auto-slide on hover
+		const reviewsSection = document.getElementById('reviews');
+		reviewsSection.addEventListener('mouseenter', stopAutoSlide);
+		reviewsSection.addEventListener('mouseleave', startAutoSlide);
+
+		// Start auto-slide
+		startAutoSlide();
+
+		// Animate stats on scroll
+		const stats = document.querySelectorAll('#reviews .text-4xl');
+		const reviewCards = document.querySelectorAll('#reviews .review-card');
+		
+		// Intersection Observer for scroll animations
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					// Animate stats
+					if (entry.target.classList.contains('text-4xl')) {
+						entry.target.classList.add('animate-count-up');
+					}
+					
+					// Stagger card animations
+					if (entry.target.classList.contains('review-card')) {
+						const index = Array.from(reviewCards).indexOf(entry.target);
+						setTimeout(() => {
+							entry.target.style.opacity = '1';
+							entry.target.style.transform = 'translateY(0)';
+						}, index * 200);
+					}
+				}
+			});
+		}, { threshold: 0.2 });
+
+		// Observe elements
+		stats.forEach(stat => observer.observe(stat));
+		reviewCards.forEach(card => {
+			card.style.opacity = '0';
+			card.style.transform = 'translateY(30px)';
+			card.style.transition = 'all 0.8s ease';
+			observer.observe(card);
+		});
+
+		// Track review interactions
+		const allReviewCards = document.querySelectorAll('#reviews .group');
+		allReviewCards.forEach((card, index) => {
+			card.addEventListener('click', () => {
+				if (typeof posthog !== 'undefined') {
+					const customerName = card.querySelector('.font-semibold')?.textContent || `Review ${index + 1}`;
+					posthog.capture('review_card_click', {
+						customer_name: customerName,
+						review_position: index + 1,
+						slide_number: Math.floor(index / 3) + 1
+					});
+				}
+			});
+		});
+
+		// Track carousel interactions
+		if (typeof posthog !== 'undefined') {
+			nextBtn.addEventListener('click', () => {
+				posthog.capture('reviews_carousel_next', {
+					current_slide: currentSlide,
+					interaction_type: 'button_click'
+				});
+			});
+
+			prevBtn.addEventListener('click', () => {
+				posthog.capture('reviews_carousel_prev', {
+					current_slide: currentSlide,
+					interaction_type: 'button_click'
+				});
+			});
+
+			dots.forEach((dot, index) => {
+				dot.addEventListener('click', () => {
+					posthog.capture('reviews_carousel_dot', {
+						target_slide: index,
+						interaction_type: 'dot_click'
+					});
+				});
+			});
+		}
+
+		// Track CTA click
+		const ctaButton = document.querySelector('#reviews a[href="#contact"]');
+		if (ctaButton) {
+			ctaButton.addEventListener('click', () => {
+				if (typeof posthog !== 'undefined') {
+					posthog.capture('reviews_cta_click', {
+						section: 'customer_reviews',
+						action: 'join_success_stories',
+						current_slide: currentSlide
+					});
+				}
+			});
+		}
+	}
+
 	// Use passive event listeners for better performance
 	document.addEventListener('DOMContentLoaded', () => {
 		initMarquee();
@@ -635,6 +1172,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		initPodcast();
 		initDockTooltips();
 		initServicesTracking();
+		initReviewsSection();
 	}, { passive: true });
 	
 	window.addEventListener('resize', initMarquee, { passive: true });
@@ -784,6 +1322,107 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		:root.dark {
 			/* Dark theme shadows and effects */
 			--shadow-color: rgba(0, 0, 0, 0.3);
+		}
+	}
+
+	/* Reviews section animations */
+	#reviews .group {
+		transform: translateY(0);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	#reviews .group:hover {
+		transform: translateY(-8px) scale(1.02);
+		box-shadow: 0 20px 60px rgba(16, 209, 255, 0.15);
+	}
+
+	#reviews .group:nth-child(2):hover {
+		box-shadow: 0 20px 60px rgba(255, 79, 170, 0.15);
+	}
+
+	#reviews .group:nth-child(3):hover {
+		box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
+	}
+
+	/* Carousel specific styles */
+	#reviewsContainer {
+		transition: transform 0.5s ease-in-out;
+	}
+
+	.review-card {
+		flex-shrink: 0;
+	}
+
+	/* Navigation buttons */
+	#prevReview, #nextReview {
+		backdrop-filter: blur(12px);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+	}
+
+	#prevReview:hover, #nextReview:hover {
+		transform: scale(1.1);
+		box-shadow: 0 12px 40px rgba(16, 209, 255, 0.2);
+	}
+
+	/* Dots indicator */
+	.carousel-dot {
+		cursor: pointer;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.carousel-dot:hover {
+		transform: scale(1.2);
+	}
+
+	/* Star rating animations */
+	#reviews svg {
+		transition: all 0.2s ease;
+	}
+
+	#reviews .group:hover svg {
+		transform: scale(1.1);
+		filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+	}
+
+	/* Stats counter animations */
+	@keyframes countUp {
+		from { opacity: 0; transform: translateY(20px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	.animate-count-up {
+		animation: countUp 0.6s ease-out;
+	}
+
+	/* Pulse glow effect for CTA */
+	@keyframes pulse-glow {
+		0%, 100% { 
+			box-shadow: 0 0 0 0 rgba(16, 209, 255, 0.4);
+		}
+		50% { 
+			box-shadow: 0 0 0 10px rgba(16, 209, 255, 0);
+		}
+	}
+
+	.animate-pulse-glow {
+		animation: pulse-glow 2s infinite;
+	}
+
+	/* Responsive carousel */
+	@media (max-width: 768px) {
+		.review-card {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+		
+		#prevReview, #nextReview {
+			width: 10px;
+			height: 10px;
+		}
+		
+		.carousel-dot {
+			width: 2.5px;
+			height: 2.5px;
 		}
 	}
 </style>
