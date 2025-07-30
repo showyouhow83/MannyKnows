@@ -1,7 +1,23 @@
 #!/bin/bash
 
-# Quick staging deployment script
-# Usage: ./deploy-staging.sh [optional commit message]
+# MannyKnows Staging Deployment Script
+# 
+# This script automates deployment from local codespace to GitHub staging branch
+# 
+# Usage:
+#   ./deploy-staging.sh                           # Uses default timestamp message
+#   ./deploy-staging.sh "Your commit message"     # Uses custom message
+#
+# What it does:
+#   1. Builds the Astro project (npm run build)
+#   2. Commits all changes with provided message
+#   3. Pushes to staging branch on GitHub
+#   4. Provides success/error feedback
+#
+# Requirements:
+#   - Must be on staging branch
+#   - NPM and dependencies installed
+#   - Git configured with GitHub access
 
 echo "🚀 Deploying to staging..."
 
