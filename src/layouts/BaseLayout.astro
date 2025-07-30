@@ -1,5 +1,6 @@
 ---
 import PostHogAdvanced from '../components/analytics/PostHogAdvanced.astro';
+import SettingsModal from '../components/SettingsModal.astro';
 
 export interface Props {
 	title: string;
@@ -28,6 +29,9 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
+		<!-- Settings Modal -->
+		<SettingsModal />
+		
 		<slot />
 		
 		<!-- Comprehensive Footer -->
@@ -42,103 +46,7 @@ const { title } = Astro.props;
 					
 					<!-- Latest Blog Articles (1 column = 33%) -->
 					<div class="lg:col-span-1 space-y-6">
-						<h4 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300">Latest AI Insights</h4>
 						
-						<!-- Blog Article 1 -->
-						<article class="group cursor-pointer space-y-3">
-							<!-- Icon and Banner Row -->
-							<div class="flex gap-3">
-								<div class="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-400">
-										<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-									</svg>
-								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg overflow-hidden flex items-center justify-center">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-blue-400/60">
-										<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-									</svg>
-								</div>
-							</div>
-							<!-- Content Below -->
-							<div class="space-y-2">
-								<span class="inline-block px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-md">
-									Chatbots & AI
-								</span>
-								<div>
-									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 mb-1">
-										How AI Chatbots Transform Customer Service
-									</h5>
-									<button class="text-blue-600 dark:text-blue-400 text-xs hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-300 font-medium">
-										Read more →
-									</button>
-								</div>
-							</div>
-						</article>
-
-						<!-- Blog Article 2 -->
-						<article class="group cursor-pointer space-y-3">
-							<!-- Icon and Banner Row -->
-							<div class="flex gap-3">
-								<div class="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400">
-										<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-										<polyline points="14,2 14,8 20,8"/>
-									</svg>
-								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg overflow-hidden flex items-center justify-center">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-purple-400/60">
-										<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-									</svg>
-								</div>
-							</div>
-							<!-- Content Below -->
-							<div class="space-y-2">
-								<span class="inline-block px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-md">
-									Content Creation
-								</span>
-								<div>
-									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 mb-1">
-										AI Content Creation: The Future of Marketing
-									</h5>
-									<button class="text-purple-600 dark:text-purple-400 text-xs hover:text-purple-500 dark:hover:text-purple-300 transition-colors duration-300 font-medium">
-										Read more →
-									</button>
-								</div>
-							</div>
-						</article>
-
-						<!-- Blog Article 3 -->
-						<article class="group cursor-pointer space-y-3">
-							<!-- Icon and Banner Row -->
-							<div class="flex gap-3">
-								<div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-orange-400">
-										<line x1="18" y1="20" x2="18" y2="10"/>
-										<line x1="12" y1="20" x2="12" y2="4"/>
-										<line x1="6" y1="20" x2="6" y2="14"/>
-									</svg>
-								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg overflow-hidden flex items-center justify-center">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-orange-400/60">
-										<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-									</svg>
-								</div>
-							</div>
-							<!-- Content Below -->
-							<div class="space-y-2">
-								<span class="inline-block px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded-md">
-									Data Analytics
-								</span>
-								<div>
-									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 mb-1">
-										Predictive Analytics: Making Data-Driven Decisions
-									</h5>
-									<button class="text-orange-600 dark:text-orange-400 text-xs hover:text-orange-500 dark:hover:text-orange-300 transition-colors duration-300 font-medium">
-										Read more →
-									</button>
-								</div>
-							</div>
-						</article>
 					</div>
 
 					<!-- Empty Column (1 column = 33%) -->
@@ -156,6 +64,105 @@ const { title } = Astro.props;
 							<p class="text-gray-700 dark:text-white/80 leading-relaxed text-sm mb-8 transition-colors duration-300">
 								Professional AI-powered business solutions. From intelligent automation to data-driven insights, helping businesses grow smarter and faster.
 							</p>
+						</div>
+
+						<div>
+							<h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title>Latest AI Insights</h4>
+							<!-- Blog Article 1 -->
+							<article class="group cursor-pointer space-y-3">
+								<!-- Icon and Banner Row -->
+								<div class="flex gap-3">
+									<div class="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-400">
+											<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+										</svg>
+									</div>
+									<div class="flex-1 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-blue-400/60">
+											<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+										</svg>
+									</div>
+								</div>
+								<!-- Content Below -->
+								<div class="space-y-2">
+									<span class="inline-block px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-md">
+										Chatbots & AI
+									</span>
+									<div>
+										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 mb-1">
+											How AI Chatbots Transform Customer Service
+										</h5>
+										<button class="text-blue-600 dark:text-blue-400 text-xs hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-300 font-medium">
+											Read more →
+										</button>
+									</div>
+								</div>
+							</article>
+
+							<!-- Blog Article 2 -->
+							<article class="group cursor-pointer space-y-3">
+								<!-- Icon and Banner Row -->
+								<div class="flex gap-3">
+									<div class="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400">
+											<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+											<polyline points="14,2 14,8 20,8"/>
+										</svg>
+									</div>
+									<div class="flex-1 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-purple-400/60">
+											<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+										</svg>
+									</div>
+								</div>
+								<!-- Content Below -->
+								<div class="space-y-2">
+									<span class="inline-block px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-md">
+										Content Creation
+									</span>
+									<div>
+										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 mb-1">
+											AI Content Creation: The Future of Marketing
+										</h5>
+										<button class="text-purple-600 dark:text-purple-400 text-xs hover:text-purple-500 dark:hover:text-purple-300 transition-colors duration-300 font-medium">
+											Read more →
+										</button>
+									</div>
+								</div>
+							</article>
+
+							<!-- Blog Article 3 -->
+							<article class="group cursor-pointer space-y-3">
+								<!-- Icon and Banner Row -->
+								<div class="flex gap-3">
+									<div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-orange-400">
+											<line x1="18" y1="20" x2="18" y2="10"/>
+											<line x1="12" y1="20" x2="12" y2="4"/>
+											<line x1="6" y1="20" x2="6" y2="14"/>
+										</svg>
+									</div>
+									<div class="flex-1 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-orange-400/60">
+											<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+										</svg>
+									</div>
+								</div>
+								<!-- Content Below -->
+								<div class="space-y-2">
+									<span class="inline-block px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded-md">
+										Data Analytics
+									</span>
+									<div>
+										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 mb-1">
+											Predictive Analytics: Making Data-Driven Decisions
+										</h5>
+										<button class="text-orange-600 dark:text-orange-400 text-xs hover:text-orange-500 dark:hover:text-orange-300 transition-colors duration-300 font-medium">
+											Read more →
+										</button>
+									</div>
+								</div>
+							</article>
 						</div>
 
 						<!-- Social Links -->
@@ -628,6 +635,16 @@ const { title } = Astro.props;
 		--sk-fill-tertiary: rgb(245,245,247);
 		--sk-fill-gray-quaternary: rgb(232,232,237);
 		
+		/* Border Colors - Light Theme */
+		--border-light: rgba(0, 0, 0, 0.1);
+		--border-light-hover: rgba(0, 0, 0, 0.2);
+		--border-dark: rgba(255, 255, 255, 0.1);
+		--border-dark-hover: rgba(255, 255, 255, 0.2);
+		
+		/* Text Colors - Light Theme */
+		--text-light-primary: rgb(29, 29, 31);
+		--text-dark-primary: rgba(255, 255, 255, 0.95);
+		
 		/* Typography Enhancement */
 		letter-spacing: .009em;
 		font-synthesis: none;
@@ -908,7 +925,7 @@ const { title } = Astro.props;
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
-		animation: apple-gradient-flow 3s ease-in-out infinite;
+		animation: apple-gradient-flow 15s ease-in-out infinite;
 	}
 
 	.apple-gradient-container {

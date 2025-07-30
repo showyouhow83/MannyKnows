@@ -2,7 +2,6 @@
 // Import the Layout component
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MarqueeSimple from '../components/MarqueeSimple.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
@@ -57,9 +56,6 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 								<span class="text-[10px] text-white/80 leading-none">CLAIM NOW</span>
 							</a>
 							
-							<!-- Theme Toggle -->
-							<ThemeToggle />
-							
 							<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
 								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 									<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -99,7 +95,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
                 <div class="max-w-[1440px] mx-auto px-8">
                     <div class="max-w-16xl mx-auto">
                         <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
-                            Scale your <span class="apple-gradient-text">business operations</span> exponentially with AI
+                            Scale your <span class="apple-gradient-text" data-colorful-title>business operations</span> exponentially with AI
                         </h1>
                         <p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
 							Optimize your operations from end to end with intelligent AI. We automate critical tasks across your marketing, sales, and support workflows to boost productivity, cut costs, and drive scalable growth.
@@ -117,7 +113,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 			
 			<div class="max-w-[1440px] mx-auto px-8 relative">
 				<div class="mb-16">
-					<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-center text-4xl md:text-6xl lg:text-7xl mb-2"><span class="apple-gradient-text">Artificial Intelligence</span></h2>
+					<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-center text-4xl md:text-6xl lg:text-7xl mb-2"><span class="apple-gradient-text" data-colorful-title>Artificial Intelligence</span></h2>
 					<p class="sf-medium apple-body-text text-xl text-text-light-secondary dark:text-text-dark-secondary text-center">Business Growing Services 🌎</p>
 				</div>
 				
@@ -241,7 +237,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 				
 				<div class="lg:col-span-2 flex items-center">
 					<div>
-						<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-3xl md:text-4xl lg:text-5xl mb-6"><span class="apple-gradient-text">Custom AI Solutions for Growth</span></h2>
+						<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-3xl md:text-4xl lg:text-5xl mb-6"><span class="apple-gradient-text" data-colorful-title>Custom AI Solutions for Growth</span></h2>
 						<p class="sf-medium apple-body-text text-xl md:text-2xl lg:text-3xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
 							We build and deploy intelligent automation to streamline operations, reduce costs, and scale your business. Go beyond off-the-shelf products with solutions tailored to your most repetitive tasks.
 						</p>
@@ -288,7 +284,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 			<!-- Section Header -->
 			<div class="text-center mb-16">
 				<h2 class="text-5xl md:text-6xl font-black text-text-light-primary dark:text-text-dark-primary mb-6 apple-headline">
-					<span class="bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-clip-text text-transparent">
+					<span class="apple-gradient-text bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-clip-text text-transparent" data-colorful-title>
 						Customer Success Stories
 					</span>
 				</h2>
@@ -693,6 +689,61 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 							</svg>
 						</div>
 					</button>
+
+					<!-- Divider -->
+					<div class="w-px h-8 bg-gray-300/50 dark:bg-white/20 mx-1"></div>
+
+					<!-- Theme Toggle -->
+					<button type="button" class="dock-item group relative" data-tooltip="Toggle Theme" id="dockThemeToggle">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
+							<!-- Sun icon for dark mode (shows when dark mode is active) -->
+							<svg 
+								id="dockSunIcon" 
+								width="20" 
+								height="20" 
+								viewBox="0 0 24 24" 
+								fill="none" 
+								stroke="currentColor" 
+								stroke-width="2" 
+								class="transition-all duration-300 rotate-0 scale-100 dark:rotate-90 dark:scale-0"
+							>
+								<circle cx="12" cy="12" r="5"/>
+								<path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+							</svg>
+							
+							<!-- Moon icon for light mode (shows when light mode is active) -->
+							<svg 
+								id="dockMoonIcon" 
+								width="20" 
+								height="20" 
+								viewBox="0 0 24 24" 
+								fill="none" 
+								stroke="currentColor" 
+								stroke-width="2" 
+								class="absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100"
+							>
+								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+							</svg>
+						</div>
+					</button>
+
+					<!-- Settings -->
+					<button type="button" class="dock-item group relative" data-tooltip="Settings" id="settingsButton">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
+							<svg 
+								width="20" 
+								height="20" 
+								viewBox="0 0 24 24" 
+								fill="none" 
+								stroke="currentColor" 
+								stroke-width="2" 
+								class="transition-all duration-300 group-hover:rotate-90"
+							>
+								<circle cx="12" cy="12" r="3"/>
+								<path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+							</svg>
+						</div>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -1027,6 +1078,58 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		}
 	}
 
+	// Dock Theme Toggle functionality
+	function initDockThemeToggle() {
+		const dockToggle = document.getElementById('dockThemeToggle');
+		const dockSunIcon = document.getElementById('dockSunIcon');
+		const dockMoonIcon = document.getElementById('dockMoonIcon');
+		
+		if (!dockToggle || !dockSunIcon || !dockMoonIcon) return;
+
+		// Check for saved theme preference or default to dark
+		const savedTheme = localStorage.getItem('theme');
+		const defaultTheme = savedTheme || 'dark';
+		
+		// Apply initial theme
+		applyTheme(defaultTheme);
+		
+		// Toggle click handler
+		dockToggle.addEventListener('click', () => {
+			const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+			const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+			applyTheme(newTheme);
+			
+			// Save preference
+			localStorage.setItem('theme', newTheme);
+			
+			// Track theme change
+			if (typeof posthog !== 'undefined') {
+				posthog.capture('theme_changed', { 
+					from: currentTheme,
+					to: newTheme,
+					location: 'dock'
+				});
+			}
+		});
+		
+		function applyTheme(theme) {
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		}
+		
+		// Listen for system theme changes (but don't auto-switch since we default to dark)
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+			// Only follow system preference if user hasn't set a preference
+			if (!localStorage.getItem('theme')) {
+				// Still default to dark even if system changes
+				applyTheme('dark');
+			}
+		});
+	}
+
 	// Use passive event listeners for better performance
 	document.addEventListener('DOMContentLoaded', () => {
 		initMarquee();
@@ -1036,6 +1139,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		initDockTooltips();
 		initServicesTracking();
 		initReviewsSection();
+		initDockThemeToggle();
 	}, { passive: true });
 	
 	window.addEventListener('resize', initMarquee, { passive: true });
