@@ -31,13 +31,13 @@ const { title } = Astro.props;
 		<slot />
 		
 		<!-- Comprehensive Footer -->
-		<footer class="relative bg-gradient-to-b from-gray-50/95 via-gray-100/90 to-gray-200/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300">
+		<footer class="relative bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/50 dark:border-white/10 transition-colors duration-300">
 			<!-- Gradient border that fades to transparent -->
 			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>
-			<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-gray-50/60 via-gray-100/40 to-gray-50/60 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
 			
 			<!-- Brand & Social Section -->
-			<div class="max-w-[1440px] mx-auto px-8 pt-[4.5rem] pb-0">
+			<div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0">
 				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					
 					<!-- Latest Blog Articles (1 column = 33%) -->
@@ -568,33 +568,27 @@ const { title } = Astro.props;
 		</footer>
 
 		<!-- Footer Bottom -->
-		<div class="relative bg-gradient-to-t from-gray-50/20 via-gray-100/15 to-gray-50/5 dark:from-gray-900/25 dark:via-slate-800/15 dark:to-gray-900/10 transition-colors duration-300 overflow-hidden">
-            <!-- Background overlay -->
-            <div class="absolute inset-0 bg-gradient-to-br from-gray-100/20 via-gray-50/15 to-gray-200/20 dark:from-slate-900/20 dark:via-gray-800/10 dark:to-slate-900/20 -z-10 transition-colors duration-300"></div>
+		<div class="relative bg-gradient-to-b from-gray-50/95 via-gray-100/90 to-gray-200/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
+			<!-- Gradient border that fades to transparent -->
+			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
             
-            <!-- Background Magic Effects -->
-            <div class="absolute inset-0 bg-gradient-to-r from-primary-blue/2 via-primary-pink/2 to-primary-blue/2 animate-gradient-flow opacity-15"></div>
-            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue/15 to-transparent animate-gradient-slide"></div>
-            
-            <div class="max-w-[1440px] mx-auto px-8 py-9 relative">
+            <div class="max-w-[1440px] mx-auto px-2 py-9 relative">
 				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
-					<div class="text-gray-700 dark:text-white/60 text-sm text-center md:text-left transition-colors duration-300 group">
+					<div class="text-gray-800 dark:text-white/60 text-sm text-center md:text-left transition-colors duration-300 group">
 						<div class="flex items-center gap-2 justify-center md:justify-start">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary-blue animate-pulse">
-							<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-							</svg>
-							<span class="font-bold bg-gradient-to-r from-primary-blue to-primary-pink bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">MannyKnows.com</span>
-							<span class="ml-2 text-xs text-gray-600 dark:text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300"><span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">soyTico🇨🇷🇺🇸</span>
+							<span class="font-bold text-black dark:bg-gradient-to-r dark:from-primary-blue dark:to-primary-pink dark:bg-clip-text dark:text-transparent hover:bg-gradient-to-r hover:from-primary-blue hover:to-primary-pink hover:bg-clip-text hover:text-transparent hover:animate-pulse group-hover:scale-105 transition-all duration-300">MannyKnows.com</span>
+							<span class="ml-2 text-xs text-gray-700 dark:text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300"><span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">soyTico🇨🇷🇺🇸</span>
 							</span>
 						</div>
 
 					</div>
 					<div class="flex gap-6 text-sm">
-						<a href="/sitemap.xml" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Sitemap</a>
-						<a href="/privacy" class="text-gray-700 dark:text-white/60 hover:text-primary-pink dark:hover:text-primary-pink transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Privacy</a>
-						<a href="/terms" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Terms</a>
+						<a href="/sitemap.xml" class="text-gray-800 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Sitemap</a>
+						<a href="/privacy" class="text-gray-800 dark:text-white/60 hover:text-primary-pink dark:hover:text-primary-pink transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Privacy</a>
+						<a href="/terms" class="text-gray-800 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Terms</a>
 							<div class="mt-1 text-xs">
-								<span>All rights reserved © {new Date().getFullYear()}</span>
+								<span class="text-gray-700 dark:text-white/50 transition-colors duration-300">All rights reserved © {new Date().getFullYear()}</span>
 							</div>
 					</div>
 
