@@ -1,0 +1,445 @@
+---
+// Settings modal component for user preferences
+---
+
+<!-- Settings Modal -->
+<div 
+  id="settingsModal" 
+  class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 invisible transition-all duration-300"
+  role="dialog"
+  aria-labelledby="settingsTitle"
+  aria-modal="true"
+>
+  <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-gray-300/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-md w-full mx-4 transform scale-95 transition-all duration-300">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/10">
+      <h2 id="settingsTitle" class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600 dark:text-gray-400">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+        </svg>
+        Settings
+      </h2>
+      <button 
+        id="closeSettings" 
+        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200 p-1 rounded-lg hover:bg-gray-100/50 dark:hover:bg-white/10"
+        aria-label="Close settings"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Settings Content -->
+    <div class="p-6 space-y-6">
+      
+      <!-- Marquee Setting -->
+      <div class="flex items-center justify-between">
+        <div>
+          <label for="marqueeToggle" class="text-sm font-medium text-gray-800 dark:text-white cursor-pointer">
+            Show Marquee
+          </label>
+          <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            Display the animated text marquee
+          </p>
+        </div>
+        <div class="flex items-center">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              id="marqueeToggle" 
+              class="sr-only peer"
+              checked
+            >
+            <div class="relative w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all duration-300 peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="h-px bg-gray-200/50 dark:bg-white/10"></div>
+
+      <!-- Colorful Titles Setting -->
+      <div class="flex items-center justify-between">
+        <div>
+          <label for="colorfulTitlesToggle" class="text-sm font-medium text-gray-800 dark:text-white cursor-pointer">
+            Colorful Titles
+          </label>
+          <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            Show gradient and animated text colors
+          </p>
+        </div>
+        <div class="flex items-center">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              id="colorfulTitlesToggle" 
+              class="sr-only peer"
+              checked
+            >
+            <div class="relative w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all duration-300 peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="h-px bg-gray-200/50 dark:bg-white/10"></div>
+
+      <!-- Analytics Notice -->
+      <div class="bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-400/20 rounded-lg p-4">
+        <div class="flex items-start gap-3">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <div>
+            <p class="text-xs font-medium text-blue-800 dark:text-blue-200">
+              Privacy Notice
+            </p>
+            <p class="text-xs text-blue-700 dark:text-blue-300 mt-1">
+              Your preferences help us improve the site experience. Settings are stored locally and anonymized usage data may be collected.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 p-6 pt-0">
+      <button 
+        id="resetSettings" 
+        class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors duration-200"
+      >
+        Reset to Default
+      </button>
+      <button 
+        id="saveSettings" 
+        class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    const openButton = document.getElementById('settingsButton');
+    const closeButton = document.getElementById('closeSettings');
+    const saveButton = document.getElementById('saveSettings');
+    const resetButton = document.getElementById('resetSettings');
+    const marqueeToggle = document.getElementById('marqueeToggle');
+    const colorfulTitlesToggle = document.getElementById('colorfulTitlesToggle');
+    
+    if (!modal || !openButton) return;
+
+    // Load saved preferences
+    loadSettings();
+
+    // Open modal
+    openButton.addEventListener('click', () => {
+      modal.classList.remove('opacity-0', 'invisible');
+      modal.querySelector('div').classList.remove('scale-95');
+      modal.querySelector('div').classList.add('scale-100');
+      document.body.style.overflow = 'hidden';
+      
+      // Track modal open
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('settings_modal_opened');
+      }
+    });
+
+    // Close modal function
+    function closeModal() {
+      modal.classList.add('opacity-0', 'invisible');
+      modal.querySelector('div').classList.add('scale-95');
+      modal.querySelector('div').classList.remove('scale-100');
+      document.body.style.overflow = '';
+    }
+
+    // Close modal events
+    closeButton?.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('invisible')) {
+        closeModal();
+      }
+    });
+
+    // Save settings
+    saveButton?.addEventListener('click', () => {
+      saveSettings();
+      closeModal();
+    });
+
+    // Reset settings
+    resetButton?.addEventListener('click', () => {
+      resetSettings();
+    });
+
+    // Real-time toggle updates with immediate saving
+    marqueeToggle?.addEventListener('change', () => {
+      applyMarqueeSetting(marqueeToggle.checked);
+      // Save immediately to localStorage
+      localStorage.setItem('marquee-enabled', marqueeToggle.checked.toString());
+      
+      // Track setting change
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('setting_changed', {
+          setting: 'marquee',
+          enabled: marqueeToggle.checked,
+          source: 'realtime_toggle'
+        });
+      }
+    });
+
+    colorfulTitlesToggle?.addEventListener('change', () => {
+      applyColorfulTitlesSetting(colorfulTitlesToggle.checked);
+      // Save immediately to localStorage
+      localStorage.setItem('colorful-titles-enabled', colorfulTitlesToggle.checked.toString());
+      
+      // Track setting change
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('setting_changed', {
+          setting: 'colorful_titles',
+          enabled: colorfulTitlesToggle.checked,
+          source: 'realtime_toggle'
+        });
+      }
+    });
+
+    function loadSettings() {
+      const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
+      const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
+      
+      if (marqueeToggle) {
+        marqueeToggle.checked = marqueeEnabled;
+        applyMarqueeSetting(marqueeEnabled);
+      }
+      
+      if (colorfulTitlesToggle) {
+        colorfulTitlesToggle.checked = colorfulTitlesEnabled;
+        applyColorfulTitlesSetting(colorfulTitlesEnabled);
+      }
+    }
+
+    function saveSettings() {
+      // Settings are now saved in real-time, this just tracks the save button click
+      const marqueeEnabled = marqueeToggle?.checked ?? true;
+      const colorfulTitlesEnabled = colorfulTitlesToggle?.checked ?? true;
+      
+      // Track settings save button click
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('settings_save_button_clicked', {
+          marquee_enabled: marqueeEnabled,
+          colorful_titles_enabled: colorfulTitlesEnabled
+        });
+      }
+    }
+
+    function resetSettings() {
+      // Reset localStorage
+      localStorage.setItem('marquee-enabled', 'true');
+      localStorage.setItem('colorful-titles-enabled', 'true');
+      
+      // Reset toggle states
+      if (marqueeToggle) marqueeToggle.checked = true;
+      if (colorfulTitlesToggle) colorfulTitlesToggle.checked = true;
+      
+      // Apply default settings
+      applyMarqueeSetting(true);
+      applyColorfulTitlesSetting(true);
+      
+      // Track settings reset
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('settings_reset', {
+          source: 'reset_button'
+        });
+      }
+    }
+
+    function applyMarqueeSetting(enabled) {
+      const marquees = document.querySelectorAll('[data-marquee]');
+      marquees.forEach(marquee => {
+        if (enabled) {
+          marquee.style.display = '';
+        } else {
+          marquee.style.display = 'none';
+        }
+      });
+    }
+
+    function applyColorfulTitlesSetting(enabled) {
+      const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]');
+      console.log('Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
+      
+      colorfulElements.forEach((element, index) => {
+        console.log(`Element ${index}:`, element.className);
+        if (enabled) {
+          element.classList.remove('colorful-disabled');
+          // Remove any inline styles that might override
+          element.style.removeProperty('background');
+          element.style.removeProperty('background-image');
+          element.style.removeProperty('background-size');
+          element.style.removeProperty('-webkit-background-clip');
+          element.style.removeProperty('background-clip');
+          element.style.removeProperty('-webkit-text-fill-color');
+          element.style.removeProperty('animation');
+          element.style.removeProperty('color');
+          console.log(`Element ${index} after enabling:`, element.className);
+        } else {
+          element.classList.add('colorful-disabled');
+          // Force inline styles as backup
+          const isDark = document.documentElement.classList.contains('dark');
+          element.style.setProperty('background', 'none', 'important');
+          element.style.setProperty('background-image', 'none', 'important');
+          element.style.setProperty('background-size', 'initial', 'important');
+          element.style.setProperty('-webkit-background-clip', 'initial', 'important');
+          element.style.setProperty('background-clip', 'initial', 'important');
+          element.style.setProperty('-webkit-text-fill-color', 'initial', 'important');
+          element.style.setProperty('animation', 'none', 'important');
+          // Apply correct color based on theme: dark text for light mode, light text for dark mode
+          element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
+          console.log(`Element ${index} after disabling (${isDark ? 'dark' : 'light'} mode):`, element.className);
+        }
+      });
+    }
+
+    // Listen for theme changes and update colorful titles if they're disabled
+    function handleThemeChange() {
+      const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
+      if (!colorfulTitlesEnabled) {
+        // Reapply the disabled state with updated colors for the new theme
+        applyColorfulTitlesSetting(false);
+      }
+    }
+
+    // Set up theme change listener
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const target = mutation.target;
+          if (target === document.documentElement) {
+            handleThemeChange();
+          }
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initSettingsModal();
+    
+    // Also apply settings globally on page load, even if modal hasn't been opened yet
+    applyGlobalSettings();
+  });
+
+  // Function to apply settings on page load
+  function applyGlobalSettings() {
+    const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
+    const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
+    
+    console.log('Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
+    
+    // Apply marquee setting
+    const marquees = document.querySelectorAll('[data-marquee]');
+    marquees.forEach(marquee => {
+      if (marqueeEnabled) {
+        marquee.style.display = '';
+      } else {
+        marquee.style.display = 'none';
+      }
+    });
+    
+    // Apply colorful titles setting
+    const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]');
+    colorfulElements.forEach(element => {
+      if (colorfulTitlesEnabled) {
+        element.classList.remove('colorful-disabled');
+        // Remove any inline styles
+        element.style.removeProperty('background');
+        element.style.removeProperty('background-image');
+        element.style.removeProperty('background-size');
+        element.style.removeProperty('-webkit-background-clip');
+        element.style.removeProperty('background-clip');
+        element.style.removeProperty('-webkit-text-fill-color');
+        element.style.removeProperty('animation');
+        element.style.removeProperty('color');
+      } else {
+        element.classList.add('colorful-disabled');
+        // Apply forced styles
+        const isDark = document.documentElement.classList.contains('dark');
+        element.style.setProperty('background', 'none', 'important');
+        element.style.setProperty('background-image', 'none', 'important');
+        element.style.setProperty('background-size', 'initial', 'important');
+        element.style.setProperty('-webkit-background-clip', 'initial', 'important');
+        element.style.setProperty('background-clip', 'initial', 'important');
+        element.style.setProperty('-webkit-text-fill-color', 'initial', 'important');
+        element.style.setProperty('animation', 'none', 'important');
+        element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
+      }
+    });
+  }
+</script>
+
+<style>
+  /* High specificity override for colorful titles when disabled */
+  .apple-gradient-text.colorful-disabled,
+  [data-colorful-title].colorful-disabled {
+    background: none !important;
+    background-image: none !important;
+    background-size: initial !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    animation: none !important;
+    color: rgb(31, 41, 55) !important; /* dark text for light mode */
+  }
+  
+  .dark .apple-gradient-text.colorful-disabled,
+  .dark [data-colorful-title].colorful-disabled {
+    color: rgba(255, 255, 255, 0.95) !important; /* light text for dark mode */
+  }
+  
+  /* Additional specificity for nested elements */
+  h1 .apple-gradient-text.colorful-disabled,
+  h2 .apple-gradient-text.colorful-disabled,
+  h3 .apple-gradient-text.colorful-disabled,
+  h4 .apple-gradient-text.colorful-disabled,
+  h5 .apple-gradient-text.colorful-disabled,
+  h6 .apple-gradient-text.colorful-disabled,
+  span.apple-gradient-text.colorful-disabled {
+    background: none !important;
+    background-image: none !important;
+    background-size: initial !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    animation: none !important;
+    color: rgb(31, 41, 55) !important; /* dark text for light mode */
+  }
+  
+  .dark h1 .apple-gradient-text.colorful-disabled,
+  .dark h2 .apple-gradient-text.colorful-disabled,
+  .dark h3 .apple-gradient-text.colorful-disabled,
+  .dark h4 .apple-gradient-text.colorful-disabled,
+  .dark h5 .apple-gradient-text.colorful-disabled,
+  .dark h6 .apple-gradient-text.colorful-disabled,
+  .dark span.apple-gradient-text.colorful-disabled {
+    color: rgba(255, 255, 255, 0.95) !important; /* light text for dark mode */
+  }
+</style>
