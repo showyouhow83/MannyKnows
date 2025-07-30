@@ -225,7 +225,7 @@ const { title } = Astro.props;
 			<div class="max-w-[1440px] mx-auto">
 				<div class="flex flex-wrap justify-center gap-0">
 					<!-- eCommerce & Web Development -->
-					<div class="service-box-padding bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tl-lg">
+					<div class="service-box-padding bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tl-lg border-t border-l border-r border-indigo-300/30 dark:border-indigo-400/20 hover:shadow-[0_12px_35px_rgba(99,102,241,0.2)] transition-all duration-300">
 						<div class="flex items-center gap-3 mb-3">
 							<div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
 								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -296,7 +296,7 @@ const { title } = Astro.props;
 							</div>
 							
 							<!-- AI Automation Flows -->
-							<div class="service-box-padding bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px]">
+							<div class="service-box-padding bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] border-t border-l border-r border-green-300/30 dark:border-green-400/20 hover:shadow-[0_12px_35px_rgba(34,197,94,0.2)] transition-all duration-300">
 								<div class="flex items-center gap-3 mb-3">
 									<div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
 										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -351,7 +351,7 @@ const { title } = Astro.props;
 							</div>
 							
 							<!-- AI Sale & Support Agents -->
-							<div class="service-box-padding bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-blue-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px]">
+							<div class="service-box-padding bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-blue-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] border-t border-l border-r border-blue-300/30 dark:border-blue-400/20 hover:shadow-[0_12px_35px_rgba(59,130,246,0.2)] transition-all duration-300">
 								<div class="flex items-center gap-3 mb-3">
 									<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
 										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -404,9 +404,9 @@ const { title } = Astro.props;
 							</div>
 							
 							<!-- Photography & Creative Services -->
-							<div class="service-box-padding bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-rose-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px]">
+							<div class="service-box-padding bg-gradient-to-br from-rose-100/70 via-pink-100/40 to-rose-200/60 dark:from-rose-500/10 dark:via-pink-500/5 dark:to-rose-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] border-t border-l border-r border-rose-300/30 dark:border-rose-400/20 hover:shadow-[0_12px_35px_rgba(244,63,94,0.2)] transition-all duration-300">
 								<div class="flex items-center gap-3 mb-3">
-									<div class="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-500 rounded-lg flex items-center justify-center">
+									<div class="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-500 rounded-lg flex items-center justify-center transform hover:rotate-3 transition-transform duration-300">
 										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
 											<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
 											<circle cx="12" cy="13" r="4"/>
@@ -434,50 +434,51 @@ const { title } = Astro.props;
 								</ul>
 
 								<!-- Divider -->
-								<div class="h-px bg-white/10 mb-4"></div>
+								<div class="h-px bg-gradient-to-r from-transparent via-pink-400/30 to-transparent mb-4"></div>
 
 								<!-- 360° Services Section -->
 								<div class="flex items-center gap-3 mb-3">
-									<div class="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+									<div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg flex items-center justify-center transform hover:rotate-360 transition-transform duration-700">
 										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-											<path d="M12 2v20M2 12h20"/>
 											<circle cx="12" cy="12" r="10"/>
-											<path d="M8 12a8 8 0 0 1 8 0"/>
-											<path d="M8 12a8 8 0 0 0 8 0"/>
+											<path d="M8 12h8"/>
+											<path d="M12 8v8"/>
+											<path d="M16.24 7.76l-8.48 8.48"/>
+											<path d="M7.76 7.76l8.48 8.48"/>
 										</svg>
 									</div>
-									<h4 class="text-lg font-semibold text-amber-400">360° Services</h4>
+									<h4 class="text-lg font-semibold text-pink-400">360° Services</h4>
 								</div>
 								<ul class="space-y-2">
-									<li><a href="/services/360-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-videos" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° Videos
 									</a></li>
-									<li><a href="/services/360-wedding-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-wedding-videos" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° Wedding Videos
 									</a></li>
-									<li><a href="/services/360-event-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-event-videos" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° Event Videos
 									</a></li>
-									<li><a href="/services/360-photos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-photos" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° Photos
 									</a></li>
-									<li><a href="/services/360-virtual-tours" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-virtual-tours" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° Virtual Tours
 									</a></li>
-									<li><a href="/services/360-ecommerce-virtual-tours" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+									<li><a href="/services/360-ecommerce-virtual-tours" class="text-pink-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-pink-400/60 rounded-full"></span>
 										360° eCommerce Virtual Tours
 									</a></li>
 								</ul>
 							</div>
 							
 							<!-- Combined: Analytics, Content Generation & Training -->
-							<div class="service-box-padding bg-gradient-to-b from-orange-500/20 via-purple-500/20 to-teal-500/20 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tr-lg">
+							<div class="service-box-padding bg-gradient-to-b from-orange-500/20 via-purple-500/20 to-teal-500/20 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tr-lg border-t border-l border-r border-orange-300/30 dark:border-orange-400/20 hover:shadow-[0_12px_35px_rgba(244,63,94,0.2)] transition-all duration-300">
 								<!-- Business Analytics Section -->
 								<div class="flex items-center gap-3 mb-3">
 									<div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
@@ -567,12 +568,15 @@ const { title } = Astro.props;
 		</footer>
 
 		<!-- Footer Bottom -->
-		<div class="bg-gray-200/90 dark:bg-dark-primary/80 border-t border-gray-300/50 dark:border-white/10 transition-colors duration-300 relative overflow-hidden">
-			<!-- Background Magic Effects -->
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/5 via-primary-pink/5 to-primary-blue/5 animate-gradient-flow opacity-30"></div>
-			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue/30 to-transparent animate-gradient-slide"></div>
-			
-			<div class="max-w-[1440px] mx-auto px-8 py-9 relative">
+		<div class="relative bg-gradient-to-t from-gray-50/20 via-gray-100/15 to-gray-50/5 dark:from-gray-900/25 dark:via-slate-800/15 dark:to-gray-900/10 transition-colors duration-300 overflow-hidden">
+            <!-- Background overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-100/20 via-gray-50/15 to-gray-200/20 dark:from-slate-900/20 dark:via-gray-800/10 dark:to-slate-900/20 -z-10 transition-colors duration-300"></div>
+            
+            <!-- Background Magic Effects -->
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-blue/2 via-primary-pink/2 to-primary-blue/2 animate-gradient-flow opacity-15"></div>
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue/15 to-transparent animate-gradient-slide"></div>
+            
+            <div class="max-w-[1440px] mx-auto px-8 py-9 relative">
 				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
 					<div class="text-gray-700 dark:text-white/60 text-sm text-center md:text-left transition-colors duration-300 group">
 						<div class="flex items-center gap-2 justify-center md:justify-start">
@@ -583,16 +587,17 @@ const { title } = Astro.props;
 							<span class="ml-2 text-xs text-gray-600 dark:text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300"><span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">soyTico🇨🇷🇺🇸</span>
 							</span>
 						</div>
-						<div class="mt-1 text-xs">
-							<span>All rights reserved © {new Date().getFullYear()}</span>
-						</div>
 
 					</div>
 					<div class="flex gap-6 text-sm">
 						<a href="/sitemap.xml" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Sitemap</a>
 						<a href="/privacy" class="text-gray-700 dark:text-white/60 hover:text-primary-pink dark:hover:text-primary-pink transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Privacy</a>
 						<a href="/terms" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Terms</a>
+							<div class="mt-1 text-xs">
+								<span>All rights reserved © {new Date().getFullYear()}</span>
+							</div>
 					</div>
+
 				</div>
 			</div>
 		</div>
@@ -1008,5 +1013,10 @@ const { title } = Astro.props;
 		:root:not(.dark) .apple-gradient-container {
 			background: transparent;
 		}
+	}
+
+	/* 360° rotation animation for footer 360° Services icon */
+	.hover\\:rotate-360:hover {
+		transform: rotate(360deg);
 	}
 </style>
