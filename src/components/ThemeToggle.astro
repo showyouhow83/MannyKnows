@@ -1,0 +1,102 @@
+---
+// Theme toggle component for light/dark mode switching
+---
+
+<button 
+  id="themeToggle" 
+  class="group relative overflow-hidden bg-white/10 dark:bg-white/10 border border-border-light dark:border-border-dark hover:border-border-light-hover dark:hover:border-border-dark-hover rounded-lg w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 backdrop-blur-lg"
+  aria-label="Toggle theme"
+>
+  <!-- Sun icon for dark mode (shows when dark mode is active) -->
+  <svg 
+    id="sunIcon" 
+    width="20" 
+    height="20" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    stroke-width="2" 
+    class="text-text-light-primary dark:text-text-dark-primary transition-all duration-300 rotate-0 scale-100 dark:rotate-90 dark:scale-0"
+  >
+    <circle cx="12" cy="12" r="5"/>
+    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+  </svg>
+  
+  <!-- Moon icon for light mode (shows when light mode is active) -->
+  <svg 
+    id="moonIcon" 
+    width="20" 
+    height="20" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    stroke-width="2" 
+    class="absolute text-text-light-primary dark:text-text-dark-primary transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+
+  <!-- Tailwind Tooltip -->
+  <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+    <span id="tooltipText">Switch to Light Mode</span>
+    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
+  </div>
+</button>
+
+<script>
+  function initThemeToggle() {
+    const toggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+    const tooltipText = document.getElementById('tooltipText');
+    
+    if (!toggle || !sunIcon || !moonIcon || !tooltipText) return;
+
+    // Check for saved theme preference or default to dark
+    const savedTheme = localStorage.getItem('theme');
+    const defaultTheme = savedTheme || 'dark';
+    
+    // Apply initial theme
+    applyTheme(defaultTheme);
+    
+    // Toggle click handler
+    toggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+      
+      // Save preference
+      localStorage.setItem('theme', newTheme);
+      
+      // Track theme change
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('theme_changed', { 
+          from: currentTheme,
+          to: newTheme
+        });
+      }
+    });
+    
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        tooltipText.textContent = 'Switch to Light Mode';
+      } else {
+        document.documentElement.classList.remove('dark');
+        tooltipText.textContent = 'Switch to Dark Mode';
+      }
+    }
+    
+    // Listen for system theme changes (but don't auto-switch since we default to dark)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // Only follow system preference if user hasn't set a preference
+      if (!localStorage.getItem('theme')) {
+        // Still default to dark even if system changes
+        applyTheme('dark');
+      }
+    });
+  }
+  
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', initThemeToggle);
+</script>

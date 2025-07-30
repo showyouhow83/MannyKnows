@@ -1,0 +1,177 @@
+---
+// PostHog Advanced Analytics - Production Ready
+// Using the web snippet approach with advanced configuration
+// Includes: Session Recording, Exception Tracking, Web Vitals, Performance
+
+const posthogKey = import.meta.env.PUBLIC_POSTHOG_PROJECT_KEY;
+---
+
+<script is:inline define:vars={{ posthogKey }}>
+	// Check if PostHog key is available
+	if (!posthogKey) {
+		console.error('PostHog project key is missing! Check your .env file.');
+		return;
+	}
+
+	console.log('🚀 PostHog Advanced initializing...');
+
+	// PostHog Web Snippet - Latest version with all features
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Re Cs Fs Pe Rs Ms capture Ve calculateEventProperties Ds register register_once register_for_session unregister unregister_for_session zs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty js As createPersonProfile Ns Is Us opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Os debug I Ls getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	
+	// Initialize PostHog with advanced configuration
+	posthog.init(posthogKey, {
+		api_host: 'https://us.i.posthog.com',
+		defaults: '2025-05-24',
+		person_profiles: 'identified_only',
+		
+		// Core tracking
+		capture_pageview: true,
+		capture_pageleave: true,
+		
+		// Session recording settings
+		session_recording: {
+			recordCrossOriginIframes: true,
+			maskAllInputs: false,
+			sampleRate: 1.0, // Record all sessions
+		},
+		
+		// Exception tracking
+		capture_exceptions: true,
+		
+		// Performance tracking
+		capture_performance: true,
+		
+		// Advanced features
+		autocapture: true, // Automatically capture clicks, form submissions, etc.
+		
+		loaded: function(posthog) {
+			console.log('✅ PostHog Advanced loaded successfully!');
+			
+			// Track successful initialization
+			posthog.capture('analytics_initialized', {
+				setup: 'advanced_web_snippet',
+				features: ['session_recording', 'exception_tracking', 'performance', 'autocapture'],
+				url: window.location.href,
+				timestamp: new Date().toISOString()
+			});
+		}
+	});
+
+	// Add global error handler for unhandled exceptions
+	window.addEventListener('error', function(event) {
+		if (window.posthog && window.posthog.captureException) {
+			posthog.captureException(event.error || new Error(event.message), {
+				type: 'global_error_handler',
+				filename: event.filename,
+				lineno: event.lineno,
+				colno: event.colno
+			});
+		}
+	});
+	
+	// Add unhandled promise rejection handler
+	window.addEventListener('unhandledrejection', function(event) {
+		if (window.posthog && window.posthog.captureException) {
+			posthog.captureException(event.reason, {
+				type: 'unhandled_promise_rejection'
+			});
+		}
+	});
+
+	// Web Vitals Integration - Manual implementation since npm import doesn't work in browser
+	setTimeout(function() {
+		console.log('📊 Setting up Web Vitals tracking...');
+		
+		// Manual Web Vitals implementation for Core Web Vitals
+		// This captures the essential metrics without requiring npm imports
+		
+		// Cumulative Layout Shift (CLS)
+		let cls = 0;
+		let sessionEntries = [];
+		const po = new PerformanceObserver((entryList) => {
+			for (const entry of entryList.getEntries()) {
+				if (!entry.hadRecentInput) {
+					cls += entry.value;
+					sessionEntries.push(entry);
+				}
+			}
+			
+			// Report CLS when page visibility changes
+			if (document.visibilityState === 'hidden') {
+				posthog.capture('$web_vitals', {
+					$web_vitals_CLS_value: cls,
+					$web_vitals_CLS_rating: cls < 0.1 ? 'good' : cls < 0.25 ? 'needs-improvement' : 'poor',
+					metric_name: 'CLS'
+				});
+			}
+		});
+		
+		try {
+			po.observe({ type: 'layout-shift', buffered: true });
+		} catch (e) {
+			console.log('Layout shift observation not supported');
+		}
+		
+		// Largest Contentful Paint (LCP)
+		const lcpObserver = new PerformanceObserver((entryList) => {
+			const entries = entryList.getEntries();
+			const lastEntry = entries[entries.length - 1];
+			const lcpValue = lastEntry.startTime;
+			
+			posthog.capture('$web_vitals', {
+				$web_vitals_LCP_value: lcpValue,
+				$web_vitals_LCP_rating: lcpValue < 2500 ? 'good' : lcpValue < 4000 ? 'needs-improvement' : 'poor',
+				metric_name: 'LCP'
+			});
+		});
+		
+		try {
+			lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+		} catch (e) {
+			console.log('LCP observation not supported');
+		}
+		
+		// First Contentful Paint (FCP)
+		const fcpObserver = new PerformanceObserver((entryList) => {
+			const entries = entryList.getEntries();
+			for (const entry of entries) {
+				if (entry.name === 'first-contentful-paint') {
+					posthog.capture('$web_vitals', {
+						$web_vitals_FCP_value: entry.startTime,
+						$web_vitals_FCP_rating: entry.startTime < 1800 ? 'good' : entry.startTime < 3000 ? 'needs-improvement' : 'poor',
+						metric_name: 'FCP'
+					});
+				}
+			}
+		});
+		
+		try {
+			fcpObserver.observe({ type: 'paint', buffered: true });
+		} catch (e) {
+			console.log('FCP observation not supported');
+		}
+		
+		// First Input Delay (FID) - using Event Timing API
+		const fidObserver = new PerformanceObserver((entryList) => {
+			for (const entry of entryList.getEntries()) {
+				if (entry.processingStart && entry.startTime) {
+					const fid = entry.processingStart - entry.startTime;
+					posthog.capture('$web_vitals', {
+						$web_vitals_FID_value: fid,
+						$web_vitals_FID_rating: fid < 100 ? 'good' : fid < 300 ? 'needs-improvement' : 'poor',
+						metric_name: 'FID'
+					});
+					fidObserver.disconnect();
+				}
+			}
+		});
+		
+		try {
+			fidObserver.observe({ type: 'first-input', buffered: true });
+		} catch (e) {
+			console.log('FID observation not supported');
+		}
+		
+		console.log('✅ Web Vitals tracking configured');
+	}, 1000);
+</script>

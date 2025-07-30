@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -8,10 +9,35 @@ export default {
           blue: '#10d1ff',
           pink: '#ff4faa',
         },
+        // Enhanced dark theme - much darker and richer
         dark: {
-          primary: '#1b1c1e',
-          secondary: '#2a2d31',
-          tertiary: '#373b3f',
+          primary: '#0a0b0d',      // Much darker base
+          secondary: '#151619',     // Darker secondary
+          tertiary: '#1f2024',     // Darker tertiary
+          accent: '#2a2d31',       // For cards/components
+        },
+        // New light theme colors
+        light: {
+          primary: '#ffffff',      // Pure white base
+          secondary: '#f8fafc',    // Very light gray
+          tertiary: '#f1f5f9',     // Light gray
+          accent: '#e2e8f0',       // For cards/components
+        },
+        // Text colors for each theme
+        text: {
+          'dark-primary': '#ffffff',
+          'dark-secondary': 'rgba(255, 255, 255, 0.8)',
+          'dark-tertiary': 'rgba(255, 255, 255, 0.6)',
+          'light-primary': '#1e293b',
+          'light-secondary': '#475569',
+          'light-tertiary': '#64748b',
+        },
+        // Border colors for each theme
+        border: {
+          'dark': 'rgba(255, 255, 255, 0.1)',
+          'dark-hover': 'rgba(255, 255, 255, 0.2)',
+          'light': 'rgba(0, 0, 0, 0.1)',
+          'light-hover': 'rgba(0, 0, 0, 0.2)',
         },
         chat: {
           green: '#10b981',
