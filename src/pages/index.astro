@@ -2,12 +2,13 @@
 // Import the Layout component
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MarqueeSimple from '../components/MarqueeSimple.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
-<BaseLayout title="MannyKnows - Business Solutions & Services">
-	<main class="relative bg-dark-primary text-white min-h-screen">
+<BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
+	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 		<!-- Background Gradient -->
-		<div class="absolute inset-0 bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary bg-300 animate-gradient-shift -z-10"></div>
+		<div class="absolute inset-0 bg-gradient-to-br from-light-primary via-light-secondary to-light-tertiary dark:from-dark-primary dark:via-dark-secondary dark:to-dark-tertiary bg-300 animate-gradient-shift -z-10 transition-colors duration-300"></div>
 
 		<!-- Marquee Announcement Section -->
 		<MarqueeSimple />
@@ -21,23 +22,23 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 				<div class="flex justify-between items-center w-full">
 					<!-- Logo -->
 					<h1 class="text-5xl font-black m-0">
-						<a href="/" class="logo-gradient text-white font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative">MK</a>
+						<a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative">MK</a>
 					</h1>
 
 					<!-- Navigation Menu -->
 					<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
-						<li><a href="#services" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
-						<li><a href="/process" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
-						<li><a href="/blog" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
-						<li><a href="/faqs" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
-						<li><a href="#about" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">About</a></li>
-						<li><a href="#contact" class="nav-gradient text-white font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Contact</a></li>
+						<li><a href="#services" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
+						<li><a href="/process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
+						<li><a href="/blog" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
+						<li><a href="/faqs" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
+						<li><a href="#about" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">About</a></li>
+						<li><a href="#contact" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Contact</a></li>
 					</ul>
 
 					<!-- Search Bar -->
 					<div class="relative flex items-center flex-1 mx-4">
-						<input type="search" placeholder="Search services..." class="bg-white/10 border border-white/20 rounded-lg py-3 pl-4 pr-10 text-white text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-white/60 focus:outline-none focus:border-primary-blue/50 focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
-						<button type="button" class="absolute right-2 bg-none border-none text-white/60 cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-white">
+						<input type="search" placeholder="Search services..." class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
+						<button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary">
 							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<circle cx="11" cy="11" r="8"></circle>
 								<path d="m21 21-4.35-4.35"></path>
@@ -48,6 +49,9 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<!-- Navigation Actions -->
 					<div class="flex items-center gap-2 relative">
 						<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex items-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">GENERATE INSTANT QUOTE</a>
+						
+						<!-- Theme Toggle -->
+						<ThemeToggle />
 						
 						<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -84,18 +88,18 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		</nav>
 
 		<!-- Hero Section -->
-		<section class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center">
+		<section class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container">
 			<div class="max-w-[1440px] mx-auto px-8">
 				<div class="max-w-4xl mx-auto">
-					<h1 class="text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight font-extrabold">
-						Innovative E-Commerce Solutions <span class="bg-gradient-to-r from-primary-blue to-primary-pink bg-clip-text text-transparent">Powered by AI</span>
+					<h1 class="sf-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
+						Scale your <span class="apple-gradient-text">life</span> with AI
 					</h1>
-					<p class="text-xl mb-10 text-white/80 leading-relaxed max-w-3xl mx-auto">
-						Discover cutting-edge e-commerce solutions designed to elevate your business, leveraging the power of artificial intelligence architecture. Our innovative approach integrates advanced AI technologies to enhance customer experiences, streamline operations, and drive sales.
+					<p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
+						Transform your online store with cutting-edge AI solutions designed for e-commerce success. From personalized customer experiences to automated operations—we help store owners increase sales, reduce costs, and scale efficiently.
 					</p>
 					<div class="flex gap-4 justify-center flex-wrap mt-8">
-						<a href="#instant-quote" class="bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-1 hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Your Free Quote</a>
-						<button type="button" class="bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-200 text-white py-3 px-6 rounded-lg font-semibold text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-green-gradient-flow hover:scale-105 hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] h-12 flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer cursor-pointer" id="heroChatButton">
+						<a href="#instant-quote" class="apple-button sf-semibold bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 no-underline text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Your Free Quote</a>
+						<button type="button" class="apple-button sf-semibold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-200 text-white py-3 px-6 text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-green-gradient-flow hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] h-12 flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer cursor-pointer" id="heroChatButton">
 							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M12 8V4H8"/>
 								<rect width="16" height="12" x="4" y="8" rx="2"/>
@@ -106,146 +110,154 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 							</svg>
 							Chat with Us
 						</button>
-						<a href="#services" class="bg-gradient-to-b from-white/10 to-white/5 text-white py-3 px-6 border border-white/20 rounded-lg no-underline font-semibold text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:scale-105 hover:-translate-y-1 hover:from-white/20 hover:to-white/10 hover:text-white hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">View Our Services</a>
+						<a href="#services" class="apple-button sf-semibold apple-focus bg-gradient-to-b from-black/10 dark:from-white/10 to-black/5 dark:to-white/5 text-text-light-primary dark:text-text-dark-primary py-3 px-6 border border-border-light dark:border-border-dark no-underline text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:from-black/20 dark:hover:from-white/20 hover:to-black/10 dark:hover:to-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-black/5 dark:before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">View Our Services</a>
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<!-- Services Preview Section -->
-		<section id="services" class="py-20 bg-white/5 backdrop-blur-lg">
-			<div class="max-w-[1440px] mx-auto px-8">
-				<div class="text-center mb-16">
-					<h2 class="text-4xl lg:text-5xl mb-6 text-white font-bold">Transform Your E-Commerce Business</h2>
-					<p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">Embrace the future of retail with data-driven insights and personalized shopping experiences that optimize conversion rates and customer satisfaction. Our bespoke AI solutions are tailored to meet the unique needs of your business and keep you ahead in the competitive e-commerce landscape.</p>
+		<!-- Services Section -->
+		<section id="services" class="relative py-20 bg-gradient-to-b from-gray-50/95 via-gray-100/90 to-gray-200/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300">
+			<!-- Gradient border that fades to transparent -->
+			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
+			
+			<div class="max-w-[1440px] mx-auto px-8 relative">
+				<div class="mb-16">
+					<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-center text-4xl md:text-6xl lg:text-7xl mb-2"><span class="apple-gradient-text">Artificial Intelligence</span></h2>
+					<p class="sf-medium apple-body-text text-xl text-text-light-secondary dark:text-text-dark-secondary text-center">Business Growing Services 🌎</p>
 				</div>
 				
 				<!-- Main AI Services Grid -->
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-16">
-					<!-- AI-Powered Websites -->
-					<div class="group bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-lg border border-indigo-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-indigo-500/15 hover:via-blue-500/10 hover:to-indigo-600/15 hover:border-indigo-400/30 hover:shadow-[0_20px_50px_rgba(99,102,241,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-									<line x1="8" y1="21" x2="16" y2="21"/>
-									<line x1="12" y1="17" x2="12" y2="21"/>
-								</svg>
-							</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto mb-16">
+				<!-- AI-Powered Websites -->
+				<div class="group bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-lg border border-indigo-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-indigo-500/15 hover:via-blue-500/10 hover:to-indigo-600/15 hover:border-indigo-400/30 hover:shadow-[0_20px_50px_rgba(99,102,241,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+								<line x1="8" y1="21" x2="16" y2="21"/>
+								<line x1="12" y1="17" x2="12" y2="21"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI-Powered Websites</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Smart websites that adapt to every visitor with personalized experiences and dynamic content. Increase conversions by 40% with real-time optimization and intelligent user behavior analysis.</p>
-						<div class="text-indigo-400 text-sm font-medium">Personalization • A/B Testing • Conversion Optimization</div>
 					</div>
+					<h3 class="text-xl mb-4 text-indigo-400 font-semibold">AI-Powered E-commerce Websites</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Smart online stores that adapt to each customer with personalized experiences and dynamic product recommendations. Boost conversions by 40% with real-time optimization and intelligent visitor behavior tracking.</p>
+					<div class="text-indigo-400 text-sm font-medium">Personalization • A/B Testing • Conversion Optimization</div>
+				</div>
 
-					<!-- AI Automation Flows -->
-					<div class="group bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-lg border border-green-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-green-500/15 hover:via-emerald-500/10 hover:to-green-600/15 hover:border-green-400/30 hover:shadow-[0_20px_50px_rgba(34,197,94,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-									<polyline points="7.5,4.21 12,6.81 16.5,4.21"/>
-									<polyline points="7.5,19.79 7.5,14.6 3,12"/>
-									<polyline points="21,12 16.5,14.6 16.5,19.79"/>
-									<polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
-									<line x1="12" y1="22.08" x2="12" y2="12"/>
-								</svg>
-							</div>
+				<!-- AI Automation Flows -->
+				<div class="group bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-lg border border-green-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-green-500/15 hover:via-emerald-500/10 hover:to-green-600/15 hover:border-green-400/30 hover:shadow-[0_20px_50px_rgba(34,197,94,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+								<polyline points="7.5,4.21 12,6.81 16.5,4.21"/>
+								<polyline points="7.5,19.79 7.5,14.6 3,12"/>
+								<polyline points="21,12 16.5,14.6 16.5,19.79"/>
+								<polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
+								<line x1="12" y1="22.08" x2="12" y2="12"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI Automation Flows</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Streamline complex business processes with intelligent automation that learns and adapts. Save 10+ hours per week while eliminating 95% of manual errors and boosting team productivity.</p>
-						<div class="text-green-400 text-sm font-medium">Workflow Automation • Data Processing • Task Management</div>
 					</div>
+					<h3 class="text-xl mb-4 text-green-400 font-semibold">E-commerce Automation</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Streamline your store operations with intelligent automation—from inventory management to order processing. Save 10+ hours per week while eliminating 95% of manual errors and boosting your team's productivity.</p>
+					<div class="text-green-400 text-sm font-medium">Order Processing • Inventory Management • Customer Communications</div>
+				</div>
 
-					<!-- AI Sale & Support Agents -->
-					<div class="group bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-blue-600/10 backdrop-blur-lg border border-blue-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-blue-500/15 hover:via-cyan-500/10 hover:to-blue-600/15 hover:border-blue-400/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-									<circle cx="12" cy="7" r="4"/>
-									<path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-									<path d="M8 3.13a4 4 0 0 0 0 7.75"/>
-								</svg>
-							</div>
+				<!-- AI Sale & Support Agents -->
+				<div class="group bg-gradient-to-br from-blue-100/70 via-cyan-100/40 to-blue-200/60 dark:from-blue-500/10 dark:via-cyan-500/5 dark:to-blue-600/10 backdrop-blur-lg border border-blue-300/40 dark:border-blue-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-blue-200/80 hover:via-cyan-200/50 hover:to-blue-300/70 dark:hover:from-blue-500/15 dark:hover:via-cyan-500/10 dark:hover:to-blue-600/15 hover:border-blue-400/50 dark:hover:border-blue-400/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+								<circle cx="12" cy="7" r="4"/>
+								<path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+								<path d="M8 3.13a4 4 0 0 0 0 7.75"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI Sale & Support Agents</h3>
-						<p class="text-white/80 leading-relaxed mb-4">24/7 intelligent customer support and sales agents that learn from every interaction. Reduce support costs by 60% while improving customer satisfaction.</p>
-						<div class="text-blue-400 text-sm font-medium">Customer Service • Lead Generation • Sales Automation</div>
 					</div>
+					<h3 class="text-xl mb-4 text-blue-400 font-semibold">AI Sales & Customer Support</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">24/7 intelligent customer support and sales assistants that understand your products and customers. Reduce support costs by 60% while improving customer satisfaction and increasing average order value.</p>
+					<div class="text-blue-400 text-sm font-medium">Live Chat Support • Product Recommendations • Order Assistance</div>
+				</div>
 
-					<!-- AI Business Analytics -->
-					<div class="group bg-gradient-to-br from-orange-500/10 via-yellow-500/5 to-orange-600/10 backdrop-blur-lg border border-orange-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-orange-500/15 hover:via-yellow-500/10 hover:to-orange-600/15 hover:border-orange-400/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<line x1="18" y1="20" x2="18" y2="10"/>
-									<line x1="12" y1="20" x2="12" y2="4"/>
-									<line x1="6" y1="20" x2="6" y2="14"/>
-								</svg>
-							</div>
+				<!-- AI Business Analytics -->
+				<div class="group bg-gradient-to-br from-orange-100/70 via-yellow-100/40 to-orange-200/60 dark:from-orange-500/10 dark:via-yellow-500/5 dark:to-orange-600/10 backdrop-blur-lg border border-orange-300/40 dark:border-orange-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-orange-200/80 hover:via-yellow-200/50 hover:to-orange-300/70 dark:hover:from-orange-500/15 dark:hover:via-yellow-500/10 dark:hover:to-orange-600/15 hover:border-orange-400/50 dark:hover:border-orange-400/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<line x1="18" y1="20" x2="18" y2="10"/>
+								<line x1="12" y1="20" x2="12" y2="4"/>
+								<line x1="6" y1="20" x2="6" y2="14"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI Business Analytics</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Transform raw data into actionable insights with predictive analytics that forecast trends and opportunities. Make data-driven decisions 70% faster with intelligent reporting and real-time dashboards.</p>
-						<div class="text-orange-400 text-sm font-medium">Business Intelligence • Predictive Analytics • Reporting</div>
 					</div>
+					<h3 class="text-xl mb-4 text-orange-400 font-semibold">E-commerce Analytics & Insights</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Transform your store data into actionable insights with predictive analytics that forecast sales trends and customer behavior. Make data-driven decisions 70% faster with intelligent dashboards and automated reporting.</p>
+					<div class="text-orange-400 text-sm font-medium">Sales Analytics • Customer Insights • Performance Tracking</div>
+				</div>
 
-					<!-- AI Content Creation -->
-					<div class="group bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-purple-600/10 backdrop-blur-lg border border-purple-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-purple-500/15 hover:via-pink-500/10 hover:to-purple-600/15 hover:border-purple-400/30 hover:shadow-[0_20px_50px_rgba(168,85,247,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-									<polyline points="14,2 14,8 20,8"/>
-									<line x1="16" y1="13" x2="8" y2="13"/>
-									<line x1="16" y1="17" x2="8" y2="17"/>
-									<polyline points="10,9 9,9 8,9"/>
-								</svg>
-							</div>
+				<!-- AI Content Creation -->
+				<div class="group bg-gradient-to-br from-purple-100/70 via-pink-100/40 to-purple-200/60 dark:from-purple-500/10 dark:via-pink-500/5 dark:to-purple-600/10 backdrop-blur-lg border border-purple-300/40 dark:border-purple-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-purple-200/80 hover:via-pink-200/50 hover:to-purple-300/70 dark:hover:from-purple-500/15 dark:hover:via-pink-500/10 dark:hover:to-purple-600/15 hover:border-purple-400/50 dark:hover:border-purple-400/30 hover:shadow-[0_20px_50px_rgba(168,85,247,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+								<polyline points="14,2 14,8 20,8"/>
+								<line x1="16" y1="13" x2="8" y2="13"/>
+								<line x1="16" y1="17" x2="8" y2="17"/>
+								<polyline points="10,9 9,9 8,9"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI Content Creation</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Generate high-converting content that resonates with your audience across all platforms. Scale your content strategy 10x faster with AI that matches your brand voice and drives engagement.</p>
-						<div class="text-purple-400 text-sm font-medium">Blog Writing • Social Media • Email Marketing</div>
 					</div>
+					<h3 class="text-xl mb-4 text-purple-400 font-semibold">E-commerce Content Creation</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Generate high-converting product descriptions, email campaigns, and social media content that drives sales. Scale your marketing content 10x faster with AI that matches your brand voice and resonates with your customers.</p>
+					<div class="text-purple-400 text-sm font-medium">Product Descriptions • Email Marketing • Social Media Content</div>
+				</div>
 
-					<!-- AI Training & Consulting -->
-					<div class="group bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-teal-600/10 backdrop-blur-lg border border-teal-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-teal-500/15 hover:via-cyan-500/10 hover:to-teal-600/15 hover:border-teal-400/30 hover:shadow-[0_20px_50px_rgba(20,184,166,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-									<circle cx="12" cy="7" r="4"/>
-								</svg>
-							</div>
+				<!-- AI Training & Consulting -->
+				<div class="group bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-teal-600/10 backdrop-blur-lg border border-teal-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-teal-500/15 hover:via-cyan-500/10 hover:to-teal-600/15 hover:border-teal-400/30 hover:shadow-[0_20px_50px_rgba(20,184,166,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+								<circle cx="12" cy="7" r="4"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">AI Training & Consulting</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Comprehensive AI strategy development and hands-on training to transform your team into AI power users. Accelerate adoption with customized workshops and ongoing support for maximum ROI.</p>
-						<div class="text-teal-400 text-sm font-medium">AI Strategy • Team Training • Implementation Support</div>
 					</div>
+					<h3 class="text-xl mb-4 text-teal-400 font-semibold">E-commerce Strategy & Training</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Comprehensive AI strategy development and hands-on training to transform your store team into e-commerce power users. Accelerate AI adoption with customized workshops and ongoing support for maximum ROI.</p>
+					<div class="text-teal-400 text-sm font-medium">Store Strategy • Team Training • Implementation Support</div>
+				</div>
 
-					<!-- Photography & Creative Services -->
-					<div class="group bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-rose-600/10 backdrop-blur-lg border border-rose-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-rose-500/15 hover:via-pink-500/10 hover:to-rose-600/15 hover:border-rose-400/30 hover:shadow-[0_20px_50px_rgba(244,63,94,0.3)]">
-						<div class="h-16 mb-6 flex items-center justify-center">
-							<div class="w-16 h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
-								<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-									<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-									<circle cx="12" cy="13" r="4"/>
-								</svg>
-							</div>
+				<!-- Photography & Creative Services -->
+				<div class="group bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-rose-600/10 backdrop-blur-lg border border-rose-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-rose-500/15 hover:via-pink-500/10 hover:to-rose-600/15 hover:border-rose-400/30 hover:shadow-[0_20px_50px_rgba(244,63,94,0.3)]">
+					<div class="h-16 mb-6 flex items-center justify-center">
+						<div class="w-16 h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+								<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+								<circle cx="12" cy="13" r="4"/>
+							</svg>
 						</div>
-						<h3 class="text-xl mb-4 text-white font-semibold">Photography & Creative Services</h3>
-						<p class="text-white/80 leading-relaxed mb-4">Professional photography and videography services that capture your brand's essence. From events to product shoots, create compelling visual content that drives engagement and builds trust with your audience.</p>
-						<div class="text-rose-400 text-sm font-medium">Event Photography • Product Photography • Corporate Portraits</div>
 					</div>
+					<h3 class="text-xl mb-4 text-rose-400 font-semibold">E-commerce Photography & Creative</h3>
+					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Professional product photography and creative services that showcase your products beautifully. From lifestyle shoots to product catalogs, create compelling visual content that drives conversions and builds customer trust.</p>
+					<div class="text-rose-400 text-sm font-medium">Product Photography • Lifestyle Shoots • Brand Creative</div>
+				</div>
+				
+				<div class="lg:col-span-2 flex items-center">
+					<p class="sf-medium apple-body-text text-3xl md:text-4xl lg:text-[2.65rem] lg:leading-[3.65rem] text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Drive more sales with AI-powered tools designed specifically for online store owners. Our solutions optimize every aspect of your e-commerce operation—from customer acquisition to retention—helping you compete and win in today's digital marketplace.</p>
 				</div>
 			</div>
-		</section>
+		</div>
+	</section>
 
 		<!-- Floating Chat Box -->
-		<div id="chatBox" class="fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-white/10 via-white/5 to-white/10 border border-white/30 rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible">
-			<div class="flex justify-between items-center p-1.75 border-b border-white/30">
-				<h3 class="text-white m-0 text-lg font-semibold">💬 Talk to Us</h3>
-				<button type="button" class="group bg-none border-none text-white/60 cursor-pointer p-1 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-white/10 hover:text-white" id="chatBoxClose">
+		<div id="chatBox" class="fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-black/10 dark:from-white/10 via-black/5 dark:via-white/5 to-black/10 dark:to-white/10 border border-border-light dark:border-border-dark rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible">
+			<div class="flex justify-between items-center p-1.75 border-b border-border-light dark:border-border-dark">
+				<h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">💬 Talk to Us</h3>
+				<button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
@@ -255,14 +267,14 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 			<div class="flex flex-col h-[calc(100%-64px)]">
 				<div class="flex-1 p-1.75 overflow-y-auto flex flex-col gap-2.5" id="chatBoxMessages">
 					<div class="flex gap-2.5 items-start">
-						<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-						<div class="bg-white/20 py-2.25 px-4 rounded-xl text-white leading-relaxed max-w-chat text-sm">
-							Hi! I'm MannyKnows AI assistant. I can help you learn about our services, get pricing information, or answer any questions about your business needs. What would you like to know?
+						<div class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+						<div class="bg-black/20 dark:bg-white/20 py-2.25 px-4 rounded-xl text-text-light-primary dark:text-text-dark-primary leading-relaxed max-w-chat text-sm">
+							Hi! I'm MannyKnows AI assistant. I can help you learn about our e-commerce solutions, get pricing for your online store, or answer questions about scaling your e-commerce business. What would you like to know?
 						</div>
 					</div>
 				</div>
-				<div class="flex gap-2 p-2.25 border-t border-white/30">
-					<input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 bg-white/20 border border-white/30 rounded-lg py-2 px-3 text-white text-sm transition-all duration-300 placeholder:text-white/60 focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]">
+				<div class="flex gap-2 p-2.25 border-t border-border-light dark:border-border-dark">
+					<input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 bg-black/20 dark:bg-white/20 border border-border-light dark:border-border-dark rounded-lg py-2 px-3 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]">
 					<button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue">
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<line x1="22" y1="2" x2="11" y2="13"></line>
@@ -275,7 +287,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 		<!-- Floating Dock Menu -->
 		<div id="floatingDock" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
-			<div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-2.25 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+			<div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.25 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
 				<div class="flex items-center gap-2">
 					<!-- MK Logo -->
 					<button type="button" class="dock-item group relative" data-tooltip="Home" onclick="window.location.href='/'">
@@ -286,7 +298,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- Services -->
 					<button type="button" class="dock-item group relative" data-tooltip="Services" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-black/20 dark:hover:bg-white/20">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<rect x="3" y="3" width="7" height="7"/>
 								<rect x="14" y="3" width="7" height="7"/>
@@ -298,7 +310,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- Process -->
 					<button type="button" class="dock-item group relative" data-tooltip="Process" onclick="window.location.href='/process'">
-						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<polyline points="9,11 12,14 22,4"/>
 								<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
@@ -308,7 +320,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- Blog -->
 					<button type="button" class="dock-item group relative" data-tooltip="Blog" onclick="window.location.href='/blog'">
-						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
 								<polyline points="14,2 14,8 20,8"/>
@@ -320,7 +332,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- About -->
 					<button type="button" class="dock-item group relative" data-tooltip="About" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
 								<circle cx="12" cy="7" r="4"/>
@@ -672,7 +684,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		animation-play-state: paused;
 	}
 
-	/* Custom gradient text selection */
+	/* Custom gradient text selection - theme aware */
 	::selection {
 		background: #ff4faa !important;
 		color: white !important;
@@ -694,14 +706,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		color: white !important;
 	}
 
-	/* Simple and reliable gradient hover effects */
+	/* Theme-aware gradient hover effects */
 	.logo-gradient,
 	.nav-gradient {
 		background: linear-gradient(45deg, #10d1ff, #ff4faa);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		background-clip: text;
-		color: white;
 		transition: all 0.5s ease;
 	}
 
@@ -732,5 +743,21 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 	#chatBox.scale-100 {
 		transform: scale(1);
 		transform-origin: bottom right;
+	}
+
+	/* Light theme specific overrides */
+	@media (prefers-color-scheme: light) {
+		:root:not(.dark) {
+			/* Light theme shadows and effects */
+			--shadow-color: rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	/* Dark theme specific overrides */
+	@media (prefers-color-scheme: dark) {
+		:root.dark {
+			/* Dark theme shadows and effects */
+			--shadow-color: rgba(0, 0, 0, 0.3);
+		}
 	}
 </style>

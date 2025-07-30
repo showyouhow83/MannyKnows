@@ -1,5 +1,5 @@
 ---
-import PostHogAnalytics from '../components/analytics/PostHogAnalytics.astro';
+import PostHogAdvanced from '../components/analytics/PostHogAdvanced.astro';
 
 export interface Props {
 	title: string;
@@ -17,13 +17,13 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		
-		<!-- Google Fonts -->
+		<!-- Apple-style System Font Stack -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 		
 		<!-- Analytics -->
-		<PostHogAnalytics />
+		<PostHogAdvanced />
 		
 		<title>{title}</title>
 	</head>
@@ -31,17 +31,18 @@ const { title } = Astro.props;
 		<slot />
 		
 		<!-- Comprehensive Footer -->
-		<footer class="relative bg-gradient-to-b from-dark-secondary to-dark-primary border-t border-white/10">
-		<!-- Gradient border that fades to transparent -->
-		<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>			<div class="absolute inset-0 bg-gradient-to-br from-dark-primary/50 via-dark-secondary/30 to-dark-tertiary/50 -z-10"></div>
+		<footer class="relative bg-gradient-to-b from-gray-50/95 via-gray-100/90 to-gray-200/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300">
+			<!-- Gradient border that fades to transparent -->
+			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>
+			<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
 			
 			<!-- Brand & Social Section -->
-			<div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0">
+			<div class="max-w-[1440px] mx-auto px-8 pt-[4.5rem] pb-0">
 				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					
 					<!-- Latest Blog Articles (1 column = 33%) -->
 					<div class="lg:col-span-1 space-y-6">
-						<h4 class="text-2xl font-bold text-white mb-6 text-left">Latest AI Insights</h4>
+						<h4 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300">Latest AI Insights</h4>
 						
 						<!-- Blog Article 1 -->
 						<article class="group cursor-pointer space-y-3">
@@ -52,13 +53,10 @@ const { title } = Astro.props;
 										<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
 									</svg>
 								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg overflow-hidden">
-									<img 
-										src="/blog-banners/ai-chatbots-customer-service.jpg" 
-										alt="AI Chatbots Transform Customer Service"
-										class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-										style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);"
-									/>
+								<div class="flex-1 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-blue-400/60">
+										<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+									</svg>
 								</div>
 							</div>
 							<!-- Content Below -->
@@ -67,10 +65,10 @@ const { title } = Astro.props;
 									Chatbots & AI
 								</span>
 								<div>
-									<h5 class="text-white/90 text-sm font-medium group-hover:text-blue-400 transition-colors duration-300 mb-1">
+									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 mb-1">
 										How AI Chatbots Transform Customer Service
 									</h5>
-									<button class="text-blue-400 text-xs hover:text-blue-300 transition-colors duration-300 font-medium">
+									<button class="text-blue-600 dark:text-blue-400 text-xs hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-300 font-medium">
 										Read more →
 									</button>
 								</div>
@@ -87,13 +85,10 @@ const { title } = Astro.props;
 										<polyline points="14,2 14,8 20,8"/>
 									</svg>
 								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg overflow-hidden">
-									<img 
-										src="/blog-banners/ai-content-creation-marketing.jpg" 
-										alt="AI Content Creation: The Future of Marketing"
-										class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-										style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);"
-									/>
+								<div class="flex-1 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-purple-400/60">
+										<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+									</svg>
 								</div>
 							</div>
 							<!-- Content Below -->
@@ -102,10 +97,10 @@ const { title } = Astro.props;
 									Content Creation
 								</span>
 								<div>
-									<h5 class="text-white/90 text-sm font-medium group-hover:text-purple-400 transition-colors duration-300 mb-1">
+									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 mb-1">
 										AI Content Creation: The Future of Marketing
 									</h5>
-									<button class="text-purple-400 text-xs hover:text-purple-300 transition-colors duration-300 font-medium">
+									<button class="text-purple-600 dark:text-purple-400 text-xs hover:text-purple-500 dark:hover:text-purple-300 transition-colors duration-300 font-medium">
 										Read more →
 									</button>
 								</div>
@@ -123,13 +118,10 @@ const { title } = Astro.props;
 										<line x1="6" y1="20" x2="6" y2="14"/>
 									</svg>
 								</div>
-								<div class="flex-1 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg overflow-hidden">
-									<img 
-										src="/blog-banners/predictive-analytics-decisions.jpg" 
-										alt="Predictive Analytics: Making Data-Driven Decisions"
-										class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-										style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 179, 8, 0.2) 100%);"
-									/>
+								<div class="flex-1 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-lg overflow-hidden flex items-center justify-center">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-orange-400/60">
+										<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+									</svg>
 								</div>
 							</div>
 							<!-- Content Below -->
@@ -138,10 +130,10 @@ const { title } = Astro.props;
 									Data Analytics
 								</span>
 								<div>
-									<h5 class="text-white/90 text-sm font-medium group-hover:text-orange-400 transition-colors duration-300 mb-1">
+									<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 mb-1">
 										Predictive Analytics: Making Data-Driven Decisions
 									</h5>
-									<button class="text-orange-400 text-xs hover:text-orange-300 transition-colors duration-300 font-medium">
+									<button class="text-orange-600 dark:text-orange-400 text-xs hover:text-orange-500 dark:hover:text-orange-300 transition-colors duration-300 font-medium">
 										Read more →
 									</button>
 								</div>
@@ -158,29 +150,29 @@ const { title } = Astro.props;
 					<div class="lg:col-span-1 space-y-8">
 						<!-- Brand Section -->
 						<div class="text-left">
-							<h3 class="text-4xl font-black text-white mb-6">
+							<h3 class="text-6xl font-black text-gray-800 dark:text-white mb-6 transition-colors duration-300">
 								<span class="bg-gradient-to-r from-primary-blue to-primary-pink bg-clip-text text-transparent">MK</span>
 							</h3>
-							<p class="text-white/80 leading-relaxed text-sm mb-8">
+							<p class="text-gray-700 dark:text-white/80 leading-relaxed text-sm mb-8 transition-colors duration-300">
 								Professional AI-powered business solutions. From intelligent automation to data-driven insights, helping businesses grow smarter and faster.
 							</p>
 						</div>
 
 						<!-- Social Links -->
 						<div>
-							<h6 class="text-white/90 font-medium mb-4 text-left">Follow Us</h6>
+							<h6 class="text-gray-800 dark:text-white/90 font-medium mb-4 text-left transition-colors duration-300">Follow Us</h6>
 							<div class="flex gap-3 justify-start">
-								<a href="#" class="group w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
+								<a href="#" class="group w-10 h-10 bg-gray-300/50 dark:bg-white/10 rounded-xl flex items-center justify-center text-gray-700 dark:text-white hover:bg-gray-400/60 dark:hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
 									<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="group-hover:scale-110 transition-transform duration-300">
 										<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
 									</svg>
 								</a>
-								<a href="#" class="group w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
+								<a href="#" class="group w-10 h-10 bg-gray-300/50 dark:bg-white/10 rounded-xl flex items-center justify-center text-gray-700 dark:text-white hover:bg-gray-400/60 dark:hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
 									<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="group-hover:scale-110 transition-transform duration-300">
 										<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
 									</svg>
 								</a>
-								<a href="#" class="group w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
+								<a href="#" class="group w-10 h-10 bg-gray-300/50 dark:bg-white/10 rounded-xl flex items-center justify-center text-gray-700 dark:text-white hover:bg-gray-400/60 dark:hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:-translate-y-1">
 									<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="group-hover:scale-110 transition-transform duration-300">
 										<path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
 									</svg>
@@ -189,11 +181,11 @@ const { title } = Astro.props;
 						</div>
 
 						<!-- Newsletter Signup (Compact Version) -->
-						<div class="bg-gradient-to-br from-primary-blue/10 via-primary-pink/5 to-primary-blue/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-							<h4 class="text-lg font-bold text-white mb-2">
+						<div class="bg-gradient-to-br from-blue-100/80 via-purple-100/60 to-pink-100/80 dark:from-primary-blue/10 dark:via-primary-pink/5 dark:to-primary-blue/10 rounded-xl p-4 backdrop-blur-sm border border-blue-300/30 dark:border-white/10 transition-colors duration-300">
+							<h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 transition-colors duration-300">
 								AI Insights
 							</h4>
-							<p class="text-white/80 text-xs mb-4 leading-relaxed">
+							<p class="text-gray-700 dark:text-white/80 text-xs mb-4 leading-relaxed transition-colors duration-300">
 								Get exclusive tips and trends delivered to your inbox.
 							</p>
 							
@@ -201,7 +193,7 @@ const { title } = Astro.props;
 								<input 
 									type="email" 
 									placeholder="Your email"
-									class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 transition-all duration-300 text-sm"
+									class="w-full px-3 py-2 bg-white/80 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 rounded-lg text-gray-800 dark:text-white placeholder-gray-600 dark:placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 transition-all duration-300 text-sm"
 									required
 								>
 								<button 
@@ -210,7 +202,7 @@ const { title } = Astro.props;
 								>
 									Subscribe
 								</button>
-								<div class="flex items-center gap-2 text-xs text-white/60">
+								<div class="flex items-center gap-2 text-xs text-gray-600 dark:text-white/60 transition-colors duration-300">
 									<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 										<path d="M9 12l2 2 4-4"/>
 										<circle cx="12" cy="12" r="9"/>
@@ -225,63 +217,79 @@ const { title } = Astro.props;
 			</div>
 			
 			<!-- Service Menus Section -->
-			<div class="max-w-[1440px] mx-auto">
+			<div class="max-w-[1440px] mx-auto px-8">
 				<div class="pt-8 pb-4">
-					<h3 class="text-2xl font-bold text-white mb-4 text-left">Our Services</h3>
+					<h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-left transition-colors duration-300">Our Services</h3>
 				</div>
+			</div>
+			<div class="max-w-[1440px] mx-auto">
 				<div class="flex flex-wrap justify-center gap-0">
-							
-							<!-- AI-Powered Websites -->
-							<div class="service-box-padding bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px]">
+					<!-- eCommerce & Web Development -->
+					<div class="service-box-padding bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tl-lg">
+						<div class="flex items-center gap-3 mb-3">
+							<div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+									<path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H19M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z"/>
+								</svg>
+							</div>
+							<h4 class="text-lg font-semibold text-indigo-400">eCommerce</h4>
+						</div>
+								<ul class="space-y-2 mb-6">
+									<li><a href="/services/custom-themes" class="text-indigo-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+										Custom Themes
+									</a></li>
+									<li><a href="/services/custom-apps" class="text-indigo-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+										Custom Apps
+									</a></li>
+									<li><a href="/services/web-scraping" class="text-indigo-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+										Web Scraping
+									</a></li>
+								</ul>
+
+								<!-- Divider -->
+								<div class="h-px bg-white/10 mb-4"></div>
+
+								<!-- Web Design & Dev Section -->
 								<div class="flex items-center gap-3 mb-3">
-									<div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+									<div class="w-8 h-8 bg-gradient-to-r from-slate-500 to-gray-500 rounded-lg flex items-center justify-center">
 										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
 											<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
 											<line x1="8" y1="21" x2="16" y2="21"/>
 											<line x1="12" y1="17" x2="12" y2="21"/>
 										</svg>
 									</div>
-									<h4 class="text-lg font-semibold text-indigo-400">AI Websites</h4>
+									<h4 class="text-lg font-semibold text-slate-400">Web Design & Dev</h4>
 								</div>
 								<ul class="space-y-2">
-									<li><a href="/services/interactive-forms" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/interactive-forms" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Interactive Smart Forms
 									</a></li>
-									<li><a href="/services/smart-quote-generator" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
-										Smart Quote Generator
-									</a></li>
-									<li><a href="/services/smart-faq-generator" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
-										Smart FAQ Generator
-									</a></li>
-									<li><a href="/services/geolocation-marketing" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
-										Marketing by Geolocation
-									</a></li>
-									<li><a href="/services/personalized-recommendations" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/personalized-recommendations" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Personalized Recommendations
 									</a></li>
-									<li><a href="/services/dynamic-pricing" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/dynamic-pricing" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Dynamic Pricing Engine
 									</a></li>
-									<li><a href="/services/smart-search" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/smart-search" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										AI-Powered Search
 									</a></li>
-									<li><a href="/services/behavioral-analytics" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/behavioral-analytics" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Behavioral Analytics
 									</a></li>
-									<li><a href="/services/conversion-optimization" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/conversion-optimization" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Conversion Optimization
 									</a></li>
-									<li><a href="/services/adaptive-layouts" class="text-white/80 hover:text-indigo-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-indigo-400/60 rounded-full"></span>
+									<li><a href="/services/adaptive-layouts" class="text-slate-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-slate-400/60 rounded-full"></span>
 										Adaptive Website Layouts
 									</a></li>
 								</ul>
@@ -303,39 +311,39 @@ const { title } = Astro.props;
 									<h4 class="text-lg font-semibold text-green-400">Automation Flows</h4>
 								</div>
 								<ul class="space-y-2">
-									<li><a href="/services/workflow-automation" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/workflow-automation" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Workflow Automation
 									</a></li>
-									<li><a href="/services/data-entry-automation" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/data-entry-automation" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Data Entry Automation
 									</a></li>
-									<li><a href="/services/invoice-processing" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/invoice-processing" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Invoice Processing
 									</a></li>
-									<li><a href="/services/crm-automation" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/crm-automation" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										CRM Automation
 									</a></li>
-									<li><a href="/services/scheduling-automation" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/scheduling-automation" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Smart Scheduling
 									</a></li>
-									<li><a href="/services/document-processing" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/document-processing" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Document Processing
 									</a></li>
-									<li><a href="/services/inventory-management" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/inventory-management" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Inventory Management
 									</a></li>
-									<li><a href="/services/expense-tracking" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/expense-tracking" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Expense Tracking
 									</a></li>
-									<li><a href="/services/email-automation" class="text-white/80 hover:text-green-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/email-automation" class="text-green-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-green-400/60 rounded-full"></span>
 										Email Workflow Automation
 									</a></li>
@@ -356,39 +364,39 @@ const { title } = Astro.props;
 									<h4 class="text-lg font-semibold text-blue-400">AI Agents</h4>
 								</div>
 								<ul class="space-y-2">
-									<li><a href="/services/customer-service-bots" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/customer-service-bots" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										24/7 Customer Service
 									</a></li>
-									<li><a href="/services/sales-agents" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/sales-agents" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										AI Sales Agents
 									</a></li>
-									<li><a href="/services/lead-generation-bots" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/lead-generation-bots" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Lead Generation & Follow-Up
 									</a></li>
-									<li><a href="/services/voice-assistants" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/voice-assistants" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Voice Assistants
 									</a></li>
-									<li><a href="/services/appointment-booking-bots" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/appointment-booking-bots" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Appointment Booking
 									</a></li>
-									<li><a href="/services/ai-phone-agents" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-phone-agents" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Phone Agents
 									</a></li>
-									<li><a href="/services/multilingual-agents" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/multilingual-agents" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Multilingual Support
 									</a></li>
-									<li><a href="/services/virtual-receptionists" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/virtual-receptionists" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										AI Concierge Services
 									</a></li>
-									<li><a href="/services/sales-automation" class="text-white/80 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/sales-automation" class="text-blue-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-blue-400/60 rounded-full"></span>
 										Sales Automation
 									</a></li>
@@ -406,52 +414,70 @@ const { title } = Astro.props;
 									</div>
 									<h4 class="text-lg font-semibold text-rose-400">Photography</h4>
 								</div>
-								<ul class="space-y-2">
-									<li><a href="/services/event-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
-										Event Photography
-									</a></li>
-									<li><a href="/services/wedding-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
+								<ul class="space-y-2 mb-6">
+									<li><a href="/services/wedding-photography" class="text-rose-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
 										Wedding Photography
 									</a></li>
-									<li><a href="/services/corporate-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
-										Corporate Photography
-									</a></li>
-									<li><a href="/services/portrait-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/portrait-photography" class="text-rose-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
 										Portrait Photography
 									</a></li>
-									<li><a href="/services/product-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/product-photography" class="text-rose-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
 										Product Photography
 									</a></li>
-									<li><a href="/services/360-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
-										360° Photography
-									</a></li>
-									<li><a href="/services/virtual-tours" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
-										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
-										Virtual Tours
-									</a></li>
-									<li><a href="/services/real-estate-photography" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/real-estate-photography" class="text-rose-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
 										Real Estate Photography
 									</a></li>
+								</ul>
 
-									<!-- Video Services (at the bottom as requested) -->
-									<li class="pt-2 border-t border-white/10">
-										<a href="/services/promotional-videos" class="text-white/80 hover:text-rose-400 transition-colors duration-300 text-sm flex items-center gap-2">
-											<span class="w-1.5 h-1.5 bg-rose-400/60 rounded-full"></span>
-											Promotional Videos
-										</a>
-									</li>
+								<!-- Divider -->
+								<div class="h-px bg-white/10 mb-4"></div>
+
+								<!-- 360° Services Section -->
+								<div class="flex items-center gap-3 mb-3">
+									<div class="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+											<path d="M12 2v20M2 12h20"/>
+											<circle cx="12" cy="12" r="10"/>
+											<path d="M8 12a8 8 0 0 1 8 0"/>
+											<path d="M8 12a8 8 0 0 0 8 0"/>
+										</svg>
+									</div>
+									<h4 class="text-lg font-semibold text-amber-400">360° Services</h4>
+								</div>
+								<ul class="space-y-2">
+									<li><a href="/services/360-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° Videos
+									</a></li>
+									<li><a href="/services/360-wedding-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° Wedding Videos
+									</a></li>
+									<li><a href="/services/360-event-videos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° Event Videos
+									</a></li>
+									<li><a href="/services/360-photos" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° Photos
+									</a></li>
+									<li><a href="/services/360-virtual-tours" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° Virtual Tours
+									</a></li>
+									<li><a href="/services/360-ecommerce-virtual-tours" class="text-amber-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
+										<span class="w-1.5 h-1.5 bg-amber-400/60 rounded-full"></span>
+										360° eCommerce Virtual Tours
+									</a></li>
 								</ul>
 							</div>
 							
 							<!-- Combined: Analytics, Content Generation & Training -->
-							<div class="service-box-padding bg-gradient-to-b from-orange-500/20 via-purple-500/20 to-teal-500/20 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px]">
+							<div class="service-box-padding bg-gradient-to-b from-orange-500/20 via-purple-500/20 to-teal-500/20 backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] rounded-tr-lg">
 								<!-- Business Analytics Section -->
 								<div class="flex items-center gap-3 mb-3">
 									<div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
@@ -464,15 +490,15 @@ const { title } = Astro.props;
 									<h4 class="text-lg font-semibold text-orange-400">Business Analytics</h4>
 								</div>
 								<ul class="space-y-2 mb-6">
-									<li><a href="/services/competitor-analysis" class="text-white/80 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/competitor-analysis" class="text-orange-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-orange-400/60 rounded-full"></span>
 										Competitor Analysis
 									</a></li>
-									<li><a href="/services/data-visualization" class="text-white/80 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/data-visualization" class="text-orange-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-orange-400/60 rounded-full"></span>
 										Data Visualization
 									</a></li>
-									<li><a href="/services/operational-analytics" class="text-white/80 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/operational-analytics" class="text-orange-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-orange-400/60 rounded-full"></span>
 										Operational Analytics
 									</a></li>
@@ -494,15 +520,15 @@ const { title } = Astro.props;
 									<h4 class="text-lg font-semibold text-purple-400">AI Content Generation</h4>
 								</div>
 								<ul class="space-y-2 mb-6">
-									<li><a href="/services/ai-product-descriptions" class="text-white/80 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-product-descriptions" class="text-purple-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-purple-400/60 rounded-full"></span>
 										AI Product Descriptions
 									</a></li>
-									<li><a href="/services/ai-product-videos" class="text-white/80 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-product-videos" class="text-purple-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-purple-400/60 rounded-full"></span>
 										AI Product Videos
 									</a></li>
-									<li><a href="/services/ai-product-photography" class="text-white/80 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-product-photography" class="text-purple-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-purple-400/60 rounded-full"></span>
 										AI Product Photography
 									</a></li>
@@ -522,15 +548,15 @@ const { title } = Astro.props;
 									<h4 class="text-lg font-semibold text-teal-400">Training</h4>
 								</div>
 								<ul class="space-y-2">
-									<li><a href="/services/ai-training-consulting" class="text-white/80 hover:text-teal-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-training" class="text-teal-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-teal-400/60 rounded-full"></span>
-										AI Training & Consulting
+										AI Training
 									</a></li>
-									<li><a href="/services/ai-in-workplace" class="text-white/80 hover:text-teal-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-consulting" class="text-teal-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-teal-400/60 rounded-full"></span>
-										AI in the Workplace
+										AI Consulting
 									</a></li>
-									<li><a href="/services/ai-office-hours" class="text-white/80 hover:text-teal-400 transition-colors duration-300 text-sm flex items-center gap-2">
+									<li><a href="/services/ai-office-hours" class="text-teal-400 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2">
 										<span class="w-1.5 h-1.5 bg-teal-400/60 rounded-full"></span>
 										AI Office Hours
 									</a></li>
@@ -541,17 +567,31 @@ const { title } = Astro.props;
 		</footer>
 
 		<!-- Footer Bottom -->
-		<div class="bg-dark-primary/80 border-t border-white/10">
-			<div class="max-w-[1440px] mx-auto px-8 py-9">
+		<div class="bg-gray-200/90 dark:bg-dark-primary/80 border-t border-gray-300/50 dark:border-white/10 transition-colors duration-300 relative overflow-hidden">
+			<!-- Background Magic Effects -->
+			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/5 via-primary-pink/5 to-primary-blue/5 animate-gradient-flow opacity-30"></div>
+			<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue/30 to-transparent animate-gradient-slide"></div>
+			
+			<div class="max-w-[1440px] mx-auto px-8 py-9 relative">
 				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
-					<div class="text-white/60 text-sm text-center md:text-left">
-						<div>© 2025 MannyKnows. All rights reserved.</div>
-						<div class="mt-1">AI-Powered Business Solutions</div>
+					<div class="text-gray-700 dark:text-white/60 text-sm text-center md:text-left transition-colors duration-300 group">
+						<div class="flex items-center gap-2 justify-center md:justify-start">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary-blue animate-pulse">
+							<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+							</svg>
+							<span class="font-bold bg-gradient-to-r from-primary-blue to-primary-pink bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">MannyKnows.com</span>
+							<span class="ml-2 text-xs text-gray-600 dark:text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300"><span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">soyTico🇨🇷🇺🇸</span>
+							</span>
+						</div>
+						<div class="mt-1 text-xs">
+							<span>All rights reserved © {new Date().getFullYear()}</span>
+						</div>
+
 					</div>
 					<div class="flex gap-6 text-sm">
-						<a href="/sitemap.xml" class="text-white/60 hover:text-white transition-colors duration-300">Sitemap</a>
-						<a href="/privacy" class="text-white/60 hover:text-white transition-colors duration-300">Privacy</a>
-						<a href="/terms" class="text-white/60 hover:text-white transition-colors duration-300">Terms</a>
+						<a href="/sitemap.xml" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Sitemap</a>
+						<a href="/privacy" class="text-gray-700 dark:text-white/60 hover:text-primary-pink dark:hover:text-primary-pink transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Privacy</a>
+						<a href="/terms" class="text-gray-700 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">Terms</a>
 					</div>
 				</div>
 			</div>
@@ -562,14 +602,56 @@ const { title } = Astro.props;
 
 <style is:global>
 	:root {
-		--bs-body-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
-		--bs-font-family-heading: 'Outfit', sans-serif;
+		/* Apple-inspired Font System */
+		--bs-body-font-family: 'SF Pro Display', 'SF Pro Icons', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+		--bs-font-family-heading: 'SF Pro Display', 'Inter', sans-serif;
 		--bs-body-font-size: 1rem;
 		--bs-body-font-weight: 400;
-		--bs-body-line-height: 1.5;
+		--bs-body-line-height: 1.1666666667;
 		--bs-body-color: #ffffff;
 		--bs-body-bg: #1b1c1e;
 		--bs-body-text-align: left;
+		
+		/* Apple-style Typography Variables - Light Theme */
+		--sk-body-text-color: rgb(29,29,31);
+		--sk-headline-text-color: rgb(29,29,31);
+		--sk-body-background-color: rgb(255,255,255);
+		--sk-body-font-stack: text;
+		--sk-focus-color: #0071e3;
+		--sk-focus-color-alt: rgb(0,0,0);
+		--sk-focus-offset: 1px;
+		
+		/* Apple-style Grays - Light Theme */
+		--sk-glyph-gray: rgb(29,29,31);
+		--sk-glyph-gray-secondary: rgb(110,110,115);
+		--sk-glyph-gray-tertiary: rgb(134,134,139);
+		--sk-fill-secondary: rgb(250,250,252);
+		--sk-fill-tertiary: rgb(245,245,247);
+		--sk-fill-gray-quaternary: rgb(232,232,237);
+		
+		/* Typography Enhancement */
+		letter-spacing: .009em;
+		font-synthesis: none;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* Dark theme Apple variables */
+	:root.dark {
+		/* Apple-style Typography Variables - Dark Theme */
+		--sk-body-text-color: rgba(255,255,255,0.85);
+		--sk-headline-text-color: rgba(255,255,255,0.95);
+		--sk-body-background-color: rgb(28,28,30);
+		--sk-focus-color: #0071e3;
+		--sk-focus-color-alt: rgba(255,255,255,0.9);
+		
+		/* Apple-style Grays - Dark Theme */
+		--sk-glyph-gray: rgba(255,255,255,0.95);
+		--sk-glyph-gray-secondary: rgba(255,255,255,0.68);
+		--sk-glyph-gray-tertiary: rgba(255,255,255,0.55);
+		--sk-fill-secondary: rgb(44,44,46);
+		--sk-fill-tertiary: rgb(58,58,60);
+		--sk-fill-gray-quaternary: rgb(72,72,74);
 	}
 
 	* {
@@ -594,62 +676,82 @@ const { title } = Astro.props;
 		background-color: var(--bs-body-bg);
 		-webkit-text-size-adjust: 100%;
 		-webkit-tap-highlight-color: rgba(0,0,0,0);
+		-webkit-font-smoothing: antialiased;
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
+		letter-spacing: .009em;
 		height: 100%;
 	}
 
-	/* Outfit font classes for titles */
-	.outfit-light {
-		font-family: "Outfit", sans-serif;
+	/* Apple System Font Classes */
+	.sf-light {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 300;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-regular {
-		font-family: "Outfit", sans-serif;
+	.sf-regular {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 400;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-medium {
-		font-family: "Outfit", sans-serif;
+	.sf-medium {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 500;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-semibold {
-		font-family: "Outfit", sans-serif;
+	.sf-semibold {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 600;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-bold {
-		font-family: "Outfit", sans-serif;
+	.sf-bold {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 700;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-extrabold {
-		font-family: "Outfit", sans-serif;
+	.sf-extrabold {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 800;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	.outfit-black {
-		font-family: "Outfit", sans-serif;
+	.sf-black {
+		font-family: "SF Pro Display", "Inter", sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 900;
 		font-style: normal;
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 	}
 
-	/* Apply Outfit to all headings by default */
+	/* Apply Apple-style typography to all headings */
 	h1, h2, h3, h4, h5, h6 {
 		font-family: var(--bs-font-family-heading);
+		-webkit-font-smoothing: antialiased;
+		letter-spacing: .009em;
 		font-optical-sizing: auto;
 		font-style: normal;
 	}
@@ -667,9 +769,8 @@ const { title } = Astro.props;
 	}
 
 	/* Only keep the specific utility we actually use */
-	.mx-0 {
-		margin-right: 0 !important;
-		margin-left: 0 !important;
+	.max-w-chat {
+		max-width: 75%;
 	}
 
 	/* Subtle gradient border animation with ultra-smooth color transition */
@@ -763,6 +864,149 @@ const { title } = Astro.props;
 		100% {
 			background: linear-gradient(90deg, transparent, #10d1ff, transparent);
 			background-position: 0% 50%;
+		}
+	}
+
+	/* Dark gradient animation for footer background */
+	.animate-gradient-flow {
+		background-size: 400% 400%;
+		animation: gradient-flow 8s ease-in-out infinite;
+	}
+
+	@keyframes gradient-flow {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	/* Apple-style Typography Classes */
+	.apple-headline {
+		line-height: 1.6666666667;
+		font-weight: 600;
+		letter-spacing: .009em;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+		color: var(--sk-headline-text-color);
+	}
+
+	.apple-body-text {
+		line-height: 1.2666666667;
+		letter-spacing: .009em;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+		color: var(--sk-body-text-color);
+	}
+
+	.apple-gradient-text {
+		background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+		background-size: 200% 200%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		animation: apple-gradient-flow 3s ease-in-out infinite;
+	}
+
+	.apple-gradient-container {
+		position: relative;
+		/* Remove forced background, let theme handle it */
+	}
+
+	/* Apple-style Button Enhancements */
+	.apple-button {
+		font-family: var(--bs-font-family-heading);
+		font-weight: 600;
+		letter-spacing: .009em;
+		-webkit-font-smoothing: antialiased;
+		border-radius: 12px;
+		transition: all 0.25s ease;
+		border: 1px solid transparent;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.apple-button:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+	}
+
+	.apple-button:active {
+		transform: translateY(0);
+		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	}
+
+	/* Apple Gradient Animation */
+	@keyframes apple-gradient-flow {
+		0%, 100% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+	}
+
+	/* Apple-style Focus States */
+	.apple-focus:focus {
+		outline: var(--sk-focus-offset) solid var(--sk-focus-color);
+		outline-offset: var(--sk-focus-offset);
+		box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+	}
+
+	/* Apple-style Card Effects */
+	.apple-card {
+		background: var(--sk-fill-secondary);
+		border: 1px solid var(--sk-fill-gray-quaternary);
+		border-radius: 12px;
+		transition: all 0.25s ease;
+	}
+
+	.apple-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+	}
+
+	/* Dark theme overrides for Apple styles */
+	@media (prefers-color-scheme: dark) {
+		:root.dark .apple-headline {
+			color: var(--sk-headline-text-color);
+		}
+		
+		:root.dark .apple-body-text {
+			color: var(--sk-body-text-color);
+		}
+		
+		:root.dark .apple-card {
+			background: rgba(255,255,255,0.05);
+			border-color: rgba(255,255,255,0.1);
+		}
+
+		:root.dark .apple-gradient-container {
+			background: transparent;
+		}
+	}
+
+	/* Light theme specific styles */
+	@media (prefers-color-scheme: light) {
+		:root:not(.dark) .apple-headline {
+			color: var(--sk-headline-text-color);
+		}
+		
+		:root:not(.dark) .apple-body-text {
+			color: var(--sk-body-text-color);
+		}
+		
+		:root:not(.dark) .apple-card {
+			background: var(--sk-fill-secondary);
+			border-color: var(--sk-fill-gray-quaternary);
+		}
+
+		:root:not(.dark) .apple-gradient-container {
+			background: transparent;
 		}
 	}
 </style>
