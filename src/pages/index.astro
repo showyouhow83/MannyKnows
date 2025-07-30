@@ -13,108 +13,112 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		<!-- Marquee Announcement Section -->
 		<MarqueeSimple />
 
-		<!-- Navigation -->
-		<nav id="topNav" class="bg-transparent min-h-[7.75rem] relative flex items-center">
-			<!-- Navigation border -->
-			<div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-primary-blue via-primary-pink to-primary-blue bg-200 animate-simple-gradient-flow"></div>
-			
-			<div class="max-w-[1440px] mx-auto px-8 w-full">
-				<div class="flex justify-between items-center w-full">
-					<!-- Logo -->
-					<h1 class="text-5xl font-black m-0">
-						<a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative">MK</a>
-					</h1>
+			<!-- Header Container with Subtle Background -->
+			<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
 
-					<!-- Navigation Menu -->
-					<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
-						<li><a href="#services" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
-						<li><a href="/process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
-						<li><a href="/blog" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
-						<li><a href="/faqs" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
-						<li><a href="#about" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">About</a></li>
-						<li><a href="#contact" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Contact</a></li>
-					</ul>
+            <!-- Navigation -->
+            <nav id="topNav" class="bg-transparent min-h-[7.75rem] relative flex items-center">
+                <!-- Navigation border -->
+                <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-primary-blue via-primary-pink to-primary-blue bg-200 animate-simple-gradient-flow"></div>
+                
+                <div class="max-w-[1440px] mx-auto px-8 w-full">
+                    <div class="flex justify-between items-center w-full">
+						<!-- Logo -->
+						<h1 class="text-5xl font-black m-0">
+							<a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative">MK</a>
+						</h1>
 
-					<!-- Search Bar -->
-					<div class="relative flex items-center flex-1 mx-4">
-						<input type="search" placeholder="Search services..." class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
-						<button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<circle cx="11" cy="11" r="8"></circle>
-								<path d="m21 21-4.35-4.35"></path>
-							</svg>
-						</button>
-					</div>
+						<!-- Navigation Menu -->
+						<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
+							<li><a href="#services" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Services</a></li>
+							<li><a href="/process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Process</a></li>
+							<li><a href="/blog" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Blog</a></li>
+							<li><a href="/faqs" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">FAQs</a></li>
+							<li><a href="#about" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">About</a></li>
+							<li><a href="#contact" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative">Contact</a></li>
+						</ul>
 
-					<!-- Navigation Actions -->
-					<div class="flex items-center gap-2 relative">
-						<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex items-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">GENERATE INSTANT QUOTE</a>
-						
-						<!-- Theme Toggle -->
-						<ThemeToggle />
-						
-						<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-								<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-								<line x1="12" y1="19" x2="12" y2="23"/>
-								<line x1="8" y1="23" x2="16" y2="23"/>
-							</svg>
-							<!-- Tailwind Tooltip -->
-							<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
-								Podcast Coming Soon
-								<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
-							</div>
-						</button>
+						<!-- Search Bar -->
+						<div class="relative flex items-center flex-1 mx-4">
+							<input type="search" placeholder="Search services..." class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
+							<button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<circle cx="11" cy="11" r="8"></circle>
+									<path d="m21 21-4.35-4.35"></path>
+								</svg>
+							</button>
+						</div>
 
-						<button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle">
-							<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M12 8V4H8"/>
-								<rect width="16" height="12" x="4" y="8" rx="2"/>
-								<path d="M2 14h2"/>
-								<path d="M20 14h2"/>
-								<path d="M15 13v2"/>
-								<path d="M9 13v2"/>
-							</svg>
-							<!-- Tailwind Tooltip -->
-							<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
-								Talk to Us
-								<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
-							</div>
-						</button>
-					</div>
-				</div>
-			</div>
-		</nav>
+						<!-- Navigation Actions -->
+						<div class="flex items-center gap-2 relative">
+							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex items-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">GENERATE INSTANT QUOTE</a>
+							
+							<!-- Theme Toggle -->
+							<ThemeToggle />
+							
+							<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+									<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+									<line x1="12" y1="19" x2="12" y2="23"/>
+									<line x1="8" y1="23" x2="16" y2="23"/>
+								</svg>
+								<!-- Tailwind Tooltip -->
+								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+									Podcast Coming Soon
+									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+								</div>
+							</button>
 
-		<!-- Hero Section -->
-		<section class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container">
-			<div class="max-w-[1440px] mx-auto px-8">
-				<div class="max-w-4xl mx-auto">
-					<h1 class="sf-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
-						Scale your <span class="apple-gradient-text">life</span> with AI
-					</h1>
-					<p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
-						Transform your online store with cutting-edge AI solutions designed for e-commerce success. From personalized customer experiences to automated operations—we help store owners increase sales, reduce costs, and scale efficiently.
-					</p>
-					<div class="flex gap-4 justify-center flex-wrap mt-8">
-						<a href="#instant-quote" class="apple-button sf-semibold bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 no-underline text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Your Free Quote</a>
-						<button type="button" class="apple-button sf-semibold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-200 text-white py-3 px-6 text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-green-gradient-flow hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] h-12 flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer cursor-pointer" id="heroChatButton">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M12 8V4H8"/>
-								<rect width="16" height="12" x="4" y="8" rx="2"/>
-								<path d="M2 14h2"/>
-								<path d="M20 14h2"/>
-								<path d="M15 13v2"/>
-								<path d="M9 13v2"/>
-							</svg>
-							Chat with Us
-						</button>
-						<a href="#services" class="apple-button sf-semibold apple-focus bg-gradient-to-b from-black/10 dark:from-white/10 to-black/5 dark:to-white/5 text-text-light-primary dark:text-text-dark-primary py-3 px-6 border border-border-light dark:border-border-dark no-underline text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:from-black/20 dark:hover:from-white/20 hover:to-black/10 dark:hover:to-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-black/5 dark:before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">View Our Services</a>
+							<button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle">
+								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M12 8V4H8"/>
+									<rect width="16" height="12" x="4" y="8" rx="2"/>
+									<path d="M2 14h2"/>
+									<path d="M20 14h2"/>
+									<path d="M15 13v2"/>
+									<path d="M9 13v2"/>
+								</svg>
+								<!-- Tailwind Tooltip -->
+								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+									Talk to Us
+									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+								</div>
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
-		</section>
+			</nav>
+
+            <!-- Hero Section -->
+            <section id="hero" class="py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container">
+                <div class="max-w-[1440px] mx-auto px-8">
+                    <div class="max-w-4xl mx-auto">
+                        <h1 class="sf-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
+                            Scale your <span class="apple-gradient-text">life</span> with AI
+                        </h1>
+                        <p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
+                            Transform your online store with cutting-edge AI solutions designed for e-commerce success. From personalized customer experiences to automated operations—we help store owners increase sales, reduce costs, and scale efficiently.
+                        </p>
+                        <div class="flex gap-4 justify-center flex-wrap mt-8">
+                            <a href="#instant-quote" class="apple-button sf-semibold bg-gradient-to-r from-primary-pink via-pink-600 to-primary-pink bg-200 text-white py-3 px-6 no-underline text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:text-white hover:animate-button-pulse h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Get Your Free Quote</a>
+                            <button type="button" class="apple-button sf-semibold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-200 text-white py-3 px-6 text-sm border-none inline-block relative overflow-hidden transition-all duration-300 animate-green-gradient-flow hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] h-12 flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent before:-translate-x-full before:animate-green-shimmer cursor-pointer" id="heroChatButton">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M12 8V4H8"/>
+									<rect width="16" height="12" x="4" y="8" rx="2"/>
+									<path d="M2 14h2"/>
+									<path d="M20 14h2"/>
+									<path d="M15 13v2"/>
+									<path d="M9 13v2"/>
+								</svg>
+								Chat with Us
+							</button>
+                            <a href="#services" class="apple-button sf-semibold apple-focus bg-gradient-to-b from-black/10 dark:from-white/10 to-black/5 dark:to-white/5 text-text-light-primary dark:text-text-dark-primary py-3 px-6 border border-border-light dark:border-border-dark no-underline text-sm transition-all duration-300 inline-block relative overflow-hidden backdrop-blur-lg hover:from-black/20 dark:hover:from-white/20 hover:to-black/10 dark:hover:to-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_25px_rgba(255,255,255,0.1)] h-12 flex items-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-black/5 dark:before:via-white/5 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">View Our Services</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </header>
 
 		<!-- Services Section -->
 		<section id="services" class="relative py-20 bg-gradient-to-b from-gray-50/95 via-gray-100/90 to-gray-200/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300">
@@ -286,7 +290,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		</div>
 
 		<!-- Floating Dock Menu -->
-		<div id="floatingDock" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
+		<div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
 			<div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.25 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
 				<div class="flex items-center gap-2">
 					<!-- MK Logo -->
@@ -684,25 +688,25 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		animation-play-state: paused;
 	}
 
-	/* Custom gradient text selection - theme aware */
+	/* Custom text selection - theme aware */
 	::selection {
-		background: #ff4faa !important;
+		background: #10d1ff !important;
 		color: white !important;
 	}
 
 	::-moz-selection {
-		background: #ff4faa !important;
+		background: #10d1ff !important;
 		color: white !important;
 	}
 
 	/* Override for all elements */
 	*::selection {
-		background: #ff4faa !important;
+		background: #10d1ff !important;
 		color: white !important;
 	}
 
 	*::-moz-selection {
-		background: #ff4faa !important;
+		background: #10d1ff !important;
 		color: white !important;
 	}
 
