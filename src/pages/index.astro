@@ -53,13 +53,15 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 						<!-- Navigation Actions -->
 						<div class="flex items-center gap-2 relative">
-							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
-								<span class="text-sm font-semibold">FREE 360 PHOTO</span>
-								<span class="text-[10px] text-white/80 leading-none">CLAIM NOW</span>
+							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+								<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+								<span class="text-sm font-semibold relative z-10">FREE 360 PHOTO</span>
+								<span class="text-[10px] text-white/80 leading-none relative z-10">CLAIM NOW</span>
 							</a>
 							
 							<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
 									<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
 									<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
 									<line x1="12" y1="19" x2="12" y2="23"/>
@@ -73,20 +75,21 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 							</button>
 
 							<button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle">
-								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-									<path d="M12 8V4H8"/>
-									<rect width="16" height="12" x="4" y="8" rx="2"/>
-									<path d="M2 14h2"/>
-									<path d="M20 14h2"/>
-									<path d="M15 13v2"/>
-									<path d="M9 13v2"/>
-								</svg>
-								<!-- Tailwind Tooltip -->
-								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
-									Talk to Us
-									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
-								</div>
-							</button>
+    <pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
+        <path d="M12 8V4H8"/>
+        <rect width="16" height="12" x="4" y="8" rx="2"/>
+        <path d="M2 14h2"/>
+        <path d="M20 14h2"/>
+        <path d="M15 13v2"/>
+        <path d="M9 13v2"/>
+    </svg>
+    <!-- Tailwind Tooltip -->
+    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+        Talk to Us
+        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
+    </div>
+</button>
 						</div>
 					</div>
 				</div>
@@ -502,6 +505,9 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 									<svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
 										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
 									</svg>
+									<svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+										<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+									</svg>
 								</div>
 								<div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">Emily Watson</div>
 							</div>
@@ -644,36 +650,36 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Stats Section -->
-			<div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-				<div class="text-center">
-					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">18+</div>
-					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Happy Clients</div>
+				<!-- Stats Section -->
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+					<div class="text-center">
+						<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">18+</div>
+						<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Happy Clients</div>
+					</div>
+					<div class="text-center">
+						<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">175%</div>
+						<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Avg. Sales Increase</div>
+					</div>
+					<div class="text-center">
+						<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">100%</div>
+						<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Client Satisfaction</div>
+					</div>
+					<div class="text-center">
+						<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">24/7</div>
+						<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Human Support</div>
+					</div>
 				</div>
-				<div class="text-center">
-					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">175%</div>
-					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Avg. Sales Increase</div>
-				</div>
-				<div class="text-center">
-					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">100%</div>
-					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Client Satisfaction</div>
-				</div>
-				<div class="text-center">
-					<div class="text-4xl md:text-5xl font-black text-text-light-primary dark:text-text-dark-primary mb-2">24/7</div>
-					<div class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Human Support</div>
-				</div>
-			</div>
 
-			<!-- Call to Action -->
-			<div class="text-center">
-				<a href="#contact" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient">
-					<span>Join Our Success Stories</span>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-					</svg>
-				</a>
+				<!-- Call to Action -->
+				<div class="text-center">
+					<a href="#contact" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient">
+						<span>Join Our Success Stories</span>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+						</svg>
+					</a>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -767,7 +773,8 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<!-- Chat -->
 					<button type="button" class="dock-item group relative" data-tooltip="Chat" id="dockChatToggle">
 						<div class="w-12 h-12 bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-green-gradient-flow relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
 								<path d="M12 8V4H8"/>
 								<rect width="16" height="12" x="4" y="8" rx="2"/>
 								<path d="M2 14h2"/>
@@ -1411,8 +1418,12 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 	.logo-gradient:hover,
 	.nav-gradient:hover {
+		background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+		background-size: 200% 200%;
+		-webkit-background-clip: text;
+		background-clip: text;
 		-webkit-text-fill-color: transparent;
-		animation: button-gradient 6s ease-in-out infinite;
+		animation: apple-gradient-flow 2s ease-in-out infinite;
 	}
 
 	/* Smooth gradient shift animation */
@@ -1757,16 +1768,51 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		opacity: 0.4 !important;
 	}
 	
+	/* Make buttons more prominent */
+	:root:not(.dark) a[href="#instant-quote"] pixel-canvas,
+	:root:not(.dark) #topPodcastButton pixel-canvas,
+	:root:not(.dark) #topChatToggle pixel-canvas {
+		opacity: 0.25 !important;
+	}
+	
+	:root.dark a[href="#instant-quote"] pixel-canvas,
+	:root.dark #topPodcastButton pixel-canvas,
+	:root.dark #topChatToggle pixel-canvas {
+		opacity: 0.5 !important;
+	}
+
+	/* Hide dock chat pixels until hover */
+	#dockChatToggle pixel-canvas {
+		opacity: 0 !important;
+		transition: opacity 0.3s ease;
+	}
+
+	#dockChatToggle:hover pixel-canvas {
+		opacity: 0.25 !important; /* light mode */
+	}
+
+	:root.dark #dockChatToggle:hover pixel-canvas {
+		opacity: 0.5 !important; /* dark mode */
+	}
+	
 	/* Alternative: Use CSS custom properties approach */
 	@media (prefers-color-scheme: light) {
 		:root:not(.dark) pixel-canvas {
 			opacity: 0.15 !important;
+		}
+		:root:not(.dark) a[href="#instant-quote"] pixel-canvas,
+		:root:not(.dark) #topPodcastButton pixel-canvas {
+			opacity: 0.25 !important;
 		}
 	}
 	
 	@media (prefers-color-scheme: dark) {
 		:root.dark pixel-canvas {
 			opacity: 0.4 !important;
+		}
+		:root.dark a[href="#instant-quote"] pixel-canvas,
+		:root.dark #topPodcastButton pixel-canvas {
+			opacity: 0.5 !important;
 		}
 	}
 </style>
