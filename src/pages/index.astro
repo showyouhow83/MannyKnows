@@ -6,9 +6,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 <BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
-		<!-- Background Gradient -->
-		<div class="absolute inset-0 bg-gradient-to-br from-light-primary via-light-secondary to-light-tertiary dark:from-dark-primary dark:via-dark-secondary dark:to-dark-tertiary bg-300 animate-gradient-shift -z-10 transition-colors duration-300"></div>
-
 		<!-- Marquee Announcement Section -->
 		<MarqueeSimple />
 
@@ -16,10 +13,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 			<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
 
             <!-- Navigation -->
-            <nav id="topNav" class="bg-transparent min-h-[7.75rem] relative flex items-center">
-                <!-- Navigation border -->
-                <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-primary-blue via-primary-pink to-primary-blue bg-200 animate-simple-gradient-flow"></div>
-                
+            <nav id="topNav" class="bg-transparent min-h-[7.75rem] relative flex items-center border-b border-gray-300/30 dark:border-white/10">
                 <div class="max-w-[1440px] mx-auto px-8 w-full">
                     <div class="flex justify-between items-center w-full">
 						<!-- Logo -->
@@ -42,9 +36,15 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 						<!-- Search Bar -->
 						<div class="relative flex items-center flex-1 mx-4">
-							<input type="search" placeholder="Search services..." class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" />
-							<button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary">
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<label for="search-input" class="sr-only">Search services</label>
+							<input 
+								id="search-input" 
+								type="search" 
+								placeholder="Search services..." 
+								class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" 
+							/>
+							<button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 									<circle cx="11" cy="11" r="8"></circle>
 									<path d="m21 21-4.35-4.35"></path>
 								</svg>
@@ -68,9 +68,8 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 									<line x1="8" y1="23" x2="16" y2="23"/>
 								</svg>
 								<!-- Tailwind Tooltip -->
-								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg" role="tooltip">
 									Podcast Coming Soon
-									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
 								</div>
 							</button>
 
@@ -85,9 +84,8 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
         <path d="M9 13v2"/>
     </svg>
     <!-- Tailwind Tooltip -->
-    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg" role="tooltip">
         Talk to Us
-        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
     </div>
 </button>
 						</div>
@@ -112,20 +110,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 		<!-- Services Section -->
 		<section id="services" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
-			<!-- Parallax Background Elements -->
-			<div class="absolute inset-0 z-0">
-				<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-				<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
-		</div>
-
-		<!-- Additional Background Overlay -->
-		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
-
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-5 dark:opacity-10">
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
-		</div>
 		
 		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
 			<div class="text-center mb-20">
@@ -314,20 +298,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 	<!-- Process Section -->
 	<section id="process" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
-		<!-- Parallax Background Elements -->
-		<div class="absolute inset-0 z-0">
-			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
-		</div>
-
-		<!-- Additional Background Overlay -->
-		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
-
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-5 dark:opacity-10">
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
-		</div>
 
 		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
 			<!-- Section Header -->
@@ -346,20 +316,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 	<!-- Case Study -->
 	<section id="case-study" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
-		<!-- Parallax Background Elements -->
-		<div class="absolute inset-0 z-0">
-			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
-		</div>
-
-		<!-- Additional Background Overlay -->
-		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
-
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-5 dark:opacity-10">
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
-		</div>
 
 		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
 			<!-- Section Header -->
@@ -378,20 +334,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 	<!-- Customer Reviews Section -->
 	<section id="reviews" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
-		<!-- Parallax Background Elements -->
-		<div class="absolute inset-0 z-0">
-			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
-		</div>
-
-		<!-- Additional Background Overlay -->
-		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
-
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-5 dark:opacity-10">
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
-		</div>
 
 		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
 			<!-- Section Header -->
@@ -705,9 +647,10 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					</div>
 				</div>
 				<div class="flex gap-2 p-2.25 border-t border-border-light dark:border-border-dark">
+					<label for="chatBoxInput" class="sr-only">Type your message</label>
 					<input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 bg-black/20 dark:bg-white/20 border border-border-light dark:border-border-dark rounded-lg py-2 px-3 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]">
-					<button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue">
-						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue" aria-label="Send message">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 							<line x1="22" y1="2" x2="11" y2="13"></line>
 							<polygon points="22,2 15,22 11,13 2,9"></polygon>
 						</svg>
