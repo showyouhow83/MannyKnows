@@ -53,7 +53,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 						<!-- Navigation Actions -->
 						<div class="flex items-center gap-2 relative">
-							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
 								<span class="text-sm font-semibold">FREE 360 PHOTO</span>
 								<span class="text-[10px] text-white/80 leading-none">CLAIM NOW</span>
 							</a>
@@ -135,7 +135,9 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 				<!-- Main AI Services Grid -->
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto mb-16">
 				<!-- AI-Powered Websites -->
-				<div class="group bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-lg border border-indigo-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-indigo-500/15 hover:via-blue-500/10 hover:to-indigo-600/15 hover:border-indigo-400/30 hover:shadow-[0_20px_50px_rgba(99,102,241,0.3)]">
+				<div class="group bg-gradient-to-br from-indigo-500/10 via-blue-500/5 to-indigo-600/10 backdrop-blur-lg border border-indigo-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-indigo-500/15 hover:via-blue-500/10 hover:to-indigo-600/15 hover:border-indigo-400/30 hover:shadow-[0_20px_50px_rgba(99,102,241,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#6366f1, #3b82f6, #4f46e5" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -148,10 +150,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-indigo-400 font-semibold">AI-Powered E-commerce Websites</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Smart online stores that adapt to each customer with personalized experiences and dynamic product recommendations. Boost conversions by 40% with real-time optimization and intelligent visitor behavior tracking.</p>
 					<div class="text-indigo-400 text-sm font-medium">Personalization • A/B Testing • Conversion Optimization</div>
+					</div>
 				</div>
 
 				<!-- AI Automation Flows -->
-				<div class="group bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-lg border border-green-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-green-500/15 hover:via-emerald-500/10 hover:to-green-600/15 hover:border-green-400/30 hover:shadow-[0_20px_50px_rgba(34,197,94,0.3)]">
+				<div class="group bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-600/10 backdrop-blur-lg border border-green-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-green-500/15 hover:via-emerald-500/10 hover:to-green-600/15 hover:border-green-400/30 hover:shadow-[0_20px_50px_rgba(34,197,94,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#22c55e, #10b981, #16a34a" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -167,10 +172,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-green-400 font-semibold">E-commerce Automation</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Streamline your store operations with intelligent automation—from inventory management to order processing. Save 10+ hours per week while eliminating 95% of manual errors and boosting your team's productivity.</p>
 					<div class="text-green-400 text-sm font-medium">Order Processing • Inventory Management • Customer Communications</div>
+					</div>
 				</div>
 
 				<!-- AI Sale & Support Agents -->
-				<div class="group bg-gradient-to-br from-blue-100/70 via-cyan-100/40 to-blue-200/60 dark:from-blue-500/10 dark:via-cyan-500/5 dark:to-blue-600/10 backdrop-blur-lg border border-blue-300/40 dark:border-blue-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-blue-200/80 hover:via-cyan-200/50 hover:to-blue-300/70 dark:hover:from-blue-500/15 dark:hover:via-cyan-500/10 dark:hover:to-blue-600/15 hover:border-blue-400/50 dark:hover:border-blue-400/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.3)]">
+				<div class="group bg-gradient-to-br from-blue-100/70 via-cyan-100/40 to-blue-200/60 dark:from-blue-500/10 dark:via-cyan-500/5 dark:to-blue-600/10 backdrop-blur-lg border border-blue-300/40 dark:border-blue-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-blue-200/80 hover:via-cyan-200/50 hover:to-blue-300/70 dark:hover:from-blue-500/15 dark:hover:via-cyan-500/10 dark:hover:to-blue-600/15 hover:border-blue-400/50 dark:hover:border-blue-400/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#3b82f6, #06b6d4, #2563eb" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -184,10 +192,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-blue-400 font-semibold">AI Sales & Customer Support</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">24/7 intelligent customer support and sales assistants that understand your products and customers. Reduce support costs by 60% while improving customer satisfaction and increasing average order value.</p>
 					<div class="text-blue-400 text-sm font-medium">Live Chat Support • Product Recommendations • Order Assistance</div>
+					</div>
 				</div>
 
 				<!-- AI Business Analytics -->
-				<div class="group bg-gradient-to-br from-orange-100/70 via-yellow-100/40 to-orange-200/60 dark:from-orange-500/10 dark:via-yellow-500/5 dark:to-orange-600/10 backdrop-blur-lg border border-orange-300/40 dark:border-orange-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-orange-200/80 hover:via-yellow-200/50 hover:to-orange-300/70 dark:hover:from-orange-500/15 dark:hover:via-yellow-500/10 dark:hover:to-orange-600/15 hover:border-orange-400/50 dark:hover:border-orange-400/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)]">
+				<div class="group bg-gradient-to-br from-orange-100/70 via-yellow-100/40 to-orange-200/60 dark:from-orange-500/10 dark:via-yellow-500/5 dark:to-orange-600/10 backdrop-blur-lg border border-orange-300/40 dark:border-orange-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-orange-200/80 hover:via-yellow-200/50 hover:to-orange-300/70 dark:hover:from-orange-500/15 dark:hover:via-yellow-500/10 dark:hover:to-orange-600/15 hover:border-orange-400/50 dark:hover:border-orange-400/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#f97316, #eab308, #ea580c" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -200,10 +211,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-orange-400 font-semibold">E-commerce Analytics & Insights</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Transform your store data into actionable insights with predictive analytics that forecast sales trends and customer behavior. Make data-driven decisions 70% faster with intelligent dashboards and automated reporting.</p>
 					<div class="text-orange-400 text-sm font-medium">Sales Analytics • Customer Insights • Performance Tracking</div>
+					</div>
 				</div>
 
 				<!-- AI Content Creation -->
-				<div class="group bg-gradient-to-br from-purple-100/70 via-pink-100/40 to-purple-200/60 dark:from-purple-500/10 dark:via-pink-500/5 dark:to-purple-600/10 backdrop-blur-lg border border-purple-300/40 dark:border-purple-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-purple-200/80 hover:via-pink-200/50 hover:to-purple-300/70 dark:hover:from-purple-500/15 dark:hover:via-pink-500/10 dark:hover:to-purple-600/15 hover:border-purple-400/50 dark:hover:border-purple-400/30 hover:shadow-[0_20px_50px_rgba(168,85,247,0.3)]">
+				<div class="group bg-gradient-to-br from-purple-100/70 via-pink-100/40 to-purple-200/60 dark:from-purple-500/10 dark:via-pink-500/5 dark:to-purple-600/10 backdrop-blur-lg border border-purple-300/40 dark:border-purple-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-purple-200/80 hover:via-pink-200/50 hover:to-purple-300/70 dark:hover:from-purple-500/15 dark:hover:via-pink-500/10 dark:hover:to-purple-600/15 hover:border-purple-400/50 dark:hover:border-purple-400/30 hover:shadow-[0_20px_50px_rgba(168,85,247,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#a855f7, #ec4899, #9333ea" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -218,10 +232,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-purple-400 font-semibold">E-commerce Content Creation</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Generate high-converting product descriptions, email campaigns, and social media content that drives sales. Scale your marketing content 10x faster with AI that matches your brand voice and resonates with your customers.</p>
 					<div class="text-purple-400 text-sm font-medium">Product Descriptions • Email Marketing • Social Media Content</div>
+					</div>
 				</div>
 
 				<!-- AI Training & Consulting -->
-				<div class="group bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-teal-600/10 backdrop-blur-lg border border-teal-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-teal-500/15 hover:via-cyan-500/10 hover:to-teal-600/15 hover:border-teal-400/30 hover:shadow-[0_20px_50px_rgba(20,184,166,0.3)]">
+				<div class="group bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-teal-600/10 backdrop-blur-lg border border-teal-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-teal-500/15 hover:via-cyan-500/10 hover:to-teal-600/15 hover:border-teal-400/30 hover:shadow-[0_20px_50px_rgba(20,184,166,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#14b8a6, #06b6d4, #0d9488" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -233,10 +250,13 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-teal-400 font-semibold">E-commerce Strategy & Training</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Comprehensive AI strategy development and hands-on training to transform your store team into e-commerce power users. Accelerate AI adoption with customized workshops and ongoing support for maximum ROI.</p>
 					<div class="text-teal-400 text-sm font-medium">Store Strategy • Team Training • Implementation Support</div>
+					</div>
 				</div>
 
 				<!-- Photography & Creative Services -->
-				<div class="group bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-rose-600/10 backdrop-blur-lg border border-rose-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-rose-500/15 hover:via-pink-500/10 hover:to-rose-600/15 hover:border-rose-400/30 hover:shadow-[0_20px_50px_rgba(244,63,94,0.3)]">
+				<div class="group bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-rose-600/10 backdrop-blur-lg border border-rose-400/20 rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 hover:bg-gradient-to-br hover:from-rose-500/15 hover:via-pink-500/10 hover:to-rose-600/15 hover:border-rose-400/30 hover:shadow-[0_20px_50px_rgba(244,63,94,0.3)] relative overflow-hidden">
+					<pixel-canvas data-colors="#f43f5e, #ec4899, #e11d48" data-gap="4" data-speed="40" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+					<div class="relative z-10">
 					<div class="h-16 mb-6 flex items-center justify-center">
 						<div class="w-16 h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-3 transition-transform duration-300">
 							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -248,6 +268,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					<h3 class="text-xl mb-4 text-rose-400 font-semibold">E-commerce Photography & Creative</h3>
 					<p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Professional product photography and creative services that showcase your products beautifully. From lifestyle shoots to product catalogs, create compelling visual content that drives conversions and builds customer trust.</p>
 					<div class="text-rose-400 text-sm font-medium">Product Photography • Lifestyle Shoots • Brand Creative</div>
+					</div>
 				</div>
 				
 				<div class="lg:col-span-2 flex items-center">
@@ -1722,6 +1743,30 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		.step-indicator {
 			width: 0.75rem;
 			height: 0.75rem;
+		}
+	}
+
+	/* Pixel Canvas Opacity Adjustments */
+	/* Reduce opacity in light mode for subtlety */
+	:root:not(.dark) pixel-canvas {
+		opacity: 0.15 !important;
+	}
+	
+	/* Keep normal opacity in dark mode */
+	:root.dark pixel-canvas {
+		opacity: 0.4 !important;
+	}
+	
+	/* Alternative: Use CSS custom properties approach */
+	@media (prefers-color-scheme: light) {
+		:root:not(.dark) pixel-canvas {
+			opacity: 0.15 !important;
+		}
+	}
+	
+	@media (prefers-color-scheme: dark) {
+		:root.dark pixel-canvas {
+			opacity: 0.4 !important;
 		}
 	}
 </style>
