@@ -58,8 +58,32 @@ A professional business website built with Astro for offering web development, d
 - ✅ Contact forms ready for integration
 - ✅ Mobile-first approach
 - ✅ Accessible design
+- ✅ Dark/Light theme support
+- ✅ Standardized section structure
+- ✅ Apple-inspired design language
 
-## �️ Customization
+## 📚 Documentation
+
+### Development Guidelines
+- **[Section Standards](/docs/SECTION_STANDARDS.md)** - Complete guide for creating consistent sections
+- **[Quick Reference](/docs/QUICK_REFERENCE.md)** - Copy-paste templates and common patterns
+
+### Architecture
+- **Standardized Sections**: All sections follow consistent structure and styling
+- **Theme System**: Complete light/dark mode implementation
+- **Component Library**: Reusable components with unified design patterns
+
+## 🛠️ Customization
+
+### Adding New Sections
+
+Follow the **[Section Standards Guide](/docs/SECTION_STANDARDS.md)** for:
+- Consistent styling and structure
+- Theme compatibility
+- Typography hierarchy
+- Responsive design patterns
+
+Use the **[Quick Reference](/docs/QUICK_REFERENCE.md)** for copy-paste templates.
 
 ### Updating Content
 
@@ -76,6 +100,7 @@ Create new files in `/src/pages/services/` following the pattern of `web-develop
 
 - Global styles are in `/src/layouts/Layout.astro`
 - Page-specific styles are in individual `.astro` files
+- Section standards documented in `/docs/SECTION_STANDARDS.md`
 
 ## 📧 Contact Integration
 

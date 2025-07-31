@@ -61,14 +61,14 @@ export default {
       animation: {
         'gradient-shift': 'gradient-shift 20s ease infinite',
         'simple-gradient-flow': 'simple-gradient-flow 6s ease-in-out infinite',
-        'subtle-shimmer': 'subtle-shimmer 20s infinite',
+        'subtle-shimmer': 'subtle-shimmer 4s ease-in-out infinite',
         'subtle-gradient-diffusion': 'subtle-gradient-diffusion 8s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
         'button-pulse': 'button-pulse 1.5s ease-in-out infinite',
         'green-gradient-flow': 'green-gradient-flow 3s ease-in-out infinite',
-        'green-shimmer': 'green-shimmer 2s ease-in-out infinite',
+        'green-shimmer': 'green-shimmer 3s ease-in-out infinite',
         'podcast-gradient-flow': 'podcast-gradient-flow 3s ease-in-out infinite',
-        'podcast-shimmer': 'podcast-shimmer 2s ease-in-out infinite',
+        'podcast-shimmer': 'podcast-shimmer 3s ease-in-out infinite',
       },
       keyframes: {
         'gradient-shift': {
@@ -82,8 +82,9 @@ export default {
           '100%': { 'background-position': '0% 50%' }
         },
         'subtle-shimmer': {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' }
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '50%': { transform: 'translateX(0%)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' }
         },
         'subtle-gradient-diffusion': {
           '0%': { 'background-position': '0% 50%' },
@@ -104,8 +105,9 @@ export default {
           '100%': { 'background-position': '0% 50%' }
         },
         'green-shimmer': {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' }
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '50%': { transform: 'translateX(0%)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' }
         },
         'podcast-gradient-flow': {
           '0%': { 'background-position': '0% 50%' },
@@ -113,8 +115,9 @@ export default {
           '100%': { 'background-position': '0% 50%' }
         },
         'podcast-shimmer': {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' }
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '50%': { transform: 'translateX(0%)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' }
         }
       },
       backgroundSize: {
