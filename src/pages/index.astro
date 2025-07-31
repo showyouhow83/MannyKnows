@@ -30,12 +30,14 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						<!-- Navigation Menu -->
 						<ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
 							<li><a href="#services" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Services</a></li>
-							<li><a href="#reviews" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Reviews</a></li>
-							<li><a href="/process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Process</a></li>
-							<li><a href="/blog" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Blog</a></li>
-							<li><a href="/faqs" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">FAQs</a></li>
+
+							<li><a href="#process" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Process</a></li>
+							
+							<li><a href="#case-study" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Case Study</a></li>
+
 							<li><a href="#about" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">About</a></li>
-							<li><a href="#contact" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Contact</a></li>
+
+							<li><a href="#reviews" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Reviews</a></li>
 						</ul>
 
 						<!-- Search Bar -->
@@ -64,9 +66,9 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 									<line x1="8" y1="23" x2="16" y2="23"/>
 								</svg>
 								<!-- Tailwind Tooltip -->
-								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
 									Podcast Coming Soon
-									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
 								</div>
 							</button>
 
@@ -80,9 +82,9 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 									<path d="M9 13v2"/>
 								</svg>
 								<!-- Tailwind Tooltip -->
-								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
 									Talk to Us
-									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"></div>
+									<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black dark:border-b-white"></div>
 								</div>
 							</button>
 						</div>
@@ -127,7 +129,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 				<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
 					<span class="apple-gradient-text" data-colorful-title>Artificial Intelligence</span>
 				</h2>
-				<p class="sf-medium apple-body-text text-xl text-text-light-secondary dark:text-text-dark-secondary">Business Growing Services 🌎</p>
+				<p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">Business Growing Services 🌎</p>
 			</div>
 				
 				<!-- Main AI Services Grid -->
@@ -282,6 +284,70 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						</ul>
 					</div>
 				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Process Section -->
+	<section id="process" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
+		<!-- Parallax Background Elements -->
+		<div class="absolute inset-0 z-0">
+			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
+			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
+			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
+		</div>
+
+		<!-- Additional Background Overlay -->
+		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
+
+		<!-- Background Pattern -->
+		<div class="absolute inset-0 opacity-5 dark:opacity-10">
+			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
+		</div>
+
+		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
+			<!-- Section Header -->
+			<div class="text-center mb-20">
+				<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
+					<span class="apple-gradient-text" data-colorful-title>
+						Our Process
+					</span>
+				</h2>
+				<p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+					From discovery to deployment, we follow a proven methodology to transform your e-commerce vision into reality
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Case Study -->
+	<section id="case-study" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
+		<!-- Parallax Background Elements -->
+		<div class="absolute inset-0 z-0">
+			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
+			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-pink/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
+			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 rounded-full blur-3xl animate-spin-slow"></div>
+		</div>
+
+		<!-- Additional Background Overlay -->
+		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
+
+		<!-- Background Pattern -->
+		<div class="absolute inset-0 opacity-5 dark:opacity-10">
+			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
+		</div>
+
+		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
+			<!-- Section Header -->
+			<div class="text-center mb-20">
+				<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
+					<span class="apple-gradient-text" data-colorful-title>
+						Case Study
+					</span>
+				</h2>
+				<p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+					AI-Powered E-commerce Transformation Case Study
+				</p>
 			</div>
 		</div>
 	</section>
@@ -591,39 +657,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		</div>
 	</section>
 
-	<!-- Process Section -->
-	<section id="process" class="relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
-		<!-- Parallax Background Elements -->
-		<div class="absolute inset-0 z-0">
-			<div class="absolute top-20 left-10 w-96 h-96 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-			<div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-blue-500/5 via-slate-500/5 to-blue-600/5 rounded-full blur-3xl animate-spin-slow"></div>
-		</div>
-
-		<!-- Additional Background Overlay -->
-		<div class="absolute inset-0 bg-gradient-to-br from-gray-100/80 via-gray-50/60 to-gray-200/80 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
-
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-5 dark:opacity-10">
-			<div class="absolute inset-0 bg-gradient-to-r from-primary-blue/20 via-blue-500/20 to-primary-blue/20 animate-gradient-shift"></div>
-		</div>
-
-		<div class="max-w-[1440px] mx-auto px-8 relative z-10">
-			<!-- Section Header -->
-			<div class="text-center mb-20">
-				<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
-					<span class="apple-gradient-text" data-colorful-title>
-						Our Process
-					</span>
-				</h2>
-				<p class="text-xl md:text-2xl text-text-light-secondary dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-					From discovery to deployment, we follow a proven methodology to transform your e-commerce vision into reality
-				</p>
-			</div>
-
-		</div>
-	</section>
-
 		<!-- Floating Chat Box -->
 		<div id="chatBox" class="fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-black/10 dark:from-white/10 via-black/5 dark:via-white/5 to-black/10 dark:to-white/10 border border-border-light dark:border-border-dark rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible">
 			<div class="flex justify-between items-center p-1.75 border-b border-border-light dark:border-border-dark">
@@ -658,19 +691,19 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 		<!-- Floating Dock Menu -->
 		<div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
-			<div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.25 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+			<div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
 				<div class="flex items-center gap-2">
 					<!-- MK Logo -->
 					<button type="button" class="dock-item group relative" data-tooltip="Home" onclick="window.location.href='/'">
-						<div class="w-12 h-12 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink rounded-xl flex items-center justify-center text-white font-black text-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-button-gradient">
+						<div class="w-12 h-12 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink rounded-xl flex items-center justify-center text-white font-black text-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-button-gradient relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
 							MK
 						</div>
 					</button>
 
 					<!-- Services -->
 					<button type="button" class="dock-item group relative" data-tooltip="Services" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-black/20 dark:hover:bg-white/20">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<rect x="3" y="3" width="7" height="7"/>
 								<rect x="14" y="3" width="7" height="7"/>
 								<rect x="14" y="14" width="7" height="7"/>
@@ -679,29 +712,20 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						</div>
 					</button>
 
-					<!-- Reviews -->
-					<button type="button" class="dock-item group relative" data-tooltip="Reviews" onclick="document.getElementById('reviews').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-							</svg>
-						</div>
-					</button>
-
 					<!-- Process -->
 					<button type="button" class="dock-item group relative" data-tooltip="Process" onclick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<polyline points="9,11 12,14 22,4"/>
 								<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
 							</svg>
 						</div>
 					</button>
 
-					<!-- Blog -->
-					<button type="button" class="dock-item group relative" data-tooltip="Blog" onclick="window.location.href='/blog'">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<!-- Case Study -->
+					<button type="button" class="dock-item group relative" data-tooltip="Case Study" onclick="document.getElementById('case-study').scrollIntoView({behavior: 'smooth'})">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
 								<polyline points="14,2 14,8 20,8"/>
 								<line x1="16" y1="13" x2="8" y2="13"/>
@@ -710,15 +734,17 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						</div>
 					</button>
 
-					<!-- About -->
-					<button type="button" class="dock-item group relative" data-tooltip="About" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-								<circle cx="12" cy="7" r="4"/>
+					<!-- Reviews -->
+					<button type="button" class="dock-item group relative" data-tooltip="Reviews" onclick="document.getElementById('reviews').scrollIntoView({behavior: 'smooth'})">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
 							</svg>
 						</div>
 					</button>
+
+					<!-- Divider -->
+					<div class="w-px h-8 bg-gray-300/50 dark:bg-white/20 mx-1"></div>
 
 					<!-- Podcast -->
 					<button type="button" class="dock-item group relative" data-tooltip="Podcast Coming Soon" id="dockPodcastButton">
@@ -751,7 +777,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- Theme Toggle -->
 					<button type="button" class="dock-item group relative" data-tooltip="Toggle Theme" id="dockThemeToggle">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
 							<!-- Sun icon for dark mode (shows when dark mode is active) -->
 							<svg 
 								id="dockSunIcon" 
@@ -785,7 +811,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 					<!-- Settings -->
 					<button type="button" class="dock-item group relative" data-tooltip="Settings" id="settingsButton">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20">
+						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
 							<svg 
 								width="20" 
 								height="20" 
@@ -974,12 +1000,12 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		
 		dockItems.forEach(item => {
 			const tooltip = document.createElement('div');
-			tooltip.className = 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-sm whitespace-nowrap rounded opacity-0 invisible transition-all duration-200 z-50 shadow-lg';
+			tooltip.className = 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible transition-all duration-200 z-50 shadow-lg';
 			tooltip.textContent = item.getAttribute('data-tooltip');
 			
 			// Add arrow
 			const arrow = document.createElement('div');
-			arrow.className = 'absolute top-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-black';
+			arrow.className = 'absolute top-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-black dark:border-t-white';
 			tooltip.appendChild(arrow);
 			
 			item.appendChild(tooltip);
