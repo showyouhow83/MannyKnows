@@ -27,6 +27,9 @@ const { title } = Astro.props;
 		<!-- Analytics -->
 		<PostHogAdvanced />
 		
+		<!-- Pixel Canvas Effect -->
+		<script type="module" src="/pixel-canvas.js"></script>
+		
 		<title>{title}</title>
 	</head>
 	<body>
@@ -161,7 +164,7 @@ const { title } = Astro.props;
 										Chatbots & AI
 									</span>
 									<div>
-										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-white dark:group-hover:text-gray-900 transition-colors duration-300 mb-1">
+										<h5 class="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent text-sm font-medium transition-colors duration-300 mb-1">
 											How AI Chatbots Transform Customer Service
 										</h5>
 										<button class="text-blue-600 dark:text-blue-400 text-xs hover:text-white dark:hover:text-gray-900 transition-colors duration-300 font-medium" aria-label="Read more about AI Chatbots Transform Customer Service">
@@ -193,7 +196,7 @@ const { title } = Astro.props;
 										Content Creation
 									</span>
 									<div>
-										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-white dark:group-hover:text-gray-900 transition-colors duration-300 mb-1">
+										<h5 class="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent text-sm font-medium transition-colors duration-300 mb-1">
 											AI Content Creation: The Future of Marketing
 										</h5>
 										<button class="text-purple-600 dark:text-purple-400 text-xs hover:text-white dark:hover:text-gray-900 transition-colors duration-300 font-medium" aria-label="Read more about AI Content Creation">
@@ -226,7 +229,7 @@ const { title } = Astro.props;
 										Data Analytics
 									</span>
 									<div>
-										<h5 class="text-gray-800 dark:text-white/90 text-sm font-medium group-hover:text-white dark:group-hover:text-gray-900 transition-colors duration-300 mb-1">
+										<h5 class="bg-gradient-to-r from-orange-600 to-yellow-500 bg-clip-text text-transparent text-sm font-medium transition-colors duration-300 mb-1">
 											Predictive Analytics: Making Data-Driven Decisions
 										</h5>
 										<button class="text-orange-600 dark:text-orange-400 text-xs hover:text-white dark:hover:text-gray-900 transition-colors duration-300 font-medium" aria-label="Read more about Predictive Analytics">
