@@ -1,4 +1,118 @@
-// Premium Podcast Player Logicclass PremiumPodcastPlayer {  constructor() {    this.isPlaying = false;    this.currentProgress = 0;    this.volume = 70;    this.isMuted = false;    this.currentEpisodeId = '1';    this.currentAudio = null;    this.isLoading = false;    this.episodes = [];    this.currentEpisodeIndex = 0;        this.init();  }  init() {    this.extractEpisodeData();    this.bindEvents();    this.setupProgressBar();    this.setupVolumeControl();    this.initializeFirstEpisode();  }  extractEpisodeData() {    const episodeItems = document.querySelectorAll('.episode-item');    this.episodes = Array.from(episodeItems).map((item, index) => ({      id: item.dataset.episodeId,      mediaUrl: item.dataset.mediaUrl,      mediaType: item.dataset.mediaType,      element: item,      index: index    }));  }  initializeFirstEpisode() {    const firstEpisode = document.querySelector('.episode-item');    if (firstEpisode) {      firstEpisode.classList.add('selected');    }  }  bindEvents() {    const playPauseBtn = document.getElementById('play-pause-btn');    if (playPauseBtn) {      playPauseBtn.addEventListener('click', () => this.togglePlayPause());    }    const episodeItems = document.querySelectorAll('.episode-item');    episodeItems.forEach(item => {      item.addEventListener('click', (e) => this.selectEpisode(e.currentTarget));    });    const prevBtn = document.getElementById('prev-btn');    if (prevBtn) {      prevBtn.addEventListener('click', () => this.previousEpisode());    }    const nextBtn = document.getElementById('next-btn');    if (nextBtn) {      nextBtn.addEventListener('click', () => this.nextEpisode());    }    const volumeBtn = document.getElementById('volume-btn');    if (volumeBtn) {      volumeBtn.addEventListener('click', () => this.toggleMute());    }    const externalBtn = document.getElementById('external-link-btn');    if (externalBtn) {      externalBtn.addEventListener('click', () => this.openExternal());    }  }  async togglePlayPause() {    if (this.isLoading) return;        const playIcon = document.getElementById('play-icon');    const pauseIcon = document.getElementById('pause-icon');        if (!this.currentAudio) {      await this.loadCurrentEpisode();      return;    }        if (this.isPlaying) {      this.currentAudio.pause();      this.isPlaying = false;      if (playIcon) playIcon.classList.remove('hidden');      if (pauseIcon) pauseIcon.classList.add('hidden');    } else {      this.currentAudio.play();      this.isPlaying = true;      if (playIcon) playIcon.classList.add('hidden');      if (pauseIcon) pauseIcon.classList.remove('hidden');    }  }  async loadCurrentEpisode() {    const currentEpisode = this.episodes[this.currentEpisodeIndex];    if (!currentEpisode) return;    this.showLoading();        try {      if (this.currentAudio) {        this.currentAudio.pause();        if (this.currentAudio.tagName === 'VIDEO') {          this.currentAudio.remove();        }      }      if (currentEpisode.mediaType === 'audio') {        this.currentAudio = new Audio(currentEpisode.mediaUrl);        this.setupAudioEvents();                this.currentAudio.play();
+// Premium Podcast Player Logic
+class PremiumPodcastPlayer {
+  constructor() {
+    this.isPlaying = false;
+    this.currentProgress = 0;
+    this.volume = 70;
+    this.isMuted = false;
+    this.currentEpisodeId = '1';
+    this.currentAudio = null;
+    this.isLoading = false;
+    this.episodes = [];
+    this.currentEpisodeIndex = 0;
+    
+    this.init();
+  }
+
+  init() {
+    this.extractEpisodeData();
+    this.bindEvents();
+    this.setupProgressBar();
+    this.setupVolumeControl();
+    this.initializeFirstEpisode();
+  }
+
+  extractEpisodeData() {
+    const episodeItems = document.querySelectorAll('.episode-item');
+    this.episodes = Array.from(episodeItems).map((item, index) => ({
+      id: item.dataset.episodeId,
+      mediaUrl: item.dataset.mediaUrl,
+      mediaType: item.dataset.mediaType,
+      element: item,
+      index: index
+    }));
+  }
+
+  initializeFirstEpisode() {
+    const firstEpisode = document.querySelector('.episode-item');
+    if (firstEpisode) {
+      firstEpisode.classList.add('selected');
+    }
+  }
+
+  bindEvents() {
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+    }
+
+    const episodeItems = document.querySelectorAll('.episode-item');
+    episodeItems.forEach(item => {
+      item.addEventListener('click', (e) => this.selectEpisode(e.currentTarget));
+    });
+
+    const prevBtn = document.getElementById('prev-btn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => this.previousEpisode());
+    }
+
+    const nextBtn = document.getElementById('next-btn');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => this.nextEpisode());
+    }
+
+    const volumeBtn = document.getElementById('volume-btn');
+    if (volumeBtn) {
+      volumeBtn.addEventListener('click', () => this.toggleMute());
+    }
+
+    const externalBtn = document.getElementById('external-link-btn');
+    if (externalBtn) {
+      externalBtn.addEventListener('click', () => this.openExternal());
+    }
+  }
+
+  async togglePlayPause() {
+    if (this.isLoading) return;
+    
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    
+    if (!this.currentAudio) {
+      await this.loadCurrentEpisode();
+      return;
+    }
+    
+    if (this.isPlaying) {
+      this.currentAudio.pause();
+      this.isPlaying = false;
+      if (playIcon) playIcon.classList.remove('hidden');
+      if (pauseIcon) pauseIcon.classList.add('hidden');
+    } else {
+      this.currentAudio.play();
+      this.isPlaying = true;
+      if (playIcon) playIcon.classList.add('hidden');
+      if (pauseIcon) pauseIcon.classList.remove('hidden');
+    }
+  }
+
+  async loadCurrentEpisode() {
+    const currentEpisode = this.episodes[this.currentEpisodeIndex];
+    if (!currentEpisode) return;
+    this.showLoading();
+    
+    try {
+      if (this.currentAudio) {
+        this.currentAudio.pause();
+        if (this.currentAudio.tagName === 'VIDEO') {
+          this.currentAudio.remove();
+        }
+      }
+      if (currentEpisode.mediaType === 'audio') {
+        this.currentAudio = new Audio(currentEpisode.mediaUrl);
+        this.setupAudioEvents();
+        
+        this.currentAudio.play();
         this.isPlaying = true;
         this.updatePlayButton();
         
