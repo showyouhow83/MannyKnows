@@ -743,21 +743,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 						</div>
 					</button>
 
-					<!-- Divider -->
-					<div class="w-px h-8 bg-gray-300/50 dark:bg-white/20 mx-1"></div>
-
-					<!-- Podcast -->
-					<button type="button" class="dock-item group relative" data-tooltip="Podcast Coming Soon" id="dockPodcastButton">
-						<div class="w-12 h-12 bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-podcast-gradient-flow relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer">
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-								<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-								<line x1="12" y1="19" x2="12" y2="23"/>
-								<line x1="8" y1="23" x2="16" y2="23"/>
-							</svg>
-						</div>
-					</button>
-
 					<!-- Chat -->
 					<button type="button" class="dock-item group relative" data-tooltip="Chat" id="dockChatToggle">
 						<div class="w-12 h-12 bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1 animate-green-gradient-flow relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer">
@@ -773,41 +758,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 					</button>
 
 					<!-- Divider -->
-					<div class="w-px h-8 bg-gray-300/50 dark:bg-white/20 mx-1"></div>
-
-					<!-- Theme Toggle -->
-					<button type="button" class="dock-item group relative" data-tooltip="Toggle Theme" id="dockThemeToggle">
-						<div class="w-12 h-12 bg-black/10 dark:bg-white/10 rounded-xl flex items-center justify-center text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:bg-black/20 dark:hover:bg-white/20 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
-							<!-- Sun icon for dark mode (shows when dark mode is active) -->
-							<svg 
-								id="dockSunIcon" 
-								width="20" 
-								height="20" 
-								viewBox="0 0 24 24" 
-								fill="none" 
-								stroke="currentColor" 
-								stroke-width="2" 
-								class="transition-all duration-300 rotate-0 scale-100 dark:rotate-90 dark:scale-0"
-							>
-								<circle cx="12" cy="12" r="5"/>
-								<path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-							</svg>
-							
-							<!-- Moon icon for light mode (shows when light mode is active) -->
-							<svg 
-								id="dockMoonIcon" 
-								width="20" 
-								height="20" 
-								viewBox="0 0 24 24" 
-								fill="none" 
-								stroke="currentColor" 
-								stroke-width="2" 
-								class="absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100"
-							>
-								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-							</svg>
-						</div>
-					</button>
+					<div class="w-px h-8 bg-gradient-to-b from-transparent via-gray-400/30 dark:via-white/20 to-transparent"></div>
 
 					<!-- Settings -->
 					<button type="button" class="dock-item group relative" data-tooltip="Settings" id="settingsButton">
@@ -1160,58 +1111,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		}
 	}
 
-	// Dock Theme Toggle functionality
-	function initDockThemeToggle() {
-		const dockToggle = document.getElementById('dockThemeToggle');
-		const dockSunIcon = document.getElementById('dockSunIcon');
-		const dockMoonIcon = document.getElementById('dockMoonIcon');
-		
-		if (!dockToggle || !dockSunIcon || !dockMoonIcon) return;
-
-		// Check for saved theme preference or default to dark
-		const savedTheme = localStorage.getItem('theme');
-		const defaultTheme = savedTheme || 'dark';
-		
-		// Apply initial theme
-		applyTheme(defaultTheme);
-		
-		// Toggle click handler
-		dockToggle.addEventListener('click', () => {
-			const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-			const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-			applyTheme(newTheme);
-			
-			// Save preference
-			localStorage.setItem('theme', newTheme);
-			
-			// Track theme change
-			if (typeof posthog !== 'undefined') {
-				posthog.capture('theme_changed', { 
-					from: currentTheme,
-					to: newTheme,
-					location: 'dock'
-				});
-			}
-		});
-		
-		function applyTheme(theme) {
-			if (theme === 'dark') {
-				document.documentElement.classList.add('dark');
-			} else {
-				document.documentElement.classList.remove('dark');
-			}
-		}
-		
-		// Listen for system theme changes (but don't auto-switch since we default to dark)
-		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-			// Only follow system preference if user hasn't set a preference
-			if (!localStorage.getItem('theme')) {
-				// Still default to dark even if system changes
-				applyTheme('dark');
-			}
-		});
-	}
-
 	// Process Section Slideshow
 	function initProcessSlideshow() {
 		const container = document.getElementById('processSteps');
@@ -1381,7 +1280,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		initDockTooltips();
 		initServicesTracking();
 		initReviewsSection();
-		initDockThemeToggle();
 		initProcessSlideshow();
 	}, { passive: true });
 	
