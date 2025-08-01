@@ -1,0 +1,141 @@
+---
+export interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Case study data
+const caseStudyStats = [
+  {
+    value: "300%",
+    label: "Revenue Increase",
+    description: "Year-over-year growth"
+  },
+  {
+    value: "65%",
+    label: "Conversion Rate",
+    description: "Improvement in sales"
+  },
+  {
+    value: "4.2s",
+    label: "Page Load Time",
+    description: "Optimized performance"
+  },
+  {
+    value: "98%",
+    label: "Customer Satisfaction",
+    description: "User experience rating"
+  }
+];
+
+const caseStudyContent = {
+  title: "E-commerce Transformation Success",
+  subtitle: "How we helped a mid-size retailer triple their online revenue with AI-powered solutions",
+  description: "Our client, a traditional retailer with $2M annual revenue, was struggling with outdated e-commerce infrastructure and declining online sales. Through our comprehensive AI-powered transformation, we rebuilt their entire digital presence with modern technology, intelligent automation, and data-driven optimization strategies.",
+  highlights: [
+    "Complete platform migration with zero downtime",
+    "AI-powered personalization engine implementation", 
+    "Advanced inventory management and forecasting",
+    "Automated customer service with 24/7 chatbot support",
+    "Mobile-first responsive design optimization",
+    "SEO and performance optimization"
+  ]
+};
+---
+
+<div class={`${className}`}>
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+    <!-- Content Column -->
+    <div>
+      <h3 class="text-2xl lg:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">
+        {caseStudyContent.title}
+      </h3>
+      
+      <p class="text-lg text-primary-blue font-semibold mb-6">
+        {caseStudyContent.subtitle}
+      </p>
+      
+      <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+        {caseStudyContent.description}
+      </p>
+      
+      <!-- Key Highlights -->
+      <div class="space-y-3">
+        <h4 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-4">
+          Key Achievements:
+        </h4>
+        <ul class="space-y-3">
+          {caseStudyContent.highlights.map((highlight) => (
+            <li class="flex items-start gap-3">
+              <div class="flex-shrink-0 w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mt-0.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                  <polyline points="9,11 12,14 22,4"></polyline>
+                </svg>
+              </div>
+              <span class="text-text-light-secondary dark:text-text-dark-secondary">
+                {highlight}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Stats Grid Column -->
+    <div>
+      <div class="grid grid-cols-2 gap-6">
+        {caseStudyStats.map((stat, index) => (
+          <div class="text-center p-6 bg-gradient-to-br from-white/80 via-gray-50/90 to-white/80 dark:from-white/5 dark:via-gray-800/20 dark:to-white/5 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_50px_rgba(16,209,255,0.15)]">
+            <div class="text-3xl lg:text-4xl font-black text-primary-blue mb-2 animate-count-up">
+              {stat.value}
+            </div>
+            <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-1">
+              {stat.label}
+            </div>
+            <div class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+              {stat.description}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <!-- Call to Action -->
+      <div class="mt-8 p-6 bg-gradient-to-br from-primary-blue/10 via-sky-500/5 to-primary-blue/10 border border-primary-blue/20 rounded-2xl text-center">
+        <h4 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">
+          Ready for Similar Results?
+        </h4>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+          Let's discuss how we can transform your e-commerce business
+        </p>
+        <button type="button" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-blue to-sky-500 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue hover:shadow-[0_12px_30px_rgba(16,209,255,0.4)]">
+          <span>Get Your Free Consultation</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,6 15,12 9,18"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Stats counter animations */
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-count-up {
+    animation: countUp 0.6s ease-out;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+export interface Props {
+  tooltip: string;
+  icon: string;
+  onClick?: string;
+  variant?: 'default' | 'brand' | 'chat' | 'settings';
+  id?: string;
+  className?: string;
+}
+
+const { 
+  tooltip, 
+  icon, 
+  onClick, 
+  variant = 'default', 
+  id,
+  className = "" 
+} = Astro.props;
+
+const variantClasses = {
+  default: 'bg-black/10 dark:bg-white/10 text-text-light-primary dark:text-text-dark-primary hover:bg-black/20 dark:hover:bg-white/20',
+  brand: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white animate-button-gradient',
+  chat: 'bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 text-white animate-green-gradient-flow',
+  settings: 'bg-black/10 dark:bg-white/10 text-text-light-primary dark:text-text-dark-primary hover:bg-black/20 dark:hover:bg-white/20'
+};
+
+const iconClasses = {
+  settings: 'transition-all duration-300 group-hover:rotate-90'
+};
+---
+
+<button 
+  type="button" 
+  class={`dock-item group relative ${className}`} 
+  data-tooltip={tooltip}
+  onclick={onClick}
+  id={id}
+>
+  <div class={`w-12 h-12 ${variantClasses[variant]} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer`}>
+    
+    {variant === 'chat' && (
+      <pixel-canvas 
+        data-colors="#ffffff, #f8fafc, #e2e8f0" 
+        data-gap="4" 
+        data-speed="60" 
+        data-no-focus 
+        style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"
+      ></pixel-canvas>
+    )}
+    
+    {variant === 'brand' ? (
+      <span class="text-white font-black text-lg relative z-10">MK</span>
+    ) : (
+      <Fragment set:html={icon} />
+    )}
+  </div>
+  
+  <!-- Tooltip -->
+  <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none" role="tooltip">
+    {tooltip}
+  </div>
+</button>

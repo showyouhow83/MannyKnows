@@ -1,0 +1,41 @@
+---
+// Modular footer with reusable components
+import FooterHeader from './FooterHeader.astro';
+import FooterServices from './FooterServices.astro';
+import FooterBottom from './FooterBottom.astro';
+
+// Footer configuration can be passed as props for full customization
+interface Props {
+  brandTitle?: string;
+  brandDescription?: string;
+  socialLinks?: {
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+  };
+  brandName?: string;
+  brandIdentifier?: string;
+  links?: {
+    sitemap?: string;
+    privacy?: string;
+    terms?: string;
+  };
+}
+
+const props = Astro.props;
+---
+
+<footer class="relative bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 dark:animate-gradient-flow border-t border-gray-300/50 dark:border-white/10 transition-colors duration-300">
+  <!-- Gradient border that fades to transparent --> 
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-blue to-transparent animate-gradient-slide"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-gray-50/60 via-gray-100/40 to-gray-50/60 dark:from-slate-900/60 dark:via-gray-800/40 dark:to-slate-900/60 -z-10 transition-colors duration-300"></div>
+  
+  <!-- Header Section: Brand, Social, Blog Articles, Newsletter -->
+  <FooterHeader {...props} />
+  
+  <!-- Services Section -->
+  <FooterServices />
+</footer>
+
+<!-- Footer Bottom -->
+<FooterBottom {...props} />

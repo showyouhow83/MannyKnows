@@ -1,0 +1,30 @@
+---
+export interface Props {
+  id?: string;
+  variant?: 'default' | 'dark' | 'gradient';
+  className?: string;
+  hasOverflow?: boolean;
+}
+
+const { 
+  id, 
+  variant = 'default', 
+  className = "",
+  hasOverflow = false 
+} = Astro.props;
+
+const variantClasses = {
+  default: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
+  dark: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30',
+  gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900'
+};
+
+const overflowClass = hasOverflow ? 'overflow-hidden' : '';
+---
+
+<section 
+  id={id}
+  class={`relative py-16 ${variantClasses[variant]} border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${overflowClass} ${className}`}
+>
+  <slot />
+</section>

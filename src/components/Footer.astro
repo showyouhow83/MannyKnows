@@ -1,0 +1,25 @@
+---
+// Unified Footer component wrapper
+import FooterMain from './footer/FooterMain.astro';
+
+interface Props {
+  brandTitle?: string;
+  brandDescription?: string;
+  socialLinks?: {
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+  };
+  brandName?: string;
+  brandIdentifier?: string;
+  links?: {
+    sitemap?: string;
+    privacy?: string;
+    terms?: string;
+  };
+}
+
+const props = Astro.props;
+---
+
+<FooterMain {...props} />

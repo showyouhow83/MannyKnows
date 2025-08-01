@@ -1,0 +1,63 @@
+---
+export interface Props {
+  id?: string;
+  title?: string;
+  subtitle?: string;
+  variant?: 'default' | 'alternate' | 'dark';
+  className?: string;
+  headerAlignment?: 'left' | 'center' | 'right';
+}
+
+const {
+  id,
+  title,
+  subtitle,
+  variant = 'default',
+  className = '',
+  headerAlignment = 'center'
+} = Astro.props;
+
+// Define variant styles
+const variantStyles = {
+  default: 'bg-light-primary dark:bg-dark-primary',
+  alternate: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10',
+  dark: 'bg-gradient-to-br from-slate-900/95 via-gray-900/90 to-slate-800/95 border-t border-white/10'
+};
+
+// Define header alignment styles
+const alignmentStyles = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right'
+};
+
+const sectionClass = `relative py-16 ${variantStyles[variant]} transition-colors duration-300 overflow-hidden ${className}`;
+const headerClass = `${alignmentStyles[headerAlignment]} mb-20`;
+---
+
+<section id={id} class={sectionClass}>
+  <div class="max-w-[1440px] mx-auto px-8 relative z-10">
+    {(title || subtitle) && (
+      <div class={headerClass}>
+        {title && (
+          <h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
+            <span class="apple-gradient-text" data-colorful-title>
+              {title}
+            </span>
+          </h2>
+        )}
+        {subtitle && (
+          <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl leading-relaxed"
+             class:list={[
+               headerAlignment === 'center' && 'mx-auto',
+               headerAlignment === 'right' && 'ml-auto'
+             ]}>
+            {subtitle}
+          </p>
+        )}
+      </div>
+    )}
+    
+    <slot />
+  </div>
+</section>

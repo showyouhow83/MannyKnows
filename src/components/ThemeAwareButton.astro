@@ -1,0 +1,62 @@
+---
+export interface Props {
+  href: string;
+  text: string;
+  subtext: string;
+  id?: string;
+  className?: string;
+}
+
+const { href, text, subtext, id, className = "" } = Astro.props;
+---
+
+<!-- Light Mode Button (black sparkles on white background) -->
+<a 
+  href={href}
+  id={id ? `${id}-light` : undefined}
+  class={`light-mode-only bg-white border border-black/20 text-black py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+>
+  <pixel-canvas 
+    data-colors="#000000, #1f2937, #374151" 
+    data-gap="4" 
+    data-speed="60" 
+    data-no-focus 
+    style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.35 !important;"
+  ></pixel-canvas>
+  <span class="text-sm font-semibold relative z-10">{text}</span>
+  <span class="text-[10px] opacity-80 leading-none relative z-10">{subtext}</span>
+</a>
+
+<!-- Dark Mode Button (white sparkles on black background) -->
+<a 
+  href={href}
+  id={id ? `${id}-dark` : undefined}
+  class={`dark-mode-only bg-black border border-white/20 text-white py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+>
+  <pixel-canvas 
+    data-colors="#ffffff, #f8fafc, #e2e8f0" 
+    data-gap="4" 
+    data-speed="60" 
+    data-no-focus 
+    style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.4 !important;"
+  ></pixel-canvas>
+  <span class="text-sm font-semibold relative z-10">{text}</span>
+  <span class="text-[10px] opacity-80 leading-none relative z-10">{subtext}</span>
+</a>
+
+<style>
+  /* Show/hide based on theme */
+  .light-mode-only {
+    display: flex;
+  }
+  .dark-mode-only {
+    display: none;
+  }
+
+  :root.dark .light-mode-only {
+    display: none;
+  }
+  :root.dark .dark-mode-only {
+    display: flex;
+  }
+</style>

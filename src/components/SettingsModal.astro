@@ -175,14 +175,14 @@
 
 <script>
   function initSettingsModal() {
-    const modal = document.getElementById('settingsModal');
-    const openButton = document.getElementById('settingsButton');
-    const closeButton = document.getElementById('closeSettings');
-    const saveButton = document.getElementById('saveSettings');
-    const resetButton = document.getElementById('resetSettings');
-    const marqueeToggle = document.getElementById('marqueeToggle');
-    const colorfulTitlesToggle = document.getElementById('colorfulTitlesToggle');
-    const themeToggle = document.getElementById('themeToggle');
+    const modal = document.getElementById('settingsModal') as HTMLElement;
+    const openButton = document.getElementById('settingsButton') as HTMLElement;
+    const closeButton = document.getElementById('closeSettings') as HTMLButtonElement;
+    const saveButton = document.getElementById('saveSettings') as HTMLButtonElement;
+    const resetButton = document.getElementById('resetSettings') as HTMLButtonElement;
+    const marqueeToggle = document.getElementById('marqueeToggle') as HTMLInputElement;
+    const colorfulTitlesToggle = document.getElementById('colorfulTitlesToggle') as HTMLInputElement;
+    const themeToggle = document.getElementById('themeToggle') as HTMLInputElement;
     
     if (!modal || !openButton) return;
 
@@ -192,8 +192,9 @@
     // Open modal
     openButton.addEventListener('click', () => {
       modal.classList.remove('opacity-0', 'invisible');
-      modal.querySelector('div').classList.remove('scale-95');
-      modal.querySelector('div').classList.add('scale-100');
+      const modalDialog = modal.querySelector('div') as HTMLElement;
+      modalDialog?.classList.remove('scale-95');
+      modalDialog?.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
       
       // Track modal open
@@ -205,8 +206,9 @@
     // Close modal function
     function closeModal() {
       modal.classList.add('opacity-0', 'invisible');
-      modal.querySelector('div').classList.add('scale-95');
-      modal.querySelector('div').classList.remove('scale-100');
+      const modalDialog = modal.querySelector('div') as HTMLElement;
+      modalDialog?.classList.add('scale-95');
+      modalDialog?.classList.remove('scale-100');
       document.body.style.overflow = '';
     }
 
@@ -269,6 +271,14 @@
       applyThemeSetting(themeToggle.checked);
       // Save immediately to localStorage
       localStorage.setItem('theme-dark', themeToggle.checked.toString());
+      
+      // Dispatch custom event for theme change
+      document.dispatchEvent(new CustomEvent('themeChanged', {
+        detail: { 
+          isDark: themeToggle.checked,
+          source: 'settings_toggle'
+        }
+      }));
       
       // Track setting change
       if (typeof posthog !== 'undefined') {
@@ -346,8 +356,8 @@
       }
     }
 
-    function applyMarqueeSetting(enabled) {
-      const marquees = document.querySelectorAll('[data-marquee]');
+    function applyMarqueeSetting(enabled: boolean) {
+      const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
       marquees.forEach(marquee => {
         if (enabled) {
           marquee.style.display = '';
@@ -357,8 +367,8 @@
       });
     }
 
-    function applyColorfulTitlesSetting(enabled) {
-      const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]');
+    function applyColorfulTitlesSetting(enabled: boolean) {
+      const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
       console.log('Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
       
       colorfulElements.forEach((element, index) => {
@@ -393,7 +403,7 @@
       });
     }
 
-    function applyThemeSetting(isDark) {
+    function applyThemeSetting(isDark: boolean) {
       const html = document.documentElement;
       
       if (isDark) {
@@ -401,6 +411,14 @@
       } else {
         html.classList.remove('dark');
       }
+      
+      // Dispatch custom event for theme change (for all theme changes)
+      document.dispatchEvent(new CustomEvent('themeChanged', {
+        detail: { 
+          isDark: isDark,
+          source: 'theme_system'
+        }
+      }));
       
       // Update the colorful titles if they're disabled to match new theme
       const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
@@ -452,7 +470,7 @@
     console.log('Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
     
     // Apply marquee setting
-    const marquees = document.querySelectorAll('[data-marquee]');
+    const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
     marquees.forEach(marquee => {
       if (marqueeEnabled) {
         marquee.style.display = '';
@@ -462,7 +480,7 @@
     });
     
     // Apply colorful titles setting
-    const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]');
+    const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
     colorfulElements.forEach(element => {
       if (colorfulTitlesEnabled) {
         element.classList.remove('colorful-disabled');
