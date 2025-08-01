@@ -2,6 +2,7 @@
 export interface Props {
   href: string;
   text: string;
+  subtext?: string;
   variant?: 'primary' | 'apple' | 'green' | 'gradient';
   size?: 'sm' | 'md' | 'lg';
   icon?: string;
@@ -12,6 +13,7 @@ export interface Props {
 const { 
   href, 
   text, 
+  subtext,
   variant = 'primary', 
   size = 'md', 
   icon, 
@@ -49,6 +51,9 @@ const variantClasses = {
   
   <span class="relative z-10 flex items-center gap-2">
     {icon && <Fragment set:html={icon} />}
-    {text}
+    <div class="flex flex-col items-center">
+      <span class="font-semibold leading-tight">{text}</span>
+      {subtext && <span class="text-xs opacity-80 leading-tight">{subtext}</span>}
+    </div>
   </span>
 </a>
