@@ -45,14 +45,28 @@ print_status() {
 # Get current branch name
 CURRENT_BRANCH=$(git branch --show-current)
 
-# Use environment parameter if provided, otherwise use current branch
+# Check if first parameter looks like a git branch name or a commit message
+# Branch names typically don't have spaces and don't start with uppercase letters followed by spaces
 if [ -z "$1" ]; then
+    # No parameters - use current branch with default message
     ENVIRONMENT="$CURRENT_BRANCH"
-    COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
-    print_status $BLUE "🎯 No environment specified, using current branch: ${ENVIRONMENT}"
-else
+    COMMIT_MSG="Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"
+    print_status $BLUE "🎯 No parameters provided, using current branch: ${ENVIRONMENT}"
+elif [[ "$1" =~ [[:space:]] ]] || [[ "$1" =~ ^[A-Z] ]]; then
+    # First parameter contains spaces or starts with uppercase - likely a commit message
+    ENVIRONMENT="$CURRENT_BRANCH"
+    COMMIT_MSG="$1"
+    print_status $BLUE "🎯 Using current branch: ${ENVIRONMENT} with custom message"
+elif git show-ref --verify --quiet refs/remotes/origin/"$1" || [[ "$1" =~ ^[a-z-]+$ ]]; then
+    # First parameter looks like a branch name
     ENVIRONMENT="$1"
     COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
+    print_status $BLUE "🎯 Deploying to specified environment: ${ENVIRONMENT}"
+else
+    # Assume first parameter is a commit message for current branch
+    ENVIRONMENT="$CURRENT_BRANCH"
+    COMMIT_MSG="$1"
+    print_status $BLUE "🎯 Using current branch: ${ENVIRONMENT} with custom message"
 fi
 
 print_status $BLUE "🚀 Deploying to ${ENVIRONMENT} environment..."
