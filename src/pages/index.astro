@@ -64,3 +64,34 @@ import ChatBox from '../components/ui/ChatBox.astro';
 		<DockMenu />
 	</main>
 </BaseLayout>
+
+<script>
+	// Navigation visibility tracking for floating dock
+	function initNavigationTracking() {
+		const topNav = document.getElementById('topNav');
+		const floatingDock = document.getElementById('floatingDock');
+		
+		if (!topNav || !floatingDock) return;
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					// Top nav is visible, hide floating dock
+					floatingDock.classList.add('translate-y-full', 'opacity-0');
+				} else {
+					// Top nav is not visible, show floating dock
+					floatingDock.classList.remove('translate-y-full', 'opacity-0');
+				}
+			});
+		}, {
+			threshold: 0.1
+		});
+
+		observer.observe(topNav);
+	}
+
+	// Initialize when DOM is loaded
+	document.addEventListener('DOMContentLoaded', () => {
+		initNavigationTracking();
+	});
+</script>
