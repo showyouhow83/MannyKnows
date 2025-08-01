@@ -5,14 +5,16 @@
 # This script automates deployment from local codespace to any GitHub branch/environment
 # 
 # Usage:
-#   ./deploy.sh <environment>                     # Uses default timestamp message
-#   ./deploy.sh <environment> "Your message"     # Uses custom commit message
+#   ./deploy.sh                                   # Deploy to current branch with default message
+#   ./deploy.sh [commit_message]                  # Deploy to current branch with custom message
+#   ./deploy.sh <environment>                     # Deploy to specific environment/branch
+#   ./deploy.sh <environment> "Your message"     # Deploy to specific environment with message
 #
 # Examples:
+#   ./deploy.sh                                   # Deploy to current branch (Development)
+#   ./deploy.sh "Fix header styling"              # Deploy to current branch with message
 #   ./deploy.sh staging                           # Deploy to staging branch
 #   ./deploy.sh production "Release v1.2.3"      # Deploy to production with message
-#   ./deploy.sh development                       # Deploy to development branch
-#   ./deploy.sh feature-branch "New feature"     # Deploy to any custom branch
 #
 # What it does:
 #   1. Validates environment parameter
@@ -22,9 +24,9 @@
 #   5. Provides success/error feedback with branch-specific URLs
 #
 # Requirements:
-#   - Environment parameter is required
 #   - NPM and dependencies installed
 #   - Git configured with GitHub access
+#   - Will deploy to current branch if no environment specified
 
 # Colors for better output
 RED='\033[0;31m'
@@ -40,22 +42,18 @@ print_status() {
     echo -e "${color}${message}${NC}"
 }
 
-# Validate that environment parameter is provided
-if [ -z "$1" ]; then
-    print_status $RED "❌ Error: Environment parameter is required!"
-    echo ""
-    echo "Usage: ./deploy.sh <environment> [commit_message]"
-    echo ""
-    echo "Examples:"
-    echo "  ./deploy.sh staging"
-    echo "  ./deploy.sh production 'Release v1.2.3'"
-    echo "  ./deploy.sh development 'Feature update'"
-    exit 1
-fi
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current)
 
-# Get environment and commit message from arguments
-ENVIRONMENT="$1"
-COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
+# Use environment parameter if provided, otherwise use current branch
+if [ -z "$1" ]; then
+    ENVIRONMENT="$CURRENT_BRANCH"
+    COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
+    print_status $BLUE "🎯 No environment specified, using current branch: ${ENVIRONMENT}"
+else
+    ENVIRONMENT="$1"
+    COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
+fi
 
 print_status $BLUE "🚀 Deploying to ${ENVIRONMENT} environment..."
 
@@ -82,7 +80,7 @@ if [ $? -eq 0 ]; then
     
     # Push to specified environment branch
     print_status $YELLOW "📤 Pushing to ${ENVIRONMENT} branch..."
-    git push origin HEAD:${ENVIRONMENT}
+    git push --force origin HEAD:${ENVIRONMENT}
     
     if [ $? -eq 0 ]; then
         print_status $GREEN "🎉 Successfully deployed to ${ENVIRONMENT}!"
