@@ -270,6 +270,14 @@
       // Save immediately to localStorage
       localStorage.setItem('theme-dark', themeToggle.checked.toString());
       
+      // Dispatch custom event for theme change
+      document.dispatchEvent(new CustomEvent('themeChanged', {
+        detail: { 
+          isDark: themeToggle.checked,
+          source: 'settings_toggle'
+        }
+      }));
+      
       // Track setting change
       if (typeof posthog !== 'undefined') {
         posthog.capture('setting_changed', {
@@ -401,6 +409,14 @@
       } else {
         html.classList.remove('dark');
       }
+      
+      // Dispatch custom event for theme change (for all theme changes)
+      document.dispatchEvent(new CustomEvent('themeChanged', {
+        detail: { 
+          isDark: isDark,
+          source: 'theme_system'
+        }
+      }));
       
       // Update the colorful titles if they're disabled to match new theme
       const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';

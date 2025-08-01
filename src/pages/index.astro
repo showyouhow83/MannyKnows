@@ -2,6 +2,7 @@
 // Import the Layout component
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MarqueeSimple from '../components/MarqueeSimple.astro';
+import ThemeAwareButton from '../components/ThemeAwareButton.astro';
 ---
 
 <BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
@@ -29,9 +30,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 							
 							<li><a href="#case-study" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Case Study</a></li>
 
-							<li><a href="#about" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">About</a></li>
-
-							<li><a href="#reviews" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Reviews</a></li>
+							<li><a href="#customer-success-stories" class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">Success</a></li>
 						</ul>
 
 						<!-- Search Bar -->
@@ -53,41 +52,34 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 
 						<!-- Navigation Actions -->
 						<div class="flex items-center gap-2 relative">
-							<a href="#instant-quote" class="bg-gradient-to-r from-primary-blue via-sky-500 to-primary-blue bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
-								<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
-								<span class="text-sm font-semibold relative z-10">FREE 360 PHOTO</span>
-								<span class="text-[10px] text-white/80 leading-none relative z-10">CLAIM NOW</span>
-							</a>
+							<ThemeAwareButton 
+								href="#instant-quote" 
+								text="FREE 360 PHOTO" 
+								subtext="CLAIM NOW"
+								id="instant-quote-btn"
+							/>
 							
-							<button type="button" class="group bg-gradient-to-br from-purple-500 via-violet-500 to-purple-600 bg-200 border border-purple-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(139,92,246,0.4)] animate-podcast-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-podcast-shimmer" id="topPodcastButton">
+							<a href="#apple-quote" class="bg-gradient-to-r from-[#0071e3] via-[#ff4faa] to-[#10d1ff] bg-200 text-white py-3 px-6 rounded-lg no-underline font-semibold border-none text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 animate-subtle-gradient-diffusion hover:scale-105 hover:-translate-y-0.5 hover:text-white hover:animate-pulse-glow overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer">
 								<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
-									<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-									<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-									<line x1="12" y1="19" x2="12" y2="23"/>
-									<line x1="8" y1="23" x2="16" y2="23"/>
-								</svg>
-								<!-- Tailwind Tooltip -->
-								<div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg" role="tooltip">
-									Podcast Coming Soon
-								</div>
-							</button>
+								<span class="text-sm font-semibold relative z-10">APPLE QUOTE</span>
+								<span class="text-[10px] text-white/80 leading-none relative z-10">PREMIUM</span>
+							</a>
 
 							<button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle">
-    <pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
-        <path d="M12 8V4H8"/>
-        <rect width="16" height="12" x="4" y="8" rx="2"/>
-        <path d="M2 14h2"/>
-        <path d="M20 14h2"/>
-        <path d="M15 13v2"/>
-        <path d="M9 13v2"/>
-    </svg>
-    <!-- Tailwind Tooltip -->
-    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg" role="tooltip">
-        Talk to Us
-    </div>
-</button>
+								<pixel-canvas data-colors="#ffffff, #f8fafc, #e2e8f0" data-gap="4" data-speed="60" data-no-focus style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></pixel-canvas>
+								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
+									<path d="M12 8V4H8"/>
+									<rect width="16" height="12" x="4" y="8" rx="2"/>
+									<path d="M2 14h2"/>
+									<path d="M20 14h2"/>
+									<path d="M15 13v2"/>
+									<path d="M9 13v2"/>
+								</svg>
+								<!-- Tooltip -->
+								<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none" role="tooltip">
+									Talk to Us
+								</div>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -755,6 +747,23 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 </BaseLayout>
 
 <script>
+	// ========================================
+	// DEVELOPER SETTINGS - Easy Toggle Controls
+	// ========================================
+	const ANIMATION_CONFIG = {
+		// Search bar apple gradient animation
+		searchGradientEnabled: false,
+		
+		// Background gradient rewind animation
+		backgroundRewindEnabled: true,
+		
+		// Search animation timing
+		searchScrollDelay: 0, // ms delay before removing gradient on scroll
+		
+		// Debug mode - logs animation state changes
+		debugMode: false
+	};
+
 	// Optimized marquee implementation
 	function initMarquee() {
 		const marqueeContent = document.querySelector('.marquee-content');
@@ -765,6 +774,46 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		const duration = Math.max(contentWidth / 50, 20); // Min 20s, max based on content
 		
 		document.documentElement.style.setProperty('--marquee-duration', `${duration}s`);
+	}
+
+	// Search input apple gradient animation
+	function initSearchAnimation() {
+		if (!ANIMATION_CONFIG.searchGradientEnabled) {
+			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient animation disabled');
+			return;
+		}
+
+		const searchInput = document.getElementById('search-input');
+		if (!searchInput) return;
+
+		if (ANIMATION_CONFIG.debugMode) console.log('Search gradient animation enabled');
+
+		// Add gradient on focus
+		const addGradient = () => {
+			searchInput.classList.add('apple-gradient-active');
+			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient activated');
+		};
+
+		// Remove gradient
+		const removeGradient = () => {
+			searchInput.classList.remove('apple-gradient-active');
+			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient deactivated');
+		};
+
+		// Event listeners
+		searchInput.addEventListener('focus', addGradient);
+		searchInput.addEventListener('blur', removeGradient);
+		
+		// Remove gradient on scroll (user is moving away)
+		let scrollTimeout;
+		const handleScroll = () => {
+			if (searchInput.classList.contains('apple-gradient-active')) {
+				clearTimeout(scrollTimeout);
+				scrollTimeout = setTimeout(removeGradient, ANIMATION_CONFIG.searchScrollDelay);
+			}
+		};
+		
+		window.addEventListener('scroll', handleScroll, { passive: true });
 	}
 
 	// Navigation visibility tracking
@@ -894,26 +943,6 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 				sendMessage();
 			}
 		});
-	}
-
-	// Podcast functionality
-	function initPodcast() {
-		const topPodcastButton = document.getElementById('topPodcastButton');
-		const dockPodcastButton = document.getElementById('dockPodcastButton');
-
-		const showPodcastMessage = () => {
-			// Track podcast interest
-			if (typeof posthog !== 'undefined') {
-				posthog.capture('podcast_interest', { 
-					location: 'coming_soon_click',
-					status: 'in_development'
-				});
-			}
-			alert('🎧 Podcast Coming Soon!\n\nOur podcast is currently in development. Stay tuned for updates!');
-		};
-
-		topPodcastButton?.addEventListener('click', showPodcastMessage);
-		dockPodcastButton?.addEventListener('click', showPodcastMessage);
 	}
 
 	// Dock tooltips
@@ -1242,12 +1271,68 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		}
 	}
 
+	// Apply animation settings
+	function applyAnimationSettings() {
+		const body = document.body;
+		
+		// Apply search gradient setting
+		if (!ANIMATION_CONFIG.searchGradientEnabled) {
+			body.classList.add('search-gradient-disabled');
+			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient disabled via CSS class');
+		} else {
+			body.classList.remove('search-gradient-disabled');
+		}
+		
+		// Apply background rewind setting via CSS injection
+		if (!ANIMATION_CONFIG.backgroundRewindEnabled) {
+			// Inject original looping animation
+			const style = document.createElement('style');
+			style.textContent = `
+				@keyframes gradient-flow {
+					0% { background-position: 0% 50%; }
+					50% { background-position: 100% 50%; }
+					100% { background-position: 0% 50%; }
+				}
+			`;
+			document.head.appendChild(style);
+			if (ANIMATION_CONFIG.debugMode) console.log('Background rewind disabled - using original loop');
+		} else {
+			if (ANIMATION_CONFIG.debugMode) console.log('Background rewind enabled');
+		}
+	}
+
+	// Developer utility - accessible from browser console
+	window.MannyKnowsAnimations = {
+		config: ANIMATION_CONFIG,
+		toggleSearchGradient: () => {
+			ANIMATION_CONFIG.searchGradientEnabled = !ANIMATION_CONFIG.searchGradientEnabled;
+			applyAnimationSettings();
+			console.log(`Search gradient: ${ANIMATION_CONFIG.searchGradientEnabled ? 'enabled' : 'disabled'}`);
+		},
+		toggleBackgroundRewind: () => {
+			ANIMATION_CONFIG.backgroundRewindEnabled = !ANIMATION_CONFIG.backgroundRewindEnabled;
+			console.log(`Background rewind: ${ANIMATION_CONFIG.backgroundRewindEnabled ? 'enabled' : 'disabled'}`);
+			console.log('Refresh page to see changes');
+		},
+		toggleDebugMode: () => {
+			ANIMATION_CONFIG.debugMode = !ANIMATION_CONFIG.debugMode;
+			console.log(`Debug mode: ${ANIMATION_CONFIG.debugMode ? 'enabled' : 'disabled'}`);
+		},
+		status: () => {
+			console.table(ANIMATION_CONFIG);
+		}
+	};
+
 	// Use passive event listeners for better performance
 	document.addEventListener('DOMContentLoaded', () => {
+		// Apply animation settings first
+		applyAnimationSettings();
+		
+		// Initialize all components
 		initMarquee();
+		initSearchAnimation();
 		initNavigationTracking();
 		initChatBox();
-		initPodcast();
 		initDockTooltips();
 		initServicesTracking();
 		initReviewsSection();
@@ -1325,6 +1410,60 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 	/* Pause marquee on hover */
 	.marquee-container:hover .animate-marquee {
 		animation-play-state: paused;
+	}
+
+	/* Search bar apple gradient animation */
+	#search-input.apple-gradient-active {
+		background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+		background-size: 200% 200%;
+		animation: search-gradient-flow 3s ease-in-out infinite;
+		border: 2px solid transparent;
+		background-clip: padding-box;
+		position: relative;
+	}
+
+	#search-input.apple-gradient-active::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		padding: 2px;
+		background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+		background-size: 200% 200%;
+		border-radius: inherit;
+		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		mask-composite: exclude;
+		animation: search-gradient-flow 3s ease-in-out infinite;
+		z-index: -1;
+	}
+
+	/* Conditional keyframes - will be overridden by JavaScript if needed */
+	@keyframes search-gradient-flow {
+		0% {
+			background-position: 0% 50%;
+		}
+		25% {
+			background-position: 100% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		75% {
+			background-position: 0% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	/* Disable search gradient animation when setting is off */
+	.search-gradient-disabled #search-input.apple-gradient-active {
+		animation: none !important;
+		background: #0071e3 !important;
+	}
+
+	.search-gradient-disabled #search-input.apple-gradient-active::before {
+		animation: none !important;
+		background: #0071e3 !important;
 	}
 
 	/* Custom text selection - theme aware */
@@ -1711,17 +1850,15 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		opacity: 0.4 !important;
 	}
 	
-	/* Make buttons more prominent */
-	:root:not(.dark) a[href="#instant-quote"] pixel-canvas,
+	/* Make buttons more prominent - excluding instant-quote which is handled by JS */
 	:root:not(.dark) #topPodcastButton pixel-canvas,
 	:root:not(.dark) #topChatToggle pixel-canvas {
-		opacity: 0.25 !important;
+		opacity: 0.35 !important;
 	}
 	
-	:root.dark a[href="#instant-quote"] pixel-canvas,
 	:root.dark #topPodcastButton pixel-canvas,
 	:root.dark #topChatToggle pixel-canvas {
-		opacity: 0.5 !important;
+		opacity: 0.3 !important;
 	}
 
 	/* Hide dock chat pixels until hover */
@@ -1743,8 +1880,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		:root:not(.dark) pixel-canvas {
 			opacity: 0.15 !important;
 		}
-		:root:not(.dark) a[href="#instant-quote"] pixel-canvas,
-		:root:not(.dark) #topPodcastButton pixel-canvas {
+		:root:not(.dark) a[href="#instant-quote"] pixel-canvas {
 			opacity: 0.25 !important;
 		}
 	}
@@ -1753,8 +1889,7 @@ import MarqueeSimple from '../components/MarqueeSimple.astro';
 		:root.dark pixel-canvas {
 			opacity: 0.4 !important;
 		}
-		:root.dark a[href="#instant-quote"] pixel-canvas,
-		:root.dark #topPodcastButton pixel-canvas {
+		:root.dark a[href="#instant-quote"] pixel-canvas {
 			opacity: 0.5 !important;
 		}
 	}
