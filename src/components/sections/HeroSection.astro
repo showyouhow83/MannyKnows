@@ -1,0 +1,49 @@
+---
+export interface Props {
+  title: string;
+  highlightedText: string;
+  subtitle: string;
+  className?: string;
+}
+
+const { title, highlightedText, subtitle, className = "" } = Astro.props;
+---
+
+<section id="hero" class={`py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container ${className}`}>
+  <div class="max-w-[1440px] mx-auto px-8">
+    <div class="max-w-16xl mx-auto">
+      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
+        {title} <span class="apple-gradient-text" data-colorful-title>{highlightedText}</span> exponentially with AI
+      </h1>
+      <p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
+        {subtitle}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Hero responsive styles */
+  @media (max-width: 768px) {
+    .hero {
+      @apply py-10 pb-16 min-h-[calc(100vh-120px)];
+    }
+    
+    .hero h1 {
+      @apply text-4xl;
+    }
+    
+    .hero p {
+      @apply text-lg;
+    }
+    
+    .hero .flex {
+      @apply flex-col items-center;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+      @apply w-full max-w-xs;
+    }
+  }
+</style>

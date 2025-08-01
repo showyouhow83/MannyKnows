@@ -1,0 +1,411 @@
+---
+export interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Process steps data
+const processSteps = [
+  {
+    number: 1,
+    title: "Discovery & Strategy",
+    description: "We dive deep into your business goals, target audience, and competitive landscape to craft a tailored e-commerce strategy that drives results.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+      <line x1="9" y1="9" x2="9.01" y2="9"/>
+      <line x1="15" y1="9" x2="15.01" y2="9"/>
+    </svg>`
+  },
+  {
+    number: 2,
+    title: "Design & Planning",
+    description: "Our design team creates stunning, user-friendly interfaces while our technical team plans the optimal architecture for performance and scalability.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+      <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+      <path d="M2 2l7.586 7.586"/>
+      <circle cx="11" cy="11" r="2"/>
+    </svg>`
+  },
+  {
+    number: 3,
+    title: "Development",
+    description: "Using cutting-edge technologies and best practices, we build robust, secure, and scalable e-commerce solutions that exceed expectations.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="16,18 22,12 16,6"/>
+      <polyline points="8,6 2,12 8,18"/>
+    </svg>`
+  },
+  {
+    number: 4,
+    title: "AI Integration",
+    description: "We seamlessly integrate advanced AI capabilities for personalized recommendations, automated customer service, and intelligent inventory management.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+      <path d="M2 17L12 22L22 17"/>
+      <path d="M2 12L12 17L22 12"/>
+    </svg>`
+  },
+  {
+    number: 5,
+    title: "Testing & Optimization",
+    description: "Rigorous testing across devices and browsers ensures flawless performance. We optimize for speed, conversions, and user experience.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9,11 12,14 22,4"/>
+      <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C13.3968 3 14.7178 3.35587 15.8871 4"/>
+    </svg>`
+  },
+  {
+    number: 6,
+    title: "Launch & Deployment",
+    description: "We handle the complete launch process, from domain setup to payment gateway integration, ensuring a smooth go-live experience.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z"/>
+      <polyline points="9,9 12,12 15,9"/>
+    </svg>`
+  },
+  {
+    number: 7,
+    title: "Support & Growth",
+    description: "Our relationship doesn't end at launch. We provide ongoing support, maintenance, and growth strategies to scale your business.",
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+    </svg>`
+  }
+];
+---
+
+<div class={`relative ${className}`}>
+  <!-- Slideshow Container -->
+  <div class="relative overflow-hidden rounded-2xl">
+    <div id="processSteps" class="flex transition-transform duration-700 ease-in-out">
+      {processSteps.map((step, index) => (
+        <div class="w-full flex-shrink-0 process-step bg-gradient-to-br from-white/90 via-gray-50/95 to-white/90 dark:from-gray-800/90 dark:via-slate-700/95 dark:to-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-12 mx-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Content Column -->
+            <div class="order-2 lg:order-1">
+              <div class="flex items-center gap-4 mb-6">
+                <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-sky-500 rounded-2xl text-white transform transition-transform duration-300 group-hover:rotate-3">
+                  <Fragment set:html={step.icon} />
+                </div>
+                <div class="text-6xl font-black text-primary-blue/20 dark:text-primary-blue/30">
+                  {step.number.toString().padStart(2, '0')}
+                </div>
+              </div>
+              
+              <h3 class="text-3xl lg:text-4xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">
+                {step.title}
+              </h3>
+              
+              <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+            
+            <!-- Visual Column -->
+            <div class="order-1 lg:order-2 relative">
+              <div class="relative w-full h-80 bg-gradient-to-br from-primary-blue/10 via-sky-500/5 to-primary-blue/10 rounded-2xl flex items-center justify-center overflow-hidden">
+                <!-- Background Animation Elements -->
+                <div class="absolute top-1/4 left-1/4 w-32 h-32 bg-primary-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-24 h-24 bg-sky-500/10 rounded-full blur-3xl animate-pulse-slow-delay"></div>
+                <div class="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-primary-blue/5 to-sky-500/5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 animate-spin-slow"></div>
+                
+                <!-- Central Icon Display -->
+                <div class="relative z-10 w-24 h-24 bg-gradient-to-r from-primary-blue to-sky-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_50px_rgba(16,209,255,0.3)] transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                  <div class="scale-150">
+                    <Fragment set:html={step.icon} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Navigation Controls -->
+  <div class="flex items-center justify-between mt-12">
+    <!-- Previous Button -->
+    <button 
+      id="prevStep" 
+      type="button"
+      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-95"
+      aria-label="Previous step"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    </button>
+    
+    <!-- Step Indicators -->
+    <div class="flex items-center gap-3">
+      {processSteps.map((_, index) => (
+        <button 
+          type="button"
+          class="step-indicator w-4 h-4 rounded-full bg-white/20 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 transition-all duration-300 hover:scale-130 cursor-pointer"
+          data-step={index}
+          aria-label={`Go to step ${index + 1}`}
+        >
+        </button>
+      ))}
+    </div>
+    
+    <!-- Next Button -->
+    <button 
+      id="nextStep" 
+      type="button"
+      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-95"
+      aria-label="Next step"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9,6 15,12 9,18"></polyline>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  // Process Section Slideshow
+  function initProcessSlideshow() {
+    const container = document.getElementById('processSteps') as HTMLElement;
+    const prevBtn = document.getElementById('prevStep') as HTMLButtonElement;
+    const nextBtn = document.getElementById('nextStep') as HTMLButtonElement;
+    const indicators = document.querySelectorAll('.step-indicator') as NodeListOf<HTMLButtonElement>;
+    
+    if (!container || !prevBtn || !nextBtn) return;
+    
+    let currentStep = 0;
+    const totalSteps = 7;
+    
+    function updateSlideshow() {
+      // Move container
+      const translateX = -currentStep * 100;
+      container.style.transform = `translateX(${translateX}%)`;
+      
+      // Update indicators
+      indicators.forEach((indicator, index) => {
+        if (index === currentStep) {
+          indicator.classList.add('active');
+          indicator.classList.remove('bg-white/20', 'dark:bg-white/10');
+          indicator.classList.add('bg-primary-blue');
+        } else {
+          indicator.classList.remove('active');
+          indicator.classList.remove('bg-primary-blue');
+          indicator.classList.add('bg-white/20', 'dark:bg-white/10');
+        }
+      });
+      
+      // Update button states
+      prevBtn.disabled = currentStep === 0;
+      nextBtn.disabled = currentStep === totalSteps - 1;
+      
+      // Track step view
+      if (typeof posthog !== 'undefined') {
+        posthog.capture('process_step_viewed', {
+          step_number: currentStep + 1,
+          step_name: getStepName(currentStep)
+        });
+      }
+    }
+    
+    function getStepName(stepIndex: number): string {
+      const stepNames = [
+        'Discovery & Strategy',
+        'Design & Planning', 
+        'Development',
+        'AI Integration',
+        'Testing & Optimization',
+        'Launch & Deployment',
+        'Support & Growth'
+      ];
+      return stepNames[stepIndex] || `Step ${stepIndex + 1}`;
+    }
+    
+    function nextSlide() {
+      if (currentStep < totalSteps - 1) {
+        currentStep++;
+        updateSlideshow();
+      }
+    }
+    
+    function prevSlide() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateSlideshow();
+      }
+    }
+    
+    function goToStep(stepIndex: number) {
+      if (stepIndex >= 0 && stepIndex < totalSteps) {
+        currentStep = stepIndex;
+        updateSlideshow();
+      }
+    }
+    
+    // Event listeners
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Indicator click handlers
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => goToStep(index));
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      const processSection = document.getElementById('process');
+      if (!processSection) return;
+      
+      // Check if process section is in viewport
+      const rect = processSection.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+      
+      if (isVisible) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextSlide();
+        }
+      }
+    });
+    
+    // Initialize
+    updateSlideshow();
+    
+    // Intersection Observer for parallax effects
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add parallax animations
+          const backgroundElements = entry.target.querySelectorAll('.absolute.blur-3xl') as NodeListOf<HTMLElement>;
+          backgroundElements.forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.5}s`;
+            el.classList.add('animate-pulse-slow');
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    const processSection = document.getElementById('process');
+    if (processSection) {
+      observer.observe(processSection);
+    }
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initProcessSlideshow);
+</script>
+
+<style>
+  /* Process Section Animations */
+  @keyframes pulse-slow {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes pulse-slow-delay {
+    0%, 100% { 
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.5;
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes spin-slow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow-delay {
+    animation: pulse-slow-delay 6s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 30s linear infinite;
+  }
+
+  /* Process Step Animations */
+  .process-step {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Step Indicator Animations */
+  .step-indicator {
+    transition: all 0.3s ease;
+    transform: scale(1);
+  }
+
+  .step-indicator:hover {
+    transform: scale(1.3);
+  }
+
+  .step-indicator.active {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px rgba(16, 209, 255, 0.6);
+  }
+
+  /* Process Navigation Buttons */
+  #prevStep, #nextStep {
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(16, 209, 255, 0.3);
+  }
+
+  #prevStep:disabled, #nextStep:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: scale(0.95);
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .process-step {
+      padding: 2rem 1.5rem;
+    }
+    
+    .process-step .grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .process-step h3 {
+      font-size: 1.875rem;
+    }
+    
+    #prevStep, #nextStep {
+      width: 3rem;
+      height: 3rem;
+    }
+    
+    .step-indicator {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  }
+</style>

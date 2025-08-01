@@ -1,0 +1,195 @@
+---
+import ReviewCard from '../ui/ReviewCard.astro';
+import Section from '../layout/Section.astro';
+import Container from '../layout/Container.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import StatsCard from '../ui/StatsCard.astro';
+
+// Reviews data
+const reviews = [
+  {
+    customerName: "Sarah Chen",
+    testimonial: "MannyKnows transformed our online store completely. Our conversion rates increased by 340% within 3 months, and the AI automation saves us 20+ hours weekly.",
+    tags: [
+      { label: "AI E-commerce", color: "blue" as const },
+      { label: "Automation", color: "purple" as const },
+      { label: "Analytics", color: "pink" as const }
+    ]
+  },
+  {
+    customerName: "Marcus Rodriguez",
+    testimonial: "The product photography service is incredible. Our product pages look professional and sales have doubled. The team understands e-commerce visual needs perfectly.",
+    tags: [
+      { label: "Photography", color: "green" as const },
+      { label: "Product Visuals", color: "blue" as const },
+      { label: "Brand Design", color: "purple" as const }
+    ]
+  },
+  {
+    customerName: "Emily Watson",
+    testimonial: "Custom AI integration revolutionized our customer support. Response time dropped 90% while satisfaction scores hit all-time highs. Exceptional technical expertise.",
+    tags: [
+      { label: "AI Integration", color: "purple" as const },
+      { label: "Customer Support", color: "blue" as const },
+      { label: "Automation", color: "green" as const }
+    ]
+  },
+  {
+    customerName: "David Kim",
+    testimonial: "Our new website is blazing fast and converts like crazy. Mobile sales jumped 280% and our SEO rankings skyrocketed. Best investment we've made!",
+    tags: [
+      { label: "Web Development", color: "blue" as const },
+      { label: "SEO", color: "green" as const },
+      { label: "Mobile Optimization", color: "purple" as const }
+    ]
+  },
+  {
+    customerName: "Lisa Thompson",
+    testimonial: "The social media automation is phenomenal. Our engagement tripled and we're generating 5x more qualified leads. The analytics insights are game-changing.",
+    tags: [
+      { label: "Social Media", color: "pink" as const },
+      { label: "Automation", color: "purple" as const },
+      { label: "Lead Generation", color: "blue" as const }
+    ]
+  },
+  {
+    customerName: "Robert Chen",
+    testimonial: "Analytics & reporting gave us crystal clear insights into customer behavior. We optimized our funnel and saw a 420% increase in lifetime value!",
+    tags: [
+      { label: "Analytics", color: "blue" as const },
+      { label: "Reporting", color: "purple" as const },
+      { label: "Optimization", color: "green" as const }
+    ]
+  },
+  {
+    customerName: "Amanda Foster",
+    testimonial: "The content creation service transformed our brand voice. Blog traffic increased 6x and we're now ranking #1 for our main keywords. Outstanding quality and strategy.",
+    tags: [
+      { label: "Content Creation", color: "blue" as const },
+      { label: "SEO Content", color: "green" as const },
+      { label: "Brand Strategy", color: "purple" as const }
+    ]
+  }
+];
+
+// Stats data
+const stats = [
+  { value: "4+", label: "Happy Clients" },
+  { value: "135%", label: "Avg. Sales Increase" },
+  { value: "100%", label: "Client Satisfaction" },
+  { value: "24/7", label: "Human Support" }
+];
+---
+
+<Section id="reviews" variant="default" hasOverflow={true}>
+  <Container className="relative z-10">
+    <SectionHeader 
+      title="Customer Success Stories"
+      subtitle="Discover how businesses like yours achieved remarkable growth with our AI-powered e-commerce solutions."
+    />
+
+    <!-- Reviews Carousel Container -->
+    <div class="relative mb-12">
+      <!-- Carousel Navigation -->
+      <div class="flex justify-center gap-4 mb-4">
+        <button id="prevReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <button id="nextReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Reviews Container -->
+      <div class="overflow-x-hidden px-8 py-12">
+        <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
+          {reviews.map((review) => (
+            <ReviewCard {...review} />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+      {stats.map((stat) => (
+        <StatsCard {...stat} />
+      ))}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+      <a href="#contact" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient">
+        <span>Join Our Success Stories</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  /* Reviews section animations */
+  .group {
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .group:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(16, 209, 255, 0.15);
+  }
+
+  .group:nth-child(2):hover {
+    box-shadow: 0 20px 60px rgba(255, 79, 170, 0.15);
+  }
+
+  .group:nth-child(3):hover {
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
+  }
+
+  /* Carousel specific styles */
+  #reviewsContainer {
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .review-card {
+    flex-shrink: 0;
+  }
+
+  /* Navigation buttons */
+  #prevReview, #nextReview {
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  #prevReview:hover, #nextReview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(16, 209, 255, 0.2);
+  }
+
+  /* Dots indicator */
+  .carousel-dot {
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .carousel-dot:hover {
+    transform: scale(1.2);
+  }
+
+  /* Star rating animations */
+  svg {
+    transition: all 0.2s ease;
+  }
+
+  .group:hover svg {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+  }
+</style>

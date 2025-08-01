@@ -1,0 +1,12 @@
+---
+export interface Props {
+  maxWidth?: string;
+  className?: string;
+}
+
+const { maxWidth = "1440px", className = "" } = Astro.props;
+---
+
+<div class={`max-w-[${maxWidth}] mx-auto px-8 ${className}`}>
+  <slot />
+</div>

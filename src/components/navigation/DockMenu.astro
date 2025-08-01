@@ -1,0 +1,104 @@
+---
+import DockButton from '../ui/DockButton.astro';
+---
+
+<!-- Floating Dock Menu -->
+<div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
+  <div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+    <div class="flex items-center gap-2">
+      <!-- MK Logo -->
+      <DockButton 
+        tooltip="Home" 
+        icon=""
+        onClick="window.location.href='/'"
+        variant="brand"
+      />
+
+      <!-- Services -->
+      <DockButton 
+        tooltip="Services" 
+        icon={`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>`}
+        onClick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})"
+      />
+
+      <!-- Process -->
+      <DockButton 
+        tooltip="Process" 
+        icon={`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,11 12,14 22,4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>`}
+        onClick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})"
+      />
+
+      <!-- Case Study -->
+      <DockButton 
+        tooltip="Case Study" 
+        icon={`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>`}
+        onClick="document.getElementById('case-study').scrollIntoView({behavior: 'smooth'})"
+      />
+
+      <!-- Reviews -->
+      <DockButton 
+        tooltip="Reviews" 
+        icon={`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>`}
+        onClick="document.getElementById('reviews').scrollIntoView({behavior: 'smooth'})"
+      />
+
+      <!-- Chat -->
+      <DockButton 
+        tooltip="Chat" 
+        icon={`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10">
+          <path d="M12 8V4H8"/>
+          <rect width="16" height="12" x="4" y="8" rx="2"/>
+          <path d="M2 14h2"/>
+          <path d="M20 14h2"/>
+          <path d="M15 13v2"/>
+          <path d="M9 13v2"/>
+        </svg>`}
+        variant="chat"
+        id="dockChatToggle"
+      />
+
+      <!-- Divider -->
+      <div class="w-px h-8 bg-gradient-to-b from-transparent via-gray-400/30 dark:via-white/20 to-transparent"></div>
+
+      <!-- Settings -->
+      <DockButton 
+        tooltip="Settings" 
+        icon={`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-all duration-300 group-hover:rotate-90">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+        </svg>`}
+        variant="settings"
+        id="settingsButton"
+      />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Dock hover effects */
+  .dock-item:hover {
+    transform: translateY(-4px) scale(1.1);
+  }
+
+  /* Responsive dock positioning */
+  @media (max-width: 768px) {
+    #floatingDock {
+      @apply bottom-4;
+    }
+  }
+</style>

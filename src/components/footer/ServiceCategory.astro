@@ -1,0 +1,125 @@
+---
+// Service Category Component - Reusable service category with services list
+interface Service {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  icon: string;
+  iconGradient: string;
+  textColor: string;
+  hoverShadow: string;
+  borderColor: string;
+  services: Service[];
+  backgroundGradient: string;
+  hasSecondarySection?: boolean;
+  secondaryTitle?: string;
+  secondaryIcon?: string;
+  secondaryIconGradient?: string;
+  secondaryTextColor?: string;
+  secondaryServices?: Service[];
+  hasThirdSection?: boolean;
+  thirdTitle?: string;
+  thirdIcon?: string;
+  thirdIconGradient?: string;
+  thirdTextColor?: string;
+  thirdServices?: Service[];
+  roundedClass?: string;
+}
+
+const { 
+  title,
+  icon,
+  iconGradient,
+  textColor,
+  hoverShadow,
+  borderColor,
+  services,
+  backgroundGradient,
+  hasSecondarySection = false,
+  secondaryTitle,
+  secondaryIcon,
+  secondaryIconGradient,
+  secondaryTextColor,
+  secondaryServices = [],
+  hasThirdSection = false,
+  thirdTitle,
+  thirdIcon,
+  thirdIconGradient,
+  thirdTextColor,
+  thirdServices = [],
+  roundedClass = ""
+} = Astro.props;
+---
+
+<div class={`service-box-padding bg-gradient-to-br ${backgroundGradient} backdrop-blur-sm flex-1 min-w-[280px] max-w-[320px] ${roundedClass} border-t border-l border-r ${borderColor} ${hoverShadow} transition-all duration-300`}>
+  <!-- Primary Section -->
+  <div class="flex items-center gap-3 mb-3">
+    <div class={`w-8 h-8 bg-gradient-to-r ${iconGradient} rounded-lg flex items-center justify-center`}>
+      <Fragment set:html={icon} />
+    </div>
+    <h4 class={`text-lg font-semibold ${textColor}`}>{title}</h4>
+  </div>
+  <ul class={`space-y-2 ${hasSecondarySection ? 'mb-6' : ''}`}>
+    {services.map((service) => (
+      <li>
+        <a href={service.href} class={`${textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+          <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
+          {service.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  {hasSecondarySection && (
+    <>
+      <!-- Divider -->
+      <div class="h-px bg-white/10 mb-4"></div>
+      
+      <!-- Secondary Section -->
+      <div class="flex items-center gap-3 mb-3">
+        <div class={`w-8 h-8 bg-gradient-to-r ${secondaryIconGradient} rounded-lg flex items-center justify-center`}>
+          <Fragment set:html={secondaryIcon} />
+        </div>
+        <h4 class={`text-lg font-semibold ${secondaryTextColor}`}>{secondaryTitle}</h4>
+      </div>
+      <ul class={`space-y-2 ${hasThirdSection ? 'mb-6' : ''}`}>
+        {secondaryServices.map((service) => (
+          <li>
+            <a href={service.href} class={`${secondaryTextColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+              <span class={`w-1.5 h-1.5 ${secondaryTextColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
+              {service.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {hasThirdSection && (
+    <>
+      <!-- Divider -->
+      <div class="h-px bg-white/10 mb-4"></div>
+      
+      <!-- Third Section -->
+      <div class="flex items-center gap-3 mb-3">
+        <div class={`w-8 h-8 bg-gradient-to-r ${thirdIconGradient} rounded-lg flex items-center justify-center`}>
+          <Fragment set:html={thirdIcon} />
+        </div>
+        <h4 class={`text-lg font-semibold ${thirdTextColor}`}>{thirdTitle}</h4>
+      </div>
+      <ul class="space-y-2">
+        {thirdServices.map((service) => (
+          <li>
+            <a href={service.href} class={`${thirdTextColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+              <span class={`w-1.5 h-1.5 ${thirdTextColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
+              {service.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+</div>
