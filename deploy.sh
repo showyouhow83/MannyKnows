@@ -1,38 +1,48 @@
 #!/bin/bash
 
-# MannyKnows Environment-Agnostic Deployment Script
+# MannyKnows Feature Branch Deployment Script
 # 
-# This script automates deployment from local codespace to any GitHub branch/environment
+# This script automates feature branch workflow and deployment to any GitHub branch/environment
 # 
 # Usage:
-#   ./deploy.sh                                   # Deploy to current branch with default message
-#   ./deploy.sh [commit_message]                  # Deploy to current branch with custom message
-#   ./deploy.sh <environment>                     # Deploy to specific environment/branch
-#   ./deploy.sh <environment> "Your message"     # Deploy to specific environment with message
+#   ./deploy.sh feature/feature-name           # Create new feature branch and switch to it
+#   ./deploy.sh feature/feature-name "msg"     # Commit and push changes to feature branch
+#   ./deploy.sh development "msg"              # Deploy to development branch
+#   ./deploy.sh production "msg"               # Deploy to production branch
+#   ./deploy.sh                                # Deploy to current branch with default message
+#   ./deploy.sh "commit message"               # Deploy to current branch with custom message
 #
 # Examples:
-#   ./deploy.sh                                   # Deploy to current branch (Development)
-#   ./deploy.sh "Fix header styling"              # Deploy to current branch with message
-#   ./deploy.sh staging                           # Deploy to staging branch
-#   ./deploy.sh production "Release v1.2.3"      # Deploy to production with message
+#   ./deploy.sh feature/navbar-improvements    # Creates & switches to feature branch
+#   ./deploy.sh feature/navbar-improvements "Add search bar"  # Commits work to feature
+#   ./deploy.sh development "Merge navbar feature"  # Deploy to development
+#   ./deploy.sh production "Release v1.2.0"   # Deploy to production
+#
+# Feature Branch Workflow:
+#   1. Create feature: ./deploy.sh feature/my-feature
+#   2. Work & commit: ./deploy.sh feature/my-feature "Add functionality"
+#   3. Create PR on GitHub from feature/my-feature → development
+#   4. After approval, merge via GitHub
+#   5. Deploy to production: ./deploy.sh production "Release notes"
 #
 # What it does:
-#   1. Validates environment parameter
-#   2. Builds the Astro project (npm run build)
-#   3. Commits all changes with provided/default message
-#   4. Pushes to specified environment branch on GitHub
-#   5. Provides success/error feedback with branch-specific URLs
+#   - Intelligently creates or switches to branches
+#   - Builds the Astro project (npm run build)
+#   - Commits all changes with provided/default message
+#   - Pushes to specified environment branch on GitHub
+#   - Provides next steps guidance for feature branches
 #
 # Requirements:
 #   - NPM and dependencies installed
 #   - Git configured with GitHub access
-#   - Will deploy to current branch if no environment specified
+#   - Development branch as base for new features
 
 # Colors for better output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Function to print colored output
@@ -45,31 +55,69 @@ print_status() {
 # Get current branch name
 CURRENT_BRANCH=$(git branch --show-current)
 
-# Check if first parameter looks like a git branch name or a commit message
-# Branch names typically don't have spaces and don't start with uppercase letters followed by spaces
+# Intelligent parameter parsing for feature branch workflow
 if [ -z "$1" ]; then
     # No parameters - use current branch with default message
     ENVIRONMENT="$CURRENT_BRANCH"
     COMMIT_MSG="Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"
     print_status $BLUE "🎯 No parameters provided, using current branch: ${ENVIRONMENT}"
-elif [[ "$1" =~ [[:space:]] ]] || [[ "$1" =~ ^[A-Z] ]]; then
-    # First parameter contains spaces or starts with uppercase - likely a commit message
-    ENVIRONMENT="$CURRENT_BRANCH"
-    COMMIT_MSG="$1"
-    print_status $BLUE "🎯 Using current branch: ${ENVIRONMENT} with custom message"
-elif git show-ref --verify --quiet refs/remotes/origin/"$1" || [[ "$1" =~ ^[a-z-]+$ ]]; then
-    # First parameter looks like a branch name
-    ENVIRONMENT="$1"
-    COMMIT_MSG="${2:-"Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"}"
-    print_status $BLUE "🎯 Deploying to specified environment: ${ENVIRONMENT}"
+elif [ $# -eq 1 ]; then
+    # One parameter - determine if it's a branch name or commit message
+    if [[ "$1" =~ ^feature/ ]] || [[ "$1" == "development" ]] || [[ "$1" == "production" ]] || [[ "$1" =~ ^hotfix/ ]]; then
+        # Parameter is a branch name
+        ENVIRONMENT="$1"
+        if [ "$CURRENT_BRANCH" != "$ENVIRONMENT" ]; then
+            # Need to create/switch to this branch
+            BRANCH_CREATION_MODE=true
+            COMMIT_MSG="Initialize ${ENVIRONMENT} branch"
+        else
+            # Already on this branch, just deploy with default message
+            COMMIT_MSG="Update ${ENVIRONMENT}: $(date '+%Y-%m-%d %H:%M:%S')"
+        fi
+        print_status $BLUE "🎯 Branch specified: ${ENVIRONMENT}"
+    else
+        # Parameter is a commit message for current branch
+        ENVIRONMENT="$CURRENT_BRANCH"
+        COMMIT_MSG="$1"
+        print_status $BLUE "🎯 Using current branch: ${ENVIRONMENT} with custom message"
+    fi
 else
-    # Assume first parameter is a commit message for current branch
-    ENVIRONMENT="$CURRENT_BRANCH"
-    COMMIT_MSG="$1"
-    print_status $BLUE "🎯 Using current branch: ${ENVIRONMENT} with custom message"
+    # Two parameters - branch name and commit message
+    ENVIRONMENT="$1"
+    COMMIT_MSG="$2"
+    if [ "$CURRENT_BRANCH" != "$ENVIRONMENT" ]; then
+        BRANCH_CREATION_MODE=true
+    fi
+    print_status $BLUE "🎯 Branch and message specified: ${ENVIRONMENT}"
 fi
 
 print_status $BLUE "🚀 Deploying to ${ENVIRONMENT} environment..."
+
+# Handle feature branch creation/switching
+if [ "$BRANCH_CREATION_MODE" = true ]; then
+    print_status $YELLOW "🌿 Branch creation mode detected..."
+    
+    # Check if branch exists locally
+    if git show-ref --verify --quiet refs/heads/$ENVIRONMENT; then
+        print_status $GREEN "✅ Switching to existing local branch: ${ENVIRONMENT}"
+        git checkout $ENVIRONMENT
+    # Check if branch exists on remote
+    elif git show-ref --verify --quiet refs/remotes/origin/$ENVIRONMENT; then
+        print_status $GREEN "✅ Checking out existing remote branch: ${ENVIRONMENT}"
+        git checkout -b $ENVIRONMENT origin/$ENVIRONMENT
+    else
+        print_status $GREEN "✅ Creating new feature branch: ${ENVIRONMENT}"
+        # Create from development branch for features, current for others
+        if [[ "$ENVIRONMENT" =~ ^feature/ ]]; then
+            git checkout development 2>/dev/null || git checkout main
+            git pull origin development 2>/dev/null || git pull origin main
+        fi
+        git checkout -b $ENVIRONMENT
+        print_status $GREEN "📝 New branch created from development/main"
+    fi
+    
+    CURRENT_BRANCH=$ENVIRONMENT
+fi
 
 # Build the project
 print_status $YELLOW "📦 Building project..."
@@ -102,6 +150,20 @@ if [ $? -eq 0 ]; then
         
         if [ "$SKIP_COMMIT" = false ]; then
             print_status $GREEN "📋 Commit message: ${COMMIT_MSG}"
+        fi
+        
+        # Feature branch specific guidance
+        if [[ "$ENVIRONMENT" =~ ^feature/ ]]; then
+            print_status $PURPLE "🔄 Feature Branch Next Steps:"
+            print_status $YELLOW "   • Continue work: ./deploy.sh ${ENVIRONMENT} \"Your commit message\""
+            print_status $YELLOW "   • Create PR: https://github.com/showyouhow83/MannyKnows/compare/development...${ENVIRONMENT}"
+            print_status $YELLOW "   • After merge: git checkout development && git pull origin development"
+        elif [ "$ENVIRONMENT" = "development" ]; then
+            print_status $PURPLE "🚀 Development Deployment Complete"
+            print_status $YELLOW "   • Ready for production: ./deploy.sh production \"Release notes\""
+        elif [ "$ENVIRONMENT" = "production" ]; then
+            print_status $PURPLE "🎉 Production Release Complete!"
+            print_status $YELLOW "   • Monitor: Check website and logs for any issues"
         fi
     else
         print_status $RED "❌ Failed to push to ${ENVIRONMENT} branch"
