@@ -7,8 +7,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "push:staging": "npm run build && git add -A && git commit -m \"Update staging: $(date)\" && git push origin staging",
-    "quick:staging": "git add -A && git commit -m \"Quick update: $(date)\" && git push origin staging"
+    "deploy:staging": "./deploy.sh staging",
+    "deploy:production": "./deploy.sh production",
+    "deploy:development": "./deploy.sh development",
+    "push:staging": "./deploy.sh staging \"Update staging: $(date)\"",
+    "quick:staging": "./deploy.sh staging \"Quick update: $(date)\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
