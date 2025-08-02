@@ -83,7 +83,7 @@ const stats = [
 
 <Section id="reviews" variant="default" hasOverflow={true}>
   <Container className="relative z-10">
-    <SectionHeader 
+    <SectionHeader
       title="Customer Success Stories"
       subtitle="Discover how businesses like yours achieved remarkable growth with our AI-powered e-commerce solutions."
     />
@@ -193,3 +193,81 @@ const stats = [
     filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
   }
 </style>
+
+<script>
+  function initReviewsSection() {
+    // Compact carousel functionality with looping
+    const container = document.getElementById('reviewsContainer');
+    const prevBtn = document.getElementById('prevReview');
+    const nextBtn = document.getElementById('nextReview');
+    
+    if (!container || !prevBtn || !nextBtn) return;
+    
+    let currentIndex = 0;
+    const totalCards = container.children.length;
+    const cardsToShow = 3;
+    
+    function getCardWidth() {
+      if (!container) return 0;
+      const card = container.querySelector('[class*="min-w-[calc(33.333%-1rem)]"]');
+      return card ? (card as HTMLElement).offsetWidth + 32 : 0; // card width + margin
+    }
+
+    function updateCarousel() {
+      if (!container) return;
+      const cardWidth = getCardWidth();
+      const translateX = -currentIndex * cardWidth;
+      container.style.transform = `translateX(${translateX}px)`;
+      
+      // Always show buttons as enabled for looping
+      if (prevBtn) prevBtn.style.opacity = '1';
+      if (nextBtn) nextBtn.style.opacity = '1';
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % totalCards;
+      updateCarousel();
+    }
+
+    function prevSlide() {
+      currentIndex = currentIndex === 0 ? totalCards - 1 : currentIndex - 1;
+      updateCarousel();
+    }
+
+    // Event listeners
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Initialize
+    updateCarousel();
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      updateCarousel(); // Recalculate on resize
+    });
+
+    // Track carousel interactions (if PostHog is available)
+    if (typeof posthog !== 'undefined') {
+      nextBtn.addEventListener('click', () => {
+        posthog.capture('reviews_carousel_next', {
+          current_index: currentIndex,
+          interaction_type: 'button_click'
+        });
+      });
+
+      prevBtn.addEventListener('click', () => {
+        posthog.capture('reviews_carousel_prev', {
+          current_index: currentIndex,
+          interaction_type: 'button_click'
+        });
+      });
+    }
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReviewsSection);
+  } else {
+    initReviewsSection();
+  }
+</script>
