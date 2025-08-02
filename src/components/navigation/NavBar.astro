@@ -30,8 +30,8 @@ const navLinks = [
       <ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
         {navLinks.map((link) => (
           <li>
-            <a 
-              href={link.href} 
+            <a
+              href={link.href}
               class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer"
             >
               {link.label}
@@ -43,11 +43,11 @@ const navLinks = [
       <!-- Search Bar -->
       <div class="relative flex items-center flex-1 mx-4">
         <label for="search-input" class="sr-only">Browse Services Catalog</label>
-        <input 
-          id="search-input" 
-          type="search" 
-          placeholder="Search services..." 
-          class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" 
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Search services..."
+          class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
         />
         <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -59,17 +59,17 @@ const navLinks = [
 
       <!-- Navigation Actions -->
       <div class="flex items-center gap-2 relative">
-        <ThemeAwareButton 
-          href="#instant-quote" 
-          text="FREE 360 PHOTO" 
+        <ThemeAwareButton
+          href="#instant-quote"
+          text="FREE 360 PHOTO"
           subtext="CLAIM NOW"
           id="instant-quote-btn"
         />
-        
+
         <GradientButton
           href="#apple-quote"
-          text="APPLE QUOTE"
-          subtext="GET STARTED"
+          text="FREE WEBSITE"
+          subtext="EXPIRING SOON"
           variant="apple"
           className="text-[10px] text-white/80 leading-none"
         />
@@ -180,19 +180,15 @@ const navLinks = [
     nav .flex {
       @apply flex-col gap-4;
     }
-    
     nav ul {
       @apply gap-6 flex-wrap justify-center;
     }
-    
     .nav-search {
       @apply mx-0 order-1;
     }
-    
     .search-input {
       @apply w-80 min-w-64;
     }
-    
     .nav-actions {
       @apply -order-1 gap-3;
     }

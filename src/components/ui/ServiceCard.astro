@@ -9,11 +9,11 @@ export interface Props {
   className?: string;
 }
 
-const { 
-  title, 
-  description, 
-  icon, 
-  tags, 
+const {
+  title,
+  description,
+  icon,
+  tags,
   variant,
   pixelColors,
   className = ''
@@ -62,29 +62,78 @@ const styles = variantStyles[variant];
 ---
 
 <div class={`${styles.container} ${className}`}>
-  <pixel-canvas 
-    data-colors={pixelColors} 
-    data-gap="4" 
-    data-speed="40" 
-    data-no-focus 
+  <pixel-canvas
+    data-colors={pixelColors}
+    data-gap="7.5"
+    data-speed="75"
+    data-no-focus
     style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"
   ></pixel-canvas>
-  
+
+  <!-- Circular mask overlay to reduce center intensity -->
+  <!-- Light Mode Mask (darker overlay for light backgrounds) -->
+  <div class="pixel-mask-overlay light-mode-only"></div>
+
+  <!-- Dark Mode Mask (lighter overlay for dark backgrounds) -->
+  <div class="pixel-mask-overlay dark-mode-only"></div>
+
   <div class="relative z-10">
     <div class="h-16 mb-6 flex items-center justify-center">
       <div class={styles.icon}>
         <Fragment set:html={icon} />
       </div>
     </div>
-    
+
     <h3 class={`text-xl mb-4 ${styles.text} font-semibold`}>{title}</h3>
-    
+
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">
       {description}
     </p>
-    
+
     <div class={`${styles.text} text-sm font-medium`}>
       {tags}
     </div>
   </div>
 </div>
+
+<style>
+  /* Base mask styles */
+  .pixel-mask-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Light Mode Mask - darker overlay for light backgrounds */
+  .light-mode-only {
+    display: block;
+    background: radial-gradient(circle at center,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 85%
+    );
+  }
+
+  /* Dark Mode Mask - lighter overlay for dark backgrounds */
+  .dark-mode-only {
+    display: none;
+    background: radial-gradient(circle at center,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0) 45%
+    );
+  }
+
+  /* Theme switching - same pattern as ThemeAwareButton */
+  :root.dark .light-mode-only {
+    display: none;
+  }
+  :root.dark .dark-mode-only {
+    display: block;
+  }
+
+  .group:hover .pixel-mask-overlay {
+    opacity: 1;
+  }
+</style>
