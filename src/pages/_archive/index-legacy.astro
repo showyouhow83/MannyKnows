@@ -1,21 +1,21 @@
 ---
 // Import the Layout component
-import BaseLayout from '../layouts/BaseLayout.astro';
-import MarqueeSimple from '../components/MarqueeSimple.astro';
-import ThemeAwareButton from '../components/ThemeAwareButton.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import ThemeAwareButton from '../../components/ThemeAwareButton.astro';
 
 // Import new components
-import NavBar from '../components/navigation/NavBar.astro';
-import HeroSection from '../components/sections/HeroSection.astro';
-import ServicesSection from '../components/sections/ServicesSection.astro';
-import ReviewsSection from '../components/sections/ReviewsSection.astro';
-import DockMenu from '../components/navigation/DockMenu.astro';
-import Section from '../components/layout/Section.astro';
-import Container from '../components/layout/Container.astro';
-import PageSection from '../components/layout/PageSection.astro';
-import ProcessSlideshow from '../components/content/ProcessSlideshow.astro';
-import CaseStudyContent from '../components/content/CaseStudyContent.astro';
-import ChatBox from '../components/ui/ChatBox.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import HeroSection from '../../components/sections/HeroSection.astro';
+import ServicesSection from '../../components/sections/ServicesSection.astro';
+import ReviewsSection from '../../components/sections/ReviewsSection.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+// import PageSection from '../../components/layout/PageSection.astro'; // Component doesn't exist
+// import ProcessSlideshow from '../../components/content/ProcessSlideshow.astro'; // Component doesn't exist
+// import CaseStudyContent from '../../components/content/CaseStudyContent.astro'; // Component doesn't exist
+// import ChatBox from '../../components/ui/ChatBox.astro'; // Component doesn't exist
 ---
 
 <BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
@@ -41,30 +41,34 @@ import ChatBox from '../components/ui/ChatBox.astro';
 		<ServicesSection />
 
 		<!-- Process Section -->
-		<PageSection 
-			id="process" 
-			title="Our Process" 
-			subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
-			variant="alternate"
+		<Section 
+			id="process"
+			variant="dark"
 		>
-			<!-- <ProcessSlideshow /> -->
-		</PageSection>
+			<Container className="text-center">
+				<h2 class="text-4xl font-bold mb-4">Our Process</h2>
+				<p class="text-xl mb-8">From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality</p>
+				<!-- <ProcessSlideshow /> -->
+			</Container>
+		</Section>
 
 		<!-- Case Study Section -->
-		<PageSection 
-			id="case-study" 
-			title="Case Study" 
-			subtitle="AI-Powered E-commerce Transformation Case Study"
-			variant="alternate"
+		<Section 
+			id="case-study"
+			variant="dark"
 		>
-			<CaseStudyContent />
-		</PageSection>
+			<Container className="text-center">
+				<h2 class="text-4xl font-bold mb-4">Case Study</h2>
+				<p class="text-xl mb-8">AI-Powered E-commerce Transformation Case Study</p>
+				<!-- <CaseStudyContent /> -->
+			</Container>
+		</Section>
 
 		<!-- Customer Reviews Section -->
 		<ReviewsSection />
 
 		<!-- Floating Chat Box -->
-		<ChatBox />
+		<!-- <ChatBox /> -->
 
 		<!-- Floating Dock Menu -->
 		<DockMenu />

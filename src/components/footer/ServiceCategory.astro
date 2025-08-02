@@ -88,8 +88,8 @@ const {
       <ul class={`space-y-2 ${hasThirdSection ? 'mb-6' : ''}`}>
         {secondaryServices.map((service) => (
           <li>
-            <a href={service.href} class={`${secondaryTextColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
-              <span class={`w-1.5 h-1.5 ${secondaryTextColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
+            <a href={service.href} class={`${secondaryTextColor || textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+              <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
               {service.label}
             </a>
           </li>
@@ -113,8 +113,8 @@ const {
       <ul class="space-y-2">
         {thirdServices.map((service) => (
           <li>
-            <a href={service.href} class={`${thirdTextColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
-              <span class={`w-1.5 h-1.5 ${thirdTextColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
+            <a href={service.href} class={`${thirdTextColor || textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+              <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
               {service.label}
             </a>
           </li>
