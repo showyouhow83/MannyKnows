@@ -105,8 +105,8 @@ const stats = [
       </div>
 
       <!-- Reviews Container -->
-      <div class="overflow-x-hidden px-8 py-12">
-        <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
+      <div class="overflow-x-hidden px-12 py-16">
+        <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out -mx-4">
           {reviews.map((review) => (
             <ReviewCard {...review} />
           ))}
@@ -200,16 +200,16 @@ const stats = [
     const container = document.getElementById('reviewsContainer');
     const prevBtn = document.getElementById('prevReview');
     const nextBtn = document.getElementById('nextReview');
-    
+
     if (!container || !prevBtn || !nextBtn) return;
-    
+
     let currentIndex = 0;
     const totalCards = container.children.length;
-    
+
     function getCardWidth() {
       if (!container) return 0;
-      const card = container.querySelector('[class*="min-w-[calc(33.333%-1rem)]"]');
-      return card ? (card as HTMLElement).offsetWidth + 32 : 0; // card width + margin
+      const card = container.children[0] as HTMLElement;
+      return card ? card.offsetWidth + 32 : 0; // card width + margin (mr-8 = 32px)
     }
 
     function updateCarousel() {
@@ -217,7 +217,7 @@ const stats = [
       const cardWidth = getCardWidth();
       const translateX = -currentIndex * cardWidth;
       container.style.transform = `translateX(${translateX}px)`;
-      
+
       // Always show buttons as enabled for looping
       if (prevBtn) prevBtn.style.opacity = '1';
       if (nextBtn) nextBtn.style.opacity = '1';

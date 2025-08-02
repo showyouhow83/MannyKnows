@@ -6,11 +6,11 @@ export interface Props {
   hasOverflow?: boolean;
 }
 
-const { 
-  id, 
-  variant = 'default', 
+const {
+  id,
+  variant = 'default',
   className = "",
-  hasOverflow = false 
+  hasOverflow = false
 } = Astro.props;
 
 const variantClasses = {
@@ -22,7 +22,7 @@ const variantClasses = {
 const overflowClass = hasOverflow ? 'overflow-hidden' : '';
 ---
 
-<section 
+<section
   id={id}
   class={`relative py-16 ${variantClasses[variant]} border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${overflowClass} ${className}`}
 >
