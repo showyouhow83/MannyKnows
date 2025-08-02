@@ -121,9 +121,23 @@ fi
 
 # Build the project
 print_status $YELLOW "📦 Building project..."
-npm run build
+echo -n "   Building"
 
-if [ $? -eq 0 ]; then
+# Show progress dots during build
+npm run build > /tmp/build.log 2>&1 &
+BUILD_PID=$!
+
+while kill -0 $BUILD_PID 2>/dev/null; do
+    echo -n "."
+    sleep 1
+done
+
+wait $BUILD_PID
+BUILD_EXIT_CODE=$?
+
+echo "" # New line after dots
+
+if [ $BUILD_EXIT_CODE -eq 0 ]; then
     print_status $GREEN "✅ Build successful!"
     
     # Check if there are any changes to commit
@@ -142,9 +156,23 @@ if [ $? -eq 0 ]; then
     
     # Push to specified environment branch
     print_status $YELLOW "📤 Pushing to ${ENVIRONMENT} branch..."
-    git push --force origin HEAD:${ENVIRONMENT}
+    echo -n "   Pushing"
     
-    if [ $? -eq 0 ]; then
+    # Show progress dots during push
+    git push --force origin HEAD:${ENVIRONMENT} > /tmp/push.log 2>&1 &
+    PUSH_PID=$!
+    
+    while kill -0 $PUSH_PID 2>/dev/null; do
+        echo -n "."
+        sleep 1
+    done
+    
+    wait $PUSH_PID
+    PUSH_EXIT_CODE=$?
+    
+    echo "" # New line after dots
+    
+    if [ $PUSH_EXIT_CODE -eq 0 ]; then
         print_status $GREEN "🎉 Successfully deployed to ${ENVIRONMENT}!"
         print_status $BLUE "💡 View your changes at: https://github.com/showyouhow83/MannyKnows/tree/${ENVIRONMENT}"
         
@@ -156,7 +184,75 @@ if [ $? -eq 0 ]; then
         if [[ "$ENVIRONMENT" =~ ^feature/ ]]; then
             print_status $PURPLE "🔄 Feature Branch Next Steps:"
             print_status $YELLOW "   • Continue work: ./deploy.sh ${ENVIRONMENT} \"Your commit message\""
-            print_status $YELLOW "   • Create PR: https://github.com/showyouhow83/MannyKnows/compare/development...${ENVIRONMENT}"
+            
+            # Check if GitHub CLI is available and create PR automatically
+            if command -v gh &> /dev/null; then
+                print_status $GREEN "🚀 Creating Pull Request automatically..."
+                echo -n "   Checking for existing PR"
+                
+                # Check if PR already exists with progress dots
+                (
+                    sleep 1
+                    gh pr view "${ENVIRONMENT}" --json number > /dev/null 2>&1
+                    echo $? > /tmp/pr_check.exit
+                ) &
+                PR_CHECK_PID=$!
+                
+                while kill -0 $PR_CHECK_PID 2>/dev/null; do
+                    echo -n "."
+                    sleep 0.5
+                done
+                
+                wait $PR_CHECK_PID
+                PR_EXISTS=$(cat /tmp/pr_check.exit)
+                rm -f /tmp/pr_check.exit
+                
+                echo "" # New line after dots
+                
+                if [ "$PR_EXISTS" -eq 0 ]; then
+                    print_status $BLUE "📋 PR already exists: $(gh pr view "${ENVIRONMENT}" --json url --jq '.url')"
+                else
+                    print_status $YELLOW "   Creating new PR..."
+                    echo -n "   Processing"
+                    
+                    # Create new PR with progress dots
+                    (
+                        PR_URL=$(gh pr create \
+                            --title "${ENVIRONMENT}: ${COMMIT_MSG}" \
+                            --body "## Changes\n${COMMIT_MSG}\n\n## Feature Branch\n\`${ENVIRONMENT}\`\n\nAuto-created by deploy script 🤖" \
+                            --base development \
+                            --head "${ENVIRONMENT}" 2>/dev/null)
+                        
+                        echo "$PR_URL" > /tmp/pr_url.txt
+                        echo $? > /tmp/pr_create.exit
+                    ) &
+                    PR_CREATE_PID=$!
+                    
+                    while kill -0 $PR_CREATE_PID 2>/dev/null; do
+                        echo -n "."
+                        sleep 0.5
+                    done
+                    
+                    wait $PR_CREATE_PID
+                    PR_CREATE_EXIT=$(cat /tmp/pr_create.exit)
+                    
+                    echo "" # New line after dots
+                    
+                    if [ "$PR_CREATE_EXIT" -eq 0 ]; then
+                        PR_URL=$(cat /tmp/pr_url.txt)
+                        print_status $GREEN "✅ Pull Request created: ${PR_URL}"
+                    else
+                        print_status $YELLOW "⚠️  Could not create PR automatically. Please create manually:"
+                        print_status $YELLOW "   • Create PR: https://github.com/showyouhow83/MannyKnows/compare/development...${ENVIRONMENT}"
+                    fi
+                    
+                    rm -f /tmp/pr_url.txt /tmp/pr_create.exit
+                fi
+            else
+                print_status $YELLOW "💡 Install GitHub CLI for automatic PR creation: brew install gh"
+                print_status $YELLOW "   • Create PR: https://github.com/showyouhow83/MannyKnows/compare/development...${ENVIRONMENT}"
+            fi
+            
             print_status $YELLOW "   • After merge: git checkout development && git pull origin development"
         elif [ "$ENVIRONMENT" = "development" ]; then
             print_status $PURPLE "🚀 Development Deployment Complete"
