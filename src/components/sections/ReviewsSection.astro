@@ -90,8 +90,59 @@ const stats = [
 
     <!-- Reviews Carousel Container -->
     <div class="relative mb-12">
+
+      <!-- Reviews Container -->
+      <div class="px-4 py-4">
+        <!-- Mobile: Single card view -->
+        <div class="block md:hidden">
+          <div id="reviewsContainerMobile" class="flex transition-transform duration-500 ease-in-out">
+            {reviews.map((review) => (
+              <div class="w-full flex-shrink-0">
+                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(14,165,233,0.35)] hover:border-sky-500/50 hover:bg-white/90 dark:hover:bg-white/15 mx-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-1">
+                      {Array.from({ length: 5 }, () => (
+                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ))}
+                    </div>
+                    <div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">{review.customerName}</div>
+                  </div>
+                  <blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+                    "{review.testimonial}"
+                  </blockquote>
+                  <div class="flex flex-wrap gap-2">
+                    {review.tags.map((tag) => (
+                      <span class={`px-3 py-1 text-xs font-medium rounded-full border 
+                        ${tag.color === 'blue' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : ''}
+                        ${tag.color === 'green' ? 'bg-green-500/10 text-green-500 border-green-500/20' : ''}
+                        ${tag.color === 'purple' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' : ''}
+                        ${tag.color === 'pink' ? 'bg-pink-500/10 text-pink-500 border-pink-500/20' : ''}
+                      `}>
+                        {tag.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- Desktop: Multi-card view -->
+        <div class="hidden md:block px-12">
+          <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
+            {reviews.map((review) => (
+              <ReviewCard {...review} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
       <!-- Carousel Navigation -->
-      <div class="flex justify-center gap-4 mb-4">
+      <div class="flex justify-center gap-6 mb-16">
         <button id="prevReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15,18 9,12 15,6"/>
@@ -103,16 +154,6 @@ const stats = [
           </svg>
         </button>
       </div>
-
-      <!-- Reviews Container -->
-      <div class="px-16 py-16">
-        <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
-          {reviews.map((review) => (
-            <ReviewCard {...review} />
-          ))}
-        </div>
-      </div>
-    </div>
 
     <!-- Stats Section -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
@@ -196,53 +237,71 @@ const stats = [
 
 <script>
   function initReviewsSection() {
-    // Compact carousel functionality with looping
-    const container = document.getElementById('reviewsContainer');
+    // Separate carousel functionality for mobile and desktop
+    const containerMobile = document.getElementById('reviewsContainerMobile');
+    const containerDesktop = document.getElementById('reviewsContainer');
     const prevBtn = document.getElementById('prevReview');
     const nextBtn = document.getElementById('nextReview');
 
-    if (!container || !prevBtn || !nextBtn) return;
+    if (!prevBtn || !nextBtn) return;
 
-    let currentIndex = 0;
-    const totalCards = container.children.length;
-
-    function getVisibleCards() {
-      const width = window.innerWidth;
-      if (width < 768) return 1; // Mobile: 1 card
-      if (width < 1024) return 2; // Tablet: 2 cards  
-      return 3; // Desktop: 3 cards
+    let currentIndexMobile = 0;
+    let currentIndexDesktop = 0;
+    
+    // Mobile carousel (1 card at a time)
+    function updateMobileCarousel() {
+      if (!containerMobile) return;
+      const cardWidth = containerMobile.offsetWidth;
+      const translateX = -currentIndexMobile * cardWidth;
+      containerMobile.style.transform = `translateX(${translateX}px)`;
     }
 
-    function getCardWidth() {
-      if (!container) return 0;
-      const visibleCards = getVisibleCards();
-      const containerWidth = container.parentElement?.offsetWidth || 0;
-      return containerWidth / visibleCards;
-    }
-
-    function updateCarousel() {
-      if (!container) return;
-      const cardWidth = getCardWidth();
-      const translateX = -currentIndex * cardWidth;
-      container.style.transform = `translateX(${translateX}px)`;
-
-      // Always show buttons as enabled for looping
-      if (prevBtn) prevBtn.style.opacity = '1';
-      if (nextBtn) nextBtn.style.opacity = '1';
+    // Desktop carousel (3 cards at a time) 
+    function updateDesktopCarousel() {
+      if (!containerDesktop) return;
+      const card = containerDesktop.children[0] as HTMLElement;
+      const cardWidth = card ? card.offsetWidth + 32 : 0; // card width + margin
+      const translateX = -currentIndexDesktop * cardWidth;
+      containerDesktop.style.transform = `translateX(${translateX}px)`;
     }
 
     function nextSlide() {
-      const visibleCards = getVisibleCards();
-      const maxIndex = Math.max(0, totalCards - visibleCards);
-      currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
-      updateCarousel();
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile && containerMobile) {
+        const totalCards = containerMobile.children.length;
+        currentIndexMobile = (currentIndexMobile + 1) % totalCards;
+        updateMobileCarousel();
+      } else if (containerDesktop) {
+        const totalCards = containerDesktop.children.length;
+        const maxIndex = Math.max(0, totalCards - 3); // Show 3 cards on desktop
+        currentIndexDesktop = currentIndexDesktop >= maxIndex ? 0 : currentIndexDesktop + 1;
+        updateDesktopCarousel();
+      }
     }
 
     function prevSlide() {
-      const visibleCards = getVisibleCards();
-      const maxIndex = Math.max(0, totalCards - visibleCards);
-      currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
-      updateCarousel();
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile && containerMobile) {
+        const totalCards = containerMobile.children.length;
+        currentIndexMobile = currentIndexMobile === 0 ? totalCards - 1 : currentIndexMobile - 1;
+        updateMobileCarousel();
+      } else if (containerDesktop) {
+        const totalCards = containerDesktop.children.length;
+        const maxIndex = Math.max(0, totalCards - 3);
+        currentIndexDesktop = currentIndexDesktop <= 0 ? maxIndex : currentIndexDesktop - 1;
+        updateDesktopCarousel();
+      }
+    }
+
+    function updateCarousel() {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        updateMobileCarousel();
+      } else {
+        updateDesktopCarousel();
+      }
     }
 
     // Event listeners
@@ -254,21 +313,21 @@ const stats = [
 
     // Handle resize
     window.addEventListener('resize', () => {
-      updateCarousel(); // Recalculate on resize
+      updateCarousel();
     });
 
     // Track carousel interactions (if PostHog is available)
     if (typeof posthog !== 'undefined') {
       nextBtn.addEventListener('click', () => {
         posthog.capture('reviews_carousel_next', {
-          current_index: currentIndex,
+          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
           interaction_type: 'button_click'
         });
       });
 
       prevBtn.addEventListener('click', () => {
         posthog.capture('reviews_carousel_prev', {
-          current_index: currentIndex,
+          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
           interaction_type: 'button_click'
         });
       });
