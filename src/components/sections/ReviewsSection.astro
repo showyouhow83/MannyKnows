@@ -206,10 +206,18 @@ const stats = [
     let currentIndex = 0;
     const totalCards = container.children.length;
 
+    function getVisibleCards() {
+      const width = window.innerWidth;
+      if (width < 768) return 1; // Mobile: 1 card
+      if (width < 1024) return 2; // Tablet: 2 cards  
+      return 3; // Desktop: 3 cards
+    }
+
     function getCardWidth() {
       if (!container) return 0;
-      const card = container.children[0] as HTMLElement;
-      return card ? card.offsetWidth + 32 : 0; // card width + margin (mr-8 = 32px)
+      const visibleCards = getVisibleCards();
+      const containerWidth = container.parentElement?.offsetWidth || 0;
+      return containerWidth / visibleCards;
     }
 
     function updateCarousel() {
@@ -224,12 +232,16 @@ const stats = [
     }
 
     function nextSlide() {
-      currentIndex = (currentIndex + 1) % totalCards;
+      const visibleCards = getVisibleCards();
+      const maxIndex = Math.max(0, totalCards - visibleCards);
+      currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
       updateCarousel();
     }
 
     function prevSlide() {
-      currentIndex = currentIndex === 0 ? totalCards - 1 : currentIndex - 1;
+      const visibleCards = getVisibleCards();
+      const maxIndex = Math.max(0, totalCards - visibleCards);
+      currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
       updateCarousel();
     }
 
