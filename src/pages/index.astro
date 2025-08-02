@@ -8,8 +8,6 @@ import ServicesSection from '../components/sections/ServicesSection.astro';
 import ReviewsSection from '../components/sections/ReviewsSection.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
-import ProcessSlideshow from '../components/content/ProcessSlideshow.astro';
-import CaseStudyContent from '../components/content/CaseStudyContent.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 ---
 
@@ -41,7 +39,6 @@ import ChatBox from '../components/ui/ChatBox.astro';
 			subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
 			variant="alternate"
 		>
-			<ProcessSlideshow />
 		</PageSection>
 
 		<!-- Case Study Section -->
@@ -51,7 +48,7 @@ import ChatBox from '../components/ui/ChatBox.astro';
 			subtitle="AI-Powered E-commerce Transformation Case Study"
 			variant="alternate"
 		>
-			<CaseStudyContent />
+
 		</PageSection>
 
 		<!-- Customer Reviews Section -->
@@ -70,7 +67,7 @@ import ChatBox from '../components/ui/ChatBox.astro';
 	function initNavigationTracking() {
 		const topNav = document.getElementById('topNav');
 		const floatingDock = document.getElementById('floatingDock');
-		
+
 		if (!topNav || !floatingDock) return;
 
 		const observer = new IntersectionObserver((entries) => {

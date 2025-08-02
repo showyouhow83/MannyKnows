@@ -99,17 +99,17 @@ const services = [
 
 <Section id="services" variant="default" hasOverflow={true}>
   <Container className="relative z-10">
-    <SectionHeader 
+    <SectionHeader
       title="Artificial Intelligence"
       subtitle="Business Growing Services 🌎"
     />
-    
+
     <!-- Main AI Services Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto mb-16">
       {services.map((service) => (
         <ServiceCard {...service} />
       ))}
-      
+
       <!-- Custom AI Solutions Card -->
       <div class="lg:col-span-2 flex items-center">
         <div>
@@ -122,7 +122,7 @@ const services = [
           <ul class="list-none p-0 mb-8 space-y-4">
             {[
               "Boost productivity by 10x",
-              "Slash operational costs", 
+              "Slash operational costs",
               "Drive scalable growth",
               "Custom AI & API integration"
             ].map((benefit) => (
