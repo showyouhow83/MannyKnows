@@ -11,7 +11,7 @@ import Button from '../ui/Button.astro';
 
 <!-- Simple CTA button with arrow -->
 <Button 
-  href="#contact" 
+  href="/contact-us" 
   text="Join Our Success Stories" 
   variant="cta" 
   size="lg" 

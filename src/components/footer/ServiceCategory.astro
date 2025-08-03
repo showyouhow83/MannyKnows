@@ -27,6 +27,7 @@ interface Props {
   thirdTextColor?: string;
   thirdServices?: Service[];
   roundedClass?: string;
+  borderClasses?: string;
 }
 
 const { 
@@ -50,11 +51,12 @@ const {
   thirdIconGradient,
   thirdTextColor,
   thirdServices = [],
-  roundedClass = ""
+  roundedClass = "",
+  borderClasses = "border-t border-l border-r"
 } = Astro.props;
 ---
 
-<div class={`service-box-padding bg-gradient-to-br ${backgroundGradient} backdrop-blur-sm ${roundedClass} border-t border-l border-r ${borderColor} ${hoverShadow} transition-all duration-300`}>
+<div class={`service-box-padding bg-gradient-to-br ${backgroundGradient} backdrop-blur-sm ${roundedClass} ${borderClasses} ${borderColor} ${hoverShadow} transition-all duration-300`}>
   <!-- Primary Section -->
   <div class="flex items-center gap-3 mb-3">
     <div class={`w-8 h-8 bg-gradient-to-r ${iconGradient} rounded-lg flex items-center justify-center`}>
