@@ -1,177 +1,192 @@
 ---
-// PostHog Advanced Analytics - Production Ready
-// Using the web snippet approach with advanced configuration
-// Includes: Session Recording, Exception Tracking, Web Vitals, Performance
+// PostHog Analytics Configuration
+interface Props {
+  // Core PostHog settings
+  enabled?: boolean;
+  apiKey?: string;
+  apiHost?: string;
+  
+  // Feature toggles
+  webVitalsEnabled?: boolean;
+  sessionRecordingEnabled?: boolean;
+  autocaptureEnabled?: boolean;
+  capturePageViews?: boolean;
+  
+  // Debug and development
+  debugMode?: boolean;
+  disableInDevelopment?: boolean;
+}
 
-const posthogKey = import.meta.env.PUBLIC_POSTHOG_PROJECT_KEY;
+const {
+  // Core settings
+  enabled = true,
+  apiKey = 'phc_P3zXU8812VuDNHqwWhcGo8dYcU7tg7fItSCqnAGJk9R',
+  apiHost = 'https://us.i.posthog.com',
+  
+  // Feature toggles with sensible defaults
+  webVitalsEnabled = true,
+  sessionRecordingEnabled = false, // Disabled by default for performance
+  autocaptureEnabled = true,
+  capturePageViews = true,
+  
+  // Debug settings
+  debugMode = false,
+  disableInDevelopment = false
+} = Astro.props;
+
+// Check if we should disable PostHog in development
+const isDevelopment = import.meta.env.DEV;
+const shouldDisable = !enabled || (disableInDevelopment && isDevelopment);
+
+if (debugMode && !shouldDisable) {
+  console.log('🔍 PostHog Config:', {
+    enabled,
+    webVitalsEnabled,
+    sessionRecordingEnabled,
+    autocaptureEnabled,
+    capturePageViews,
+    isDevelopment
+  });
+}
 ---
 
-<script is:inline define:vars={{ posthogKey }}>
-	// Check if PostHog key is available
-	if (!posthogKey) {
-		console.error('PostHog project key is missing! Check your .env file.');
-		return;
-	}
+{!shouldDisable && (
+  <script type="text/javascript" define:vars={{ 
+    apiKey, 
+    apiHost, 
+    webVitalsEnabled, 
+    sessionRecordingEnabled, 
+    autocaptureEnabled, 
+    capturePageViews,
+    debugMode 
+  }}>
+    // PostHog initialization
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    
+    posthog.init(apiKey, {
+      api_host: apiHost,
+      
+      // Core features
+      autocapture: autocaptureEnabled,
+      capture_pageview: capturePageViews,
+      
+      // Session recording
+      disable_session_recording: !sessionRecordingEnabled,
+      
+      // Debug mode
+      debug: debugMode,
+      
+      // Performance optimizations
+      request_batching: true,
+      batch_request_timeout_ms: 500,
+      
+      // Privacy settings
+      respect_dnt: true,
+      opt_out_capturing_by_default: false,
+      
+      // Disable features we don't need for better performance
+      disable_surveys: true,
+      disable_toolbar: !debugMode
+    });
 
-	console.log('🚀 PostHog Advanced initializing...');
+    // Web Vitals tracking (configurable)
+    if (webVitalsEnabled) {
+      // Core Web Vitals tracking with web-vitals library or manual implementation
+      function trackWebVitals() {
+        // Track CLS (Cumulative Layout Shift)
+        if ('PerformanceObserver' in window) {
+          try {
+            const clsObserver = new PerformanceObserver((list) => {
+              for (const entry of list.getEntries()) {
+                if (!entry.hadRecentInput) {
+                  posthog.capture('web_vital_cls', {
+                    value: entry.value,
+                    rating: entry.value > 0.25 ? 'poor' : entry.value > 0.1 ? 'needs-improvement' : 'good'
+                  });
+                }
+              }
+            });
+            clsObserver.observe({ type: 'layout-shift', buffered: true });
+          } catch (e) {
+            if (debugMode) console.warn('CLS tracking failed:', e);
+          }
 
-	// PostHog Web Snippet - Latest version with all features
-	!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Re Cs Fs Pe Rs Ms capture Ve calculateEventProperties Ds register register_once register_for_session unregister unregister_for_session zs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty js As createPersonProfile Ns Is Us opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Os debug I Ls getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-	
-	// Initialize PostHog with advanced configuration
-	posthog.init(posthogKey, {
-		api_host: 'https://us.i.posthog.com',
-		defaults: '2025-05-24',
-		person_profiles: 'identified_only',
-		
-		// Core tracking
-		capture_pageview: true,
-		capture_pageleave: true,
-		
-		// Session recording settings
-		session_recording: {
-			recordCrossOriginIframes: true,
-			maskAllInputs: false,
-			sampleRate: 1.0, // Record all sessions
-		},
-		
-		// Exception tracking
-		capture_exceptions: true,
-		
-		// Performance tracking
-		capture_performance: true,
-		
-		// Advanced features
-		autocapture: true, // Automatically capture clicks, form submissions, etc.
-		
-		loaded: function(posthog) {
-			console.log('✅ PostHog Advanced loaded successfully!');
-			
-			// Track successful initialization
-			posthog.capture('analytics_initialized', {
-				setup: 'advanced_web_snippet',
-				features: ['session_recording', 'exception_tracking', 'performance', 'autocapture'],
-				url: window.location.href,
-				timestamp: new Date().toISOString()
-			});
-		}
-	});
+          // Track LCP (Largest Contentful Paint)
+          try {
+            const lcpObserver = new PerformanceObserver((list) => {
+              const entries = list.getEntries();
+              const lastEntry = entries[entries.length - 1];
+              posthog.capture('web_vital_lcp', {
+                value: lastEntry.startTime,
+                rating: lastEntry.startTime > 4000 ? 'poor' : lastEntry.startTime > 2500 ? 'needs-improvement' : 'good'
+              });
+            });
+            lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+          } catch (e) {
+            if (debugMode) console.warn('LCP tracking failed:', e);
+          }
 
-	// Add global error handler for unhandled exceptions
-	window.addEventListener('error', function(event) {
-		if (window.posthog && window.posthog.captureException) {
-			posthog.captureException(event.error || new Error(event.message), {
-				type: 'global_error_handler',
-				filename: event.filename,
-				lineno: event.lineno,
-				colno: event.colno
-			});
-		}
-	});
-	
-	// Add unhandled promise rejection handler
-	window.addEventListener('unhandledrejection', function(event) {
-		if (window.posthog && window.posthog.captureException) {
-			posthog.captureException(event.reason, {
-				type: 'unhandled_promise_rejection'
-			});
-		}
-	});
+          // Track FID (First Input Delay)
+          try {
+            const fidObserver = new PerformanceObserver((list) => {
+              for (const entry of list.getEntries()) {
+                posthog.capture('web_vital_fid', {
+                  value: entry.processingStart - entry.startTime,
+                  rating: (entry.processingStart - entry.startTime) > 300 ? 'poor' : (entry.processingStart - entry.startTime) > 100 ? 'needs-improvement' : 'good'
+                });
+              }
+            });
+            fidObserver.observe({ type: 'first-input', buffered: true });
+          } catch (e) {
+            if (debugMode) console.warn('FID tracking failed:', e);
+          }
+        }
 
-	// Web Vitals Integration - Manual implementation since npm import doesn't work in browser
-	setTimeout(function() {
-		console.log('📊 Setting up Web Vitals tracking...');
-		
-		// Manual Web Vitals implementation for Core Web Vitals
-		// This captures the essential metrics without requiring npm imports
-		
-		// Cumulative Layout Shift (CLS)
-		let cls = 0;
-		let sessionEntries = [];
-		const po = new PerformanceObserver((entryList) => {
-			for (const entry of entryList.getEntries()) {
-				if (!entry.hadRecentInput) {
-					cls += entry.value;
-					sessionEntries.push(entry);
-				}
-			}
-			
-			// Report CLS when page visibility changes
-			if (document.visibilityState === 'hidden') {
-				posthog.capture('$web_vitals', {
-					$web_vitals_CLS_value: cls,
-					$web_vitals_CLS_rating: cls < 0.1 ? 'good' : cls < 0.25 ? 'needs-improvement' : 'poor',
-					metric_name: 'CLS'
-				});
-			}
-		});
-		
-		try {
-			po.observe({ type: 'layout-shift', buffered: true });
-		} catch (e) {
-			console.log('Layout shift observation not supported');
-		}
-		
-		// Largest Contentful Paint (LCP)
-		const lcpObserver = new PerformanceObserver((entryList) => {
-			const entries = entryList.getEntries();
-			const lastEntry = entries[entries.length - 1];
-			const lcpValue = lastEntry.startTime;
-			
-			posthog.capture('$web_vitals', {
-				$web_vitals_LCP_value: lcpValue,
-				$web_vitals_LCP_rating: lcpValue < 2500 ? 'good' : lcpValue < 4000 ? 'needs-improvement' : 'poor',
-				metric_name: 'LCP'
-			});
-		});
-		
-		try {
-			lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-		} catch (e) {
-			console.log('LCP observation not supported');
-		}
-		
-		// First Contentful Paint (FCP)
-		const fcpObserver = new PerformanceObserver((entryList) => {
-			const entries = entryList.getEntries();
-			for (const entry of entries) {
-				if (entry.name === 'first-contentful-paint') {
-					posthog.capture('$web_vitals', {
-						$web_vitals_FCP_value: entry.startTime,
-						$web_vitals_FCP_rating: entry.startTime < 1800 ? 'good' : entry.startTime < 3000 ? 'needs-improvement' : 'poor',
-						metric_name: 'FCP'
-					});
-				}
-			}
-		});
-		
-		try {
-			fcpObserver.observe({ type: 'paint', buffered: true });
-		} catch (e) {
-			console.log('FCP observation not supported');
-		}
-		
-		// First Input Delay (FID) - using Event Timing API
-		const fidObserver = new PerformanceObserver((entryList) => {
-			for (const entry of entryList.getEntries()) {
-				if (entry.processingStart && entry.startTime) {
-					const fid = entry.processingStart - entry.startTime;
-					posthog.capture('$web_vitals', {
-						$web_vitals_FID_value: fid,
-						$web_vitals_FID_rating: fid < 100 ? 'good' : fid < 300 ? 'needs-improvement' : 'poor',
-						metric_name: 'FID'
-					});
-					fidObserver.disconnect();
-				}
-			}
-		});
-		
-		try {
-			fidObserver.observe({ type: 'first-input', buffered: true });
-		} catch (e) {
-			console.log('FID observation not supported');
-		}
-		
-		console.log('✅ Web Vitals tracking configured');
-	}, 1000);
-</script>
+        // Track page load time
+        window.addEventListener('load', () => {
+          const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+          posthog.capture('page_load_time', {
+            value: loadTime,
+            rating: loadTime > 3000 ? 'poor' : loadTime > 1000 ? 'needs-improvement' : 'good'
+          });
+        });
+      }
+
+      // Initialize Web Vitals tracking
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', trackWebVitals);
+      } else {
+        trackWebVitals();
+      }
+    }
+
+    // Track basic user engagement
+    if (capturePageViews) {
+      // Track scroll depth
+      let maxScrollDepth = 0;
+      const trackScrollDepth = () => {
+        const scrollDepth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
+        if (scrollDepth > maxScrollDepth) {
+          maxScrollDepth = scrollDepth;
+          if (maxScrollDepth >= 25 && maxScrollDepth % 25 === 0) {
+            posthog.capture('scroll_depth', { depth: maxScrollDepth });
+          }
+        }
+      };
+      
+      window.addEventListener('scroll', () => {
+        clearTimeout(window.scrollTimer);
+        window.scrollTimer = setTimeout(trackScrollDepth, 150);
+      }, { passive: true });
+    }
+
+    if (debugMode) {
+      console.log('🚀 PostHog initialized with features:', {
+        webVitals: webVitalsEnabled,
+        sessionRecording: sessionRecordingEnabled,
+        autocapture: autocaptureEnabled,
+        pageViews: capturePageViews
+      });
+    }
+  </script>
+)}
