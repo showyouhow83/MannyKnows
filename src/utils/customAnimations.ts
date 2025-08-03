@@ -60,32 +60,43 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       element.dataset.currentReview = '0';
       element.dataset.animationActive = 'false';
       
-      // Setup CSS for smooth card transitions
+      // PRESERVE existing styles - don't change the layout!
+      // Just ensure smooth transitions for transform only
       reviewsContainer.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      reviewsContainer.style.display = 'flex';
-      reviewsContainer.style.width = `${reviewCards.length * 100}%`;
       
-      // Position cards side by side
-      reviewCards.forEach((card, index) => {
-        (card as HTMLElement).style.width = `${100 / reviewCards.length}%`;
-        (card as HTMLElement).style.flexShrink = '0';
-      });
+      // Don't change display, width, or card positioning - keep existing layout!
       
       if (config.debug) {
         console.log('🎬 Reviews scroll hijack setup:', {
           totalReviews: reviewCards.length,
-          container: reviewsContainer
+          container: reviewsContainer,
+          preservedLayout: 'existing styles maintained'
         });
       }
     },
     
     animate: (element: HTMLElement, progress: ScrollProgress, config: any) => {
-      if (!progress.isInView) return;
+      // Only hijack when the ENTIRE section is substantially in view
+      // Not just a peek - wait until user has scrolled to the reviews section
+      const sectionHeight = progress.bounds.height;
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate how much of the section is actually visible
+      const visibleTop = Math.max(0, Math.min(progress.bounds.bottom, viewportHeight));
+      const visibleBottom = Math.max(0, Math.min(progress.bounds.top, 0));
+      const visibleHeight = visibleTop - visibleBottom;
+      const visibilityRatio = visibleHeight / Math.min(sectionHeight, viewportHeight);
+      
+      // Only activate when at least 70% of the section is visible
+      if (visibilityRatio < 0.7) {
+        element.dataset.animationActive = 'false';
+        return;
+      }
       
       const totalReviews = parseInt(element.dataset.totalReviews || '0');
       if (totalReviews === 0) return;
       
-      // Calculate which review should be shown based on scroll progress
+      // Calculate which review should be shown based on scroll progress within the section
       // Map progress 0-1 to review index 0-(totalReviews-1)
       const reviewIndex = Math.floor(progress.progress * totalReviews);
       const clampedIndex = Math.max(0, Math.min(totalReviews - 1, reviewIndex));
@@ -96,19 +107,34 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       if (clampedIndex !== currentReview) {
         const reviewsContainer = element.querySelector('[data-reviews-container]') as HTMLElement;
         if (reviewsContainer) {
-          // Calculate transform to show the current review
-          const translateX = -(clampedIndex * (100 / totalReviews));
-          reviewsContainer.style.transform = `translateX(${translateX}%)`;
-          
-          element.dataset.currentReview = clampedIndex.toString();
-          element.dataset.animationActive = 'true';
-          
-          if (config.debug) {
-            console.log('🎬 Reviews scroll progress:', {
-              progress: progress.progress.toFixed(3),
-              reviewIndex: clampedIndex,
-              translateX: translateX.toFixed(1)
-            });
+          // Get the actual width of one review card (including gaps)
+          const firstCard = reviewsContainer.querySelector('[data-review-card]') as HTMLElement;
+          if (firstCard) {
+            const cardRect = firstCard.getBoundingClientRect();
+            const containerRect = reviewsContainer.getBoundingClientRect();
+            
+            // Calculate actual card width including gap
+            const cardWidth = cardRect.width;
+            const gap = 32; // 2rem = 32px gap from the existing layout
+            const moveDistance = cardWidth + gap;
+            
+            // Calculate transform to show the current review
+            const translateX = -(clampedIndex * moveDistance);
+            reviewsContainer.style.transform = `translateX(${translateX}px)`;
+            
+            element.dataset.currentReview = clampedIndex.toString();
+            element.dataset.animationActive = 'true';
+            
+            if (config.debug) {
+              console.log('🎬 Reviews scroll progress:', {
+                visibilityRatio: visibilityRatio.toFixed(2),
+                progress: progress.progress.toFixed(3),
+                reviewIndex: clampedIndex,
+                translateX: translateX.toFixed(1),
+                cardWidth,
+                moveDistance
+              });
+            }
           }
         }
       }
@@ -117,9 +143,20 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
     shouldReleaseScroll: (element: HTMLElement, progress: ScrollProgress, config: any) => {
       const totalReviews = parseInt(element.dataset.totalReviews || '0');
       const currentReview = parseInt(element.dataset.currentReview || '0');
+      const animationActive = element.dataset.animationActive === 'true';
       
-      // Release scroll when we've shown all reviews and progress > 0.9
-      return currentReview >= (totalReviews - 1) && progress.progress > 0.9;
+      // Release scroll when we've shown all reviews and progress > 0.95
+      // Or if the section is no longer substantially visible
+      const sectionHeight = progress.bounds.height;
+      const viewportHeight = window.innerHeight;
+      const visibleTop = Math.max(0, Math.min(progress.bounds.bottom, viewportHeight));
+      const visibleBottom = Math.max(0, Math.min(progress.bounds.top, 0));
+      const visibleHeight = visibleTop - visibleBottom;
+      const visibilityRatio = visibleHeight / Math.min(sectionHeight, viewportHeight);
+      
+      return (currentReview >= (totalReviews - 1) && progress.progress > 0.95) || 
+             (visibilityRatio < 0.3) || 
+             !animationActive;
     },
     
     cleanup: (element: HTMLElement, config: any) => {

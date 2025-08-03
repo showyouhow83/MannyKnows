@@ -116,13 +116,26 @@ export class CustomAnimationManager {
   }
 
   private shouldHijackScroll(): boolean {
-    // Check if any hijack-enabled element is in view and should control scroll
+    // Check if any hijack-enabled element is FULLY in view and should control scroll
     for (const element of this.hijackedElements) {
       const data = this.elements.get(element);
       if (!data || !data.config.enabled) continue;
       
       const progress = this.calculateScrollProgress(element);
-      if (progress.isInView) {
+      
+      // More precise visibility check
+      const rect = progress.bounds;
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate actual visibility ratio
+      const visibleTop = Math.max(0, Math.min(rect.bottom, viewportHeight));
+      const visibleBottom = Math.max(0, Math.min(rect.top, 0));
+      const visibleHeight = visibleTop - visibleBottom;
+      const elementHeight = rect.height;
+      const visibilityRatio = visibleHeight / Math.min(elementHeight, viewportHeight);
+      
+      // Only hijack when the section is substantially visible (70%+)
+      if (visibilityRatio >= 0.7) {
         const animation = customAnimations[data.animationName];
         if (animation.shouldReleaseScroll) {
           const shouldRelease = animation.shouldReleaseScroll(
@@ -131,10 +144,13 @@ export class CustomAnimationManager {
             data.config
           );
           if (!shouldRelease) {
+            if (data.config.debug) {
+              this.log(`Hijacking scroll - visibility: ${(visibilityRatio * 100).toFixed(1)}%`);
+            }
             return true; // Hijack scroll
           }
         } else {
-          return true; // Default hijack when in view
+          return true; // Default hijack when substantially in view
         }
       }
     }
@@ -182,11 +198,31 @@ export class CustomAnimationManager {
     // Calculate if element is in view
     const isInView = rect.top < viewportHeight && rect.bottom > 0;
     
-    // Calculate progress (0 = top of element at bottom of viewport, 1 = bottom of element at top of viewport)
+    // More accurate progress calculation for hijacking
+    // When element fully enters viewport, progress starts at 0
+    // When element fully exits viewport, progress ends at 1
     const elementHeight = rect.height;
-    const totalScrollableDistance = viewportHeight + elementHeight;
-    const currentPosition = viewportHeight - rect.top;
-    const progress = Math.max(0, Math.min(1, currentPosition / totalScrollableDistance));
+    
+    // Progress based on how far the element has scrolled through the viewport
+    let progress = 0;
+    
+    if (rect.top <= 0 && rect.bottom >= viewportHeight) {
+      // Element is larger than viewport and fills it completely
+      progress = Math.abs(rect.top) / (elementHeight - viewportHeight);
+    } else if (rect.top <= 0) {
+      // Element is exiting the top of viewport
+      progress = Math.abs(rect.top) / elementHeight;
+    } else if (rect.bottom >= viewportHeight) {
+      // Element is entering from bottom of viewport
+      progress = (viewportHeight - rect.top) / (elementHeight + viewportHeight);
+    } else {
+      // Element is completely within viewport
+      const totalScrollableDistance = elementHeight + viewportHeight;
+      const currentPosition = viewportHeight - rect.top;
+      progress = currentPosition / totalScrollableDistance;
+    }
+    
+    progress = Math.max(0, Math.min(1, progress));
     
     return {
       progress,
