@@ -15,19 +15,17 @@ import ScrollAnimations from '../components/ui/ScrollAnimations.astro';
 // ANIMATION CONFIGURATION - Easy Toggle Controls
 // ========================================
 const ANIMATION_CONFIG = {
-	// Search bar apple gradient animation
+	// Search gradient animations in navbar
 	searchGradientEnabled: true,
+	searchScrollDelay: 0,
 
-	// Search animation timing
-	searchScrollDelay: 0, // ms delay before removing gradient on scroll
-
-	// Scroll animations
+	// Scroll-based animations system
 	scrollAnimationsEnabled: true,
-	scrollAnimationThreshold: 0.1, // How much of element must be visible to trigger
-	scrollAnimationDebug: true, // Debug scroll animations specifically - ENABLED for testing
+	
+	scrollAnimationDebug: false,
 
 	// Debug mode - logs animation state changes
-	debugMode: true // ENABLED for testing
+	debugMode: false
 };
 ---
 
@@ -58,12 +56,12 @@ const ANIMATION_CONFIG = {
         </header>
 
 		<!-- Services Section -->
-		<ScrollAnimations animation="fadeIn" delay={200} debug={true}>
+		<ScrollAnimations animation="fadeIn" delay={200}>
 			<ServicesSection />
 		</ScrollAnimations>
 
 		<!-- Process Section -->
-		<ScrollAnimations animation="slideInUp" delay={300} debug={true}>
+		<ScrollAnimations animation="slideInUp" delay={300}>
 			<PageSection
 				id="process"
 				title="Our Process"
@@ -74,12 +72,7 @@ const ANIMATION_CONFIG = {
 		</ScrollAnimations>
 
 		<!-- Customer Reviews Section -->
-		<ScrollAnimations 
-			mode="custom" 
-			customAnimation="reviewsScrollHijack"
-			animationConfig={{ debug: true }}
-			debug={true}
-		>
+		<ScrollAnimations mode="trigger" animation="slideInLeft" delay={100}>
 			<ReviewsSection />
 		</ScrollAnimations>
 
@@ -159,17 +152,12 @@ const ANIMATION_CONFIG = {
 	// Initialize custom animations with scroll hijacking
 	function initCustomAnimations() {
 		const config = {
-			enabled: true,
-			debugMode: true, // ENABLED for testing
+			enabled: false, // DISABLED - using simple scroll-controlled reviews instead
+			debugMode: false,
 			respectReducedMotion: true
 		};
 
 		const customAnimationManager = CustomAnimationManager.initialize(config);
-		
-		if (config.debugMode) {
-			console.log('🎨 Custom animations initialized', config);
-		}
-
 		(window as any).customAnimationManager = customAnimationManager;
 	}
 
