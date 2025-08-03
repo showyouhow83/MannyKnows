@@ -16,10 +16,10 @@ import ChatBox from '../components/ui/ChatBox.astro';
 const ANIMATION_CONFIG = {
 	// Search bar apple gradient animation
 	searchGradientEnabled: true,
-	
+
 	// Search animation timing
 	searchScrollDelay: 0, // ms delay before removing gradient on scroll
-	
+
 	// Debug mode - logs animation state changes
 	debugMode: false
 };
@@ -33,7 +33,7 @@ const ANIMATION_CONFIG = {
 		<!-- Header Container with Subtle Background -->
 		<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
             <!-- Navigation -->
-            <NavBar 
+            <NavBar
 				animationConfig={{
 					searchGradientEnabled: ANIMATION_CONFIG.searchGradientEnabled,
 					debugMode: ANIMATION_CONFIG.debugMode,

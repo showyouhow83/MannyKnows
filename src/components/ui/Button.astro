@@ -1,0 +1,226 @@
+---
+export interface Props {
+  href: string;
+  text: string;
+  subtext?: string;
+  id?: string;
+  
+  // Styling variants
+  variant?: 'primary' | 'apple' | 'green' | 'urgent' | 'emoji' | 'theme-aware' | 'cta';
+  size?: 'sm' | 'md' | 'lg';
+  
+  // Icon and emoji support
+  icon?: string;
+  arrow?: boolean; // For CTA buttons with arrow
+  emoji?: string;
+  emojiAnimation?: 'subtle' | 'normal' | 'dramatic' | 'extreme';
+  
+  // Sparkle/pixel effects
+  sparkles?: boolean;
+  sparkleTheme?: 'light' | 'dark' | 'blue' | 'green' | 'orange' | 'purple' | 'cyan' | 'none';
+  pixelColors?: string; // Override sparkleTheme with custom colors
+  
+  // Advanced styling
+  className?: string;
+  yellowText?: boolean;
+}
+
+const {
+  href,
+  text,
+  subtext,
+  id,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  arrow = false,
+  emoji,
+  emojiAnimation = 'normal',
+  sparkles = true,
+  sparkleTheme = 'light',
+  pixelColors,
+  className = "",
+  yellowText = false
+} = Astro.props;
+
+// Size configurations
+const sizeClasses = {
+  sm: 'py-2 px-4 text-sm h-10',
+  md: 'py-3 px-6 text-sm h-12',
+  lg: 'py-4 px-8 text-lg h-14'
+};
+
+// Variant style configurations
+const variantClasses = {
+  primary: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/40',
+  apple: 'bg-gradient-to-r from-[#0071e3] via-[#ff4faa] to-[#10d1ff] text-white shadow-lg shadow-blue-500/40',
+  green: 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/40',
+  urgent: 'bg-red-500 text-white animate-pulse shadow-xl shadow-red-500/60 border-4 border-yellow-400',
+  emoji: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/40',
+  cta: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl text-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient',
+  'theme-aware': '' // Special handling below
+};
+
+// Sparkle theme configurations
+const sparkleThemes = {
+  light: "#ffffff, #f8fafc, #e2e8f0",
+  dark: "#000000, #1f2937, #374151", 
+  blue: "#6366f1, #3b82f6, #4f46e5",
+  green: "#22c55e, #10b981, #16a34a",
+  orange: "#f97316, #eab308, #ea580c",
+  purple: "#a855f7, #ec4899, #9333ea",
+  cyan: "#14b8a6, #06b6d4, #0d9488",
+  none: ""
+};
+
+// Determine final sparkle colors (disable sparkles for CTA variant)
+const finalSparkleColors = !sparkles || variant === 'cta' ? "" : (pixelColors !== undefined ? pixelColors : sparkleThemes[sparkleTheme]);
+
+// Special theme-aware styling
+const isThemeAware = variant === 'theme-aware';
+const themeAwareClasses = {
+  light: 'bg-white border border-black/20 text-black',
+  dark: 'bg-black border border-white/20 text-white'
+};
+const themeAwareSparkles = {
+  light: "#000000, #1f2937, #374151",
+  dark: "#ffffff, #f8fafc, #e2e8f0"
+};
+
+//Base button classes
+const sizeClass = variant === 'cta' ? '' : sizeClasses[size]; // CTA has its own sizing
+const borderRadius = variant === 'cta' ? '' : 'rounded-lg'; // CTA has its own border radius
+const hoverTransform = variant === 'cta' ? '' : 'hover:scale-105 hover:-translate-y-0.5'; // CTA has its own hover
+const flexType = variant === 'cta' ? 'inline-flex' : 'flex'; // CTA should be inline-flex
+const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${flexType} items-center justify-center relative transition-all duration-300 ${hoverTransform} group`;
+---
+
+{isThemeAware ? (
+  <!-- Theme-Aware Button: Two versions for light/dark modes -->
+  <>
+    <!-- Light Mode Version -->
+    <a 
+      href={href}
+      id={id ? `${id}-light` : undefined}
+      class={`light-mode-only ${themeAwareClasses.light} ${baseClasses} overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+    >
+      {sparkles && (
+        <pixel-canvas 
+          data-colors={finalSparkleColors || themeAwareSparkles.light}
+          data-gap="4" 
+          data-speed="60" 
+          data-no-focus 
+          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.35 !important;"
+        ></pixel-canvas>
+      )}
+      <div class="relative z-10 flex flex-col items-center">
+        <span class="font-semibold relative z-10">{text}</span>
+        {subtext && <span class="text-[10px] opacity-80 leading-none relative z-10">{subtext}</span>}
+      </div>
+    </a>
+
+    <!-- Dark Mode Version -->
+    <a 
+      href={href}
+      id={id ? `${id}-dark` : undefined}
+      class={`dark-mode-only ${themeAwareClasses.dark} ${baseClasses} overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+    >
+      {sparkles && (
+        <pixel-canvas 
+          data-colors={finalSparkleColors || themeAwareSparkles.dark}
+          data-gap="4" 
+          data-speed="60" 
+          data-no-focus 
+          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.4 !important;"
+        ></pixel-canvas>
+      )}
+      <div class="relative z-10 flex flex-col items-center">
+        <span class="font-semibold relative z-10">{text}</span>
+        {subtext && <span class="text-[10px] opacity-80 leading-none relative z-10">{subtext}</span>}
+      </div>
+    </a>
+  </>
+) : (
+  <!-- Regular Button: Single version with variant styling -->
+  <a
+    href={href}
+    id={id}
+    class={`${variantClasses[variant]} ${baseClasses} ${className}`}
+  >
+    {finalSparkleColors && variant !== 'cta' && (
+      <pixel-canvas
+        data-colors={finalSparkleColors}
+        data-gap="5"
+        data-speed="75"
+        data-no-focus
+        style="position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; overflow: hidden;"
+      ></pixel-canvas>
+    )}
+
+    <span class={`relative z-10 flex items-center ${variant === 'cta' ? 'gap-3' : 'gap-2'}`}>
+      {icon && <Fragment set:html={icon} />}
+      {variant === 'cta' ? (
+        <>
+          <span>{text}</span>
+          {arrow && (
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          )}
+        </>
+      ) : (
+        <div class="flex flex-col items-center">
+          <span class={`font-semibold leading-tight transition-all duration-300 hover:drop-shadow-lg ${variant === 'emoji' ? 'group-hover:text-yellow-300' : ''}`}>{text}</span>
+          {subtext && <span class={`text-xs opacity-80 leading-tight transition-all duration-300 hover:drop-shadow-md ${variant === 'emoji' ? 'group-hover:text-yellow-200' : ''}`}>{subtext}</span>}
+        </div>
+      )}
+    </span>
+
+    {(emoji && variant === 'emoji') && (
+      <span 
+        class={`absolute top-1/2 right-0 text-2xl flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-1 -translate-y-1/2 group-hover:animate-emoji-sway`}
+        style={`--sway-intensity: ${emojiAnimation === 'subtle' ? '0.3' : emojiAnimation === 'normal' ? '1' : emojiAnimation === 'dramatic' ? '2' : '3'};`}
+      >
+        {emoji}
+      </span>
+    )}
+  </a>
+)}
+
+<style>
+  /* Theme-aware visibility controls */
+  .light-mode-only {
+    display: flex;
+  }
+  .dark-mode-only {
+    display: none;
+  }
+
+  :root.dark .light-mode-only {
+    display: none;
+  }
+  :root.dark .dark-mode-only {
+    display: flex;
+  }
+
+  /* Button gradient animation for CTA variant */
+  .animate-button-gradient {
+    background-size: 400% 400%;
+    animation: button-gradient 4s ease-in-out infinite;
+  }
+
+  @keyframes button-gradient {
+    0%, 100% { 
+      background-position: 0% 50%; 
+    }
+    25% { 
+      background-position: 100% 50%; 
+    }
+    50% { 
+      background-position: 100% 100%; 
+    }
+    75% { 
+      background-position: 0% 100%; 
+    }
+  }
+</style>

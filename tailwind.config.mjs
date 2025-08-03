@@ -60,8 +60,10 @@ export default {
         'subtle-gradient-diffusion': 'subtle-gradient-diffusion 8s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
         'button-pulse': 'button-pulse 1.5s ease-in-out infinite',
+        'button-gradient': 'button-gradient 6s ease-in-out infinite',
         'green-gradient-flow': 'green-gradient-flow 3s ease-in-out infinite',
         'green-shimmer': 'green-shimmer 3s ease-in-out infinite',
+        'emoji-sway': 'emoji-sway 1.5s ease-in-out infinite',
       },
       keyframes: {
         'gradient-shift': {
@@ -92,6 +94,10 @@ export default {
           '0%, 100%': { 'box-shadow': '0 10px 30px rgba(255, 79, 170, 0.4)' },
           '50%': { 'box-shadow': '0 10px 40px rgba(255, 79, 170, 0.6)' }
         },
+        'button-gradient': {
+          '0%, 100%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' }
+        },
         'green-gradient-flow': {
           '0%': { 'background-position': '0% 50%' },
           '50%': { 'background-position': '100% 50%' },
@@ -101,6 +107,20 @@ export default {
           '0%': { transform: 'translateX(-100%)', opacity: '0' },
           '50%': { transform: 'translateX(0%)', opacity: '1' },
           '100%': { transform: 'translateX(100%)', opacity: '0' }
+        },
+        'emoji-sway': {
+          '0%, 100%': { 
+            transform: 'translate(0.25rem, -50%) rotate(calc(-6deg * var(--sway-intensity, 1))) translateY(calc(0px * var(--sway-intensity, 1)))' 
+          },
+          '25%': { 
+            transform: 'translate(0.25rem, -50%) rotate(calc(8deg * var(--sway-intensity, 1))) translateY(calc(-8px * var(--sway-intensity, 1)))' 
+          },
+          '50%': { 
+            transform: 'translate(0.25rem, -50%) rotate(calc(-4deg * var(--sway-intensity, 1))) translateY(calc(-4px * var(--sway-intensity, 1)))' 
+          },
+          '75%': { 
+            transform: 'translate(0.25rem, -50%) rotate(calc(6deg * var(--sway-intensity, 1))) translateY(calc(-12px * var(--sway-intensity, 1)))' 
+          }
         }
       },
       backgroundSize: {
