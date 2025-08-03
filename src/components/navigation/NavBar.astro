@@ -1,6 +1,5 @@
 ---
-import ThemeAwareButton from '../ThemeAwareButton.astro';
-import GradientButton from '../ui/GradientButton.astro';
+import Button from '../ui/Button.astro';
 
 interface AnimationConfig {
   searchGradientEnabled?: boolean;
@@ -26,7 +25,7 @@ const navLinks = [
   { href: "#services", label: "Services" },
   { href: "#process", label: "Process" },
   { href: "#case-study", label: "Case Study" },
-  { href: "#customer-success-stories", label: "Success" }
+  { href: "#reviews", label: "Success" }
 ];
 ---
 
@@ -73,18 +72,22 @@ const navLinks = [
 
       <!-- Navigation Actions -->
       <div class="flex items-center gap-2 relative">
-        <ThemeAwareButton
+        <Button
           href="#instant-quote"
           text="FREE 360 PHOTO"
           subtext="CLAIM NOW"
           id="instant-quote-btn"
+          variant="theme-aware"
         />
 
-        <GradientButton
+        <Button
           href="#apple-quote"
           text="FREE WEBSITE"
           subtext="EXPIRING SOON"
-          variant="apple"
+          variant="emoji"
+          emoji="🚀"
+          emojiAnimation="subtle"
+          sparkles={false}
           className="text-[10px] text-white/80 leading-none"
         />
 

@@ -91,6 +91,39 @@ const blogArticles = [
           </a>
         </div>
       </div>
+      <div>
+          <!-- Newsletter Signup -->
+        <div class="bg-gradient-to-br from-blue-100/80 via-purple-100/60 to-pink-100/80 dark:from-primary-blue/10 dark:via-primary-pink/5 dark:to-primary-blue/10 rounded-xl p-4 backdrop-blur-sm border border-blue-300/30 dark:border-white/10 transition-colors duration-300">
+          <h4 class="apple-gradient-text text-lg font-bold text-gray-800 dark:text-white mb-2 transition-colors duration-300">
+            AI Insights
+          </h4>
+          <p class="text-gray-700 dark:text-white/80 text-xs mb-4 leading-relaxed transition-colors duration-300">
+            Get exclusive tips and trends delivered to your inbox.
+          </p>
+          <form class="space-y-3" data-np-autofill-form-type="subscribe" data-np-checked="1" data-np-watching="1">
+            <input 
+              type="email" 
+              placeholder="Your email" 
+              class="w-full px-3 py-2 bg-white/80 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 rounded-lg text-gray-800 dark:text-white placeholder-gray-600 dark:placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 transition-all duration-300 text-sm" 
+              required 
+              data-np-autofill-field-type="email"
+            />
+            <button 
+              type="submit" 
+              class="w-full px-4 py-2 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-medium rounded-lg hover:from-primary-blue/80 hover:to-primary-pink/80 transition-all duration-300 transform hover:scale-105 text-sm animate-button-gradient"
+            >
+              Subscribe
+            </button>
+            <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-white/60 transition-colors duration-300">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4"></path>
+                <circle cx="12" cy="12" r="9"></circle>
+              </svg>
+              No spam. Unsubscribe anytime.
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <!-- Column 2: Latest AI Insights Blog Articles (1 column = 33%) -->
@@ -108,37 +141,7 @@ const blogArticles = [
 
     <!-- Column 3: Newsletter Signup (1 column = 33%) -->
     <div class="lg:col-span-1 space-y-6 px-4 lg:px-6">
-      <!-- Newsletter Signup -->
-      <div class="bg-gradient-to-br from-blue-100/80 via-purple-100/60 to-pink-100/80 dark:from-primary-blue/10 dark:via-primary-pink/5 dark:to-primary-blue/10 rounded-xl p-4 backdrop-blur-sm border border-blue-300/30 dark:border-white/10 transition-colors duration-300">
-        <h4 class="apple-gradient-text text-lg font-bold text-gray-800 dark:text-white mb-2 transition-colors duration-300">
-          AI Insights
-        </h4>
-        <p class="text-gray-700 dark:text-white/80 text-xs mb-4 leading-relaxed transition-colors duration-300">
-          Get exclusive tips and trends delivered to your inbox.
-        </p>
-        <form class="space-y-3" data-np-autofill-form-type="subscribe" data-np-checked="1" data-np-watching="1">
-          <input 
-            type="email" 
-            placeholder="Your email" 
-            class="w-full px-3 py-2 bg-white/80 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 rounded-lg text-gray-800 dark:text-white placeholder-gray-600 dark:placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 transition-all duration-300 text-sm" 
-            required 
-            data-np-autofill-field-type="email"
-          />
-          <button 
-            type="submit" 
-            class="w-full px-4 py-2 bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-medium rounded-lg hover:from-primary-blue/80 hover:to-primary-pink/80 transition-all duration-300 transform hover:scale-105 text-sm animate-button-gradient"
-          >
-            Subscribe
-          </button>
-          <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-white/60 transition-colors duration-300">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 12l2 2 4-4"></path>
-              <circle cx="12" cy="12" r="9"></circle>
-            </svg>
-            No spam. Unsubscribe anytime.
-          </div>
-        </form>
-      </div>
+      
     </div>
   </div>
 </div>
