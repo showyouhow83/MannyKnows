@@ -58,6 +58,7 @@
               type="checkbox" 
               id="themeToggle" 
               class="sr-only peer"
+              checked
             >
             <div class="relative w-14 h-7 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300/50 dark:peer-focus:ring-blue-800/50 rounded-full peer transition-all duration-300 peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all after:duration-300 peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600 shadow-lg">
               <!-- Sun icon -->
@@ -294,8 +295,8 @@
     function loadSettings() {
       const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
       const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
-      const themeDark = localStorage.getItem('theme-dark') === 'true' || 
-                       (!localStorage.getItem('theme-dark') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      // Default to dark mode unless explicitly set to light
+      const themeDark = localStorage.getItem('theme-dark') !== 'false';
       
       if (marqueeToggle) {
         marqueeToggle.checked = marqueeEnabled;
@@ -317,7 +318,7 @@
       // Settings are now saved in real-time, this just tracks the save button click
       const marqueeEnabled = marqueeToggle?.checked ?? true;
       const colorfulTitlesEnabled = colorfulTitlesToggle?.checked ?? true;
-      const themeDark = themeToggle?.checked ?? false;
+      const themeDark = themeToggle?.checked ?? true; // Default to dark mode
       
       // Track settings save button click
       if (typeof posthog !== 'undefined') {
