@@ -8,6 +8,7 @@ import ServicesSection from '../components/sections/ServicesSection.astro';
 import ReviewsSection from '../components/sections/ReviewsSection.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
+import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import ScrollAnimations from '../components/ui/ScrollAnimations.astro';
 
@@ -46,7 +47,7 @@ const ANIMATION_CONFIG = {
 			/>
 
             <!-- Hero Section -->
-            <ScrollAnimations animation="slideInUp" delay={500} debug={true}>
+            <ScrollAnimations animation="slideInUp" delay={500}>
                 <HeroSection
                     title="Scale your"
                     highlightedText="business operations"
@@ -68,6 +69,7 @@ const ANIMATION_CONFIG = {
 				subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
 				variant="alternate"
 			>
+				<ProcessSectionAlt />
 			</PageSection>
 		</ScrollAnimations>
 
@@ -87,7 +89,6 @@ const ANIMATION_CONFIG = {
 <script>
 	import { ScrollAnimationManager } from '../utils/scrollAnimations.ts';
 	import { ScrollDrivenManager } from '../utils/scrollDriven.ts';
-	import { CustomAnimationManager } from '../utils/customAnimationManager.ts';
 
 	// Navigation visibility tracking for floating dock
 	function initNavigationTracking() {
@@ -118,7 +119,7 @@ const ANIMATION_CONFIG = {
 		const config = {
 			enabled: true,
 			defaultThreshold: 0.1,
-			debugMode: true, // ENABLED for testing
+			debugMode: false, // DISABLED for production
 			respectReducedMotion: true
 		};
 
@@ -135,7 +136,7 @@ const ANIMATION_CONFIG = {
 	function initScrollDrivenAnimations() {
 		const config = {
 			enabled: true,
-			debugMode: true, // ENABLED for testing
+			debugMode: false, // DISABLED for production
 			respectReducedMotion: true,
 			throttleMs: 16 // ~60fps
 		};
@@ -143,22 +144,10 @@ const ANIMATION_CONFIG = {
 		const scrollDrivenManager = ScrollDrivenManager.initialize(config);
 		
 		if (config.debugMode) {
-			console.log('� Scroll-driven animations initialized', config);
+			console.log('🔄 Scroll-driven animations initialized', config);
 		}
 
 		(window as any).scrollDrivenManager = scrollDrivenManager;
-	}
-
-	// Initialize custom animations with scroll hijacking
-	function initCustomAnimations() {
-		const config = {
-			enabled: false, // DISABLED - using simple scroll-controlled reviews instead
-			debugMode: false,
-			respectReducedMotion: true
-		};
-
-		const customAnimationManager = CustomAnimationManager.initialize(config);
-		(window as any).customAnimationManager = customAnimationManager;
 	}
 
 	// Initialize when DOM is loaded
@@ -166,6 +155,5 @@ const ANIMATION_CONFIG = {
 		initNavigationTracking();
 		initScrollAnimations();
 		initScrollDrivenAnimations();
-		initCustomAnimations();
 	});
 </script>
