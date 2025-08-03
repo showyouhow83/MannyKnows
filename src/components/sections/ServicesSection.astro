@@ -1,6 +1,6 @@
 ---
 import ServiceCard from '../ui/ServiceCard.astro';
-import Section from '../layout/Section.astro';
+import SparkleSection from '../layout/SparkleSection.astro';
 import Container from '../layout/Container.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 
@@ -97,7 +97,7 @@ const services = [
 ];
 ---
 
-<Section id="services" variant="default" hasOverflow={true}>
+<SparkleSection id="services" variant="subtle" hasOverflow={true}>
   <Container className="relative z-10">
     <SectionHeader
       title="Artificial Intelligence"
@@ -138,7 +138,7 @@ const services = [
       </div>
     </div>
   </Container>
-</Section>
+</SparkleSection>
 
 <style>
   /* Services responsive styles */

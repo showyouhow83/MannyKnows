@@ -1,22 +1,29 @@
 ---
 export interface Props {
   id?: string;
-  variant?: 'default' | 'dark' | 'gradient';
+  variant?: 'default' | 'dark' | 'gradient' | 'sparkles';
   className?: string;
   hasOverflow?: boolean;
+  sparkleColors?: string;
+  sparkleGap?: string;
+  sparkleSpeed?: string;
 }
 
 const {
   id,
   variant = 'default',
   className = "",
-  hasOverflow = false
+  hasOverflow = false,
+  sparkleColors = "#ffffff, #f8fafc, #e2e8f0", // Default light sparkles for dark backgrounds
+  sparkleGap = "8",
+  sparkleSpeed = "60"
 } = Astro.props;
 
 const variantClasses = {
   default: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
   dark: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30',
-  gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900'
+  gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900',
+  sparkles: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90'
 };
 
 const overflowClass = hasOverflow ? 'overflow-hidden' : '';
@@ -26,5 +33,48 @@ const overflowClass = hasOverflow ? 'overflow-hidden' : '';
   id={id}
   class={`relative py-16 ${variantClasses[variant]} border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${overflowClass} ${className}`}
 >
-  <slot />
+  {variant === 'sparkles' && (
+    <>
+      <!-- Light Mode Sparkles (dark sparkles on light background) -->
+      <pixel-canvas
+        class="light-mode-only absolute inset-0 z-0 pointer-events-none"
+        data-colors="#000000, #1f2937, #374151"
+        data-gap={sparkleGap}
+        data-speed={sparkleSpeed}
+        data-no-focus
+        style="opacity: 0.15 !important;"
+      ></pixel-canvas>
+      
+      <!-- Dark Mode Sparkles (light sparkles on dark background) -->
+      <pixel-canvas
+        class="dark-mode-only absolute inset-0 z-0 pointer-events-none"
+        data-colors={sparkleColors}
+        data-gap={sparkleGap}
+        data-speed={sparkleSpeed}
+        data-no-focus
+        style="opacity: 0.3 !important;"
+      ></pixel-canvas>
+    </>
+  )}
+  
+  <div class="relative z-10">
+    <slot />
+  </div>
 </section>
+
+<style>
+  /* Show/hide based on theme - same pattern as ThemeAwareButton */
+  .light-mode-only {
+    display: block;
+  }
+  .dark-mode-only {
+    display: none;
+  }
+
+  :root.dark .light-mode-only {
+    display: none;
+  }
+  :root.dark .dark-mode-only {
+    display: block;
+  }
+</style>
