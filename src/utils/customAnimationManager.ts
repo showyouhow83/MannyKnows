@@ -90,12 +90,24 @@ export class CustomAnimationManager {
 
   private startScrollListener() {
     let ticking = false;
+    let hijackTimeoutId: number | null = null;
 
     const handleScroll = (event: Event) => {
+      // Clear any pending hijack timeout
+      if (hijackTimeoutId) {
+        clearTimeout(hijackTimeoutId);
+        hijackTimeoutId = null;
+      }
+
       // Check if we should prevent default scroll behavior
+      // Add a small delay to prevent overly aggressive hijacking
       if (this.shouldHijackScroll()) {
-        event.preventDefault();
-        this.handleHijackedScroll();
+        hijackTimeoutId = window.setTimeout(() => {
+          if (this.shouldHijackScroll()) {
+            event.preventDefault();
+            this.handleHijackedScroll();
+          }
+        }, 10); // Small delay to prevent immediate hijacking
       }
 
       if (!ticking) {
@@ -107,7 +119,7 @@ export class CustomAnimationManager {
       }
     };
 
-    // Use passive: false to allow preventDefault
+    // Use passive: false to allow preventDefault, but be more careful about when we use it
     window.addEventListener('scroll', handleScroll, { passive: false });
     window.addEventListener('wheel', handleScroll, { passive: false });
     
@@ -123,7 +135,7 @@ export class CustomAnimationManager {
       
       const progress = this.calculateScrollProgress(element);
       
-      // More precise visibility check
+      // More conservative visibility check
       const rect = progress.bounds;
       const viewportHeight = window.innerHeight;
       
@@ -134,8 +146,9 @@ export class CustomAnimationManager {
       const elementHeight = rect.height;
       const visibilityRatio = visibleHeight / Math.min(elementHeight, viewportHeight);
       
-      // Only hijack when the section is substantially visible (70%+)
-      if (visibilityRatio >= 0.7) {
+      // Only hijack when the section is substantially visible (80%+) and animation is active
+      const isActive = (element as HTMLElement).dataset.animationActive === 'true';
+      if (visibilityRatio >= 0.8 && isActive) {
         const animation = customAnimations[data.animationName];
         if (animation.shouldReleaseScroll) {
           const shouldRelease = animation.shouldReleaseScroll(
@@ -145,12 +158,10 @@ export class CustomAnimationManager {
           );
           if (!shouldRelease) {
             if (data.config.debug) {
-              this.log(`Hijacking scroll - visibility: ${(visibilityRatio * 100).toFixed(1)}%`);
+              this.log(`Hijacking scroll - visibility: ${(visibilityRatio * 100).toFixed(1)}%, active: ${isActive}`);
             }
             return true; // Hijack scroll
           }
-        } else {
-          return true; // Default hijack when substantially in view
         }
       }
     }

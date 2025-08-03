@@ -60,24 +60,24 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       element.dataset.currentReview = '0';
       element.dataset.animationActive = 'false';
       
-      // PRESERVE existing styles - don't change the layout!
-      // Just ensure smooth transitions for transform only
-      reviewsContainer.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      // ONLY add smooth transition - don't touch any layout properties!
+      const originalTransition = reviewsContainer.style.transition;
+      reviewsContainer.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Smoother easing
       
-      // Don't change display, width, or card positioning - keep existing layout!
+      // Store original transition so we can restore it
+      element.dataset.originalTransition = originalTransition;
       
       if (config.debug) {
         console.log('🎬 Reviews scroll hijack setup:', {
           totalReviews: reviewCards.length,
           container: reviewsContainer,
-          preservedLayout: 'existing styles maintained'
+          layoutPreserved: 'no layout changes made'
         });
       }
     },
     
     animate: (element: HTMLElement, progress: ScrollProgress, config: any) => {
       // Only hijack when the ENTIRE section is substantially in view
-      // Not just a peek - wait until user has scrolled to the reviews section
       const sectionHeight = progress.bounds.height;
       const viewportHeight = window.innerHeight;
       
@@ -96,43 +96,65 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       const totalReviews = parseInt(element.dataset.totalReviews || '0');
       if (totalReviews === 0) return;
       
-      // Calculate which review should be shown based on scroll progress within the section
-      // Map progress 0-1 to review index 0-(totalReviews-1)
-      const reviewIndex = Math.floor(progress.progress * totalReviews);
-      const clampedIndex = Math.max(0, Math.min(totalReviews - 1, reviewIndex));
+      // SLOWER, more controlled progression
+      // Instead of direct mapping, use segments for each review
+      const reviewSegmentSize = 1 / totalReviews;
+      const currentSegment = Math.floor(progress.progress / reviewSegmentSize);
+      const reviewIndex = Math.max(0, Math.min(totalReviews - 1, currentSegment));
       
+      // Add hysteresis to prevent rapid switching
       const currentReview = parseInt(element.dataset.currentReview || '0');
+      const threshold = 0.1; // Require 10% progress into next segment to switch
       
-      // Only update if review changed (prevents unnecessary DOM updates)
-      if (clampedIndex !== currentReview) {
+      let targetReview = reviewIndex;
+      
+      // Only change review if we've moved significantly
+      if (reviewIndex > currentReview) {
+        const progressInSegment = (progress.progress % reviewSegmentSize) / reviewSegmentSize;
+        if (progressInSegment < threshold) {
+          targetReview = currentReview; // Stay on current review
+        }
+      } else if (reviewIndex < currentReview) {
+        const progressInSegment = (progress.progress % reviewSegmentSize) / reviewSegmentSize;
+        if (progressInSegment > (1 - threshold)) {
+          targetReview = currentReview; // Stay on current review
+        }
+      }
+      
+      // Only update if review actually changed
+      if (targetReview !== currentReview) {
         const reviewsContainer = element.querySelector('[data-reviews-container]') as HTMLElement;
         if (reviewsContainer) {
-          // Get the actual width of one review card (including gaps)
-          const firstCard = reviewsContainer.querySelector('[data-review-card]') as HTMLElement;
-          if (firstCard) {
-            const cardRect = firstCard.getBoundingClientRect();
+          // Get actual card dimensions to maintain spacing
+          const cards = reviewsContainer.querySelectorAll('[data-review-card]');
+          if (cards.length > 0) {
+            const firstCard = cards[0] as HTMLElement;
             const containerRect = reviewsContainer.getBoundingClientRect();
+            const cardRect = firstCard.getBoundingClientRect();
             
-            // Calculate actual card width including gap
-            const cardWidth = cardRect.width;
-            const gap = 32; // 2rem = 32px gap from the existing layout
-            const moveDistance = cardWidth + gap;
+            // Calculate the actual distance between cards (including gap)
+            let cardSpacing = cardRect.width;
+            if (cards.length > 1) {
+              const secondCard = cards[1] as HTMLElement;
+              const secondCardRect = secondCard.getBoundingClientRect();
+              cardSpacing = secondCardRect.left - cardRect.left;
+            }
             
-            // Calculate transform to show the current review
-            const translateX = -(clampedIndex * moveDistance);
+            // Calculate transform maintaining exact spacing
+            const translateX = -(targetReview * cardSpacing);
             reviewsContainer.style.transform = `translateX(${translateX}px)`;
             
-            element.dataset.currentReview = clampedIndex.toString();
+            element.dataset.currentReview = targetReview.toString();
             element.dataset.animationActive = 'true';
             
             if (config.debug) {
               console.log('🎬 Reviews scroll progress:', {
                 visibilityRatio: visibilityRatio.toFixed(2),
-                progress: progress.progress.toFixed(3),
-                reviewIndex: clampedIndex,
+                rawProgress: progress.progress.toFixed(3),
+                segment: currentSegment,
+                targetReview,
                 translateX: translateX.toFixed(1),
-                cardWidth,
-                moveDistance
+                cardSpacing: cardSpacing.toFixed(1)
               });
             }
           }
@@ -145,8 +167,7 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       const currentReview = parseInt(element.dataset.currentReview || '0');
       const animationActive = element.dataset.animationActive === 'true';
       
-      // Release scroll when we've shown all reviews and progress > 0.95
-      // Or if the section is no longer substantially visible
+      // Calculate section visibility more precisely
       const sectionHeight = progress.bounds.height;
       const viewportHeight = window.innerHeight;
       const visibleTop = Math.max(0, Math.min(progress.bounds.bottom, viewportHeight));
@@ -154,22 +175,44 @@ export const customAnimations: Record<string, CustomAnimationDefinition> = {
       const visibleHeight = visibleTop - visibleBottom;
       const visibilityRatio = visibleHeight / Math.min(sectionHeight, viewportHeight);
       
-      return (currentReview >= (totalReviews - 1) && progress.progress > 0.95) || 
-             (visibilityRatio < 0.3) || 
-             !animationActive;
+      // Release scroll if:
+      // 1. We've shown all reviews AND progress is high
+      // 2. OR section visibility drops below 50% (user scrolling away)
+      // 3. OR animation is not active
+      const allReviewsShown = currentReview >= (totalReviews - 1);
+      const highProgress = progress.progress > 0.95;
+      const lowVisibility = visibilityRatio < 0.5;
+      const notActive = !animationActive;
+      
+      const shouldRelease = (allReviewsShown && highProgress) || lowVisibility || notActive;
+      
+      if (config.debug && shouldRelease) {
+        console.log('🎬 Releasing scroll:', {
+          allReviewsShown,
+          highProgress,
+          lowVisibility,
+          notActive,
+          visibilityRatio: visibilityRatio.toFixed(2),
+          progress: progress.progress.toFixed(3)
+        });
+      }
+      
+      return shouldRelease;
     },
     
     cleanup: (element: HTMLElement, config: any) => {
       const reviewsContainer = element.querySelector('[data-reviews-container]') as HTMLElement;
       if (reviewsContainer) {
+        // Restore original transition
+        const originalTransition = element.dataset.originalTransition || '';
+        reviewsContainer.style.transition = originalTransition;
         reviewsContainer.style.transform = '';
-        reviewsContainer.style.transition = '';
       }
       
       element.dataset.animationActive = 'false';
       
       if (config.debug) {
-        console.log('🎬 Reviews scroll hijack cleanup');
+        console.log('🎬 Reviews scroll hijack cleanup - styles restored');
       }
     }
   },
