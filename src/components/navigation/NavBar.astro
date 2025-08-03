@@ -2,11 +2,25 @@
 import ThemeAwareButton from '../ThemeAwareButton.astro';
 import GradientButton from '../ui/GradientButton.astro';
 
-interface Props {
-  className?: string;
+interface AnimationConfig {
+  searchGradientEnabled?: boolean;
+  debugMode?: boolean;
+  searchScrollDelay?: number;
 }
 
-const { className = "" } = Astro.props;
+interface Props {
+  className?: string;
+  animationConfig?: AnimationConfig;
+}
+
+const { 
+  className = "",
+  animationConfig = {
+    searchGradientEnabled: true,
+    debugMode: false,
+    searchScrollDelay: 0
+  }
+} = Astro.props;
 
 const navLinks = [
   { href: "#services", label: "Services" },
@@ -46,7 +60,7 @@ const navLinks = [
         <input
           id="search-input"
           type="search"
-          placeholder="Search services..."
+          placeholder="Browse services catalog..."
           class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
         />
         <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
@@ -194,3 +208,76 @@ const navLinks = [
     }
   }
 </style>
+
+<script define:vars={{ animationConfig }}>
+  // Search input apple gradient animation
+  function initSearchAnimation() {
+    if (!animationConfig.searchGradientEnabled) {
+      if (animationConfig.debugMode) console.log('Search gradient animation disabled');
+      return;
+    }
+
+    const searchInput = document.getElementById('search-input');
+    if (!searchInput) return;
+
+    if (animationConfig.debugMode) console.log('Search gradient animation enabled');
+
+    // Add gradient on focus
+    const addGradient = () => {
+      searchInput.classList.add('apple-gradient-active');
+      if (animationConfig.debugMode) console.log('Search gradient activated');
+    };
+
+    // Remove gradient
+    const removeGradient = () => {
+      searchInput.classList.remove('apple-gradient-active');
+      if (animationConfig.debugMode) console.log('Search gradient deactivated');
+    };
+
+    // Event listeners
+    searchInput.addEventListener('focus', addGradient);
+    searchInput.addEventListener('blur', removeGradient);
+    
+    // Remove gradient on scroll (user is moving away)
+    let scrollTimeout;
+    const handleScroll = () => {
+      if (searchInput.classList.contains('apple-gradient-active')) {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(removeGradient, animationConfig.searchScrollDelay);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Apply animation settings
+    const body = document.body;
+    if (!animationConfig.searchGradientEnabled) {
+      body.classList.add('search-gradient-disabled');
+      if (animationConfig.debugMode) console.log('Search gradient disabled via CSS class');
+    } else {
+      body.classList.remove('search-gradient-disabled');
+    }
+  }
+
+  // Developer utility - accessible from browser console
+  if (!window.MannyKnowsNavigation) {
+    window.MannyKnowsNavigation = {
+      searchAnimation: {
+        config: animationConfig,
+        toggle: () => {
+          animationConfig.searchGradientEnabled = !animationConfig.searchGradientEnabled;
+          console.log(`Search gradient: ${animationConfig.searchGradientEnabled ? 'enabled' : 'disabled'}`);
+          console.log('Refresh page to see changes');
+        },
+        status: () => {
+          console.table(animationConfig);
+        }
+      }
+    };
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initSearchAnimation();
+  }, { passive: true });
+</script>

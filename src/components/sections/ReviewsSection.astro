@@ -129,10 +129,10 @@ const stats = [
             ))}
           </div>
         </div>
-        
+
         <!-- Desktop: Multi-card view -->
         <div class="hidden md:block px-16">
-          <div id="reviewsContainer" class="flex transition-transform duration-500 ease-in-out">
+          <div id="reviewsContainer" class="flex gap-8 transition-transform duration-500 ease-in-out">
             {reviews.map((review) => (
               <ReviewCard {...review} />
             ))}
