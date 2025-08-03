@@ -84,10 +84,11 @@ const stats = [
 
 <Section id="reviews" variant="default" hasOverflow={true}>
   <Container className="relative z-10">
-    <SectionHeader
-      title="Customer Success Stories"
-      subtitle="Discover how businesses like yours achieved remarkable growth with our AI-powered e-commerce solutions."
-    />
+    <div id="reviews-section">
+      <SectionHeader
+        title="Customer Success Stories"
+        subtitle="Discover how businesses like yours achieved remarkable growth with our AI-powered e-commerce solutions."
+      />
 
     <!-- Reviews Carousel Container -->
     <div class="relative mb-12">
@@ -96,7 +97,7 @@ const stats = [
       <div class="py-4">
         <!-- Mobile: Single card view -->
         <div class="block md:hidden px-8">
-          <div id="reviewsContainerMobile" class="flex transition-transform duration-500 ease-in-out">
+          <div id="reviewsContainerMobile" class="flex transition-transform duration-300 ease-in-out">
             {reviews.map((review) => (
               <div class="w-full flex-shrink-0 px-2">
                 <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(14,165,233,0.35)] hover:border-sky-500/50 hover:bg-white/90 dark:hover:bg-white/15">
@@ -173,6 +174,7 @@ const stats = [
         arrow={true}
         sparkleTheme='cyan' />
     </div>
+    </div>
   </Container>
 </Section>
 
@@ -198,7 +200,7 @@ const stats = [
 
   /* Carousel specific styles */
   #reviewsContainer {
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.3s ease-in-out;
   }
 
   .review-card {
@@ -244,11 +246,13 @@ const stats = [
     const containerDesktop = document.getElementById('reviewsContainer');
     const prevBtn = document.getElementById('prevReview');
     const nextBtn = document.getElementById('nextReview');
+    const reviewsSection = document.getElementById('reviews-section');
 
-    if (!prevBtn || !nextBtn) return;
+    if (!prevBtn || !nextBtn || !reviewsSection) return;
 
     let currentIndexMobile = 0;
     let currentIndexDesktop = 0;
+    let isScrollControlled = false;
     
     // Mobile carousel (1 card at a time)
     function updateMobileCarousel() {
@@ -298,6 +302,78 @@ const stats = [
       }
     }
 
+    // SCROLL-CONTROLLED REVIEWS - What you actually asked for!
+    function scrollToReviewIndex(targetIndex: number) {
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile && containerMobile) {
+        currentIndexMobile = Math.max(0, Math.min(targetIndex, containerMobile.children.length - 1));
+        updateMobileCarousel();
+      } else if (containerDesktop) {
+        const totalCards = containerDesktop.children.length;
+        const maxIndex = Math.max(0, totalCards - 3);
+        currentIndexDesktop = Math.max(0, Math.min(targetIndex, maxIndex));
+        updateDesktopCarousel();
+      }
+    }
+
+    function initScrollControlledReviews() {
+      if (!reviewsSection) return;
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            isScrollControlled = true;
+            startScrollListener();
+          } else {
+            isScrollControlled = false;
+          }
+        });
+      }, {
+        threshold: [0.5, 0.8],
+        rootMargin: '-20% 0px -20% 0px'
+      });
+
+      observer.observe(reviewsSection);
+    }
+
+    function startScrollListener() {
+      let lastScrollTime = 0;
+      
+      function handleScroll() {
+        if (!isScrollControlled || !reviewsSection) return;
+        
+        const now = Date.now();
+        if (now - lastScrollTime < 16) return; // Throttle to ~60fps
+        lastScrollTime = now;
+
+        const rect = reviewsSection.getBoundingClientRect();
+        const sectionHeight = rect.height;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate how far through the section we've scrolled
+        const scrollProgress = Math.max(0, Math.min(1, 
+          (viewportHeight - rect.top - 100) / (sectionHeight + viewportHeight - 200)
+        ));
+
+        // Map scroll progress to review index
+        const isMobile = window.innerWidth < 768;
+        const totalReviews = isMobile ? 
+          (containerMobile?.children.length || 5) : 
+          Math.max(0, (containerDesktop?.children.length || 5) - 2);
+        
+        const targetIndex = Math.floor(scrollProgress * totalReviews);
+        
+        // Only update if the index changed
+        const currentIndex = isMobile ? currentIndexMobile : currentIndexDesktop;
+        if (targetIndex !== currentIndex) {
+          scrollToReviewIndex(targetIndex);
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
     function updateCarousel() {
       const isMobile = window.innerWidth < 768;
       if (isMobile) {
@@ -313,6 +389,7 @@ const stats = [
 
     // Initialize
     updateCarousel();
+    initScrollControlledReviews(); // ENABLE SCROLL-CONTROLLED REVIEWS
 
     // Handle resize
     window.addEventListener('resize', () => {
