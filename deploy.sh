@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # MannyKnows Feature Branch Deployment Script
-# 
+#
 # This script automates feature branch workflow and deployment to any GitHub branch/environment
-# 
+#
 # Usage:
 #   ./deploy.sh feature/feature-name           # Create new feature branch and switch to it
 #   ./deploy.sh feature/feature-name "msg"     # Commit and push changes to feature branch
@@ -96,7 +96,7 @@ print_status $BLUE "🚀 Deploying to ${ENVIRONMENT} environment..."
 # Handle feature branch creation/switching
 if [ "$BRANCH_CREATION_MODE" = true ]; then
     print_status $YELLOW "🌿 Branch creation mode detected..."
-    
+
     # Check if branch exists locally
     if git show-ref --verify --quiet refs/heads/$ENVIRONMENT; then
         print_status $GREEN "✅ Switching to existing local branch: ${ENVIRONMENT}"
@@ -115,7 +115,7 @@ if [ "$BRANCH_CREATION_MODE" = true ]; then
         git checkout -b $ENVIRONMENT
         print_status $GREEN "📝 New branch created from development/main"
     fi
-    
+
     CURRENT_BRANCH=$ENVIRONMENT
 fi
 
@@ -125,7 +125,7 @@ npm run build
 
 if [ $? -eq 0 ]; then
     print_status $GREEN "✅ Build successful!"
-    
+
     # Check if there are any changes to commit
     if git diff --quiet && git diff --staged --quiet; then
         print_status $YELLOW "⚠️  No changes detected. Skipping commit."
@@ -133,25 +133,25 @@ if [ $? -eq 0 ]; then
     else
         # Add all changes
         git add -A
-        
+
         # Commit with message
         print_status $YELLOW "📝 Committing changes..."
         git commit -m "$COMMIT_MSG"
         SKIP_COMMIT=false
     fi
-    
+
     # Push to specified environment branch
     print_status $YELLOW "📤 Pushing to ${ENVIRONMENT} branch..."
     git push --force origin HEAD:${ENVIRONMENT}
-    
+
     if [ $? -eq 0 ]; then
         print_status $GREEN "🎉 Successfully deployed to ${ENVIRONMENT}!"
         print_status $BLUE "💡 View your changes at: https://github.com/showyouhow83/MannyKnows/tree/${ENVIRONMENT}"
-        
+
         if [ "$SKIP_COMMIT" = false ]; then
             print_status $GREEN "📋 Commit message: ${COMMIT_MSG}"
         fi
-        
+
         # Feature branch specific guidance
         if [[ "$ENVIRONMENT" =~ ^feature/ ]]; then
             print_status $PURPLE "🔄 Feature Branch Next Steps:"
