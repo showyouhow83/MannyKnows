@@ -130,4 +130,27 @@ export default {
     },
   },
   plugins: [],
+  // Optimize for production
+  corePlugins: {
+    // Disable unused core plugins
+    container: false,
+    accessibility: false,
+  },
+  // Safelist only essential classes
+  safelist: [
+    'dark',
+    // Essential animation classes
+    'animate-scroll',
+    'animate-gradient-slide',
+    'animate-button-gradient',
+    // Essential utility classes  
+    'transition-colors',
+    'duration-300',
+    'sf-regular',
+    'sf-medium', 
+    'sf-semibold',
+    'sf-bold',
+    'apple-gradient-text',
+    'apple-headline'
+  ]
 }
