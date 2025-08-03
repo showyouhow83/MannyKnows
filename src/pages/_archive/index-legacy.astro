@@ -12,10 +12,23 @@ import ReviewsSection from '../../components/sections/ReviewsSection.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
-// import PageSection from '../../components/layout/PageSection.astro'; // Component doesn't exist
-// import ProcessSlideshow from '../../components/content/ProcessSlideshow.astro'; // Component doesn't exist
-// import CaseStudyContent from '../../components/content/CaseStudyContent.astro'; // Component doesn't exist
-// import ChatBox from '../../components/ui/ChatBox.astro'; // Component doesn't exist
+
+// ========================================
+// ANIMATION CONFIGURATION - Easy Toggle Controls
+// ========================================
+const ANIMATION_CONFIG = {
+	// Search bar apple gradient animation
+	searchGradientEnabled: true,
+	
+	// Background gradient rewind animation
+	backgroundRewindEnabled: true,
+	
+	// Search animation timing
+	searchScrollDelay: 0, // ms delay before removing gradient on scroll
+	
+	// Debug mode - logs animation state changes
+	debugMode: false
+};
 ---
 
 <BaseLayout title="MannyKnows - AI-Powered E-commerce Solutions">
@@ -27,7 +40,13 @@ import Container from '../../components/layout/Container.astro';
 			<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
 
             <!-- Navigation -->
-            <NavBar />
+            <NavBar 
+				animationConfig={{
+					searchGradientEnabled: ANIMATION_CONFIG.searchGradientEnabled,
+					debugMode: ANIMATION_CONFIG.debugMode,
+					searchScrollDelay: ANIMATION_CONFIG.searchScrollDelay
+				}}
+			/>
 
             <!-- Hero Section -->
             <HeroSection 
@@ -112,46 +131,6 @@ import Container from '../../components/layout/Container.astro';
 		const duration = Math.max(contentWidth / 50, 20); // Min 20s, max based on content
 		
 		document.documentElement.style.setProperty('--marquee-duration', `${duration}s`);
-	}
-
-	// Search input apple gradient animation
-	function initSearchAnimation() {
-		if (!ANIMATION_CONFIG.searchGradientEnabled) {
-			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient animation disabled');
-			return;
-		}
-
-		const searchInput = document.getElementById('search-input');
-		if (!searchInput) return;
-
-		if (ANIMATION_CONFIG.debugMode) console.log('Search gradient animation enabled');
-
-		// Add gradient on focus
-		const addGradient = () => {
-			searchInput.classList.add('apple-gradient-active');
-			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient activated');
-		};
-
-		// Remove gradient
-		const removeGradient = () => {
-			searchInput.classList.remove('apple-gradient-active');
-			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient deactivated');
-		};
-
-		// Event listeners
-		searchInput.addEventListener('focus', addGradient);
-		searchInput.addEventListener('blur', removeGradient);
-		
-		// Remove gradient on scroll (user is moving away)
-		let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
-		const handleScroll = () => {
-			if (searchInput.classList.contains('apple-gradient-active')) {
-				clearTimeout(scrollTimeout);
-				scrollTimeout = setTimeout(removeGradient, ANIMATION_CONFIG.searchScrollDelay);
-			}
-		};
-		
-		window.addEventListener('scroll', handleScroll, { passive: true });
 	}
 
 	// Navigation visibility tracking
@@ -349,16 +328,6 @@ import Container from '../../components/layout/Container.astro';
 
 	// Apply animation settings
 	function applyAnimationSettings() {
-		const body = document.body;
-		
-		// Apply search gradient setting
-		if (!ANIMATION_CONFIG.searchGradientEnabled) {
-			body.classList.add('search-gradient-disabled');
-			if (ANIMATION_CONFIG.debugMode) console.log('Search gradient disabled via CSS class');
-		} else {
-			body.classList.remove('search-gradient-disabled');
-		}
-		
 		// Apply background rewind setting via CSS injection
 		if (!ANIMATION_CONFIG.backgroundRewindEnabled) {
 			// Inject original looping animation
@@ -380,11 +349,6 @@ import Container from '../../components/layout/Container.astro';
 	// Developer utility - accessible from browser console
 	window.MannyKnowsAnimations = {
 		config: ANIMATION_CONFIG,
-		toggleSearchGradient: () => {
-			ANIMATION_CONFIG.searchGradientEnabled = !ANIMATION_CONFIG.searchGradientEnabled;
-			applyAnimationSettings();
-			console.log(`Search gradient: ${ANIMATION_CONFIG.searchGradientEnabled ? 'enabled' : 'disabled'}`);
-		},
 		toggleBackgroundRewind: () => {
 			ANIMATION_CONFIG.backgroundRewindEnabled = !ANIMATION_CONFIG.backgroundRewindEnabled;
 			console.log(`Background rewind: ${ANIMATION_CONFIG.backgroundRewindEnabled ? 'enabled' : 'disabled'}`);
@@ -396,6 +360,14 @@ import Container from '../../components/layout/Container.astro';
 		},
 		status: () => {
 			console.table(ANIMATION_CONFIG);
+		},
+		// Navigation animations are now controlled via window.MannyKnowsNavigation
+		help: () => {
+			console.log('Available controls:');
+			console.log('- window.MannyKnowsAnimations.status() - Show all animation settings');
+			console.log('- window.MannyKnowsAnimations.toggleBackgroundRewind() - Toggle background animations');
+			console.log('- window.MannyKnowsNavigation.searchAnimation.toggle() - Toggle search gradient');
+			console.log('- window.MannyKnowsNavigation.searchAnimation.status() - Show search settings');
 		}
 	};
 
@@ -404,9 +376,8 @@ import Container from '../../components/layout/Container.astro';
 		// Apply animation settings first
 		applyAnimationSettings();
 		
-		// Initialize all components
+		// Initialize all components (search animation now handled by NavBar)
 		initMarquee();
-		initSearchAnimation();
 		initNavigationTracking();
 		initDockTooltips();
 		initServicesTracking();

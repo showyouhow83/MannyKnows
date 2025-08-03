@@ -1,0 +1,109 @@
+---
+import Section from './Section.astro';
+
+export interface Props {
+  id?: string;
+  variant?: 'subtle' | 'medium' | 'intense' | 'rainbow' | 'brand';
+  className?: string;
+  hasOverflow?: boolean;
+}
+
+const {
+  id,
+  variant = 'subtle',
+  className = "",
+  hasOverflow = false
+} = Astro.props;
+
+// Predefined sparkle configurations
+const sparkleConfigs = {
+  subtle: {
+    lightColors: "#000000, #1f2937, #374151", // Dark colors for light mode
+    darkColors: "#ffffff, #f8fafc, #e2e8f0",  // Light colors for dark mode
+    gap: "12",
+    speed: "80",
+    lightOpacity: "0.1",
+    darkOpacity: "0.25"
+  },
+  medium: {
+    lightColors: "#000000, #1f2937, #374151, #4b5563",
+    darkColors: "#ffffff, #f8fafc, #e2e8f0, #cbd5e1",
+    gap: "8",
+    speed: "60",
+    lightOpacity: "0.15",
+    darkOpacity: "0.3"
+  },
+  intense: {
+    lightColors: "#000000, #1f2937, #374151, #4b5563, #6b7280",
+    darkColors: "#ffffff, #f8fafc, #e2e8f0, #cbd5e1, #94a3b8",
+    gap: "6",
+    speed: "45",
+    lightOpacity: "0.2",
+    darkOpacity: "0.4"
+  },
+  rainbow: {
+    lightColors: "#ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #ec4899",
+    darkColors: "#fca5a5, #fdba74, #fde047, #86efac, #93c5fd, #c4b5fd, #f9a8d4",
+    gap: "8",
+    speed: "50",
+    lightOpacity: "0.15",
+    darkOpacity: "0.3"
+  },
+  brand: {
+    lightColors: "#0071e3, #007aff, #5856d6, #af52de, #ff2d92, #ff3b30",
+    darkColors: "#10d1ff, #ff4faa, #0071e3, #5ac8fa, #64d2ff, #bf5af2",
+    gap: "8",
+    speed: "55",
+    lightOpacity: "0.2",
+    darkOpacity: "0.35"
+  }
+};
+
+const config = sparkleConfigs[variant];
+---
+
+<section
+  id={id}
+  class={`relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${hasOverflow ? 'overflow-hidden' : ''} ${className}`}
+>
+  <!-- Light Mode Sparkles (darker colors for light background) -->
+  <pixel-canvas
+    class="light-mode-only absolute inset-0 z-0 pointer-events-none"
+    data-colors={config.lightColors}
+    data-gap={config.gap}
+    data-speed={config.speed}
+    data-no-focus
+    style={`opacity: ${config.lightOpacity} !important;`}
+  ></pixel-canvas>
+  
+  <!-- Dark Mode Sparkles (lighter colors for dark background) -->
+  <pixel-canvas
+    class="dark-mode-only absolute inset-0 z-0 pointer-events-none"
+    data-colors={config.darkColors}
+    data-gap={config.gap}
+    data-speed={config.speed}
+    data-no-focus
+    style={`opacity: ${config.darkOpacity} !important;`}
+  ></pixel-canvas>
+  
+  <div class="relative z-10">
+    <slot />
+  </div>
+</section>
+
+<style>
+  /* Show/hide based on theme */
+  .light-mode-only {
+    display: block;
+  }
+  .dark-mode-only {
+    display: none;
+  }
+
+  :root.dark .light-mode-only {
+    display: none;
+  }
+  :root.dark .dark-mode-only {
+    display: block;
+  }
+</style>
