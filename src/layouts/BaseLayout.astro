@@ -31,6 +31,21 @@ const { title } = Astro.props;
 		<script type="module" src="/pixel-canvas.js"></script>
 		
 		<title>{title}</title>
+		
+		<!-- Theme initialization script - must run before body to prevent FOUC -->
+		<script>
+			// Initialize theme immediately to prevent flash of unstyled content
+			(function() {
+				// Default to dark mode unless explicitly set to light
+				const themeDark = localStorage.getItem('theme-dark') !== 'false';
+				
+				if (themeDark) {
+					document.documentElement.classList.add('dark');
+				} else {
+					document.documentElement.classList.remove('dark');
+				}
+			})();
+		</script>
 	</head>
 	<body>
 		<!-- Settings Modal -->
