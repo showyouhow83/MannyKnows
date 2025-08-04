@@ -102,81 +102,121 @@ const processSteps = [
 ];
 ---
 
-<div class={`ai-process-container ${className}`}>
+<div class={`ai-process-container max-w-[1440px] mx-auto relative z-10 ${className}`}>
   <div class="process-grid">
     {processSteps.map((step, index) => (
       <div class={`process-card-wrapper ${index % 2 === 0 ? 'left-number-right-card' : 'right-number-left-card'}`} data-step={index}>
         
-        {/* Number and Card Side by Side */}
+        {/* Timeline Layout: Complete number+card groups alternate sides */}
         <div class="step-row">
           {/* Left Side Content */}
           <div class="step-left">
             {index % 2 === 0 ? (
-              <div class={`step-number-large`} 
-                   style={`color: ${gradientColors[index]}`}
-                   data-target-step={index}
-                   role="button"
-                   tabindex="0"
-                   aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
-                <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
-              </div>
-            ) : (
-              <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
-                   style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
-                   data-step-index={index}
-                   role="article"
-                   aria-labelledby={`step-title-${index}-left`}>
-                <div class="step-content">
-                  <div class="step-header">
-                    <div class="step-icon-container" 
-                         style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
-                         aria-hidden="true">
-                      <div class="step-icon" style={`color: ${gradientColors[index]}`}>
-                        <Fragment set:html={step.icon} />
+              // Even steps (1,3,5): Number and card together on left side
+              <div class="step-group">
+                <div class={`step-number-large`} 
+                     style={`color: ${gradientColors[index]}`}
+                     data-target-step={index}
+                     role="button"
+                     tabindex="0"
+                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
+                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
+                </div>
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
+                     data-step-index={index}
+                     role="article"
+                     aria-labelledby={`step-title-${index}-left`}>
+                  <div class="step-content">
+                    <div class="step-header">
+                      <div class="step-icon-container" 
+                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
+                           aria-hidden="true">
+                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
+                          <Fragment set:html={step.icon} />
+                        </div>
                       </div>
+                      
+                      <h3 class="step-title sf-semibold" id={`step-title-${index}-left`}>{step.title}</h3>
                     </div>
                     
-                    <h3 class="step-title sf-semibold" id={`step-title-${index}-left`}>{step.title}</h3>
+                    <p class="step-description sf-regular">{step.description}</p>
                   </div>
-                  
-                  <p class="step-description sf-regular">{step.description}</p>
                 </div>
               </div>
+            ) : (
+              // Odd steps: Empty left side
+              <div class="empty-side"></div>
             )}
           </div>
           
           {/* Right Side Content */}
           <div class="step-right">
-            {index % 2 === 0 ? (
-              <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
-                   style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
-                   data-step-index={index}
-                   role="article"
-                   aria-labelledby={`step-title-${index}-right`}>
-                <div class="step-content">
-                  <div class="step-header">
-                    <div class="step-icon-container" 
-                         style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
-                         aria-hidden="true">
-                      <div class="step-icon" style={`color: ${gradientColors[index]}`}>
-                        <Fragment set:html={step.icon} />
+            {index % 2 === 1 ? (
+              // Odd steps (2,4,6): Number and card together on right side
+              <div class="step-group">
+                <div class={`step-number-large`} 
+                     style={`color: ${gradientColors[index]}`}
+                     data-target-step={index}
+                     role="button"
+                     tabindex="0"
+                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
+                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
+                </div>
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
+                     data-step-index={index}
+                     role="article"
+                     aria-labelledby={`step-title-${index}-right`}>
+                  <div class="step-content">
+                    <div class="step-header">
+                      <div class="step-icon-container" 
+                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
+                           aria-hidden="true">
+                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
+                          <Fragment set:html={step.icon} />
+                        </div>
                       </div>
+                      
+                      <h3 class="step-title sf-semibold" id={`step-title-${index}-right`}>{step.title}</h3>
                     </div>
                     
-                    <h3 class="step-title sf-semibold" id={`step-title-${index}-right`}>{step.title}</h3>
+                    <p class="step-description sf-regular">{step.description}</p>
                   </div>
-                  
-                  <p class="step-description sf-regular">{step.description}</p>
                 </div>
               </div>
             ) : (
-              <div class={`step-number-large left-aligned`} 
-                   style={`color: ${gradientColors[index]}`}
-                   data-target-step={index}
-                   role="button"
-                   tabindex="0"
-                   aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
-                <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
+              // Even steps on mobile: Show content on right side too
+              <div class="mobile-content">
+                <div class={`step-number-large number-mobile`} 
+                     style={`color: ${gradientColors[index]}`}
+                     data-target-step={index}
+                     role="button"
+                     tabindex="0"
+                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
+                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
+                </div>
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
+                     data-step-index={index}
+                     role="article"
+                     aria-labelledby={`step-title-${index}-mobile`}>
+                  <div class="step-content">
+                    <div class="step-header">
+                      <div class="step-icon-container" 
+                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
+                           aria-hidden="true">
+                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
+                          <Fragment set:html={step.icon} />
+                        </div>
+                      </div>
+                      
+                      <h3 class="step-title sf-semibold" id={`step-title-${index}-mobile`}>{step.title}</h3>
+                    </div>
+                    
+                    <p class="step-description sf-regular">{step.description}</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -186,35 +226,40 @@ const processSteps = [
       </div>
     ))}
   </div>
+  
+  {/* Final Arrow at bottom of section */}
+  <div class="final-arrow" style={`color: ${gradientColors[5]}`}>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6,9 12,15 18,9"></polyline>
+    </svg>
+  </div>
 </div>
 
 <style>
   /* AI Process Section Styles */
   .ai-process-container {
     width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    /* Removed max-width, margin, padding - now handled by Tailwind classes */
   }
 
   .process-grid {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 0rem; /* Changed from 2rem */
     align-items: center;
     position: relative;
     max-width: 1440px;
     margin: 0 auto;
   }
 
-  /* Central Timeline Line */
+  /* Central Timeline Line - Curved/Wavy */
   .process-grid::before {
     content: '';
     position: absolute;
     left: 50%;
     top: 100px;
     bottom: 100px;
-    width: 4px;
+    width: 6px;
     background: linear-gradient(180deg, 
       #10d1ff 0%, 
       #0071e3 20%, 
@@ -222,9 +267,45 @@ const processSteps = [
       #5856d6 60%,
       #a855f7 80%,
       #ec4899 100%);
-    border-radius: 2px;
+    border-radius: 3px;
     transform: translateX(-50%);
     z-index: 1;
+    clip-path: polygon(
+      20% 0%, 80% 0%, 
+      95% 10%, 85% 20%, 
+      90% 30%, 75% 40%, 
+      85% 50%, 70% 60%, 
+      80% 70%, 65% 80%, 
+      75% 90%, 60% 100%, 
+      40% 100%, 25% 90%, 
+      35% 80%, 20% 70%, 
+      30% 60%, 15% 50%, 
+      25% 40%, 10% 30%, 
+      20% 20%, 5% 10%
+    );
+    animation: timelineGlow 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes timelineGlow {
+    0% { 
+      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
+      opacity: 0.9;
+    }
+    100% { 
+      filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 15px currentColor);
+      opacity: 1;
+    }
+  }
+
+  /* Mobile: Move timeline to left */
+  @media (max-width: 768px) {
+    .process-grid::before {
+      left: 5.2rem;
+      transform: translateX(0%);
+      top: 125.5px;
+      bottom: 107.7px;
+      display: none; /* Hidden on mobile as requested */
+    }
   }
 
   .process-card-wrapper {
@@ -239,63 +320,73 @@ const processSteps = [
   .step-row {
     display: flex;
     align-items: center;
-    width: 100%;
-    gap: 4rem;
+    min-height: 190px; /* Changed from 280px */
+    gap: 2rem;
   }
 
   .step-left,
   .step-right {
     flex: 1;
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: 1.5rem;
   }
 
-  .left-number-right-card .step-left {
+  .step-left {
     justify-content: flex-end;
   }
 
-  .left-number-right-card .step-right {
-    justify-content: flex-end;
-  }
-
-  .right-number-left-card .step-left {
+  .step-right {
     justify-content: flex-start;
   }
 
-  .right-number-left-card .step-right {
-    justify-content: flex-start;
+  /* Step group container for number + card together */
+  .step-group {
+    display: flex;
+    align-items: center;
+    gap: 0rem; /* Changed from 2rem */
+    max-width: 600px;
+  }
+
+  /* Empty side placeholder */
+  .empty-side {
+    min-height: 1px;
   }
 
   .step-number-large {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-size: 18rem;
+    font-size: 12rem; /* Changed from 6rem */
     font-weight: 900;
     line-height: 1;
-    opacity: 0.9;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
+    cursor: pointer;
+    text-shadow: 0 2px 10px currentColor;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
     will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
+  .step-number-large:hover {
+    transform: scale(1.05) translateZ(0);
+    filter: brightness(1.2);
+  }
+
+  /* Hide mobile content on desktop */
+  .mobile-content {
+    display: none;
   }
 
   .dot-part {
     font-size: 0.15em;
-    opacity: 0.6;
+    opacity: 0.8;
   }
 
-  .step-number-large.left-aligned {
-    justify-content: flex-start;
-    text-align: left;
-  }
-
-  .process-card-wrapper:hover .step-number-large {
-    transform: scale(1.1);
-    opacity: 1;
+  /* Process card styling */
+  .process-card {
+    max-width: 350px;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    will-change: transform, box-shadow;
+    transform: translateZ(0);
   }
 
   .process-card {
@@ -377,6 +468,42 @@ const processSteps = [
     margin: 0;
   }
 
+  /* Arrow styles */
+  .step-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .step-arrow:hover {
+    opacity: 1;
+    transform: translateY(2px);
+  }
+
+  .final-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto;
+    opacity: 0.8;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-4px);
+    }
+    60% {
+      transform: translateY(-2px);
+    }
+  }
+
   /* Dark mode support */
   :global(.dark) .process-grid::before {
     background: linear-gradient(180deg, 
@@ -386,6 +513,7 @@ const processSteps = [
       #5856d6 60%,
       #a855f7 80%,
       #ec4899 100%);
+    filter: drop-shadow(0 0 10px #10d1ff) drop-shadow(0 0 20px #10d1ff);
   }
 
   :global(.dark) .process-card {
@@ -419,39 +547,77 @@ const processSteps = [
   /* Responsive Design */
   @media (max-width: 768px) {
     .ai-process-container {
-      padding: 0 1rem;
+      padding: 0; /* Updated from 0 1rem */
     }
 
     .process-grid {
-      gap: 3rem;
+      gap: 1rem; /* Changed from 3rem */
       max-width: 400px;
-    }
-
-    .process-grid::before {
-      top: 50px;
-      bottom: 50px;
+      align-items: flex-start; /* Confirmed consistent with user spec */
+      padding-left: 0rem; /* Removed timeline space */
     }
 
     .step-row {
-      flex-direction: column;
-      gap: 1rem;
+      flex-direction: row; /* Keep horizontal layout on mobile */
+      gap: 0rem; /* Updated from 1rem */
+      margin-bottom: 0rem; /* Changed from 3rem */
+      min-height: auto;
+      width: 100%;
     }
 
     .step-left,
     .step-right {
-      justify-content: center !important;
+      flex-direction: row; /* Reset to row for mobile */
+      justify-content: flex-start !important;
+      width: 100%;
+      gap: 1rem;
+    }
+
+    /* On mobile, show all content on right side of timeline */
+    .step-left {
+      display: none; /* Hide left side completely */
+    }
+
+    .step-right {
+      display: flex; /* Always show right side */
+      align-items: center;
+    }
+
+    /* Mobile-specific number and card layout */
+    .mobile-content {
+      display: flex !important; /* Show on mobile */
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    /* Hide mobile content on desktop */
+    @media (min-width: 769px) {
+      .mobile-content {
+        display: none !important;
+      }
     }
 
     .process-card {
       width: 100%;
-      max-width: 350px;
-      padding: 1.5rem;
+      max-width: 400px; /* Updated from 280px */
+      padding: 2.2rem 0.5rem 2.2rem 6rem; /* Updated padding values */
     }
 
     .step-number-large {
-      font-size: 8rem;
-      margin-bottom: 0;
-      height: 120px;
+      font-size: 10rem; /* Updated from 12rem */
+      margin: 0;
+      height: auto;
+      flex-shrink: 0;
+      position: absolute; /* Changed from relative */
+      left: -25px; /* Updated positioning */
+      z-index: revert-layer; /* Added z-index */
+    }
+
+    .number-left,
+    .number-right,
+    .number-mobile {
+      margin: 0;
     }
 
     .dot-part {
@@ -467,8 +633,8 @@ const processSteps = [
     }
 
     .step-icon-container {
-      width: 24px;
-      height: 24px;
+      width: 45px; /* Updated from 24px */
+      height: 35px; /* Updated from 24px */
     }
 
     .step-content {
@@ -501,7 +667,7 @@ const processSteps = [
     }
 
     .step-row {
-      gap: 6rem;
+      gap: 50rem; /* Extreme gap for wide spacing */
     }
 
     .process-card {
@@ -539,6 +705,7 @@ const processSteps = [
     // Cache DOM elements for better performance
     const numbers = document.querySelectorAll('[data-target-step]');
     const processCards = document.querySelectorAll('.process-card');
+    const processCardWrappers = document.querySelectorAll('.process-card-wrapper');
     
     // Optimized gradient colors array
     const gradientColors = [
@@ -546,25 +713,36 @@ const processSteps = [
       "#5856d6", "#a855f7", "#ec4899"
     ];
     
-    // Performance-optimized hover effects for process cards
+    // Set custom properties for connector colors
+    processCardWrappers.forEach((wrapper, index) => {
+      if (wrapper instanceof HTMLElement) {
+        wrapper.style.setProperty('--step-color', gradientColors[index]);
+      }
+    });
+    
+    // Performance-optimized hover effects for process cards (unified with number hover)
     processCards.forEach((card, index) => {
       if (!(card instanceof HTMLElement)) return;
       
       const color = gradientColors[index];
+      // Use exact same values as number hover for perfect consistency
       const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
+      const hoverTransform = 'translateY(-8px) translateZ(0)';
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
-          card.style.boxShadow = hoverShadow;
-          card.style.borderColor = hoverBorderColor;
+          card.style.setProperty('transform', hoverTransform, 'important');
+          card.style.setProperty('box-shadow', hoverShadow, 'important');
+          card.style.setProperty('border-color', hoverBorderColor, 'important');
         });
       });
       
       card.addEventListener('mouseleave', () => {
         requestAnimationFrame(() => {
-          card.style.boxShadow = '';
-          card.style.borderColor = '';
+          card.style.removeProperty('transform');
+          card.style.removeProperty('box-shadow');
+          card.style.removeProperty('border-color');
         });
       });
     });
@@ -583,38 +761,38 @@ const processSteps = [
         const hoverBorderColor = `${color}60`;
         const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
         
-        // Mouse interactions - cross-component awareness
+        // Mouse interactions - cross-component awareness (unified colors)
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = hoverTransform;
-            correspondingCard.style.borderColor = hoverBorderColor;
-            correspondingCard.style.boxShadow = hoverShadow;
+            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
+            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
         });
         
         number.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = '';
-            correspondingCard.style.borderColor = '';
-            correspondingCard.style.boxShadow = '';
+            correspondingCard.style.removeProperty('transform');
+            correspondingCard.style.removeProperty('border-color');
+            correspondingCard.style.removeProperty('box-shadow');
           });
         });
         
-        // Touch support for mobile - cross-mode functionality preserved
+        // Touch support for mobile - cross-mode functionality preserved (unified colors)
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = hoverTransform;
-            correspondingCard.style.borderColor = hoverBorderColor;
-            correspondingCard.style.boxShadow = hoverShadow;
+            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
+            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
         }, { passive: true });
         
         number.addEventListener('touchend', () => {
           setTimeout(() => {
             requestAnimationFrame(() => {
-              correspondingCard.style.transform = '';
-              correspondingCard.style.borderColor = '';
-              correspondingCard.style.boxShadow = '';
+              correspondingCard.style.removeProperty('transform');
+              correspondingCard.style.removeProperty('border-color');
+              correspondingCard.style.removeProperty('box-shadow');
             });
           }, 300);
         }, { passive: true });
