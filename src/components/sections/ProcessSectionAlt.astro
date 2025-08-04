@@ -102,7 +102,7 @@ const processSteps = [
 ];
 ---
 
-<div class={`ai-process-container max-w-[1440px] mx-auto px-2 relative z-10 md:px-8 ${className}`}>
+<div class={`ai-process-container max-w-[1440px] mx-auto relative z-10 ${className}`}>
   <div class="process-grid">
     {processSteps.map((step, index) => (
       <div class={`process-card-wrapper ${index % 2 === 0 ? 'left-number-right-card' : 'right-number-left-card'}`} data-step={index}>
@@ -226,6 +226,13 @@ const processSteps = [
       </div>
     ))}
   </div>
+  
+  {/* Final Arrow at bottom of section */}
+  <div class="final-arrow" style={`color: ${gradientColors[5]}`}>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6,9 12,15 18,9"></polyline>
+    </svg>
+  </div>
 </div>
 
 <style>
@@ -293,10 +300,11 @@ const processSteps = [
   /* Mobile: Move timeline to left */
   @media (max-width: 768px) {
     .process-grid::before {
-      left: 3rem;
-      transform: translateX(-50%);
-      top: -80px;
-      bottom: 20px;
+      left: 5.2rem;
+      transform: translateX(0%);
+      top: 125.5px;
+      bottom: 107.7px;
+      display: none; /* Hidden on mobile as requested */
     }
   }
 
@@ -369,7 +377,7 @@ const processSteps = [
 
   .dot-part {
     font-size: 0.15em;
-    opacity: 0.6;
+    opacity: 0.8;
   }
 
   /* Process card styling */
@@ -460,6 +468,42 @@ const processSteps = [
     margin: 0;
   }
 
+  /* Arrow styles */
+  .step-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .step-arrow:hover {
+    opacity: 1;
+    transform: translateY(2px);
+  }
+
+  .final-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto;
+    opacity: 0.8;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-4px);
+    }
+    60% {
+      transform: translateY(-2px);
+    }
+  }
+
   /* Dark mode support */
   :global(.dark) .process-grid::before {
     background: linear-gradient(180deg, 
@@ -503,7 +547,7 @@ const processSteps = [
   /* Responsive Design */
   @media (max-width: 768px) {
     .ai-process-container {
-      padding: 0 1rem; /* Confirmed consistent with user spec */
+      padding: 0; /* Updated from 0 1rem */
     }
 
     .process-grid {
@@ -515,7 +559,7 @@ const processSteps = [
 
     .step-row {
       flex-direction: row; /* Keep horizontal layout on mobile */
-      gap: 1rem;
+      gap: 0rem; /* Updated from 1rem */
       margin-bottom: 0rem; /* Changed from 3rem */
       min-height: auto;
       width: 100%;
@@ -556,15 +600,18 @@ const processSteps = [
 
     .process-card {
       width: 100%;
-      max-width: 280px;
-      padding: 1.5rem;
+      max-width: 400px; /* Updated from 280px */
+      padding: 2.2rem 0.5rem 2.2rem 6rem; /* Updated padding values */
     }
 
     .step-number-large {
-      font-size: 12rem; /* Changed from 3rem - now matches desktop size */
+      font-size: 10rem; /* Updated from 12rem */
       margin: 0;
       height: auto;
       flex-shrink: 0;
+      position: absolute; /* Changed from relative */
+      left: -25px; /* Updated positioning */
+      z-index: revert-layer; /* Added z-index */
     }
 
     .number-left,
@@ -586,8 +633,8 @@ const processSteps = [
     }
 
     .step-icon-container {
-      width: 24px;
-      height: 24px;
+      width: 45px; /* Updated from 24px */
+      height: 35px; /* Updated from 24px */
     }
 
     .step-content {
@@ -658,6 +705,7 @@ const processSteps = [
     // Cache DOM elements for better performance
     const numbers = document.querySelectorAll('[data-target-step]');
     const processCards = document.querySelectorAll('.process-card');
+    const processCardWrappers = document.querySelectorAll('.process-card-wrapper');
     
     // Optimized gradient colors array
     const gradientColors = [
@@ -665,25 +713,36 @@ const processSteps = [
       "#5856d6", "#a855f7", "#ec4899"
     ];
     
-    // Performance-optimized hover effects for process cards
+    // Set custom properties for connector colors
+    processCardWrappers.forEach((wrapper, index) => {
+      if (wrapper instanceof HTMLElement) {
+        wrapper.style.setProperty('--step-color', gradientColors[index]);
+      }
+    });
+    
+    // Performance-optimized hover effects for process cards (unified with number hover)
     processCards.forEach((card, index) => {
       if (!(card instanceof HTMLElement)) return;
       
       const color = gradientColors[index];
+      // Use exact same values as number hover for perfect consistency
       const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
+      const hoverTransform = 'translateY(-8px) translateZ(0)';
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
-          card.style.boxShadow = hoverShadow;
-          card.style.borderColor = hoverBorderColor;
+          card.style.setProperty('transform', hoverTransform, 'important');
+          card.style.setProperty('box-shadow', hoverShadow, 'important');
+          card.style.setProperty('border-color', hoverBorderColor, 'important');
         });
       });
       
       card.addEventListener('mouseleave', () => {
         requestAnimationFrame(() => {
-          card.style.boxShadow = '';
-          card.style.borderColor = '';
+          card.style.removeProperty('transform');
+          card.style.removeProperty('box-shadow');
+          card.style.removeProperty('border-color');
         });
       });
     });
@@ -702,38 +761,38 @@ const processSteps = [
         const hoverBorderColor = `${color}60`;
         const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
         
-        // Mouse interactions - cross-component awareness
+        // Mouse interactions - cross-component awareness (unified colors)
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = hoverTransform;
-            correspondingCard.style.borderColor = hoverBorderColor;
-            correspondingCard.style.boxShadow = hoverShadow;
+            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
+            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
         });
         
         number.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = '';
-            correspondingCard.style.borderColor = '';
-            correspondingCard.style.boxShadow = '';
+            correspondingCard.style.removeProperty('transform');
+            correspondingCard.style.removeProperty('border-color');
+            correspondingCard.style.removeProperty('box-shadow');
           });
         });
         
-        // Touch support for mobile - cross-mode functionality preserved
+        // Touch support for mobile - cross-mode functionality preserved (unified colors)
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.transform = hoverTransform;
-            correspondingCard.style.borderColor = hoverBorderColor;
-            correspondingCard.style.boxShadow = hoverShadow;
+            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
+            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
         }, { passive: true });
         
         number.addEventListener('touchend', () => {
           setTimeout(() => {
             requestAnimationFrame(() => {
-              correspondingCard.style.transform = '';
-              correspondingCard.style.borderColor = '';
-              correspondingCard.style.boxShadow = '';
+              correspondingCard.style.removeProperty('transform');
+              correspondingCard.style.removeProperty('border-color');
+              correspondingCard.style.removeProperty('box-shadow');
             });
           }, 300);
         }, { passive: true });
