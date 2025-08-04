@@ -122,16 +122,31 @@ The project uses an intelligent `deploy.sh` script for branch management:
 
 1. **`DEVELOPMENT_WORKFLOW.md`** - Complete development process
 2. **`src/components/footer/README.md`** - Footer component system
-3. **`public/ComponentArchitectureMigration.Prompt.md`** - CSS migration guidelines
-4. **`.github/instructions/always.instructions.md`** - Development standards
+3. **`.github/instructions/always.instructions.md`** - Development standards and performance rules
+4. **`.github/instructions/performance.instructions.md`** - Detailed performance optimization patterns and examples
+5. **Performance Optimization Examples**: ProcessSectionAlt.astro demonstrates best practices:
+   - Hardware acceleration implementation
+   - Cross-mode interaction preservation
+   - Bundle size optimization
+   - Accessibility improvements
 
 # 🎨 Styling Standards
 
 - **Tailwind CSS**: Component-scoped utility classes
 - **Dark Mode**: Built-in support with `dark:` prefixes
 - **Responsive**: Mobile-first approach
-- **Typography**: Apple-inspired font system
+- **Typography**: Apple-inspired font system with SF Pro Display
 - **Colors**: Custom color palette with semantic naming
+- **Performance**: Hardware-accelerated animations with `will-change` hints
+- **Accessibility**: Semantic HTML with proper ARIA attributes
+
+## Performance-First CSS Guidelines
+- Add `will-change` to animated elements
+- Use `transform3d` for GPU acceleration
+- Minimize layout-triggering properties
+- Cache dynamic values in CSS custom properties
+- Remove unused CSS classes and dead code
+- Use efficient selectors and avoid deep nesting
 
 # 🔄 Branch Strategy
 
@@ -144,17 +159,112 @@ feature/feature-name        ← Individual features
 hotfix/urgent-fix          ← Critical fixes
 ```
 
+# ⚡ Performance Optimization Checklist
+
+Before submitting any component changes, ensure you've followed these optimization rules:
+
+## CSS Performance ✅
+- [ ] Added `will-change` properties to animated elements
+- [ ] Used `transform3d(0,0,0)` or `translateZ(0)` for GPU acceleration
+- [ ] Removed unused CSS classes and dead code
+- [ ] Used CSS custom properties for dynamic values
+- [ ] Minimized layout-triggering properties (avoid changing `width`, `height`, `top`, `left`)
+
+## JavaScript Performance ✅
+- [ ] Cached DOM selectors instead of repeated queries
+- [ ] Used `requestAnimationFrame` for smooth animations
+- [ ] Added passive event listeners where appropriate
+- [ ] Pre-calculated hover values and cached them
+- [ ] Preserved intelligent cross-component interaction systems
+
+## Accessibility ✅
+- [ ] Added semantic `role` attributes
+- [ ] Included proper ARIA labels and descriptions
+- [ ] Ensured keyboard navigation support
+- [ ] Added unique IDs for screen reader associations
+
+## Bundle Size ✅
+- [ ] Removed verbose comments from production CSS
+- [ ] Compressed color arrays and data structures
+- [ ] Consolidated similar animations and effects
+- [ ] Cleaned up redundant code and unused imports
+
+## Testing Requirements ✅
+- [ ] Verified visual design remains identical
+- [ ] Tested cross-component interactions (numbers ↔ cards)
+- [ ] Confirmed touch and mouse events work properly
+- [ ] Validated responsive behavior across breakpoints
+- [ ] Ensured dark/light mode compatibility
+
 # 🚨 Key Development Notes
 
-1. **Component CSS Migration**: Currently migrating CSS from main files to individual components (see `public/ComponentArchitectureMigration.Prompt.md`)
+## Performance-First Development Rules
 
-2. **Animation System**: Sophisticated animation controls with performance optimization
+### 1. **Hardware Acceleration Standards**
+- **ALWAYS** add `will-change` properties to animated elements
+- **ALWAYS** use `translateZ(0)` or `transform3d` for GPU acceleration
+- **PREFER** `transform` over properties that trigger layout/paint
+- **CACHE** DOM selectors in JavaScript - avoid repeated queries
 
-3. **Type Safety**: Full TypeScript integration with proper interfaces
+### 2. **JavaScript Performance Rules**
+- **USE** `requestAnimationFrame` for smooth animations
+- **PRESERVE** intelligent cross-component interaction systems
+- **ADD** passive event listeners where possible: `{ passive: true }`
+- **CACHE** frequently used values (colors, transforms, etc.)
+- **AVOID** inline style manipulation - use CSS classes when possible
 
-4. **Performance**: Optimized builds, lazy loading, and efficient bundling
+### 3. **CSS Optimization Rules**
+- **REMOVE** dead CSS code immediately
+- **USE** CSS custom properties for dynamic values
+- **CONSOLIDATE** similar animations and hover effects
+- **ADD** hardware acceleration hints to animated elements
+- **AVOID** complex box-shadows without `will-change`
 
-5. **SEO**: Semantic HTML structure and proper meta tag management
+### 4. **Cross-Mode Interaction Systems**
+When working with components that have intelligent interactions:
+- **PRESERVE** all cross-component awareness logic
+- **MAINTAIN** touch/mouse/keyboard support
+- **TEST** across different input modes and screen sizes
+- **DOCUMENT** interaction patterns in component comments
 
-This architecture promotes maintainability, reusability, and scalability while providing an excellent developer experience with automated workflows and comprehensive documentation.
+### 5. **Bundle Size Management**
+- **REMOVE** unused CSS classes and properties
+- **COMPRESS** color arrays and data structures
+- **CLEAN** verbose comments from production CSS
+- **OPTIMIZE** gradient and animation definitions
+
+## Component Architecture
+
+Components follow a modular, self-contained approach with performance-first principles:
+
+**ProcessSectionAlt**: Exemplifies optimized component architecture:
+- Hardware-accelerated animations
+- Cross-mode interaction system (numbers ↔ cards)
+- Touch/mouse/keyboard support
+- Cached DOM elements and pre-calculated values
+- Semantic accessibility attributes
+
+**Footer System**: Highly modular footer components documented in `src/components/footer/README.md`:
+- `FooterMain.astro` - Main orchestrator
+- `FooterHeader.astro` - Brand and social links
+- `BlogArticleCard.astro` - Article cards
+- `ServiceCategory.astro` - Service sections
+
+**Navigation**: 
+- `NavBar.astro` with search gradient animations
+- `DockMenu.astro` for floating navigation
+
+**Content Components**:
+- `CaseStudyContent.astro` with stats grid
+- `ProcessSlideshow.astro` for process visualization
+
+## Animation Configuration
+Centralized animation controls in main pages with `ANIMATION_CONFIG` object:
+```astro
+const ANIMATION_CONFIG = {
+    searchGradientEnabled: true,
+    searchScrollDelay: 0,
+    debugMode: false
+};
+```
 
