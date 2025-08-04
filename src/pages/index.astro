@@ -16,6 +16,9 @@ import ScrollAnimations from '../components/ui/ScrollAnimations.astro';
 // ANIMATION CONFIGURATION - Easy Toggle Controls
 // ========================================
 const ANIMATION_CONFIG = {
+	// Background gradient rewind animation
+	backgroundRewindEnabled: true,
+
 	// Search gradient animations in navbar
 	searchGradientEnabled: true,
 	searchScrollDelay: 0,
@@ -156,4 +159,64 @@ const ANIMATION_CONFIG = {
 		initScrollAnimations();
 		initScrollDrivenAnimations();
 	});
+
+	// Apply animation settings
+	function applyAnimationSettings() {
+		const backgroundRewindEnabled = true; // From ANIMATION_CONFIG.backgroundRewindEnabled
+		const debugMode = false; // From ANIMATION_CONFIG.debugMode
+		
+		// Apply background rewind setting via CSS injection
+		if (!backgroundRewindEnabled) {
+			// Inject original looping animation
+			const style = document.createElement('style');
+			style.textContent = `
+				@keyframes gradient-flow {
+					0% { background-position: 0% 50%; }
+					50% { background-position: 100% 50%; }
+					100% { background-position: 0% 50%; }
+				}
+			`;
+			document.head.appendChild(style);
+			if (debugMode) console.log('Background rewind disabled - using original loop');
+		} else {
+			if (debugMode) console.log('Background rewind enabled');
+		}
+	}
+
+	// Initialize when DOM is loaded
+	document.addEventListener('DOMContentLoaded', () => {
+		// Apply animation settings first
+		applyAnimationSettings();
+		
+		initNavigationTracking();
+		initScrollAnimations();
+		initScrollDrivenAnimations();
+	});
 </script>
+
+<style>
+	/* Smooth gradient shift animation */
+	.animate-gradient-shift {
+		background-size: 200% 200%;
+		animation: gradient-shift 4s ease-in-out infinite;
+	}
+
+	/* Button gradient animation */
+	.animate-button-gradient {
+		background-size: 300% 300%;
+		animation: button-gradient 6s ease-in-out infinite;
+	}
+
+	/* Keyframe for gradient animation */
+	@keyframes gradient-shift {
+		0%, 100% { background-position: 0% 50%; }
+		33% { background-position: 100% 50%; }
+		66% { background-position: 200% 50%; }
+	}
+
+	/* Keyframe for button gradient animation */
+	@keyframes button-gradient {
+		0%, 100% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+	}
+</style>

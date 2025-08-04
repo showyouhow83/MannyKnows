@@ -1,5 +1,7 @@
 ---
 // ProcessSectionAlt.astro - Marketing Strategy Plan Design
+import ProcessFlowGlass from '../react/ProcessFlowGlass.tsx';
+
 const processSteps = [
   {
     number: "01",
@@ -53,6 +55,10 @@ const iconSvgs: Record<string, string> = {
 };
 ---
 
+<!-- React Glass Morphism Process Flow -->
+<ProcessFlowGlass client:load />
+
+<!-- Original Process Flow (for comparison) -->
 <div class="process-flow-container">
   <div class="process-steps">
     {processSteps.map((step, index) => (
