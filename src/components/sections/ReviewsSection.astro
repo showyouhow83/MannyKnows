@@ -517,22 +517,7 @@ const stats = [
       updateCarousel();
     });
 
-    // Track carousel interactions (if PostHog is available)
-    if (typeof posthog !== 'undefined') {
-      nextBtn.addEventListener('click', () => {
-        posthog.capture('reviews_carousel_next', {
-          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
-          interaction_type: 'button_click'
-        });
-      });
-
-      prevBtn.addEventListener('click', () => {
-        posthog.capture('reviews_carousel_prev', {
-          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
-          interaction_type: 'button_click'
-        });
-      });
-    }
+    // Analytics tracking removed for simplicity
   }
 
   // Initialize when DOM is loaded

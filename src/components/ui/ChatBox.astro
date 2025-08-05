@@ -63,9 +63,7 @@ const { className = '' } = Astro.props;
       chatBox.classList.add('scale-100', 'opacity-100', 'visible');
       
       // Track chat open event
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('chat_opened', { location: 'website' });
-      }
+      // Analytics tracking removed for simplicity
       
       // Focus on input after chat opens
       setTimeout(() => chatBoxInput?.focus(), 300);
@@ -98,12 +96,7 @@ const { className = '' } = Astro.props;
       if (!message) return;
 
       // Track message sent event
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('chat_message_sent', { 
-          message_length: message.length,
-          location: 'website'
-        });
-      }
+      // Analytics tracking removed for simplicity
 
       // Add user message
       const userMessage = document.createElement('div');
