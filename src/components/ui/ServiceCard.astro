@@ -62,21 +62,6 @@ const styles = variantStyles[variant];
 ---
 
 <div class={`${styles.container} ${className}`}>
-  <pixel-canvas
-    data-colors={pixelColors}
-    data-gap="12"
-    data-speed="75"
-    data-no-focus
-    style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"
-  ></pixel-canvas>
-
-  <!-- Circular mask overlay to reduce center intensity -->
-  <!-- Light Mode Mask (darker overlay for light backgrounds) -->
-  <div class="pixel-mask-overlay light-mode-only"></div>
-
-  <!-- Dark Mode Mask (lighter overlay for dark backgrounds) -->
-  <div class="pixel-mask-overlay dark-mode-only"></div>
-
   <div class="relative z-10">
     <div class="h-16 mb-6 flex items-center justify-center">
       <div class={styles.icon}>
@@ -97,43 +82,10 @@ const styles = variantStyles[variant];
 </div>
 
 <style>
-  /* Base mask styles */
-  .pixel-mask-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  /* Light Mode Mask - darker overlay for light backgrounds */
-  .light-mode-only {
-    display: block;
-    background: radial-gradient(circle at center,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0) 85%
-    );
-  }
-
-  /* Dark Mode Mask - lighter overlay for dark backgrounds */
-  .dark-mode-only {
-    display: none;
-    background: radial-gradient(circle at center,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(0, 0, 0, 0) 45%
-    );
-  }
-
-  /* Theme switching - same pattern as ThemeAwareButton */
-  :root.dark .light-mode-only {
-    display: none;
-  }
-  :root.dark .dark-mode-only {
-    display: block;
-  }
-
-  .group:hover .pixel-mask-overlay {
-    opacity: 1;
+  /* Services responsive styles */
+  @media (max-width: 768px) {
+    .services-grid {
+      @apply grid-cols-1 gap-6;
+    }
   }
 </style>

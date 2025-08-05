@@ -203,6 +203,19 @@ const stats = [
     transition: transform 0.3s ease-in-out;
   }
 
+  #reviewsContainerMobile {
+    transition: transform 0.3s ease-out;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  #reviewsContainerMobile:active {
+    cursor: grabbing;
+  }
+
   .review-card {
     flex-shrink: 0;
   }
@@ -253,6 +266,12 @@ const stats = [
     let currentIndexMobile = 0;
     let currentIndexDesktop = 0;
     let isScrollControlled = false;
+    
+    // Touch scrolling variables for mobile
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let startTime = 0;
     
     // Mobile carousel (1 card at a time)
     function updateMobileCarousel() {
@@ -383,35 +402,194 @@ const stats = [
       }
     }
 
+    // Touch scrolling for mobile
+    function initTouchScrolling() {
+      if (!containerMobile) return;
+      
+      // Touch start
+      containerMobile.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerMobile.style.transition = 'none';
+      }, { passive: true });
+      
+      // Touch move
+      containerMobile.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.touches[0].clientX;
+        const diffX = currentX - startX;
+        const currentTransform = -currentIndexMobile * (containerMobile.children[0] as HTMLElement)?.offsetWidth || 0;
+        
+        containerMobile.style.transform = `translateX(${currentTransform + diffX}px)`;
+      }, { passive: true });
+      
+      // Touch end
+      containerMobile.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerMobile.style.transition = 'transform 0.3s ease-out';
+        
+        const diffX = currentX - startX;
+        const threshold = 50; // Minimum swipe distance
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        // Determine if it's a valid swipe
+        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+          if (diffX > 0) {
+            // Swipe right - go to previous
+            prevSlide();
+          } else {
+            // Swipe left - go to next
+            nextSlide();
+          }
+        } else {
+          // Snap back to current position
+          updateMobileCarousel();
+        }
+      }, { passive: true });
+      
+      // Mouse events for desktop touch devices (mobile container only)
+      containerMobile.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerMobile.style.transition = 'none';
+        e.preventDefault();
+      });
+      
+      containerMobile.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.clientX;
+        const diffX = currentX - startX;
+        const currentTransform = -currentIndexMobile * (containerMobile.children[0] as HTMLElement)?.offsetWidth || 0;
+        
+        containerMobile.style.transform = `translateX(${currentTransform + diffX}px)`;
+        e.preventDefault();
+      });
+      
+      containerMobile.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerMobile.style.transition = 'transform 0.3s ease-out';
+        
+        const diffX = currentX - startX;
+        const threshold = 50;
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+          if (diffX > 0) {
+            prevSlide();
+          } else {
+            nextSlide();
+          }
+        } else {
+          updateMobileCarousel();
+        }
+        e.preventDefault();
+      });
+      
+      // Prevent context menu on long press
+      containerMobile.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+    }
+
+    // Mouse drag scrolling for desktop
+    function initDesktopMouseDrag() {
+      if (!containerDesktop) return;
+      
+      // Mouse events for desktop drag scrolling
+      containerDesktop.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerDesktop.style.transition = 'none';
+        containerDesktop.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.clientX;
+        const diffX = currentX - startX;
+        const card = containerDesktop.children[0] as HTMLElement;
+        const cardWidth = card ? card.offsetWidth + 32 : 400; // Use actual card width + gap
+        const currentTransform = -currentIndexDesktop * cardWidth;
+        
+        containerDesktop.style.transform = `translateX(${currentTransform + diffX}px)`;
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerDesktop.style.transition = 'transform 0.5s ease-in-out';
+        containerDesktop.style.cursor = 'grab';
+        
+        const diffX = currentX - startX;
+        const threshold = 30; // Reduced threshold for more sensitivity
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        if (Math.abs(diffX) > threshold || velocity > 0.3) { // Reduced velocity threshold
+          if (diffX > 0) {
+            prevSlide();
+          } else {
+            nextSlide();
+          }
+        } else {
+          updateDesktopCarousel();
+        }
+        e.preventDefault();
+      });
+
+      // Handle mouse leave to stop dragging
+      containerDesktop.addEventListener('mouseleave', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerDesktop.style.transition = 'transform 0.5s ease-in-out';
+        containerDesktop.style.cursor = 'grab';
+        updateDesktopCarousel();
+      });
+      
+      // Prevent context menu on long press
+      containerDesktop.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+
+      // Set initial cursor
+      containerDesktop.style.cursor = 'grab';
+    }
+
     // Event listeners
     nextBtn.addEventListener('click', nextSlide);
     prevBtn.addEventListener('click', prevSlide);
 
     // Initialize
     updateCarousel();
-    initScrollControlledReviews(); // ENABLE SCROLL-CONTROLLED REVIEWS
+    initTouchScrolling(); // Enable touch scrolling for mobile
+    initDesktopMouseDrag(); // Enable mouse drag scrolling for desktop
+    // initScrollControlledReviews(); // DISABLED - Scroll animations removed per user request
 
     // Handle resize
     window.addEventListener('resize', () => {
       updateCarousel();
     });
 
-    // Track carousel interactions (if PostHog is available)
-    if (typeof posthog !== 'undefined') {
-      nextBtn.addEventListener('click', () => {
-        posthog.capture('reviews_carousel_next', {
-          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
-          interaction_type: 'button_click'
-        });
-      });
-
-      prevBtn.addEventListener('click', () => {
-        posthog.capture('reviews_carousel_prev', {
-          current_index: window.innerWidth < 768 ? currentIndexMobile : currentIndexDesktop,
-          interaction_type: 'button_click'
-        });
-      });
-    }
+    // Analytics tracking removed for simplicity
   }
 
   // Initialize when DOM is loaded

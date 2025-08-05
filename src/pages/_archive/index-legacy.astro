@@ -95,13 +95,11 @@ const ANIMATION_CONFIG = {
 </BaseLayout>
 
 <script>
-	// Declare global posthog variable for TypeScript
+	// Declare global variables for TypeScript
 	declare global {
 		interface Window {
-			posthog?: any;
 			MannyKnowsAnimations?: any;
 		}
-		var posthog: any;
 	}
 	
 	// ========================================
@@ -193,21 +191,11 @@ const ANIMATION_CONFIG = {
 			const serviceName = card.querySelector('h3')?.textContent || `Service ${index + 1}`;
 			
 			card.addEventListener('mouseenter', () => {
-				if (typeof posthog !== 'undefined') {
-					posthog.capture('service_card_hover', {
-						service_name: serviceName,
-						service_position: index + 1
-					});
-				}
+				// Service card hover tracking could be added here
 			});
 			
 			card.addEventListener('click', () => {
-				if (typeof posthog !== 'undefined') {
-					posthog.capture('service_card_click', {
-						service_name: serviceName,
-						service_position: index + 1
-					});
-				}
+				// Service card click tracking could be added here
 			});
 		});
 
@@ -215,12 +203,7 @@ const ANIMATION_CONFIG = {
 		const ctaButtons = document.querySelectorAll('#services a[href]');
 		ctaButtons.forEach(button => {
 			button.addEventListener('click', () => {
-				if (typeof posthog !== 'undefined') {
-					posthog.capture('services_cta_click', {
-						button_text: button.textContent,
-						button_href: button.getAttribute('href')
-					});
-				}
+				// CTA click tracking could be added here
 			});
 		});
 	}
@@ -298,32 +281,18 @@ const ANIMATION_CONFIG = {
 			
 			// Track clicks
 			card.addEventListener('click', () => {
-				if (typeof posthog !== 'undefined') {
-					const customerName = card.querySelector('.font-semibold')?.textContent || `Review ${index + 1}`;
-					posthog.capture('review_card_click', {
-						customer_name: customerName,
-						review_position: index + 1
-					});
-				}
+				// Review card click tracking could be added here
 			});
 		});
 
-		// Track carousel interactions
-		if (typeof posthog !== 'undefined') {
-			nextBtn.addEventListener('click', () => {
-				posthog.capture('reviews_carousel_next', {
-					current_index: currentIndex,
-					interaction_type: 'button_click'
-				});
-			});
+		// Track carousel interactions - could be added here if needed
+		nextBtn.addEventListener('click', () => {
+			// Next button click tracking could be added here
+		});
 
-			prevBtn.addEventListener('click', () => {
-				posthog.capture('reviews_carousel_prev', {
-					current_index: currentIndex,
-					interaction_type: 'button_click'
-				});
-			});
-		}
+		prevBtn.addEventListener('click', () => {
+			// Previous button click tracking could be added here
+		});
 	}
 
 	// Apply animation settings

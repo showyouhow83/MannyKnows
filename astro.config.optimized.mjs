@@ -6,8 +6,8 @@ export default defineConfig({
   output: 'static',
   integrations: [
     tailwind({
-      // Keep base styles for proper styling
-      applyBaseStyles: true,
+      // Apply base styles and components
+      applyBaseStyles: false, // Disable default base styles to reduce CSS
     })
   ],
   vite: {

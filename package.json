@@ -5,21 +5,33 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:analyze": "astro build --analyze",
+    "build:clean": "rm -rf dist .astro && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "deploy:staging": "./deploy.sh staging",
     "deploy:production": "./deploy.sh production",
     "deploy:development": "./deploy.sh development",
     "push:staging": "./deploy.sh staging \"Update staging: $(date)\"",
-    "quick:staging": "./deploy.sh staging \"Quick update: $(date)\""
+    "quick:staging": "./deploy.sh staging \"Quick update: $(date)\"",
+    "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr",
+    "perf:analyze": "npm run build && npm run size:check && echo '\\n📊 Performance Analysis:' && echo 'Target: Bundle <500KB, CSS <30KB, HTML <100KB'",
+    "perf:budget": "npm run build && node scripts/performance-budget.js",
+    "perf:optimize": "npm run build && find dist/ -name '._*' -delete && node scripts/safe-html-optimize.js && node scripts/performance-dashboard.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.12.3",
-    "posthog-js": "^1.258.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "web-vitals": "^5.0.3"
+  },
+  "devDependencies": {
+    "astro-compress": "^2.3.8",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.1.0",
+    "terser": "^5.43.1",
+    "vite-bundle-analyzer": "^1.1.0"
   }
 }

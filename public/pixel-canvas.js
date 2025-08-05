@@ -26,23 +26,19 @@ class Pixel {
 
   draw() {
     const centerOffset = this.maxSizeInteger * 0.5 - this.size * 0.5;
-
     this.ctx.fillStyle = this.color;
     this.ctx.fillRect(this.x + centerOffset, this.y + centerOffset, this.size, this.size);
   }
 
   appear() {
     this.isIdle = false;
-
     if (this.counter <= this.delay) {
       this.counter += this.counterStep;
       return;
     }
-
     if (this.size >= this.maxSize) {
       this.isShimmer = true;
     }
-
     if (this.isShimmer) {
       this.shimmer();
     } else {

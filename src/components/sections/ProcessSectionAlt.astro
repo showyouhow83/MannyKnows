@@ -122,7 +122,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -163,7 +163,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -196,7 +196,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -245,66 +245,22 @@ const processSteps = [
   .process-grid {
     display: flex;
     flex-direction: column;
-    gap: 0rem; /* Changed from 2rem */
+    gap: 0rem; /* Reduced spacing between cards */
     align-items: center;
     position: relative;
     max-width: 1440px;
     margin: 0 auto;
   }
 
-  /* Central Timeline Line - Curved/Wavy */
+  /* Central Timeline Line - Hidden for cleaner desktop design */
   .process-grid::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 100px;
-    bottom: 100px;
-    width: 6px;
-    background: linear-gradient(180deg, 
-      #10d1ff 0%, 
-      #0071e3 20%, 
-      #3b5bd6 40%,
-      #5856d6 60%,
-      #a855f7 80%,
-      #ec4899 100%);
-    border-radius: 3px;
-    transform: translateX(-50%);
-    z-index: 1;
-    clip-path: polygon(
-      20% 0%, 80% 0%, 
-      95% 10%, 85% 20%, 
-      90% 30%, 75% 40%, 
-      85% 50%, 70% 60%, 
-      80% 70%, 65% 80%, 
-      75% 90%, 60% 100%, 
-      40% 100%, 25% 90%, 
-      35% 80%, 20% 70%, 
-      30% 60%, 15% 50%, 
-      25% 40%, 10% 30%, 
-      20% 20%, 5% 10%
-    );
-    animation: timelineGlow 4s ease-in-out infinite alternate;
+    display: none;
   }
 
-  @keyframes timelineGlow {
-    0% { 
-      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
-      opacity: 0.9;
-    }
-    100% { 
-      filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 15px currentColor);
-      opacity: 1;
-    }
-  }
-
-  /* Mobile: Move timeline to left */
+  /* Mobile: Timeline hidden on mobile */
   @media (max-width: 768px) {
     .process-grid::before {
-      left: 5.2rem;
-      transform: translateX(0%);
-      top: 125.5px;
-      bottom: 107.7px;
-      display: none; /* Hidden on mobile as requested */
+      display: none;
     }
   }
 
@@ -320,7 +276,7 @@ const processSteps = [
   .step-row {
     display: flex;
     align-items: center;
-    min-height: 190px; /* Changed from 280px */
+    min-height: 250px; /* Increased from 160px for better desktop spacing */
     gap: 2rem;
   }
 
@@ -408,9 +364,9 @@ const processSteps = [
     will-change: transform, box-shadow, border-color;
   }
 
+  /* Disabled default card hover animations */
   .process-card:hover {
-    transform: translateY(-8px) translateZ(0);
-    position: relative;
+    /* No hover effects for cleaner interaction */
   }
 
   .step-content {
@@ -442,8 +398,9 @@ const processSteps = [
     will-change: transform;
   }
 
+  /* Disabled icon hover animation */
   .process-card:hover .step-icon-container {
-    transform: scale(1.1) rotate(5deg) translateZ(0);
+    /* No hover effects for cleaner interaction */
   }
 
   .step-icon {
@@ -526,10 +483,9 @@ const processSteps = [
       0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
+  /* Disabled dark mode hover animations */
   :global(.dark) .process-card:hover {
-    box-shadow: 
-      0 20px 60px rgba(16, 209, 255, 0.25),
-      0 8px 40px rgba(0, 0, 0, 0.4);
+    /* No hover effects for cleaner interaction */
   }
 
   :global(.dark) .step-title {
@@ -661,13 +617,25 @@ const processSteps = [
     }
   }
 
+  /* Tablet and intermediate screen sizes */
+  @media (min-width: 769px) and (max-width: 1023px) {
+    .step-row {
+      min-height: 200px; /* Intermediate height between mobile and desktop */
+      gap: 3rem; /* Intermediate gap */
+    }
+
+    .process-card {
+      width: 380px;
+    }
+  }
+
   @media (min-width: 1024px) {
     .process-grid {
       max-width: 1440px;
     }
 
     .step-row {
-      gap: 50rem; /* Extreme gap for wide spacing */
+      gap: 5rem; /* Improved desktop spacing */
     }
 
     .process-card {
@@ -724,28 +692,49 @@ const processSteps = [
     processCards.forEach((card, index) => {
       if (!(card instanceof HTMLElement)) return;
       
-      const color = gradientColors[index];
-      // Use exact same values as number hover for perfect consistency
-      const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+      // Get the actual step index from data attribute instead of forEach index
+      const stepIndex = card.getAttribute('data-step-index');
+      if (!stepIndex) return;
+      
+      const color = gradientColors[parseInt(stepIndex)];
+      // Match number hover effects exactly - including scale
+      const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
-      const hoverTransform = 'translateY(-8px) translateZ(0)';
+      const hoverTransform = 'translateY(-8px) scale(1.05) translateZ(0)'; // Added scale to match number hover
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
           card.style.setProperty('transform', hoverTransform, 'important');
+          card.style.setProperty('filter', 'brightness(1.2)', 'important');
           card.style.setProperty('box-shadow', hoverShadow, 'important');
           card.style.setProperty('border-color', hoverBorderColor, 'important');
+          
+          // Also affect corresponding number using correct step index
+          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
+          if (correspondingNumber instanceof HTMLElement) {
+            correspondingNumber.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            correspondingNumber.style.setProperty('filter', 'brightness(1.2)', 'important');
+          }
         });
       });
       
       card.addEventListener('mouseleave', () => {
         requestAnimationFrame(() => {
           card.style.removeProperty('transform');
+          card.style.removeProperty('filter');
           card.style.removeProperty('box-shadow');
           card.style.removeProperty('border-color');
+          
+          // Also remove effects from corresponding number using correct step index
+          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
+          if (correspondingNumber instanceof HTMLElement) {
+            correspondingNumber.style.removeProperty('transform');
+            correspondingNumber.style.removeProperty('filter');  
+          }
         });
       });
     });
+    
     
     // Cross-component interaction system (PRESERVED)
     // This intelligent system makes numbers aware of their corresponding cards
@@ -759,12 +748,15 @@ const processSteps = [
         const color = gradientColors[parseInt(stepIndex)];
         const hoverTransform = 'translateY(-8px) translateZ(0)';
         const hoverBorderColor = `${color}60`;
-        const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+        // Centered glow with consistent intensity - matching card hover exactly
+        const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
         
         // Mouse interactions - cross-component awareness (unified colors)
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            // Apply full card hover effects including scale and brightness
+            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
+            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
             correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
             correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
@@ -773,6 +765,7 @@ const processSteps = [
         number.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
             correspondingCard.style.removeProperty('transform');
+            correspondingCard.style.removeProperty('filter');
             correspondingCard.style.removeProperty('border-color');
             correspondingCard.style.removeProperty('box-shadow');
           });
@@ -781,7 +774,8 @@ const processSteps = [
         // Touch support for mobile - cross-mode functionality preserved (unified colors)
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
+            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
             correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
             correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
@@ -791,8 +785,43 @@ const processSteps = [
           setTimeout(() => {
             requestAnimationFrame(() => {
               correspondingCard.style.removeProperty('transform');
+              correspondingCard.style.removeProperty('filter');
               correspondingCard.style.removeProperty('border-color');
               correspondingCard.style.removeProperty('box-shadow');
+            });
+          }, 300);
+        }, { passive: true });
+        
+        // REVERSE CONNECTION: Card affects Number - apply exact same effects as number hover
+        correspondingCard.addEventListener('mouseenter', () => {
+          requestAnimationFrame(() => {
+            // Apply the exact same number hover effects
+            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+          });
+        });
+        
+        correspondingCard.addEventListener('mouseleave', () => {
+          requestAnimationFrame(() => {
+            // Remove the exact same number hover effects
+            number.style.removeProperty('transform');
+            number.style.removeProperty('filter');
+          });
+        });
+        
+        // Touch support for card affecting number
+        correspondingCard.addEventListener('touchstart', () => {
+          requestAnimationFrame(() => {
+            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+          });
+        }, { passive: true });
+        
+        correspondingCard.addEventListener('touchend', () => {
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              number.style.removeProperty('transform');
+              number.style.removeProperty('filter');
             });
           }, 300);
         }, { passive: true });

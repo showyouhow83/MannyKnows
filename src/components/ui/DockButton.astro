@@ -38,16 +38,6 @@ const iconClasses = {
 >
   <div class={`w-12 h-12 ${variantClasses[variant]} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer`}>
     
-    {variant === 'chat' && (
-      <pixel-canvas 
-        data-colors="#ffffff, #f8fafc, #e2e8f0" 
-        data-gap="4" 
-        data-speed="60" 
-        data-no-focus 
-        style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"
-      ></pixel-canvas>
-    )}
-    
     {variant === 'brand' ? (
       <span class="text-white font-black text-lg relative z-10">MK</span>
     ) : (

@@ -202,13 +202,7 @@ const processSteps = [
       prevBtn.disabled = currentStep === 0;
       nextBtn.disabled = currentStep === totalSteps - 1;
       
-      // Track step view
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('process_step_viewed', {
-          step_number: currentStep + 1,
-          step_name: getStepName(currentStep)
-        });
-      }
+      // Step view tracking could be added here
     }
     
     function getStepName(stepIndex: number): string {
