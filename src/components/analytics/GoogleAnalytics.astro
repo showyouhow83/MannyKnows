@@ -1,0 +1,29 @@
+---
+// Google Analytics component with exact configuration from user
+export interface Props {
+  measurementId?: string;
+  enableInDev?: boolean;
+}
+
+const { 
+  measurementId = import.meta.env.GA_MEASUREMENT_ID || 'G-J0V35RZNZB',
+  enableInDev = false 
+} = Astro.props;
+
+// Only load in production unless specifically enabled for dev
+const shouldLoad = import.meta.env.PROD || enableInDev;
+---
+
+{shouldLoad && (
+  <>
+    <!-- Google tag (gtag.js) -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
+    <script is:inline define:vars={{ measurementId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', measurementId);
+    </script>
+  </>
+)}

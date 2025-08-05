@@ -1,0 +1,19 @@
+---
+// Test component to verify Google Analytics is working
+// This will only show in development mode
+const isDev = !import.meta.env.PROD;
+---
+
+{isDev && (
+  <script is:inline>
+    // Check if Google Analytics is loaded
+    setTimeout(() => {
+      if (typeof gtag === 'function') {
+        console.log('✅ Google Analytics (gtag) is loaded and ready!');
+        console.log('📊 GA Measurement ID: G-J0V35RZNZB');
+      } else {
+        console.log('⚠️ Google Analytics not detected (this is normal in development)');
+      }
+    }, 2000);
+  </script>
+)}
