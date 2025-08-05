@@ -32,7 +32,7 @@ const navLinks = [
 <nav id="topNav" class={`bg-transparent min-h-[4.05rem] relative flex items-center border-b border-gray-300/30 dark:border-white/10 ${className}`}>
   <div class="max-w-[1440px] mx-auto px-2 w-full">
     <!-- Desktop Layout -->
-    <div class="hidden md:flex justify-between items-center w-full">
+    <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <h1 class="text-5xl font-black m-0">
         <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
@@ -111,7 +111,7 @@ const navLinks = [
     </div>
 
     <!-- Mobile Layout -->
-    <div class="flex md:hidden items-center w-full h-16 px-0">
+    <div class="flex xl:hidden items-center w-full h-16 px-0">
       <!-- Logo - 15% -->
       <div class="flex-[0_0_15%] flex items-center">
         <h1 class="text-3xl font-black m-0 leading-none">
@@ -164,7 +164,7 @@ const navLinks = [
   </div>
 
   <!-- Mobile Menu Overlay -->
-  <div id="mobile-menu" class="fixed inset-0 z-50 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="mobile-menu" class="fixed inset-0 z-50 xl:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
     <!-- Glassmorphism Background -->
     <div class="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent dark:from-black/30 dark:via-black/20 dark:to-transparent backdrop-blur-xl border-l border-white/20 dark:border-white/10"></div>
     
@@ -339,7 +339,7 @@ const navLinks = [
   }
 
   /* Responsive navigation styles */
-  @media (max-width: 768px) {
+  @media (max-width: 1111px) {
     /* Remove column direction for mobile layout */
     .nav-search {
       @apply mx-0;
@@ -475,7 +475,7 @@ const navLinks = [
 
     // Close menu on window resize to desktop
     window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768 && isMenuOpen) {
+      if (window.innerWidth >= 1111 && isMenuOpen) {
         closeMenu();
       }
     });
