@@ -198,10 +198,7 @@
       modalDialog?.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
       
-      // Track modal open
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('settings_modal_opened');
-      }
+      // Modal opened - tracking could be added here
     });
 
     // Close modal function
@@ -243,14 +240,7 @@
       // Save immediately to localStorage
       localStorage.setItem('marquee-enabled', marqueeToggle.checked.toString());
       
-      // Track setting change
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('setting_changed', {
-          setting: 'marquee',
-          enabled: marqueeToggle.checked,
-          source: 'realtime_toggle'
-        });
-      }
+      // Setting change tracking could be added here
     });
 
     colorfulTitlesToggle?.addEventListener('change', () => {
@@ -258,14 +248,7 @@
       // Save immediately to localStorage
       localStorage.setItem('colorful-titles-enabled', colorfulTitlesToggle.checked.toString());
       
-      // Track setting change
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('setting_changed', {
-          setting: 'colorful_titles',
-          enabled: colorfulTitlesToggle.checked,
-          source: 'realtime_toggle'
-        });
-      }
+      // Setting change tracking could be added here
     });
 
     themeToggle?.addEventListener('change', () => {
@@ -281,15 +264,7 @@
         }
       }));
       
-      // Track setting change
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('setting_changed', {
-          setting: 'theme',
-          enabled: themeToggle.checked,
-          value: themeToggle.checked ? 'dark' : 'light',
-          source: 'realtime_toggle'
-        });
-      }
+      // Setting change tracking could be added here
     });
 
     function loadSettings() {
@@ -320,14 +295,7 @@
       const colorfulTitlesEnabled = colorfulTitlesToggle?.checked ?? true;
       const themeDark = themeToggle?.checked ?? true; // Default to dark mode
       
-      // Track settings save button click
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('settings_save_button_clicked', {
-          marquee_enabled: marqueeEnabled,
-          colorful_titles_enabled: colorfulTitlesEnabled,
-          theme_dark: themeDark
-        });
-      }
+      // Settings save tracking could be added here
     }
 
     function resetSettings() {
@@ -349,12 +317,7 @@
       applyMarqueeSetting(true);
       applyColorfulTitlesSetting(true);
       
-      // Track settings reset
-      if (typeof posthog !== 'undefined') {
-        posthog.capture('settings_reset', {
-          source: 'reset_button'
-        });
-      }
+      // Settings reset tracking could be added here
     }
 
     function applyMarqueeSetting(enabled: boolean) {

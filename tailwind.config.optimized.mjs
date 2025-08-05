@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // PERFORMANCE OPTIMIZATION: Aggressive purging
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
     './public/**/*.{html,js}'
@@ -12,7 +13,7 @@ export default {
     'sf-regular', 'sf-medium', 'sf-semibold', 'sf-bold',
     'apple-gradient-text', 'apple-headline', 'apple-body-text',
     // Essential animations
-    'animate-float', 'animate-sparkle', 'animate-gradient-shift', 'animate-emoji-sway',
+    'animate-float', 'animate-sparkle',
     // Transition classes
     'transition-colors', 'transition-all', 'duration-300',
     // Dynamic color classes (most commonly used)
