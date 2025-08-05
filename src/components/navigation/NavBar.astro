@@ -113,8 +113,8 @@ const navLinks = [
     <!-- Mobile Layout -->
     <div class="flex md:hidden items-center w-full h-16">
       <!-- Logo - 35% -->
-      <div class="flex-[0_0_35%]">
-        <h1 class="text-3xl font-black m-0">
+      <div class="flex-[0_0_35%] flex items-center h-10">
+        <h1 class="text-3xl font-black m-0 leading-none">
           <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
             MK
           </a>
@@ -122,8 +122,8 @@ const navLinks = [
       </div>
 
       <!-- Search Bar - 55% -->
-      <div class="flex-[0_0_55%] px-3">
-        <div class="relative flex items-center">
+      <div class="flex-[0_0_55%] px-3 flex items-center h-10">
+        <div class="relative flex items-center w-full">
           <label for="search-input-mobile" class="absolute -left-[10000px] opacity-0 pointer-events-none">Browse Services Catalog</label>
           <input
             id="search-input-mobile"
@@ -141,11 +141,11 @@ const navLinks = [
       </div>
 
       <!-- Hamburger Menu - 10% -->
-      <div class="flex-[0_0_10%] flex justify-end">
+      <div class="flex-[0_0_10%] flex justify-end items-center h-10">
         <button
           type="button"
           id="mobile-menu-toggle"
-          class="p-2 rounded-lg text-text-light-primary dark:text-text-dark-primary hover:bg-black/10 dark:hover:bg-white/10 transition-colors duration-300"
+          class="p-2 rounded-lg text-text-light-primary dark:text-text-dark-primary hover:bg-black/10 dark:hover:bg-white/10 transition-colors duration-300 h-10 w-10 flex items-center justify-center"
           aria-label="Toggle mobile menu"
           aria-expanded="false"
         >
