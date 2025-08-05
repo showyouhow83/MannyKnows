@@ -122,7 +122,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -163,7 +163,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -196,7 +196,7 @@ const processSteps = [
                      aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
                   <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
                 </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center transition-all duration-300 hover:-translate-y-3 hover:scale-105 relative overflow-hidden"
+                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
                      style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
                      data-step-index={index}
                      role="article"
@@ -364,12 +364,9 @@ const processSteps = [
     will-change: transform, box-shadow, border-color;
   }
 
+  /* Disabled default card hover animations */
   .process-card:hover {
-    transform: translateY(-8px) scale(1.05) translateZ(0);
-    filter: brightness(1.2);
-    position: relative;
-    /* Ensure glow is centered around the card */
-    box-shadow: 0 0 60px rgba(16, 209, 255, 0.4), 0 0 30px rgba(16, 209, 255, 0.3), 0 0 15px rgba(16, 209, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    /* No hover effects for cleaner interaction */
   }
 
   .step-content {
@@ -401,8 +398,9 @@ const processSteps = [
     will-change: transform;
   }
 
+  /* Disabled icon hover animation */
   .process-card:hover .step-icon-container {
-    transform: scale(1.1) rotate(5deg) translateZ(0);
+    /* No hover effects for cleaner interaction */
   }
 
   .step-icon {
@@ -485,12 +483,9 @@ const processSteps = [
       0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
+  /* Disabled dark mode hover animations */
   :global(.dark) .process-card:hover {
-    transform: translateY(-8px) scale(1.05) translateZ(0);
-    filter: brightness(1.2);
-    box-shadow: 
-      0 20px 60px rgba(16, 209, 255, 0.25),
-      0 8px 40px rgba(0, 0, 0, 0.4);
+    /* No hover effects for cleaner interaction */
   }
 
   :global(.dark) .step-title {
@@ -697,20 +692,25 @@ const processSteps = [
     processCards.forEach((card, index) => {
       if (!(card instanceof HTMLElement)) return;
       
-      const color = gradientColors[index];
-      // Centered glow with consistent intensity - matching number hover exactly
+      // Get the actual step index from data attribute instead of forEach index
+      const stepIndex = card.getAttribute('data-step-index');
+      if (!stepIndex) return;
+      
+      const color = gradientColors[parseInt(stepIndex)];
+      // Match number hover effects exactly - including scale
       const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
-      const hoverTransform = 'translateY(-8px) translateZ(0)';
+      const hoverTransform = 'translateY(-8px) scale(1.05) translateZ(0)'; // Added scale to match number hover
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
           card.style.setProperty('transform', hoverTransform, 'important');
+          card.style.setProperty('filter', 'brightness(1.2)', 'important');
           card.style.setProperty('box-shadow', hoverShadow, 'important');
           card.style.setProperty('border-color', hoverBorderColor, 'important');
           
-          // Also affect corresponding number
-          const correspondingNumber = document.querySelector(`[data-target-step="${index}"]`);
+          // Also affect corresponding number using correct step index
+          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
           if (correspondingNumber instanceof HTMLElement) {
             correspondingNumber.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
             correspondingNumber.style.setProperty('filter', 'brightness(1.2)', 'important');
@@ -721,11 +721,12 @@ const processSteps = [
       card.addEventListener('mouseleave', () => {
         requestAnimationFrame(() => {
           card.style.removeProperty('transform');
+          card.style.removeProperty('filter');
           card.style.removeProperty('box-shadow');
           card.style.removeProperty('border-color');
           
-          // Also remove effects from corresponding number
-          const correspondingNumber = document.querySelector(`[data-target-step="${index}"]`);
+          // Also remove effects from corresponding number using correct step index
+          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
           if (correspondingNumber instanceof HTMLElement) {
             correspondingNumber.style.removeProperty('transform');
             correspondingNumber.style.removeProperty('filter');  
@@ -791,10 +792,10 @@ const processSteps = [
           }, 300);
         }, { passive: true });
         
-        // REVERSE CONNECTION: Card affects Number (NEW)
+        // REVERSE CONNECTION: Card affects Number - apply exact same effects as number hover
         correspondingCard.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            // Apply number hover effects to the number
+            // Apply the exact same number hover effects
             number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
             number.style.setProperty('filter', 'brightness(1.2)', 'important');
           });
@@ -802,7 +803,7 @@ const processSteps = [
         
         correspondingCard.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
-            // Remove number hover effects
+            // Remove the exact same number hover effects
             number.style.removeProperty('transform');
             number.style.removeProperty('filter');
           });

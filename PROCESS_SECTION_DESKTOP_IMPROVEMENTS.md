@@ -15,6 +15,13 @@ Improve the desktop experience of the ProcessSectionAlt.astro component with bet
 - **Breakpoint Strategy**: Ensure proper scaling between breakpoints
 - **Maintain Mobile**: Keep existing mobile layout intact
 
+### 3. Card Hover Animations
+- **Default Hover**: Disabled inline `hover:-translate-y-3 hover:scale-105` classes
+- **CSS Hover**: Disabled transform, filter, and box-shadow animations
+- **Icon Hover**: Disabled scale and rotate animations
+- **Dark Mode**: Disabled dark mode hover effects
+- **Result**: Clean, static cards with only JavaScript-controlled interactions
+
 ## Implementation Plan
 
 ### Phase 1: Desktop Spacing
@@ -34,9 +41,19 @@ Improve the desktop experience of the ProcessSectionAlt.astro component with bet
 - [x] Height scaling: mobile (auto) → tablet (200px) → desktop (250px)
 
 ### Phase 4: Testing & Refinement
+- [x] Disable default card hover animations and styling
+- [x] Fix JavaScript hover interaction mapping and effects consistency
 - [ ] Cross-browser testing
 - [ ] Mobile regression testing
 - [ ] Performance validation
+
+## Issues Fixed
+
+### Hover Interaction Problems (Resolved)
+- **Card-Number Mapping**: Fixed incorrect `forEach index` usage, now uses `data-step-index` attribute
+- **Effect Consistency**: Both card and number hover now apply identical transforms: `scale(1.05) translateZ(0)`
+- **Color Matching**: Fixed wrong color application by using correct step index for gradient colors
+- **Bidirectional Effects**: Card→Number and Number→Card now apply exactly the same effects
 
 ## Technical Details
 
@@ -70,6 +87,33 @@ Improve the desktop experience of the ProcessSectionAlt.astro component with bet
 .process-grid::before {
   display: none; /* Completely hidden for cleaner design */
 }
+```
+
+### Card Hover Animations (Disabled)
+```css
+/* Disabled default card hover animations */
+.process-card:hover {
+  /* No hover effects for cleaner interaction */
+}
+
+/* Disabled icon hover animation */
+.process-card:hover .step-icon-container {
+  /* No hover effects for cleaner interaction */
+}
+
+/* Disabled dark mode hover animations */
+:global(.dark) .process-card:hover {
+  /* No hover effects for cleaner interaction */
+}
+```
+
+### HTML Classes (Cleaned)
+```html
+<!-- Before: -->
+<div class="process-card ... transition-all duration-300 hover:-translate-y-3 hover:scale-105 ...">
+
+<!-- After: -->
+<div class="process-card ... relative overflow-hidden">
 ```
 
 ## Expected Outcomes
