@@ -110,7 +110,7 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
           data-gap="4" 
           data-speed="60" 
           data-no-focus 
-          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.35 !important;"
+          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.6 !important;"
         ></pixel-canvas>
       )}
       <div class="relative z-10 flex flex-col items-center">
@@ -131,7 +131,7 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
           data-gap="4" 
           data-speed="60" 
           data-no-focus 
-          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.4 !important;"
+          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.6 !important;"
         ></pixel-canvas>
       )}
       <div class="relative z-10 flex flex-col items-center">
@@ -178,7 +178,7 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
 
     {(emoji && variant === 'emoji') && (
       <span 
-        class={`absolute top-1/2 right-0 text-2xl flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-1 -translate-y-1/2 group-hover:animate-emoji-sway`}
+        class={`absolute top-1/2 right-0 text-2xl flex items-center justify-center z-20 opacity-100 transition-all duration-300 transform translate-x-1 -translate-y-1/2 animate-emoji-sway`}
         style={`--sway-intensity: ${emojiAnimation === 'subtle' ? '0.3' : emojiAnimation === 'normal' ? '1' : emojiAnimation === 'dramatic' ? '2' : '3'};`}
       >
         {emoji}
