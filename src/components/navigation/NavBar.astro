@@ -29,9 +29,10 @@ const navLinks = [
 ];
 ---
 
-<nav id="topNav" class={`bg-transparent min-h-[7.75rem] relative flex items-center border-b border-gray-300/30 dark:border-white/10 ${className}`}>
-  <div class="max-w-[1440px] mx-auto px-8 w-full">
-    <div class="flex justify-between items-center w-full">
+<nav id="topNav" class={`bg-transparent min-h-[4.05rem] relative flex items-center border-b border-gray-300/30 dark:border-white/10 ${className}`}>
+  <div class="max-w-[1440px] mx-auto px-2 w-full">
+    <!-- Desktop Layout -->
+    <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <h1 class="text-5xl font-black m-0">
         <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
@@ -108,12 +109,109 @@ const navLinks = [
         </button>
       </div>
     </div>
+
+    <!-- Mobile Layout -->
+    <div class="flex xl:hidden items-center w-full h-16 px-0">
+      <!-- Logo - 15% -->
+      <div class="flex-[0_0_15%] flex items-center">
+        <h1 class="text-3xl font-black m-0 leading-none">
+          <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+            MK
+          </a>
+        </h1>
+      </div>
+
+      <!-- Search Bar - 70% -->
+      <div class="flex-[0_0_70%] flex items-center px-2">
+        <div class="relative flex items-center w-full">
+          <label for="search-input-mobile" class="absolute -left-[10000px] opacity-0 pointer-events-none">Browse Services Catalog</label>
+          <input
+            id="search-input-mobile"
+            type="search"
+            placeholder="Browse services catalog..."
+            class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-2 pl-3 pr-8 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-10 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
+          />
+          <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu - 15% -->
+      <div class="flex-[0_0_15%] flex justify-center items-center">
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          class="p-2 rounded-lg text-text-light-primary dark:text-text-dark-primary hover:bg-black/10 dark:hover:bg-white/10 transition-colors duration-300 flex items-center justify-center"
+          aria-label="Toggle mobile menu"
+          aria-expanded="false"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hamburger-icon">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="close-icon hidden">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 xl:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
+    <!-- Glassmorphism Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent dark:from-black/30 dark:via-black/20 dark:to-transparent backdrop-blur-xl border-l border-white/20 dark:border-white/10"></div>
+    
+    <!-- Menu Content -->
+    <div class="relative h-full w-[90%] ml-[10%] flex flex-col bg-white/95 dark:bg-black/95 backdrop-blur-lg">
+      <!-- Navigation Links -->
+      <div class="flex-1 flex flex-col justify-center px-8 space-y-8">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="mobile-nav-link text-3xl font-semibold text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 transform hover:translate-x-2"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="px-8 pb-12 space-y-4">
+        <div class="flex gap-4">
+          <Button
+            href="#instant-quote"
+            text="FREE 360 PHOTO"
+            subtext="CLAIM NOW"
+            variant="theme-aware"
+            className="flex-1 text-center"
+          />
+          <Button
+            href="#apple-quote"
+            text="FREE WEBSITE"
+            subtext="EXPIRING SOON"
+            variant="emoji"
+            emoji="🚀"
+            emojiAnimation="subtle"
+            sparkles={false}
+            className="flex-1 text-center text-[10px] text-white/80 leading-none"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 
 <style>
   /* Search bar apple gradient animation */
-  #search-input.apple-gradient-active {
+  #search-input.apple-gradient-active,
+  #search-input-mobile.apple-gradient-active {
     background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
     background-size: 200% 200%;
     animation: search-gradient-flow 3s ease-in-out infinite;
@@ -122,7 +220,8 @@ const navLinks = [
     position: relative;
   }
 
-  #search-input.apple-gradient-active::before {
+  #search-input.apple-gradient-active::before,
+  #search-input-mobile.apple-gradient-active::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -156,12 +255,14 @@ const navLinks = [
   }
 
   /* Disable search gradient animation when setting is off */
-  .search-gradient-disabled #search-input.apple-gradient-active {
+  .search-gradient-disabled #search-input.apple-gradient-active,
+  .search-gradient-disabled #search-input-mobile.apple-gradient-active {
     animation: none !important;
     background: #0071e3 !important;
   }
 
-  .search-gradient-disabled #search-input.apple-gradient-active::before {
+  .search-gradient-disabled #search-input.apple-gradient-active::before,
+  .search-gradient-disabled #search-input-mobile.apple-gradient-active::before {
     animation: none !important;
     background: #0071e3 !important;
   }
@@ -192,22 +293,59 @@ const navLinks = [
     50% { background-position: 100% 50%; }
   }
 
+  /* Mobile Menu Styles */
+  .mobile-nav-link {
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+
+  .mobile-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(45deg, #10d1ff, #ff4faa);
+    transition: width 0.3s ease;
+  }
+
+  .mobile-nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Mobile menu animations */
+  #mobile-menu.menu-open {
+    transform: translateX(0);
+  }
+
+  /* Hamburger icon animation */
+  #mobile-menu-toggle .hamburger-icon,
+  #mobile-menu-toggle .close-icon {
+    transition: opacity 0.2s ease;
+  }
+
+  #mobile-menu-toggle[aria-expanded="true"] .hamburger-icon {
+    opacity: 0;
+  }
+
+  #mobile-menu-toggle[aria-expanded="true"] .close-icon {
+    opacity: 1;
+  }
+
+  #mobile-menu-toggle[aria-expanded="false"] .close-icon {
+    opacity: 0;
+  }
+
   /* Responsive navigation styles */
-  @media (max-width: 768px) {
-    nav .flex {
-      @apply flex-col gap-4;
-    }
-    nav ul {
-      @apply gap-6 flex-wrap justify-center;
-    }
+  @media (max-width: 1111px) {
+    /* Remove column direction for mobile layout */
     .nav-search {
-      @apply mx-0 order-1;
+      @apply mx-0;
     }
     .search-input {
-      @apply w-80 min-w-64;
-    }
-    .nav-actions {
-      @apply -order-1 gap-3;
+      @apply min-w-64;
     }
   }
 </style>
@@ -221,33 +359,39 @@ const navLinks = [
     }
 
     const searchInput = document.getElementById('search-input');
-    if (!searchInput) return;
+    const searchInputMobile = document.getElementById('search-input-mobile');
+    
+    [searchInput, searchInputMobile].forEach(input => {
+      if (!input) return;
 
-    if (animationConfig.debugMode) console.log('Search gradient animation enabled');
+      if (animationConfig.debugMode) console.log('Search gradient animation enabled');
 
-    // Add gradient on focus
-    const addGradient = () => {
-      searchInput.classList.add('apple-gradient-active');
-      if (animationConfig.debugMode) console.log('Search gradient activated');
-    };
+      // Add gradient on focus
+      const addGradient = () => {
+        input.classList.add('apple-gradient-active');
+        if (animationConfig.debugMode) console.log('Search gradient activated');
+      };
 
-    // Remove gradient
-    const removeGradient = () => {
-      searchInput.classList.remove('apple-gradient-active');
-      if (animationConfig.debugMode) console.log('Search gradient deactivated');
-    };
+      // Remove gradient
+      const removeGradient = () => {
+        input.classList.remove('apple-gradient-active');
+        if (animationConfig.debugMode) console.log('Search gradient deactivated');
+      };
 
-    // Event listeners
-    searchInput.addEventListener('focus', addGradient);
-    searchInput.addEventListener('blur', removeGradient);
+      // Event listeners
+      input.addEventListener('focus', addGradient);
+      input.addEventListener('blur', removeGradient);
+    });
     
     // Remove gradient on scroll (user is moving away)
     let scrollTimeout;
     const handleScroll = () => {
-      if (searchInput.classList.contains('apple-gradient-active')) {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(removeGradient, animationConfig.searchScrollDelay);
-      }
+      [searchInput, searchInputMobile].forEach(input => {
+        if (input && input.classList.contains('apple-gradient-active')) {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => input.classList.remove('apple-gradient-active'), animationConfig.searchScrollDelay);
+        }
+      });
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -260,6 +404,83 @@ const navLinks = [
     } else {
       body.classList.remove('search-gradient-disabled');
     }
+  }
+
+  // Mobile menu functionality
+  function initMobileMenu() {
+    console.log('Initializing mobile menu...');
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    
+    console.log('Menu toggle:', menuToggle);
+    console.log('Mobile menu:', mobileMenu);
+    console.log('Mobile nav links:', mobileNavLinks);
+    
+    if (!menuToggle || !mobileMenu) {
+      console.error('Mobile menu elements not found!');
+      return;
+    }
+
+    let isMenuOpen = false;
+
+    const openMenu = () => {
+      console.log('Opening mobile menu...');
+      isMenuOpen = true;
+      mobileMenu.classList.add('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      menuToggle.querySelector('.hamburger-icon').classList.add('hidden');
+      menuToggle.querySelector('.close-icon').classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Prevent body scroll
+    };
+
+    const closeMenu = () => {
+      console.log('Closing mobile menu...');
+      isMenuOpen = false;
+      mobileMenu.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.querySelector('.hamburger-icon').classList.remove('hidden');
+      menuToggle.querySelector('.close-icon').classList.add('hidden');
+      document.body.style.overflow = ''; // Restore body scroll
+    };
+
+    // Toggle menu on button click
+    menuToggle.addEventListener('click', (e) => {
+      console.log('Menu toggle clicked!', e);
+      if (isMenuOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Close menu when clicking on navigation links
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close menu when clicking outside
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        closeMenu();
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        closeMenu();
+      }
+    });
+
+    // Close menu on window resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1111 && isMenuOpen) {
+        closeMenu();
+      }
+    });
+    
+    console.log('Mobile menu initialized successfully!');
   }
 
   // Developer utility - accessible from browser console
@@ -275,6 +496,15 @@ const navLinks = [
         status: () => {
           console.table(animationConfig);
         }
+      },
+      mobileMenu: {
+        open: () => document.getElementById('mobile-menu-toggle')?.click(),
+        close: () => {
+          const menu = document.getElementById('mobile-menu');
+          if (menu && menu.classList.contains('menu-open')) {
+            document.getElementById('mobile-menu-toggle')?.click();
+          }
+        }
       }
     };
   }
@@ -282,5 +512,6 @@ const navLinks = [
   // Initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     initSearchAnimation();
+    initMobileMenu();
   }, { passive: true });
 </script>
