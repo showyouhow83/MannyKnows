@@ -24,30 +24,60 @@ const {
   apiHost = 'https://us.i.posthog.com',
   
   // Feature toggles with sensible defaults
-  webVitalsEnabled = true,
-  sessionRecordingEnabled = false, // Disabled by default for performance
+---
+// PostHog Analytics Configuration - OPTIMIZED
+interface Props {
+  enabled?: boolean;
+  webVitalsEnabled?: boolean;
+  sessionRecordingEnabled?: boolean;
+  autocaptureEnabled?: boolean;
+  capturePageViews?: boolean;
+  debugMode?: boolean;
+  disableInDevelopment?: boolean;
+}
+
+const {
+  enabled = true,
+  webVitalsEnabled = false, // DISABLED for performance
+  sessionRecordingEnabled = false,
   autocaptureEnabled = true,
   capturePageViews = true,
-  
-  // Debug settings
   debugMode = false,
-  disableInDevelopment = false
+  disableInDevelopment = true
 } = Astro.props;
 
-// Check if we should disable PostHog in development
-const isDevelopment = import.meta.env.DEV;
-const shouldDisable = !enabled || (disableInDevelopment && isDevelopment);
-
-if (debugMode && !shouldDisable) {
-  console.log('🔍 PostHog Config:', {
-    enabled,
-    webVitalsEnabled,
-    sessionRecordingEnabled,
-    autocaptureEnabled,
-    capturePageViews,
-    isDevelopment
-  });
+// Skip if disabled
+if (!enabled || (disableInDevelopment && import.meta.env.DEV)) {
+  return;
 }
+---
+
+<!-- MINIMAL PostHog Analytics -->
+<script define:vars={{ autocaptureEnabled, capturePageViews, debugMode }}>
+  (function(){
+    const apiKey = "phc_P3zXU8812VuDNHqwWhcGo8dYcU7tg7fItSCqnAGJk9R"; 
+    const apiHost = "https://us.i.posthog.com";
+    
+    // Minimal PostHog loader
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){(p=t.createElement("script")).async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;u.people=u.people||[],o="capture identify register".split(" ");for(n=0;n<o.length;n++)u[o[n]]=function(){u.push([o[n]].concat(Array.prototype.slice.call(arguments,0)))};e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    
+    posthog.init(apiKey, {
+      api_host: apiHost,
+      autocapture: autocaptureEnabled,
+      capture_pageview: capturePageViews,
+      disable_session_recording: true,
+      debug: debugMode,
+      request_batching: true,
+      batch_request_timeout_ms: 2000, // Slower for efficiency
+      disable_surveys: true,
+      disable_toolbar: true
+    });
+
+    if (debugMode) {
+      console.log('🚀 PostHog (minimal) loaded');
+    }
+  })();
+</script>
 
 // Log when PostHog is disabled in development
 if (isDevelopment && disableInDevelopment) {
