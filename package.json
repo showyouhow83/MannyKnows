@@ -7,6 +7,7 @@
     "build": "astro build",
     "build:analyze": "astro build --analyze",
     "build:clean": "rm -rf dist .astro && astro build",
+    "build:optimized": "npm run build && npm run optimize:all",
     "preview": "astro preview",
     "astro": "astro",
     "deploy:staging": "./deploy.sh staging",
@@ -17,7 +18,10 @@
     "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr",
     "perf:analyze": "npm run build && npm run size:check && echo '\\n📊 Performance Analysis:' && echo 'Target: Bundle <500KB, CSS <30KB, HTML <100KB'",
     "perf:budget": "npm run build && node scripts/performance-budget.js",
-    "perf:optimize": "npm run build && find dist/ -name '._*' -delete && node scripts/safe-html-optimize.js && node scripts/performance-dashboard.js"
+    "perf:optimize": "npm run build && find dist/ -name '._*' -delete && node scripts/safe-html-optimize.js && node scripts/performance-dashboard.js",
+    "optimize:critical-css": "node scripts/critical-css-extract.js",
+    "optimize:render-blocking": "node scripts/render-blocking-optimizer.js",
+    "optimize:all": "npm run optimize:critical-css && npm run optimize:render-blocking"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
