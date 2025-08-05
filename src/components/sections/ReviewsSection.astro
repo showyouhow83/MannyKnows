@@ -518,19 +518,20 @@ const stats = [
         e.preventDefault();
       });
       
-      containerDesktop.addEventListener('mousemove', (e) => {
+      document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         
         currentX = e.clientX;
         const diffX = currentX - startX;
-        const cardWidth = 400; // Approximate card width + gap
+        const card = containerDesktop.children[0] as HTMLElement;
+        const cardWidth = card ? card.offsetWidth + 32 : 400; // Use actual card width + gap
         const currentTransform = -currentIndexDesktop * cardWidth;
         
         containerDesktop.style.transform = `translateX(${currentTransform + diffX}px)`;
         e.preventDefault();
       });
       
-      containerDesktop.addEventListener('mouseup', (e) => {
+      document.addEventListener('mouseup', (e) => {
         if (!isDragging) return;
         
         isDragging = false;
@@ -538,11 +539,11 @@ const stats = [
         containerDesktop.style.cursor = 'grab';
         
         const diffX = currentX - startX;
-        const threshold = 50;
+        const threshold = 30; // Reduced threshold for more sensitivity
         const timeDiff = Date.now() - startTime;
         const velocity = Math.abs(diffX) / timeDiff;
         
-        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+        if (Math.abs(diffX) > threshold || velocity > 0.3) { // Reduced velocity threshold
           if (diffX > 0) {
             prevSlide();
           } else {

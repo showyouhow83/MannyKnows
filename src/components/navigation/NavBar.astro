@@ -90,8 +90,7 @@ const navLinks = [
           variant="emoji"
           emoji="🚀"
           emojiAnimation="subtle"
-          sparkles={true}
-          sparkleTheme="light"
+          sparkles={false}
           className="text-[10px] text-white/80 leading-none"
         />
 
@@ -168,16 +167,32 @@ const navLinks = [
   <!-- Mobile Menu Overlay -->
   <div id="mobile-menu" class="fixed inset-0 z-50 xl:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
     <!-- Glassmorphism Background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent dark:from-black/30 dark:via-black/20 dark:to-transparent backdrop-blur-xl border-l border-white/20 dark:border-white/10"></div>
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
     
     <!-- Menu Content -->
-    <div class="relative h-full w-[90%] ml-[10%] flex flex-col bg-white/95 dark:bg-black/95 backdrop-blur-lg">
+    <div class="relative h-full w-80 ml-auto flex flex-col bg-white dark:bg-gray-900 shadow-xl">
+      <!-- Header with Close Button -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary">Menu</h2>
+        <button 
+          type="button" 
+          id="mobile-menu-close"
+          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+          aria-label="Close mobile menu"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-light-primary dark:text-text-dark-primary">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
       <!-- Navigation Links -->
-      <div class="flex-1 flex flex-col justify-center px-8 space-y-8">
+      <div class="flex-1 px-6 py-8 space-y-6">
         {navLinks.map((link) => (
           <a
             href={link.href}
-            class="mobile-nav-link text-3xl font-semibold text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 transform hover:translate-x-2"
+            class="mobile-nav-link block text-lg font-medium text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-colors duration-200"
           >
             {link.label}
           </a>
@@ -185,26 +200,24 @@ const navLinks = [
       </div>
       
       <!-- Action Buttons -->
-      <div class="px-8 pb-12 space-y-4">
-        <div class="flex gap-4">
-          <Button
-            href="#instant-quote"
-            text="FREE 360 PHOTO"
-            subtext="CLAIM NOW"
-            variant="theme-aware"
-            className="flex-1 text-center"
-          />
-          <Button
-            href="#apple-quote"
-            text="FREE WEBSITE"
-            subtext="EXPIRING SOON"
-            variant="emoji"
-            emoji="🚀"
-            emojiAnimation="subtle"
-            sparkles={false}
-            className="flex-1 text-center text-[10px] text-white/80 leading-none"
-          />
-        </div>
+      <div class="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <Button
+          href="#instant-quote"
+          text="FREE 360 PHOTO"
+          subtext="CLAIM NOW"
+          variant="theme-aware"
+          className="w-full text-center"
+        />
+        <Button
+          href="#apple-quote"
+          text="FREE WEBSITE"
+          subtext="EXPIRING SOON"
+          variant="emoji"
+          emoji="🚀"
+          emojiAnimation="subtle"
+          sparkles={false}
+          className="w-full text-center text-[10px] text-white/80 leading-none"
+        />
       </div>
     </div>
   </div>
@@ -413,11 +426,13 @@ const navLinks = [
     console.log('Initializing mobile menu...');
     const menuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
     
     console.log('Menu toggle:', menuToggle);
     console.log('Mobile menu:', mobileMenu);
     console.log('Mobile nav links:', mobileNavLinks);
+    console.log('Mobile menu close:', mobileMenuClose);
     
     if (!menuToggle || !mobileMenu) {
       console.error('Mobile menu elements not found!');
@@ -456,14 +471,19 @@ const navLinks = [
       }
     });
 
+    // Close menu on close button click
+    if (mobileMenuClose) {
+      mobileMenuClose.addEventListener('click', closeMenu);
+    }
+
     // Close menu when clicking on navigation links
     mobileNavLinks.forEach(link => {
       link.addEventListener('click', closeMenu);
     });
 
-    // Close menu when clicking outside
+    // Close menu when clicking outside (on backdrop)
     mobileMenu.addEventListener('click', (e) => {
-      if (e.target === mobileMenu) {
+      if (e.target === mobileMenu || e.target.classList.contains('bg-black/50')) {
         closeMenu();
       }
     });

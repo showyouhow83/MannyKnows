@@ -4,7 +4,7 @@ import DockButton from '../ui/DockButton.astro';
 
 <!-- Floating Dock Menu -->
 <div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
-  <div class="bg-black/10 dark:bg-white/10 backdrop-blur-xl border border-border-light dark:border-border-dark rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+  <div class="bg-black/30 dark:bg-white/80 backdrop-blur-xl border border-gray-800/30 dark:border-gray-300/30 rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(255,255,255,0.2)]">
     <div class="flex items-center gap-2">
       <!-- MK Logo -->
       <DockButton 
@@ -98,7 +98,7 @@ import DockButton from '../ui/DockButton.astro';
   /* Responsive dock positioning */
   @media (max-width: 768px) {
     #floatingDock {
-      @apply bottom-4;
+      bottom: 0rem;
     }
   }
 </style>
