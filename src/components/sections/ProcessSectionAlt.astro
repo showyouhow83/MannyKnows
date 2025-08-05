@@ -740,6 +740,13 @@ const processSteps = [
           card.style.setProperty('transform', hoverTransform, 'important');
           card.style.setProperty('box-shadow', hoverShadow, 'important');
           card.style.setProperty('border-color', hoverBorderColor, 'important');
+          
+          // Also affect corresponding number
+          const correspondingNumber = document.querySelector(`[data-target-step="${index}"]`);
+          if (correspondingNumber instanceof HTMLElement) {
+            correspondingNumber.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            correspondingNumber.style.setProperty('filter', 'brightness(1.2)', 'important');
+          }
         });
       });
       
@@ -748,9 +755,17 @@ const processSteps = [
           card.style.removeProperty('transform');
           card.style.removeProperty('box-shadow');
           card.style.removeProperty('border-color');
+          
+          // Also remove effects from corresponding number
+          const correspondingNumber = document.querySelector(`[data-target-step="${index}"]`);
+          if (correspondingNumber instanceof HTMLElement) {
+            correspondingNumber.style.removeProperty('transform');
+            correspondingNumber.style.removeProperty('filter');  
+          }
         });
       });
     });
+    
     
     // Cross-component interaction system (PRESERVED)
     // This intelligent system makes numbers aware of their corresponding cards
