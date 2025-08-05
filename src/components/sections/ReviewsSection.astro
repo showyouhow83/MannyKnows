@@ -453,7 +453,7 @@ const stats = [
         }
       }, { passive: true });
       
-      // Mouse events for desktop touch devices
+      // Mouse events for desktop touch devices (mobile container only)
       containerMobile.addEventListener('mousedown', (e) => {
         startX = e.clientX;
         currentX = startX;
@@ -503,6 +503,76 @@ const stats = [
       });
     }
 
+    // Mouse drag scrolling for desktop
+    function initDesktopMouseDrag() {
+      if (!containerDesktop) return;
+      
+      // Mouse events for desktop drag scrolling
+      containerDesktop.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerDesktop.style.transition = 'none';
+        containerDesktop.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      
+      containerDesktop.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.clientX;
+        const diffX = currentX - startX;
+        const cardWidth = 400; // Approximate card width + gap
+        const currentTransform = -currentIndexDesktop * cardWidth;
+        
+        containerDesktop.style.transform = `translateX(${currentTransform + diffX}px)`;
+        e.preventDefault();
+      });
+      
+      containerDesktop.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerDesktop.style.transition = 'transform 0.5s ease-in-out';
+        containerDesktop.style.cursor = 'grab';
+        
+        const diffX = currentX - startX;
+        const threshold = 50;
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+          if (diffX > 0) {
+            prevSlide();
+          } else {
+            nextSlide();
+          }
+        } else {
+          updateDesktopCarousel();
+        }
+        e.preventDefault();
+      });
+
+      // Handle mouse leave to stop dragging
+      containerDesktop.addEventListener('mouseleave', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerDesktop.style.transition = 'transform 0.5s ease-in-out';
+        containerDesktop.style.cursor = 'grab';
+        updateDesktopCarousel();
+      });
+      
+      // Prevent context menu on long press
+      containerDesktop.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+
+      // Set initial cursor
+      containerDesktop.style.cursor = 'grab';
+    }
+
     // Event listeners
     nextBtn.addEventListener('click', nextSlide);
     prevBtn.addEventListener('click', prevSlide);
@@ -510,6 +580,7 @@ const stats = [
     // Initialize
     updateCarousel();
     initTouchScrolling(); // Enable touch scrolling for mobile
+    initDesktopMouseDrag(); // Enable mouse drag scrolling for desktop
     // initScrollControlledReviews(); // DISABLED - Scroll animations removed per user request
 
     // Handle resize
