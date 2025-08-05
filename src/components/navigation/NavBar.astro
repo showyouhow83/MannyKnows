@@ -30,7 +30,7 @@ const navLinks = [
 ---
 
 <nav id="topNav" class={`bg-transparent min-h-[7.75rem] relative flex items-center border-b border-gray-300/30 dark:border-white/10 ${className}`}>
-  <div class="max-w-[1440px] mx-auto px-8 w-full">
+  <div class="max-w-[1440px] mx-auto px-2 w-full">
     <!-- Desktop Layout -->
     <div class="hidden md:flex justify-between items-center w-full">
       <!-- Logo -->
@@ -112,8 +112,8 @@ const navLinks = [
 
     <!-- Mobile Layout -->
     <div class="flex md:hidden items-center w-full h-16 px-0">
-      <!-- Logo - 35% -->
-      <div class="flex-[0_0_35%] flex items-center">
+      <!-- Logo - 15% -->
+      <div class="flex-[0_0_15%] flex items-center">
         <h1 class="text-3xl font-black m-0 leading-none">
           <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
             MK
@@ -121,8 +121,8 @@ const navLinks = [
         </h1>
       </div>
 
-      <!-- Search Bar - 55% -->
-      <div class="flex-[0_0_55%] flex items-center px-2">
+      <!-- Search Bar - 70% -->
+      <div class="flex-[0_0_70%] flex items-center px-2">
         <div class="relative flex items-center w-full">
           <label for="search-input-mobile" class="absolute -left-[10000px] opacity-0 pointer-events-none">Browse Services Catalog</label>
           <input
@@ -140,8 +140,8 @@ const navLinks = [
         </div>
       </div>
 
-      <!-- Hamburger Menu - 10% -->
-      <div class="flex-[0_0_10%] flex justify-center items-center">
+      <!-- Hamburger Menu - 15% -->
+      <div class="flex-[0_0_15%] flex justify-center items-center">
         <button
           type="button"
           id="mobile-menu-toggle"
@@ -340,20 +340,12 @@ const navLinks = [
 
   /* Responsive navigation styles */
   @media (max-width: 768px) {
-    nav .flex {
-      @apply flex-col gap-4;
-    }
-    nav ul {
-      @apply gap-6 flex-wrap justify-center;
-    }
+    /* Remove column direction for mobile layout */
     .nav-search {
-      @apply mx-0 order-1;
+      @apply mx-0;
     }
     .search-input {
-      @apply w-80 min-w-64;
-    }
-    .nav-actions {
-      @apply -order-1 gap-3;
+      @apply min-w-64;
     }
   }
 </style>
