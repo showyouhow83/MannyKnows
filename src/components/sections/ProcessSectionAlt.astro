@@ -770,7 +770,9 @@ const processSteps = [
         // Mouse interactions - cross-component awareness (unified colors)
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            // Apply full card hover effects including scale and brightness
+            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
+            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
             correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
             correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
@@ -779,6 +781,7 @@ const processSteps = [
         number.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
             correspondingCard.style.removeProperty('transform');
+            correspondingCard.style.removeProperty('filter');
             correspondingCard.style.removeProperty('border-color');
             correspondingCard.style.removeProperty('box-shadow');
           });
@@ -787,7 +790,8 @@ const processSteps = [
         // Touch support for mobile - cross-mode functionality preserved (unified colors)
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.setProperty('transform', hoverTransform, 'important');
+            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
+            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
             correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
             correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
           });
@@ -797,8 +801,43 @@ const processSteps = [
           setTimeout(() => {
             requestAnimationFrame(() => {
               correspondingCard.style.removeProperty('transform');
+              correspondingCard.style.removeProperty('filter');
               correspondingCard.style.removeProperty('border-color');
               correspondingCard.style.removeProperty('box-shadow');
+            });
+          }, 300);
+        }, { passive: true });
+        
+        // REVERSE CONNECTION: Card affects Number (NEW)
+        correspondingCard.addEventListener('mouseenter', () => {
+          requestAnimationFrame(() => {
+            // Apply number hover effects to the number
+            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+          });
+        });
+        
+        correspondingCard.addEventListener('mouseleave', () => {
+          requestAnimationFrame(() => {
+            // Remove number hover effects
+            number.style.removeProperty('transform');
+            number.style.removeProperty('filter');
+          });
+        });
+        
+        // Touch support for card affecting number
+        correspondingCard.addEventListener('touchstart', () => {
+          requestAnimationFrame(() => {
+            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
+            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+          });
+        }, { passive: true });
+        
+        correspondingCard.addEventListener('touchend', () => {
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              number.style.removeProperty('transform');
+              number.style.removeProperty('filter');
             });
           }, 300);
         }, { passive: true });
