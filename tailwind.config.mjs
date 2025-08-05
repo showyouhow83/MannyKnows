@@ -1,30 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // PERFORMANCE OPTIMIZATION: More aggressive content scanning
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
     './public/**/*.{html,js}'
   ],
-  // Add safelist for dynamic classes that might be missed
+  // OPTIMIZED: Reduced safelist for critical classes only
   safelist: [
-    // Theme switching
-    'dark',
-    // Typography variants
-    'sf-regular', 'sf-medium', 'sf-semibold', 'sf-bold',
-    'apple-gradient-text', 'apple-headline', 'apple-body-text',
-    // Essential animations
-    'animate-float', 'animate-sparkle', 'animate-gradient-shift', 'animate-emoji-sway',
-    // Transition classes
-    'transition-colors', 'transition-all', 'duration-300',
-    // Dynamic color classes (most commonly used)
+    // Theme switching essentials only
+    'dark', 'light-mode-only', 'dark-mode-only',
+    // Core typography (essential only)
+    'apple-gradient-text', 'apple-headline',
+    // Essential transitions
+    'transition-colors', 'duration-300',
+    // Critical dynamic classes
     'text-text-light-primary', 'text-text-dark-primary',
-    'text-text-light-secondary', 'text-text-dark-secondary',
     'bg-light-primary', 'bg-dark-primary',
-    'bg-light-secondary', 'bg-dark-secondary',
-    // Gradients (commonly used)
-    'bg-gradient-to-r', 'bg-gradient-to-t',
-    'from-primary-blue', 'to-primary-pink',
-    'from-gray-50/50', 'to-gray-50/20',
-    'dark:from-gray-900/60', 'dark:to-gray-900/30',
+    // Modal states
+    'opacity-0', 'invisible', 'scale-95', 'scale-100',
   ],
   darkMode: 'class',
   theme: {

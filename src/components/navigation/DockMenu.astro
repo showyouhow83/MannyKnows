@@ -3,8 +3,8 @@ import DockButton from '../ui/DockButton.astro';
 ---
 
 <!-- Floating Dock Menu -->
-<div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 translate-y-full opacity-0">
-    <div class="bg-white/80 backdrop-blur-xl border border-gray-300/40 rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
+<div id="floatingDock" class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ease-out">
+    <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-300/40 dark:border-white/20 rounded-2xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
     <div class="flex items-center gap-2">
       <!-- MK Logo -->
       <DockButton 
@@ -104,31 +104,87 @@ import DockButton from '../ui/DockButton.astro';
 </style>
 
 <script>
-  // Self-contained dock visibility logic
+  // Enhanced dock visibility and functionality
   function initDockVisibility() {
     const topNav = document.getElementById('topNav');
     const floatingDock = document.getElementById('floatingDock');
+    
+    console.log('🚢 Initializing dock visibility...', { topNav, floatingDock });
+    
+    if (!topNav || !floatingDock) {
+      console.warn('❌ Dock elements not found:', { topNav: !!topNav, floatingDock: !!floatingDock });
+      // Show dock by default if elements aren't found
+      if (floatingDock) {
+        setTimeout(() => {
+          floatingDock.classList.remove('translate-y-full', 'opacity-0');
+          floatingDock.classList.add('translate-y-0', 'opacity-100');
+        }, 1000);
+      }
+      return;
+    }
 
-    if (!topNav || !floatingDock) return;
-
+    // Initially hide the dock
+    floatingDock.classList.add('translate-y-full', 'opacity-0');
+    
+    // Create intersection observer to show/hide dock based on nav visibility
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // Top nav visible → hide dock
+          // Top nav visible → hide dock (user is at top of page)
           floatingDock.classList.add('translate-y-full', 'opacity-0');
+          floatingDock.classList.remove('translate-y-0', 'opacity-100');
         } else {
-          // Top nav hidden → show dock
+          // Top nav hidden → show dock (user has scrolled down)
           floatingDock.classList.remove('translate-y-full', 'opacity-0');
+          floatingDock.classList.add('translate-y-0', 'opacity-100');
         }
       });
     }, {
       threshold: 0.1,
-      rootMargin: '10px'
+      rootMargin: '-10px 0px'
     });
 
     observer.observe(topNav);
+    console.log('✅ Dock intersection observer initialized');
+
+    // Also show dock on settings button click
+    const settingsButton = document.getElementById('settingsButton');
+    if (settingsButton) {
+      settingsButton.addEventListener('click', () => {
+        console.log('⚙️ Settings button clicked from dock');
+        const settingsModal = document.getElementById('settingsModal');
+        const openButton = document.getElementById('openSettings');
+        if (openButton) {
+          openButton.click();
+        }
+      });
+    }
+
+    // Connect dock chat button to main chat functionality
+    const dockChatToggle = document.getElementById('dockChatToggle');
+    const mainChatToggle = document.getElementById('topChatToggle');
+    if (dockChatToggle && mainChatToggle) {
+      dockChatToggle.addEventListener('click', () => {
+        console.log('💬 Chat button clicked from dock');
+        mainChatToggle.click();
+      });
+    }
   }
 
-  // Initialize when component loads
-  document.addEventListener('DOMContentLoaded', initDockVisibility, { passive: true });
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDockVisibility, { passive: true });
+  } else {
+    initDockVisibility();
+  }
+  
+  // Fallback: Show dock after a delay if initialization doesn't work
+  setTimeout(() => {
+    const floatingDock = document.getElementById('floatingDock');
+    if (floatingDock && floatingDock.classList.contains('translate-y-full')) {
+      console.log('🔧 Fallback: Showing dock after timeout');
+      floatingDock.classList.remove('translate-y-full', 'opacity-0');
+      floatingDock.classList.add('translate-y-0', 'opacity-100');
+    }
+  }, 3000);
 </script>
