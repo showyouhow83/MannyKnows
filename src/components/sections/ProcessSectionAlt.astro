@@ -252,59 +252,15 @@ const processSteps = [
     margin: 0 auto;
   }
 
-  /* Central Timeline Line - Curved/Wavy */
+  /* Central Timeline Line - Hidden for cleaner desktop design */
   .process-grid::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 100px;
-    bottom: 100px;
-    width: 6px;
-    background: linear-gradient(180deg, 
-      #10d1ff 0%, 
-      #0071e3 20%, 
-      #3b5bd6 40%,
-      #5856d6 60%,
-      #a855f7 80%,
-      #ec4899 100%);
-    border-radius: 3px;
-    transform: translateX(-50%);
-    z-index: 1;
-    clip-path: polygon(
-      20% 0%, 80% 0%, 
-      95% 10%, 85% 20%, 
-      90% 30%, 75% 40%, 
-      85% 50%, 70% 60%, 
-      80% 70%, 65% 80%, 
-      75% 90%, 60% 100%, 
-      40% 100%, 25% 90%, 
-      35% 80%, 20% 70%, 
-      30% 60%, 15% 50%, 
-      25% 40%, 10% 30%, 
-      20% 20%, 5% 10%
-    );
-    animation: timelineGlow 4s ease-in-out infinite alternate;
+    display: none;
   }
 
-  @keyframes timelineGlow {
-    0% { 
-      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
-      opacity: 0.9;
-    }
-    100% { 
-      filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 15px currentColor);
-      opacity: 1;
-    }
-  }
-
-  /* Mobile: Move timeline to left */
+  /* Mobile: Timeline hidden on mobile */
   @media (max-width: 768px) {
     .process-grid::before {
-      left: 5.2rem;
-      transform: translateX(0%);
-      top: 125.5px;
-      bottom: 107.7px;
-      display: none; /* Hidden on mobile as requested */
+      display: none;
     }
   }
 
@@ -320,7 +276,7 @@ const processSteps = [
   .step-row {
     display: flex;
     align-items: center;
-    min-height: 160px; /* Reduced from 190px for tighter spacing */
+    min-height: 250px; /* Increased from 160px for better desktop spacing */
     gap: 2rem;
   }
 
@@ -666,13 +622,25 @@ const processSteps = [
     }
   }
 
+  /* Tablet and intermediate screen sizes */
+  @media (min-width: 769px) and (max-width: 1023px) {
+    .step-row {
+      min-height: 200px; /* Intermediate height between mobile and desktop */
+      gap: 3rem; /* Intermediate gap */
+    }
+
+    .process-card {
+      width: 380px;
+    }
+  }
+
   @media (min-width: 1024px) {
     .process-grid {
       max-width: 1440px;
     }
 
     .step-row {
-      gap: 50rem; /* Extreme gap for wide spacing */
+      gap: 5rem; /* Improved desktop spacing */
     }
 
     .process-card {
