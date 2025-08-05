@@ -203,6 +203,19 @@ const stats = [
     transition: transform 0.3s ease-in-out;
   }
 
+  #reviewsContainerMobile {
+    transition: transform 0.3s ease-out;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  #reviewsContainerMobile:active {
+    cursor: grabbing;
+  }
+
   .review-card {
     flex-shrink: 0;
   }
@@ -253,6 +266,12 @@ const stats = [
     let currentIndexMobile = 0;
     let currentIndexDesktop = 0;
     let isScrollControlled = false;
+    
+    // Touch scrolling variables for mobile
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let startTime = 0;
     
     // Mobile carousel (1 card at a time)
     function updateMobileCarousel() {
@@ -383,13 +402,115 @@ const stats = [
       }
     }
 
+    // Touch scrolling for mobile
+    function initTouchScrolling() {
+      if (!containerMobile) return;
+      
+      // Touch start
+      containerMobile.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerMobile.style.transition = 'none';
+      }, { passive: true });
+      
+      // Touch move
+      containerMobile.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.touches[0].clientX;
+        const diffX = currentX - startX;
+        const currentTransform = -currentIndexMobile * (containerMobile.children[0] as HTMLElement)?.offsetWidth || 0;
+        
+        containerMobile.style.transform = `translateX(${currentTransform + diffX}px)`;
+      }, { passive: true });
+      
+      // Touch end
+      containerMobile.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerMobile.style.transition = 'transform 0.3s ease-out';
+        
+        const diffX = currentX - startX;
+        const threshold = 50; // Minimum swipe distance
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        // Determine if it's a valid swipe
+        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+          if (diffX > 0) {
+            // Swipe right - go to previous
+            prevSlide();
+          } else {
+            // Swipe left - go to next
+            nextSlide();
+          }
+        } else {
+          // Snap back to current position
+          updateMobileCarousel();
+        }
+      }, { passive: true });
+      
+      // Mouse events for desktop touch devices
+      containerMobile.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        containerMobile.style.transition = 'none';
+        e.preventDefault();
+      });
+      
+      containerMobile.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.clientX;
+        const diffX = currentX - startX;
+        const currentTransform = -currentIndexMobile * (containerMobile.children[0] as HTMLElement)?.offsetWidth || 0;
+        
+        containerMobile.style.transform = `translateX(${currentTransform + diffX}px)`;
+        e.preventDefault();
+      });
+      
+      containerMobile.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        containerMobile.style.transition = 'transform 0.3s ease-out';
+        
+        const diffX = currentX - startX;
+        const threshold = 50;
+        const timeDiff = Date.now() - startTime;
+        const velocity = Math.abs(diffX) / timeDiff;
+        
+        if (Math.abs(diffX) > threshold || velocity > 0.5) {
+          if (diffX > 0) {
+            prevSlide();
+          } else {
+            nextSlide();
+          }
+        } else {
+          updateMobileCarousel();
+        }
+        e.preventDefault();
+      });
+      
+      // Prevent context menu on long press
+      containerMobile.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+    }
+
     // Event listeners
     nextBtn.addEventListener('click', nextSlide);
     prevBtn.addEventListener('click', prevSlide);
 
     // Initialize
     updateCarousel();
-    initScrollControlledReviews(); // ENABLE SCROLL-CONTROLLED REVIEWS
+    initTouchScrolling(); // Enable touch scrolling for mobile
+    // initScrollControlledReviews(); // DISABLED - Scroll animations removed per user request
 
     // Handle resize
     window.addEventListener('resize', () => {

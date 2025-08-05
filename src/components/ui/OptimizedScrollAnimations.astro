@@ -1,0 +1,133 @@
+---
+/**
+ * Optimized Scroll Animations Component
+ * 
+ * High-performance replacement for the previous ScrollAnimations system.
+ * Uses the new OptimizedAnimationManager for better performance and fewer conflicts.
+ */
+
+interface Props {
+  /** Animation type */
+  animation?: 'fadeIn' | 'slideInUp' | 'slideInDown' | 'slideInLeft' | 'slideInRight' | 'scaleIn';
+  /** Whether animation is enabled */
+  enabled?: boolean;
+  /** Delay before animation starts (ms) */
+  delay?: number;
+  /** Animation duration (ms) */
+  duration?: number;
+  /** Whether to animate only once */
+  once?: boolean;
+  /** Additional CSS classes */
+  className?: string;
+  /** Enable debug logging */
+  debug?: boolean;
+}
+
+const {
+  animation = 'fadeIn',
+  enabled = true,
+  delay = 0,
+  duration = 600,
+  once = true,
+  className = '',
+  debug = false
+} = Astro.props;
+
+// Generate unique ID for this animation element
+const animationId = `anim-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+{enabled && (
+  <div 
+    id={animationId}
+    class={`optimized-animation-wrapper ${className}`}
+    data-animate={animation}
+    data-animate-delay={delay}
+    data-animate-duration={duration}
+    data-animate-once={once}
+    data-animate-debug={debug}
+  >
+    <slot />
+  </div>
+)}
+
+{!enabled && (
+  <div class={className}>
+    <slot />
+  </div>
+)}
+
+<style>
+  /* Base wrapper - optimized for hardware acceleration */
+  .optimized-animation-wrapper {
+    /* Force GPU layer from start for better performance */
+    backface-visibility: hidden;
+    perspective: 1000px;
+    
+    /* Smooth transitions using hardware acceleration */
+    transition-property: transform, opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Will-change is set dynamically by JavaScript for optimal performance */
+  }
+
+  /* Animation states - GPU accelerated transforms */
+  .optimized-animation-wrapper.animate-fadeIn {
+    opacity: 1;
+  }
+
+  .optimized-animation-wrapper.animate-slideInUp {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+
+  .optimized-animation-wrapper.animate-slideInDown {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+
+  .optimized-animation-wrapper.animate-slideInLeft {
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+  }
+
+  .optimized-animation-wrapper.animate-slideInRight {
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+  }
+
+  .optimized-animation-wrapper.animate-scaleIn {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .optimized-animation-wrapper {
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      will-change: auto !important;
+    }
+  }
+</style>
+
+<script>
+  // Initialize the optimized animation system when DOM is ready
+  import { initOptimizedAnimations } from '../../utils/optimizedAnimations.ts';
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize with production-optimized config
+    const animationManager = initOptimizedAnimations({
+      enabled: true,
+      respectReducedMotion: true,
+      debugMode: false, // Always false in production
+      performanceMonitoring: false // Disabled for production
+    });
+
+    // Make available for debugging in development only
+    if (import.meta.env.DEV) {
+      (window as any).animationManager = animationManager;
+    }
+  });
+</script>

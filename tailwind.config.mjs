@@ -53,42 +53,20 @@ export default {
         'chat': '85%',      // Custom max-width for chat bubbles
         'chat-sm': '80%',   // Alternative chat bubble width
       },
+      // OPTIMIZED: Reduced animation set - removed unused animations  
       animation: {
         'gradient-shift': 'gradient-shift 20s ease infinite',
-        'simple-gradient-flow': 'simple-gradient-flow 6s ease-in-out infinite',
-        'subtle-shimmer': 'subtle-shimmer 4s ease-in-out infinite',
-        'subtle-gradient-diffusion': 'subtle-gradient-diffusion 8s ease-in-out infinite',
-        'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
         'button-pulse': 'button-pulse 1.5s ease-in-out infinite',
         'button-gradient': 'button-gradient 6s ease-in-out infinite',
         'green-gradient-flow': 'green-gradient-flow 3s ease-in-out infinite',
-        'green-shimmer': 'green-shimmer 3s ease-in-out infinite',
         'emoji-sway': 'emoji-sway 1.5s ease-in-out infinite',
       },
+      // OPTIMIZED: Reduced keyframes - removed unused animations
       keyframes: {
         'gradient-shift': {
           '0%': { 'background-position': '0% 50%' },
           '50%': { 'background-position': '100% 50%' },
           '100%': { 'background-position': '0% 50%' }
-        },
-        'simple-gradient-flow': {
-          '0%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
-          '100%': { 'background-position': '0% 50%' }
-        },
-        'subtle-shimmer': {
-          '0%': { transform: 'translateX(-100%)', opacity: '0' },
-          '50%': { transform: 'translateX(0%)', opacity: '1' },
-          '100%': { transform: 'translateX(100%)', opacity: '0' }
-        },
-        'subtle-gradient-diffusion': {
-          '0%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
-          '100%': { 'background-position': '0% 50%' }
-        },
-        'pulse-glow': {
-          '0%, 100%': { 'box-shadow': '0 8px 25px rgba(16, 209, 255, 0.4)' },
-          '50%': { 'box-shadow': '0 8px 35px rgba(16, 209, 255, 0.6)' }
         },
         'button-pulse': {
           '0%, 100%': { 'box-shadow': '0 10px 30px rgba(255, 79, 170, 0.4)' },
@@ -102,11 +80,6 @@ export default {
           '0%': { 'background-position': '0% 50%' },
           '50%': { 'background-position': '100% 50%' },
           '100%': { 'background-position': '0% 50%' }
-        },
-        'green-shimmer': {
-          '0%': { transform: 'translateX(-100%)', opacity: '0' },
-          '50%': { transform: 'translateX(0%)', opacity: '1' },
-          '100%': { transform: 'translateX(100%)', opacity: '0' }
         },
         'emoji-sway': {
           '0%, 100%': { 
@@ -130,19 +103,21 @@ export default {
     },
   },
   plugins: [],
-  // Optimize for production
+  // PERFORMANCE OPTIMIZATION: Disable unused core plugins
   corePlugins: {
-    // Disable unused core plugins
     container: false,
-    accessibility: false,
   },
-  // Safelist only essential classes
+  // PERFORMANCE OPTIMIZATION: Optimized safelist with only essential classes
   safelist: [
     'dark',
-    // Essential animation classes
-    'animate-scroll',
-    'animate-gradient-slide',
-    'animate-button-gradient',
+    // Essential animation classes for the new optimized system
+    'animate',
+    'animate-fadeIn',
+    'animate-slideInUp',
+    'animate-slideInDown', 
+    'animate-slideInLeft',
+    'animate-slideInRight',
+    'animate-scaleIn',
     // Essential utility classes  
     'transition-colors',
     'duration-300',
@@ -151,6 +126,11 @@ export default {
     'sf-semibold',
     'sf-bold',
     'apple-gradient-text',
-    'apple-headline'
+    'apple-headline',
+    // Hardware acceleration classes
+    'will-change-transform',
+    'will-change-opacity',
+    'backface-hidden',
+    'preserve-3d'
   ]
 }

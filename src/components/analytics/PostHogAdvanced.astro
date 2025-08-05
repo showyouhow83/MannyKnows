@@ -48,6 +48,11 @@ if (debugMode && !shouldDisable) {
     isDevelopment
   });
 }
+
+// Log when PostHog is disabled in development
+if (isDevelopment && disableInDevelopment) {
+  console.log('📊 PostHog disabled in development environment');
+}
 ---
 
 {!shouldDisable && (

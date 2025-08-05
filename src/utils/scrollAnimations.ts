@@ -23,6 +23,10 @@ export class ScrollAnimationManager {
 
   constructor(config: ScrollAnimationConfig) {
     this.config = config;
+    // DISABLED: Skip initialization completely if disabled
+    if (!config.enabled) {
+      return;
+    }
     this.init();
   }
 

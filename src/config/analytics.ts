@@ -13,7 +13,7 @@ export const ANALYTICS_CONFIG = {
   
   // Development settings
   debugMode: false,               // Enable console logging
-  disableInDevelopment: false     // Disable in dev environment
+  disableInDevelopment: true      // Disable in dev environment to prevent 404/401 errors
 };
 
 // Easy presets for different environments

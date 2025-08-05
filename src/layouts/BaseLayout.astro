@@ -496,4 +496,46 @@ const { title } = Astro.props;
 	.hover\\:rotate-360:hover {
 		transform: rotate(360deg);
 	}
+
+	/* SCROLL ANIMATIONS DISABLED: Ensure all animation wrappers are visible */
+	.optimized-animation-wrapper,
+	.scroll-animation-wrapper {
+		opacity: 1 !important;
+		transform: none !important;
+		animation: none !important;
+		transition: none !important;
+	}
+
+	/* REVIEWS SECTION: Disable scroll-controlled transforms but allow manual carousel */
+	#reviews-section {
+		/* Don't override transform here - let carousel work */
+	}
+	
+	/* Only disable transforms on scroll animation wrappers, not carousel containers */
+	#reviewsContainer.scroll-controlled,
+	#reviewsContainerMobile.scroll-controlled {
+		transform: none !important;
+	}
+
+	/* HERO VISIBILITY FIX: Force hero section to be visible */
+	#hero,
+	section[id="hero"],
+	.apple-gradient-container {
+		opacity: 1 !important;
+		visibility: visible !important;
+		display: flex !important;
+		transform: none !important;
+		animation: none !important;
+		transition: none !important;
+	}
+
+	/* DEBUG: Make hero content highly visible */
+	#hero h1,
+	#hero p {
+		opacity: 1 !important;
+		visibility: visible !important;
+		transform: none !important;
+		animation: none !important;
+		color: inherit !important;
+	}
 </style>

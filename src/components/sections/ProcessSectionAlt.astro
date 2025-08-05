@@ -245,7 +245,7 @@ const processSteps = [
   .process-grid {
     display: flex;
     flex-direction: column;
-    gap: 0rem; /* Changed from 2rem */
+    gap: 0rem; /* Reduced spacing between cards */
     align-items: center;
     position: relative;
     max-width: 1440px;
@@ -320,7 +320,7 @@ const processSteps = [
   .step-row {
     display: flex;
     align-items: center;
-    min-height: 190px; /* Changed from 280px */
+    min-height: 160px; /* Reduced from 190px for tighter spacing */
     gap: 2rem;
   }
 
@@ -411,6 +411,8 @@ const processSteps = [
   .process-card:hover {
     transform: translateY(-8px) translateZ(0);
     position: relative;
+    /* Ensure glow is centered around the card */
+    box-shadow: 0 0 60px rgba(16, 209, 255, 0.4), 0 0 30px rgba(16, 209, 255, 0.3), 0 0 15px rgba(16, 209, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.1) !important;
   }
 
   .step-content {
@@ -725,8 +727,8 @@ const processSteps = [
       if (!(card instanceof HTMLElement)) return;
       
       const color = gradientColors[index];
-      // Use exact same values as number hover for perfect consistency
-      const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+      // Centered glow with consistent intensity - matching number hover exactly
+      const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
       const hoverTransform = 'translateY(-8px) translateZ(0)';
       
@@ -759,7 +761,8 @@ const processSteps = [
         const color = gradientColors[parseInt(stepIndex)];
         const hoverTransform = 'translateY(-8px) translateZ(0)';
         const hoverBorderColor = `${color}60`;
-        const hoverShadow = `0 0 80px ${color}40, 0 0 40px ${color}30, 0 0 20px ${color}30, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+        // Centered glow with consistent intensity - matching card hover exactly
+        const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
         
         // Mouse interactions - cross-component awareness (unified colors)
         number.addEventListener('mouseenter', () => {

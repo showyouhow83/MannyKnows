@@ -10,23 +10,19 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
-import ScrollAnimations from '../components/ui/ScrollAnimations.astro';
-
 // ========================================
-// ANIMATION CONFIGURATION - Easy Toggle Controls
+// PERFORMANCE OPTIMIZED CONFIGURATION
 // ========================================
 const ANIMATION_CONFIG = {
-	// Search gradient animations in navbar
+	// PERFORMANCE: Scroll animations disabled for immediate visibility
+	scrollAnimationsEnabled: false,
+	
+	// PRODUCTION: Debug disabled for performance
+	debugMode: false,
+	
+	// Search gradient animations in navbar (preserved)
 	searchGradientEnabled: true,
 	searchScrollDelay: 0,
-
-	// Scroll-based animations system
-	scrollAnimationsEnabled: true,
-	
-	scrollAnimationDebug: false,
-
-	// Debug mode - logs animation state changes
-	debugMode: false
 };
 ---
 
@@ -47,36 +43,28 @@ const ANIMATION_CONFIG = {
 			/>
 
             <!-- Hero Section -->
-            <ScrollAnimations animation="slideInUp" delay={500}>
-                <HeroSection
-                    title="Scale your"
-                    highlightedText="business operations"
-                    subtitle="Optimize your operations from end to end with intelligent AI. We automate critical tasks across your marketing, sales, and support workflows to boost productivity, cut costs, and drive scalable growth."
-                />
-            </ScrollAnimations>
+            <HeroSection
+                title="Scale your"
+                highlightedText="business operations"
+                subtitle="Optimize your operations from end to end with intelligent AI. We automate critical tasks across your marketing, sales, and support workflows to boost productivity, cut costs, and drive scalable growth."
+            />
         </header>
 
 		<!-- Services Section -->
-		<ScrollAnimations animation="fadeIn" delay={200}>
-			<ServicesSection />
-		</ScrollAnimations>
+		<ServicesSection />
 
 		<!-- Process Section -->
-		<ScrollAnimations animation="slideInUp" delay={300}>
-			<PageSection
-				id="process"
-				title="Our Process"
-				subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
-				variant="alternate"
-			>
-				<ProcessSectionAlt />
-			</PageSection>
-		</ScrollAnimations>
+		<PageSection
+			id="process"
+			title="Our Process"
+			subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
+			variant="alternate"
+		>
+			<ProcessSectionAlt />
+		</PageSection>
 
 		<!-- Customer Reviews Section -->
-		<ScrollAnimations mode="trigger" animation="slideInLeft" delay={100}>
-			<ReviewsSection />
-		</ScrollAnimations>
+		<ReviewsSection />
 
 		<!-- Floating Chat Box -->
 		<ChatBox />
@@ -87,9 +75,8 @@ const ANIMATION_CONFIG = {
 </BaseLayout>
 
 <script>
-	import { ScrollAnimationManager } from '../utils/scrollAnimations.ts';
-	import { ScrollDrivenManager } from '../utils/scrollDriven.ts';
-
+	// PERFORMANCE OPTIMIZED: Single navigation tracking system
+	
 	// Navigation visibility tracking for floating dock
 	function initNavigationTracking() {
 		const topNav = document.getElementById('topNav');
@@ -97,6 +84,7 @@ const ANIMATION_CONFIG = {
 
 		if (!topNav || !floatingDock) return;
 
+		// Use optimized intersection observer
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
@@ -108,52 +96,13 @@ const ANIMATION_CONFIG = {
 				}
 			});
 		}, {
-			threshold: 0.1
+			threshold: 0.1,
+			rootMargin: '10px' // Slight optimization
 		});
 
 		observer.observe(topNav);
 	}
 
-	// Initialize trigger-based scroll animations
-	function initScrollAnimations() {
-		const config = {
-			enabled: true,
-			defaultThreshold: 0.1,
-			debugMode: false, // DISABLED for production
-			respectReducedMotion: true
-		};
-
-		const scrollManager = ScrollAnimationManager.initialize(config);
-		
-		if (config.debugMode) {
-			console.log('🎬 Trigger-based scroll animations initialized', config);
-		}
-
-		(window as any).scrollAnimationManager = scrollManager;
-	}
-
-	// Initialize scroll-driven animations  
-	function initScrollDrivenAnimations() {
-		const config = {
-			enabled: true,
-			debugMode: false, // DISABLED for production
-			respectReducedMotion: true,
-			throttleMs: 16 // ~60fps
-		};
-
-		const scrollDrivenManager = ScrollDrivenManager.initialize(config);
-		
-		if (config.debugMode) {
-			console.log('🔄 Scroll-driven animations initialized', config);
-		}
-
-		(window as any).scrollDrivenManager = scrollDrivenManager;
-	}
-
-	// Initialize when DOM is loaded
-	document.addEventListener('DOMContentLoaded', () => {
-		initNavigationTracking();
-		initScrollAnimations();
-		initScrollDrivenAnimations();
-	});
+	// PERFORMANCE: Initialize only when DOM is loaded with passive listener
+	document.addEventListener('DOMContentLoaded', initNavigationTracking, { passive: true });
 </script>

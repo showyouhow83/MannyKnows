@@ -23,6 +23,10 @@ export class CustomAnimationManager {
 
   constructor(config: CustomAnimationConfig) {
     this.config = config;
+    // DISABLED: Skip initialization completely if disabled
+    if (!config.enabled) {
+      return;
+    }
     this.init();
   }
 

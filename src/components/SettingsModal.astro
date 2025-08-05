@@ -370,10 +370,10 @@
 
     function applyColorfulTitlesSetting(enabled: boolean) {
       const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
-      console.log('Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
+      // DEBUG DISABLED: console.log('Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
       
       colorfulElements.forEach((element, index) => {
-        console.log(`Element ${index}:`, element.className);
+        // DEBUG DISABLED: console.log(`Element ${index}:`, element.className);
         if (enabled) {
           element.classList.remove('colorful-disabled');
           // Remove any inline styles that might override
@@ -385,7 +385,7 @@
           element.style.removeProperty('-webkit-text-fill-color');
           element.style.removeProperty('animation');
           element.style.removeProperty('color');
-          console.log(`Element ${index} after enabling:`, element.className);
+          // DEBUG DISABLED: console.log(`Element ${index} after enabling:`, element.className);
         } else {
           element.classList.add('colorful-disabled');
           // Force inline styles as backup
@@ -399,7 +399,7 @@
           element.style.setProperty('animation', 'none', 'important');
           // Apply correct color based on theme: dark text for light mode, light text for dark mode
           element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
-          console.log(`Element ${index} after disabling (${isDark ? 'dark' : 'light'} mode):`, element.className);
+          // DEBUG DISABLED: console.log(`Element ${index} after disabling (${isDark ? 'dark' : 'light'} mode):`, element.className);
         }
       });
     }
@@ -468,7 +468,7 @@
     const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
     const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
     
-    console.log('Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
+    // DEBUG DISABLED: console.log('Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
     
     // Apply marquee setting
     const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
