@@ -409,7 +409,8 @@ const processSteps = [
   }
 
   .process-card:hover {
-    transform: translateY(-8px) translateZ(0);
+    transform: translateY(-8px) scale(1.05) translateZ(0);
+    filter: brightness(1.2);
     position: relative;
     /* Ensure glow is centered around the card */
     box-shadow: 0 0 60px rgba(16, 209, 255, 0.4), 0 0 30px rgba(16, 209, 255, 0.3), 0 0 15px rgba(16, 209, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.1) !important;
@@ -529,6 +530,8 @@ const processSteps = [
   }
 
   :global(.dark) .process-card:hover {
+    transform: translateY(-8px) scale(1.05) translateZ(0);
+    filter: brightness(1.2);
     box-shadow: 
       0 20px 60px rgba(16, 209, 255, 0.25),
       0 8px 40px rgba(0, 0, 0, 0.4);
