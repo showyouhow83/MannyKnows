@@ -447,10 +447,16 @@ echo "" # New line after dots
 if [ $BUILD_EXIT_CODE -eq 0 ]; then
     print_status $GREEN "✅ Build successful!"
     
+    # Clean up macOS resource fork files from build
+    print_status $BLUE "🧹 Cleaning up macOS resource forks..."
+    find dist/ -name "._*" -delete 2>/dev/null || true
+    find dist/ -name ".DS_Store" -delete 2>/dev/null || true
+    
     # Show build size if dist folder exists
     if [ -d "dist" ]; then
-        BUILD_SIZE=$(du -sh dist 2>/dev/null | cut -f1)
-        print_status $BLUE "📊 Build size: ${BUILD_SIZE:-"unknown"}"
+        BUILD_SIZE=$(ls -la dist/ dist/_astro/ 2>/dev/null | grep -v "^d" | awk '{sum += $5} END {printf "%.1fKB", sum/1024}')
+        ALLOCATED_SIZE=$(du -sh dist 2>/dev/null | cut -f1)
+        print_status $BLUE "📊 Build size: ${BUILD_SIZE:-"unknown"} (${ALLOCATED_SIZE:-"unknown"} allocated)"
     fi
 
     # Check if there are any changes to commit
