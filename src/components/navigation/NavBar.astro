@@ -132,7 +132,7 @@ const navLinks = [
             placeholder="Browse services catalog..."
             class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-2 pl-3 pr-8 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-10 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
           />
-          <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
+          <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center h-6 w-6 hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
@@ -166,11 +166,11 @@ const navLinks = [
 
   <!-- Mobile Menu Overlay -->
   <div id="mobile-menu" class="fixed inset-0 z-50 xl:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
-    <!-- Glassmorphism Background -->
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <!-- Light Glassmorphism Background -->
+    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-white/20 dark:bg-white/15 backdrop-blur-xl"></div>
     
     <!-- Menu Content -->
-    <div class="relative h-full w-80 ml-auto flex flex-col bg-white dark:bg-gray-900 shadow-xl">
+    <div class="relative h-full w-80 ml-auto flex flex-col bg-white/90 dark:bg-white/10 backdrop-blur-xl border-l border-gray-300/30 dark:border-white/20 shadow-xl">
       <!-- Header with Close Button -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary">Menu</h2>
@@ -482,8 +482,19 @@ const navLinks = [
     });
 
     // Close menu when clicking outside (on backdrop)
+    const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+    if (mobileMenuBackdrop) {
+      mobileMenuBackdrop.addEventListener('click', (e) => {
+        console.log('Backdrop clicked, closing menu');
+        closeMenu();
+      });
+    }
+
+    // Also handle clicks on the menu overlay itself
     mobileMenu.addEventListener('click', (e) => {
-      if (e.target === mobileMenu || e.target.classList.contains('bg-black/50')) {
+      // Only close if clicking directly on the menu overlay (not on menu content)
+      if (e.target === mobileMenu) {
+        console.log('Menu overlay clicked, closing menu');
         closeMenu();
       }
     });
