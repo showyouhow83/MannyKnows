@@ -102,3 +102,33 @@ import DockButton from '../ui/DockButton.astro';
     }
   }
 </style>
+
+<script>
+  // Self-contained dock visibility logic
+  function initDockVisibility() {
+    const topNav = document.getElementById('topNav');
+    const floatingDock = document.getElementById('floatingDock');
+
+    if (!topNav || !floatingDock) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Top nav visible → hide dock
+          floatingDock.classList.add('translate-y-full', 'opacity-0');
+        } else {
+          // Top nav hidden → show dock
+          floatingDock.classList.remove('translate-y-full', 'opacity-0');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '10px'
+    });
+
+    observer.observe(topNav);
+  }
+
+  // Initialize when component loads
+  document.addEventListener('DOMContentLoaded', initDockVisibility, { passive: true });
+</script>

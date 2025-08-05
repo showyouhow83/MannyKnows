@@ -11,18 +11,15 @@ import PageSection from '../components/layout/PageSection.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 // ========================================
-// PERFORMANCE OPTIMIZED CONFIGURATION
+// NAVBAR CONFIGURATION
 // ========================================
-const ANIMATION_CONFIG = {
-	// PERFORMANCE: Scroll animations disabled for immediate visibility
-	scrollAnimationsEnabled: false,
-	
-	// PRODUCTION: Debug disabled for performance
-	debugMode: false,
-	
-	// Search gradient animations in navbar (preserved)
+const NAVBAR_CONFIG = {
+	// Search gradient animations in navbar
 	searchGradientEnabled: true,
 	searchScrollDelay: 0,
+	
+	// Debug mode for development
+	debugMode: false,
 };
 ---
 
@@ -36,9 +33,9 @@ const ANIMATION_CONFIG = {
             <!-- Navigation -->
             <NavBar
 				animationConfig={{
-					searchGradientEnabled: ANIMATION_CONFIG.searchGradientEnabled,
-					debugMode: ANIMATION_CONFIG.debugMode,
-					searchScrollDelay: ANIMATION_CONFIG.searchScrollDelay
+					searchGradientEnabled: NAVBAR_CONFIG.searchGradientEnabled,
+					debugMode: NAVBAR_CONFIG.debugMode,
+					searchScrollDelay: NAVBAR_CONFIG.searchScrollDelay
 				}}
 			/>
 
@@ -73,36 +70,3 @@ const ANIMATION_CONFIG = {
 		<DockMenu />
 	</main>
 </BaseLayout>
-
-<script>
-	// PERFORMANCE OPTIMIZED: Single navigation tracking system
-	
-	// Navigation visibility tracking for floating dock
-	function initNavigationTracking() {
-		const topNav = document.getElementById('topNav');
-		const floatingDock = document.getElementById('floatingDock');
-
-		if (!topNav || !floatingDock) return;
-
-		// Use optimized intersection observer
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					// Top nav is visible, hide floating dock
-					floatingDock.classList.add('translate-y-full', 'opacity-0');
-				} else {
-					// Top nav is not visible, show floating dock
-					floatingDock.classList.remove('translate-y-full', 'opacity-0');
-				}
-			});
-		}, {
-			threshold: 0.1,
-			rootMargin: '10px' // Slight optimization
-		});
-
-		observer.observe(topNav);
-	}
-
-	// PERFORMANCE: Initialize only when DOM is loaded with passive listener
-	document.addEventListener('DOMContentLoaded', initNavigationTracking, { passive: true });
-</script>

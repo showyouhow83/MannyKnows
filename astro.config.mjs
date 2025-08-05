@@ -43,7 +43,8 @@ export default defineConfig({
             // Only keep essential chunks
             'settings': ['src/components/SettingsModal.astro']
           }
-        }
+        },
+        external: (id) => id.includes('._') || id.includes('.DS_Store')
       }
     },
     // Optimize assets
