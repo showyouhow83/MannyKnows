@@ -140,7 +140,7 @@ const processSteps = [
                       <h3 class="step-title sf-semibold" id={`step-title-${index}-left`}>{step.title}</h3>
                     </div>
                     
-                    <p class="step-description sf-regular">{step.description}</p>
+                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
                   </div>
                 </div>
               </div>
@@ -181,7 +181,7 @@ const processSteps = [
                       <h3 class="step-title sf-semibold" id={`step-title-${index}-right`}>{step.title}</h3>
                     </div>
                     
-                    <p class="step-description sf-regular">{step.description}</p>
+                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ const processSteps = [
                       <h3 class="step-title sf-semibold" id={`step-title-${index}-mobile`}>{step.title}</h3>
                     </div>
                     
-                    <p class="step-description sf-regular">{step.description}</p>
+                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
                   </div>
                 </div>
               </div>
@@ -416,15 +416,6 @@ const processSteps = [
     text-align: left;
   }
 
-  .step-description {
-    font-size: 0.9rem;
-    color: #4a5568;
-    line-height: 1.6;
-    text-align: left;
-    flex-grow: 1;
-    margin: 0;
-  }
-
   /* Arrow styles */
   .step-arrow {
     display: flex;
@@ -490,10 +481,6 @@ const processSteps = [
 
   :global(.dark) .step-title {
     color: #f7fafc;
-  }
-
-  :global(.dark) .step-description {
-    color: #cbd5e0;
   }
 
   :global(.dark) .step-number-large {
@@ -584,10 +571,6 @@ const processSteps = [
       font-size: 1.25rem;
     }
 
-    .step-description {
-      font-size: 0.9rem;
-    }
-
     .step-icon-container {
       width: 45px; /* Updated from 24px */
       height: 35px; /* Updated from 24px */
@@ -608,12 +591,6 @@ const processSteps = [
       text-align: left;
       margin: 0;
       font-size: 0.9rem;
-    }
-
-    .step-description {
-      text-align: left;
-      font-size: 0.8rem;
-      margin: 0;
     }
   }
 
