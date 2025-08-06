@@ -350,9 +350,13 @@ const processSteps = [
     width: 400px;
     max-width: 100%;
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9) 0%, 
-      rgba(248, 250, 252, 0.95) 100%);
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(248, 250, 252, 0.98) 100%);
+    /* Fallback for browsers without backdrop-filter support */
+    background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
+    /* Webkit fallback for Windows browsers */
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 2rem;
@@ -361,7 +365,18 @@ const processSteps = [
       0 4px 20px rgba(0, 0, 0, 0.08),
       0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    will-change: transform, box-shadow, border-color;
+    /* Simplified will-change for better Windows compatibility */
+    will-change: transform;
+  }
+
+  /* Fallback styles for browsers that don't support backdrop-filter */
+  @supports not (backdrop-filter: blur(20px)) {
+    .process-card {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.98) 0%, 
+        rgba(248, 250, 252, 1) 100%);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
   }
 
   /* Disabled default card hover animations */
@@ -466,12 +481,24 @@ const processSteps = [
 
   :global(.dark) .process-card {
     background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.9) 0%, 
-      rgba(51, 65, 85, 0.95) 100%);
+      rgba(30, 41, 59, 0.95) 0%, 
+      rgba(51, 65, 85, 0.98) 100%);
+    /* Fallback for browsers without backdrop-filter support */
+    background-color: rgba(30, 41, 59, 0.95);
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: 
       0 4px 20px rgba(0, 0, 0, 0.3),
       0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Dark mode fallback for browsers that don't support backdrop-filter */
+  @supports not (backdrop-filter: blur(20px)) {
+    :global(.dark) .process-card {
+      background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.98) 0%, 
+        rgba(51, 65, 85, 1) 100%);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
   }
 
   /* Disabled dark mode hover animations */
@@ -645,8 +672,13 @@ const processSteps = [
 </style>
 
 <script>
-  // Optimized hover interaction system - preserving cross-mode awareness
+  // Optimized hover interaction system with Windows compatibility
   document.addEventListener('DOMContentLoaded', function() {
+    // Browser compatibility detection - using userAgent instead of deprecated platform
+    const isWindows = navigator.userAgent.indexOf('Windows') !== -1;
+    const supportsBackdropFilter = CSS.supports('backdrop-filter', 'blur(20px)') || CSS.supports('-webkit-backdrop-filter', 'blur(20px)');
+    const supportsWillChange = CSS.supports('will-change', 'transform');
+    
     // Cache DOM elements for better performance
     const numbers = document.querySelectorAll('[data-target-step]');
     const processCards = document.querySelectorAll('.process-card');
@@ -665,56 +697,109 @@ const processSteps = [
       }
     });
     
-    // Performance-optimized hover effects for process cards (unified with number hover)
+    // Windows-compatible animation function
+    function applyHoverEffect(element: HTMLElement, options: {
+      transform?: string;
+      brightness?: number;
+      boxShadow?: string;
+      borderColor?: string;
+    }) {
+      if (!(element instanceof HTMLElement)) return;
+      
+      try {
+        // Simplified transforms for Windows compatibility
+        if (options.transform) {
+          // Break down complex transforms for better compatibility
+          element.style.setProperty('transform', options.transform, 'important');
+        }
+        
+        // Use opacity changes instead of filter brightness on Windows if needed
+        if (options.brightness) {
+          if (isWindows && !CSS.supports('filter', 'brightness(1.2)')) {
+            // Fallback: use opacity for Windows browsers that don't support filter
+            element.style.setProperty('opacity', '0.9', 'important');
+          } else {
+            element.style.setProperty('filter', `brightness(${options.brightness})`, 'important');
+          }
+        }
+        
+        if (options.boxShadow) {
+          element.style.setProperty('box-shadow', options.boxShadow, 'important');
+        }
+        
+        if (options.borderColor) {
+          element.style.setProperty('border-color', options.borderColor, 'important');
+        }
+      } catch (error) {
+        console.warn('Hover effect failed:', error);
+      }
+    }
+    
+    // Windows-compatible cleanup function
+    function removeHoverEffect(element: HTMLElement) {
+      if (!(element instanceof HTMLElement)) return;
+      
+      try {
+        element.style.removeProperty('transform');
+        element.style.removeProperty('filter');
+        element.style.removeProperty('opacity');
+        element.style.removeProperty('box-shadow');
+        element.style.removeProperty('border-color');
+      } catch (error) {
+        console.warn('Hover cleanup failed:', error);
+      }
+    }
+    
+    // Performance-optimized hover effects for process cards
     processCards.forEach((card, index) => {
       if (!(card instanceof HTMLElement)) return;
       
-      // Get the actual step index from data attribute instead of forEach index
+      // Get the actual step index from data attribute
       const stepIndex = card.getAttribute('data-step-index');
       if (!stepIndex) return;
       
       const color = gradientColors[parseInt(stepIndex)];
-      // Match number hover effects exactly - including scale
-      const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+      // Simplified transforms for Windows compatibility
+      const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
-      const hoverTransform = 'translateY(-8px) scale(1.05) translateZ(0)'; // Added scale to match number hover
+      // Simplified transform - removed scale for Windows compatibility
+      const hoverTransform = isWindows ? 'translateY(-8px)' : 'translateY(-8px) scale(1.05)';
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
-          card.style.setProperty('transform', hoverTransform, 'important');
-          card.style.setProperty('filter', 'brightness(1.2)', 'important');
-          card.style.setProperty('box-shadow', hoverShadow, 'important');
-          card.style.setProperty('border-color', hoverBorderColor, 'important');
+          applyHoverEffect(card, {
+            transform: hoverTransform,
+            brightness: 1.2,
+            boxShadow: hoverShadow,
+            borderColor: hoverBorderColor
+          });
           
-          // Also affect corresponding number using correct step index
+          // Also affect corresponding number
           const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
           if (correspondingNumber instanceof HTMLElement) {
-            correspondingNumber.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
-            correspondingNumber.style.setProperty('filter', 'brightness(1.2)', 'important');
+            const numberTransform = isWindows ? 'scale(1.03)' : 'scale(1.05)';
+            applyHoverEffect(correspondingNumber, {
+              transform: numberTransform,
+              brightness: 1.2
+            });
           }
         });
       });
       
       card.addEventListener('mouseleave', () => {
         requestAnimationFrame(() => {
-          card.style.removeProperty('transform');
-          card.style.removeProperty('filter');
-          card.style.removeProperty('box-shadow');
-          card.style.removeProperty('border-color');
+          removeHoverEffect(card);
           
-          // Also remove effects from corresponding number using correct step index
+          // Also remove effects from corresponding number
           const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
           if (correspondingNumber instanceof HTMLElement) {
-            correspondingNumber.style.removeProperty('transform');
-            correspondingNumber.style.removeProperty('filter');  
+            removeHoverEffect(correspondingNumber);
           }
         });
       });
     });
     
-    
-    // Cross-component interaction system (PRESERVED)
-    // This intelligent system makes numbers aware of their corresponding cards
+    // Cross-component interaction system with Windows compatibility
     numbers.forEach(number => {
       if (!(number instanceof HTMLElement)) return;
       
@@ -723,86 +808,90 @@ const processSteps = [
       
       if (stepIndex && correspondingCard instanceof HTMLElement) {
         const color = gradientColors[parseInt(stepIndex)];
-        const hoverTransform = 'translateY(-8px) translateZ(0)';
         const hoverBorderColor = `${color}60`;
-        // Centered glow with consistent intensity - matching card hover exactly
-        const hoverShadow = `0 0 60px ${color}40, 0 0 30px ${color}30, 0 0 15px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+        const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
+        const cardHoverTransform = isWindows ? 'translateY(-8px)' : 'translateY(-8px) scale(1.05)';
+        const numberHoverTransform = isWindows ? 'scale(1.03)' : 'scale(1.05)';
         
-        // Mouse interactions - cross-component awareness (unified colors)
+        // Mouse interactions - cross-component awareness
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            // Apply full card hover effects including scale and brightness
-            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
-            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
-            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
-            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
+            applyHoverEffect(correspondingCard, {
+              transform: cardHoverTransform,
+              brightness: 1.2,
+              borderColor: hoverBorderColor,
+              boxShadow: hoverShadow
+            });
           });
         });
         
         number.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.removeProperty('transform');
-            correspondingCard.style.removeProperty('filter');
-            correspondingCard.style.removeProperty('border-color');
-            correspondingCard.style.removeProperty('box-shadow');
+            removeHoverEffect(correspondingCard);
           });
         });
         
-        // Touch support for mobile - cross-mode functionality preserved (unified colors)
+        // Touch support with Windows compatibility
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            correspondingCard.style.setProperty('transform', 'translateY(-8px) scale(1.05) translateZ(0)', 'important');
-            correspondingCard.style.setProperty('filter', 'brightness(1.2)', 'important');
-            correspondingCard.style.setProperty('border-color', hoverBorderColor, 'important');
-            correspondingCard.style.setProperty('box-shadow', hoverShadow, 'important');
+            applyHoverEffect(correspondingCard, {
+              transform: cardHoverTransform,
+              brightness: 1.2,
+              borderColor: hoverBorderColor,
+              boxShadow: hoverShadow
+            });
           });
         }, { passive: true });
         
         number.addEventListener('touchend', () => {
           setTimeout(() => {
             requestAnimationFrame(() => {
-              correspondingCard.style.removeProperty('transform');
-              correspondingCard.style.removeProperty('filter');
-              correspondingCard.style.removeProperty('border-color');
-              correspondingCard.style.removeProperty('box-shadow');
+              removeHoverEffect(correspondingCard);
             });
           }, 300);
         }, { passive: true });
         
-        // REVERSE CONNECTION: Card affects Number - apply exact same effects as number hover
+        // Card affects Number - Windows compatible
         correspondingCard.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
-            // Apply the exact same number hover effects
-            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
-            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+            applyHoverEffect(number, {
+              transform: numberHoverTransform,
+              brightness: 1.2
+            });
           });
         });
         
         correspondingCard.addEventListener('mouseleave', () => {
           requestAnimationFrame(() => {
-            // Remove the exact same number hover effects
-            number.style.removeProperty('transform');
-            number.style.removeProperty('filter');
+            removeHoverEffect(number);
           });
         });
         
         // Touch support for card affecting number
         correspondingCard.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
-            number.style.setProperty('transform', 'scale(1.05) translateZ(0)', 'important');
-            number.style.setProperty('filter', 'brightness(1.2)', 'important');
+            applyHoverEffect(number, {
+              transform: numberHoverTransform,
+              brightness: 1.2
+            });
           });
         }, { passive: true });
         
         correspondingCard.addEventListener('touchend', () => {
           setTimeout(() => {
             requestAnimationFrame(() => {
-              number.style.removeProperty('transform');
-              number.style.removeProperty('filter');
+              removeHoverEffect(number);
             });
           }, 300);
         }, { passive: true });
       }
     });
+    
+    // Debug logging for Windows troubleshooting
+    if (isWindows) {
+      console.log('Windows detected - using compatibility mode');
+      console.log('Backdrop filter support:', supportsBackdropFilter);
+      console.log('Will-change support:', supportsWillChange);
+    }
   });
 </script>

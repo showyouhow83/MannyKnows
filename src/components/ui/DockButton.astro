@@ -31,22 +31,24 @@ const iconClasses = {
 
 <button 
   type="button" 
-  class={`dock-item group relative ${className}`} 
+  class={`dock-item group relative flex-1 sm:flex-none ${className}`} 
   data-tooltip={tooltip}
   onclick={onClick}
   id={id}
 >
-  <div class={`w-12 h-12 ${variantClasses[variant]} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer`}>
+  <div class={`w-full h-full aspect-square sm:w-12 sm:h-12 ${variantClasses[variant]} rounded-lg sm:rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer`}>
     
     {variant === 'brand' ? (
-      <span class="text-white font-black text-lg relative z-10">MK</span>
+      <span class="text-white font-black text-sm sm:text-lg relative z-10">MK</span>
     ) : (
-      <Fragment set:html={icon} />
+      <div class="scale-75 sm:scale-100">
+        <Fragment set:html={icon} />
+      </div>
     )}
   </div>
   
   <!-- Tooltip -->
-  <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none" role="tooltip">
+  <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 sm:px-3 sm:py-2 bg-black dark:bg-white text-white dark:text-black text-xs sm:text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none" role="tooltip">
     {tooltip}
   </div>
 </button>
