@@ -26,6 +26,17 @@ import DockButton from '../ui/DockButton.astro';
         onClick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})"
       />
 
+      <!-- Products -->
+      <DockButton 
+        tooltip="Products" 
+        icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>`}
+        onClick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})"
+      />
+
       <!-- Process -->
       <DockButton 
         tooltip="Process" 
@@ -34,18 +45,6 @@ import DockButton from '../ui/DockButton.astro';
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>`}
         onClick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})"
-      />
-
-      <!-- Case Study -->
-      <DockButton 
-        tooltip="Case Study" 
-        icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14,2 14,8 20,8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>`}
-        onClick="document.getElementById('case-study').scrollIntoView({behavior: 'smooth'})"
       />
 
       <!-- Reviews -->
@@ -73,17 +72,18 @@ import DockButton from '../ui/DockButton.astro';
       />
 
       <!-- Divider -->
-      <div class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-gray-400/30 dark:via-white/20 to-transparent"></div>
+      <div class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-gray-400/30 dark:via-white/20 to-transparent md:hidden"></div>
 
-      <!-- Settings -->
+      <!-- Hamburger Menu -->
       <DockButton 
-        tooltip="Settings" 
-        icon={`<svg class="w-5 h-5 transition-all duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+        tooltip="Menu" 
+        icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>`}
-        variant="settings"
-        id="settingsButton"
+        id="dockMenuToggle"
+        className="md:hidden"
       />
     </div>
   </div>
@@ -152,10 +152,14 @@ import DockButton from '../ui/DockButton.astro';
     if (settingsButton) {
       settingsButton.addEventListener('click', () => {
         console.log('⚙️ Settings button clicked from dock');
+        // Directly open the settings modal
         const settingsModal = document.getElementById('settingsModal');
-        const openButton = document.getElementById('openSettings');
-        if (openButton) {
-          openButton.click();
+        if (settingsModal) {
+          settingsModal.classList.remove('opacity-0', 'invisible');
+          const modalDialog = settingsModal.querySelector('div');
+          if (modalDialog) {
+            modalDialog.classList.remove('scale-95');
+          }
         }
       });
     }
@@ -167,6 +171,16 @@ import DockButton from '../ui/DockButton.astro';
       dockChatToggle.addEventListener('click', () => {
         console.log('💬 Chat button clicked from dock');
         mainChatToggle.click();
+      });
+    }
+
+    // Connect dock hamburger menu to main mobile menu
+    const dockMenuToggle = document.getElementById('dockMenuToggle');
+    const mainMenuToggle = document.getElementById('mobile-menu-toggle');
+    if (dockMenuToggle && mainMenuToggle) {
+      dockMenuToggle.addEventListener('click', () => {
+        console.log('🍔 Menu button clicked from dock');
+        mainMenuToggle.click();
       });
     }
   }
