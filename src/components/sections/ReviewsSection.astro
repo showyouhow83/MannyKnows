@@ -98,37 +98,55 @@ const stats = [
         <!-- Mobile: Single card view -->
         <div class="block md:hidden px-8">
           <div id="reviewsContainerMobile" class="flex transition-transform duration-300 ease-in-out">
-            {reviews.map((review) => (
-              <div class="w-full flex-shrink-0 px-2">
-                <div class="bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(14,165,233,0.35)] hover:border-sky-500/50 hover:bg-white/90 dark:hover:bg-white/15">
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-1">
-                      {Array.from({ length: 5 }, () => (
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                      ))}
+            {reviews.map((review) => {
+              // Get primary color for glassmorphism effect
+              const primaryColor = review.tags[0]?.color === 'blue' ? '#3b82f6' :
+                                   review.tags[0]?.color === 'green' ? '#22c55e' :
+                                   review.tags[0]?.color === 'purple' ? '#8b5cf6' :
+                                   review.tags[0]?.color === 'pink' ? '#ec4899' :
+                                   '#3b82f6';
+              
+              return (
+                <div class="w-full flex-shrink-0 px-2">
+                  <div class="backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group relative overflow-hidden"
+                       style={`background: linear-gradient(135deg, ${primaryColor}15, ${primaryColor}08); border-color: ${primaryColor}40; box-shadow: 0 4px 20px ${primaryColor}20, 0 1px 3px ${primaryColor}10;`}>
+                    
+                    <!-- Enhanced glassmorphism overlay on hover -->
+                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                         style={`background: linear-gradient(135deg, ${primaryColor}08, ${primaryColor}05);`}></div>
+                    
+                    <!-- Card content with proper z-index -->
+                    <div class="relative z-10">
+                      <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-1">
+                          {Array.from({ length: 5 }, () => (
+                            <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                          ))}
+                        </div>
+                        <div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">{review.customerName}</div>
+                      </div>
+                      <blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+                        "{review.testimonial}"
+                      </blockquote>
+                      <div class="flex flex-wrap gap-2">
+                        {review.tags.map((tag) => (
+                          <span class={`px-3 py-1 text-xs font-medium rounded-full border 
+                            ${tag.color === 'blue' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : ''}
+                            ${tag.color === 'green' ? 'bg-green-500/10 text-green-500 border-green-500/20' : ''}
+                            ${tag.color === 'purple' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' : ''}
+                            ${tag.color === 'pink' ? 'bg-pink-500/10 text-pink-500 border-pink-500/20' : ''}
+                          `}>
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">{review.customerName}</div>
-                  </div>
-                  <blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
-                    "{review.testimonial}"
-                  </blockquote>
-                  <div class="flex flex-wrap gap-2">
-                    {review.tags.map((tag) => (
-                      <span class={`px-3 py-1 text-xs font-medium rounded-full border 
-                        ${tag.color === 'blue' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : ''}
-                        ${tag.color === 'green' ? 'bg-green-500/10 text-green-500 border-green-500/20' : ''}
-                        ${tag.color === 'purple' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' : ''}
-                        ${tag.color === 'pink' ? 'bg-pink-500/10 text-pink-500 border-pink-500/20' : ''}
-                      `}>
-                        {tag.label}
-                      </span>
-                    ))}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -179,23 +197,16 @@ const stats = [
 </Section>
 
 <style>
-  /* Reviews section animations */
+  /* Reviews section animations - Enhanced for glassmorphism cards */
   .group {
     transform: translateY(0);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Enhanced hover effects that work with dynamic colors via inline styles */
   .group:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(16, 209, 255, 0.15);
-  }
-
-  .group:nth-child(2):hover {
-    box-shadow: 0 20px 60px rgba(255, 79, 170, 0.15);
-  }
-
-  .group:nth-child(3):hover {
-    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
+    transform: translateY(-8px) scale(1.05);
+    /* Shadow is now handled by inline styles for dynamic colors */
   }
 
   /* Carousel specific styles */
@@ -220,15 +231,17 @@ const stats = [
     flex-shrink: 0;
   }
 
-  /* Navigation buttons */
+  /* Navigation buttons with enhanced glassmorphism */
   #prevReview, #nextReview {
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   #prevReview:hover, #nextReview:hover {
     transform: scale(1.1);
     box-shadow: 0 12px 40px rgba(16, 209, 255, 0.2);
+    backdrop-filter: blur(20px);
   }
 
   /* Dots indicator */
@@ -249,6 +262,24 @@ const stats = [
   .group:hover svg {
     transform: scale(1.1);
     filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+  }
+
+  /* Glassmorphism shimmer effect on hover */
+  .group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .group:hover::before {
+    left: 100%;
   }
 </style>
 

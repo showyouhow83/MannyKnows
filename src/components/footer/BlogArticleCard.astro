@@ -32,7 +32,9 @@ const colorMap = {
     badgeBg: 'bg-blue-500/20',
     badgeText: 'text-blue-400',
     hoverText: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
-    buttonColor: 'text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300'
+    buttonColor: 'text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300',
+    shadowColor: 'rgba(59, 130, 246, 0.1)',
+    hoverShadowColor: 'rgba(59, 130, 246, 0.3)'
   },
   purple: {
     gradient: 'from-purple-500/20 to-pink-500/20',
@@ -40,7 +42,9 @@ const colorMap = {
     badgeBg: 'bg-purple-500/20',
     badgeText: 'text-purple-400',
     hoverText: 'group-hover:text-purple-600 dark:group-hover:text-purple-400',
-    buttonColor: 'text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300'
+    buttonColor: 'text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300',
+    shadowColor: 'rgba(139, 92, 246, 0.1)',
+    hoverShadowColor: 'rgba(139, 92, 246, 0.3)'
   },
   orange: {
     gradient: 'from-orange-500/20 to-yellow-500/20',
@@ -48,7 +52,9 @@ const colorMap = {
     badgeBg: 'bg-orange-500/20',
     badgeText: 'text-orange-400',
     hoverText: 'group-hover:text-orange-600 dark:group-hover:text-orange-400',
-    buttonColor: 'text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300'
+    buttonColor: 'text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300',
+    shadowColor: 'rgba(249, 115, 22, 0.1)',
+    hoverShadowColor: 'rgba(249, 115, 22, 0.3)'
   }
 };
 
@@ -58,13 +64,21 @@ const colors = colorMap[categoryColor];
 <article class="group cursor-pointer space-y-3">
   <!-- Icon and Banner Row -->
   <div class="flex gap-3">
-    <div class={`w-16 h-16 bg-gradient-to-br ${colors.gradient} rounded-lg flex-shrink-0 flex items-center justify-center`}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class={colors.iconColor}>
+    <div class={`w-16 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-500 hover:scale-110 hover:-translate-y-1 relative overflow-hidden group/icon`}
+         style={`background: linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.15')}, ${colors.shadowColor.replace('0.1', '0.08')}); box-shadow: 0 4px 20px ${colors.shadowColor};`}
+         onmouseenter={`this.style.background='linear-gradient(135deg, ${colors.hoverShadowColor.replace('0.3', '0.25')}, ${colors.hoverShadowColor.replace('0.3', '0.15')})'; this.style.boxShadow='0 8px 32px ${colors.hoverShadowColor}';`}
+         onmouseleave={`this.style.background='linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.15')}, ${colors.shadowColor.replace('0.1', '0.08')})'; this.style.boxShadow='0 4px 20px ${colors.shadowColor}';`}>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover/icon:translate-x-full transition-transform duration-700 opacity-0 group-hover/icon:opacity-100"></div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class={`${colors.iconColor} relative z-10 group-hover/icon:scale-110 transition-transform duration-300`}>
         <Fragment set:html={iconSvgs[icon]} />
       </svg>
     </div>
-    <div class={`flex-1 h-16 bg-gradient-to-br ${colors.gradient} rounded-lg overflow-hidden flex items-center justify-center`}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class={`${colors.iconColor}/60`}>
+    <div class={`flex-1 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg overflow-hidden flex items-center justify-center transition-all duration-500 hover:scale-105 hover:-translate-y-0.5 relative group/banner`}
+         style={`background: linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.10')}, ${colors.shadowColor.replace('0.1', '0.05')}); box-shadow: 0 2px 15px ${colors.shadowColor.replace('0.1', '0.05')};`}
+         onmouseenter={`this.style.background='linear-gradient(135deg, ${colors.hoverShadowColor.replace('0.3', '0.15')}, ${colors.hoverShadowColor.replace('0.3', '0.08')})'; this.style.boxShadow='0 4px 25px ${colors.hoverShadowColor.replace('0.3', '0.2')}';`}
+         onmouseleave={`this.style.background='linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.10')}, ${colors.shadowColor.replace('0.1', '0.05')})'; this.style.boxShadow='0 2px 15px ${colors.shadowColor.replace('0.1', '0.05')}';`}>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/6 to-transparent -translate-x-full group-hover/banner:translate-x-full transition-transform duration-1000 opacity-0 group-hover/banner:opacity-100"></div>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class={`${colors.iconColor}/60 relative z-10 group-hover/banner:scale-105 transition-transform duration-300`}>
         <Fragment set:html={bannerIconSvgs[icon]} />
       </svg>
     </div>
