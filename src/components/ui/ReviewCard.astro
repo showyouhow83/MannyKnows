@@ -32,29 +32,59 @@ const colorVariants = {
   teal: 'bg-teal-500/10 text-teal-500 border-teal-500/20',
   cyan: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20'
 };
+
+// Glassmorphism color themes based on primary tag
+const glassmorphismColors = {
+  blue: '#3b82f6',
+  green: '#22c55e', 
+  purple: '#8b5cf6',
+  pink: '#ec4899',
+  violet: '#7c3aed',
+  red: '#ef4444',
+  indigo: '#4f46e5',
+  orange: '#f97316',
+  sky: '#0ea5e9',
+  teal: '#14b8a6',
+  cyan: '#06b6d4'
+};
+
+// Get primary color from the first tag for glassmorphism effect
+const primaryColor = glassmorphismColors[tags[0]?.color] || '#3b82f6';
 ---
 
-<div class={`w-full md:w-1/2 lg:w-1/3 flex-shrink-0 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-2xl p-8 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_rgba(14,165,233,0.35)] hover:border-sky-500/50 hover:bg-white/90 dark:hover:bg-white/15 ${className}`}>
-  <div class="flex items-center justify-between mb-4">
-    <div class="flex items-center gap-1">
-      {Array.from({ length: rating }, () => (
-        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
+<div class={`w-full md:w-1/2 lg:w-1/3 flex-shrink-0 backdrop-blur-lg border rounded-xl p-8 transition-all duration-300 hover:scale-110 hover:-translate-y-2 group relative overflow-hidden ${className}`}
+     style={`background: linear-gradient(135deg, ${primaryColor}15, ${primaryColor}08); border-color: ${primaryColor}40; box-shadow: 0 4px 20px ${primaryColor}20, 0 1px 3px ${primaryColor}10;`}>
+  
+  <!-- Enhanced glassmorphism overlay on hover -->
+  <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+       style={`background: linear-gradient(135deg, ${primaryColor}08, ${primaryColor}05);`}></div>
+  <!-- Enhanced glassmorphism overlay on hover -->
+  <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+       style={`background: linear-gradient(135deg, ${primaryColor}08, ${primaryColor}05);`}></div>
+  
+  <!-- Card content with proper z-index -->
+  <div class="relative z-10">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-1">
+        {Array.from({ length: rating }, () => (
+          <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        ))}
+      </div>
+      <div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">{customerName}</div>
+    </div>
+
+    <blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
+      "{testimonial}"
+    </blockquote>
+
+    <div class="flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span class={`px-3 py-1 ${colorVariants[tag.color]} text-xs font-medium rounded-full border`}>
+          {tag.label}
+        </span>
       ))}
     </div>
-    <div class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">{customerName}</div>
-  </div>
-
-  <blockquote class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">
-    "{testimonial}"
-  </blockquote>
-
-  <div class="flex flex-wrap gap-2">
-    {tags.map((tag) => (
-      <span class={`px-3 py-1 ${colorVariants[tag.color]} text-xs font-medium rounded-full border`}>
-        {tag.label}
-      </span>
-    ))}
   </div>
 </div>
