@@ -10,16 +10,18 @@ interface Props {
     youtube?: string;
     tiktok?: string;
   };
+  target?: string;
 }
 
 const { 
   brandTitle = "MK",
   brandDescription = "Professional AI-powered business solutions. From intelligent automation to data-driven insights, helping businesses grow smarter and faster.",
   socialLinks = {
-    linkedin: "#",
-    youtube: "#",
-    tiktok: "#"
-  }
+    linkedin: "https://www.linkedin.com/in/mrmanu/",
+    youtube: "https://www.youtube.com/@MannyKnows-com/posts",
+    tiktok: "https://www.tiktok.com/@mannyknowsai"
+  },
+  target = "_blank"
 } = Astro.props;
 
 // Blog articles data - could be passed as props or fetched from CMS
@@ -70,7 +72,7 @@ const blogArticles = [
         <h6 class="apple-gradient-text text-gray-800 dark:text-white/90 font-medium mb-4 text-center transition-colors duration-300">Follow Us</h6>
         <div class="flex gap-3 justify-center">
           <!-- LinkedIn -->
-          <a href={socialLinks.linkedin} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-[#0077B5] dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
+          <a href={socialLinks.linkedin} target={target} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-[#0077B5] dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
              style="background: linear-gradient(135deg, #0077B525, #0077B515); box-shadow: 0 4px 20px rgba(0, 119, 181, 0.15);"
              onmouseenter="this.style.background='linear-gradient(135deg, #0077B540, #0077B530)'; this.style.boxShadow='0 8px 32px rgba(0, 119, 181, 0.4), 0 0 20px rgba(0, 119, 181, 0.3)'"
              onmouseleave="this.style.background='linear-gradient(135deg, #0077B525, #0077B515)'; this.style.boxShadow='0 4px 20px rgba(0, 119, 181, 0.15)'">
@@ -88,7 +90,7 @@ const blogArticles = [
           </a>
           
           <!-- YouTube -->
-          <a href={socialLinks.youtube} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-[#FF0000] dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
+          <a href={socialLinks.youtube} target={target} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-[#FF0000] dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
              style="background: linear-gradient(135deg, #FF000025, #FF000015); box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);"
              onmouseenter="this.style.background='linear-gradient(135deg, #FF000040, #FF000030)'; this.style.boxShadow='0 8px 32px rgba(255, 0, 0, 0.4), 0 0 20px rgba(255, 0, 0, 0.3)'"
              onmouseleave="this.style.background='linear-gradient(135deg, #FF000025, #FF000015)'; this.style.boxShadow='0 4px 20px rgba(255, 0, 0, 0.15)'">
@@ -106,7 +108,7 @@ const blogArticles = [
           </a>
           
           <!-- TikTok -->
-          <a href={socialLinks.tiktok} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
+          <a href={socialLinks.tiktok} target={target} class="group w-10 h-10 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-xl flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-all duration-500 hover:scale-110 hover:-translate-y-2 relative overflow-hidden"
              style="background: linear-gradient(135deg, #00000030, #00000020); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);"
              onmouseenter="this.style.background='linear-gradient(135deg, #00000050, #00000040)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(100, 100, 255, 0.2)'"
              onmouseleave="this.style.background='linear-gradient(135deg, #00000030, #00000020)'; this.style.boxShadow='0 4px 20px rgba(0, 0, 0, 0.15)'">
