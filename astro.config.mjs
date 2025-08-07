@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server', // Changed to server mode for API routes
   integrations: [
     tailwind({
       // Keep base styles for proper styling

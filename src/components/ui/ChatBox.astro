@@ -6,36 +6,44 @@ export interface Props {
 const { className = '' } = Astro.props;
 ---
 
-<!-- Floating Chat Box -->
-<div id="chatBox" class={`fixed bottom-24 right-6 lg:left-6 lg:right-auto w-96 h-[500px] backdrop-blur-lg border rounded-2xl transform scale-0 transition-all duration-300 origin-bottom-right lg:origin-bottom-left z-40 opacity-0 invisible ${className} chat-glassmorphism`}>
-  <div class="flex justify-between items-center p-1.75 border-b border-white/20 dark:border-white/10">
-    <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">💬 Talk to Us</h3>
-    <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
+<!-- Chatting Hub -->
+<div id="chatBox" class={`chat-hub-container transform scale-0 transition-all duration-300 origin-bottom-center z-40 opacity-0 invisible ${className} chat-glassmorphism`}>
+  <div class="flex justify-between items-center p-4 border-b border-white/20 dark:border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+        <span class="text-white font-bold text-lg">C</span>
+      </div>
+      <div>
+        <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">Chat with Carl</h3>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary m-0 text-sm">Your project assistant</p>
+      </div>
+    </div>
+    <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-2 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
   </div>
-  <div class="flex flex-col h-[calc(100%-64px)]">
-    <div class="flex-1 p-1.75 overflow-y-auto flex flex-col gap-2.5" id="chatBoxMessages">
-      <div class="flex gap-2.5 items-start">
-        <div class="w-8 h-8 rounded-full bg-primary-blue/20 border border-primary-blue/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-        <div class="chat-message-bubble">
-          Hey what's up? My name is Carl, I'm Manny's AI assistant, and my job is to make your life easy on our site.
+  <div class="flex flex-col chat-body">
+    <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" id="chatBoxMessages">
+      <div class="flex gap-3 items-start">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
+        <div class="chat-message-bubble bot-message">
+          Hi there! I'm Carl, your project assistant. I'm here to help you get started with your project and connect you with our team.
         </div>
       </div>
-      <div class="flex gap-2.5 items-start mt-2.5">
-        <div class="w-8 h-8 rounded-full bg-primary-blue/20 border border-primary-blue/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-        <div class="chat-message-bubble">
-          How can I help you today? You can start by telling me your name, where do you live and brief description of the project you have in mind. No need to have all the details, I can help you develop those later. Let me know 🤖🥸
+      <div class="flex gap-3 items-start">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
+        <div class="chat-message-bubble bot-message">
+          To get started, could you tell me your name? This helps me personalize our conversation.
         </div>
       </div>
     </div>
-    <div class="flex gap-2 p-2.25 border-t border-white/20 dark:border-white/10 chat-input-area">
+    <div class="flex gap-3 p-4 border-t border-white/20 dark:border-white/10 chat-input-area">
       <label for="chatBoxInput" class="sr-only">Type your message</label>
-      <input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 backdrop-blur-lg border border-white/30 dark:border-white/20 rounded-lg py-2 px-3 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)] chat-input">
-      <button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue" aria-label="Send message">
+      <input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 backdrop-blur-lg border rounded-lg py-3 px-4 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none chat-input">
+      <button type="button" id="chatBoxSend" class="bg-gradient-to-r from-green-500 to-emerald-500 border-none rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-emerald-500 hover:to-green-500" aria-label="Send message">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22,2 15,22 11,13 2,9"></polygon>
@@ -46,7 +54,7 @@ const { className = '' } = Astro.props;
 </div>
 
 <script>
-  // Chat Box functionality
+  // Chat Hub functionality with conversation flow and data collection
   function initChatBox() {
     const chatBox = document.getElementById('chatBox');
     const topChatToggle = document.getElementById('topChatToggle');
@@ -60,6 +68,58 @@ const { className = '' } = Astro.props;
     if (!chatBox) return;
 
     let isOpen = false;
+    
+    // Conversation state management
+    interface UserData {
+      name?: string;
+      email?: string;
+      phone?: string;
+      project?: string;
+      completed: boolean;
+    }
+
+    let conversationState = {
+      step: 'name', // name -> email -> phone -> project -> complete
+      userData: {} as UserData
+    };
+
+    // Input sanitization to prevent prompt injection
+    const sanitizeInput = (input: string): string => {
+      // Remove potential prompt injection patterns
+      return input
+        .replace(/system:|assistant:|user:|prompt:|instruction:|ignore|forget|override/gi, '')
+        .replace(/[<>]/g, '')
+        .trim()
+        .substring(0, 500); // Limit length
+    };
+
+    // Conversation flow responses
+    const getNextPrompt = (step: string, userInput?: string): string => {
+      switch (step) {
+        case 'email':
+          return `Nice to meet you, ${conversationState.userData.name}! To help our team reach out with a personalized quote, could you share your email address?`;
+        case 'phone':
+          return `Great! And what's the best phone number to reach you at?`;
+        case 'project':
+          return `Perfect! Now, could you tell me a bit about your project? What kind of help are you looking for?`;
+        case 'complete':
+          return `Thank you ${conversationState.userData.name}! I have all the information I need. Our team will review your project details and reach out to you within 24 hours with a personalized quote. Is there anything else I can help you with in the meantime?`;
+        default:
+          return `I'd be happy to help! Could you tell me your name so I can personalize our conversation?`;
+      }
+    };
+
+    // Email validation
+    const isValidEmail = (email: string): boolean => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
+    // Phone validation (basic)
+    const isValidPhone = (phone: string): boolean => {
+      const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
+      return phoneRegex.test(phone.replace(/\s/g, ''));
+    };
 
     // Open chat box
     const openChatBox = () => {
@@ -83,10 +143,19 @@ const { className = '' } = Astro.props;
       chatBox.classList.remove('scale-100', 'opacity-100', 'visible');
     };
 
+    // Toggle chat box function
+    const toggleChatBox = () => {
+      if (isOpen) {
+        closeChatBox();
+      } else {
+        openChatBox();
+      }
+    };
+
     // Event listeners
-    topChatToggle?.addEventListener('click', openChatBox);
-    dockChatToggle?.addEventListener('click', openChatBox);
-    heroChatButton?.addEventListener('click', openChatBox);
+    topChatToggle?.addEventListener('click', toggleChatBox);
+    dockChatToggle?.addEventListener('click', toggleChatBox);
+    heroChatButton?.addEventListener('click', openChatBox); // Hero button only opens
     chatBoxClose?.addEventListener('click', closeChatBox);
 
     // Close on Escape key
@@ -113,40 +182,110 @@ const { className = '' } = Astro.props;
       }
     });
 
-    // Send message functionality
+    // Send message functionality with conversation flow
     const sendMessage = () => {
       const message = chatBoxInput?.value.trim();
       if (!message) return;
 
-      // Track message sent event
-      // Analytics tracking removed for simplicity
+      // Sanitize input
+      const sanitizedMessage = sanitizeInput(message);
+      if (!sanitizedMessage) {
+        addBotMessage("I didn't quite catch that. Could you please rephrase your message?");
+        return;
+      }
 
       // Add user message
-      const userMessage = document.createElement('div');
-      userMessage.className = 'flex gap-2.5 items-start flex-row-reverse text-right';
-      userMessage.innerHTML = `
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-pink-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-sm">U</div>
-        <div class="bg-gradient-to-r from-blue-400 to-sky-500 text-white py-2.25 px-4 rounded-xl leading-relaxed max-w-chat text-sm">${message}</div>
-      `;
-      chatBoxMessages?.appendChild(userMessage);
+      addUserMessage(sanitizedMessage);
 
       // Clear input
       if (chatBoxInput) chatBoxInput.value = '';
 
-      // Scroll to bottom
-      chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
+      // Process based on conversation state
+      processUserInput(sanitizedMessage);
+    };
 
-      // Simulate bot response
+    // Add user message to chat
+    const addUserMessage = (message: string) => {
+      const userMessage = document.createElement('div');
+      userMessage.className = 'flex gap-3 items-start flex-row-reverse text-right';
+      userMessage.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm">${conversationState.userData.name ? conversationState.userData.name.charAt(0).toUpperCase() : 'U'}</div>
+        <div class="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 rounded-xl leading-relaxed max-w-chat text-sm">${message}</div>
+      `;
+      chatBoxMessages?.appendChild(userMessage);
+      scrollToBottom();
+    };
+
+    // Add bot message to chat
+    const addBotMessage = (message: string, delay: number = 1000) => {
       setTimeout(() => {
         const botResponse = document.createElement('div');
-        botResponse.className = 'flex gap-2.5 items-start';
+        botResponse.className = 'flex gap-3 items-start';
         botResponse.innerHTML = `
-          <div class="w-8 h-8 rounded-full bg-primary-blue/20 border border-primary-blue/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-          <div class="chat-message-bubble">Thanks for your message! I'm currently being set up to help you better. In the meantime, feel free to browse our services or contact us directly.</div>
+          <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
+          <div class="chat-message-bubble bot-message">${message}</div>
         `;
         chatBoxMessages?.appendChild(botResponse);
-        chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
-      }, 1000);
+        scrollToBottom();
+      }, delay);
+    };
+
+    // Scroll to bottom of messages
+    const scrollToBottom = () => {
+      chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
+    };
+
+    // Process user input based on conversation state
+    const processUserInput = (input: string) => {
+      switch (conversationState.step) {
+        case 'name':
+          conversationState.userData.name = input;
+          conversationState.step = 'email';
+          addBotMessage(getNextPrompt('email'));
+          break;
+          
+        case 'email':
+          if (isValidEmail(input)) {
+            conversationState.userData.email = input;
+            conversationState.step = 'phone';
+            addBotMessage(getNextPrompt('phone'));
+          } else {
+            addBotMessage("That doesn't look like a valid email address. Could you please double-check and try again?");
+          }
+          break;
+          
+        case 'phone':
+          if (isValidPhone(input)) {
+            conversationState.userData.phone = input;
+            conversationState.step = 'project';
+            addBotMessage(getNextPrompt('project'));
+          } else {
+            addBotMessage("That doesn't look like a valid phone number. Please include your area code and try again.");
+          }
+          break;
+          
+        case 'project':
+          conversationState.userData.project = input;
+          conversationState.step = 'complete';
+          conversationState.userData.completed = true;
+          
+          // Submit data (you can add API call here)
+          submitUserData(conversationState.userData);
+          
+          addBotMessage(getNextPrompt('complete'));
+          break;
+          
+        case 'complete':
+          addBotMessage("I'll make sure our team has all your information. They'll be in touch soon! Feel free to browse our services in the meantime.");
+          break;
+      }
+    };
+
+    // Submit user data (placeholder for API integration)
+    const submitUserData = (userData: UserData) => {
+      console.log('User data collected:', userData);
+      // TODO: Send to your backend/CRM
+      // fetch('/api/leads', { method: 'POST', body: JSON.stringify(userData) })
     };
 
     // Send on button click
@@ -162,100 +301,189 @@ const { className = '' } = Astro.props;
   }
 
   // Initialize when DOM is loaded
-  document.addEventListener('DOMContentLoaded', initChatBox);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add a small delay to ensure all other scripts have loaded
+    setTimeout(initChatBox, 100);
+  });
 </script>
 
 <style>
-  /* Enhanced Glassmorphism - Following ProcessSection and ReviewsSection pattern */
+  /* Chat Hub Responsive Layout */
+  .chat-hub-container {
+    /* Desktop: Bottom center positioning, up to 20% width */
+    position: fixed;
+    bottom: 6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28rem;
+    height: 36rem;
+    max-width: 20vw;
+    min-width: 24rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid;
+    border-radius: 1rem;
+  }
+
+  /* Tablet: Half height, full width with padding */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .chat-hub-container {
+      position: fixed;
+      top: 25%;
+      left: 1rem;
+      right: 1rem;
+      bottom: 25%;
+      width: auto;
+      height: auto;
+      max-width: none;
+      min-width: none;
+      transform: none;
+    }
+  }
+
+  /* Mobile: Half height, full width with padding */
+  @media (max-width: 768px) {
+    .chat-hub-container {
+      position: fixed;
+      top: 25%;
+      left: 1rem;
+      right: 1rem;
+      bottom: 25%;
+      width: auto;
+      height: auto;
+      max-width: none;
+      min-width: none;
+      border-radius: 0.75rem;
+      transform: none;
+    }
+  }
+
+  /* Chat body takes remaining space */
+  .chat-body {
+    height: calc(100% - 5rem);
+  }
+
+  /* Enhanced Green Glassmorphism - Matching dock chat button exactly */
   .chat-glassmorphism {
-    /* Light mode: Clean white-based glassmorphism */
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.95) 0%, 
-      rgba(248, 250, 252, 0.98) 100%);
-    border: 1px solid rgba(16, 209, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(16, 209, 255, 0.15), 0 1px 3px rgba(16, 209, 255, 0.1);
+    /* Light mode: Clean glassmorphism with dock button green */
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2), 0 2px 8px rgba(34, 197, 94, 0.1);
+    backdrop-filter: blur(20px);
   }
 
-  /* Dark mode: Enhanced glassmorphism */
+  /* Dark mode: Same as light mode for dock consistency */
   :global(.dark) .chat-glassmorphism {
-    background: linear-gradient(135deg, 
-      rgba(15, 23, 42, 0.95) 0%, 
-      rgba(30, 41, 59, 0.98) 100%);
-    border-color: rgba(16, 209, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(16, 209, 255, 0.2), 0 1px 3px rgba(16, 209, 255, 0.15);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2), 0 2px 8px rgba(34, 197, 94, 0.1);
   }
 
-  /* Message bubbles */
+  /* Message bubbles with green theme */
   .chat-message-bubble {
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(16, 209, 255, 0.25);
-    padding: 0.5625rem 1rem;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 0.75rem 1rem;
     border-radius: 0.75rem;
     color: var(--text-light-primary);
     line-height: 1.6;
-    max-width: 75%;
+    max-width: 85%;
     font-size: 0.875rem;
-    background: linear-gradient(135deg, rgba(16, 209, 255, 0.08), rgba(16, 209, 255, 0.04));
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  }
+
+  .bot-message {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
   }
 
   :global(.dark) .chat-message-bubble {
     color: var(--text-dark-primary);
-    background: linear-gradient(135deg, rgba(16, 209, 255, 0.15), rgba(16, 209, 255, 0.08));
-    border-color: rgba(16, 209, 255, 0.4);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
+    border-color: rgba(34, 197, 94, 0.4);
   }
 
-  /* Input area */
+  :global(.dark) .bot-message {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+  }
+
+  /* Input area with subtle green tint */
   .chat-input-area {
-    background: linear-gradient(135deg, rgba(16, 209, 255, 0.03), rgba(16, 209, 255, 0.01));
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.03), rgba(34, 197, 94, 0.01));
   }
 
   :global(.dark) .chat-input-area {
-    background: linear-gradient(135deg, rgba(16, 209, 255, 0.08), rgba(16, 209, 255, 0.04));
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(34, 197, 94, 0.02));
   }
 
-  /* Input field */
+  /* Input field with green focus states */
   .chat-input {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.9));
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+
+  .chat-input:focus {
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 
   :global(.dark) .chat-input {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.9));
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(34, 197, 94, 0.3);
   }
 
-  /* Chat box animations */
-  #chatBox.scale-0 {
-    transform: scale(0);
-    transform-origin: bottom right;
+  :global(.dark) .chat-input:focus {
+    border-color: rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
   }
 
-  #chatBox.scale-100 {
-    transform: scale(1);
-    transform-origin: bottom right;
+  /* Chat hub animations */
+  .chat-hub-container.scale-0 {
+    transform: translateX(-50%) scale(0);
+    transform-origin: bottom center;
   }
 
-  /* Only keep the specific utility we actually use */
+  .chat-hub-container.scale-100 {
+    transform: translateX(-50%) scale(1);
+    transform-origin: bottom center;
+  }
+
+  /* Tablet and mobile animation adjustments */
+  @media (max-width: 1024px) {
+    .chat-hub-container.scale-0 {
+      transform: scale(0);
+      transform-origin: center;
+    }
+
+    .chat-hub-container.scale-100 {
+      transform: scale(1);
+      transform-origin: center;
+    }
+  }
+
+  /* Message width utility */
   .max-w-chat {
-    max-width: 75%;
+    max-width: 85%;
   }
 
-  /* Mobile responsiveness */
-  @media (max-width: 768px) {
-    #chatBox {
-      @apply w-full max-w-sm right-4 left-4 mx-auto h-[450px];
-    }
+  /* Scroll behavior */
+  #chatBoxMessages {
+    scroll-behavior: smooth;
   }
 
-  /* Tablet and medium screens - center the chat */
-  @media (min-width: 769px) and (max-width: 1110px) {
-    #chatBox {
-      @apply left-1/2 right-auto;
-      transform: translateX(-50%) scale(0);
-      transform-origin: bottom center;
-    }
-    
-    #chatBox.scale-100 {
-      transform: translateX(-50%) scale(1);
-      transform-origin: bottom center;
-    }
+  #chatBoxMessages::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  #chatBoxMessages::-webkit-scrollbar-track {
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 2px;
+  }
+
+  #chatBoxMessages::-webkit-scrollbar-thumb {
+    background: rgba(34, 197, 94, 0.3);
+    border-radius: 2px;
+  }
+
+  #chatBoxMessages::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 197, 94, 0.5);
   }
 </style>
