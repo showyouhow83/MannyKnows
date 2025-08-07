@@ -63,10 +63,11 @@ const navLinks = [
           placeholder="Browse services catalog..."
           class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-3 pl-4 pr-10 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-12 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
         />
-        <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.35-4.35"></path>
+        <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="AI Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0l1.5 4.5L18 6l-4.5 1.5L12 12l-1.5-4.5L6 6l4.5-1.5L12 0z"/>
+            <path d="M20 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/>
+            <path d="M4 16l0.8 2.4L7.2 19.2l-2.4 0.8L4 22.4l-0.8-2.4L0.8 19.2l2.4-0.8L4 16z"/>
           </svg>
         </button>
       </div>
@@ -132,10 +133,11 @@ const navLinks = [
             placeholder="Browse services catalog..."
             class="bg-black/10 dark:bg-white/10 border border-border-light dark:border-border-dark rounded-lg py-2 pl-3 pr-8 text-text-light-primary dark:text-text-dark-primary text-sm w-full h-10 transition-all duration-300 backdrop-blur-lg placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:bg-black/20 dark:focus:bg-white/20 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]"
           />
-          <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center h-6 w-6 hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="Search">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
+          <button type="button" class="absolute right-2 bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded transition-colors duration-300 flex items-center justify-center h-6 w-6 hover:text-text-light-primary dark:hover:text-text-dark-primary" aria-label="AI Search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0l1.5 4.5L18 6l-4.5 1.5L12 12l-1.5-4.5L6 6l4.5-1.5L12 0z"/>
+              <path d="M20 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/>
+              <path d="M4 16l0.8 2.4L7.2 19.2l-2.4 0.8L4 22.4l-0.8-2.4L0.8 19.2l2.4-0.8L4 16z"/>
             </svg>
           </button>
         </div>
@@ -389,6 +391,29 @@ const navLinks = [
     border: 2px solid transparent;
     background-clip: padding-box;
     position: relative;
+  }
+
+  /* Search input border gradient effect - proper border gradient implementation */
+  #search-input:focus,
+  #search-input-mobile:focus {
+    background: linear-gradient(var(--bg-light, rgba(0, 0, 0, 0.1)), var(--bg-light, rgba(0, 0, 0, 0.1))),
+                linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+    background-size: auto, 200% 200%;
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+    border: 2px solid transparent;
+    animation: search-gradient-flow 3s ease-in-out infinite;
+    box-shadow: none !important;
+  }
+
+  /* Dark mode variant */
+  :global(.dark) #search-input:focus,
+  :global(.dark) #search-input-mobile:focus {
+    background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)),
+                linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+    background-size: auto, 200% 200%;
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
   }
 
   #search-input.apple-gradient-active::before,
