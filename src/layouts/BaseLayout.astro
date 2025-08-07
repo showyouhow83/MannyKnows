@@ -49,13 +49,33 @@ const { title } = Astro.props;
 		<script is:inline>
 			// Initialize theme immediately to prevent flash of unstyled content
 			(function() {
-				// Default to dark mode unless explicitly set to light
-				const themeDark = localStorage.getItem('theme-dark') !== 'false';
+				function getInitialTheme() {
+					try {
+						// Check if user has explicitly set a preference
+						const stored = localStorage.getItem('theme-dark');
+						if (stored !== null) {
+							return stored !== 'false';
+						}
+						
+						// Default to dark mode by design (instead of system preference)
+						return true;
+					} catch (error) {
+						// Handle localStorage errors (private browsing, etc.)
+						// Default to dark mode by design
+						return true;
+					}
+				}
 				
-				if (themeDark) {
-					document.documentElement.classList.add('dark');
-				} else {
-					document.documentElement.classList.remove('dark');
+				const isDark = getInitialTheme();
+				document.documentElement.classList.toggle('dark', isDark);
+				
+				// Store the resolved preference for consistency
+				try {
+					if (localStorage.getItem('theme-dark') === null) {
+						localStorage.setItem('theme-dark', isDark.toString());
+					}
+				} catch (error) {
+					// Silently fail if localStorage is unavailable
 				}
 			})();
 		</script>
