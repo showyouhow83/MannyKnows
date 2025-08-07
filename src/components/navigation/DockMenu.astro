@@ -108,9 +108,7 @@ import DockButton from '../ui/DockButton.astro';
   function initDockVisibility() {
     const topNav = document.getElementById('topNav');
     const floatingDock = document.getElementById('floatingDock');
-    
-    console.log('🚢 Initializing dock visibility...', { topNav, floatingDock });
-    
+
     if (!topNav || !floatingDock) {
       console.warn('❌ Dock elements not found:', { topNav: !!topNav, floatingDock: !!floatingDock });
       // Show dock by default if elements aren't found
@@ -145,13 +143,12 @@ import DockButton from '../ui/DockButton.astro';
     });
 
     observer.observe(topNav);
-    console.log('✅ Dock intersection observer initialized');
 
     // Also show dock on settings button click
     const settingsButton = document.getElementById('settingsButton');
     if (settingsButton) {
       settingsButton.addEventListener('click', () => {
-        console.log('⚙️ Settings button clicked from dock');
+
         // Directly open the settings modal
         const settingsModal = document.getElementById('settingsModal');
         if (settingsModal) {
@@ -169,7 +166,7 @@ import DockButton from '../ui/DockButton.astro';
     const mainChatToggle = document.getElementById('topChatToggle');
     if (dockChatToggle && mainChatToggle) {
       dockChatToggle.addEventListener('click', () => {
-        console.log('💬 Chat button clicked from dock');
+
         mainChatToggle.click();
       });
     }
@@ -179,7 +176,7 @@ import DockButton from '../ui/DockButton.astro';
     const mainMenuToggle = document.getElementById('mobile-menu-toggle');
     if (dockMenuToggle && mainMenuToggle) {
       dockMenuToggle.addEventListener('click', () => {
-        console.log('🍔 Menu button clicked from dock');
+
         mainMenuToggle.click();
       });
     }
@@ -196,7 +193,7 @@ import DockButton from '../ui/DockButton.astro';
   setTimeout(() => {
     const floatingDock = document.getElementById('floatingDock');
     if (floatingDock && floatingDock.classList.contains('translate-y-full')) {
-      console.log('🔧 Fallback: Showing dock after timeout');
+
       floatingDock.classList.remove('translate-y-full', 'opacity-0');
       floatingDock.classList.add('translate-y-0', 'opacity-100');
     }

@@ -33,7 +33,7 @@ Embrace Astro Islands: All interactive components must be isolated within Astro 
 
 Asset Optimization is Mandatory: All images, fonts, and other assets will be processed and optimized using astro:assets. You must serve modern formats (e.g., AVIF, WebP), correctly sized images, and implement lazy loading (loading="lazy") by default. Note: This is a known gap and a high-priority area for improvement.
 
-CSS is Critical and Scoped: Leverage Astro's scoped styling. Aggressively pursue Critical CSS extraction. CRITICAL: Our current CSS size is 107.5KB, which drastically exceeds our <30KB target. All CSS-related work must focus on reducing this size.
+CSS is Critical and Scoped: Leverage Astro's scoped styling as much as possible.
 
 Minimize Third-Party Scripts: Audit every third-party script for its performance impact. Always seek lightweight alternatives and load them asynchronously or deferred wherever possible.
 
@@ -77,47 +77,7 @@ This section outlines the current status of the MannyKnows project as of August 
 
 A. Performance Metrics Summary
 Metric	Current	Target	Status	Priority
-CSS Size	107.5KB	<30KB	❌ Needs Work	Highest
-HTML Size	167.6KB	<100KB	❌ Needs Work	High
-Total Bundle	286.4KB	<500KB	✅ Pass	Monitor
-JavaScript	11.2KB	<50KB	✅ Excellent	Maintain
 
-Export to Sheets
-B. Critical Gaps & Top Priorities
-Your primary focus should be on addressing these known issues:
-
-CSS Bloat: The CSS bundle is over 3x its target size. Implementing critical CSS extraction and purging unused CSS is the top priority.
-
-HTML Size: The HTML is overweight. Implementing aggressive minification in the production build is the second priority.
-
-SEO Deficiencies: The project is missing critical SEO elements. This is a high-impact area for improvement.
-
-Structured Data: No Schema.org implementation (Organization, Service, Reviews, etc.).
-
-Social Tags: Missing Open Graph and Twitter Card meta tags.
-
-Technical Files: Missing sitemap.xml and robots.txt.
-
-Lack of Automated Testing: There is no formal testing framework. This is a foundational gap that needs to be filled.
-
-Missing Security Headers: A Content Security Policy (CSP) and other standard security headers are not implemented.
-
-C. Official Project Roadmap
-Immediate Actions (Current Sprint):
-
-Performance: Implement critical CSS extraction and enable aggressive HTML minification for production builds.
-
-SEO: Implement comprehensive Schema.org structured data (Organization, Services, etc.) and add Open Graph tags.
-
-Security: Add basic security headers (HSTS, X-Frame-Options).
-
-Short-term Goals (Next 1-2 Sprints):
-
-Testing: Integrate Vitest for component unit testing and Playwright for End-to-End testing.
-
-Accessibility: Conduct a full accessibility audit and implement fixes (e.g., aria-labels, skip links).
-
-CI/CD: Create an automated deployment pipeline (e.g., using GitHub Actions) that utilizes the deploy.sh script.
 
 5. Standard Operating Procedure (SOP) for Reviews
 When asked to perform a task, especially a code review, use the following as your checklist:

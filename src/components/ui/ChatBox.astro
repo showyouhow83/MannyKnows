@@ -7,7 +7,7 @@ const { className = '' } = Astro.props;
 ---
 
 <!-- Floating Chat Box -->
-<div id="chatBox" class={`fixed bottom-24 right-6 w-96 h-[500px] bg-gradient-to-br from-black/10 dark:from-white/10 via-black/5 dark:via-white/5 to-black/10 dark:to-white/10 border border-border-light dark:border-border-dark rounded-2xl backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.3)] transform scale-0 transition-all duration-300 origin-bottom-right z-40 opacity-0 invisible ${className}`}>
+<div id="chatBox" class={`fixed bottom-24 right-6 lg:left-6 lg:right-auto w-96 h-[500px] backdrop-blur-lg border rounded-2xl transform scale-0 transition-all duration-300 origin-bottom-right lg:origin-bottom-left z-40 opacity-0 invisible ${className}`} style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.15), rgba(16, 209, 255, 0.08)); border-color: rgba(16, 209, 255, 0.4); box-shadow: 0 4px 20px rgba(16, 209, 255, 0.2), 0 1px 3px rgba(16, 209, 255, 0.1);">
   <div class="flex justify-between items-center p-1.75 border-b border-border-light dark:border-border-dark">
     <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">💬 Talk to Us</h3>
     <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-1 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
@@ -20,15 +20,21 @@ const { className = '' } = Astro.props;
   <div class="flex flex-col h-[calc(100%-64px)]">
     <div class="flex-1 p-1.75 overflow-y-auto flex flex-col gap-2.5" id="chatBoxMessages">
       <div class="flex gap-2.5 items-start">
-        <div class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-        <div class="bg-black/20 dark:bg-white/20 py-2.25 px-4 rounded-xl text-text-light-primary dark:text-text-dark-primary leading-relaxed max-w-chat text-sm">
-          Hi! I'm MannyKnows AI assistant. I can help you learn about our e-commerce solutions, get pricing for your online store, or answer questions about scaling your e-commerce business. What would you like to know?
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/20 border border-blue-400/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+        <div class="backdrop-blur-lg border border-blue-400/30 py-2.25 px-4 rounded-xl text-text-light-primary dark:text-text-dark-primary leading-relaxed max-w-chat text-sm" style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.1), rgba(16, 209, 255, 0.05));">
+          Hey what's up? My name is Carl, I'm Manny's AI assistant, and my job is to make your life easy on our site.
+        </div>
+      </div>
+      <div class="flex gap-2.5 items-start mt-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/20 border border-blue-400/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+        <div class="backdrop-blur-lg border border-blue-400/30 py-2.25 px-4 rounded-xl text-text-light-primary dark:text-text-dark-primary leading-relaxed max-w-chat text-sm" style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.1), rgba(16, 209, 255, 0.05));">
+          How can I help you today? You can start by telling me your name, where do you live and brief description of the project you have in mind. No need to have all the details, I can help you develop those later. Let me know 🤖🥸
         </div>
       </div>
     </div>
-    <div class="flex gap-2 p-2.25 border-t border-border-light dark:border-border-dark">
+    <div class="flex gap-2 p-2.25 border-t border-blue-400/30" style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.05), rgba(16, 209, 255, 0.02));">
       <label for="chatBoxInput" class="sr-only">Type your message</label>
-      <input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 bg-black/20 dark:bg-white/20 border border-border-light dark:border-border-dark rounded-lg py-2 px-3 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]">
+      <input type="text" id="chatBoxInput" placeholder="Type your message..." class="flex-1 backdrop-blur-lg border border-blue-400/30 rounded-lg py-2 px-3 text-text-light-primary dark:text-text-dark-primary text-sm transition-all duration-300 placeholder:text-text-light-tertiary dark:placeholder:text-text-dark-tertiary focus:outline-none focus:border-primary-blue/50 focus:shadow-[0_0_0_2px_rgba(16,209,255,0.2)]" style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.08), rgba(16, 209, 255, 0.04));">
       <button type="button" id="chatBoxSend" class="bg-gradient-to-r from-primary-blue to-sky-500 border-none rounded-lg text-white w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 hover:from-sky-500 hover:to-primary-blue" aria-label="Send message">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -90,6 +96,23 @@ const { className = '' } = Astro.props;
       }
     });
 
+    // Close when clicking outside the chat box
+    document.addEventListener('click', (e) => {
+      if (isOpen && chatBox && !chatBox.contains(e.target as Node)) {
+        // Check if the click was on any of the chat toggle buttons
+        const chatToggleButtons = ['topChatToggle', 'dockChatToggle', 'heroChatButton'];
+        const clickedOnToggle = chatToggleButtons.some(id => {
+          const button = document.getElementById(id);
+          return button && (button === e.target || button.contains(e.target as Node));
+        });
+        
+        // Only close if not clicking on a toggle button
+        if (!clickedOnToggle) {
+          closeChatBox();
+        }
+      }
+    });
+
     // Send message functionality
     const sendMessage = () => {
       const message = chatBoxInput?.value.trim();
@@ -118,8 +141,8 @@ const { className = '' } = Astro.props;
         const botResponse = document.createElement('div');
         botResponse.className = 'flex gap-2.5 items-start';
         botResponse.innerHTML = `
-          <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">🤖</div>
-          <div class="bg-white/10 py-2.25 px-4 rounded-xl text-white leading-relaxed max-w-chat text-sm">Thanks for your message! I'm currently being set up to help you better. In the meantime, feel free to browse our services or contact us directly.</div>
+          <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/20 border border-blue-400/30 flex items-center justify-center text-base flex-shrink-0">🤖</div>
+          <div class="backdrop-blur-lg border border-blue-400/30 py-2.25 px-4 rounded-xl text-text-light-primary dark:text-text-dark-primary leading-relaxed max-w-chat text-sm" style="background: linear-gradient(135deg, rgba(16, 209, 255, 0.1), rgba(16, 209, 255, 0.05));">Thanks for your message! I'm currently being set up to help you better. In the meantime, feel free to browse our services or contact us directly.</div>
         `;
         chatBoxMessages?.appendChild(botResponse);
         chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
@@ -163,6 +186,20 @@ const { className = '' } = Astro.props;
   @media (max-width: 768px) {
     #chatBox {
       @apply w-full max-w-sm right-4 left-4 mx-auto h-[450px];
+    }
+  }
+
+  /* Tablet and medium screens - center the chat */
+  @media (min-width: 769px) and (max-width: 1110px) {
+    #chatBox {
+      @apply left-1/2 right-auto;
+      transform: translateX(-50%) scale(0);
+      transform-origin: bottom center;
+    }
+    
+    #chatBox.scale-100 {
+      transform: translateX(-50%) scale(1);
+      transform-origin: bottom center;
     }
   }
 </style>

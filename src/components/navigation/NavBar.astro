@@ -229,30 +229,24 @@ const navLinks = [
             id="mobileSettingsToggle"
             class="group w-full p-3 bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-200 flex items-center justify-between"
             onclick="
-              console.log('🎯 INLINE CLICK HANDLER FIRED!');
               const panel = document.getElementById('mobileSettingsPanel');
               const button = document.getElementById('mobileSettingsToggle');
               const chevron = document.getElementById('settingsChevron');
               if (panel && chevron && button) {
                 const isHidden = panel.classList.contains('hidden');
-                console.log('Panel hidden:', isHidden);
                 if (isHidden) {
                   // Show settings panel and reduce button size
                   panel.classList.remove('hidden');
                   button.classList.remove('p-3');
                   button.classList.add('p-2', 'text-sm');
                   chevron.style.transform = 'rotate(180deg)';
-                  console.log('Panel opened, button reduced');
                 } else {
                   // Hide settings panel and restore button size
                   panel.classList.add('hidden');
                   button.classList.remove('p-2', 'text-sm');
                   button.classList.add('p-3');
                   chevron.style.transform = 'rotate(0deg)';
-                  console.log('Panel closed, button restored');
                 }
-              } else {
-                console.log('Panel or chevron not found!', {panel, chevron, button});
               }
             "
           >
@@ -533,8 +527,8 @@ const navLinks = [
 </style>
 
 <script define:vars={{ animationConfig }}>
-  // Immediate debug to confirm script is running
-  console.log('🚨 NavBar script started!', new Date().toISOString());
+  // NavBar script initialization (debug removed for production)
+  // Mobile menu functionality starts here
   
   // Search input apple gradient animation
   function initSearchAnimation() {
@@ -593,26 +587,23 @@ const navLinks = [
 
   // Mobile menu functionality
   function initMobileMenu() {
-    console.log('Initializing mobile menu...');
+    // Mobile menu initialization (debug removed for production)
     const menuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
     
-    console.log('Menu toggle:', menuToggle);
-    console.log('Mobile menu:', mobileMenu);
-    console.log('Mobile nav links:', mobileNavLinks);
-    console.log('Mobile menu close:', mobileMenuClose);
+    // Menu elements validation
     
     if (!menuToggle || !mobileMenu) {
-      console.error('Mobile menu elements not found!');
+      // Mobile menu elements not found - fail silently in production
       return;
     }
 
     let isMenuOpen = false;
 
     const openMenu = () => {
-      console.log('Opening mobile menu...');
+
       isMenuOpen = true;
       mobileMenu.classList.add('menu-open');
       menuToggle.setAttribute('aria-expanded', 'true');
@@ -629,7 +620,7 @@ const navLinks = [
     };
 
     const closeMenu = () => {
-      console.log('Closing mobile menu...');
+
       isMenuOpen = false;
       mobileMenu.classList.remove('menu-open');
       menuToggle.setAttribute('aria-expanded', 'false');
@@ -655,7 +646,7 @@ const navLinks = [
 
     // Toggle menu on button click
     menuToggle.addEventListener('click', (e) => {
-      console.log('Menu toggle clicked!', e);
+
       if (isMenuOpen) {
         closeMenu();
       } else {
@@ -677,7 +668,7 @@ const navLinks = [
     const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
     if (mobileMenuBackdrop) {
       mobileMenuBackdrop.addEventListener('click', (e) => {
-        console.log('Backdrop clicked, closing menu');
+
         closeMenu();
       });
 
@@ -691,7 +682,7 @@ const navLinks = [
     mobileMenu.addEventListener('click', (e) => {
       // Only close if clicking directly on the menu overlay (not on menu content)
       if (e.target === mobileMenu) {
-        console.log('Menu overlay clicked, closing menu');
+
         closeMenu();
       }
     });
@@ -758,7 +749,7 @@ const navLinks = [
 
       // Detect right swipe (positive X distance) with minimal vertical movement
       if (swipeDistanceX > minSwipeDistance && swipeDistanceY < maxVerticalDistance) {
-        console.log('👉 Right swipe detected, closing mobile menu');
+
         closeMenu();
       }
     };
@@ -789,7 +780,7 @@ const navLinks = [
       mobileThemeToggle.addEventListener('change', () => {
         mainThemeToggle.checked = mobileThemeToggle.checked;
         mainThemeToggle.dispatchEvent(new Event('change'));
-        console.log('🎨 Theme toggled from mobile menu:', mobileThemeToggle.checked);
+
       });
     }
 
@@ -801,7 +792,7 @@ const navLinks = [
       mobileMarqueeToggle.addEventListener('change', () => {
         mainMarqueeToggle.checked = mobileMarqueeToggle.checked;
         mainMarqueeToggle.dispatchEvent(new Event('change'));
-        console.log('📜 Marquee toggled from mobile menu:', mobileMarqueeToggle.checked);
+
       });
     }
 
@@ -813,11 +804,10 @@ const navLinks = [
       mobileColorfulTitlesToggle.addEventListener('change', () => {
         mainColorfulTitlesToggle.checked = mobileColorfulTitlesToggle.checked;
         mainColorfulTitlesToggle.dispatchEvent(new Event('change'));
-        console.log('🌈 Colorful titles toggled from mobile menu:', mobileColorfulTitlesToggle.checked);
+
       });
     }
-    
-    console.log('Mobile menu initialized successfully!');
+
   }
 
   // Developer utility - accessible from browser console
@@ -827,8 +817,7 @@ const navLinks = [
         config: animationConfig,
         toggle: () => {
           animationConfig.searchGradientEnabled = !animationConfig.searchGradientEnabled;
-          console.log(`Search gradient: ${animationConfig.searchGradientEnabled ? 'enabled' : 'disabled'}`);
-          console.log('Refresh page to see changes');
+
         },
         status: () => {
           console.table(animationConfig);
@@ -848,90 +837,64 @@ const navLinks = [
 
   // Mobile Settings Panel Initialization
   function initMobileSettings() {
-    console.log('🔧 Initializing mobile settings panel...');
-    
+
     // Immediate check
-    console.log('🚀 Script is running!');
-    console.log('DOM ready state:', document.readyState);
-    
+
     const mobileSettingsToggle = document.getElementById('mobileSettingsToggle');
     const mobileSettingsPanel = document.getElementById('mobileSettingsPanel');
     const settingsChevron = document.getElementById('settingsChevron');
-    
-    console.log('🔧 Settings elements found immediately:', { 
-      toggle: !!mobileSettingsToggle, 
-      panel: !!mobileSettingsPanel, 
-      chevron: !!settingsChevron 
-    });
-    
+
     if (mobileSettingsToggle && mobileSettingsPanel && settingsChevron) {
-      console.log('✅ All settings elements found immediately, adding event listener...');
-      
+
       mobileSettingsToggle.addEventListener('click', (e) => {
-        console.log('🎯 BUTTON CLICKED!!! Event fired!');
+
         e.preventDefault();
         e.stopPropagation();
         
         const isHidden = mobileSettingsPanel.classList.contains('hidden');
-        
-        console.log('🎛️ Settings toggle clicked, currently hidden:', isHidden);
-        console.log('Panel classes before:', mobileSettingsPanel.className);
-        
+
         if (isHidden) {
           // Show settings panel
           mobileSettingsPanel.classList.remove('hidden');
           settingsChevron.style.transform = 'rotate(180deg)';
-          console.log('📱 Mobile settings panel opened');
-          console.log('Panel classes after open:', mobileSettingsPanel.className);
+
         } else {
           // Hide settings panel
           mobileSettingsPanel.classList.add('hidden');
           settingsChevron.style.transform = 'rotate(0deg)';
-          console.log('📱 Mobile settings panel closed');
-          console.log('Panel classes after close:', mobileSettingsPanel.className);
+
         }
       });
-      
-      console.log('✅ Mobile settings toggle initialized successfully');
+
     } else {
-      console.error('❌ Mobile settings elements not found immediately!');
-      
+
       // Try with timeout
       setTimeout(() => {
         const mobileSettingsToggle2 = document.getElementById('mobileSettingsToggle');
         const mobileSettingsPanel2 = document.getElementById('mobileSettingsPanel');
         const settingsChevron2 = document.getElementById('settingsChevron');
-        
-        console.log('🔧 Settings elements found after timeout:', { 
-          toggle: !!mobileSettingsToggle2, 
-          panel: !!mobileSettingsPanel2, 
-          chevron: !!settingsChevron2 
-        });
-        
+
         if (mobileSettingsToggle2 && mobileSettingsPanel2 && settingsChevron2) {
-          console.log('✅ All settings elements found after timeout, adding event listener...');
-          
+
           mobileSettingsToggle2.addEventListener('click', (e) => {
-            console.log('🎯 TIMEOUT BUTTON CLICKED!!! Event fired!');
+
             e.preventDefault();
             e.stopPropagation();
             
             const isHidden = mobileSettingsPanel2.classList.contains('hidden');
             
-            console.log('🎛️ Settings toggle clicked (timeout), currently hidden:', isHidden);
+            // Settings panel toggle (production-safe)
             
             if (isHidden) {
               mobileSettingsPanel2.classList.remove('hidden');
               settingsChevron2.style.transform = 'rotate(180deg)';
-              console.log('📱 Mobile settings panel opened (timeout)');
             } else {
               mobileSettingsPanel2.classList.add('hidden');
               settingsChevron2.style.transform = 'rotate(0deg)';
-              console.log('📱 Mobile settings panel closed (timeout)');
             }
           });
         } else {
-          console.error('❌ Mobile settings elements STILL not found after timeout!');
+
         }
       }, 500);
     }
