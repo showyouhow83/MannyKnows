@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server', // Changed to server mode for API routes
+  output: 'server', // Server mode for API routes
+  adapter: cloudflare(), // Cloudflare adapter for production
   integrations: [
     tailwind({
       // Keep base styles for proper styling
