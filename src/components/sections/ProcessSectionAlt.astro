@@ -887,11 +887,9 @@ const processSteps = [
       }
     });
     
-    // Debug logging for Windows troubleshooting
-    if (isWindows) {
-      console.log('Windows detected - using compatibility mode');
-      console.log('Backdrop filter support:', supportsBackdropFilter);
-      console.log('Will-change support:', supportsWillChange);
-    }
   });
+
+  // Debug logging for Windows troubleshooting - removed in production
+  // Windows compatibility mode handled automatically
+
 </script>

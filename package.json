@@ -19,9 +19,7 @@
     "perf:analyze": "npm run build && npm run size:check && echo '\\n📊 Performance Analysis:' && echo 'Target: Bundle <500KB, CSS <30KB, HTML <100KB'",
     "perf:budget": "npm run build && node scripts/performance-budget.js",
     "perf:optimize": "npm run build && find dist/ -name '._*' -delete && node scripts/safe-html-optimize.js && node scripts/performance-dashboard.js",
-    "optimize:critical-css": "node scripts/critical-css-extract.js",
-    "optimize:render-blocking": "node scripts/render-blocking-optimizer.js",
-    "optimize:all": "npm run optimize:critical-css && npm run optimize:render-blocking"
+    "optimize:critical-css": "node scripts/critical-css-extract.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
