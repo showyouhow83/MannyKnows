@@ -178,7 +178,94 @@
 </div>
 
 <script>
+  // Define apply functions globally so they're available when DOM loads
+  function applyMarqueeSetting(enabled: boolean) {
+    const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
+    marquees.forEach(marquee => {
+      if (enabled) {
+        marquee.style.display = '';
+      } else {
+        marquee.style.display = 'none';
+      }
+    });
+  }
+
+  function applyColorfulTitlesSetting(enabled: boolean) {
+    const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
+    console.log('🎯 Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
+    
+    colorfulElements.forEach((element, index) => {
+      if (enabled) {
+        element.classList.remove('colorful-disabled');
+        // Remove any inline styles that might override
+        element.style.removeProperty('background');
+        element.style.removeProperty('background-image');
+        element.style.removeProperty('background-size');
+        element.style.removeProperty('-webkit-background-clip');
+        element.style.removeProperty('background-clip');
+        element.style.removeProperty('-webkit-text-fill-color');
+        element.style.removeProperty('animation');
+        element.style.removeProperty('color');
+      } else {
+        element.classList.add('colorful-disabled');
+        // Force inline styles as backup
+        const isDark = document.documentElement.classList.contains('dark');
+        element.style.setProperty('background', 'none', 'important');
+        element.style.setProperty('background-image', 'none', 'important');
+        element.style.setProperty('background-size', 'initial', 'important');
+        element.style.setProperty('-webkit-background-clip', 'initial', 'important');
+        element.style.setProperty('background-clip', 'initial', 'important');
+        element.style.setProperty('-webkit-text-fill-color', 'initial', 'important');
+        element.style.setProperty('animation', 'none', 'important');
+        // Apply correct color based on theme: dark text for light mode, light text for dark mode
+        element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
+      }
+    });
+  }
+
+  function applyThemeSetting(isDark: boolean) {
+    console.log('🎯 Applying theme setting:', isDark);
+    const html = document.documentElement;
+    
+    if (isDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+    
+    // Dispatch custom event for theme change (for all theme changes)
+    document.dispatchEvent(new CustomEvent('themeChanged', {
+      detail: { 
+        isDark: isDark,
+        source: 'theme_system'
+      }
+    }));
+    
+    // Update the colorful titles if they're disabled to match new theme
+    const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
+    if (!colorfulTitlesEnabled) {
+      applyColorfulTitlesSetting(false);
+    }
+  }
+
+  // Function to apply settings on page load
+  function applyGlobalSettings() {
+    const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
+    const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
+    
+    console.log('🎯 Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
+    
+    // Apply marquee setting
+    applyMarqueeSetting(marqueeEnabled);
+    
+    // Apply colorful titles setting
+    applyColorfulTitlesSetting(colorfulTitlesEnabled);
+  }
+
   function initSettingsModal() {
+    console.log('🎯 initSettingsModal() called');
+    
+    // Modal elements (might not exist if using mobile-only design)
     const modal = document.getElementById('settingsModal') as HTMLElement;
     const openButton = document.getElementById('settingsButton') as HTMLElement;
     const closeButton = document.getElementById('closeSettings') as HTMLButtonElement;
@@ -188,7 +275,29 @@
     const colorfulTitlesToggle = document.getElementById('colorfulTitlesToggle') as HTMLInputElement;
     const themeToggle = document.getElementById('themeToggle') as HTMLInputElement;
     
-    if (!modal || !openButton) return;
+    // Mobile panel elements (primary implementation)
+    const mobileThemeToggle = document.getElementById('mobileThemeToggle') as HTMLInputElement;
+    const mobileMarqueeToggle = document.getElementById('mobileMarqueeToggle') as HTMLInputElement;
+    // Note: Mobile panel doesn't have colorful titles toggle in current implementation
+    
+    console.log('🎯 Elements found:', {
+      modal: !!modal,
+      openButton: !!openButton,
+      closeButton: !!closeButton,
+      marqueeToggle: !!marqueeToggle,
+      colorfulTitlesToggle: !!colorfulTitlesToggle,
+      themeToggle: !!themeToggle,
+      mobileThemeToggle: !!mobileThemeToggle,
+      mobileMarqueeToggle: !!mobileMarqueeToggle
+    });
+    
+    // If modal exists, set it up (optional)
+    if (modal && openButton) {
+      console.log('🎯 Setting up modal functionality');
+      // ... existing modal setup code ...
+    } else {
+      console.log('🎯 Modal not found, using mobile panel only');
+    }
 
     // Load saved preferences
     loadSettings();
@@ -238,37 +347,98 @@
     });
 
     // Real-time toggle updates with immediate saving
-    marqueeToggle?.addEventListener('change', () => {
-      applyMarqueeSetting(marqueeToggle.checked);
-      // Save immediately to localStorage
-      localStorage.setItem('marquee-enabled', marqueeToggle.checked.toString());
-      
-      // Setting change tracking could be added here
-    });
+    if (marqueeToggle) {
+      console.log('🎯 Adding marquee toggle event listener');
+      marqueeToggle.addEventListener('change', () => {
+        console.log('🎯 Marquee toggle changed:', marqueeToggle.checked);
+        applyMarqueeSetting(marqueeToggle.checked);
+        // Save immediately to localStorage
+        localStorage.setItem('marquee-enabled', marqueeToggle.checked.toString());
+        
+        // Setting change tracking could be added here
+      });
+    } else {
+      console.log('🚨 Marquee toggle not found!');
+    }
 
-    colorfulTitlesToggle?.addEventListener('change', () => {
-      applyColorfulTitlesSetting(colorfulTitlesToggle.checked);
-      // Save immediately to localStorage
-      localStorage.setItem('colorful-titles-enabled', colorfulTitlesToggle.checked.toString());
-      
-      // Setting change tracking could be added here
-    });
+    if (colorfulTitlesToggle) {
+      console.log('🎯 Adding colorful titles toggle event listener');
+      colorfulTitlesToggle.addEventListener('change', () => {
+        console.log('🎯 Colorful titles toggle changed:', colorfulTitlesToggle.checked);
+        applyColorfulTitlesSetting(colorfulTitlesToggle.checked);
+        // Save immediately to localStorage
+        localStorage.setItem('colorful-titles-enabled', colorfulTitlesToggle.checked.toString());
+        
+        // Setting change tracking could be added here
+      });
+    } else {
+      console.log('🚨 Colorful titles toggle not found!');
+    }
 
-    themeToggle?.addEventListener('change', () => {
-      applyThemeSetting(themeToggle.checked);
-      // Save immediately to localStorage
-      localStorage.setItem('theme-dark', themeToggle.checked.toString());
-      
-      // Dispatch custom event for theme change
-      document.dispatchEvent(new CustomEvent('themeChanged', {
-        detail: { 
-          isDark: themeToggle.checked,
-          source: 'settings_toggle'
+    if (themeToggle) {
+      console.log('🎯 Adding theme toggle event listener');
+      themeToggle.addEventListener('change', () => {
+        console.log('🎯 Theme toggle changed:', themeToggle.checked);
+        applyThemeSetting(themeToggle.checked);
+        // Save immediately to localStorage
+        localStorage.setItem('theme-dark', themeToggle.checked.toString());
+        
+        // Dispatch custom event for theme change
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+          detail: { 
+            isDark: themeToggle.checked,
+            source: 'settings_toggle'
+          }
+        }));
+        
+        // Setting change tracking could be added here
+      });
+    } else {
+      console.log('🚨 Theme toggle not found!');
+    }
+
+    // Mobile toggle event listeners (primary implementation)
+    if (mobileThemeToggle) {
+      console.log('🎯 Adding mobile theme toggle event listener');
+      mobileThemeToggle.addEventListener('change', () => {
+        console.log('🎯 Mobile theme toggle changed:', mobileThemeToggle.checked);
+        applyThemeSetting(mobileThemeToggle.checked);
+        // Save immediately to localStorage
+        localStorage.setItem('theme-dark', mobileThemeToggle.checked.toString());
+        
+        // Sync with modal toggle if it exists
+        if (themeToggle) {
+          themeToggle.checked = mobileThemeToggle.checked;
         }
-      }));
-      
-      // Setting change tracking could be added here
-    });
+        
+        // Dispatch custom event for theme change
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+          detail: { 
+            isDark: mobileThemeToggle.checked,
+            source: 'mobile_settings_toggle'
+          }
+        }));
+      });
+    } else {
+      console.log('🚨 Mobile theme toggle not found!');
+    }
+
+    if (mobileMarqueeToggle) {
+      console.log('🎯 Adding mobile marquee toggle event listener');
+      mobileMarqueeToggle.addEventListener('change', () => {
+        console.log('🎯 Mobile marquee toggle changed:', mobileMarqueeToggle.checked);
+        applyMarqueeSetting(mobileMarqueeToggle.checked);
+        // Save immediately to localStorage
+        localStorage.setItem('marquee-enabled', mobileMarqueeToggle.checked.toString());
+        
+        // Sync with modal toggle if it exists
+        if (marqueeToggle) {
+          marqueeToggle.checked = mobileMarqueeToggle.checked;
+        }
+      });
+    } else {
+      console.log('🚨 Mobile marquee toggle not found!');
+    }
 
     function loadSettings() {
       const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
@@ -276,6 +446,9 @@
       // Default to dark mode unless explicitly set to light
       const themeDark = localStorage.getItem('theme-dark') !== 'false';
       
+      console.log('🎯 Loading settings - Theme:', themeDark, 'Marquee:', marqueeEnabled, 'Colorful:', colorfulTitlesEnabled);
+      
+      // Modal toggles (if they exist)
       if (marqueeToggle) {
         marqueeToggle.checked = marqueeEnabled;
         applyMarqueeSetting(marqueeEnabled);
@@ -289,6 +462,17 @@
       if (themeToggle) {
         themeToggle.checked = themeDark;
         applyThemeSetting(themeDark);
+      }
+      
+      // Mobile panel toggles (primary implementation)
+      if (mobileThemeToggle) {
+        console.log('🎯 Setting mobile theme toggle to:', themeDark);
+        mobileThemeToggle.checked = themeDark;
+      }
+      
+      if (mobileMarqueeToggle) {
+        console.log('🎯 Setting mobile marquee toggle to:', marqueeEnabled);
+        mobileMarqueeToggle.checked = marqueeEnabled;
       }
     }
 
@@ -311,9 +495,9 @@
       if (marqueeToggle) marqueeToggle.checked = true;
       if (colorfulTitlesToggle) colorfulTitlesToggle.checked = true;
       if (themeToggle) {
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        themeToggle.checked = systemPrefersDark;
-        applyThemeSetting(systemPrefersDark);
+        // Default to dark mode by design
+        themeToggle.checked = true;
+        applyThemeSetting(true);
       }
       
       // Apply default settings
@@ -321,77 +505,6 @@
       applyColorfulTitlesSetting(true);
       
       // Settings reset tracking could be added here
-    }
-
-    function applyMarqueeSetting(enabled: boolean) {
-      const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
-      marquees.forEach(marquee => {
-        if (enabled) {
-          marquee.style.display = '';
-        } else {
-          marquee.style.display = 'none';
-        }
-      });
-    }
-
-    function applyColorfulTitlesSetting(enabled: boolean) {
-      const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
-      // DEBUG DISABLED: console.log('Applying colorful titles setting:', enabled, 'Elements found:', colorfulElements.length);
-      
-      colorfulElements.forEach((element, index) => {
-        // DEBUG DISABLED: console.log(`Element ${index}:`, element.className);
-        if (enabled) {
-          element.classList.remove('colorful-disabled');
-          // Remove any inline styles that might override
-          element.style.removeProperty('background');
-          element.style.removeProperty('background-image');
-          element.style.removeProperty('background-size');
-          element.style.removeProperty('-webkit-background-clip');
-          element.style.removeProperty('background-clip');
-          element.style.removeProperty('-webkit-text-fill-color');
-          element.style.removeProperty('animation');
-          element.style.removeProperty('color');
-          // DEBUG DISABLED: console.log(`Element ${index} after enabling:`, element.className);
-        } else {
-          element.classList.add('colorful-disabled');
-          // Force inline styles as backup
-          const isDark = document.documentElement.classList.contains('dark');
-          element.style.setProperty('background', 'none', 'important');
-          element.style.setProperty('background-image', 'none', 'important');
-          element.style.setProperty('background-size', 'initial', 'important');
-          element.style.setProperty('-webkit-background-clip', 'initial', 'important');
-          element.style.setProperty('background-clip', 'initial', 'important');
-          element.style.setProperty('-webkit-text-fill-color', 'initial', 'important');
-          element.style.setProperty('animation', 'none', 'important');
-          // Apply correct color based on theme: dark text for light mode, light text for dark mode
-          element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
-          // DEBUG DISABLED: console.log(`Element ${index} after disabling (${isDark ? 'dark' : 'light'} mode):`, element.className);
-        }
-      });
-    }
-
-    function applyThemeSetting(isDark: boolean) {
-      const html = document.documentElement;
-      
-      if (isDark) {
-        html.classList.add('dark');
-      } else {
-        html.classList.remove('dark');
-      }
-      
-      // Dispatch custom event for theme change (for all theme changes)
-      document.dispatchEvent(new CustomEvent('themeChanged', {
-        detail: { 
-          isDark: isDark,
-          source: 'theme_system'
-        }
-      }));
-      
-      // Update the colorful titles if they're disabled to match new theme
-      const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
-      if (!colorfulTitlesEnabled) {
-        applyColorfulTitlesSetting(false);
-      }
     }
 
     // Listen for theme changes and update colorful titles if they're disabled
@@ -423,58 +536,93 @@
 
   // Initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
-    initSettingsModal();
+    console.log('🎯 DOM loaded, initializing settings...');
     
-    // Also apply settings globally on page load, even if modal hasn't been opened yet
-    applyGlobalSettings();
+    // Debug: Let's see if the mobile toggles exist and work
+    setTimeout(() => {
+      const mobileTheme = document.getElementById('mobileThemeToggle') as HTMLInputElement;
+      const mobileMarquee = document.getElementById('mobileMarqueeToggle') as HTMLInputElement;
+      
+      console.log('🔍 DEBUGGING - Mobile theme toggle found:', !!mobileTheme);
+      console.log('🔍 DEBUGGING - Mobile marquee toggle found:', !!mobileMarquee);
+      
+      if (mobileTheme) {
+        console.log('🔍 DEBUGGING - Theme toggle checked state:', mobileTheme.checked);
+        console.log('🔍 DEBUGGING - Theme toggle classes:', mobileTheme.className);
+        
+        // Add proper event handlers that call apply functions
+        mobileTheme.addEventListener('click', () => {
+          console.log('🔥 THEME TOGGLE CLICKED! New state:', mobileTheme.checked);
+          // Call the apply function
+          applyThemeSetting(mobileTheme.checked);
+          // Save to localStorage
+          localStorage.setItem('theme-dark', mobileTheme.checked.toString());
+        });
+        
+        mobileTheme.addEventListener('change', () => {
+          console.log('🔥 THEME TOGGLE CHANGED! New state:', mobileTheme.checked);
+          // Call the apply function
+          applyThemeSetting(mobileTheme.checked);
+          // Save to localStorage
+          localStorage.setItem('theme-dark', mobileTheme.checked.toString());
+        });
+      }
+      
+      if (mobileMarquee) {
+        console.log('🔍 DEBUGGING - Marquee toggle checked state:', mobileMarquee.checked);
+        
+        // Add proper event handlers that call apply functions
+        mobileMarquee.addEventListener('click', () => {
+          console.log('🔥 MARQUEE TOGGLE CLICKED! New state:', mobileMarquee.checked);
+          // Call the apply function
+          applyMarqueeSetting(mobileMarquee.checked);
+          // Save to localStorage
+          localStorage.setItem('marquee-enabled', mobileMarquee.checked.toString());
+        });
+        
+        mobileMarquee.addEventListener('change', () => {
+          console.log('🔥 MARQUEE TOGGLE CHANGED! New state:', mobileMarquee.checked);
+          // Call the apply function
+          applyMarqueeSetting(mobileMarquee.checked);
+          // Save to localStorage
+          localStorage.setItem('marquee-enabled', mobileMarquee.checked.toString());
+        });
+      }
+      
+      // Get mobile colorful titles toggle and add event handlers
+      const mobileColorfulTitles = document.getElementById('mobileColorfulTitlesToggle') as HTMLInputElement;
+      if (mobileColorfulTitles) {
+        console.log('🔍 DEBUGGING - Mobile colorful titles toggle checked state:', mobileColorfulTitles.checked);
+        
+        // Add proper event handlers that call apply functions
+        mobileColorfulTitles.addEventListener('click', () => {
+          console.log('🔥 MOBILE COLORFUL TITLES TOGGLE CLICKED! New state:', mobileColorfulTitles.checked);
+          // Call the apply function
+          applyColorfulTitlesSetting(mobileColorfulTitles.checked);
+          // Save to localStorage
+          localStorage.setItem('colorful-titles-enabled', mobileColorfulTitles.checked.toString());
+        });
+        
+        mobileColorfulTitles.addEventListener('change', () => {
+          console.log('🔥 MOBILE COLORFUL TITLES TOGGLE CHANGED! New state:', mobileColorfulTitles.checked);
+          // Call the apply function
+          applyColorfulTitlesSetting(mobileColorfulTitles.checked);
+          // Save to localStorage
+          localStorage.setItem('colorful-titles-enabled', mobileColorfulTitles.checked.toString());
+        });
+      }
+      
+    }, 500); // Wait longer to ensure everything is loaded
+    
+    // Wait a bit for all elements to be ready, then apply global settings
+    setTimeout(() => {
+      console.log('🎯 Applying global settings...');
+      applyGlobalSettings();
+      
+      // Initialize modal after settings are applied
+      initSettingsModal();
+    }, 100);
   });
-
-  // Function to apply settings on page load
-  function applyGlobalSettings() {
-    const marqueeEnabled = localStorage.getItem('marquee-enabled') !== 'false';
-    const colorfulTitlesEnabled = localStorage.getItem('colorful-titles-enabled') !== 'false';
-    
-    // DEBUG DISABLED: console.log('Loading global settings:', { marqueeEnabled, colorfulTitlesEnabled });
-    
-    // Apply marquee setting
-    const marquees = document.querySelectorAll('[data-marquee]') as NodeListOf<HTMLElement>;
-    marquees.forEach(marquee => {
-      if (marqueeEnabled) {
-        marquee.style.display = '';
-      } else {
-        marquee.style.display = 'none';
-      }
-    });
-    
-    // Apply colorful titles setting
-    const colorfulElements = document.querySelectorAll('.apple-gradient-text, [data-colorful-title]') as NodeListOf<HTMLElement>;
-    colorfulElements.forEach(element => {
-      if (colorfulTitlesEnabled) {
-        element.classList.remove('colorful-disabled');
-        // Remove any inline styles
-        element.style.removeProperty('background');
-        element.style.removeProperty('background-image');
-        element.style.removeProperty('background-size');
-        element.style.removeProperty('-webkit-background-clip');
-        element.style.removeProperty('background-clip');
-        element.style.removeProperty('-webkit-text-fill-color');
-        element.style.removeProperty('animation');
-        element.style.removeProperty('color');
-      } else {
-        element.classList.add('colorful-disabled');
-        // Apply forced styles
-        const isDark = document.documentElement.classList.contains('dark');
-        element.style.setProperty('background', 'none', 'important');
-        element.style.setProperty('background-image', 'none', 'important');
-        element.style.setProperty('background-size', 'initial', 'important');
-        element.style.setProperty('-webkit-background-clip', 'initial', 'important');
-        element.style.setProperty('background-clip', 'initial', 'important');
-        element.style.setProperty('-webkit-text-fill-color', 'initial', 'important');
-        element.style.setProperty('animation', 'none', 'important');
-        element.style.setProperty('color', isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgb(31, 41, 55)', 'important');
-      }
-    });
-  }
 </script>
 
 <style>
