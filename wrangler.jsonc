@@ -7,6 +7,13 @@
     "binding": "ASSETS",
     "directory": "./dist"
   },
+  "kv_namespaces": [
+    {
+      "binding": "CHATBOT_KV",
+      "id": "preview_id_will_be_replaced_by_deployment",
+      "preview_id": "preview_id_will_be_replaced_by_deployment"
+    }
+  ],
   "observability": {
     "enabled": true
   }

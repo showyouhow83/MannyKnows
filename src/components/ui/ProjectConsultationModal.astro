@@ -143,6 +143,10 @@ if (currentHour >= 12 && currentHour < 17) {
     if (!modal) return;
 
     let isOpen = false;
+    // Initialize conversation tracking
+    let conversationHistory: Array<{role: string, content: string}> = [];
+    const MAX_MESSAGES = 15; // Match backend limit
+    let userMessageCount = 0;
 
     // Input sanitization for security
     const sanitizeInput = (input: string): string => {
@@ -195,6 +199,10 @@ if (currentHour >= 12 && currentHour < 17) {
       isOpen = false;
       modal.classList.add('scale-0', 'opacity-0', 'invisible');
       modal.classList.remove('scale-100', 'opacity-100', 'visible');
+      
+      // Reset conversation when closing modal
+      conversationHistory = [];
+      userMessageCount = 0;
       
       // Show floating dock when modal is closed
       const floatingDock = document.getElementById('floatingDock');
@@ -285,6 +293,15 @@ if (currentHour >= 12 && currentHour < 17) {
       const sanitizedText = sanitizeInput(projectText);
       if (!sanitizedText && !serviceType) return;
 
+      // Check message limit before sending
+      if (userMessageCount >= MAX_MESSAGES) {
+        addMessage('bot', `I've enjoyed our conversation! After ${MAX_MESSAGES} messages, I'd love to connect you directly with Manny for a proper consultation. Please call us at (555) 123-4567 or email hello@mannyknows.com 📞`);
+        return;
+      }
+
+      // Increment user message count
+      userMessageCount++;
+
       // Show chat area and hide greeting
       const chatMessages = document.getElementById('chatMessages');
       const greetingSection = document.querySelector('.text-center.mb-4.flex-shrink-0');
@@ -308,13 +325,28 @@ if (currentHour >= 12 && currentHour < 17) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             message: userMessage,
-            model: 'gpt-4.1-nano'  // Use your enabled 4.1 nano model
+            model: 'gpt-4.1-nano',
+            conversation_history: conversationHistory
           })
         });
 
         const data = await response.json();
         if (data.reply) {
+          // Add user message to history
+          conversationHistory.push({ role: 'user', content: userMessage });
+          // Add bot response to history  
+          conversationHistory.push({ role: 'assistant', content: data.reply });
+          
           addMessage('bot', data.reply);
+          
+          // If message limit reached, disable input
+          if (data.message_limit_reached) {
+            const projectInput = document.getElementById('projectInput') as HTMLInputElement;
+            if (projectInput) {
+              projectInput.disabled = true;
+              projectInput.placeholder = 'Please contact us directly to continue...';
+            }
+          }
         }
       } catch (error) {
         console.error('Chat error:', error);

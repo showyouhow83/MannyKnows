@@ -3,14 +3,43 @@
 
 export interface Lead {
   id?: string;
+  // Basic Contact Info (20 points)
   name: string;
   email: string;
   phone?: string;
+  location?: string;
   company?: string;
-  interest: string;
+  
+  // Project Details (40 points)
+  project_type: string; // website, app, marketing, branding, etc.
+  project_description?: string;
   budget_range?: string;
   timeline?: string;
+  current_solution?: string; // what they have now
+  
+  // Business Context (25 points)
+  business_goals?: string[];
+  target_audience?: string;
+  success_metrics?: string[];
+  main_challenges?: string[];
+  competitors?: string[];
+  
+  // Technical Requirements (10 points)
+  technical_requirements?: string[];
+  integrations_needed?: string[];
+  platforms?: string[];
+  special_features?: string[];
+  
+  // Lead Scoring & Quality
+  lead_score?: number; // 0-100 score
+  quality_tier: 'premium' | 'good' | 'medium' | 'low' | 'poor'; // 80+, 60-79, 40-59, 20-39, 0-19
+  quality_indicators?: string[];
+  conversation_insights?: string[];
+  
+  // Metadata
   source: string;
+  conversation_length?: number;
+  engagement_quality?: 'high' | 'medium' | 'low';
   created_at?: string;
   updated_at?: string;
 }
@@ -79,11 +108,12 @@ export class CloudflareD1Adapter extends DatabaseAdapter {
     const now = new Date().toISOString();
     
     await this.db.prepare(`
-      INSERT INTO leads (id, name, email, phone, company, interest, budget_range, timeline, source, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO leads (id, name, email, phone, company, project_type, budget_range, timeline, source, lead_score, quality_tier, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       id, lead.name, lead.email, lead.phone, lead.company, 
-      lead.interest, lead.budget_range, lead.timeline, lead.source, now, now
+      lead.project_type, lead.budget_range, lead.timeline, lead.source, 
+      lead.lead_score || 0, lead.quality_tier, now, now
     ).run();
     
     return id;
@@ -281,17 +311,128 @@ export class MemoryAdapter extends DatabaseAdapter {
   }
 }
 
+// Cloudflare KV implementation - simpler than D1 for lead storage
+export class CloudflareKVAdapter extends DatabaseAdapter {
+  private kv: any;
+
+  constructor(kv: any) {
+    super();
+    this.kv = kv;
+  }
+
+  async saveLead(lead: Lead): Promise<string> {
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const leadData = { ...lead, id, created_at: now, updated_at: now };
+    
+    await this.kv.put(`lead:${id}`, JSON.stringify(leadData));
+    // Also store by email for quick lookup
+    if (lead.email) {
+      await this.kv.put(`lead_by_email:${lead.email}`, id);
+    }
+    
+    return id;
+  }
+
+  async getLead(id: string): Promise<Lead | null> {
+    const data = await this.kv.get(`lead:${id}`);
+    return data ? JSON.parse(data) : null;
+  }
+
+  async updateLead(id: string, updates: Partial<Lead>): Promise<void> {
+    const existing = await this.getLead(id);
+    if (existing) {
+      const updated = { ...existing, ...updates, updated_at: new Date().toISOString() };
+      await this.kv.put(`lead:${id}`, JSON.stringify(updated));
+    }
+  }
+
+  async findLeadByEmail(email: string): Promise<Lead | null> {
+    const leadId = await this.kv.get(`lead_by_email:${email}`);
+    return leadId ? await this.getLead(leadId) : null;
+  }
+
+  async saveConsultationRequest(request: ConsultationRequest): Promise<string> {
+    const id = crypto.randomUUID();
+    const data = { ...request, id, created_at: new Date().toISOString() };
+    await this.kv.put(`consultation:${id}`, JSON.stringify(data));
+    return id;
+  }
+
+  async getConsultationRequest(id: string): Promise<ConsultationRequest | null> {
+    const data = await this.kv.get(`consultation:${id}`);
+    return data ? JSON.parse(data) : null;
+  }
+
+  async updateConsultationRequest(id: string, updates: Partial<ConsultationRequest>): Promise<void> {
+    const existing = await this.getConsultationRequest(id);
+    if (existing) {
+      const updated = { ...existing, ...updates };
+      await this.kv.put(`consultation:${id}`, JSON.stringify(updated));
+    }
+  }
+
+  async saveQuoteRequest(request: QuoteRequest): Promise<string> {
+    const id = crypto.randomUUID();
+    const data = { ...request, id, created_at: new Date().toISOString() };
+    await this.kv.put(`quote:${id}`, JSON.stringify(data));
+    return id;
+  }
+
+  async getQuoteRequest(id: string): Promise<QuoteRequest | null> {
+    const data = await this.kv.get(`quote:${id}`);
+    return data ? JSON.parse(data) : null;
+  }
+
+  async updateQuoteRequest(id: string, updates: Partial<QuoteRequest>): Promise<void> {
+    const existing = await this.getQuoteRequest(id);
+    if (existing) {
+      const updated = { ...existing, ...updates };
+      await this.kv.put(`quote:${id}`, JSON.stringify(updated));
+    }
+  }
+
+  async logInteraction(interaction: ChatInteraction): Promise<string> {
+    const id = crypto.randomUUID();
+    const data = { ...interaction, id, timestamp: new Date().toISOString() };
+    
+    // Store individual interaction
+    await this.kv.put(`interaction:${id}`, JSON.stringify(data));
+    
+    // Add to session history (append to list)
+    const sessionKey = `session:${interaction.session_id}`;
+    const existing = await this.kv.get(sessionKey);
+    const interactions = existing ? JSON.parse(existing) : [];
+    interactions.push(data);
+    await this.kv.put(sessionKey, JSON.stringify(interactions));
+    
+    return id;
+  }
+
+  async getInteractionHistory(sessionId: string): Promise<ChatInteraction[]> {
+    const data = await this.kv.get(`session:${sessionId}`);
+    return data ? JSON.parse(data) : [];
+  }
+}
+
 // Factory function to create appropriate database adapter
-export function createDatabaseAdapter(environment: string, db?: any): DatabaseAdapter {
+export function createDatabaseAdapter(environment: string, storage?: any): DatabaseAdapter {
   switch (environment) {
     case 'development':
       return new MemoryAdapter();
     case 'staging':
     case 'production':
-      if (db) {
-        return new CloudflareD1Adapter(db);
+      if (storage) {
+        // If it has a prepare method, it's D1
+        if (storage.prepare) {
+          return new CloudflareD1Adapter(storage);
+        }
+        // Otherwise assume it's KV
+        return new CloudflareKVAdapter(storage);
       }
-      throw new Error('Database instance required for staging/production');
+      // Fallback to memory for dev if no storage provided
+      console.warn('No storage provided for production environment, using memory adapter');
+      return new MemoryAdapter();
     default:
       return new MemoryAdapter();
   }
