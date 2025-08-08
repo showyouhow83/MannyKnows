@@ -119,7 +119,7 @@ export class ChatbotManager {
             email: leadInfo.email || '',
             phone: leadInfo.phone,
             company: leadInfo.company,
-            interest: 'General inquiry from chat',
+            project_type: 'General inquiry from chat',
             budget_range: leadInfo.budget_range,
             source: 'website_chat'
           });
