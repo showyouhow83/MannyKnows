@@ -116,7 +116,7 @@ const CONFIG_DATA = {
       }
     },
     response_limits: {
-      max_response_length: 300,
+      max_response_length: 800,
       max_conversation_length: 15,
       session_timeout_minutes: 20
     }
