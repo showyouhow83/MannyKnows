@@ -152,6 +152,26 @@ if (currentHour >= 12 && currentHour < 17) {
         .substring(0, 1000);
     };
 
+    // Simple Markdown to HTML conversion for chat messages
+    const parseMarkdown = (text: string): string => {
+      return text
+        // Bold text: **text** -> <strong>text</strong>
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Bullet points: • or - at start of line -> proper list items
+        .replace(/^[•\-]\s+(.+)/gm, '<li>$1</li>')
+        // Wrap consecutive list items in <ul>
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        // Fix nested ul tags
+        .replace(/<\/ul>\s*<ul>/g, '')
+        // Line breaks: double newlines -> paragraph breaks
+        .replace(/\n\n/g, '</p><p>')
+        // Wrap in paragraphs
+        .replace(/^(.)/gm, '<p>$1')
+        .replace(/(.)\n$/gm, '$1</p>')
+        // Clean up empty paragraphs
+        .replace(/<p><\/p>/g, '');
+    };
+
     // Open consultation modal
     const openModal = () => {
       if (isOpen) return;
@@ -316,7 +336,7 @@ if (currentHour >= 12 && currentHour < 17) {
       
       messageDiv.innerHTML = `
         <div class="inline-block p-4 max-w-[85%] ${bubbleClass}">
-          ${message}
+          ${sender === 'bot' ? parseMarkdown(message) : message}
         </div>
       `;
       
@@ -972,6 +992,8 @@ if (currentHour >= 12 && currentHour < 17) {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     transform: translateY(0);
     transition: all 0.2s ease;
+    white-space: pre-wrap; /* Preserve line breaks and formatting */
+    word-wrap: break-word; /* Handle long words */
   }
 
   .chat-bubble-user:hover {
@@ -985,6 +1007,8 @@ if (currentHour >= 12 && currentHour < 17) {
     background: rgba(255, 255, 255, 0.95);
     transform: translateY(0);
     transition: all 0.2s ease;
+    white-space: pre-wrap; /* Preserve line breaks and formatting */
+    word-wrap: break-word; /* Handle long words */
   }
 
   .chat-bubble-bot:hover {
@@ -1012,5 +1036,47 @@ if (currentHour >= 12 && currentHour < 17) {
     :global(.dark) .chat-bubble-bot:hover {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+  }
+
+  /* Markdown formatting styles for chat messages */
+  .chat-bubble-bot ul {
+    margin: 0.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .chat-bubble-bot li {
+    margin: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .chat-bubble-bot li::before {
+    content: "•";
+    color: #22c55e;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+
+  .chat-bubble-bot strong {
+    font-weight: 600;
+    color: #16a34a;
+  }
+
+  :global(.dark) .chat-bubble-bot strong {
+    color: #22c55e;
+  }
+
+  .chat-bubble-bot p {
+    margin: 0.5rem 0;
+  }
+
+  .chat-bubble-bot p:first-child {
+    margin-top: 0;
+  }
+
+  .chat-bubble-bot p:last-child {
+    margin-bottom: 0;
   }
 </style>

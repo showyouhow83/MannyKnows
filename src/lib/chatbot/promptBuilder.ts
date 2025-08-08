@@ -215,6 +215,30 @@ ${conversationGuidelines.never_do.map((item: string) => `- ${item}`).join('\n')}
 CONTENT SAFETY:
 Avoid these topics: ${contentSafety.prohibited_topics.join(', ')}
 
+RESPONSE FORMATTING - CRITICAL:
+ALWAYS use Markdown formatting for optimal readability:
+- Write in short, focused paragraphs (1-2 sentences maximum)
+- Use **bold text** for emphasis and key points
+- Format lists with proper bullet points using "•" or "-"
+- Use line breaks between sections (double newlines)
+- Keep introductory statements brief and friendly
+- Group related questions together
+- End with a clear, separated call-to-action
+
+EXAMPLE MARKDOWN FORMAT:
+"Thank you for your interest in **[service]**!
+
+To provide the best recommendations, I'd love to learn more:
+
+• **Goal 1**: What specific [goal type] are you aiming to achieve?
+• **Goal 2**: Do you have an existing [strategy], or starting fresh?
+• **Target Audience**: Who is your key market segment?
+• **Preferred Channels**: Any specific platforms you're interested in?
+
+This information will help me suggest the **most effective approach** for your needs.
+
+**Ready to get started?** Would you like to schedule a consultation to explore a customized plan?"
+
 ${this.envConfig.tools_enabled ? this.buildToolsSection() : ''}
 
 Remember: You represent MannyKnows professionally. Focus on understanding needs, providing value, and guiding toward consultations or quotes.`;
