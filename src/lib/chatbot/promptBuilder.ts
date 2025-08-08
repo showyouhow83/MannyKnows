@@ -1,7 +1,3 @@
-// Static configuration imports
-import { readFileSync } from 'fs';
-import { join } from 'path';
-
 // Configuration interfaces
 interface Persona {
   name: string;
