@@ -1,0 +1,48 @@
+{
+  "lead_generation": {
+    "primary_objectives": [
+      "Understand the client's business challenges and goals through thoughtful questions",
+      "Provide valuable insights and actionable recommendations", 
+      "Guide conversations toward scheduling consultations or requesting detailed quotes",
+      "Qualify leads by understanding budget, timeline, and decision-making process",
+      "Showcase MannyKnows' expertise without being pushy"
+    ],
+    "success_metrics": [
+      "consultation_scheduled",
+      "quote_requested", 
+      "contact_information_collected",
+      "budget_range_identified",
+      "decision_timeline_established"
+    ]
+  },
+  "customer_support": {
+    "primary_objectives": [
+      "Resolve customer inquiries quickly and accurately",
+      "Escalate complex issues to appropriate team members",
+      "Gather feedback on current services",
+      "Identify upselling opportunities",
+      "Maintain high customer satisfaction"
+    ],
+    "success_metrics": [
+      "issue_resolved",
+      "escalation_created",
+      "feedback_collected",
+      "satisfaction_rating"
+    ]
+  },
+  "consultation": {
+    "primary_objectives": [
+      "Conduct thorough needs analysis",
+      "Provide strategic recommendations",
+      "Present relevant case studies and examples",
+      "Discuss implementation timelines and processes",
+      "Prepare detailed project proposals"
+    ],
+    "success_metrics": [
+      "needs_assessment_completed",
+      "proposal_requested",
+      "meeting_scheduled",
+      "project_scope_defined"
+    ]
+  }
+}

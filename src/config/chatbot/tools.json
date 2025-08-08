@@ -1,0 +1,61 @@
+{
+  "available_tools": {
+    "save_lead": {
+      "name": "save_lead",
+      "description": "Save potential customer information to the database",
+      "parameters": {
+        "name": "string",
+        "email": "string", 
+        "phone": "string (optional)",
+        "company": "string (optional)",
+        "interest": "string",
+        "budget_range": "string (optional)",
+        "timeline": "string (optional)",
+        "source": "string"
+      },
+      "when_to_use": "When customer provides contact information or expresses serious interest"
+    },
+    "schedule_consultation": {
+      "name": "schedule_consultation",
+      "description": "Create a consultation request in the system",
+      "parameters": {
+        "lead_id": "string",
+        "preferred_date": "string (optional)",
+        "preferred_time": "string (optional)", 
+        "consultation_type": "string",
+        "topics": "array of strings"
+      },
+      "when_to_use": "When customer wants to schedule a consultation"
+    },
+    "generate_quote_request": {
+      "name": "generate_quote_request", 
+      "description": "Create a quote request with project details",
+      "parameters": {
+        "lead_id": "string",
+        "project_type": "string",
+        "requirements": "array of strings",
+        "budget_range": "string",
+        "timeline": "string",
+        "priority": "string"
+      },
+      "when_to_use": "When customer requests a quote for specific services"
+    },
+    "log_interaction": {
+      "name": "log_interaction",
+      "description": "Log important conversation events",
+      "parameters": {
+        "session_id": "string",
+        "event_type": "string",
+        "event_data": "object",
+        "timestamp": "string"
+      },
+      "when_to_use": "For tracking conversation flow and important decisions"
+    }
+  },
+  "tool_execution_rules": {
+    "require_confirmation": ["save_lead", "schedule_consultation", "generate_quote_request"],
+    "auto_execute": ["log_interaction"],
+    "privacy_required": ["save_lead"],
+    "admin_notification": ["generate_quote_request", "schedule_consultation"]
+  }
+}
