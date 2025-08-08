@@ -6,6 +6,11 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   output: 'server', // Server mode for API routes
   adapter: cloudflare(), // Cloudflare adapter for production
+  image: {
+    service: { 
+      entrypoint: 'astro/assets/services/compile' 
+    }
+  },
   integrations: [
     tailwind({
       // Keep base styles for proper styling

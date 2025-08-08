@@ -3,6 +3,16 @@
   "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2025-08-08",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "GA_MEASUREMENT_ID": "G-J0V35RZNZB",
+    "CLOUDFLARE_R2_BUCKET_NAME": "mannyknows-podcasts",
+    "CLOUDFLARE_R2_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
+    "CLOUDFLARE_R2_REGION": "auto",
+    "CLOUDFLARE_R2_ENDPOINT": "https://f2cb7f9c07dd4587efbd7772ff8e324f.r2.cloudflarestorage.com",
+    "CLOUDFLARE_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
+    "CF_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
+    "CF_PAGES_PROJECT_NAME": "mannyknows"
+  },
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"
