@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
 import { createDatabaseAdapter } from '../../lib/database/chatbotDatabase';
 import { ChatbotTools } from '../../lib/chatbot/tools';
+import { LeadScoringService } from '../../lib/chatbot/leadScoring';
 
 export const prerender = false;
 
@@ -43,6 +44,25 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Initialize chatbot system
     const promptBuilder = createPromptBuilder();
+    const guardrails = promptBuilder.getGuardrails();
+    
+    // ENFORCE MESSAGE LIMITS - Critical for cost control
+    const maxMessages = guardrails.response_limits.max_conversation_length;
+    const currentMessageCount = conversation_history.filter((msg: any) => msg.role === 'user').length + 1; // +1 for current message
+    
+    if (currentMessageCount > maxMessages) {
+      console.warn(`Message limit exceeded: ${currentMessageCount}/${maxMessages} for session ${session_id}`);
+      return new Response(JSON.stringify({
+        reply: `I appreciate your interest! After ${maxMessages} messages, I need to connect you with Manny for a proper consultation. Please call us at (555) 123-4567 or email hello@mannyknows.com to continue.`,
+        message_limit_reached: true,
+        session_id: session_id
+      }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     const envConfig = promptBuilder.getEnvironmentConfig();
     
     console.log('Environment config:', envConfig);
@@ -51,7 +71,16 @@ export const POST: APIRoute = async ({ request }) => {
     // Initialize database if enabled
     let chatbotTools: ChatbotTools | null = null;
     if (envConfig.database_enabled) {
-      const dbAdapter = createDatabaseAdapter(envConfig.environment);
+      // Try to get KV storage from Cloudflare Workers runtime
+      let storage = null;
+      try {
+        // @ts-ignore - Access Cloudflare runtime if available
+        storage = globalThis.CHATBOT_KV || globalThis.KV || null;
+      } catch (e) {
+        console.log('No Cloudflare KV available, using memory storage');
+      }
+      
+      const dbAdapter = createDatabaseAdapter(envConfig.environment, storage);
       chatbotTools = new ChatbotTools(dbAdapter, session_id);
     }
 
@@ -139,28 +168,46 @@ export const POST: APIRoute = async ({ request }) => {
       // Process tools if enabled and chatbotTools available
       let toolResults: any[] = [];
       if (envConfig.tools_enabled && chatbotTools) {
-        // Check if the conversation indicates lead information
-        if (chatbotTools.shouldCaptureLead(message)) {
-          const leadInfo = chatbotTools.extractLeadInfo(message);
-          if (leadInfo.email || leadInfo.phone) {
-            // Auto-save lead if we have sufficient information
-            const leadResult = await chatbotTools.saveLead({
-              name: leadInfo.name || 'Anonymous',
-              email: leadInfo.email || '',
-              phone: leadInfo.phone,
-              company: leadInfo.company,
-              interest: 'General inquiry from chat',
-              budget_range: leadInfo.budget_range,
-              source: 'website_chat'
-            });
+        // Enhanced lead capture - extract data from full conversation
+        const shouldCapture = chatbotTools.shouldCaptureLead(message) || 
+                             conversation_history.length >= 5; // Auto-capture after 5 messages
+        
+        if (shouldCapture) {
+          // Extract lead info from entire conversation
+          const extractedLead = chatbotTools.extractLeadInfo(
+            conversation_history.map((msg: any) => msg.content).join(' ') + ' ' + message
+          );
+          
+          // Enhanced lead data extraction from conversation
+          const enhancedLead = LeadScoringService.extractLeadFromConversation(conversation_history);
+          
+          // Merge extracted data
+          const leadData = {
+            ...extractedLead,
+            ...enhancedLead,
+            name: extractedLead.name || 'Anonymous',
+            email: extractedLead.email || '',
+            project_type: enhancedLead.project_type || 'General inquiry',
+            source: 'website_chat'
+          };
+          
+          // Only save if we have meaningful data
+          if (leadData.email || leadData.phone || leadData.name !== 'Anonymous') {
+            const leadResult = await chatbotTools.saveLead(leadData, conversation_history);
             toolResults.push(leadResult);
           }
         }
 
-        // Log the interaction
+        // Log the interaction with enhanced data
         await chatbotTools.logInteraction({
           event_type: 'chat_message',
-          event_data: { message, reply: replyContent, model: model || envConfig.model }
+          event_data: { 
+            message, 
+            reply: replyContent, 
+            model: model || envConfig.model,
+            conversation_length: conversation_history.length + 1,
+            user_message_count: conversation_history.filter((msg: any) => msg.role === 'user').length + 1
+          }
         });
       }
       
