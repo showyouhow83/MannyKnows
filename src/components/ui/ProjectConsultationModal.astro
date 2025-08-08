@@ -1,0 +1,1082 @@
+---
+export interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Desktop modal width variable for easy updates
+const DESKTOP_MODAL_WIDTH = '80vw'; // Easy to update - can be changed to 30vw, 20vw, etc.
+
+// Desktop modal height variable for easy updates
+const DESKTOP_MODAL_HEIGHT = '90vh'; // Easy to update - can be changed to 70vh, 90vh, etc.
+
+// Bot icon for easy customization
+const BOT_ICON = '🤖'; // Easy to change: 🤖, 👨‍💻, 🎯, 💬, etc.
+
+// Get current time for dynamic greeting
+const currentHour = new Date().getHours();
+let greeting = 'Good morning';
+if (currentHour >= 12 && currentHour < 17) {
+  greeting = 'Good afternoon';
+} else if (currentHour >= 17) {
+  greeting = 'Good evening';
+}
+---
+
+<!-- Project Consultation Modal -->
+<div id="consultationModal" 
+     class={`fixed backdrop-blur-2xl border z-50 transform scale-0 transition-all duration-300 origin-center opacity-0 invisible ${className} consultation-glassmorphism`}
+     style={`--desktop-modal-width: ${DESKTOP_MODAL_WIDTH}; --desktop-modal-height: ${DESKTOP_MODAL_HEIGHT}`}>
+  <!-- Header with back button -->
+  <div class="flex justify-between items-center p-0 px-6">
+    <button type="button" 
+            class="bg-transparent border-none text-gray-500 cursor-pointer p-2 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-green-500/10 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100" 
+            id="consultationClose" 
+            aria-label="Back to site">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m12 19-7-7 7-7"/>
+        <path d="m19 12H5"/>
+      </svg>
+    </button>
+    
+    <div class="flex items-center gap-2">
+      <button type="button" id="resetChat" class="reset-button-header" title="Reset conversation">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+          <path d="M21 3v5h-5"></path>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+          <path d="M3 21v-5h5"></path>
+        </svg>
+      </button>
+      <button type="button" id="expandModal" class="expand-button-header" title="Expand modal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 18L12 14L16 18"></path>
+          <path d="M8 6L12 10L16 6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main consultation interface -->
+  <div class="flex flex-col h-full overflow-hidden">
+    <!-- Content area - fixed height to prevent shifting -->
+    <div class="flex-1 flex flex-col justify-center min-h-0">
+      <!-- Project consultation greeting -->
+      <div class="text-center mb-4 flex-shrink-0">
+        <div class="flex justify-center mb-4">
+          <div class="pulse-container">
+            <div class="pulse-bg"></div>
+            <div class="bot-avatar">{BOT_ICON}</div>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">Project Consultation</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">Get a guaranteed quote and schedule your project kick-off call</p>
+      </div>
+
+      <!-- Chat messages area -->
+      <div id="chatMessages" class="flex-1 overflow-y-auto mb-4 hidden min-h-0">
+        <!-- Chat messages will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Input section - always fixed at bottom -->
+    <div class="flex-shrink-0">
+      <!-- Project input field -->
+      <div class="mb-4">
+        <label for="projectInput" class="sr-only">Describe your project idea</label>
+        <div class="input-container">
+          <textarea 
+            id="projectInput" 
+            placeholder="Tell me about your project and I'll get you a quick quote..." 
+            class="project-input"
+            rows="3"
+          ></textarea>
+          <button type="button" id="projectSubmit" class="submit-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22,2 15,22 11,13 2,9"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Service shortcuts -->
+      <div class="service-shortcuts">
+        <div class="shortcuts-single-line">
+          <span class="shortcuts-label">Or jump straight to:</span>
+          <div class="shortcuts-buttons">
+            <button type="button" class="service-shortcut" data-service="web-development">
+              <span class="service-content">🌐 Web Development</span>
+            </button>
+            <button type="button" class="service-shortcut" data-service="marketing">
+              <span class="service-content">📈 Marketing Services</span>
+            </button>
+            <button type="button" class="service-shortcut" data-service="branding">
+              <span class="service-content">🎨 Branding & Design</span>
+            </button>
+            <button type="button" class="service-shortcut" data-service="ecommerce">
+              <span class="service-content">🛒 E-commerce</span>
+            </button>
+            <button type="button" class="service-shortcut" data-service="consulting">
+              <span class="service-content">💡 Business Consulting</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Project Consultation Modal functionality
+  function initConsultationModal() {
+    const modal = document.getElementById('consultationModal');
+    const topChatToggle = document.getElementById('topChatToggle');
+    const dockChatToggle = document.getElementById('dockChatToggle');
+    const heroChatButton = document.getElementById('heroChatButton');
+    const consultationClose = document.getElementById('consultationClose');
+    const projectInput = document.getElementById('projectInput') as HTMLTextAreaElement;
+    const projectSubmit = document.getElementById('projectSubmit');
+    const serviceShortcuts = document.querySelectorAll('.service-shortcut');
+
+    if (!modal) return;
+
+    let isOpen = false;
+
+    // Input sanitization for security
+    const sanitizeInput = (input: string): string => {
+      return input
+        .replace(/[<>]/g, '')
+        .trim()
+        .substring(0, 1000);
+    };
+
+    // Simple Markdown to HTML conversion for chat messages
+    const parseMarkdown = (text: string): string => {
+      return text
+        // Bold text: **text** -> <strong>text</strong>
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Bullet points: • or - at start of line -> proper list items
+        .replace(/^[•\-]\s+(.+)/gm, '<li>$1</li>')
+        // Wrap consecutive list items in <ul>
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        // Fix nested ul tags
+        .replace(/<\/ul>\s*<ul>/g, '')
+        // Line breaks: double newlines -> paragraph breaks
+        .replace(/\n\n/g, '</p><p>')
+        // Wrap in paragraphs
+        .replace(/^(.)/gm, '<p>$1')
+        .replace(/(.)\n$/gm, '$1</p>')
+        // Clean up empty paragraphs
+        .replace(/<p><\/p>/g, '');
+    };
+
+    // Open consultation modal
+    const openModal = () => {
+      if (isOpen) return;
+      isOpen = true;
+      modal.classList.remove('scale-0', 'opacity-0', 'invisible');
+      modal.classList.add('scale-100', 'opacity-100', 'visible');
+      
+      // Hide floating dock when modal is open
+      const floatingDock = document.getElementById('floatingDock');
+      if (floatingDock) {
+        floatingDock.style.display = 'none';
+      }
+      
+      // Focus on input after modal opens
+      setTimeout(() => projectInput?.focus(), 300);
+    };
+
+    // Close consultation modal
+    const closeModal = () => {
+      if (!isOpen) return;
+      isOpen = false;
+      modal.classList.add('scale-0', 'opacity-0', 'invisible');
+      modal.classList.remove('scale-100', 'opacity-100', 'visible');
+      
+      // Show floating dock when modal is closed
+      const floatingDock = document.getElementById('floatingDock');
+      if (floatingDock) {
+        floatingDock.style.display = '';
+      }
+    };
+
+    // Toggle modal function
+    const toggleModal = () => {
+      if (isOpen) {
+        closeModal();
+      } else {
+        openModal();
+      }
+    };
+
+    // Reset conversation function
+    const resetConversation = () => {
+      const chatMessages = document.getElementById('chatMessages');
+      const greetingSection = document.querySelector('.text-center.mb-4.flex-shrink-0');
+      
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+        chatMessages.classList.add('hidden');
+      }
+      
+      if (projectInput) {
+        projectInput.value = '';
+        projectInput.style.height = 'auto';
+      }
+      
+      // Show greeting section again
+      if (greetingSection) {
+        greetingSection.classList.remove('hidden');
+      }
+    };
+
+    // Toggle fullscreen function
+    const toggleFullscreen = () => {
+      // Only allow fullscreen on desktop (1111px+)
+      if (window.innerWidth < 1111) {
+        return;
+      }
+      
+      const modal = document.getElementById('consultationModal');
+      if (!modal) return;
+      
+      const isFullscreen = modal.classList.contains('fullscreen-modal');
+      
+      if (isFullscreen) {
+        // Exit fullscreen
+        modal.classList.remove('fullscreen-modal');
+        modal.style.width = '';
+        modal.style.height = '';
+        // Update expand button icon to expand
+        const expandButton = document.getElementById('expandModal');
+        if (expandButton) {
+          expandButton.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 18L12 14L16 18"></path>
+              <path d="M8 6L12 10L16 6"></path>
+            </svg>
+          `;
+          expandButton.title = 'Expand modal';
+        }
+      } else {
+        // Enter fullscreen
+        modal.classList.add('fullscreen-modal');
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        // Update expand button icon to contract
+        const expandButton = document.getElementById('expandModal');
+        if (expandButton) {
+          expandButton.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 6L12 10L8 6"></path>
+              <path d="M16 18L12 14L8 18"></path>
+            </svg>
+          `;
+          expandButton.title = 'Contract modal';
+        }
+      }
+    };
+
+    // Handle project submission
+    const handleProjectSubmission = async (projectText: string, serviceType?: string) => {
+      const sanitizedText = sanitizeInput(projectText);
+      if (!sanitizedText && !serviceType) return;
+
+      // Show chat area and hide greeting
+      const chatMessages = document.getElementById('chatMessages');
+      const greetingSection = document.querySelector('.text-center.mb-4.flex-shrink-0');
+      
+      if (chatMessages && greetingSection) {
+        greetingSection.classList.add('hidden');
+        chatMessages.classList.remove('hidden');
+      }
+
+      // Add user message
+      const userMessage = sanitizedText || `I'm interested in ${serviceType}`;
+      addMessage('user', userMessage);
+
+      // Clear input
+      if (projectInput) projectInput.value = '';
+
+      // Send to API
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: userMessage,
+            model: 'gpt-4.1-nano'  // Use your enabled 4.1 nano model
+          })
+        });
+
+        const data = await response.json();
+        if (data.reply) {
+          addMessage('bot', data.reply);
+        }
+      } catch (error) {
+        console.error('Chat error:', error);
+        addMessage('bot', 'Sorry, I encountered an error. Please try again.');
+      }
+    };
+
+    // Add message to chat
+    const addMessage = (sender: 'user' | 'bot', message: string) => {
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) return;
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `mb-6 ${sender === 'user' ? 'flex justify-end' : 'flex justify-start'}`;
+      
+      const bubbleClass = sender === 'user' 
+        ? 'bg-green-500 text-white shadow-lg chat-bubble-user'
+        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700 chat-bubble-bot';
+      
+      messageDiv.innerHTML = `
+        <div class="inline-block p-4 max-w-[85%] ${bubbleClass}">
+          ${sender === 'bot' ? parseMarkdown(message) : message}
+        </div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    // Event listeners - toggle behavior like ChatBox  
+    topChatToggle?.addEventListener('click', toggleModal);
+    dockChatToggle?.addEventListener('click', toggleModal);
+    heroChatButton?.addEventListener('click', openModal); // Hero button only opens
+    // consultationClose click handler moved below with blur handling
+
+    // Close when clicking outside the modal
+    document.addEventListener('click', (e) => {
+      if (isOpen && modal && !modal.contains(e.target as Node)) {
+        // Check if the click was on any of the chat toggle buttons
+        const chatToggleButtons = ['topChatToggle', 'dockChatToggle', 'heroChatButton'];
+        const clickedOnToggle = chatToggleButtons.some(id => {
+          const button = document.getElementById(id);
+          return button && (button === e.target || button.contains(e.target as Node));
+        });
+        
+        // Only close if not clicking on a toggle button
+        if (!clickedOnToggle) {
+          closeModal();
+        }
+      }
+    });
+
+    // Project submission - moved to service shortcuts section with blur handling
+
+    // Service shortcuts
+    serviceShortcuts.forEach(button => {
+      button.addEventListener('click', () => {
+        const serviceType = button.getAttribute('data-service');
+        const serviceText = button.textContent?.trim() || '';
+        handleProjectSubmission(`I'm interested in ${serviceText}`, serviceType || undefined);
+        
+        // Blur the button to remove focus state after click (prevents stuck hover on touch devices)
+        (button as HTMLElement).blur();
+      });
+    });
+
+    // Submit button blur handling
+    projectSubmit?.addEventListener('click', () => {
+      const projectText = projectInput?.value.trim() || '';
+      handleProjectSubmission(projectText);
+      
+      // Blur the button to remove focus state after click
+      (projectSubmit as HTMLElement).blur();
+    });
+
+    // Reset button
+    const resetButton = document.getElementById('resetChat');
+    resetButton?.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      resetConversation();
+      (resetButton as HTMLElement).blur();
+    });
+
+    // Expand button
+    const expandButton = document.getElementById('expandModal');
+    expandButton?.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event bubbling that might close modal
+      toggleFullscreen();
+      (expandButton as HTMLElement).blur();
+    });
+
+    // Back button blur handling  
+    consultationClose?.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      closeModal();
+      
+      // Blur the button to remove focus state after click
+      (consultationClose as HTMLElement).blur();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeModal();
+      }
+    });
+
+    // Submit on Enter (or Ctrl/Cmd + Enter for new line)
+    projectInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        // Enter alone sends the message
+        e.preventDefault();
+        const projectText = projectInput.value.trim();
+        if (projectText) {
+          handleProjectSubmission(projectText);
+        }
+      } else if (e.key === 'Enter' && e.shiftKey) {
+        // Shift + Enter adds a new line (default behavior)
+        // Allow default behavior
+      }
+    });
+
+    // Auto-resize textarea
+    projectInput?.addEventListener('input', () => {
+      projectInput.style.height = 'auto';
+      projectInput.style.height = Math.min(projectInput.scrollHeight, 120) + 'px';
+    });
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initConsultationModal, 100);
+  });
+</script>
+
+<style>
+  /* Consultation Modal Responsive Layout */
+  #consultationModal {
+    position: fixed;
+    backdrop-filter: blur(24px);
+    border: 1px solid;
+    z-index: 50;
+  }
+
+  /* Mobile: Full screen with proper padding (375px+) */
+  @media (max-width: 424px) {
+    #consultationModal {
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      padding: 1rem;
+      padding-bottom: 5rem; /* Extra space for dock */
+      transform: none !important;
+    }
+  }
+
+  /* Tablet: Full screen modal (425px - 1024px) */
+  @media (min-width: 425px) and (max-width: 1024px) {
+    #consultationModal {
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      padding: 2rem;
+      padding-bottom: 5rem; /* Extra space for dock */
+      transform: none !important;
+    }
+  }
+  /* Desktop: Variable width modal (1025px+) */
+  @media (min-width: 1025px) {
+    #consultationModal {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--desktop-modal-width);
+      height: var(--desktop-modal-height);
+      min-width: 400px;
+      max-height: 90vh;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      padding-bottom: 4rem; /* Much more room for button on desktop */
+      margin: 2rem;
+    }
+  }
+
+  /* Fullscreen modal override */
+  #consultationModal.fullscreen-modal {
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+  }
+
+  @media (max-width: 768px) {
+    #consultationModal.fullscreen-modal {
+      padding: 1rem !important;
+    }
+  }
+
+  /* Show expand button only on screens 1111px+ */
+  @media (min-width: 1111px) {
+    .expand-button-header {
+      display: flex !important;
+    }
+  }
+
+  @media (max-width: 1110px) {
+    .expand-button-header {
+      display: none !important;
+    }
+  }
+
+  /* Glassmorphism styling */
+  .consultation-glassmorphism {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.15), 0 4px 12px rgba(34, 197, 94, 0.1);
+  }
+
+  :global(.dark) .consultation-glassmorphism {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 12px 40px rgba(34, 197, 94, 0.2), 0 4px 12px rgba(34, 197, 94, 0.15);
+  }
+
+  /* Header */
+  .consultation-header {
+    padding: 0rem 1.5rem 0;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .back-button {
+    background: none;
+    border: none;
+    color: var(--text-light-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-button:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--text-light-primary);
+  }
+
+  /* Prevent stuck hover states on touch devices */
+  @media (hover: none) {
+    .back-button:hover {
+      background: none;
+      color: var(--text-light-secondary);
+    }
+  }
+
+  :global(.dark) .back-button {
+    color: var(--text-dark-secondary);
+  }
+
+  :global(.dark) .back-button:hover {
+    color: var(--text-dark-primary);
+  }
+
+  /* Prevent stuck hover states on touch devices - dark mode */
+  @media (hover: none) {
+    :global(.dark) .back-button:hover {
+      color: var(--text-dark-secondary);
+    }
+  }
+
+  /* Main content */
+  .consultation-content {
+    padding: 2rem 1.5rem;
+    height: calc(100% - 4rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Greeting section */
+  .greeting-section {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .greeting-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .pulse-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+  }
+
+  .pulse-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #22c55e, #10b981);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+    opacity: 0.3;
+  }
+
+  .bot-avatar {
+    position: relative;
+    font-size: 2rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+  }
+
+  :global(.dark) .bot-avatar {
+    background: rgba(30, 41, 59, 0.9);
+  }
+
+  .greeting-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-light-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+  }
+
+  .greeting-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-light-secondary);
+    margin: 0;
+  }
+
+  :global(.dark) .greeting-title {
+    color: var(--text-dark-primary);
+  }
+
+  :global(.dark) .greeting-subtitle {
+    color: var(--text-dark-secondary);
+  }
+
+  /* Project input section */
+  .project-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .input-container {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .input-container:focus-within {
+    border-color: rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+
+  :global(.dark) .input-container {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .project-input {
+    flex: 1;
+    min-height: 100px;
+    padding: 1rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: transparent;
+    color: var(--text-light-primary);
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: none;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .project-input::placeholder {
+    color: var(--text-light-tertiary);
+  }
+
+  :global(.dark) .project-input {
+    color: var(--text-dark-primary);
+  }
+
+  :global(.dark) .project-input::placeholder {
+    color: var(--text-dark-tertiary);
+  }
+
+  .button-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem;
+  }
+
+  .reset-button,
+  .expand-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .expand-button {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+
+  .reset-button:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .expand-button:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+  }
+
+  /* Header button variants */
+  .reset-button-header,
+  .expand-button-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .expand-button-header {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+
+  .reset-button-header:hover {
+    background: rgba(239, 68, 68, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .expand-button-header:hover {
+    background: rgba(59, 130, 246, 0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Prevent stuck hover states on touch devices */
+  @media (hover: none) {
+    .reset-button:hover,
+    .expand-button:hover,
+    .reset-button-header:hover,
+    .expand-button-header:hover {
+      transform: none;
+    }
+  }
+
+  .submit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin: 0.5rem;
+    background: linear-gradient(135deg, #22c55e, #10b981);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .submit-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+  }
+
+  /* Prevent stuck hover states on touch devices */
+  @media (hover: none) {
+    .submit-button:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* Service shortcuts */
+  .service-shortcuts {
+    /* Removed margin-top: auto; since shortcuts now follow input directly */
+  }
+
+  .shortcuts-single-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .shortcuts-label {
+    color: var(--text-light-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .shortcuts-label {
+    color: var(--text-dark-secondary);
+  }
+
+  .shortcuts-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Mobile: Stack label and buttons */
+  @media (max-width: 640px) {
+    .shortcuts-single-line {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .shortcuts-buttons {
+      gap: 0.5rem;
+    }
+  }
+
+  .service-shortcut {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 0.5rem;
+    color: var(--text-light-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .service-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .service-shortcut:hover {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Prevent stuck hover states on touch devices */
+  @media (hover: none) {
+    .service-shortcut:hover {
+      background: rgba(34, 197, 94, 0.05);
+      border-color: rgba(34, 197, 94, 0.2);
+      transform: none;
+    }
+  }
+
+  .service-icon {
+    font-size: 1.125rem;
+    margin-right: 0.25rem;
+  }
+
+  :global(.dark) .service-shortcut {
+    color: var(--text-dark-primary);
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  :global(.dark) .service-shortcut:hover {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  /* Prevent stuck hover states on touch devices - dark mode */
+  @media (hover: none) {
+    :global(.dark) .service-shortcut:hover {
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+  }
+
+  /* Animations */
+  #consultationModal.scale-0 {
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  #consultationModal.scale-100 {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Mobile and tablet animation adjustments */
+  @media (max-width: 1024px) {
+    #consultationModal.scale-0 {
+      transform: scale(0) !important;
+    }
+
+    #consultationModal.scale-100 {
+      transform: scale(1) !important;
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  /* Chat Bubble Styles */
+  .chat-bubble-user {
+    border-radius: 1.25rem 1.25rem 0.375rem 1.25rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    transform: translateY(0);
+    transition: all 0.2s ease;
+    white-space: pre-wrap; /* Preserve line breaks and formatting */
+    word-wrap: break-word; /* Handle long words */
+  }
+
+  .chat-bubble-user:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.25);
+  }
+
+  .chat-bubble-bot {
+    border-radius: 1.25rem 1.25rem 1.25rem 0.375rem;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(0);
+    transition: all 0.2s ease;
+    white-space: pre-wrap; /* Preserve line breaks and formatting */
+    word-wrap: break-word; /* Handle long words */
+  }
+
+  .chat-bubble-bot:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dark) .chat-bubble-bot {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(55, 65, 81, 0.5);
+  }
+
+  :global(.dark) .chat-bubble-bot:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Prevent hover effects on touch devices */
+  @media (hover: none) {
+    .chat-bubble-user:hover,
+    .chat-bubble-bot:hover {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+    }
+    
+    :global(.dark) .chat-bubble-bot:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  /* Markdown formatting styles for chat messages */
+  .chat-bubble-bot ul {
+    margin: 0.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .chat-bubble-bot li {
+    margin: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .chat-bubble-bot li::before {
+    content: "•";
+    color: #22c55e;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+
+  .chat-bubble-bot strong {
+    font-weight: 600;
+    color: #16a34a;
+  }
+
+  :global(.dark) .chat-bubble-bot strong {
+    color: #22c55e;
+  }
+
+  .chat-bubble-bot p {
+    margin: 0.5rem 0;
+  }
+
+  .chat-bubble-bot p:first-child {
+    margin-top: 0;
+  }
+
+  .chat-bubble-bot p:last-child {
+    margin-bottom: 0;
+  }
+</style>

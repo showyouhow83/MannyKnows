@@ -298,56 +298,56 @@ import Skeleton from './ui/Skeleton.astro';
     if (modal && openButton) {
       devLog('🎯 Setting up modal functionality');
       // ... existing modal setup code ...
+      
+      // Open modal
+      openButton.addEventListener('click', () => {
+        modal.classList.remove('opacity-0', 'invisible');
+        const modalDialog = modal.querySelector('div') as HTMLElement;
+        modalDialog?.classList.remove('scale-95');
+        modalDialog?.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+        
+        // Modal opened - tracking could be added here
+      });
+
+      // Close modal function
+      function closeModal() {
+        modal.classList.add('opacity-0', 'invisible');
+        const modalDialog = modal.querySelector('div') as HTMLElement;
+        modalDialog?.classList.add('scale-95');
+        modalDialog?.classList.remove('scale-100');
+        document.body.style.overflow = '';
+      }
+
+      // Close modal events
+      closeButton?.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Escape key to close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('invisible')) {
+          closeModal();
+        }
+      });
+
+      // Save settings
+      saveButton?.addEventListener('click', () => {
+        saveSettings();
+        closeModal();
+      });
+
+      // Reset settings
+      resetButton?.addEventListener('click', () => {
+        resetSettings();
+      });
     } else {
       devLog('🎯 Modal not found, using mobile panel only');
     }
 
     // Load saved preferences
     loadSettings();
-
-    // Open modal
-    openButton.addEventListener('click', () => {
-      modal.classList.remove('opacity-0', 'invisible');
-      const modalDialog = modal.querySelector('div') as HTMLElement;
-      modalDialog?.classList.remove('scale-95');
-      modalDialog?.classList.add('scale-100');
-      document.body.style.overflow = 'hidden';
-      
-      // Modal opened - tracking could be added here
-    });
-
-    // Close modal function
-    function closeModal() {
-      modal.classList.add('opacity-0', 'invisible');
-      const modalDialog = modal.querySelector('div') as HTMLElement;
-      modalDialog?.classList.add('scale-95');
-      modalDialog?.classList.remove('scale-100');
-      document.body.style.overflow = '';
-    }
-
-    // Close modal events
-    closeButton?.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Escape key to close
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.classList.contains('invisible')) {
-        closeModal();
-      }
-    });
-
-    // Save settings
-    saveButton?.addEventListener('click', () => {
-      saveSettings();
-      closeModal();
-    });
-
-    // Reset settings
-    resetButton?.addEventListener('click', () => {
-      resetSettings();
-    });
 
     // Real-time toggle updates with immediate saving
     if (marqueeToggle) {

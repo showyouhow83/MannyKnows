@@ -30,6 +30,7 @@
     "web-vitals": "^5.0.3"
   },
   "devDependencies": {
+    "@astrojs/cloudflare": "^12.6.2",
     "astro-compress": "^2.3.8",
     "autoprefixer": "^10.4.21",
     "cssnano": "^7.1.0",

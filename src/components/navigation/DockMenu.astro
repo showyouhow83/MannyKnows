@@ -163,12 +163,9 @@ import DockButton from '../ui/DockButton.astro';
 
     // Connect dock chat button to main chat functionality
     const dockChatToggle = document.getElementById('dockChatToggle');
-    const mainChatToggle = document.getElementById('topChatToggle');
-    if (dockChatToggle && mainChatToggle) {
-      dockChatToggle.addEventListener('click', () => {
-
-        mainChatToggle.click();
-      });
+    if (dockChatToggle) {
+      // Remove the redirect to mainChatToggle, let ChatBox handle it directly
+      // The ChatBox component already listens for dockChatToggle clicks
     }
 
     // Connect dock hamburger menu to main mobile menu

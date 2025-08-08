@@ -689,43 +689,6 @@ const navLinks = [
       link.addEventListener('click', closeMenu);
     });
 
-    // Close menu when clicking outside (on backdrop)
-    const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
-    if (mobileMenuBackdrop) {
-      mobileMenuBackdrop.addEventListener('click', (e) => {
-
-        closeMenu();
-      });
-
-      // Also add swipe gesture to backdrop for better UX
-      mobileMenuBackdrop.addEventListener('touchstart', handleTouchStart, { passive: true });
-      mobileMenuBackdrop.addEventListener('touchmove', handleTouchMove, { passive: false });
-      mobileMenuBackdrop.addEventListener('touchend', handleTouchEnd, { passive: true });
-    }
-
-    // Also handle clicks on the menu overlay itself
-    mobileMenu.addEventListener('click', (e) => {
-      // Only close if clicking directly on the menu overlay (not on menu content)
-      if (e.target === mobileMenu) {
-
-        closeMenu();
-      }
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isMenuOpen) {
-        closeMenu();
-      }
-    });
-
-    // Close menu on window resize to desktop
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1111 && isMenuOpen) {
-        closeMenu();
-      }
-    });
-
     // Add swipe gesture support to close mobile menu
     let touchStartX = 0;
     let touchStartY = 0;
@@ -774,10 +737,45 @@ const navLinks = [
 
       // Detect right swipe (positive X distance) with minimal vertical movement
       if (swipeDistanceX > minSwipeDistance && swipeDistanceY < maxVerticalDistance) {
-
         closeMenu();
       }
     };
+
+    // Close menu when clicking outside (on backdrop)
+    const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+    if (mobileMenuBackdrop) {
+      mobileMenuBackdrop.addEventListener('click', (e) => {
+        closeMenu();
+      });
+
+      // Also add swipe gesture to backdrop for better UX
+      mobileMenuBackdrop.addEventListener('touchstart', handleTouchStart, { passive: true });
+      mobileMenuBackdrop.addEventListener('touchmove', handleTouchMove, { passive: false });
+      mobileMenuBackdrop.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+
+    // Also handle clicks on the menu overlay itself
+    mobileMenu.addEventListener('click', (e) => {
+      // Only close if clicking directly on the menu overlay (not on menu content)
+      if (e.target === mobileMenu) {
+
+        closeMenu();
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        closeMenu();
+      }
+    });
+
+    // Close menu on window resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1111 && isMenuOpen) {
+        closeMenu();
+      }
+    });
 
     // Add touch event listeners to the mobile menu content
     const mobileMenuContent = mobileMenu.querySelector('div:last-child'); // The menu content div
