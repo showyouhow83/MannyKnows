@@ -143,6 +143,8 @@ if (currentHour >= 12 && currentHour < 17) {
     if (!modal) return;
 
     let isOpen = false;
+    // Add conversation history tracking
+    let conversationHistory: Array<{role: string, content: string}> = [];
 
     // Input sanitization for security
     const sanitizeInput = (input: string): string => {
@@ -195,6 +197,9 @@ if (currentHour >= 12 && currentHour < 17) {
       isOpen = false;
       modal.classList.add('scale-0', 'opacity-0', 'invisible');
       modal.classList.remove('scale-100', 'opacity-100', 'visible');
+      
+      // Reset conversation when closing modal
+      conversationHistory = [];
       
       // Show floating dock when modal is closed
       const floatingDock = document.getElementById('floatingDock');
@@ -308,12 +313,18 @@ if (currentHour >= 12 && currentHour < 17) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             message: userMessage,
-            model: 'gpt-4.1-nano'  // Use your enabled 4.1 nano model
+            model: 'gpt-4.1-nano',
+            conversation_history: conversationHistory
           })
         });
 
         const data = await response.json();
         if (data.reply) {
+          // Add user message to history
+          conversationHistory.push({ role: 'user', content: userMessage });
+          // Add bot response to history  
+          conversationHistory.push({ role: 'assistant', content: data.reply });
+          
           addMessage('bot', data.reply);
         }
       } catch (error) {

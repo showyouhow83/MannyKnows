@@ -37,8 +37,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const { message, model, session_id = 'default' } = body;
-    console.log('Chat API request:', { message, model, session_id });
+    const { message, model, session_id = 'default', conversation_history = [] } = body;
+    console.log('Chat API request:', { message, model, session_id, history_length: conversation_history.length });
     console.log('API Key exists:', !!apiKey);
 
     // Initialize chatbot system
@@ -60,6 +60,23 @@ export const POST: APIRoute = async ({ request }) => {
     
     console.log('System prompt built:', systemPrompt.length, 'characters');
 
+    // Build conversation messages with history
+    const messages = [
+      {
+        role: 'system',
+        content: systemPrompt
+      },
+      // Add conversation history
+      ...conversation_history,
+      // Add current user message
+      {
+        role: 'user',
+        content: message
+      }
+    ];
+
+    console.log('Sending', messages.length, 'messages to OpenAI');
+
     // Simple OpenAI API call
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -69,16 +86,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         model: model || envConfig.model,
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
+        messages: messages,
         max_completion_tokens: envConfig.max_tokens,
       }),
     });
