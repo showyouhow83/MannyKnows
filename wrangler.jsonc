@@ -10,8 +10,8 @@
   "kv_namespaces": [
     {
       "binding": "CHATBOT_KV",
-      "id": "preview_id_will_be_replaced_by_deployment",
-      "preview_id": "preview_id_will_be_replaced_by_deployment"
+      "id": "ed368c98eef342b79e8f7c4b96b3fb62",
+      "preview_id": "6ef503c2554244e4a2432f3c1d2e522c"
     }
   ],
   "observability": {
