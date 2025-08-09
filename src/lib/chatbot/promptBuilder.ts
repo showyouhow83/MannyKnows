@@ -51,6 +51,24 @@ const CONFIG_DATA = {
         "understanding project needs quickly",
         "providing ballpark estimates"
       ]
+    },
+    business_consultant: {
+      name: "Senior Business Consultant",
+      role: "senior business consultant for MannyKnows",
+      company: "MannyKnows, a premium digital agency specializing in web development, marketing, branding, and strategic business consulting",
+      personality: {
+        traits: ["professional", "approachable", "knowledgeable", "solution-focused"],
+        tone: "confident and expertise while being genuinely helpful",
+        communication_style: "consultative and strategic"
+      },
+      expertise: [
+        "web development strategy",
+        "digital marketing campaigns", 
+        "brand positioning",
+        "business process optimization",
+        "ROI analysis",
+        "technology implementation"
+      ]
     }
   },
   goals: {
@@ -73,6 +91,22 @@ const CONFIG_DATA = {
         "phone_number_collected",
         "consultation_scheduled",
         "lead_quality_score_calculated"
+      ]
+    },
+    lead_generation: {
+      primary_objectives: [
+        "Understand the client's business challenges and goals through thoughtful questions",
+        "Provide valuable insights and actionable recommendations", 
+        "Guide conversations toward scheduling consultations or requesting detailed quotes",
+        "Qualify leads by understanding budget, timeline, and decision-making process",
+        "Showcase MannyKnows' expertise without being pushy"
+      ],
+      success_metrics: [
+        "consultation_scheduled",
+        "quote_requested", 
+        "contact_information_collected",
+        "budget_range_identified",
+        "decision_timeline_established"
       ]
     }
   },
@@ -126,7 +160,7 @@ const CONFIG_DATA = {
 export interface ChatbotConfig {
   persona: string;
   goals: string;
-  environment: 'development' | 'staging' | 'production';
+  environment: 'development' | 'production';
 }
 
 export class PromptBuilder {
@@ -139,37 +173,28 @@ export class PromptBuilder {
     // Set environment configuration
     const environments = {
       development: {
-        persona: "sales_agent",
-        goals: "lead_capture", 
-        model: "gpt-4.1-nano",
-        max_tokens: 150,
-        temperature: 0.8,
+        persona: "business_consultant",
+        goals: "lead_generation", 
+        model: "gpt-5-nano",
+        max_tokens: 500,
+        temperature: 0.7,
         debug_logging: true,
         tools_enabled: true,
         database_enabled: false,
-        session_storage: "memory"
+        session_storage: "memory",
+        chatbot_enabled: true
       },
-      staging: {
-        persona: "sales_agent",
-        goals: "lead_capture",
-        model: "gpt-4.1-nano", 
-        max_tokens: 150,
-        temperature: 0.8,
+      production: {
+        persona: "business_consultant",
+        goals: "lead_generation",
+        model: "gpt-5",
+        max_tokens: 500,
+        temperature: 0.7,
         debug_logging: true,
         tools_enabled: true,
         database_enabled: true,
-        session_storage: "cloudflare_kv"
-      },
-      production: {
-        persona: "sales_agent",
-        goals: "lead_capture",
-        model: "gpt-4.1-nano",
-        max_tokens: 150,
-        temperature: 0.8,
-        debug_logging: false,
-        tools_enabled: true,
-        database_enabled: true,
-        session_storage: "cloudflare_kv"
+        session_storage: "cloudflare_kv",
+        chatbot_enabled: true
       }
     };
     
@@ -345,16 +370,14 @@ Use tools when appropriate to provide better service and capture leads.`;
 export function createPromptBuilder(
   persona: string = 'sales_agent',
   goals: string = 'lead_capture', 
-  environment?: 'development' | 'staging' | 'production'
+  environment?: 'development' | 'production'
 ): PromptBuilder {
   // Auto-detect environment if not specified
   if (!environment) {
     if (import.meta.env.MODE === 'development') {
       environment = 'development';
-    } else if (import.meta.env.PROD) {
-      environment = 'production';
     } else {
-      environment = 'staging';
+      environment = 'production';
     }
   }
 

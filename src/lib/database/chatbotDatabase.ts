@@ -422,7 +422,6 @@ export function createDatabaseAdapter(environment: string, storage?: any): Datab
   switch (environment) {
     case 'development':
       return new MemoryAdapter();
-    case 'staging':
     case 'production':
       if (storage) {
         // If it has a prepare method, it's D1

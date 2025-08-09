@@ -1,206 +1,204 @@
 # MannyKnows Chatbot System
 
-A modular, containerized chatbot system with configurable personas, goals, guardrails, and database integration.
+A streamlined chatbot system with GPT-5 integration, configurable environments, and database integration.
+
+## 🚀 TLDR - Quick Settings
+
+### Turn Chatbot On/Off
+Control chatbot availability by editing `src/config/chatbot/environments.json`:
+```json
+{
+  "development": {
+    "chatbot_enabled": true     // Set to false for offline mode
+  },
+  "production": {
+    "chatbot_enabled": true     // Set to false for offline mode
+  }
+}
+```
+
+### Quick Commands
+```bash
+# Deploy changes after configuration update
+npm run deploy
+
+# Test locally
+npm run dev
+```
+
+### Common Settings
+- **Enable/Disable**: `chatbot_enabled: true/false` in environments.json
+- **Change Model**: Update `model` field (gpt-5-nano for dev, gpt-5 for production)
+- **Debug Mode**: Set `debug_logging: true` for detailed logs
+- **Database**: Set `database_enabled: false` to use memory storage (dev/testing)
+
+### Environment URLs
+- **Live Chat**: https://mannyknows.showyouhow83.workers.dev (click green chat button)
+- **Admin Panel**: https://mannyknows.showyouhow83.workers.dev/admin/leads
 
 ## 🏗️ Architecture Overview
 
 ```
 src/
-├── config/chatbot/           # JSON configuration files
-│   ├── personas.json         # Character profiles and expertise
-│   ├── goals.json            # Objective sets (lead_generation, consultation, etc.)
-│   ├── guardrails.json       # Safety rules and content restrictions
-│   ├── tools.json            # Available tools and when to use them
-│   └── environments.json     # Environment-specific settings
+├── config/chatbot/
+│   └── environments.json     # Environment-specific settings (ONLY CONFIG FILE)
 ├── lib/chatbot/             # Core chatbot logic
-│   ├── promptBuilder.ts      # Builds system prompts from configs
-│   ├── manager.ts            # Main orchestration class
-│   └── tools.ts              # Tool implementations (save leads, etc.)
+│   ├── promptBuilder.ts      # Builds system prompts (contains hardcoded personas/goals)
+│   ├── tools.ts              # Tool implementations (save leads, etc.)
+│   └── leadScoring.ts        # Lead scoring logic
 ├── lib/database/            # Database operations
-│   ├── chatbotDatabase.ts    # Database adapters (D1, Memory)
+│   ├── chatbotDatabase.ts    # Database adapters (KV, Memory)
 │   └── schema.sql            # Database schema
 └── pages/api/               # API endpoints
     └── chat.ts               # Main chat endpoint
 ```
 
-## 🎭 Managing Personas
+## ⚙️ Configuration Management
 
-### Current Personas
-- **business_consultant**: Professional, strategic, lead-focused
-- **sales_specialist**: Energetic, persuasive, deal-closing focused
-- **technical_advisor**: Analytical, detail-oriented, solution-focused
+### Environment Configuration (environments.json)
+This is the **ONLY** configuration file actually used by the system:
 
-### Adding a New Persona
-1. Edit `src/config/chatbot/personas.json`:
 ```json
 {
-  "customer_support": {
-    "name": "Customer Support Specialist",
-    "role": "customer support specialist for MannyKnows",
-    "company": "MannyKnows customer success team",
-    "personality": {
-      "traits": ["helpful", "patient", "empathetic", "solution-oriented"],
-      "tone": "friendly and supportive",
-      "communication_style": "clear and reassuring"
-    },
-    "expertise": [
-      "troubleshooting issues",
-      "account management", 
-      "service explanations",
-      "escalation handling"
-    ]
+  "development": {
+    "persona": "business_consultant",
+    "goals": "lead_generation", 
+    "model": "gpt-5-nano",
+    "max_tokens": 500,
+    "temperature": 0.7,
+    "debug_logging": true,
+    "tools_enabled": true,
+    "database_enabled": false,
+    "session_storage": "memory",
+    "chatbot_enabled": true
+  },
+  "production": {
+    "persona": "business_consultant", 
+    "goals": "lead_generation",
+    "model": "gpt-5",
+    "max_tokens": 500,
+    "temperature": 0.7,
+    "debug_logging": true,
+    "tools_enabled": true,
+    "database_enabled": true,
+    "session_storage": "cloudflare_kv",
+    "chatbot_enabled": true
   }
 }
 ```
 
-2. Update `src/lib/chatbot/manager.ts` to include the new instance:
+### Personas and Goals (Hardcoded in promptBuilder.ts)
+Currently available personas and goals are hardcoded in `src/lib/chatbot/promptBuilder.ts`:
+
+**Available Personas:**
+- `business_consultant`: Professional, strategic consultant
+- `sales_agent`: Friendly, direct sales agent
+
+**Available Goals:**
+- `lead_generation`: Focus on capturing leads and consultations
+- `lead_capture`: Focus on identifying problems and creating urgency
+
+### Environment Variables (Cloudflare Secrets)
+```bash
+# Required (already configured)
+OPENAI_API_KEY=your-openai-api-key  # Set via: wrangler secret put OPENAI_API_KEY
+
+# Optional - GA tracking (already configured)
+GA_MEASUREMENT_ID=G-J0V35RZNZB
+```
+
+### Current System Status ✅
+The chatbot system is **fully implemented and operational**:
+
+1. ✅ **Streamlined configuration** - Single environments.json config file
+2. ✅ **Database integration** - Cloudflare KV storage active
+3. ✅ **API endpoint** - `/api/chat` fully functional  
+4. ✅ **Tools system** - Lead capture and interaction logging working
+5. ✅ **Admin interface** - Lead management at `/admin/leads`
+6. ✅ **Production deployment** - Live on Cloudflare Workers
+7. ✅ **GPT-5 integration** - Latest models (gpt-5-nano dev, gpt-5 production)
+
+### Current Configuration Status
+- ✅ **Production**: Fully configured with Cloudflare KV storage
+- ✅ **Authentication**: OAuth-based deployment setup  
+- ✅ **Secrets**: OPENAI_API_KEY stored as Cloudflare secret
+- ✅ **Database**: Cloudflare KV for conversations and sessions
+- ✅ **Admin Panel**: /admin/leads for viewing captured leads
+
+## 🔧 Adding/Modifying Personas and Goals
+
+Since personas and goals are hardcoded in `src/lib/chatbot/promptBuilder.ts`, to add new ones:
+
+1. **Adding a New Persona**: Edit the `CONFIG_DATA.personas` object in promptBuilder.ts:
 ```typescript
-export const CHATBOT_INSTANCES: Record<string, ChatbotInstance> = {
-  // ... existing instances
+const CONFIG_DATA = {
+  personas: {
+    // ... existing personas
+    customer_support: {
+      name: "Customer Support Specialist",
+      role: "customer support specialist for MannyKnows",
+      company: "MannyKnows customer success team",
+      personality: {
+        traits: ["helpful", "patient", "empathetic", "solution-oriented"],
+        tone: "friendly and supportive",
+        communication_style: "clear and reassuring"
+      },
+      expertise: [
+        "troubleshooting issues",
+        "account management", 
+        "service explanations"
+      ]
+    }
+  }
+}
+```
+
+2. **Adding New Goals**: Edit the `CONFIG_DATA.goals` object in promptBuilder.ts:
+```typescript
+goals: {
+  // ... existing goals
   customer_support: {
-    id: 'customer_support',
-    name: 'Customer Support',
-    persona: 'customer_support',
-    goals: 'customer_support', // You'll need to create this in goals.json
-    environment: 'production',
-    model: 'gpt-4.1-nano',
-    enabled: true
-  }
-}
-```
-
-## 🎯 Managing Goals
-
-### Current Goal Sets
-- **lead_generation**: Focus on capturing leads and scheduling consultations
-- **customer_support**: Focus on resolving issues and maintaining satisfaction
-- **consultation**: Focus on needs analysis and strategic recommendations
-
-### Adding New Goals
-Edit `src/config/chatbot/goals.json`:
-```json
-{
-  "upselling": {
-    "primary_objectives": [
-      "Identify expansion opportunities with existing customers",
-      "Present relevant additional services",
-      "Quantify potential ROI of additional services",
-      "Guide toward upgrade consultations"
+    primary_objectives: [
+      "Resolve customer issues quickly",
+      "Maintain high satisfaction", 
+      "Escalate when needed"
     ],
-    "success_metrics": [
-      "upsell_opportunity_identified",
-      "upgrade_consultation_scheduled",
-      "additional_service_interest"
+    success_metrics: [
+      "issue_resolved",
+      "satisfaction_rating"
     ]
   }
 }
 ```
 
-## 🛡️ Managing Guardrails
-
-### Current Guardrails
-- **Conversation Guidelines**: What to always do/never do
-- **Content Safety**: Prohibited topics and required disclaimers
-- **Response Limits**: Length, conversation limits, timeouts
-
-### Updating Guardrails
-Edit `src/config/chatbot/guardrails.json`:
+3. **Update environments.json** to use the new persona/goals:
 ```json
 {
-  "conversation_guidelines": {
-    "always_do": [
-      "Verify customer identity for sensitive requests",
-      "Provide accurate service information",
-      "Document important customer requests"
-    ],
-    "never_do": [
-      "Share customer data with unauthorized parties",
-      "Make commitments beyond your authority",
-      "Ignore escalation triggers"
-    ],
-    "escalation_triggers": [
-      "Customer data requests",
-      "Billing disputes over $500",
-      "Technical issues affecting live sites"
-    ]
-  }
-}
-```
-
-## 🔧 Managing Tools
-
-### Current Tools
-- **save_lead**: Capture customer information
-- **schedule_consultation**: Create consultation requests  
-- **generate_quote_request**: Submit quote requests
-- **log_interaction**: Track conversation events
-
-### Adding New Tools
-1. Add tool definition to `src/config/chatbot/tools.json`:
-```json
-{
-  "send_welcome_email": {
-    "name": "send_welcome_email",
-    "description": "Send a welcome email to new leads",
-    "parameters": {
-      "lead_id": "string",
-      "email_template": "string"
-    },
-    "when_to_use": "After successfully capturing a new lead"
-  }
-}
-```
-
-2. Implement the tool in `src/lib/chatbot/tools.ts`:
-```typescript
-async sendWelcomeEmail(params: {
-  lead_id: string;
-  email_template: string;
-}): Promise<ToolResult> {
-  try {
-    // Email sending logic here
-    return {
-      success: true,
-      message: 'Welcome email sent successfully',
-      data: { email_sent: true }
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: 'Failed to send welcome email'
-    };
+  "production": {
+    "persona": "customer_support",
+    "goals": "customer_support"
   }
 }
 ```
 
 ## 🗄️ Database Integration
 
-### Setup Cloudflare D1
-1. Create D1 database:
-```bash
-npx wrangler d1 create mannyknows-chatbot
-```
+### Database Setup (Cloudflare KV)
+The system uses Cloudflare KV storage (already configured in wrangler.jsonc):
 
-2. Run schema:
-```bash
-npx wrangler d1 execute mannyknows-chatbot --file=src/lib/database/schema.sql
-```
-
-3. Add to `wrangler.toml`:
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "mannyknows-chatbot" 
-database_id = "your-database-id"
+```typescript
+// KV namespaces configured:
+// - CHATBOT_KV: For conversation history
+// - SESSION: For session management
 ```
 
 ### Using the Database
 ```typescript
-// In your API route
-const dbAdapter = createDatabaseAdapter('production', env.DB);
+// In chat.ts (already implemented)
+const dbAdapter = createDatabaseAdapter(environment, storage);
 const chatbotTools = new ChatbotTools(dbAdapter, sessionId);
 
-// Save a lead
+// Save a lead (handled automatically by tools)
 const leadResult = await chatbotTools.saveLead({
   name: 'John Doe',
   email: 'john@example.com',
@@ -211,123 +209,110 @@ const leadResult = await chatbotTools.saveLead({
 
 ## 🚀 Usage Examples
 
-### Basic Usage
+### Basic API Usage
+The main chat endpoint is `POST /api/chat`:
+
 ```typescript
-import { createChatbotManager } from '../lib/chatbot/manager';
+// Request
+{
+  "message": "I need help with my website",
+  "session_id": "optional-session-id",
+  "conversation_history": [
+    {"role": "user", "content": "Previous message"},
+    {"role": "assistant", "content": "Previous response"}
+  ]
+}
 
-// Create a business consultant chatbot
-const chatbot = createChatbotManager('business_consultant');
-
-// Get system prompt
-const systemPrompt = chatbot.getSystemPrompt();
-
-// Process a message
-const result = await chatbot.processMessage('I need a website', 'session123');
+// Response
+{
+  "reply": "Chat response from GPT-5",
+  "tool_results": [...],
+  "session_id": "session-id"
+}
 ```
 
-### Environment-Specific Configuration
-```typescript
-// Development environment with memory storage
-const devChatbot = createChatbotManager('business_consultant');
+### Environment Configuration
+The system automatically detects environment and loads appropriate settings:
 
-// Production environment with D1 database
-const prodChatbot = createChatbotManager('business_consultant', env.DB);
+```typescript
+// Development environment (local dev server)
+// Uses: gpt-5-nano, memory storage, debug logging
+
+// Production environment (deployed)  
+// Uses: gpt-5, Cloudflare KV storage
 ```
 
-### Custom Configuration
-```typescript
-import { ChatbotPresets } from '../lib/chatbot/manager';
-
-// Use preset
-const leadGenBot = createChatbotManager(ChatbotPresets.LEAD_GENERATION);
-
-// Custom configuration
-const customConfig = ChatbotPresets.custom('technical_advisor', 'consultation');
-```
-
-## 🔄 Switching Configurations
-
-### Runtime Switching
-```typescript
-// In your API endpoint
-const chatbotId = request.headers.get('x-chatbot-id') || 'business_consultant';
-const chatbot = createChatbotManager(chatbotId, env.DB);
-```
-
-### A/B Testing
-```typescript
-// Simple A/B test
-const chatbotId = Math.random() > 0.5 ? 'business_consultant' : 'sales_specialist';
-const chatbot = createChatbotManager(chatbotId, env.DB);
-```
-
-### Environment-Based Selection
-```typescript
-const environment = import.meta.env.MODE;
-const chatbotId = environment === 'development' ? 'business_consultant' : 'sales_specialist';
-```
+### Changing Configuration
+1. Edit `src/config/chatbot/environments.json`
+2. Deploy changes: `npm run deploy`
+3. Test the changes
 
 ## 📊 Monitoring & Analytics
 
 ### Built-in Logging
-- All conversations are logged via `log_interaction` tool
+- All conversations are logged via the tools system
 - Lead capture events are automatically tracked
-- Response validation failures are logged
+- Debug information available when `debug_logging: true`
 
-### Custom Metrics
-```typescript
-// Track custom events
-await chatbotTools.logInteraction({
-  event_type: 'feature_request',
-  event_data: { feature: 'mobile_app', priority: 'high' }
-});
-```
+### Admin Panel
+Visit `/admin/leads` to view:
+- Captured leads
+- Conversation history
+- Tool usage statistics
 
-## 🔧 Configuration Management
+## 🔧 Troubleshooting
 
-### Environment Variables
+### Chatbot Not Responding
+1. Check `chatbot_enabled: true` in environments.json
+2. Verify OPENAI_API_KEY is set: `wrangler secret list`
+3. Check browser console for API errors
+
+### Database Issues  
+1. Verify KV namespaces in wrangler.jsonc
+2. Check admin panel: `/admin/leads`
+3. Enable debug logging: `debug_logging: true`
+
+### Configuration Changes Not Working
+1. Redeploy after changes: `npm run deploy`
+2. Clear browser cache
+3. Check environment (development/production)
+
+### Quick Fixes
 ```bash
-# Required
-OPENAI_API_KEY=your-openai-api-key
+# Reset to default working config
+git checkout src/config/chatbot/environments.json
 
-# Optional - Chatbot Selection
-DEFAULT_CHATBOT_ID=business_consultant
-ENABLE_TOOLS=true
-ENABLE_DATABASE=true
-```
+# Redeploy
+npm run deploy
 
-### Dynamic Configuration Updates
-```typescript
-// Update configuration without restart
-const config = chatbot.getInstanceInfo();
-config.environment_config.max_tokens = 750;
+# Check logs (if needed)
+wrangler tail
 ```
 
 ## 🚀 Best Practices
 
-1. **Modular Design**: Keep personas, goals, and guardrails in separate files
-2. **Environment Separation**: Use different configurations for dev/staging/prod
-3. **Tool Safety**: Always validate tool inputs and handle errors gracefully
-4. **Response Validation**: Use guardrails to ensure brand consistency
-5. **Database Backup**: Regular backups of lead and interaction data
-6. **Monitoring**: Track conversation quality and tool usage metrics
-7. **Version Control**: Tag configuration changes for rollback capability
+1. **Simple Configuration**: Keep environment settings in environments.json
+2. **Environment Separation**: Use different models for dev/production
+3. **Tool Safety**: All tools validate inputs and handle errors
+4. **Database Backup**: Regular backups of lead data via admin panel
+5. **Monitoring**: Track conversation quality via debug logs
+6. **Deployment**: Always test in development before deploying
 
-## 🔄 Migration Guide
+## � System Architecture Summary
 
-### From Old System
-1. Export existing system prompt to persona + goals + guardrails
-2. Move database operations to tools system
-3. Update API endpoint to use ChatbotManager
-4. Test with memory adapter before enabling database
-5. Deploy incrementally with feature flags
+**Current Implementation:**
+- Single configuration file: `environments.json`
+- Hardcoded personas/goals in `promptBuilder.ts`
+- Direct API integration with GPT-5 models
+- Cloudflare KV for production data storage
+- Memory storage for development
+- Tools system for lead capture and logging
 
-### Configuration Versioning
-```typescript
-// Version your configurations
-const configVersion = '1.2.0';
-const chatbot = createChatbotManager('business_consultant', env.DB);
-chatbot.setConfigVersion(configVersion);
-```
+**Key Files:**
+- `src/pages/api/chat.ts` - Main API endpoint
+- `src/config/chatbot/environments.json` - Environment configuration
+- `src/lib/chatbot/promptBuilder.ts` - System prompts and personas
+- `src/lib/chatbot/tools.ts` - Lead capture and logging tools
+- `src/lib/database/chatbotDatabase.ts` - Database adapters
 
-This modular system gives you complete control over your chatbot's behavior while maintaining clean separation of concerns and easy maintainability.
+This streamlined architecture provides reliable chatbot functionality with GPT-5 integration while maintaining simplicity and ease of maintenance.

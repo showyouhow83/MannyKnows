@@ -2,7 +2,7 @@
   "development": {
     "persona": "business_consultant",
     "goals": "lead_generation", 
-    "model": "gpt-4.1-nano",
+    "model": "gpt-5-nano",
     "max_tokens": 500,
     "temperature": 0.7,
     "debug_logging": true,
@@ -11,25 +11,13 @@
     "session_storage": "memory",
     "chatbot_enabled": true
   },
-  "staging": {
-    "persona": "business_consultant",
-    "goals": "lead_generation",
-    "model": "gpt-4.1-nano", 
-    "max_tokens": 500,
-    "temperature": 0.7,
-    "debug_logging": true,
-    "tools_enabled": true,
-    "database_enabled": true,
-    "session_storage": "cloudflare_kv",
-    "chatbot_enabled": true
-  },
   "production": {
     "persona": "business_consultant",
     "goals": "lead_generation",
-    "model": "gpt-4.1-nano",
+    "model": "gpt-5",
     "max_tokens": 500,
     "temperature": 0.7,
-    "debug_logging": false,
+    "debug_logging": true,
     "tools_enabled": true,
     "database_enabled": true,
     "session_storage": "cloudflare_kv",

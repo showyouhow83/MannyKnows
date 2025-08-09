@@ -43,8 +43,14 @@ export const POST: APIRoute = async ({ request }) => {
     devLog('Chat API request:', { message, model, session_id, history_length: conversation_history.length });
     devLog('API Key exists:', !!apiKey);
 
-    // Initialize chatbot system
-    const promptBuilder = createPromptBuilder();
+    // Initialize chatbot system - read persona and goals from environment config
+    const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
+    
+    // Load environment configuration to get persona and goals
+    const environmentsConfig = await import('../../config/chatbot/environments.json');
+    const envSettings = environmentsConfig.default[environment];
+    
+    const promptBuilder = createPromptBuilder(envSettings.persona, envSettings.goals, environment);
     const guardrails = promptBuilder.getGuardrails();
     
     // ENFORCE MESSAGE LIMITS - Critical for cost control
@@ -118,25 +124,50 @@ export const POST: APIRoute = async ({ request }) => {
     ];
 
     // Simple OpenAI API call
+    const requestBody: any = {
+      model: model || envConfig.model,
+      messages: messages,
+    };
+    
+    // For GPT-5 and reasoning models, don't set max_completion_tokens
+    if (!(model || envConfig.model).includes('gpt-5')) {
+      requestBody.max_completion_tokens = envConfig.max_tokens;
+    }
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
       },
-      body: JSON.stringify({
-        model: model || envConfig.model,
-        messages: messages,
-        max_completion_tokens: envConfig.max_tokens,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
+    devLog('OpenAI API response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      errorLog(`OpenAI API error: ${response.status} - ${errorText}`);
+      return new Response(JSON.stringify({
+        reply: 'Sorry, I encountered an error. Please try again later.'
+      }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     const data = await response.json();
+    devLog('OpenAI API response data:', data);
     
     if (data.choices && data.choices[0]) {
       // Handle different model response formats
       const choice = data.choices[0];
       let replyContent = '';
+      
+      devLog('Choice object:', choice);
+      devLog('Choice message:', choice.message);
       
       // Standard models use message.content
       if (choice.message && choice.message.content) {
@@ -240,6 +271,8 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
   } catch (error) {
+    errorLog('Chat API error:', error);
+    console.error('Full error details:', error);
     return new Response(JSON.stringify({
       reply: 'Sorry, I encountered an error. Please try again later.'
     }), {
