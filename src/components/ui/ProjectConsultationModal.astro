@@ -339,6 +339,15 @@ if (currentHour >= 12 && currentHour < 17) {
           
           addMessage('bot', data.reply);
           
+          // If chatbot is offline, show contact info and disable input
+          if (data.chatbot_offline) {
+            const projectInput = document.getElementById('projectInput') as HTMLInputElement;
+            if (projectInput) {
+              projectInput.disabled = true;
+              projectInput.placeholder = 'Chatbot offline - please contact us directly';
+            }
+          }
+          
           // If message limit reached, disable input
           if (data.message_limit_reached) {
             const projectInput = document.getElementById('projectInput') as HTMLInputElement;
@@ -349,7 +358,7 @@ if (currentHour >= 12 && currentHour < 17) {
           }
         }
       } catch (error) {
-        console.error('Chat error:', error);
+        // Silent error handling in production
         addMessage('bot', 'Sorry, I encountered an error. Please try again.');
       }
     };

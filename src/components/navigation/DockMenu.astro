@@ -9,7 +9,7 @@ import DockButton from '../ui/DockButton.astro';
       <!-- MK Logo -->
       <DockButton 
         tooltip="Home" 
-        icon=""
+        icon="MK"
         onClick="window.location.href='/'"
         variant="brand"
       />
@@ -110,7 +110,6 @@ import DockButton from '../ui/DockButton.astro';
     const floatingDock = document.getElementById('floatingDock');
 
     if (!topNav || !floatingDock) {
-      console.warn('❌ Dock elements not found:', { topNav: !!topNav, floatingDock: !!floatingDock });
       // Show dock by default if elements aren't found
       if (floatingDock) {
         setTimeout(() => {
@@ -143,23 +142,6 @@ import DockButton from '../ui/DockButton.astro';
     });
 
     observer.observe(topNav);
-
-    // Also show dock on settings button click
-    const settingsButton = document.getElementById('settingsButton');
-    if (settingsButton) {
-      settingsButton.addEventListener('click', () => {
-
-        // Directly open the settings modal
-        const settingsModal = document.getElementById('settingsModal');
-        if (settingsModal) {
-          settingsModal.classList.remove('opacity-0', 'invisible');
-          const modalDialog = settingsModal.querySelector('div');
-          if (modalDialog) {
-            modalDialog.classList.remove('scale-95');
-          }
-        }
-      });
-    }
 
     // Connect dock chat button to main chat functionality
     const dockChatToggle = document.getElementById('dockChatToggle');

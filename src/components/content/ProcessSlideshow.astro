@@ -87,7 +87,7 @@ const processSteps = [
             <!-- Content Column -->
             <div class="order-2 lg:order-1">
               <div class="flex items-center gap-4 mb-6">
-                <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-sky-500 rounded-2xl text-white transform transition-transform duration-300 group-hover:rotate-3">
+                <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-blue to-sky-500 rounded-2xl text-white transform transition-transform duration-300">
                   <Fragment set:html={step.icon} />
                 </div>
                 <div class="text-6xl font-black text-primary-blue/20 dark:text-primary-blue/30">
@@ -113,7 +113,7 @@ const processSteps = [
                 <div class="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-primary-blue/5 to-sky-500/5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 animate-spin-slow"></div>
                 
                 <!-- Central Icon Display -->
-                <div class="relative z-10 w-24 h-24 bg-gradient-to-r from-primary-blue to-sky-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_50px_rgba(16,209,255,0.3)] transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                <div class="relative z-10 w-24 h-24 bg-gradient-to-r from-primary-blue to-sky-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_50px_rgba(16,209,255,0.3)] transform transition-all duration-500">
                   <div class="scale-150">
                     <Fragment set:html={step.icon} />
                   </div>
@@ -132,7 +132,7 @@ const processSteps = [
     <button 
       id="prevStep" 
       type="button"
-      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-95"
+      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Previous step"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -145,7 +145,7 @@ const processSteps = [
       {processSteps.map((_, index) => (
         <button 
           type="button"
-          class="step-indicator w-4 h-4 rounded-full bg-white/20 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 transition-all duration-300 hover:scale-130 cursor-pointer"
+          class="step-indicator w-4 h-4 rounded-full bg-white/20 dark:bg-white/10 border border-gray-300/50 dark:border-white/20 transition-all duration-300 cursor-pointer"
           data-step={index}
           aria-label={`Go to step ${index + 1}`}
         >
@@ -157,7 +157,7 @@ const processSteps = [
     <button 
       id="nextStep" 
       type="button"
-      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-95"
+      class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-xl text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:bg-primary-blue hover:text-white hover:shadow-[0_12px_40px_rgba(16,209,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Next step"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

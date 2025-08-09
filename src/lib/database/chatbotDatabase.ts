@@ -1,6 +1,8 @@
 // Database integration for customer data and chat interactions
 // This module provides abstraction for different storage backends
 
+import { warnLog } from '../../utils/debug';
+
 export interface Lead {
   id?: string;
   // Basic Contact Info (20 points)
@@ -431,7 +433,7 @@ export function createDatabaseAdapter(environment: string, storage?: any): Datab
         return new CloudflareKVAdapter(storage);
       }
       // Fallback to memory for dev if no storage provided
-      console.warn('No storage provided for production environment, using memory adapter');
+      warnLog('No storage provided for production environment, using memory adapter');
       return new MemoryAdapter();
     default:
       return new MemoryAdapter();

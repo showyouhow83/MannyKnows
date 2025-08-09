@@ -10,7 +10,6 @@ interface Props {
   icon: string;
   iconGradient: string;
   textColor: string;
-  hoverShadow: string;
   borderColor: string;
   services: Service[];
   backgroundGradient: string;
@@ -35,7 +34,6 @@ const {
   icon,
   iconGradient,
   textColor,
-  hoverShadow,
   borderColor,
   services,
   backgroundGradient,
@@ -70,8 +68,8 @@ const hoverColorRGB = getHoverColor(textColor);
 
 <div class={`service-box-padding bg-gradient-to-br ${backgroundGradient} backdrop-blur-sm ${roundedClass} ${borderClasses} ${borderColor} transition-all duration-300 group`}
      style={`--hover-color: ${hoverColorRGB};`}
-     onmouseenter={`this.style.boxShadow = '0 8px 32px rgba(${hoverColorRGB}, 0.15), 0 4px 20px rgba(${hoverColorRGB}, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)'; this.style.transform = 'translateY(-4px) scale(1.02)';`}
-     onmouseleave={`this.style.boxShadow = ''; this.style.transform = '';`}>
+     onmouseenter={`this.style.boxShadow = '0 8px 32px rgba(${hoverColorRGB}, 0.15), 0 4px 20px rgba(${hoverColorRGB}, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)';`}
+     onmouseleave={`this.style.boxShadow = '';`}>
   <!-- Primary Section -->
   <div class="flex items-center gap-3 mb-3">
     <div class={`w-8 h-8 bg-gradient-to-r ${iconGradient} rounded-lg flex items-center justify-center`}>
@@ -82,7 +80,7 @@ const hoverColorRGB = getHoverColor(textColor);
   <ul class={`space-y-2 ${hasSecondarySection ? 'mb-6' : ''}`}>
     {services.map((service) => (
       <li>
-        <a href={service.href} class={`${textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+        <a href={service.href} class={`${textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
           <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
           {service.label}
         </a>
@@ -105,7 +103,7 @@ const hoverColorRGB = getHoverColor(textColor);
       <ul class={`space-y-2 ${hasThirdSection ? 'mb-6' : ''}`}>
         {secondaryServices.map((service) => (
           <li>
-            <a href={service.href} class={`${secondaryTextColor || textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+            <a href={service.href} class={`${secondaryTextColor || textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
               <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
               {service.label}
             </a>
@@ -130,7 +128,7 @@ const hoverColorRGB = getHoverColor(textColor);
       <ul class="space-y-2">
         {thirdServices.map((service) => (
           <li>
-            <a href={service.href} class={`${thirdTextColor || textColor} hover:text-white transition-colors duration-300 text-sm flex items-center gap-2`}>
+            <a href={service.href} class={`${thirdTextColor || textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
               <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
               {service.label}
             </a>

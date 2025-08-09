@@ -35,7 +35,7 @@ const navLinks = [
     <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <h1 class="text-5xl font-black m-0">
-        <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+        <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
           MK
         </a>
       </h1>
@@ -117,7 +117,7 @@ const navLinks = [
       <!-- Logo - 15% -->
       <div class="flex-[0_0_15%] flex items-center">
         <h1 class="text-3xl font-black m-0 leading-none">
-          <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 hover:-translate-y-1 hover:scale-105 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+          <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
             MK
           </a>
         </h1>
@@ -230,27 +230,6 @@ const navLinks = [
             type="button"
             id="mobileSettingsToggle"
             class="group w-full p-3 bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-200 flex items-center justify-between"
-            onclick="
-              const panel = document.getElementById('mobileSettingsPanel');
-              const button = document.getElementById('mobileSettingsToggle');
-              const chevron = document.getElementById('settingsChevron');
-              if (panel && chevron && button) {
-                const isHidden = panel.classList.contains('hidden');
-                if (isHidden) {
-                  // Show settings panel and reduce button size
-                  panel.classList.remove('hidden');
-                  button.classList.remove('p-3');
-                  button.classList.add('p-2', 'text-sm');
-                  chevron.style.transform = 'rotate(180deg)';
-                } else {
-                  // Hide settings panel and restore button size
-                  panel.classList.add('hidden');
-                  button.classList.remove('p-2', 'text-sm');
-                  button.classList.add('p-3');
-                  chevron.style.transform = 'rotate(0deg)';
-                }
-              }
-            "
           >
             <div class="flex items-center gap-3">
               <!-- User Preferences Icon -->
@@ -558,7 +537,6 @@ const navLinks = [
   // Search input apple gradient animation
   function initSearchAnimation() {
     if (!animationConfig.searchGradientEnabled) {
-      if (animationConfig.debugMode) console.log('Search gradient animation disabled');
       return;
     }
 
@@ -568,18 +546,14 @@ const navLinks = [
     [searchInput, searchInputMobile].forEach(input => {
       if (!input) return;
 
-      if (animationConfig.debugMode) console.log('Search gradient animation enabled');
-
       // Add gradient on focus
       const addGradient = () => {
         input.classList.add('apple-gradient-active');
-        if (animationConfig.debugMode) console.log('Search gradient activated');
       };
 
       // Remove gradient
       const removeGradient = () => {
         input.classList.remove('apple-gradient-active');
-        if (animationConfig.debugMode) console.log('Search gradient deactivated');
       };
 
       // Event listeners
@@ -604,7 +578,6 @@ const navLinks = [
     const body = document.body;
     if (!animationConfig.searchGradientEnabled) {
       body.classList.add('search-gradient-disabled');
-      if (animationConfig.debugMode) console.log('Search gradient disabled via CSS class');
     } else {
       body.classList.remove('search-gradient-disabled');
     }
@@ -627,6 +600,10 @@ const navLinks = [
 
     let isMenuOpen = false;
 
+    // Mobile settings tracking
+    let userHasClosedSettings = false;
+    let isFirstMenuOpen = true;
+
     const openMenu = () => {
 
       isMenuOpen = true;
@@ -635,6 +612,20 @@ const navLinks = [
       menuToggle.querySelector('.hamburger-icon').classList.add('hidden');
       menuToggle.querySelector('.close-icon').classList.remove('hidden');
       document.body.style.overflow = 'hidden'; // Prevent body scroll
+      
+      // Mobile settings auto-open logic
+      const mobileSettingsPanel = document.getElementById('mobileSettingsPanel');
+      const settingsChevron = document.getElementById('settingsChevron');
+      
+      if (mobileSettingsPanel && settingsChevron) {
+        if (isFirstMenuOpen && !userHasClosedSettings) {
+          // First time opening - auto open settings
+          mobileSettingsPanel.classList.remove('hidden');
+          settingsChevron.style.transform = 'rotate(180deg)';
+          isFirstMenuOpen = false;
+        }
+        // Subsequent opens - keep current state unless user manually closed it
+      }
       
       // Hide the floating dock when mobile menu is open
       const floatingDock = document.getElementById('floatingDock');
@@ -653,6 +644,15 @@ const navLinks = [
       menuToggle.querySelector('.close-icon').classList.add('hidden');
       document.body.style.overflow = ''; // Restore body scroll
       
+      // Always close settings panel when mobile menu closes
+      const mobileSettingsPanel = document.getElementById('mobileSettingsPanel');
+      const settingsChevron = document.getElementById('settingsChevron');
+      
+      if (mobileSettingsPanel && settingsChevron) {
+        mobileSettingsPanel.classList.add('hidden');
+        settingsChevron.style.transform = 'rotate(0deg)';
+      }
+      
       // Show the floating dock when mobile menu is closed (only if not at top of page)
       const floatingDock = document.getElementById('floatingDock');
       const topNav = document.getElementById('topNav');
@@ -667,6 +667,11 @@ const navLinks = [
           floatingDock.classList.add('translate-y-0', 'opacity-100');
         }
       }
+    };
+
+    // Make settings state tracking available to settings toggle
+    window.mobileSettingsState = {
+      setUserClosed: (closed) => { userHasClosedSettings = closed; }
     };
 
     // Toggle menu on button click
@@ -869,28 +874,33 @@ const navLinks = [
 
     if (mobileSettingsToggle && mobileSettingsPanel && settingsChevron) {
 
+      // Settings toggle event listener
       mobileSettingsToggle.addEventListener('click', (e) => {
-
         e.preventDefault();
         e.stopPropagation();
         
         const isHidden = mobileSettingsPanel.classList.contains('hidden');
-
+        
         if (isHidden) {
           // Show settings panel
           mobileSettingsPanel.classList.remove('hidden');
           settingsChevron.style.transform = 'rotate(180deg)';
-
+          // User opened it manually
+          if (window.mobileSettingsState) {
+            window.mobileSettingsState.setUserClosed(false);
+          }
         } else {
           // Hide settings panel
           mobileSettingsPanel.classList.add('hidden');
           settingsChevron.style.transform = 'rotate(0deg)';
-
+          // User closed it manually
+          if (window.mobileSettingsState) {
+            window.mobileSettingsState.setUserClosed(true);
+          }
         }
       });
 
     } else {
-
       // Try with timeout
       setTimeout(() => {
         const mobileSettingsToggle2 = document.getElementById('mobileSettingsToggle');
@@ -898,26 +908,27 @@ const navLinks = [
         const settingsChevron2 = document.getElementById('settingsChevron');
 
         if (mobileSettingsToggle2 && mobileSettingsPanel2 && settingsChevron2) {
-
+          
           mobileSettingsToggle2.addEventListener('click', (e) => {
-
             e.preventDefault();
             e.stopPropagation();
             
             const isHidden = mobileSettingsPanel2.classList.contains('hidden');
             
-            // Settings panel toggle (production-safe)
-            
             if (isHidden) {
               mobileSettingsPanel2.classList.remove('hidden');
               settingsChevron2.style.transform = 'rotate(180deg)';
+              if (window.mobileSettingsState) {
+                window.mobileSettingsState.setUserClosed(false);
+              }
             } else {
               mobileSettingsPanel2.classList.add('hidden');
               settingsChevron2.style.transform = 'rotate(0deg)';
+              if (window.mobileSettingsState) {
+                window.mobileSettingsState.setUserClosed(true);
+              }
             }
           });
-        } else {
-
         }
       }, 500);
     }

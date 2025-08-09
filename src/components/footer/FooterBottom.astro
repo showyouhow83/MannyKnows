@@ -28,28 +28,36 @@ const {
   <div class="max-w-[1440px] mx-auto px-8 py-6 relative">
     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
       <!-- Left Side: Brand Identity -->
-      <div class="flex items-center gap-2 justify-center md:justify-start">
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 apple-gradient-text" data-colorful-title>
-          {brandName}
-        </span>
-        <span class="text-xs text-gray-600 dark:text-gray-400 opacity-80 hover:opacity-100 transition-opacity duration-300">
-          <span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">
-            {brandIdentifier}
+      <div class="flex flex-col gap-1 justify-center md:justify-start">
+        <div class="flex items-center gap-2 justify-center md:justify-start">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300 transition-all duration-300 apple-gradient-text" data-colorful-title>
+            {brandName}
           </span>
-        </span>
+          <span class="text-xs text-gray-600 dark:text-gray-400 opacity-80 transition-opacity duration-300">
+            <span class="border-l border-gray-400/30 dark:border-white/20 pl-2 ml-1">
+              {brandIdentifier}
+            </span>
+          </span>
+        </div>
+        <!-- Cherry Vibes LLC -->
+        <div class="text-xs text-center md:text-left">
+          <span class="text-gray-600 dark:text-gray-400 opacity-70 transition-opacity duration-300">
+            Cherry Vibes LLC, MA
+          </span>
+        </div>
       </div>
 
       <!-- Right Side: Menu and Copyright -->
       <div class="flex flex-col gap-2 text-sm md:text-right">
         <!-- Menu Links -->
         <div class="flex gap-6 justify-center md:justify-end">
-          <a href={links.sitemap} class="text-gray-800 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
+          <a href={links.sitemap} class="text-gray-800 dark:text-white/60 transition-all duration-300 apple-gradient-text hover:opacity-80">
             Sitemap
           </a>
-          <a href={links.privacy} class="text-gray-800 dark:text-white/60 hover:text-primary-pink dark:hover:text-primary-pink transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
+          <a href={links.privacy} class="text-gray-800 dark:text-white/60 transition-all duration-300 apple-gradient-text hover:opacity-80">
             Privacy
           </a>
-          <a href={links.terms} class="text-gray-800 dark:text-white/60 hover:text-primary-blue dark:hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
+          <a href={links.terms} class="text-gray-800 dark:text-white/60 transition-all duration-300 apple-gradient-text hover:opacity-80">
             Terms
           </a>
         </div>

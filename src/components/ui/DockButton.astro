@@ -19,14 +19,14 @@ const {
 
 const variantClasses = {
   default: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
-  brand: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white animate-button-gradient backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
+  brand: 'animate-button-gradient text-white backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
   chat: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
   settings: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1'
 };
 
 const variantStyles = {
   default: "background: linear-gradient(135deg, rgba(16, 209, 255, 0.15), rgba(16, 209, 255, 0.08)); border-color: rgba(16, 209, 255, 0.4); box-shadow: 0 4px 20px rgba(16, 209, 255, 0.2), 0 1px 3px rgba(16, 209, 255, 0.1);",
-  brand: "",
+  brand: "background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #ec4899, #10d1ff); background-size: 400% 400%;",
   chat: "background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)); border-color: rgba(34, 197, 94, 0.4); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2), 0 1px 3px rgba(34, 197, 94, 0.1);",
   settings: "background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.08)); border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2), 0 1px 3px rgba(168, 85, 247, 0.1);"
 };
@@ -67,3 +67,22 @@ const iconClasses = {
     {tooltip}
   </div>
 </button>
+
+<style>
+  /* Animated gradient for brand variant */
+  .animate-button-gradient {
+    animation: button-gradient 3s ease-in-out infinite;
+  }
+
+  @keyframes button-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+</style>

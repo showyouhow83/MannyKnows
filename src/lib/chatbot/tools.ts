@@ -1,6 +1,7 @@
 import type { Lead, ConsultationRequest, QuoteRequest, ChatInteraction } from '../database/chatbotDatabase';
 import { DatabaseAdapter } from '../database/chatbotDatabase';
 import { LeadScoringService } from './leadScoring';
+import { errorLog } from '../../utils/debug';
 
 export interface ToolResult {
   success: boolean;
@@ -122,7 +123,7 @@ export class ChatbotTools {
         };
       }
     } catch (error) {
-      console.error('Error saving lead:', error);
+      errorLog('Error saving lead:', error);
       return {
         success: false,
         message: 'I apologize, but there was an issue saving your information. Please try again.'
@@ -161,7 +162,7 @@ export class ChatbotTools {
         data: { consultation_id: consultationId }
       };
     } catch (error) {
-      console.error('Error scheduling consultation:', error);
+      errorLog('Error scheduling consultation:', error);
       return {
         success: false,
         message: 'I apologize, but there was an issue scheduling your consultation. Please try again.'
@@ -202,7 +203,7 @@ export class ChatbotTools {
         data: { quote_id: quoteId }
       };
     } catch (error) {
-      console.error('Error generating quote request:', error);
+      errorLog('Error generating quote request:', error);
       return {
         success: false,
         message: 'I apologize, but there was an issue creating your quote request. Please try again.'
@@ -225,7 +226,7 @@ export class ChatbotTools {
         timestamp: new Date().toISOString()
       });
     } catch (error) {
-      console.error('Error logging interaction:', error);
+      errorLog('Error logging interaction:', error);
       return '';
     }
   }

@@ -10,6 +10,7 @@
     "build:optimized": "npm run build && npm run optimize:all",
     "preview": "astro preview",
     "astro": "astro",
+    "deploy": "./deploy.sh",
     "deploy:staging": "./deploy.sh staging",
     "deploy:production": "./deploy.sh production",
     "deploy:development": "./deploy.sh development",

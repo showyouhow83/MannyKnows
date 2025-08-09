@@ -3,6 +3,7 @@ import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
 import { createDatabaseAdapter } from '../../lib/database/chatbotDatabase';
 import { ChatbotTools } from '../../lib/chatbot/tools';
 import { LeadScoringService } from '../../lib/chatbot/leadScoring';
+import { errorLog, devLog } from '../../utils/debug';
 
 export const prerender = false;
 
@@ -11,7 +12,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Check if API key is available
     const apiKey = import.meta.env.OPENAI_API_KEY;
     if (!apiKey) {
-      console.error('OPENAI_API_KEY environment variable is not set');
+      errorLog('OPENAI_API_KEY environment variable is not set');
       return new Response(JSON.stringify({
         reply: 'Chat service is currently unavailable. Please try again later.'
       }), {
@@ -27,7 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
     try {
       body = await request.json();
     } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
+      errorLog('JSON parsing error:', parseError);
       return new Response(JSON.stringify({
         reply: 'Invalid request format. Please try again.'
       }), {
@@ -39,8 +40,8 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const { message, model, session_id = 'default', conversation_history = [] } = body;
-    console.log('Chat API request:', { message, model, session_id, history_length: conversation_history.length });
-    console.log('API Key exists:', !!apiKey);
+    devLog('Chat API request:', { message, model, session_id, history_length: conversation_history.length });
+    devLog('API Key exists:', !!apiKey);
 
     // Initialize chatbot system
     const promptBuilder = createPromptBuilder();
@@ -51,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
     const currentMessageCount = conversation_history.filter((msg: any) => msg.role === 'user').length + 1; // +1 for current message
     
     if (currentMessageCount > maxMessages) {
-      console.warn(`Message limit exceeded: ${currentMessageCount}/${maxMessages} for session ${session_id}`);
+      devLog(`Message limit exceeded: ${currentMessageCount}/${maxMessages} for session ${session_id}`);
       return new Response(JSON.stringify({
         reply: `I appreciate your interest! After ${maxMessages} messages, I need to connect you with Manny for a proper consultation. Please call us at (555) 123-4567 or email hello@mannyknows.com to continue.`,
         message_limit_reached: true,
@@ -65,8 +66,22 @@ export const POST: APIRoute = async ({ request }) => {
     }
     const envConfig = promptBuilder.getEnvironmentConfig();
     
-    console.log('Environment config:', envConfig);
-    console.log('Debug logging enabled:', envConfig.debug_logging);
+    devLog('Environment config:', envConfig);
+    devLog('Debug logging enabled:', envConfig.debug_logging);
+    
+    // Check if chatbot is enabled
+    if (!envConfig.chatbot_enabled) {
+      return new Response(JSON.stringify({
+        reply: "Thank you for reaching out! Our AI assistant is currently offline. Please contact us directly at (555) 123-4567 or email hello@mannyknows.com for assistance.",
+        chatbot_offline: true,
+        session_id: session_id
+      }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     
     // Initialize database if enabled
     let chatbotTools: ChatbotTools | null = null;
@@ -77,7 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
         // @ts-ignore - Access Cloudflare runtime if available
         storage = globalThis.CHATBOT_KV || globalThis.KV || null;
       } catch (e) {
-        console.log('No Cloudflare KV available, using memory storage');
+        // KV not available, fallback to memory storage
       }
       
       const dbAdapter = createDatabaseAdapter(envConfig.environment, storage);
@@ -86,8 +101,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Build system prompt
     const systemPrompt = promptBuilder.buildSystemPrompt();
-    
-    console.log('System prompt built:', systemPrompt.length, 'characters');
 
     // Build conversation messages with history
     const messages = [
@@ -104,8 +117,6 @@ export const POST: APIRoute = async ({ request }) => {
       }
     ];
 
-    console.log('Sending', messages.length, 'messages to OpenAI');
-
     // Simple OpenAI API call
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -120,20 +131,12 @@ export const POST: APIRoute = async ({ request }) => {
       }),
     });
 
-    console.log('OpenAI response status:', response.status);
     const data = await response.json();
-    if (envConfig.debug_logging) {
-      console.log('OpenAI response:', JSON.stringify(data, null, 2));
-    }
     
     if (data.choices && data.choices[0]) {
       // Handle different model response formats
       const choice = data.choices[0];
       let replyContent = '';
-      
-      if (envConfig.debug_logging) {
-        console.log('Message object:', JSON.stringify(choice.message, null, 2));
-      }
       
       // Standard models use message.content
       if (choice.message && choice.message.content) {
@@ -148,20 +151,12 @@ export const POST: APIRoute = async ({ request }) => {
         replyContent = choice.text;
       }
       
-      if (envConfig.debug_logging) {
-        console.log('Final reply content length:', replyContent?.length || 0);
-        console.log('Final reply content preview:', replyContent?.substring(0, 100) + '...');
-      }
-      
       // Only validate if we have content
       if (replyContent) {
         // Validate response against guardrails
         const validation = promptBuilder.validateResponse(replyContent);
         if (!validation.valid && envConfig.environment === 'production') {
-          console.warn('Response validation failed:', validation.issues);
           replyContent = 'I apologize, but I need to rephrase my response. Could you please ask your question again?';
-        } else if (!validation.valid && envConfig.debug_logging) {
-          console.warn('Response validation issues (allowing in dev):', validation.issues);
         }
       }
 
@@ -225,7 +220,6 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Handle OpenAI API errors
     if (data.error) {
-      console.error('OpenAI API error:', data.error);
       return new Response(JSON.stringify({
         reply: 'I apologize, but I encountered an issue with the AI service. Please try again.'
       }), {
@@ -246,7 +240,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
   } catch (error) {
-    console.error('Chat API error:', error);
     return new Response(JSON.stringify({
       reply: 'Sorry, I encountered an error. Please try again later.'
     }), {

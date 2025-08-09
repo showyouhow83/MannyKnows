@@ -172,7 +172,6 @@ if (!isAuthenticated) {
         `).join('');
         
       } catch (error) {
-        console.error('Error loading leads:', error);
         document.getElementById('leadsContainer')!.innerHTML = `
           <div class="px-4 py-4 text-center text-red-500">
             Error loading leads

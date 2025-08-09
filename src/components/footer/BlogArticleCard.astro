@@ -64,21 +64,21 @@ const colors = colorMap[categoryColor];
 <article class="group cursor-pointer space-y-3">
   <!-- Icon and Banner Row -->
   <div class="flex gap-3">
-    <div class={`w-16 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-500 hover:scale-110 hover:-translate-y-1 relative overflow-hidden group/icon`}
+    <div class={`w-16 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg flex-shrink-0 flex items-center justify-center transition-all duration-500 relative overflow-hidden group/icon`}
          style={`background: linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.15')}, ${colors.shadowColor.replace('0.1', '0.08')}); box-shadow: 0 4px 20px ${colors.shadowColor};`}
          onmouseenter={`this.style.background='linear-gradient(135deg, ${colors.hoverShadowColor.replace('0.3', '0.25')}, ${colors.hoverShadowColor.replace('0.3', '0.15')})'; this.style.boxShadow='0 8px 32px ${colors.hoverShadowColor}';`}
          onmouseleave={`this.style.background='linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.15')}, ${colors.shadowColor.replace('0.1', '0.08')})'; this.style.boxShadow='0 4px 20px ${colors.shadowColor}';`}>
       <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover/icon:translate-x-full transition-transform duration-700 opacity-0 group-hover/icon:opacity-100"></div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class={`${colors.iconColor} relative z-10 group-hover/icon:scale-110 transition-transform duration-300`}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class={`${colors.iconColor} relative z-10 transition-transform duration-300`}>
         <Fragment set:html={iconSvgs[icon]} />
       </svg>
     </div>
-    <div class={`flex-1 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg overflow-hidden flex items-center justify-center transition-all duration-500 hover:scale-105 hover:-translate-y-0.5 relative group/banner`}
+    <div class={`flex-1 h-16 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg overflow-hidden flex items-center justify-center transition-all duration-500 relative group/banner`}
          style={`background: linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.10')}, ${colors.shadowColor.replace('0.1', '0.05')}); box-shadow: 0 2px 15px ${colors.shadowColor.replace('0.1', '0.05')};`}
          onmouseenter={`this.style.background='linear-gradient(135deg, ${colors.hoverShadowColor.replace('0.3', '0.15')}, ${colors.hoverShadowColor.replace('0.3', '0.08')})'; this.style.boxShadow='0 4px 25px ${colors.hoverShadowColor.replace('0.3', '0.2')}';`}
          onmouseleave={`this.style.background='linear-gradient(135deg, ${colors.shadowColor.replace('0.1', '0.10')}, ${colors.shadowColor.replace('0.1', '0.05')})'; this.style.boxShadow='0 2px 15px ${colors.shadowColor.replace('0.1', '0.05')}';`}>
       <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/6 to-transparent -translate-x-full group-hover/banner:translate-x-full transition-transform duration-1000 opacity-0 group-hover/banner:opacity-100"></div>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class={`${colors.iconColor}/60 relative z-10 group-hover/banner:scale-105 transition-transform duration-300`}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class={`${colors.iconColor}/60 relative z-10 transition-transform duration-300`}>
         <Fragment set:html={bannerIconSvgs[icon]} />
       </svg>
     </div>

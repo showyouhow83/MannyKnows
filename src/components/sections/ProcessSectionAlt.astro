@@ -245,7 +245,7 @@ const processSteps = [
   .process-grid {
     display: flex;
     flex-direction: column;
-    gap: 0rem; /* Reduced spacing between cards */
+    gap: 1rem;
     align-items: center;
     position: relative;
     max-width: 1440px;
@@ -319,11 +319,6 @@ const processSteps = [
     flex-shrink: 0;
     will-change: transform, opacity;
     transform: translateZ(0);
-  }
-
-  .step-number-large:hover {
-    transform: scale(1.05) translateZ(0);
-    filter: brightness(1.2);
   }
 
   /* Hide mobile content on desktop */
@@ -439,11 +434,6 @@ const processSteps = [
     margin-top: 1rem;
     opacity: 0.7;
     transition: all 0.3s ease;
-  }
-
-  .step-arrow:hover {
-    opacity: 1;
-    transform: translateY(2px);
   }
 
   .final-arrow {
@@ -731,7 +721,7 @@ const processSteps = [
           element.style.setProperty('border-color', options.borderColor, 'important');
         }
       } catch (error) {
-        console.warn('Hover effect failed:', error);
+        // Silent error handling in production
       }
     }
     
@@ -746,7 +736,7 @@ const processSteps = [
         element.style.removeProperty('box-shadow');
         element.style.removeProperty('border-color');
       } catch (error) {
-        console.warn('Hover cleanup failed:', error);
+        // Silent error handling in production
       }
     }
     
@@ -762,24 +752,20 @@ const processSteps = [
       // Simplified transforms for Windows compatibility
       const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
       const hoverBorderColor = `${color}60`;
-      // Simplified transform - removed scale for Windows compatibility
-      const hoverTransform = isWindows ? 'translateY(-8px)' : 'translateY(-8px) scale(1.05)';
+      // Removed transforms for cleaner interaction - only keep glow effects
       
       card.addEventListener('mouseenter', () => {
         requestAnimationFrame(() => {
           applyHoverEffect(card, {
-            transform: hoverTransform,
             brightness: 1.2,
             boxShadow: hoverShadow,
             borderColor: hoverBorderColor
           });
           
-          // Also affect corresponding number
+          // Also affect corresponding number - only brightness, no transform
           const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
           if (correspondingNumber instanceof HTMLElement) {
-            const numberTransform = isWindows ? 'scale(1.03)' : 'scale(1.05)';
             applyHoverEffect(correspondingNumber, {
-              transform: numberTransform,
               brightness: 1.2
             });
           }
@@ -810,14 +796,11 @@ const processSteps = [
         const color = gradientColors[parseInt(stepIndex)];
         const hoverBorderColor = `${color}60`;
         const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
-        const cardHoverTransform = isWindows ? 'translateY(-8px)' : 'translateY(-8px) scale(1.05)';
-        const numberHoverTransform = isWindows ? 'scale(1.03)' : 'scale(1.05)';
         
-        // Mouse interactions - cross-component awareness
+        // Mouse interactions - cross-component awareness (removed transforms)
         number.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
             applyHoverEffect(correspondingCard, {
-              transform: cardHoverTransform,
               brightness: 1.2,
               borderColor: hoverBorderColor,
               boxShadow: hoverShadow
@@ -831,11 +814,10 @@ const processSteps = [
           });
         });
         
-        // Touch support with Windows compatibility
+        // Touch support with Windows compatibility (removed transforms)
         number.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
             applyHoverEffect(correspondingCard, {
-              transform: cardHoverTransform,
               brightness: 1.2,
               borderColor: hoverBorderColor,
               boxShadow: hoverShadow
@@ -851,11 +833,10 @@ const processSteps = [
           }, 300);
         }, { passive: true });
         
-        // Card affects Number - Windows compatible
+        // Card affects Number - Windows compatible (removed transforms)
         correspondingCard.addEventListener('mouseenter', () => {
           requestAnimationFrame(() => {
             applyHoverEffect(number, {
-              transform: numberHoverTransform,
               brightness: 1.2
             });
           });
@@ -867,11 +848,10 @@ const processSteps = [
           });
         });
         
-        // Touch support for card affecting number
+        // Touch support for card affecting number (removed transforms)
         correspondingCard.addEventListener('touchstart', () => {
           requestAnimationFrame(() => {
             applyHoverEffect(number, {
-              transform: numberHoverTransform,
               brightness: 1.2
             });
           });

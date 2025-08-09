@@ -8,7 +8,8 @@
     "debug_logging": true,
     "tools_enabled": true,
     "database_enabled": false,
-    "session_storage": "memory"
+    "session_storage": "memory",
+    "chatbot_enabled": true
   },
   "staging": {
     "persona": "business_consultant",
@@ -19,7 +20,8 @@
     "debug_logging": true,
     "tools_enabled": true,
     "database_enabled": true,
-    "session_storage": "cloudflare_kv"
+    "session_storage": "cloudflare_kv",
+    "chatbot_enabled": true
   },
   "production": {
     "persona": "business_consultant",
@@ -30,6 +32,7 @@
     "debug_logging": false,
     "tools_enabled": true,
     "database_enabled": true,
-    "session_storage": "cloudflare_kv"
+    "session_storage": "cloudflare_kv",
+    "chatbot_enabled": true
   }
 }

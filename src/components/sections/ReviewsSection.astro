@@ -108,11 +108,11 @@ const stats = [
               
               return (
                 <div class="w-full flex-shrink-0 px-2">
-                  <div class="backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group relative overflow-hidden"
+                  <div class="backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 group relative overflow-hidden"
                        style={`background: linear-gradient(135deg, ${primaryColor}15, ${primaryColor}08); border-color: ${primaryColor}40; box-shadow: 0 4px 20px ${primaryColor}20, 0 1px 3px ${primaryColor}10;`}>
                     
-                    <!-- Enhanced glassmorphism overlay on hover -->
-                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    <!-- Enhanced glassmorphism overlay -->
+                    <div class="absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none"
                          style={`background: linear-gradient(135deg, ${primaryColor}08, ${primaryColor}05);`}></div>
                     
                     <!-- Card content with proper z-index -->
@@ -163,13 +163,23 @@ const stats = [
 
       <!-- Carousel Navigation -->
       <div class="flex justify-center gap-6 mb-16">
-        <button id="prevReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30" aria-label="Previous review">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <button id="prevReview" class="group flex items-center justify-center w-12 h-12 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 relative overflow-hidden" 
+                style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+                aria-label="Previous review">
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="relative z-10">
             <polyline points="15,18 9,12 15,6"/>
           </svg>
         </button>
-        <button id="nextReview" class="flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 hover:scale-110 hover:bg-primary-blue/20 hover:border-primary-blue/30" aria-label="Next review">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <button id="nextReview" class="group flex items-center justify-center w-12 h-12 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-full text-text-light-primary dark:text-text-dark-primary transition-all duration-300 relative overflow-hidden"
+                style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+                aria-label="Next review">
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="relative z-10">
             <polyline points="9,18 15,12 9,6"/>
           </svg>
         </button>
@@ -198,17 +208,7 @@ const stats = [
 
 <style>
   /* Reviews section animations - Enhanced for glassmorphism cards */
-  .group {
-    transform: translateY(0);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Enhanced hover effects that work with dynamic colors via inline styles */
-  .group:hover {
-    transform: translateY(-8px) scale(1.05);
-    /* Shadow is now handled by inline styles for dynamic colors */
-  }
-
+  
   /* Carousel specific styles */
   #reviewsContainer {
     transition: transform 0.3s ease-in-out;
@@ -234,13 +234,11 @@ const stats = [
   /* Navigation buttons with enhanced glassmorphism */
   #prevReview, #nextReview {
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   #prevReview:hover, #nextReview:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 40px rgba(16, 209, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3), 0 4px 20px rgba(59, 130, 246, 0.2);
     backdrop-filter: blur(20px);
   }
 
@@ -251,35 +249,12 @@ const stats = [
   }
 
   .carousel-dot:hover {
-    transform: scale(1.2);
+    /* Keep glow but remove transform */
   }
 
   /* Star rating animations */
   svg {
     transition: all 0.2s ease;
-  }
-
-  .group:hover svg {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
-  }
-
-  /* Glassmorphism shimmer effect on hover */
-  .group::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .group:hover::before {
-    left: 100%;
   }
 </style>
 
