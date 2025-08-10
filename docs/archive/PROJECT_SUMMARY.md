@@ -39,7 +39,7 @@
 
 ### Architecture
 - **API**: `/src/pages/api/chat.ts` - Main chatbot endpoint
-- **Models**: OpenAI GPT-4.1-nano integration
+- **Models**: OpenAI GPT-5 (gpt-5-nano in development, gpt-5 in production)
 - **Configuration**: Environment-based persona and behavior management
 - **Storage**: Cloudflare KV for conversation history (production)
 

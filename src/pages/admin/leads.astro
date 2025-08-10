@@ -4,8 +4,17 @@ export const prerender = false;
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// Basic auth check
-const adminPassword = import.meta.env.ADMIN_PASSWORD || 'admin123';
+// Basic auth check - ONLY use secret, NO fallback for security
+// Access Cloudflare Workers environment through runtime
+const adminPassword = import.meta.env.ADMIN_PASSWORD || (Astro.locals as any).runtime?.env?.ADMIN_PASSWORD;
+
+if (!adminPassword) {
+  return new Response('Admin access disabled - no password configured', { 
+    status: 503,
+    headers: { 'Content-Type': 'text/plain' }
+  });
+}
+
 const authHeader = Astro.request.headers.get('authorization');
 
 let isAuthenticated = false;

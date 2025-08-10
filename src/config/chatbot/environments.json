@@ -2,25 +2,21 @@
   "development": {
     "persona": "business_consultant",
     "goals": "lead_generation", 
-    "model": "gpt-5-nano",
+    "model": "gpt-4o-mini",
     "max_tokens": 500,
     "temperature": 0.7,
     "debug_logging": true,
-    "tools_enabled": true,
-    "database_enabled": false,
-    "session_storage": "memory",
+    "lead_capture_enabled": false,
     "chatbot_enabled": true
   },
   "production": {
     "persona": "business_consultant",
     "goals": "lead_generation",
-    "model": "gpt-5",
+    "model": "gpt-4o",
     "max_tokens": 500,
     "temperature": 0.7,
-    "debug_logging": true,
-    "tools_enabled": true,
-    "database_enabled": true,
-    "session_storage": "cloudflare_kv",
-    "chatbot_enabled": true
+    "debug_logging": false,
+    "lead_capture_enabled": true,
+    "chatbot_enabled": false
   }
 }

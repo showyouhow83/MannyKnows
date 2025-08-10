@@ -38,8 +38,8 @@ const CONFIG_DATA = {
   personas: {
     sales_agent: {
       name: "Sales Agent",
-      role: "friendly sales agent for MannyKnows",
-      company: "MannyKnows - web development, design, and marketing agency",
+      role: "friendly sales agent for MK",
+      company: "MK - web development, design, and marketing studio",
       personality: {
         traits: ["friendly", "direct", "helpful", "efficient"],
         tone: "casual but professional, like talking to a friend",
@@ -54,8 +54,8 @@ const CONFIG_DATA = {
     },
     business_consultant: {
       name: "Senior Business Consultant",
-      role: "senior business consultant for MannyKnows",
-      company: "MannyKnows, a premium digital agency specializing in web development, marketing, branding, and strategic business consulting",
+      role: "senior business consultant for MK",
+      company: "MK, a premium digital studio specializing in web development, marketing, branding, and strategic business consulting",
       personality: {
         traits: ["professional", "approachable", "knowledgeable", "solution-focused"],
         tone: "confident and expertise while being genuinely helpful",
@@ -99,7 +99,7 @@ const CONFIG_DATA = {
         "Provide valuable insights and actionable recommendations", 
         "Guide conversations toward scheduling consultations or requesting detailed quotes",
         "Qualify leads by understanding budget, timeline, and decision-making process",
-        "Showcase MannyKnows' expertise without being pushy"
+        "Showcase MK' expertise without being pushy"
       ],
       success_metrics: [
         "consultation_scheduled",
@@ -208,13 +208,12 @@ export class PromptBuilder {
     const persona = CONFIG_DATA.personas[this.config.persona as keyof typeof CONFIG_DATA.personas];
     const goalSet = CONFIG_DATA.goals[this.config.goals as keyof typeof CONFIG_DATA.goals];
     const conversationGuidelines = CONFIG_DATA.guardrails.conversation_guidelines;
-    const contentSafety = CONFIG_DATA.guardrails.content_safety;
 
     if (!persona || !goalSet) {
       throw new Error(`Invalid persona (${this.config.persona}) or goals (${this.config.goals})`);
     }
 
-    const systemPrompt = `You are Alex, a sales agent at MannyKnows - a web development, design, and marketing agency.
+    const systemPrompt = `You are Sally, a sales agent at MK - an on-demand Marketing, Web development, design, and marketing studio.
 
 CRITICAL: Read the FULL conversation history carefully. Remember everything the user has told you.
 
@@ -227,7 +226,7 @@ YOUR ROLE & APPROACH:
 SALES-FOCUSED CONVERSATION FLOW:
 🎯 **Identify the Problem**: Ask about their business challenges
 🔍 **Amplify the Pain**: Help them realize the cost of not fixing it
-� **Position the Solution**: Mention that Manny can solve this (without details)
+💡 **Position the Solution**: Mention that Manny can solve this (without details)
 📊 **Gather Intel**: Collect project details for better sales conversation
 📞 **Get Contact Info**: Schedule Manny to provide the actual solution
 
@@ -287,26 +286,9 @@ LEAD QUALIFICATION QUESTIONS:
 
 Remember: Your job is to get them excited about the solution and eager to talk to Manny, not to solve their problems in the chat.
 
-${this.envConfig.tools_enabled ? this.buildToolsSection() : ''}
-
 Focus: Create desire for the solution, don't provide the solution.`;
 
     return systemPrompt;
-  }
-
-  /**
-   * Build the tools section if tools are enabled
-   */
-  private buildToolsSection(): string {
-    return `
-AVAILABLE TOOLS:
-You have access to these tools to help customers:
-- save_lead: Save potential customer information to the database
-- schedule_consultation: Create a consultation request in the system
-- generate_quote_request: Create a quote request with project details
-- log_interaction: Log important conversation events
-
-Use tools when appropriate to provide better service and capture leads.`;
   }
 
   /**
@@ -314,19 +296,6 @@ Use tools when appropriate to provide better service and capture leads.`;
    */
   getEnvironmentConfig() {
     return this.envConfig;
-  }
-
-  /**
-   * Get available tools for this configuration
-   */
-  getAvailableTools() {
-    if (!this.envConfig.tools_enabled) return {};
-    return {
-      save_lead: { name: "save_lead", description: "Save potential customer information to the database" },
-      schedule_consultation: { name: "schedule_consultation", description: "Create a consultation request in the system" },
-      generate_quote_request: { name: "generate_quote_request", description: "Create a quote request with project details" },
-      log_interaction: { name: "log_interaction", description: "Log important conversation events" }
-    };
   }
 
   /**
