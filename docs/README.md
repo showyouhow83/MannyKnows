@@ -1,65 +1,27 @@
 # MannyKnows Documentation
 
-## 📁 Documentation Structure
+This directory contains accurate, up-to-date documentation for the MannyKnows project.
 
-### **🔥 Current Implementation**
-```
-docs/implementation/
-└── VERIFICATION_SYSTEM_PLAN.md     # ACTIVE: User verification & anti-abuse system
-```
+## 📋 Documentation Index
 
-### **📊 Current Status**
-```
-docs/current/
-└── CURRENT_STATUS.md                # What's working right now
-```
+- **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - High-level project description and architecture
+- **[API_REFERENCE.md](./API_REFERENCE.md)** - Complete API endpoint documentation  
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - How to deploy and configure the application
+- **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)** - Local development setup and workflow
+- **[CLEANUP_SUMMARY.md](./CLEANUP_SUMMARY.md)** - Complete record of cleanup and current state
 
-### **📋 Future Plans**
-```
-docs/plans/
-├── EMAIL_INTEGRATION_PLAN.md        # Phase 2: Professional email reports
-├── MODULAR_ANALYSIS_PLAN.md         # Phase 3: Plugin architecture
-└── WEBSITE_ANALYSIS_ROADMAP.md      # Long-term: Advanced features
-```
+## 🎯 Quick Start
 
-### **📁 Archive & Reference**
-```
-docs/archive/
-├── CHATBOT_CLEANUP_REPORT.md        # Historical: System cleanup process
-├── DOCUMENTATION_AUDIT.md           # Historical: Documentation audit
-├── DOCUMENTATION_CONSOLIDATION.md   # Historical: Organization process
-├── DOCUMENTATION_GUIDE.md           # Historical: Navigation guide
-└── QUICK_DEPLOY.md                  # Reference: Deployment instructions
-```
+1. **Local Development**: See [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)
+2. **API Usage**: See [API_REFERENCE.md](./API_REFERENCE.md)
+3. **Deployment**: See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 
----
+## 📝 Documentation Standards
 
-## 🎯 **Current Priority**
+All documentation in this directory:
+- ✅ Reflects the **actual current codebase** (as of August 10, 2025)
+- ✅ Is tested and verified to work
+- ✅ Removes outdated/legacy information
+- ✅ Uses working examples and real file paths
 
-**IMPLEMENTING NOW**: [`docs/implementation/VERIFICATION_SYSTEM_PLAN.md`](implementation/VERIFICATION_SYSTEM_PLAN.md)
-
-Professional gatekeeping system to protect website analysis service:
-- Email-domain validation
-- Rate limiting (IP, email, domain)
-- Verification flow with email codes
-- Token-based protected access
-
----
-
-## 🚀 **Quick Navigation**
-
-- **See what's working**: [`docs/current/CURRENT_STATUS.md`](current/CURRENT_STATUS.md)
-- **Current development**: [`docs/implementation/VERIFICATION_SYSTEM_PLAN.md`](implementation/VERIFICATION_SYSTEM_PLAN.md)
-- **Future features**: [`docs/plans/`](plans/)
-- **Deployment guide**: [`docs/archive/QUICK_DEPLOY.md`](archive/QUICK_DEPLOY.md)
-
----
-
-## 📈 **Implementation Sequence**
-
-1. **🔐 User Verification** (CURRENT) - Professional gatekeeping
-2. **📧 Email Integration** (NEXT) - Professional report delivery  
-3. **🧩 Modular Analysis** (FUTURE) - Enhanced capabilities
-4. **🖼️ Advanced Features** (ROADMAP) - Screenshots, Lighthouse, enterprise
-
-**Why this order**: Establish security and professional positioning before expanding features.
+Last Updated: August 10, 2025

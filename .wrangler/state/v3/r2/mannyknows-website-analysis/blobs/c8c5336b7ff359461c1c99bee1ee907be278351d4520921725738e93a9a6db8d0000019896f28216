@@ -1,0 +1,72 @@
+{
+  "analysisId": "954dd289-3ac0-4385-9888-d11d68584ab0",
+  "url": "https://mannyknows.com/",
+  "timestamp": "2025-08-11T02:25:29.647Z",
+  "statusCode": 200,
+  "responseTime": 330,
+  "analysis": {
+    "overallScore": 80,
+    "scores": {
+      "performance": 100,
+      "seo": 57,
+      "accessibility": 90,
+      "security": 65,
+      "content": 90
+    },
+    "metrics": {
+      "responseTime": 330,
+      "statusCode": 200,
+      "pageSizeKB": 212,
+      "wordCount": 2956,
+      "totalImages": 0,
+      "imagesWithAlt": 0,
+      "h1Count": 4,
+      "h2Count": 7,
+      "h3Count": 18,
+      "title": "MK - AI-Powered Software on-demand &amp; E-commerce Solutions by Manny",
+      "titleLength": 70,
+      "metaDescription": "MannyKnows - Professional AI-powered business solutions. Transform your business with intelligent automation, data-driven insights, and cutting-edge AI services.",
+      "metaDescLength": 161,
+      "hasOpenGraph": false,
+      "hasSchema": false,
+      "hasCanonical": false,
+      "hasAnalytics": true
+    },
+    "issues": [
+      "🔒 Website not using HTTPS encryption",
+      "Multiple H1 tags found: 4"
+    ],
+    "warnings": [
+      "Long title: 70 characters",
+      "Long meta description: 161 characters",
+      "Missing Open Graph tags",
+      "Missing canonical URL",
+      "No structured data found",
+      "Potential color contrast issues detected",
+      "External links without rel=\"noopener\" detected",
+      "Potential duplicate content detected"
+    ],
+    "recommendations": [
+      "BUSINESS OPPORTUNITY: Implement SSL certificate for security and SEO benefits",
+      "Shorten title to under 60 characters to avoid truncation",
+      "Shorten meta description to under 160 characters",
+      "Use only one H1 tag per page",
+      "Add Open Graph meta tags for better social media sharing",
+      "Add canonical URL to prevent duplicate content issues",
+      "Add schema markup for rich snippets",
+      "Ensure sufficient color contrast (4.5:1 ratio minimum)",
+      "Add rel=\"noopener noreferrer\" to external links opening in new tabs",
+      "Review content for unnecessary repetition"
+    ],
+    "salesOpportunities": [
+      {
+        "type": "SSL Certificate",
+        "priority": "HIGH",
+        "description": "Website not using HTTPS encryption",
+        "businessImpact": "Security vulnerability, reduced search rankings, customer trust issues",
+        "solution": "SSL Certificate Installation & HTTPS Migration"
+      }
+    ]
+  },
+  "htmlStoragePath": "html/954dd289-3ac0-4385-9888-d11d68584ab0.html"
+}

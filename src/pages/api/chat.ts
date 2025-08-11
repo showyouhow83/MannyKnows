@@ -52,6 +52,77 @@ async function getLeadsFromStorage(environment: string, kv?: any) {
   }
 }
 
+// Helper function to analyze website for verified user
+async function analyzeWebsiteForUser(email: string, websiteUrl: string, request: Request, locals: any, session_id: string) {
+  try {
+    const analysisResponse = await fetch(`${new URL(request.url).origin}/api/analyze-website`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: websiteUrl, email })
+    });
+    
+    if (analysisResponse.ok) {
+      const analysisResult = await analysisResponse.json();
+      
+      // Create dynamic, intelligent response based on actual analysis data
+      const analysis = analysisResult.analysis;
+      const biggestProblem = analysis.scores.seo < 60 ? 'SEO' : 
+                           analysis.scores.performance < 70 ? 'performance' : 
+                           analysis.scores.security < 80 ? 'security' : 'optimization';
+      
+      const lostRevenue = analysis.scores.performance < 70 ? 
+        `Your ${analysis.metrics.responseTime}ms load time is killing conversions - that's potentially thousands in lost sales monthly` :
+        analysis.scores.seo < 60 ? 
+        `With SEO at ${analysis.scores.seo}/100, you're invisible to customers actively searching for what you sell` :
+        `Multiple critical issues are bleeding potential customers before they even see your offer`;
+
+      const urgentIssue = analysis.issues.length > 0 ? analysis.issues[0] : 
+                         analysis.warnings?.length > 0 ? analysis.warnings[0] : 
+                         'optimization opportunities';
+
+      const reply = `Just analyzed ${websiteUrl} - and I need to be direct with you.
+
+${lostRevenue}. 
+
+The specific issue I'm most concerned about: ${urgentIssue.toLowerCase()}. This isn't just a technical problem - it's costing you real money right now while your competitors capture the customers you should be getting.
+
+Look, I could walk you through all the details, but what you really need is Manny to map out exactly how to fix this and turn these problems into profit drivers.
+
+I'm blocking out 20 minutes on his calendar right now. What's your phone number and best time this week? 
+
+Because every day we wait on this, you're literally paying your competitors to take your customers.`;
+
+      return new Response(JSON.stringify({
+        reply,
+        session_id,
+        analysis_complete: true,
+        analysis_data: analysisResult
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } else {
+      const errorData = await analysisResponse.json();
+      return new Response(JSON.stringify({
+        reply: `I encountered an issue analyzing ${websiteUrl}: ${errorData.error}\n\nPlease try again or contact support if the issue persists.`,
+        session_id
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  } catch (error) {
+    console.error('Website analysis failed:', error);
+    return new Response(JSON.stringify({
+      reply: `I encountered a technical issue while analyzing ${websiteUrl}. Please try again in a moment.`,
+      session_id
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Access KV storage from Cloudflare runtime
@@ -85,6 +156,149 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const { message, session_id = 'default', conversation_history = [] } = body;
     devLog('Chat API request:', { message, session_id, history_length: conversation_history.length });
+
+    // Check if this is just an email address (for verification flow)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isJustEmail = emailRegex.test(message.trim()) && !message.includes(' ');
+    
+    if (isJustEmail) {
+      // Check if this email is already verified
+      const email = message.trim();
+      const userData = await kv?.get(`user:${email}`);
+      
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.verified) {
+          // Check if they previously requested website analysis
+          const lastMessage = conversation_history.length > 0 ? conversation_history[conversation_history.length - 1] : null;
+          const previousUserMessage = conversation_history.length >= 2 ? conversation_history[conversation_history.length - 2] : null;
+          
+          // Look for previous website analysis request
+          let websiteUrl = null;
+          if (previousUserMessage?.role === 'user') {
+            const urlMatch = previousUserMessage.content.match(/https?:\/\/[^\s]+/) || 
+                            previousUserMessage.content.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
+            if (urlMatch) {
+              websiteUrl = urlMatch[0];
+            }
+          }
+          
+          if (websiteUrl) {
+            // User is verified and we have their website URL - proceed with analysis
+            return await analyzeWebsiteForUser(email, websiteUrl, request, locals, session_id);
+          }
+          
+          // Store verified email in session
+          await kv?.put(`session:${session_id}`, JSON.stringify({
+            userEmail: email,
+            verified: true,
+            timestamp: new Date().toISOString()
+          }), { expirationTtl: 3600 });
+          
+          return new Response(JSON.stringify({
+            reply: `Great! I see **${email}** is already verified. ✅\n\nI'm ready to analyze your website! Just provide your website URL like:\n• "analyze mannyknows.com"\n• "check https://yoursite.com"\n• "review mywebsite.org"\n\nWhat website would you like me to analyze?`,
+            session_id
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      }
+      
+      // User provided email, check if they previously requested website analysis
+      const lastMessage = conversation_history.length > 0 ? conversation_history[conversation_history.length - 1] : null;
+      const previousUserMessage = conversation_history.length >= 2 ? conversation_history[conversation_history.length - 2] : null;
+      
+      // Look for previous website analysis request
+      let websiteUrl = null;
+      if (previousUserMessage?.role === 'user') {
+        const urlMatch = previousUserMessage.content.match(/https?:\/\/[^\s]+/) || 
+                        previousUserMessage.content.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
+        if (urlMatch) {
+          websiteUrl = urlMatch[0];
+        }
+      }
+      
+      if (websiteUrl) {
+        const email = message.trim();
+        devLog('Email provided for verification with website:', { email, websiteUrl });
+        
+        try {
+          // Start verification process
+          const verificationResponse = await fetch(`${new URL(request.url).origin}/api/verify-user`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, websiteUrl })
+          });
+          
+          const verificationData = await verificationResponse.json();
+          
+          if (verificationResponse.ok) {
+            if (verificationData.needsVerification) {
+              // Store session data
+              await kv?.put(`session:${session_id}`, JSON.stringify({
+                userEmail: email,
+                pendingWebsiteUrl: websiteUrl,
+                verificationRequested: true,
+                timestamp: new Date().toISOString()
+              }), { expirationTtl: 3600 });
+
+              const reply = `Perfect! I've sent a verification email to **${email}**.
+
+📧 **Next Steps:**
+1. Check your email inbox (and spam folder)
+2. Click the verification link 
+3. Come back here and I'll analyze **${websiteUrl}** for you!
+
+${verificationData.domainAnalysis ? `\n🔍 **Initial Insights:**\n${verificationData.domainAnalysis}` : ''}
+
+⏰ **Verification link expires in 1 hour**
+
+Once verified, I'll provide a comprehensive analysis covering performance, SEO, security, accessibility, and content quality!`;
+
+              return new Response(JSON.stringify({
+                reply,
+                session_id,
+                verification_sent: true,
+                email,
+                website_url: websiteUrl
+              }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+              });
+            } else {
+              // User already verified, proceed with analysis
+              return await analyzeWebsiteForUser(email, websiteUrl, request, locals, session_id);
+            }
+          } else {
+            return new Response(JSON.stringify({
+              reply: `I had trouble with that email address: ${verificationData.error}\n\nPlease provide a different business email address to continue.`,
+              session_id
+            }), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
+        } catch (error) {
+          devLog('Verification process failed:', error);
+          return new Response(JSON.stringify({
+            reply: 'I encountered an issue during verification. Please try again or contact support.',
+            session_id
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      } else {
+        return new Response(JSON.stringify({
+          reply: `I see you provided an email address (${message.trim()}), but I need to know which website you'd like me to analyze first.\n\nPlease provide your website URL, like:\n• "analyze mannyknows.com"\n• "check https://yoursite.com"\n• "review mywebsite.org"`,
+          session_id
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
 
     // Initialize chatbot system
     const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
@@ -126,42 +340,139 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const systemPrompt = promptBuilder.buildSystemPrompt();
 
     // Check for website analysis request
-    const urlMatch = message.match(/https?:\/\/[^\s]+/);
+    const urlMatch = message.match(/https?:\/\/[^\s]+/) || message.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
     const isAnalysisRequest = (message.toLowerCase().includes('analyze') || 
                               message.toLowerCase().includes('review') || 
                               message.toLowerCase().includes('check')) && urlMatch;
     
-    if (isAnalysisRequest && urlMatch) {
+    // Check if user is verified and provided just a domain
+    const sessionData = await kv?.get(`session:${session_id}`);
+    let verifiedEmail = null;
+    
+    if (sessionData) {
+      const session = JSON.parse(sessionData);
+      if (session.userEmail && session.verified) {
+        verifiedEmail = session.userEmail;
+      }
+    }
+    
+    // If user is verified and provides just a URL (no keywords), treat it as analysis request
+    const isVerifiedUserDomainRequest = verifiedEmail && urlMatch && !message.includes(' ') && urlMatch[0] === message.trim();
+    
+    if ((isAnalysisRequest && urlMatch) || isVerifiedUserDomainRequest) {
       const url = urlMatch[0];
       devLog('Website analysis requested for:', url);
       
+      if (verifiedEmail) {
+        // User is verified, proceed directly with analysis
+        return await analyzeWebsiteForUser(verifiedEmail, url, request, locals, session_id);
+      }
+      
+      // Check if user provided email for verification
+      const emailMatch = message.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+      
+      if (!emailMatch) {
+        const emailRequestReply = `I'd love to analyze ${url} for you! To provide this comprehensive analysis, I need to verify your email address first.
+
+🔒 **Why email verification?**
+• Prevents abuse of our analysis system
+• Allows me to save your analysis history
+• Enables personalized recommendations based on your website
+
+📧 **Please provide your email** in this format:
+"Analyze ${url} using email@yourdomain.com"
+
+💡 **Pro tip:** If you use an email with the same domain as your website, I can provide additional domain management insights!`;
+
+        return new Response(JSON.stringify({
+          reply: emailRequestReply,
+          session_id: session_id,
+          requires_email: true,
+          website_url: url
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      
+      const email = emailMatch[0];
+      
       try {
-        // Call our website analysis API
+        // Call our website analysis API with email
         const analysisResponse = await fetch(`${new URL(request.url).origin}/api/analyze-website`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
+          body: JSON.stringify({ url, email })
         });
+        
+        const analysisResult = await analysisResponse.json();
+        
+        if (analysisResponse.status === 401 && analysisResult.requiresVerification) {
+          // User needs to verify email
+          const verificationReply = `I need to verify your email address (${email}) before I can analyze ${url}.
+
+🔐 **Next Steps:**
+1. I'll send a verification link to ${email}
+2. Click the link in your email to verify
+3. Come back here and ask me to analyze your website again
+
+📧 **Sending verification email now...**
+
+${analysisResult.action === 'verify_email' ? 'This is your first time - I\'ll set up your account!' : 'Please check your email and click the verification link.'}`;
+
+          // Trigger email verification
+          try {
+            await fetch(`${new URL(request.url).origin}/api/verify-email`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, websiteUrl: url })
+            });
+          } catch (verifyError) {
+            devLog('Email verification request failed:', verifyError);
+          }
+
+          return new Response(JSON.stringify({
+            reply: verificationReply,
+            session_id: session_id,
+            requires_verification: true,
+            email: email,
+            website_url: url
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
         
         if (analysisResponse.ok) {
           const analysisResult = await analysisResponse.json();
           
-          const analysisReply = `I've analyzed ${url} for you! Here's what I found:
+          const analysisReply = `I've completed a comprehensive analysis of ${url}! Here's your detailed report:
 
 📊 **Overall Score: ${analysisResult.analysis.overallScore}/100**
 
-🚀 **Performance**: ${analysisResult.analysis.performanceScore}/100 (${analysisResult.analysis.responseTime}ms response time)
-🔍 **SEO Score**: ${analysisResult.analysis.seoScore}/100  
-♿ **Accessibility**: ${analysisResult.analysis.accessibilityScore}/100
+🎯 **Category Breakdown:**
+🚀 Performance: ${analysisResult.analysis.scores.performance}/100 (${analysisResult.analysis.metrics.responseTime}ms)
+🔍 SEO: ${analysisResult.analysis.scores.seo}/100
+♿ Accessibility: ${analysisResult.analysis.scores.accessibility}/100  
+� Security: ${analysisResult.analysis.scores.security}/100
+📝 Content: ${analysisResult.analysis.scores.content}/100
 
-${analysisResult.analysis.issues.length > 0 ? `\n⚠️ **Issues Found:**\n${analysisResult.analysis.issues.map((issue: string) => `• ${issue}`).join('\n')}` : ''}
+📈 **Key Metrics:**
+• Page Size: ${analysisResult.analysis.metrics.pageSizeKB}KB
+• Word Count: ~${analysisResult.analysis.metrics.wordCount} words
+• Images: ${analysisResult.analysis.metrics.totalImages} (${analysisResult.analysis.metrics.imagesWithAlt} with alt text)
+${analysisResult.analysis.metrics.title ? `• Title: "${analysisResult.analysis.metrics.title}" (${analysisResult.analysis.metrics.titleLength} chars)` : ''}
 
-${analysisResult.analysis.recommendations.length > 0 ? `\n💡 **Recommendations:**\n${analysisResult.analysis.recommendations.map((rec: string) => `• ${rec}`).join('\n')}` : ''}
+${analysisResult.analysis.issues.length > 0 ? `\n🚨 **Critical Issues (${analysisResult.analysis.issues.length}):**\n${analysisResult.analysis.issues.slice(0, 5).map((issue: string) => `• ${issue}`).join('\n')}${analysisResult.analysis.issues.length > 5 ? '\n• ...and more in full report' : ''}` : ''}
 
-📄 **View full report**: ${analysisResult.reportUrl}
-${analysisResult.htmlUrl ? `🌐 **Saved HTML**: ${analysisResult.htmlUrl}` : ''}
+${analysisResult.analysis.warnings && analysisResult.analysis.warnings.length > 0 ? `\n⚠️ **Warnings (${analysisResult.analysis.warnings.length}):**\n${analysisResult.analysis.warnings.slice(0, 3).map((warning: string) => `• ${warning}`).join('\n')}${analysisResult.analysis.warnings.length > 3 ? '\n• ...see full report for all warnings' : ''}` : ''}
 
-Would you like me to explain any of these findings or help you improve your website?`;
+${analysisResult.analysis.recommendations.length > 0 ? `\n💡 **Top Recommendations:**\n${analysisResult.analysis.recommendations.slice(0, 5).map((rec: string) => `• ${rec}`).join('\n')}${analysisResult.analysis.recommendations.length > 5 ? '\n• ...plus more recommendations in detailed report' : ''}` : ''}
+
+📄 **Full Analysis Report**: ${analysisResult.reportUrl}
+${analysisResult.htmlUrl ? `🌐 **Original HTML**: ${analysisResult.htmlUrl}` : ''}
+
+This comprehensive analysis covers performance, SEO, accessibility, security, and content quality. Would you like me to dive deeper into any specific area or help you prioritize these improvements?`;
 
           return new Response(JSON.stringify({
             reply: analysisReply,

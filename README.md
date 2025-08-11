@@ -1,6 +1,6 @@
 # MannyKnows - Marketing & Web Development Studio
 
-A professional business website with AI-powered chat functionality and protected website analysis services.
+Modern business consultation website with AI-powered chatbot for lead generation and website analysis services.
 
 ## 🚀 Quick Start
 
@@ -14,89 +14,61 @@ npm run build
 npm run deploy
 ```
 
-## 🎯 **Features**
+## 🎯 **Current Features**
 
 ### ✅ **AI Chat System**
 - OpenAI GPT-4o powered business consultation
-- Lead capture and management
-- Environment-based configuration
+- Automatic lead capture and storage
+- Environment-based model selection (gpt-4o-mini dev, gpt-4o prod)
+- Message limits and conversation management
 
-### ✅ **Website Analysis** (Protected Service)
+### ✅ **Website Analysis Service**
 - Comprehensive website performance analysis
-- SEO and accessibility scoring
-- Professional report generation
-- **🔐 Requires email verification** (professional users only)
+- SEO, accessibility, and performance scoring
+- Automated report generation and R2 storage
+- Integration with chat system for analysis requests
 
 ### ✅ **Admin Dashboard**
-- Lead management and export
-- Analysis tracking
-- Password-protected access
+- Lead management with viewing, deletion, and export
+- HTTP Basic Authentication security
+- Both development (memory) and production (KV) storage support
 
-## 📚 **Documentation Overview**
+## 📚 **Documentation**
 
-### **📁 Organized Documentation Structure**
-All documentation is organized in the [`docs/`](docs/) folder:
+Complete and up-to-date documentation is available in the [`docs/`](docs/) directory:
 
-```
-docs/
-├── 📖 README.md                     # Complete documentation guide
-├── 📊 current/                      # What's working right now
-│   └── CURRENT_STATUS.md            # System status & features
-├── 🔥 implementation/               # Active development
-│   └── VERIFICATION_SYSTEM_PLAN.md  # USER VERIFICATION (current priority)
-├── 📋 plans/                        # Future implementation
-│   ├── EMAIL_INTEGRATION_PLAN.md    # Phase 2: Professional reports
-│   ├── MODULAR_ANALYSIS_PLAN.md     # Phase 3: Plugin architecture
-│   └── WEBSITE_ANALYSIS_ROADMAP.md  # Long-term: Advanced features
-└── 📁 archive/                      # Historical reference
-    ├── CHATBOT_CLEANUP_REPORT.md    # System cleanup process
-    ├── QUICK_DEPLOY.md              # Deployment instructions
-    └── [historical docs...]
-```
+- **[Project Overview](docs/PROJECT_OVERVIEW.md)** - Architecture and system overview
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API endpoint documentation  
+- **[Development Guide](docs/DEVELOPMENT_GUIDE.md)** - Local development setup and workflow
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
 
-### **🎯 Quick Navigation**
-- **See what's working**: [`docs/current/CURRENT_STATUS.md`](docs/current/CURRENT_STATUS.md)
-- **Current development**: [`docs/implementation/VERIFICATION_SYSTEM_PLAN.md`](docs/implementation/VERIFICATION_SYSTEM_PLAN.md) ⭐
-- **All documentation**: [`docs/README.md`](docs/README.md)
-
-### **🔥 Current Priority**
-**IMPLEMENTING**: User verification & anti-abuse system for website analysis service
-- Professional gatekeeping (email-domain validation)
-- Rate limiting (IP, email, domain)
-- Prevents free abuse while serving legitimate customers
+## 📁 Project Structure
 
 ## 📁 Project Structure
 
 ```
 src/
-├── components/
-│   ├── ui/
-│   │   └── ProjectConsultationModal.astro  # Chat modal interface
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   ├── ui/
-│   │   ├── ChatBox.astro                  # Chat interface
-│   │   └── ProjectConsultationModal.astro # Chat modal
-│   └── [other components...]
+├── components/           # Reusable UI components
+│   ├── ui/              # Core UI elements
+│   ├── sections/        # Page sections  
+│   └── navigation/      # Navigation components
 ├── config/
 │   └── chatbot/
-│       └── environments.json               # Chat configuration
+│       └── environments.json    # AI behavior configuration
 ├── lib/
 │   └── chatbot/
-│       └── promptBuilder.ts                # AI prompt system
+│       └── promptBuilder.ts     # AI prompt generation
 ├── pages/
-│   ├── index.astro                        # Main website
+│   ├── index.astro              # Homepage
+│   ├── admin/
+│   │   └── leads.astro          # Admin interface
 │   └── api/
-│       ├── chat.ts                        # Chat API endpoint
-│       ├── analyze-website.ts             # Website analysis API
-│       ├── files/[...path].ts             # R2 file serving
-│       └── admin/
-│           └── leads.ts                   # Lead management
+│       ├── chat.ts              # Chatbot API
+│       ├── analyze-website.ts   # Website analysis
+│       ├── files/[...path].ts   # File serving
+│       └── admin/leads.ts       # Lead management API
 └── utils/
-    └── debug.ts                           # Logging utilities
+    └── debug.ts                 # Logging utilities
 ```
 
 ## ⚙️ Configuration
@@ -104,42 +76,74 @@ src/
 ### Environment Variables
 Set via Cloudflare Workers secrets:
 ```bash
-npx wrangler secret put OPENAI_API_KEY
-npx wrangler secret put ADMIN_PASSWORD     # For admin access
-npx wrangler secret put RESEND_API_KEY     # For email verification (coming soon)
+npx wrangler secret put OPENAI_API_KEY    # Required for chatbot
+npx wrangler secret put ADMIN_PASSWORD    # Required for admin access
 ```
 
 ### Chat Configuration
-Edit `src/config/chatbot/environments.json` for behavior settings.
-
-## 🛠️ Development
-
-```bash
-npm run dev                # Start development server
-npm run build             # Build for production  
-npm run deploy            # Deploy to Cloudflare Workers
+Edit `src/config/chatbot/environments.json`:
+```json
+{
+  "development": {
+    "model": "gpt-4o-mini",
+    "chatbot_enabled": true,
+    "debug_logging": true
+  },
+  "production": {
+    "model": "gpt-4o", 
+    "chatbot_enabled": false,
+    "debug_logging": false
+  }
+}
 ```
 
-## 📊 Admin Access
+## 🛠️ Development Commands
 
-- **Lead Management**: Visit `/admin/leads` (password protected)
-- **Analysis Tracking**: Coming with verification system
-- **Usage Analytics**: Planned feature
+```bash
+npm run dev               # Start development server (localhost:4321)
+npm run build            # Build for production  
+npm run deploy           # Deploy to Cloudflare Workers
+npm run perf:analyze     # Performance analysis
+```
 
-## 🚀 Current Development
+## 📊 Admin Features
 
-**Active Implementation**: User verification system for website analysis service
+- **Lead Management**: `/admin/leads` (HTTP Basic Auth)
+- **Export Options**: CSV, JSON, Google Sheets integration
+- **Analysis Reports**: Accessible via R2 file serving
+- **Real-time Logs**: Available via `wrangler tail`
 
-**Why First**: Establish professional gatekeeping before expanding features to protect service value and ensure legitimate customer usage.
+## 🎯 System Status
 
-**See**: [`docs/implementation/VERIFICATION_SYSTEM_PLAN.md`](docs/implementation/VERIFICATION_SYSTEM_PLAN.md) for complete implementation details.
+### ✅ **Production Ready**
+- AI chatbot with lead capture
+- Website analysis service
+- Admin panel with authentication
+- Cloudflare Workers deployment
+- KV and R2 storage integration
 
-## 📈 **Development Roadmap**
+### ⚠️ **Not Implemented**
+- User verification system (planned)
+- Rate limiting controls
+- Email notifications
+- Advanced analysis features
 
-1. **🔐 User Verification** (CURRENT) - Professional access control
-2. **📧 Email Integration** (NEXT) - Professional report delivery  
-3. **🧩 Modular Analysis** (FUTURE) - Enhanced plugin capabilities
-4. **🖼️ Advanced Features** (ROADMAP) - Screenshots, Lighthouse, enterprise
+## � Troubleshooting
+
+**Chatbot Issues:**
+- Check `chatbot_enabled: true` in environments.json
+- Verify `OPENAI_API_KEY` secret is set
+- Monitor browser console for errors
+
+**Admin Access:**
+- Ensure `ADMIN_PASSWORD` secret is configured
+- Use HTTP Basic Auth credentials
+- Check Cloudflare Workers logs
+
+**Analysis Service:**
+- Verify R2 bucket exists and is accessible
+- Check `MANNYKNOWS_R2` binding in wrangler.jsonc
+- Monitor API response for error details
 
 **Full roadmap**: [`docs/plans/`](docs/plans/) folder
 
