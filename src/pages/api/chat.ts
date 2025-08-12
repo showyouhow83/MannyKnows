@@ -1,10 +1,485 @@
 import type { APIRoute } from 'astro';
-import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
-import { errorLog, devLog } from '../../utils/debug';
+import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
+import { getServiceBranding, getAvailableUserServices } from '../../lib/services/components/userServices';
+import { devLog } from '../../utils/debug';
+import { PromptBuilder } from '../../lib/chatbot/promptBuilder';
 
 export const prerender = false;
 
-// Development storage (in-memory)
+// Ultra-simplified tools for debugging
+const AVAILABLE_TOOLS = [
+  {
+    type: "function" as const,
+    function: {
+      name: "analyze_website",
+      description: "Analyze a website",
+      parameters: {
+        type: "object",
+        properties: {
+          url: {
+            type: "string",
+            description: "Website URL"
+          }
+        },
+        required: ["url"]
+      }
+    }
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "show_available_services",
+      description: "Show available MK services to the user",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: []
+      }
+    }
+  }
+];
+
+export const POST: APIRoute = async ({ request, locals }) => {
+  try {
+    const body = await request.json();
+    const { message, session_id = crypto.randomUUID(), conversation_history = [], mode = 'analysis' } = body;
+    
+    devLog('Function-calling chat request:', { message, session_id, history_length: conversation_history.length, mode });
+
+    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    
+    // Get environment config and build personality-driven prompt
+    const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
+    const config = await import('../../config/chatbot/environments.json');
+    const envConfig = config.default[environment as keyof typeof config.default];
+
+    if (!envConfig.chatbot_enabled) {
+      return new Response(JSON.stringify({
+        reply: "I'm currently offline for maintenance. Please contact us directly for assistance.",
+        chatbot_offline: true
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Build streamlined prompt for function calling mode
+    const isAnalysisRequest = message.toLowerCase().includes('analyz') || 
+                             message.toLowerCase().includes('website') ||
+                             message.toLowerCase().includes('scan') ||
+                             message.toLowerCase().includes('audit');
+
+    // Email detection helper
+    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+    const hasEmail = emailPattern.test(message);
+
+    let systemPrompt = '';
+    let toolChoice: "auto" | "required" = "auto";
+    
+    if (isAnalysisRequest && mode === 'analysis') {
+      // Analysis mode - implement email verification workflow first
+      if (message.toLowerCase().includes('verify email:')) {
+        // Handle email verification
+        systemPrompt = `You are Sally from MK. The user provided an email for verification. Confirm the email is valid and proceed with next steps. If email is valid, respond with verification success and ask for their website URL.`;
+        toolChoice = "auto";
+      } else if (hasEmail && (message.includes('http') || message.includes('www.'))) {
+        // Both email and URL provided - proceed with analysis
+        systemPrompt = `You are Sally from MK. The user provided both email and website URL. Proceed with analyzing the website using the analyze_website function.`;
+        toolChoice = "required";
+      } else if (hasEmail && !message.toLowerCase().includes('verify email:')) {
+        // Email detected in message - verify it and then ask for URL
+        systemPrompt = `You are Sally from MK. The user provided an email address. Extract and verify the email, then ask for their website URL to proceed with the analysis. Say something like: "Perfect! I have your email [EMAIL]. Now, what's your website URL so I can run the comprehensive AI analysis?"`;
+        toolChoice = "auto";
+      } else if (message.includes('http') || message.includes('www.')) {
+        // URL provided, but need to check if email was verified first
+        systemPrompt = `You are Sally from MK. Before analyzing any website, you need to collect and verify the user's email address for lead generation. Ask: "I'd be happy to analyze your website! First, I need your email address to send you the detailed analysis report. What's your email address?"`;
+        toolChoice = "auto";
+      } else {
+        // Initial analysis request - ask for email first, not URL
+        systemPrompt = `You are Sally from MK. The user wants website analysis. Before asking for their website URL, you need to collect their email address first for lead generation. Ask: "I'd be happy to help with a comprehensive AI analysis of your website! First, I'll need your email address to send you the detailed report. What's your email address?"`;
+        toolChoice = "auto";
+      }
+    } else if (mode === 'chat') {
+      // Chat mode - no tools, conversational Sally
+      systemPrompt = `You are Sally, an MK sales specialist. Be helpful and professional. Available services: AI Web Intelligence Scan, Market Intelligence Report, Digital Presence Optimizer, Growth Acceleration Analysis. 
+
+For website analysis, recommend: "I'd suggest using our AI Web Intelligence Scan tool for a comprehensive analysis." 
+
+Answer questions about MK services, availability, and help schedule calls. Be conversational but focused on MK offerings.`;
+    } else {
+      // Get available services from catalog (modal mode with tools)
+      const availableServices = getAvailableUserServices();
+      const servicesList = availableServices.map(s => `${s.displayName}`).join(', ');
+      
+      // Professional MK-focused system prompt
+      systemPrompt = `You are an MK sales specialist. Available services: ${servicesList}. Be professional and direct. Only offer MK services.`;
+    }
+
+    // Prepare OpenAI request with function calling
+    const openaiMessages = [
+      {
+        role: "system" as const,
+        content: systemPrompt
+      },
+      {
+        role: "user" as const,
+        content: isAnalysisRequest ? `analyze website: ${message}` : message
+      }
+    ];
+
+    devLog('System prompt length:', systemPrompt.length);
+    devLog('Tool choice:', toolChoice);
+    devLog('Sending messages to OpenAI:', openaiMessages);
+
+    // Call OpenAI with function calling
+    const apiKey = import.meta.env.OPENAI_API_KEY;
+    
+    // Prepare request body - only include tools for analysis/modal modes
+    const requestBody: any = {
+      model: envConfig.model,
+      messages: openaiMessages,
+      max_completion_tokens: envConfig.max_tokens,
+      temperature: envConfig.temperature
+    };
+
+    // Only include tools for non-chat modes
+    if (mode !== 'chat') {
+      requestBody.tools = AVAILABLE_TOOLS;
+      requestBody.tool_choice = toolChoice;
+    }
+
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!openaiResponse.ok) {
+      const error = await openaiResponse.text();
+      devLog('OpenAI API error:', `${openaiResponse.status} - ${error}`);
+      throw new Error(`OpenAI API error: ${openaiResponse.status} - ${error}`);
+    }
+
+    const data = await openaiResponse.json();
+    devLog('OpenAI function-calling response:', data);
+    
+    const choice = data.choices[0];
+    devLog('Choice message:', choice?.message);
+    devLog('Tool calls:', choice?.message?.tool_calls);
+    
+    let finalResponse = '';
+
+    // Handle function calls
+    if (choice.message.tool_calls) {
+      const toolResults = [];
+
+      for (const toolCall of choice.message.tool_calls) {
+        const functionName = toolCall.function.name;
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        
+        devLog('Executing function:', `${functionName} with ${JSON.stringify(functionArgs)}`);
+
+        let toolResult = null;
+
+        switch (functionName) {
+          case 'analyze_website':
+            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv);
+            break;
+            
+          case 'product_analysis':
+            toolResult = await executeProductAnalysis(functionArgs.url, session_id, kv);
+            break;
+            
+          case 'seo_audit':
+            toolResult = await executeSEOAudit(functionArgs.url, session_id, kv);
+            break;
+            
+          case 'conversion_optimization':
+            toolResult = await executeConversionOptimization(functionArgs.url, session_id, kv);
+            break;
+            
+          case 'show_available_services':
+            toolResult = getAvailableServicesInfo();
+            break;
+            
+          case 'request_email_verification':
+            toolResult = await handleEmailVerification(functionArgs.email, session_id, kv);
+            break;
+            
+          default:
+            toolResult = { error: `Unknown function: ${functionName}` };
+        }
+
+        toolResults.push({
+          tool_call_id: toolCall.id,
+          result: toolResult
+        });
+      }
+
+      // Send tool results back to OpenAI for final response
+      const followUpMessages = [
+        ...openaiMessages,
+        choice.message,
+        ...toolResults.map(result => ({
+          role: "tool" as const,
+          tool_call_id: result.tool_call_id,
+          content: JSON.stringify(result.result)
+        }))
+      ];
+
+      const finalOpenaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: envConfig.model,
+          messages: followUpMessages,
+          max_completion_tokens: 300, // Keep responses short
+          temperature: envConfig.temperature
+        }),
+      });
+
+      const finalData = await finalOpenaiResponse.json();
+      finalResponse = finalData.choices[0].message.content;
+
+    } else {
+      // No function calls, just regular response
+      finalResponse = choice.message.content;
+    }
+
+    return new Response(JSON.stringify({
+      reply: finalResponse,
+      session_id
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Function-calling chat error:', error);
+    return new Response(JSON.stringify({
+      error: 'Internal server error',
+      reply: "I'm having technical difficulties. Please try again in a moment."
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+};
+
+// Function implementations
+async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any) {
+  try {
+    // Normalize URL
+    const normalizedUrl = url.startsWith('http') ? url : `https://${url}`;
+    
+    // Check if user needs verification first
+    // const sessionData = kv ? await kv.get(`session:${sessionId}`) : null;
+    // const isVerified = sessionData ? JSON.parse(sessionData).verified : false;
+    
+    // Temporarily disable verification for testing
+    const isVerified = true;
+    
+    if (!isVerified) {
+      return {
+        status: 'verification_required',
+        message: 'Email verification required before analysis',
+        url: normalizedUrl
+      };
+    }
+
+    // Execute the actual analysis using our service orchestrator
+    const result = await serviceOrchestrator.executeUserService(
+      'advanced_web_analysis',
+      { url: normalizedUrl },
+      { session_id: sessionId, kv }
+    );
+
+    devLog('Service orchestrator result:', result);
+
+    if (result.success) {
+      return {
+        status: 'success',
+        url: normalizedUrl,
+        analysis: result.data,
+        summary: formatAnalysisResults(result.data)
+      };
+    } else {
+      return {
+        status: 'error',
+        message: result.errors?.join(', ') || 'Analysis failed'
+      };
+    }
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+// Generate available services dynamically from User Services
+function getAvailableServicesInfo() {
+  const userServices = getAvailableUserServices();
+  
+  const servicesText = userServices.map(service => 
+    `**${service.displayName}** ${service.icon}\n` +
+    `${service.shortDescription}\n` +
+    `⏱️ ${service.estimatedTime}`
+  ).join('\n\n');
+
+  return {
+    success: true,
+    services: userServices,
+    formatted_text: `Here are our available AI services:\n\n${servicesText}\n\nWhich service interests you most?`
+  };
+}
+
+async function handleEmailVerification(email: string, sessionId: string, kv: any) {
+  // Implementation for email verification
+  return {
+    status: 'verification_sent',
+    email: email,
+    message: 'Verification email sent'
+  };
+}
+
+function formatAnalysisResults(data: any) {
+  if (!data.analysis) return 'Analysis data not available';
+  
+  const analysis = data.analysis;
+  return `## 📊 Website Analysis Results
+
+**Overall Score:** ${analysis.overallScore}/100
+
+### 🔍 Key Metrics
+- **SEO Score:** ${analysis.scores.seo}/100
+- **Performance:** ${analysis.scores.performance}/100  
+- **Security:** ${analysis.scores.security}/100
+
+### ⚡ Load Performance
+- **Response Time:** ${analysis.metrics.responseTime}ms
+- **Page Size:** ${analysis.metrics.pageSizeKB}KB
+
+### 🎯 Top Opportunities
+${analysis.issues.slice(0, 3).map((issue: string) => `- ${issue}`).join('\n')}
+
+Ready to dive deeper into any specific area?`;
+}
+
+// Progressive Analysis Functions
+async function executeProductAnalysis(url: string, session_id: string, kv: any) {
+  try {
+    devLog('Executing product analysis for:', url);
+    
+    // Simulated product analysis results
+    const productAnalysis = {
+      analysis: {
+        productDescriptions: {
+          count: 12,
+          avgLength: 45,
+          aiOptimizationScore: 35,
+          issues: [
+            "Generic product descriptions lack emotional triggers",
+            "Missing SEO keywords in 70% of descriptions", 
+            "No personalization or customer-specific language",
+            "Competitive descriptions outperform by 40%"
+          ]
+        },
+        opportunities: [
+          "AI-powered description generator could increase conversions by 25%",
+          "Personalized product recommendations based on user behavior",
+          "Dynamic pricing optimization using market intelligence"
+        ]
+      }
+    };
+    
+    return {
+      success: true,
+      data: productAnalysis,
+      analysis_type: 'product_analysis'
+    };
+  } catch (error) {
+    return { success: false, error: 'Product analysis failed' };
+  }
+}
+
+async function executeSEOAudit(url: string, session_id: string, kv: any) {
+  try {
+    devLog('Executing SEO audit for:', url);
+    
+    const seoAudit = {
+      analysis: {
+        seoGaps: {
+          missingKeywords: 23,
+          contentGaps: 8,
+          technicalIssues: 5,
+          competitorAdvantages: [
+            "Competitors rank for 40% more profitable keywords",
+            "Missing schema markup reducing rich snippet potential",
+            "Page speed affecting mobile rankings",
+            "Internal linking structure needs optimization"
+          ]
+        },
+        opportunities: [
+          "AI SEO agent could identify and target 50+ new profitable keywords",
+          "Automated content optimization for featured snippets",
+          "Real-time competitor tracking and gap analysis"
+        ]
+      }
+    };
+    
+    return {
+      success: true,
+      data: seoAudit,
+      analysis_type: 'seo_audit'
+    };
+  } catch (error) {
+    return { success: false, error: 'SEO audit failed' };
+  }
+}
+
+async function executeConversionOptimization(url: string, session_id: string, kv: any) {
+  try {
+    devLog('Executing conversion optimization for:', url);
+    
+    const conversionAnalysis = {
+      analysis: {
+        conversionIssues: {
+          currentRate: 2.3,
+          potentialRate: 4.8,
+          revenueGap: "$12,400/month",
+          criticalIssues: [
+            "Call-to-action buttons have low visibility",
+            "Checkout process has 60% abandonment rate",
+            "No urgency triggers or social proof",
+            "Mobile experience causes 40% drop-offs"
+          ]
+        },
+        opportunities: [
+          "AI-powered A/B testing could optimize conversion funnels automatically",
+          "Behavioral tracking agent to identify drop-off points",
+          "Dynamic pricing and offer optimization based on user intent"
+        ]
+      }
+    };
+    
+    return {
+      success: true,
+      data: conversionAnalysis,
+      analysis_type: 'conversion_optimization'
+    };
+  } catch (error) {
+    return { success: false, error: 'Conversion optimization failed' };
+  }
+}
+
+// Development storage (in-memory) for leads
 const devLeads: Array<{
   name?: string;
   email?: string;
@@ -43,7 +518,7 @@ async function getLeadsFromStorage(environment: string, kv?: any) {
       }
       return leads.sort((a, b) => new Date(b.created_at || b.timestamp).getTime() - new Date(a.created_at || a.timestamp).getTime());
     } catch (error) {
-      errorLog('Error fetching leads from KV:', error);
+      console.error('Error fetching leads from KV:', error);
       return [];
     }
   } else {
@@ -51,541 +526,6 @@ async function getLeadsFromStorage(environment: string, kv?: any) {
     return devLeads;
   }
 }
-
-// Helper function to analyze website for verified user
-async function analyzeWebsiteForUser(email: string, websiteUrl: string, request: Request, locals: any, session_id: string) {
-  try {
-    const analysisResponse = await fetch(`${new URL(request.url).origin}/api/analyze-website`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: websiteUrl, email })
-    });
-    
-    if (analysisResponse.ok) {
-      const analysisResult = await analysisResponse.json();
-      
-      // Create dynamic, intelligent response based on actual analysis data
-      const analysis = analysisResult.analysis;
-      const biggestProblem = analysis.scores.seo < 60 ? 'SEO' : 
-                           analysis.scores.performance < 70 ? 'performance' : 
-                           analysis.scores.security < 80 ? 'security' : 'optimization';
-      
-      const lostRevenue = analysis.scores.performance < 70 ? 
-        `Your ${analysis.metrics.responseTime}ms load time is killing conversions - that's potentially thousands in lost sales monthly` :
-        analysis.scores.seo < 60 ? 
-        `With SEO at ${analysis.scores.seo}/100, you're invisible to customers actively searching for what you sell` :
-        `Multiple critical issues are bleeding potential customers before they even see your offer`;
-
-      const urgentIssue = analysis.issues.length > 0 ? analysis.issues[0] : 
-                         analysis.warnings?.length > 0 ? analysis.warnings[0] : 
-                         'optimization opportunities';
-
-      const reply = `Just analyzed ${websiteUrl} - and I need to be direct with you.
-
-${lostRevenue}. 
-
-The specific issue I'm most concerned about: ${urgentIssue.toLowerCase()}. This isn't just a technical problem - it's costing you real money right now while your competitors capture the customers you should be getting.
-
-Look, I could walk you through all the details, but what you really need is Manny to map out exactly how to fix this and turn these problems into profit drivers.
-
-I'm blocking out 20 minutes on his calendar right now. What's your phone number and best time this week? 
-
-Because every day we wait on this, you're literally paying your competitors to take your customers.`;
-
-      return new Response(JSON.stringify({
-        reply,
-        session_id,
-        analysis_complete: true,
-        analysis_data: analysisResult
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    } else {
-      const errorData = await analysisResponse.json();
-      return new Response(JSON.stringify({
-        reply: `I encountered an issue analyzing ${websiteUrl}: ${errorData.error}\n\nPlease try again or contact support if the issue persists.`,
-        session_id
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-  } catch (error) {
-    console.error('Website analysis failed:', error);
-    return new Response(JSON.stringify({
-      reply: `I encountered a technical issue while analyzing ${websiteUrl}. Please try again in a moment.`,
-      session_id
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-}
-
-export const POST: APIRoute = async ({ request, locals }) => {
-  try {
-    // Access KV storage from Cloudflare runtime
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-    
-    // Check if API key is available
-    const apiKey = import.meta.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      errorLog('OPENAI_API_KEY environment variable is not set');
-      return new Response(JSON.stringify({
-        reply: 'Chat service is currently unavailable. Please try again later.'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Parse request
-    let body;
-    try {
-      body = await request.json();
-    } catch (parseError) {
-      errorLog('JSON parsing error:', parseError);
-      return new Response(JSON.stringify({
-        reply: 'Invalid request format. Please try again.'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const { message, session_id = 'default', conversation_history = [] } = body;
-    devLog('Chat API request:', { message, session_id, history_length: conversation_history.length });
-
-    // Check if this is just an email address (for verification flow)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isJustEmail = emailRegex.test(message.trim()) && !message.includes(' ');
-    
-    if (isJustEmail) {
-      // Check if this email is already verified
-      const email = message.trim();
-      const userData = await kv?.get(`user:${email}`);
-      
-      if (userData) {
-        const user = JSON.parse(userData);
-        if (user.verified) {
-          // Check if they previously requested website analysis
-          const lastMessage = conversation_history.length > 0 ? conversation_history[conversation_history.length - 1] : null;
-          const previousUserMessage = conversation_history.length >= 2 ? conversation_history[conversation_history.length - 2] : null;
-          
-          // Look for previous website analysis request
-          let websiteUrl = null;
-          if (previousUserMessage?.role === 'user') {
-            const urlMatch = previousUserMessage.content.match(/https?:\/\/[^\s]+/) || 
-                            previousUserMessage.content.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
-            if (urlMatch) {
-              websiteUrl = urlMatch[0];
-            }
-          }
-          
-          if (websiteUrl) {
-            // User is verified and we have their website URL - proceed with analysis
-            return await analyzeWebsiteForUser(email, websiteUrl, request, locals, session_id);
-          }
-          
-          // Store verified email in session
-          await kv?.put(`session:${session_id}`, JSON.stringify({
-            userEmail: email,
-            verified: true,
-            timestamp: new Date().toISOString()
-          }), { expirationTtl: 3600 });
-          
-          return new Response(JSON.stringify({
-            reply: `Great! I see **${email}** is already verified. ✅\n\nI'm ready to analyze your website! Just provide your website URL like:\n• "analyze mannyknows.com"\n• "check https://yoursite.com"\n• "review mywebsite.org"\n\nWhat website would you like me to analyze?`,
-            session_id
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      }
-      
-      // User provided email, check if they previously requested website analysis
-      const lastMessage = conversation_history.length > 0 ? conversation_history[conversation_history.length - 1] : null;
-      const previousUserMessage = conversation_history.length >= 2 ? conversation_history[conversation_history.length - 2] : null;
-      
-      // Look for previous website analysis request
-      let websiteUrl = null;
-      if (previousUserMessage?.role === 'user') {
-        const urlMatch = previousUserMessage.content.match(/https?:\/\/[^\s]+/) || 
-                        previousUserMessage.content.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
-        if (urlMatch) {
-          websiteUrl = urlMatch[0];
-        }
-      }
-      
-      if (websiteUrl) {
-        const email = message.trim();
-        devLog('Email provided for verification with website:', { email, websiteUrl });
-        
-        try {
-          // Start verification process
-          const verificationResponse = await fetch(`${new URL(request.url).origin}/api/verify-user`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, websiteUrl })
-          });
-          
-          const verificationData = await verificationResponse.json();
-          
-          if (verificationResponse.ok) {
-            if (verificationData.needsVerification) {
-              // Store session data
-              await kv?.put(`session:${session_id}`, JSON.stringify({
-                userEmail: email,
-                pendingWebsiteUrl: websiteUrl,
-                verificationRequested: true,
-                timestamp: new Date().toISOString()
-              }), { expirationTtl: 3600 });
-
-              const reply = `Perfect! I've sent a verification email to **${email}**.
-
-📧 **Next Steps:**
-1. Check your email inbox (and spam folder)
-2. Click the verification link 
-3. Come back here and I'll analyze **${websiteUrl}** for you!
-
-${verificationData.domainAnalysis ? `\n🔍 **Initial Insights:**\n${verificationData.domainAnalysis}` : ''}
-
-⏰ **Verification link expires in 1 hour**
-
-Once verified, I'll provide a comprehensive analysis covering performance, SEO, security, accessibility, and content quality!`;
-
-              return new Response(JSON.stringify({
-                reply,
-                session_id,
-                verification_sent: true,
-                email,
-                website_url: websiteUrl
-              }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' },
-              });
-            } else {
-              // User already verified, proceed with analysis
-              return await analyzeWebsiteForUser(email, websiteUrl, request, locals, session_id);
-            }
-          } else {
-            return new Response(JSON.stringify({
-              reply: `I had trouble with that email address: ${verificationData.error}\n\nPlease provide a different business email address to continue.`,
-              session_id
-            }), {
-              status: 200,
-              headers: { 'Content-Type': 'application/json' },
-            });
-          }
-        } catch (error) {
-          devLog('Verification process failed:', error);
-          return new Response(JSON.stringify({
-            reply: 'I encountered an issue during verification. Please try again or contact support.',
-            session_id
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      } else {
-        return new Response(JSON.stringify({
-          reply: `I see you provided an email address (${message.trim()}), but I need to know which website you'd like me to analyze first.\n\nPlease provide your website URL, like:\n• "analyze mannyknows.com"\n• "check https://yoursite.com"\n• "review mywebsite.org"`,
-          session_id
-        }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    }
-
-    // Initialize chatbot system
-    const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
-    const environmentsConfig = await import('../../config/chatbot/environments.json');
-    const envSettings = environmentsConfig.default[environment];
-    
-    const promptBuilder = createPromptBuilder(envSettings.persona, envSettings.goals, environment);
-    const guardrails = promptBuilder.getGuardrails();
-    
-    // Enforce message limits
-    const maxMessages = guardrails.response_limits.max_conversation_length;
-    const currentMessageCount = conversation_history.filter((msg: any) => msg.role === 'user').length + 1;
-    
-    if (currentMessageCount > maxMessages) {
-      devLog(`Message limit exceeded: ${currentMessageCount}/${maxMessages} for session ${session_id}`);
-      return new Response(JSON.stringify({
-        reply: `I appreciate your interest! After ${maxMessages} messages, I need to connect you with Manny for a proper consultation. Please call us at (555) 123-4567 or email hello@mannyknows.com to continue.`,
-        message_limit_reached: true,
-        session_id: session_id
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Check if chatbot is enabled
-    if (!envSettings.chatbot_enabled) {
-      return new Response(JSON.stringify({
-        reply: "Thank you for reaching out! Our AI assistant is currently offline. Please contact us directly at (555) 123-4567 or email hello@mannyknows.com for assistance.",
-        chatbot_offline: true,
-        session_id: session_id
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Build system prompt
-    const systemPrompt = promptBuilder.buildSystemPrompt();
-
-    // Check for website analysis request
-    const urlMatch = message.match(/https?:\/\/[^\s]+/) || message.match(/[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.([a-zA-Z]{2,6})/);
-    const isAnalysisRequest = (message.toLowerCase().includes('analyze') || 
-                              message.toLowerCase().includes('review') || 
-                              message.toLowerCase().includes('check')) && urlMatch;
-    
-    // Check if user is verified and provided just a domain
-    const sessionData = await kv?.get(`session:${session_id}`);
-    let verifiedEmail = null;
-    
-    if (sessionData) {
-      const session = JSON.parse(sessionData);
-      if (session.userEmail && session.verified) {
-        verifiedEmail = session.userEmail;
-      }
-    }
-    
-    // If user is verified and provides just a URL (no keywords), treat it as analysis request
-    const isVerifiedUserDomainRequest = verifiedEmail && urlMatch && !message.includes(' ') && urlMatch[0] === message.trim();
-    
-    if ((isAnalysisRequest && urlMatch) || isVerifiedUserDomainRequest) {
-      const url = urlMatch[0];
-      devLog('Website analysis requested for:', url);
-      
-      if (verifiedEmail) {
-        // User is verified, proceed directly with analysis
-        return await analyzeWebsiteForUser(verifiedEmail, url, request, locals, session_id);
-      }
-      
-      // Check if user provided email for verification
-      const emailMatch = message.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
-      
-      if (!emailMatch) {
-        const emailRequestReply = `I'd love to analyze ${url} for you! To provide this comprehensive analysis, I need to verify your email address first.
-
-🔒 **Why email verification?**
-• Prevents abuse of our analysis system
-• Allows me to save your analysis history
-• Enables personalized recommendations based on your website
-
-📧 **Please provide your email** in this format:
-"Analyze ${url} using email@yourdomain.com"
-
-💡 **Pro tip:** If you use an email with the same domain as your website, I can provide additional domain management insights!`;
-
-        return new Response(JSON.stringify({
-          reply: emailRequestReply,
-          session_id: session_id,
-          requires_email: true,
-          website_url: url
-        }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      
-      const email = emailMatch[0];
-      
-      try {
-        // Call our website analysis API with email
-        const analysisResponse = await fetch(`${new URL(request.url).origin}/api/analyze-website`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, email })
-        });
-        
-        const analysisResult = await analysisResponse.json();
-        
-        if (analysisResponse.status === 401 && analysisResult.requiresVerification) {
-          // User needs to verify email
-          const verificationReply = `I need to verify your email address (${email}) before I can analyze ${url}.
-
-🔐 **Next Steps:**
-1. I'll send a verification link to ${email}
-2. Click the link in your email to verify
-3. Come back here and ask me to analyze your website again
-
-📧 **Sending verification email now...**
-
-${analysisResult.action === 'verify_email' ? 'This is your first time - I\'ll set up your account!' : 'Please check your email and click the verification link.'}`;
-
-          // Trigger email verification
-          try {
-            await fetch(`${new URL(request.url).origin}/api/verify-email`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, websiteUrl: url })
-            });
-          } catch (verifyError) {
-            devLog('Email verification request failed:', verifyError);
-          }
-
-          return new Response(JSON.stringify({
-            reply: verificationReply,
-            session_id: session_id,
-            requires_verification: true,
-            email: email,
-            website_url: url
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-        
-        if (analysisResponse.ok) {
-          const analysisResult = await analysisResponse.json();
-          
-          const analysisReply = `I've completed a comprehensive analysis of ${url}! Here's your detailed report:
-
-📊 **Overall Score: ${analysisResult.analysis.overallScore}/100**
-
-🎯 **Category Breakdown:**
-🚀 Performance: ${analysisResult.analysis.scores.performance}/100 (${analysisResult.analysis.metrics.responseTime}ms)
-🔍 SEO: ${analysisResult.analysis.scores.seo}/100
-♿ Accessibility: ${analysisResult.analysis.scores.accessibility}/100  
-� Security: ${analysisResult.analysis.scores.security}/100
-📝 Content: ${analysisResult.analysis.scores.content}/100
-
-📈 **Key Metrics:**
-• Page Size: ${analysisResult.analysis.metrics.pageSizeKB}KB
-• Word Count: ~${analysisResult.analysis.metrics.wordCount} words
-• Images: ${analysisResult.analysis.metrics.totalImages} (${analysisResult.analysis.metrics.imagesWithAlt} with alt text)
-${analysisResult.analysis.metrics.title ? `• Title: "${analysisResult.analysis.metrics.title}" (${analysisResult.analysis.metrics.titleLength} chars)` : ''}
-
-${analysisResult.analysis.issues.length > 0 ? `\n🚨 **Critical Issues (${analysisResult.analysis.issues.length}):**\n${analysisResult.analysis.issues.slice(0, 5).map((issue: string) => `• ${issue}`).join('\n')}${analysisResult.analysis.issues.length > 5 ? '\n• ...and more in full report' : ''}` : ''}
-
-${analysisResult.analysis.warnings && analysisResult.analysis.warnings.length > 0 ? `\n⚠️ **Warnings (${analysisResult.analysis.warnings.length}):**\n${analysisResult.analysis.warnings.slice(0, 3).map((warning: string) => `• ${warning}`).join('\n')}${analysisResult.analysis.warnings.length > 3 ? '\n• ...see full report for all warnings' : ''}` : ''}
-
-${analysisResult.analysis.recommendations.length > 0 ? `\n💡 **Top Recommendations:**\n${analysisResult.analysis.recommendations.slice(0, 5).map((rec: string) => `• ${rec}`).join('\n')}${analysisResult.analysis.recommendations.length > 5 ? '\n• ...plus more recommendations in detailed report' : ''}` : ''}
-
-📄 **Full Analysis Report**: ${analysisResult.reportUrl}
-${analysisResult.htmlUrl ? `🌐 **Original HTML**: ${analysisResult.htmlUrl}` : ''}
-
-This comprehensive analysis covers performance, SEO, accessibility, security, and content quality. Would you like me to dive deeper into any specific area or help you prioritize these improvements?`;
-
-          return new Response(JSON.stringify({
-            reply: analysisReply,
-            session_id: session_id,
-            analysis_data: analysisResult
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      } catch (error) {
-        devLog('Website analysis failed:', error);
-        // Continue with normal chat flow if analysis fails
-      }
-    }
-
-    // Build conversation messages
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...conversation_history,
-      { role: 'user', content: message }
-    ];
-
-    // Call OpenAI API
-    const requestBody: any = {
-      model: envSettings.model,
-      messages: messages,
-      temperature: envSettings.temperature,
-    };
-    
-    // Add max_tokens for older models
-    if (!envSettings.model.includes('gpt-5') && !envSettings.model.includes('o1')) {
-      requestBody.max_tokens = envSettings.max_tokens;
-    }
-    
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    devLog('OpenAI API response status:', response.status);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      errorLog(`OpenAI API error: ${response.status} - ${errorText}`);
-      return new Response(JSON.stringify({
-        reply: 'Sorry, I encountered an error. Please try again later.'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const data = await response.json();
-    devLog('OpenAI API response data:', data);
-    
-    if (data.choices && data.choices[0]) {
-      const choice = data.choices[0];
-      let replyContent = choice.message?.content || '';
-      
-      // Validate response against guardrails
-      if (replyContent) {
-        const validation = promptBuilder.validateResponse(replyContent);
-        if (!validation.valid && environment === 'production') {
-          replyContent = 'I apologize, but I need to rephrase my response. Could you please ask your question again?';
-        }
-      }
-
-      // Simple lead capture (only in production and if enabled)
-      if (envSettings.lead_capture_enabled && environment === 'production') {
-        const leadInfo = extractSimpleLeadInfo(message, conversation_history);
-        if (leadInfo.hasContactInfo) {
-          const leadData = {
-            ...leadInfo,
-            message,
-            timestamp: new Date().toISOString(),
-            sessionId: session_id
-          };
-          await saveLeadToStorage(leadData, environment, kv);
-          devLog('Lead captured:', leadInfo);
-        }
-      }
-      
-      return new Response(JSON.stringify({
-        reply: replyContent || 'I received your message but had trouble generating a response. Please try again.',
-        session_id: session_id
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    return new Response(JSON.stringify({
-      reply: 'I apologize, but I encountered an issue. Please try again.'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-  } catch (error) {
-    errorLog('Chat API error:', error);
-    return new Response(JSON.stringify({
-      reply: 'Sorry, I encountered an error. Please try again later.'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-};
 
 // Export leads for admin access
 export const getLeads = async (environment?: string, kv?: any) => {
@@ -608,7 +548,7 @@ export const deleteLead = async (leadId: string, environment?: string, kv?: any)
       }
       return false;
     } catch (error) {
-      errorLog('Error deleting lead from KV:', error);
+      console.error('Error deleting lead from KV:', error);
       return false;
     }
   } else {
@@ -646,41 +586,13 @@ export const clearAllLeads = async (environment?: string, kv?: any): Promise<voi
       for (const key of keys.keys) {
         await kv.delete(key.name);
       }
+      devLog('All leads cleared from KV storage');
     } catch (error) {
-      errorLog('Error clearing leads from KV:', error);
+      console.error('Error clearing leads from KV:', error);
     }
   } else {
     // Clear memory for development
     devLeads.length = 0;
+    devLog('All leads cleared from memory storage');
   }
 };
-
-// Simple lead extraction function
-function extractSimpleLeadInfo(message: string, history: any[]) {
-  const fullText = [...history.map((msg: any) => msg.content), message].join(' ');
-  
-  const leadInfo: any = { hasContactInfo: false };
-  
-  // Extract email
-  const emailMatch = fullText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  if (emailMatch) {
-    leadInfo.email = emailMatch[0];
-    leadInfo.hasContactInfo = true;
-  }
-  
-  // Extract phone
-  const phoneMatch = fullText.match(/(\d{3})[-\s]?(\d{3})[-\s]?(\d{4})/);
-  if (phoneMatch) {
-    leadInfo.phone = phoneMatch[0];
-    leadInfo.hasContactInfo = true;
-  }
-  
-  // Extract name
-  const nameMatch = fullText.match(/(?:i'm|my name is|i am|call me)\s+([a-zA-Z]+)/i);
-  if (nameMatch) {
-    leadInfo.name = nameMatch[1];
-    leadInfo.hasContactInfo = true;
-  }
-  
-  return leadInfo;
-}

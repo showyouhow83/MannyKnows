@@ -2,9 +2,9 @@
   "development": {
     "persona": "business_consultant",
     "goals": "lead_generation", 
-    "model": "gpt-4o-mini",
-    "max_tokens": 500,
-    "temperature": 0.7,
+    "model": "gpt-5-nano",
+    "max_tokens": 2000,
+    "temperature": 1,
     "debug_logging": true,
     "lead_capture_enabled": false,
     "chatbot_enabled": true
@@ -12,9 +12,9 @@
   "production": {
     "persona": "business_consultant",
     "goals": "lead_generation",
-    "model": "gpt-4o",
-    "max_tokens": 500,
-    "temperature": 0.7,
+    "model": "gpt-5-nano",
+    "max_tokens": 1500,
+    "temperature": 1,
     "debug_logging": false,
     "lead_capture_enabled": true,
     "chatbot_enabled": false

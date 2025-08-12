@@ -7,8 +7,8 @@ export default defineConfig({
   output: 'server', // Server mode for API routes
   adapter: cloudflare(), // Cloudflare adapter for production
   image: {
-    service: { 
-      entrypoint: 'astro/assets/services/compile' 
+    service: {
+      entrypoint: 'astro/assets/services/compile'
     }
   },
   integrations: [

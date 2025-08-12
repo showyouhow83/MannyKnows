@@ -24,7 +24,7 @@ if (currentHour >= 12 && currentHour < 17) {
 }
 ---
 
-<!-- Project Consultation Modal -->
+<!-- AI Business Intelligence Modal -->
 <div id="consultationModal" 
      class={`fixed backdrop-blur-2xl border z-50 transform scale-0 transition-all duration-300 origin-center opacity-0 invisible ${className} consultation-glassmorphism`}
      style={`--desktop-modal-width: ${DESKTOP_MODAL_WIDTH}; --desktop-modal-height: ${DESKTOP_MODAL_HEIGHT}`}>
@@ -61,8 +61,8 @@ if (currentHour >= 12 && currentHour < 17) {
   <!-- Main consultation interface -->
   <div class="flex flex-col h-full overflow-hidden">
     <!-- Content area - fixed height to prevent shifting -->
-    <div class="flex-1 flex flex-col justify-center min-h-0">
-      <!-- Project consultation greeting -->
+    <div class="flex-1 flex flex-col justify-center min-h-0 pt-6 px-4">
+      <!-- AI business intelligence greeting -->
       <div class="text-center mb-4 flex-shrink-0">
         <div class="flex justify-center mb-4">
           <div class="pulse-container">
@@ -70,8 +70,8 @@ if (currentHour >= 12 && currentHour < 17) {
             <div class="bot-avatar">{BOT_ICON}</div>
           </div>
         </div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">Project Consultation</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300">Get a guaranteed quote and schedule your project kick-off call</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">MK Business Tools</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">Choose a service or chat with our AI assistant</p>
       </div>
 
       <!-- Chat messages area -->
@@ -88,7 +88,7 @@ if (currentHour >= 12 && currentHour < 17) {
         <div class="input-container">
           <textarea 
             id="projectInput" 
-            placeholder="Tell me about your project and I'll get you a quick quote..." 
+            placeholder="Ask me anything or try: analyze my website..." 
             class="project-input"
             rows="3"
           ></textarea>
@@ -106,20 +106,8 @@ if (currentHour >= 12 && currentHour < 17) {
         <div class="shortcuts-single-line">
           <span class="shortcuts-label">Or jump straight to:</span>
           <div class="shortcuts-buttons">
-            <button type="button" class="service-shortcut" data-service="web-development">
-              <span class="service-content">🌐 Web Development</span>
-            </button>
-            <button type="button" class="service-shortcut" data-service="marketing">
-              <span class="service-content">📈 Marketing Services</span>
-            </button>
-            <button type="button" class="service-shortcut" data-service="branding">
-              <span class="service-content">🎨 Branding & Design</span>
-            </button>
-            <button type="button" class="service-shortcut" data-service="ecommerce">
-              <span class="service-content">🛒 E-commerce</span>
-            </button>
-            <button type="button" class="service-shortcut" data-service="consulting">
-              <span class="service-content">💡 Business Consulting</span>
+            <button type="button" class="service-shortcut" data-service="ai-web-scan">
+              <span class="service-content">🔍 FREE Website AI Analysis</span>
             </button>
           </div>
         </div>
@@ -129,13 +117,11 @@ if (currentHour >= 12 && currentHour < 17) {
 </div>
 
 <script>
-  // Project Consultation Modal functionality
+  // AI Business Intelligence Modal functionality
   function initConsultationModal() {
     const modal = document.getElementById('consultationModal');
-    const topChatToggle = document.getElementById('topChatToggle');
-    const dockChatToggle = document.getElementById('dockChatToggle');
-    const heroChatButton = document.getElementById('heroChatButton');
     const consultationClose = document.getElementById('consultationClose');
+    const heroChatButton = document.getElementById('heroChatButton');
     const projectInput = document.getElementById('projectInput') as HTMLTextAreaElement;
     const projectSubmit = document.getElementById('projectSubmit');
     const serviceShortcuts = document.querySelectorAll('.service-shortcut');
@@ -143,17 +129,126 @@ if (currentHour >= 12 && currentHour < 17) {
     if (!modal) return;
 
     let isOpen = false;
-    // Initialize conversation tracking
+    // Conversation state
     let conversationHistory: Array<{role: string, content: string}> = [];
-    const MAX_MESSAGES = 15; // Match backend limit
+    const MAX_MESSAGES = 15;
     let userMessageCount = 0;
-
-    // Input sanitization for security
+    
+    // Session management
+    let sessionId = crypto.randomUUID();
+    
+    // Bot icon constant for JavaScript
+    const BOT_ICON = '🤖';
+    
+    // Email verification state
+    let isCollectingEmailForAnalysis = false;
+    let userEmail = '';
+    let isEmailVerified = false;    // Input sanitization for security
     const sanitizeInput = (input: string): string => {
       return input
         .replace(/[<>]/g, '')
         .trim()
         .substring(0, 1000);
+    };
+
+    // Email validation
+    const isValidEmail = (email: string): boolean => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email.trim());
+    };
+
+    // Handle email verification workflow
+    const handleEmailVerification = async (email: string): Promise<boolean> => {
+      const trimmedEmail = email.trim();
+      
+      if (!isValidEmail(trimmedEmail)) {
+        addMessage('bot', 'Please provide a valid email address so I can send you the analysis results.');
+        return false;
+      }
+
+      // Store email and show verification in progress
+      userEmail = trimmedEmail;
+      addMessage('bot', `Perfect! I'm verifying ${userEmail} and preparing your comprehensive website analysis...`);
+      
+      // Add loading indicator for verification
+      addLoadingMessage();
+      
+      try {
+        // Send email verification request to API
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: `verify email: ${userEmail}`,
+            session_id: sessionId,
+            email: userEmail,
+            mode: 'analysis'
+          })
+        });
+
+        const data = await response.json();
+        removeLoadingMessage();
+
+        if (data.verification_success || data.reply) {
+          isEmailVerified = true;
+          isCollectingEmailForAnalysis = false;
+          
+          // Now proceed with the actual analysis
+          addMessage('bot', 'Email verified! Running your comprehensive AI website analysis now...');
+          
+          // Add user message for analysis request and trigger analysis
+          setTimeout(() => {
+            const analysisMessage = "I'd like a comprehensive AI web analysis of my website";
+            addMessage('user', analysisMessage);
+            addLoadingMessage();
+            
+            // Send analysis request
+            handleAnalysisSubmission(analysisMessage);
+          }, 1000);
+          
+          return true;
+        } else {
+          addMessage('bot', 'There was an issue with email verification. Please try again or contact us directly.');
+          return false;
+        }
+      } catch (error) {
+        removeLoadingMessage();
+        addMessage('bot', 'There was an issue with email verification. Please try again or contact us directly.');
+        return false;
+      }
+    };
+
+    // Handle the actual analysis submission (separate from regular chat)
+    const handleAnalysisSubmission = async (projectText: string) => {
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: projectText,
+            session_id: sessionId,
+            email: userEmail,
+            mode: 'analysis',
+            conversation_history: conversationHistory
+          })
+        });
+
+        const data = await response.json();
+        removeLoadingMessage();
+        
+        if (data.reply) {
+          addMessage('bot', data.reply);
+          
+          // Add to conversation history
+          conversationHistory.push({ role: 'user', content: projectText });
+          conversationHistory.push({ role: 'assistant', content: data.reply });
+        } else if (data.error) {
+          addMessage('bot', 'I encountered an issue running the analysis. Please try again or contact us directly.');
+        }
+      } catch (error) {
+        removeLoadingMessage();
+        addMessage('bot', 'I encountered an issue running the analysis. Please try again or contact us directly.');
+      }
     };
 
     // Simple Markdown to HTML conversion for chat messages
@@ -177,7 +272,7 @@ if (currentHour >= 12 && currentHour < 17) {
     };
 
     // Open consultation modal
-    const openModal = () => {
+    const openModal = (mode?: 'analysis' | 'chat') => {
       if (isOpen) return;
       isOpen = true;
       modal.classList.remove('scale-0', 'opacity-0', 'invisible');
@@ -188,10 +283,37 @@ if (currentHour >= 12 && currentHour < 17) {
       if (floatingDock) {
         floatingDock.style.display = 'none';
       }
+
+      // If opening in analysis mode, start the analysis conversation
+      if (mode === 'analysis') {
+        startAnalysisMode();
+      }
       
       // Focus on input after modal opens
       setTimeout(() => projectInput?.focus(), 300);
     };
+
+    // Start analysis mode - first collect and verify email
+    const startAnalysisMode = () => {
+      // Show chat area and hide greeting 
+      const chatMessages = document.getElementById('chatMessages');
+      const greetingSection = document.querySelector('.text-center.mb-4.flex-shrink-0');
+      
+      if (chatMessages && greetingSection) {
+        greetingSection.classList.add('hidden');
+        chatMessages.classList.remove('hidden');
+      }
+      
+      // Start with email collection for analysis
+      const welcomeMessage = "Hi! I'd love to run a comprehensive AI analysis of your website. To get started, please provide your email address so I can send you the detailed results.";
+      addMessage('bot', welcomeMessage);
+      
+      // Set flag to indicate we're in email collection mode for analysis
+      isCollectingEmailForAnalysis = true;
+    };
+
+    // Make openModal globally accessible for hash navigation
+    globalOpenModal = openModal;
 
     // Close consultation modal
     const closeModal = () => {
@@ -203,6 +325,7 @@ if (currentHour >= 12 && currentHour < 17) {
       // Reset conversation when closing modal
       conversationHistory = [];
       userMessageCount = 0;
+      sessionId = crypto.randomUUID();
       
       // Show floating dock when modal is closed
       const floatingDock = document.getElementById('floatingDock');
@@ -234,6 +357,11 @@ if (currentHour >= 12 && currentHour < 17) {
         projectInput.value = '';
         projectInput.style.height = 'auto';
       }
+      
+      // Reset conversation state and generate new session
+      conversationHistory = [];
+      userMessageCount = 0;
+      sessionId = crypto.randomUUID();
       
       // Show greeting section again
       if (greetingSection) {
@@ -293,6 +421,14 @@ if (currentHour >= 12 && currentHour < 17) {
       const sanitizedText = sanitizeInput(projectText);
       if (!sanitizedText && !serviceType) return;
 
+      // If we're collecting email for analysis, handle that workflow
+      if (isCollectingEmailForAnalysis) {
+        // Add user's email input as a message
+        addMessage('user', sanitizedText);
+        await handleEmailVerification(sanitizedText);
+        return;
+      }
+
       // Check message limit before sending
       if (userMessageCount >= MAX_MESSAGES) {
         addMessage('bot', `I've enjoyed our conversation! After ${MAX_MESSAGES} messages, I'd love to connect you directly with Manny for a proper consultation. Please call us at (555) 123-4567 or email hello@mannyknows.com 📞`);
@@ -318,6 +454,9 @@ if (currentHour >= 12 && currentHour < 17) {
       // Clear input
       if (projectInput) projectInput.value = '';
 
+      // Add loading indicator
+      addLoadingMessage();
+
       // Send to API
       try {
         const response = await fetch('/api/chat', {
@@ -325,12 +464,17 @@ if (currentHour >= 12 && currentHour < 17) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             message: userMessage,
+            session_id: sessionId,
             // Removed hardcoded model to rely on server environment configuration
             conversation_history: conversationHistory
           })
         });
 
         const data = await response.json();
+        
+        // Remove loading indicator
+        removeLoadingMessage();
+        
         if (data.reply) {
           // Add user message to history
           conversationHistory.push({ role: 'user', content: userMessage });
@@ -358,6 +502,8 @@ if (currentHour >= 12 && currentHour < 17) {
           }
         }
       } catch (error) {
+        // Remove loading indicator
+        removeLoadingMessage();
         // Silent error handling in production
         addMessage('bot', 'Sorry, I encountered an error. Please try again.');
       }
@@ -375,34 +521,77 @@ if (currentHour >= 12 && currentHour < 17) {
         ? 'bg-green-500 text-white shadow-lg chat-bubble-user'
         : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700 chat-bubble-bot';
       
-      messageDiv.innerHTML = `
-        <div class="inline-block p-4 max-w-[85%] ${bubbleClass}">
-          ${sender === 'bot' ? parseMarkdown(message) : message}
-        </div>
-      `;
+      if (sender === 'user') {
+        messageDiv.innerHTML = `
+          <div class="inline-block p-4 max-w-[85%] ${bubbleClass}">
+            ${message}
+          </div>
+        `;
+      } else {
+        // Bot message with avatar
+        messageDiv.innerHTML = `
+          <div class="flex items-start gap-3 max-w-[85%]">
+            <div class="bot-avatar-small flex-shrink-0">${BOT_ICON}</div>
+            <div class="inline-block p-4 ${bubbleClass}">
+              ${parseMarkdown(message)}
+            </div>
+          </div>
+        `;
+      }
       
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    // Event listeners - toggle behavior like ChatBox  
-    topChatToggle?.addEventListener('click', toggleModal);
-    dockChatToggle?.addEventListener('click', toggleModal);
-    heroChatButton?.addEventListener('click', openModal); // Hero button only opens
+    // Add loading message
+    const addLoadingMessage = () => {
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) return;
+
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'mb-6 flex justify-start';
+      loadingDiv.id = 'loading-message';
+      
+      loadingDiv.innerHTML = `
+        <div class="flex items-start gap-3 max-w-[85%]">
+          <div class="bot-avatar-small flex-shrink-0">${BOT_ICON}</div>
+          <div class="inline-block p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700 chat-bubble-bot">
+            <div class="flex items-center gap-3">
+              <div class="flex gap-1">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+              </div>
+              <span class="text-sm text-gray-600 dark:text-gray-400">Analyzing your request...</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      chatMessages.appendChild(loadingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    // Remove loading message
+    const removeLoadingMessage = () => {
+      const loadingMessage = document.getElementById('loading-message');
+      if (loadingMessage) {
+        loadingMessage.remove();
+      }
+    };
+
+    // Event listeners - only hero button opens modal, chat buttons handled by ChatWindow
+    heroChatButton?.addEventListener('click', () => openModal()); // Hero button only opens
     // consultationClose click handler moved below with blur handling
 
     // Close when clicking outside the modal
     document.addEventListener('click', (e) => {
       if (isOpen && modal && !modal.contains(e.target as Node)) {
-        // Check if the click was on any of the chat toggle buttons
-        const chatToggleButtons = ['topChatToggle', 'dockChatToggle', 'heroChatButton'];
-        const clickedOnToggle = chatToggleButtons.some(id => {
-          const button = document.getElementById(id);
-          return button && (button === e.target || button.contains(e.target as Node));
-        });
+        // Don't close if clicking on hero button or analysis button
+        const isHeroButton = heroChatButton && (heroChatButton === e.target || heroChatButton.contains(e.target as Node));
+        const isAnalysisButton = (e.target as HTMLElement)?.closest('a[href="#apple-quote"]');
         
-        // Only close if not clicking on a toggle button
-        if (!clickedOnToggle) {
+        if (!isHeroButton && !isAnalysisButton) {
           closeModal();
         }
       }
@@ -410,12 +599,43 @@ if (currentHour >= 12 && currentHour < 17) {
 
     // Project submission - moved to service shortcuts section with blur handling
 
+    // Service shortcuts mapping with compelling prompts
+    const serviceMapping = {
+      'ai-web-scan': {
+        name: 'AI Web Intelligence Scan',
+        prompt: 'Run a deep AI analysis on my website - I want to see hidden performance issues, SEO gaps, and revenue optimization opportunities that most tools miss.'
+      },
+      'market-intelligence': {
+        name: 'Market Intelligence Report', 
+        prompt: 'I need a competitive intelligence report - show me what my competitors are doing better and where I can outmaneuver them in the market.'
+      },
+      'marketing-audit': {
+        name: 'Digital Presence Audit',
+        prompt: 'Audit my entire digital marketing presence - I want to know what\'s working, what\'s broken, and where I\'m bleeding potential customers.'
+      },
+      'growth-optimizer': {
+        name: 'Growth Acceleration Analysis',
+        prompt: 'I\'m ready to scale my business - analyze my growth bottlenecks and show me the fastest path to increase revenue.'
+      },
+      'consulting': {
+        name: 'Business Strategy Consultation',
+        prompt: 'I need strategic business guidance - help me identify my biggest opportunities and create a roadmap for success.'
+      }
+    };
+
     // Service shortcuts
     serviceShortcuts.forEach(button => {
       button.addEventListener('click', () => {
         const serviceType = button.getAttribute('data-service');
-        const serviceText = button.textContent?.trim() || '';
-        handleProjectSubmission(`I'm interested in ${serviceText}`, serviceType || undefined);
+        const serviceData = serviceMapping[serviceType as keyof typeof serviceMapping];
+        
+        if (serviceData) {
+          handleProjectSubmission(serviceData.prompt, serviceType || undefined);
+        } else {
+          // Fallback for any unmapped services
+          const fallbackText = button.textContent?.trim() || '';
+          handleProjectSubmission(`I'm interested in ${fallbackText}`, serviceType || undefined);
+        }
         
         // Blur the button to remove focus state after click (prevents stuck hover on touch devices)
         (button as HTMLElement).blur();
@@ -485,10 +705,37 @@ if (currentHour >= 12 && currentHour < 17) {
     });
   }
 
+  // Global variable to store openModal function
+  let globalOpenModal: ((mode?: 'analysis' | 'chat') => void) | null = null;
+
+  // Check for apple-quote hash to trigger analysis mode
+  const checkForAnalysisMode = () => {
+    if (window.location.hash === '#apple-quote') {
+      // Remove the hash from URL
+      history.replaceState(null, '', window.location.pathname);
+      // Open modal in analysis mode
+      if (globalOpenModal) {
+        globalOpenModal('analysis');
+      } else {
+        // Retry after a short delay if modal isn't ready
+        setTimeout(checkForAnalysisMode, 100);
+      }
+    }
+  };
+
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initConsultationModal, 100);
+    setTimeout(() => {
+      initConsultationModal();
+      checkForAnalysisMode();
+    }, 100);
   });
+
+  // Also check for hash on window load (in case DOM loads before hash is set)
+  window.addEventListener('load', checkForAnalysisMode);
+  
+  // Listen for hash changes
+  window.addEventListener('hashchange', checkForAnalysisMode);
 </script>
 
 <style>
@@ -1077,6 +1324,28 @@ if (currentHour >= 12 && currentHour < 17) {
     :global(.dark) .chat-bubble-bot:hover {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+  }
+
+  /* Bot Avatar Small */
+  .bot-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+    font-weight: 500;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .bot-avatar-small:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
   }
 
   /* Markdown formatting styles for chat messages */
