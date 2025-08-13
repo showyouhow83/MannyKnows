@@ -1,90 +1,36 @@
 import type { APIRoute } from 'astro';
 import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
-import { getServiceBranding, getAvailableUserServices } from '../../lib/services/components/userServices';
 import { devLog } from '../../utils/debug';
-import { sally } from '../../lib/sally/SallyManager';
+import { ProfileManager } from '../../lib/user/ProfileManager';
+import { serviceArchitecture } from '../../lib/services/ServiceArchitecture';
+import EmailCollectionManager from '../../lib/services/EmailCollectionManager';
 
 export const prerender = false;
 
-// Email validation function
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email.trim());
-}
-
-// Ultra-simplified tools for debugging
-const AVAILABLE_TOOLS = [
-  {
-    type: "function" as const,
-    function: {
-      name: "analyze_website",
-      description: "Analyze a website",
-      parameters: {
-        type: "object",
-        properties: {
-          url: {
-            type: "string",
-            description: "Website URL"
-          }
-        },
-        required: ["url"]
-      }
-    }
-  },
-  {
-    type: "function" as const,
-    function: {
-      name: "show_available_services",
-      description: "Show available MK services to the user",
-      parameters: {
-        type: "object",
-        properties: {},
-        required: []
-      }
-    }
-  },
-  {
-    type: "function" as const,
-    function: {
-      name: "create_modal_link",
-      description: "Create a clickable link in chat that opens the AI analysis modal",
-      parameters: {
-        type: "object",
-        properties: {
-          text: {
-            type: "string",
-            description: "The text to display for the link"
-          },
-          mode: {
-            type: "string",
-            enum: ["analysis", "chat"],
-            description: "Which modal mode to open"
-          }
-        },
-        required: ["text", "mode"]
-      }
-    }
-  }
-];
+// Get available tools from service architecture
+const AVAILABLE_TOOLS = serviceArchitecture.getAvailableTools();
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const body = await request.json();
-    const { message, session_id = crypto.randomUUID(), conversation_history = [], mode = 'analysis' } = body;
+    const { message, session_id = crypto.randomUUID(), conversation_history = [] } = body;
     
-    devLog('Function-calling chat request:', { message, session_id, history_length: conversation_history.length, mode });
+    devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
     const kv = (locals as any).runtime?.env?.CHATBOT_KV;
     
-    // Get environment config and set Sally's persona
+    // Initialize managers
+    const profileManager = new ProfileManager(kv);
+    const emailManager = new EmailCollectionManager(profileManager);
+    
+    // Get or create user profile
+    const profile = await profileManager.getUserProfile(session_id);
+    devLog('User profile:', { id: profile.id, interactions: profile.interactions, trustScore: profile.trustScore });
+    
+    // Get environment config
     const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
     const config = await import('../../config/chatbot/environments.json');
     const envConfig = config.default[environment as keyof typeof config.default];
-
-    // Switch Sally's persona based on environment config
-    if (envConfig.persona && envConfig.persona !== sally.getSettings().active_persona) {
-      sally.switchPersona(envConfig.persona);
-    }
 
     if (!envConfig.chatbot_enabled) {
       return new Response(JSON.stringify({
@@ -96,75 +42,33 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Build streamlined prompt for function calling mode
-    const isAnalysisRequest = message.toLowerCase().includes('analyz') || 
-                             message.toLowerCase().includes('website') ||
-                             message.toLowerCase().includes('scan') ||
-                             message.toLowerCase().includes('audit');
+    // Check if we should request email before processing
+    const emailContext = {
+      message,
+      serviceName: extractServiceName(message),
+      userIntent: classifyUserIntent(message)
+    };
 
-    // Email detection helper
-    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
-    const hasEmail = emailPattern.test(message);
-
-    let systemPrompt = '';
-    let toolChoice: "auto" | "required" = "auto";
+    const emailEvaluation = await emailManager.evaluateEmailRequest(profile, emailContext);
     
-    if (isAnalysisRequest && mode === 'analysis') {
-      // Analysis mode - implement email verification workflow first
-      if (message.toLowerCase().includes('verify email:')) {
-        // Handle email verification - extract email from message
-        const emailMatch = message.match(/verify email:\s*([^\s]+)/i);
-        const email = emailMatch ? emailMatch[1] : '';
-        
-        if (email && isValidEmail(email)) {
-          // Email is valid, respond directly without tools
-          return new Response(JSON.stringify({
-            reply: `Perfect! I've verified ${email} and am preparing your comprehensive AI website analysis. Now, what's your website URL so I can run the analysis?`,
-            verification_success: true,
-            session_id,
-            email_verified: email
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        } else {
-          // Invalid email format
-          return new Response(JSON.stringify({
-            reply: 'Please provide a valid email address so I can send you the detailed analysis results.',
-            verification_success: false,
-            session_id
-          }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
-      } else if (hasEmail && (message.includes('http') || message.includes('www.'))) {
-        // Both email and URL provided - proceed with analysis
-        systemPrompt = `You are Sally from MK. The user provided both email and website URL. Proceed with analyzing the website using the analyze_website function.`;
-        toolChoice = "required";
-      } else if (hasEmail && !message.toLowerCase().includes('verify email:')) {
-        // Email detected in message - verify it and then ask for URL
-        systemPrompt = `You are Sally from MK. The user provided an email address. Extract and verify the email, then ask for their website URL to proceed with the analysis. Say something like: "Perfect! I have your email [EMAIL]. Now, what's your website URL so I can run the comprehensive AI analysis?"`;
-        toolChoice = "auto";
-      } else if (message.includes('http') || message.includes('www.')) {
-        // URL provided, but need to check if email was verified first
-        systemPrompt = `You are Sally from MK. Before analyzing any website, you need to collect and verify the user's email address for lead generation. Ask: "I'd be happy to analyze your website! First, I need your email address to send you the detailed analysis report. What's your email address?"`;
-        toolChoice = "auto";
-      } else {
-        // Initial analysis request - ask for email first, not URL
-        systemPrompt = `You are Sally from MK. The user wants website analysis. Before asking for their website URL, you need to collect their email address first for lead generation. Ask: "I'd be happy to help with a comprehensive AI analysis of your website! First, I'll need your email address to send you the detailed report. What's your email address?"`;
-        toolChoice = "auto";
-      }
-    } else if (mode === 'chat') {
-      // Chat mode - use Sally's centralized personality system
-      systemPrompt = sally.buildSystemPrompt();
-    } else {
-      // Modal mode - compact professional system
-      const availableServices = getAvailableUserServices();
-      const servicesList = availableServices.map(s => `${s.displayName}`).join(', ');
+    if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'now') {
+      // Mark email as requested and return collection message
+      await profileManager.markEmailRequested(profile);
       
-      systemPrompt = `You are Sally, MK's business consultant. Focus on connecting user needs with MK services: ${servicesList}. Be professional, direct, solution-oriented.`;
+      return new Response(JSON.stringify({
+        reply: emailEvaluation.message,
+        action: 'request_email',
+        strategy: emailEvaluation.strategy,
+        session_id
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
+
+    // Build system prompt based on user profile and accessible services
+    const accessibleServices = serviceArchitecture.getAccessibleServices(profile);
+    const systemPrompt = buildAdaptiveSystemPrompt(profile, accessibleServices, emailEvaluation);
 
     // Prepare OpenAI request with function calling
     const openaiMessages = [
@@ -174,34 +78,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
       },
       {
         role: "user" as const,
-        content: isAnalysisRequest ? `analyze website: ${message}` : message
+        content: message
       }
     ];
 
     devLog('System prompt length:', systemPrompt.length);
-    devLog('Tool choice:', toolChoice);
-    devLog('Sending messages to OpenAI:', openaiMessages);
+    devLog('Available tools count:', AVAILABLE_TOOLS.length);
 
     // Call OpenAI with function calling
     const apiKey = import.meta.env.OPENAI_API_KEY;
     
-    // Prepare request body - only include tools for analysis/modal modes
-    const requestBody: any = {
+    const requestBody = {
       model: envConfig.model,
       messages: openaiMessages,
-      max_completion_tokens: envConfig.max_tokens
+      max_completion_tokens: envConfig.max_tokens,
+      tools: AVAILABLE_TOOLS,
+      tool_choice: "auto" as const
     };
-
-    // Include tools based on mode
-    if (mode === 'chat') {
-      // Chat mode gets ALL tools - Sally should be fully capable
-      requestBody.tools = AVAILABLE_TOOLS;
-      requestBody.tool_choice = "auto";
-    } else if (mode !== 'chat') {
-      // Analysis and modal modes get full tools
-      requestBody.tools = AVAILABLE_TOOLS;
-      requestBody.tool_choice = toolChoice;
-    }
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -219,12 +112,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const data = await openaiResponse.json();
-    devLog('OpenAI function-calling response:', data);
+    devLog('OpenAI response:', data);
     
     const choice = data.choices[0];
-    devLog('Choice message:', choice?.message);
-    devLog('Tool calls:', choice?.message?.tool_calls);
-    
     let finalResponse = '';
 
     // Handle function calls
@@ -239,37 +129,37 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         let toolResult = null;
 
+        // Route function calls through service architecture
         switch (functionName) {
           case 'analyze_website':
-            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv);
-            break;
-            
-          case 'product_analysis':
-            toolResult = await executeProductAnalysis(functionArgs.url, session_id, kv);
-            break;
-            
-          case 'seo_audit':
-            toolResult = await executeSEOAudit(functionArgs.url, session_id, kv);
-            break;
-            
-          case 'conversion_optimization':
-            toolResult = await executeConversionOptimization(functionArgs.url, session_id, kv);
+            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv, profile, profileManager);
             break;
             
           case 'show_available_services':
-            toolResult = getAvailableServicesInfo();
-            break;
-            
-          case 'create_modal_link':
-            toolResult = createModalLink(functionArgs.text, functionArgs.mode);
+            toolResult = await executeShowServices(profile, profileManager);
             break;
             
           case 'request_email_verification':
-            toolResult = await handleEmailVerification(functionArgs.email, session_id, kv);
+            toolResult = await executeEmailVerification(functionArgs.email, session_id, kv, profile, profileManager, emailManager);
+            break;
+
+          case 'get_seo_tips':
+            toolResult = await executeGetSeoTips(functionArgs.topic, profile, profileManager);
+            break;
+
+          case 'check_domain_status':
+            toolResult = await executeCheckDomain(functionArgs.domain, profile, profileManager);
+            break;
+
+          case 'get_industry_insights':
+            toolResult = await executeIndustryInsights(functionArgs.industry, profile, profileManager);
             break;
             
           default:
-            toolResult = { error: `Unknown function: ${functionName}` };
+            toolResult = {
+              error: `Function ${functionName} not implemented`,
+              message: `Sorry, ${functionName} is not available yet.`
+            };
         }
 
         toolResults.push({
@@ -278,51 +168,42 @@ export const POST: APIRoute = async ({ request, locals }) => {
         });
       }
 
-      // Send tool results back to OpenAI for final response
-      const followUpMessages = [
-        ...openaiMessages,
-        choice.message,
-        ...toolResults.map(result => ({
-          role: "tool" as const,
-          tool_call_id: result.tool_call_id,
-          content: JSON.stringify(result.result)
-        }))
-      ];
-
-      const finalOpenaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: envConfig.model,
-          messages: followUpMessages,
-          max_completion_tokens: 300 // Keep responses short
-        }),
-      });
-
-      const finalData = await finalOpenaiResponse.json();
-      finalResponse = finalData.choices[0].message.content;
-
+      // Format the final response based on tool results
+      finalResponse = formatToolResults(toolResults);
     } else {
-      // No function calls, just regular response
       finalResponse = choice.message.content;
+    }
+
+    // Track interaction
+    await profileManager.trackInteraction(profile, 'message_sent', {
+      messageLength: message.length,
+      responseLength: finalResponse.length,
+      toolsUsed: choice.message.tool_calls?.length || 0
+    });
+
+    // Check if we should suggest email after service completion
+    if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'after_service') {
+      finalResponse += `\n\n${emailEvaluation.message}`;
     }
 
     return new Response(JSON.stringify({
       reply: finalResponse,
-      session_id
+      session_id,
+      profile_summary: {
+        interactions: profile.interactions,
+        trustScore: profile.trustScore,
+        servicesUsed: profile.freeServicesUsed.length + profile.premiumServicesUsed.length
+      }
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
-    console.error('Function-calling chat error:', error);
+    devLog('Chat error:', error);
     return new Response(JSON.stringify({
-      error: 'Internal server error',
-      reply: "I'm having technical difficulties. Please try again in a moment."
+      error: 'Failed to process your request',
+      details: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -330,339 +211,314 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 };
 
-// Function implementations
-async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any) {
+// Helper Functions
+
+/**
+ * Extract service name from user message
+ */
+function extractServiceName(message: string): string | undefined {
+  const lowerMessage = message.toLowerCase();
+  
+  const serviceKeywords = {
+    'analyze_website': ['analyz', 'website', 'audit', 'scan', 'check website'],
+    'get_seo_tips': ['seo', 'search engine', 'optimization', 'ranking'],
+    'check_domain_status': ['domain', 'availability', 'whois'],
+    'get_industry_insights': ['industry', 'benchmark', 'competitor', 'market'],
+    'competitor_analysis': ['competitor', 'competition', 'rival'],
+    'market_intelligence': ['market', 'intelligence', 'research', 'trends']
+  };
+
+  for (const [serviceName, keywords] of Object.entries(serviceKeywords)) {
+    if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+      return serviceName;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Classify user intent from message
+ */
+function classifyUserIntent(message: string): string {
+  const lowerMessage = message.toLowerCase();
+  
+  if (lowerMessage.includes('help') || lowerMessage.includes('what can you')) {
+    return 'discovery';
+  }
+  if (lowerMessage.includes('analyz') || lowerMessage.includes('check')) {
+    return 'analysis';
+  }
+  if (lowerMessage.includes('improve') || lowerMessage.includes('optimize')) {
+    return 'optimization';
+  }
+  if (lowerMessage.includes('business') || lowerMessage.includes('revenue')) {
+    return 'business_growth';
+  }
+  
+  return 'general';
+}
+
+/**
+ * Build adaptive system prompt based on user profile
+ */
+function buildAdaptiveSystemPrompt(profile: any, accessibleServices: any[], emailEvaluation: any): string {
+  const userType = profile.emailVerified ? 'verified user' : 
+                  profile.interactions >= 3 ? 'engaged visitor' : 'new visitor';
+  
+  const servicesList = accessibleServices.map(s => s.displayName).join(', ');
+  
+  let prompt = `You are Sally, MK's AI business consultant. User type: ${userType} (${profile.interactions} interactions, trust: ${profile.trustScore}).
+
+Available services: ${servicesList}
+
+Guidelines:
+- Be helpful and professional
+- For new visitors: Focus on demonstrating value with free services
+- For engaged visitors: Highlight premium features they can unlock
+- For verified users: Provide full access to all services
+- Keep responses concise (1-2 sentences when possible)`;
+
+  if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'after_service') {
+    prompt += `\n- After helping, mention: "${emailEvaluation.message}"`;
+  }
+
+  return prompt;
+}
+
+// Service Execution Functions
+
+/**
+ * Execute website analysis with access control
+ */
+async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any, profile: any, profileManager: ProfileManager) {
   try {
-    // Normalize URL
     const normalizedUrl = url.startsWith('http') ? url : `https://${url}`;
     
-    // Check if user needs verification first
-    // const sessionData = kv ? await kv.get(`session:${sessionId}`) : null;
-    // const isVerified = sessionData ? JSON.parse(sessionData).verified : false;
+    // Check service access
+    const accessCheck = serviceArchitecture.checkServiceAccess('analyze_website', profile);
     
-    // Temporarily disable verification for testing
-    const isVerified = true;
-    
-    if (!isVerified) {
+    if (!accessCheck.allowed) {
+      // Track attempted premium service
+      await profileManager.trackServiceUsage(profile, 'analyze_website', 'premium', false);
+      
       return {
-        status: 'verification_required',
-        message: 'Email verification required before analysis',
+        status: 'access_denied',
+        message: accessCheck.message,
+        suggested_action: accessCheck.suggestedAction,
         url: normalizedUrl
       };
     }
 
-    // Execute the actual analysis using our service orchestrator
+    // Execute the analysis
     const result = await serviceOrchestrator.executeUserService(
       'advanced_web_analysis',
       { url: normalizedUrl },
       { session_id: sessionId, kv }
     );
 
-    devLog('Service orchestrator result:', result);
+    // Track successful premium service usage
+    await profileManager.trackServiceUsage(profile, 'analyze_website', 'premium', true);
 
-    if (result.success) {
-      return {
-        status: 'success',
-        url: normalizedUrl,
-        analysis: result.data,
-        summary: formatAnalysisResults(result.data)
-      };
-    } else {
-      return {
-        status: 'error',
-        message: result.errors?.join(', ') || 'Analysis failed'
-      };
-    }
+    return result;
   } catch (error) {
     return {
       status: 'error',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message : 'Analysis failed'
     };
   }
 }
 
-// Generate available services dynamically from User Services
-function getAvailableServicesInfo() {
-  const userServices = getAvailableUserServices();
+/**
+ * Execute show available services
+ */
+async function executeShowServices(profile: any, profileManager: ProfileManager): Promise<any> {
+  const allServices = serviceArchitecture.getServicesByCategory('free')
+    .concat(serviceArchitecture.getServicesByCategory('premium'));
   
-  const servicesText = userServices.map(service => 
-    `**${service.displayName}** ${service.icon}\n` +
-    `${service.shortDescription}\n` +
-    `⏱️ ${service.estimatedTime}`
-  ).join('\n\n');
+  const accessibleServices = serviceArchitecture.getAccessibleServices(profile);
+  const lockedServices = allServices.filter(service => 
+    !accessibleServices.find(accessible => accessible.name === service.name)
+  );
+
+  // Track interaction
+  await profileManager.trackServiceUsage(profile, 'show_available_services', 'free', true);
 
   return {
-    success: true,
-    services: userServices,
-    formatted_text: `Here are our available AI services:\n\n${servicesText}\n\nWhich service interests you most?`
+    available_services: accessibleServices.map(s => ({
+      name: s.displayName,
+      description: s.description,
+      category: s.category,
+      status: 'available'
+    })),
+    locked_services: lockedServices.map(s => ({
+      name: s.displayName,
+      description: s.description,
+      category: s.category,
+      status: 'locked',
+      requirement: s.requiresEmail ? 'Email verification required' : 'More engagement needed'
+    })),
+    message: `Here are your available AI services. You have access to ${accessibleServices.length} services.`
   };
 }
 
-// Create a clickable modal link for the chat interface
-function createModalLink(text: string, mode: string) {
+/**
+ * Execute email verification
+ */
+async function executeEmailVerification(email: string, sessionId: string, kv: any, profile: any, profileManager: ProfileManager, emailManager: EmailCollectionManager) {
+  try {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        status: 'invalid_email',
+        message: 'Please provide a valid email address.'
+      };
+    }
+
+    // Handle email provided
+    await emailManager.handleEmailProvided(profile, email);
+
+    // TODO: Implement actual email sending
+    // For now, simulate verification
+    const verificationToken = crypto.randomUUID();
+    await kv.put(`verify:${verificationToken}`, JSON.stringify({
+      email,
+      sessionId,
+      timestamp: Date.now()
+    }));
+
+    return {
+      status: 'verification_sent',
+      email: email,
+      message: emailManager.getEmailVerificationMessage(email),
+      token: verificationToken // Remove in production
+    };
+  } catch (error) {
+    return {
+      status: 'error',
+      message: 'Failed to send verification email'
+    };
+  }
+}
+
+/**
+ * Execute SEO tips (free service)
+ */
+async function executeGetSeoTips(topic: string, profile: any, profileManager: ProfileManager) {
+  // Track free service usage
+  await profileManager.trackServiceUsage(profile, 'get_seo_tips', 'free', true);
+
+  const tips: Record<string, string[]> = {
+    'general': [
+      'Focus on high-quality, relevant content',
+      'Optimize your page titles and meta descriptions',
+      'Improve your website loading speed'
+    ],
+    'content': [
+      'Write for your audience, not just search engines',
+      'Use header tags (H1, H2, H3) to structure content',
+      'Include relevant keywords naturally in your content'
+    ],
+    'technical': [
+      'Ensure your website is mobile-friendly',
+      'Create an XML sitemap',
+      'Fix broken links and 404 errors'
+    ]
+  };
+
+  const relevantTips = tips[topic] || tips['general'];
+
   return {
-    success: true,
-    link_type: 'modal',
-    modal_mode: mode,
-    display_text: text,
-    action: 'open_modal',
-    formatted_text: `<modal-link data-mode="${mode}">${text}</modal-link>`
+    topic,
+    tips: relevantTips,
+    message: `Here are ${relevantTips.length} SEO tips for ${topic}:`
   };
 }
 
-async function handleEmailVerification(email: string, sessionId: string, kv: any) {
-  // Implementation for email verification
+/**
+ * Execute domain check (free service)
+ */
+async function executeCheckDomain(domain: string, profile: any, profileManager: ProfileManager) {
+  // Track free service usage
+  await profileManager.trackServiceUsage(profile, 'check_domain_status', 'free', true);
+
+  // Simple domain check (in real implementation, you'd use a domain API)
+  const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '');
+  
   return {
-    status: 'verification_sent',
-    email: email,
-    message: 'Verification email sent'
+    domain: cleanDomain,
+    status: 'available', // Simulated
+    extensions: ['.com', '.net', '.org'],
+    message: `Domain check completed for ${cleanDomain}`
   };
 }
 
-function formatAnalysisResults(data: any) {
-  if (!data.analysis) return 'Analysis data not available';
+/**
+ * Execute industry insights (engaged user service)
+ */
+async function executeIndustryInsights(industry: string, profile: any, profileManager: ProfileManager) {
+  // Check access
+  const accessCheck = serviceArchitecture.checkServiceAccess('get_industry_insights', profile);
   
-  const analysis = data.analysis;
-  return `## 📊 Website Analysis Results
-
-**Overall Score:** ${analysis.overallScore}/100
-
-### 🔍 Key Metrics
-- **SEO Score:** ${analysis.scores.seo}/100
-- **Performance:** ${analysis.scores.performance}/100  
-- **Security:** ${analysis.scores.security}/100
-
-### ⚡ Load Performance
-- **Response Time:** ${analysis.metrics.responseTime}ms
-- **Page Size:** ${analysis.metrics.pageSizeKB}KB
-
-### 🎯 Top Opportunities
-${analysis.issues.slice(0, 3).map((issue: string) => `- ${issue}`).join('\n')}
-
-Ready to dive deeper into any specific area?`;
-}
-
-// Progressive Analysis Functions
-async function executeProductAnalysis(url: string, session_id: string, kv: any) {
-  try {
-    devLog('Executing product analysis for:', url);
-    
-    // Simulated product analysis results
-    const productAnalysis = {
-      analysis: {
-        productDescriptions: {
-          count: 12,
-          avgLength: 45,
-          aiOptimizationScore: 35,
-          issues: [
-            "Generic product descriptions lack emotional triggers",
-            "Missing SEO keywords in 70% of descriptions", 
-            "No personalization or customer-specific language",
-            "Competitive descriptions outperform by 40%"
-          ]
-        },
-        opportunities: [
-          "AI-powered description generator could increase conversions by 25%",
-          "Personalized product recommendations based on user behavior",
-          "Dynamic pricing optimization using market intelligence"
-        ]
-      }
-    };
-    
+  if (!accessCheck.allowed) {
     return {
-      success: true,
-      data: productAnalysis,
-      analysis_type: 'product_analysis'
+      status: 'access_denied',
+      message: accessCheck.message
     };
-  } catch (error) {
-    return { success: false, error: 'Product analysis failed' };
   }
+
+  // Track service usage
+  await profileManager.trackServiceUsage(profile, 'get_industry_insights', 'free', true);
+
+  const insights = {
+    industry,
+    averageConversionRate: '2.5%',
+    topTrafficSources: ['Search', 'Social Media', 'Direct'],
+    keyMetrics: {
+      pageSpeed: '3.2s average',
+      mobileOptimization: '78% of sites',
+      sslAdoption: '95%'
+    },
+    message: `Industry insights for ${industry} sector`
+  };
+
+  return insights;
 }
 
-async function executeSEOAudit(url: string, session_id: string, kv: any) {
-  try {
-    devLog('Executing SEO audit for:', url);
-    
-    const seoAudit = {
-      analysis: {
-        seoGaps: {
-          missingKeywords: 23,
-          contentGaps: 8,
-          technicalIssues: 5,
-          competitorAdvantages: [
-            "Competitors rank for 40% more profitable keywords",
-            "Missing schema markup reducing rich snippet potential",
-            "Page speed affecting mobile rankings",
-            "Internal linking structure needs optimization"
-          ]
-        },
-        opportunities: [
-          "AI SEO agent could identify and target 50+ new profitable keywords",
-          "Automated content optimization for featured snippets",
-          "Real-time competitor tracking and gap analysis"
-        ]
-      }
-    };
-    
-    return {
-      success: true,
-      data: seoAudit,
-      analysis_type: 'seo_audit'
-    };
-  } catch (error) {
-    return { success: false, error: 'SEO audit failed' };
-  }
-}
-
-async function executeConversionOptimization(url: string, session_id: string, kv: any) {
-  try {
-    devLog('Executing conversion optimization for:', url);
-    
-    const conversionAnalysis = {
-      analysis: {
-        conversionIssues: {
-          currentRate: 2.3,
-          potentialRate: 4.8,
-          revenueGap: "$12,400/month",
-          criticalIssues: [
-            "Call-to-action buttons have low visibility",
-            "Checkout process has 60% abandonment rate",
-            "No urgency triggers or social proof",
-            "Mobile experience causes 40% drop-offs"
-          ]
-        },
-        opportunities: [
-          "AI-powered A/B testing could optimize conversion funnels automatically",
-          "Behavioral tracking agent to identify drop-off points",
-          "Dynamic pricing and offer optimization based on user intent"
-        ]
-      }
-    };
-    
-    return {
-      success: true,
-      data: conversionAnalysis,
-      analysis_type: 'conversion_optimization'
-    };
-  } catch (error) {
-    return { success: false, error: 'Conversion optimization failed' };
-  }
-}
-
-// Development storage (in-memory) for leads
-const devLeads: Array<{
-  name?: string;
-  email?: string;
-  phone?: string;
-  message: string;
-  timestamp: string;
-  sessionId: string;
-}> = [];
-
-// Storage functions that adapt based on environment
-async function saveLeadToStorage(lead: any, environment: string, kv?: any) {
-  if (environment === 'production' && kv) {
-    // Save to KV storage
-    const leadId = crypto.randomUUID();
-    const leadData = { ...lead, id: leadId, created_at: new Date().toISOString() };
-    await kv.put(`lead:${leadId}`, JSON.stringify(leadData));
-    devLog('Lead saved to KV storage:', leadId);
-  } else {
-    // Save to memory for development
-    devLeads.push(lead);
-    devLog('Lead saved to memory storage');
-  }
-}
-
-async function getLeadsFromStorage(environment: string, kv?: any) {
-  if (environment === 'production' && kv) {
-    // Get from KV storage
-    try {
-      const keys = await kv.list({ prefix: 'lead:' });
-      const leads = [];
-      for (const key of keys.keys) {
-        const leadData = await kv.get(key.name);
-        if (leadData) {
-          leads.push(JSON.parse(leadData));
-        }
-      }
-      return leads.sort((a, b) => new Date(b.created_at || b.timestamp).getTime() - new Date(a.created_at || a.timestamp).getTime());
-    } catch (error) {
-      console.error('Error fetching leads from KV:', error);
-      return [];
-    }
-  } else {
-    // Return from memory for development
-    return devLeads;
-  }
-}
-
-// Export leads for admin access
-export const getLeads = async (environment?: string, kv?: any) => {
-  const env = environment || (import.meta.env.MODE === 'development' ? 'development' : 'production');
-  return await getLeadsFromStorage(env, kv);
-};
-
-// Delete a specific lead by timestamp or index
-export const deleteLead = async (leadId: string, environment?: string, kv?: any): Promise<boolean> => {
-  const env = environment || (import.meta.env.MODE === 'development' ? 'development' : 'production');
+/**
+ * Format tool results into readable response
+ */
+function formatToolResults(toolResults: any[]): string {
+  let response = '';
   
-  if (env === 'production' && kv) {
-    // Delete from KV storage
-    try {
-      const leads = await getLeadsFromStorage(env, kv);
-      const lead = leads.find((l: any) => l.timestamp === leadId || l.id === leadId);
-      if (lead) {
-        await kv.delete(`lead:${lead.id || leadId}`);
-        return true;
+  for (const result of toolResults) {
+    const data = result.result;
+    
+    if (data.status === 'access_denied') {
+      response += data.message + '\n\n';
+    } else if (data.message) {
+      response += data.message + '\n\n';
+    } else if (data.available_services) {
+      response += `📋 Available Services:\n`;
+      data.available_services.forEach((service: any) => {
+        response += `• ${service.name}: ${service.description}\n`;
+      });
+      if (data.locked_services && data.locked_services.length > 0) {
+        response += `\n🔒 Premium Services (${data.locked_services[0].requirement}):\n`;
+        data.locked_services.forEach((service: any) => {
+          response += `• ${service.name}: ${service.description}\n`;
+        });
       }
-      return false;
-    } catch (error) {
-      console.error('Error deleting lead from KV:', error);
-      return false;
+    } else if (data.tips) {
+      response += `💡 SEO Tips for ${data.topic}:\n`;
+      data.tips.forEach((tip: string, index: number) => {
+        response += `${index + 1}. ${tip}\n`;
+      });
+    } else {
+      response += JSON.stringify(data, null, 2) + '\n\n';
     }
-  } else {
-    // Delete from memory for development
-    const initialLength = devLeads.length;
-    
-    // Try to find by timestamp first
-    let index = devLeads.findIndex((lead: any) => lead.timestamp === leadId);
-    
-    // If not found by timestamp, try by array index
-    if (index === -1) {
-      const numericId = parseInt(leadId);
-      if (!isNaN(numericId) && numericId >= 0 && numericId < devLeads.length) {
-        index = numericId;
-      }
-    }
-    
-    if (index !== -1) {
-      devLeads.splice(index, 1);
-      return true;
-    }
-    
-    return false;
   }
-};
-
-// Clear all leads
-export const clearAllLeads = async (environment?: string, kv?: any): Promise<void> => {
-  const env = environment || (import.meta.env.MODE === 'development' ? 'development' : 'production');
   
-  if (env === 'production' && kv) {
-    // Clear KV storage
-    try {
-      const keys = await kv.list({ prefix: 'lead:' });
-      for (const key of keys.keys) {
-        await kv.delete(key.name);
-      }
-      devLog('All leads cleared from KV storage');
-    } catch (error) {
-      console.error('Error clearing leads from KV:', error);
-    }
-  } else {
-    // Clear memory for development
-    devLeads.length = 0;
-    devLog('All leads cleared from memory storage');
-  }
-};
+  return response.trim();
+}
