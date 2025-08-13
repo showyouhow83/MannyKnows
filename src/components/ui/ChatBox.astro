@@ -14,8 +14,8 @@ const { className = '' } = Astro.props;
         <span class="text-white font-bold text-lg">C</span>
       </div>
       <div>
-        <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">Chat with Carl</h3>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary m-0 text-sm">Your project assistant</p>
+        <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">Chat with Sally</h3>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary m-0 text-sm">Your MK assistant</p>
       </div>
     </div>
     <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-2 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
@@ -28,15 +28,9 @@ const { className = '' } = Astro.props;
   <div class="flex flex-col chat-body">
     <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" id="chatBoxMessages">
       <div class="flex gap-3 items-start">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">S</div>
         <div class="chat-message-bubble bot-message">
-          Hi there! I'm Carl, your project assistant. I'm here to help you get started with your project and connect you with our team.
-        </div>
-      </div>
-      <div class="flex gap-3 items-start">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
-        <div class="chat-message-bubble bot-message">
-          To get started, could you tell me your name? This helps me personalize our conversation.
+          Hi! I'm Sally from MannyKnows. I'm here to help answer questions about our services and assist with your business needs. How can I help you today?
         </div>
       </div>
     </div>
@@ -54,7 +48,7 @@ const { className = '' } = Astro.props;
 </div>
 
 <script>
-  // Chat Hub functionality with conversation flow and data collection
+  // Chat Box functionality with Sally API integration
   function initChatBox() {
     const chatBox = document.getElementById('chatBox');
     const topChatToggle = document.getElementById('topChatToggle');
@@ -69,56 +63,17 @@ const { className = '' } = Astro.props;
 
     let isOpen = false;
     
-    // Conversation state management
-    interface UserData {
-      name?: string;
-      email?: string;
-      phone?: string;
-      project?: string;
-      completed: boolean;
-    }
+    // Session management for Sally API
+    let sessionId = crypto.randomUUID();
+    let conversationHistory: Array<{role: string, content: string}> = [];
+    const MAX_MESSAGES = 20;
 
-    let conversationState = {
-      step: 'name', // name -> email -> phone -> project -> complete
-      userData: {} as UserData
-    };
-
-    // Input sanitization to prevent prompt injection
+    // Input sanitization to prevent issues
     const sanitizeInput = (input: string): string => {
-      // Remove potential prompt injection patterns
       return input
-        .replace(/system:|assistant:|user:|prompt:|instruction:|ignore|forget|override/gi, '')
         .replace(/[<>]/g, '')
         .trim()
-        .substring(0, 500); // Limit length
-    };
-
-    // Conversation flow responses
-    const getNextPrompt = (step: string, userInput?: string): string => {
-      switch (step) {
-        case 'email':
-          return `Nice to meet you, ${conversationState.userData.name}! To help our team reach out with a personalized quote, could you share your email address?`;
-        case 'phone':
-          return `Great! And what's the best phone number to reach you at?`;
-        case 'project':
-          return `Perfect! Now, could you tell me a bit about your project? What kind of help are you looking for?`;
-        case 'complete':
-          return `Thank you ${conversationState.userData.name}! I have all the information I need. Our team will review your project details and reach out to you within 24 hours with a personalized quote. Is there anything else I can help you with in the meantime?`;
-        default:
-          return `I'd be happy to help! Could you tell me your name so I can personalize our conversation?`;
-      }
-    };
-
-    // Email validation
-    const isValidEmail = (email: string): boolean => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
-
-    // Phone validation (basic)
-    const isValidPhone = (phone: string): boolean => {
-      const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
-      return phoneRegex.test(phone.replace(/\s/g, ''));
+        .substring(0, 1000);
     };
 
     // Open chat box
@@ -127,9 +82,6 @@ const { className = '' } = Astro.props;
       isOpen = true;
       chatBox.classList.remove('scale-0', 'opacity-0', 'invisible');
       chatBox.classList.add('scale-100', 'opacity-100', 'visible');
-      
-      // Track chat open event
-      // Analytics tracking removed for simplicity
       
       // Focus on input after chat opens
       setTimeout(() => chatBoxInput?.focus(), 300);
@@ -141,6 +93,10 @@ const { className = '' } = Astro.props;
       isOpen = false;
       chatBox.classList.add('scale-0', 'opacity-0', 'invisible');
       chatBox.classList.remove('scale-100', 'opacity-100', 'visible');
+      
+      // Reset conversation when closing
+      conversationHistory = [];
+      sessionId = crypto.randomUUID();
     };
 
     // Toggle chat box function
@@ -155,7 +111,7 @@ const { className = '' } = Astro.props;
     // Event listeners
     topChatToggle?.addEventListener('click', toggleChatBox);
     dockChatToggle?.addEventListener('click', toggleChatBox);
-    heroChatButton?.addEventListener('click', openChatBox); // Hero button only opens
+    heroChatButton?.addEventListener('click', openChatBox);
     chatBoxClose?.addEventListener('click', closeChatBox);
 
     // Close on Escape key
@@ -168,29 +124,32 @@ const { className = '' } = Astro.props;
     // Close when clicking outside the chat box
     document.addEventListener('click', (e) => {
       if (isOpen && chatBox && !chatBox.contains(e.target as Node)) {
-        // Check if the click was on any of the chat toggle buttons
         const chatToggleButtons = ['topChatToggle', 'dockChatToggle', 'heroChatButton'];
         const clickedOnToggle = chatToggleButtons.some(id => {
           const button = document.getElementById(id);
           return button && (button === e.target || button.contains(e.target as Node));
         });
         
-        // Only close if not clicking on a toggle button
         if (!clickedOnToggle) {
           closeChatBox();
         }
       }
     });
 
-    // Send message functionality with conversation flow
-    const sendMessage = () => {
+    // Send message to Sally API
+    const sendMessage = async () => {
       const message = chatBoxInput?.value.trim();
       if (!message) return;
 
-      // Sanitize input
       const sanitizedMessage = sanitizeInput(message);
       if (!sanitizedMessage) {
         addBotMessage("I didn't quite catch that. Could you please rephrase your message?");
+        return;
+      }
+
+      // Check message limit
+      if (conversationHistory.length >= MAX_MESSAGES) {
+        addBotMessage("I've enjoyed our conversation! For more detailed assistance, please feel free to call us or use our website analysis tool.");
         return;
       }
 
@@ -200,91 +159,121 @@ const { className = '' } = Astro.props;
       // Clear input
       if (chatBoxInput) chatBoxInput.value = '';
 
-      // Process based on conversation state
-      processUserInput(sanitizedMessage);
+      // Add loading indicator
+      addLoadingMessage();
+
+      try {
+        // Send to Sally API in chat mode (not analysis mode)
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: sanitizedMessage,
+            session_id: sessionId,
+            conversation_history: conversationHistory,
+            mode: 'chat' // This ensures Sally uses conversational mode, not analysis mode
+          })
+        });
+
+        const data = await response.json();
+        
+        // Remove loading indicator
+        removeLoadingMessage();
+
+        if (data.reply) {
+          // Add Sally's response
+          addBotMessage(data.reply);
+          
+          // Update conversation history
+          conversationHistory.push({role: 'user', content: sanitizedMessage});
+          conversationHistory.push({role: 'assistant', content: data.reply});
+          
+          // Keep history manageable
+          if (conversationHistory.length > 20) {
+            conversationHistory = conversationHistory.slice(-16);
+          }
+        } else {
+          addBotMessage("I'm having trouble connecting right now. Please try again in a moment.");
+        }
+
+      } catch (error) {
+        removeLoadingMessage();
+        addBotMessage("Sorry, I encountered an error. Please try again.");
+      }
     };
 
     // Add user message to chat
     const addUserMessage = (message: string) => {
       const userMessage = document.createElement('div');
       userMessage.className = 'flex gap-3 items-start flex-row-reverse text-right';
+      userMessage.setAttribute('data-astro-cid-wqmercx5', '');
       userMessage.innerHTML = `
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm">${conversationState.userData.name ? conversationState.userData.name.charAt(0).toUpperCase() : 'U'}</div>
-        <div class="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 rounded-xl leading-relaxed max-w-chat text-sm">${message}</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm" data-astro-cid-wqmercx5="">U</div>
+        <div class="chat-message-bubble user-message" data-astro-cid-wqmercx5="">${message}</div>
       `;
       chatBoxMessages?.appendChild(userMessage);
       scrollToBottom();
     };
 
-    // Add bot message to chat
-    const addBotMessage = (message: string, delay: number = 1000) => {
-      setTimeout(() => {
-        const botResponse = document.createElement('div');
-        botResponse.className = 'flex gap-3 items-start';
-        botResponse.innerHTML = `
-          <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">C</div>
-          <div class="chat-message-bubble bot-message">${message}</div>
-        `;
-        chatBoxMessages?.appendChild(botResponse);
-        scrollToBottom();
-      }, delay);
+    // Add bot message to chat (Sally)
+    const addBotMessage = (message: string) => {
+      const botResponse = document.createElement('div');
+      botResponse.className = 'flex gap-3 items-start';
+      botResponse.setAttribute('data-astro-cid-wqmercx5', '');
+      botResponse.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0" data-astro-cid-wqmercx5="">S</div>
+        <div class="chat-message-bubble bot-message" data-astro-cid-wqmercx5="">${parseMarkdown(message)}</div>
+      `;
+      chatBoxMessages?.appendChild(botResponse);
+      scrollToBottom();
+    };
+
+    // Add loading message
+    const addLoadingMessage = () => {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'flex gap-3 items-start';
+      loadingDiv.id = 'loading-message';
+      
+      loadingDiv.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">S</div>
+        <div class="chat-message-bubble bot-message">
+          <div class="flex items-center gap-3">
+            <div class="flex gap-1">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+            </div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Sally is typing...</span>
+          </div>
+        </div>
+      `;
+      
+      chatBoxMessages?.appendChild(loadingDiv);
+      scrollToBottom();
+    };
+
+    // Remove loading message
+    const removeLoadingMessage = () => {
+      const loadingMessage = document.getElementById('loading-message');
+      if (loadingMessage) {
+        loadingMessage.remove();
+      }
+    };
+
+    // Simple markdown parser for Sally's responses
+    const parseMarkdown = (text: string): string => {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/<modal-link data-mode="(.*?)">(.*?)<\/modal-link>/g, 
+          '<button class="modal-link-button" data-mode="$1" onclick="globalOpenModal(\'$1\')">$2</button>')
+        .replace(/\n/g, '<br>');
     };
 
     // Scroll to bottom of messages
     const scrollToBottom = () => {
       chatBoxMessages?.scrollTo({ top: chatBoxMessages.scrollHeight, behavior: 'smooth' });
-    };
-
-    // Process user input based on conversation state
-    const processUserInput = (input: string) => {
-      switch (conversationState.step) {
-        case 'name':
-          conversationState.userData.name = input;
-          conversationState.step = 'email';
-          addBotMessage(getNextPrompt('email'));
-          break;
-          
-        case 'email':
-          if (isValidEmail(input)) {
-            conversationState.userData.email = input;
-            conversationState.step = 'phone';
-            addBotMessage(getNextPrompt('phone'));
-          } else {
-            addBotMessage("That doesn't look like a valid email address. Could you please double-check and try again?");
-          }
-          break;
-          
-        case 'phone':
-          if (isValidPhone(input)) {
-            conversationState.userData.phone = input;
-            conversationState.step = 'project';
-            addBotMessage(getNextPrompt('project'));
-          } else {
-            addBotMessage("That doesn't look like a valid phone number. Please include your area code and try again.");
-          }
-          break;
-          
-        case 'project':
-          conversationState.userData.project = input;
-          conversationState.step = 'complete';
-          conversationState.userData.completed = true;
-          
-          // Submit data (you can add API call here)
-          submitUserData(conversationState.userData);
-          
-          addBotMessage(getNextPrompt('complete'));
-          break;
-          
-        case 'complete':
-          addBotMessage("I'll make sure our team has all your information. They'll be in touch soon! Feel free to browse our services in the meantime.");
-          break;
-      }
-    };
-
-    // Submit user data (placeholder for API integration)
-    const submitUserData = (userData: UserData) => {
-      // TODO: Send to your backend/CRM
-      // fetch('/api/leads', { method: 'POST', body: JSON.stringify(userData) })
     };
 
     // Send on button click
@@ -301,7 +290,6 @@ const { className = '' } = Astro.props;
 
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
-    // Add a small delay to ensure all other scripts have loaded
     setTimeout(initChatBox, 100);
   });
 </script>
@@ -404,6 +392,15 @@ const { className = '' } = Astro.props;
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
   }
 
+  .user-message {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.06));
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  :global(.dark) .user-message {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+  }
+
   /* Input area with subtle green tint */
   .chat-input-area {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.03), rgba(34, 197, 94, 0.01));
@@ -480,6 +477,44 @@ const { className = '' } = Astro.props;
   #chatBoxMessages::-webkit-scrollbar-thumb {
     background: rgba(34, 197, 94, 0.3);
     border-radius: 2px;
+  }
+
+  /* Modal link buttons */
+  .modal-link-button {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 4px 0;
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+  }
+
+  .modal-link-button:hover {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+  }
+
+  .modal-link-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+  }
+
+  :global(.dark) .modal-link-button {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
+  }
+
+  :global(.dark) .modal-link-button:hover {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.4);
   }
 
   #chatBoxMessages::-webkit-scrollbar-thumb:hover {

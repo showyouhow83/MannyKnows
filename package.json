@@ -13,14 +13,10 @@
     "deploy": "./deploy.sh",
     "deploy:staging": "./deploy.sh staging",
     "deploy:production": "./deploy.sh production",
-    "deploy:development": "./deploy.sh development",
+    "deploy:development": "./deploy.sh development", 
     "push:staging": "./deploy.sh staging \"Update staging: $(date)\"",
     "quick:staging": "./deploy.sh staging \"Quick update: $(date)\"",
-    "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr",
-    "perf:analyze": "npm run build && npm run size:check && echo '\\n📊 Performance Analysis:' && echo 'Target: Bundle <500KB, CSS <30KB, HTML <100KB'",
-    "perf:budget": "npm run build && node scripts/performance-budget.js",
-    "perf:optimize": "npm run build && find dist/ -name '._*' -delete && node scripts/safe-html-optimize.js && node scripts/performance-dashboard.js",
-    "optimize:critical-css": "node scripts/critical-css-extract.js"
+    "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

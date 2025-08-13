@@ -284,6 +284,12 @@ if (currentHour >= 12 && currentHour < 17) {
         floatingDock.style.display = 'none';
       }
 
+      // Clear chat messages to prevent duplicates
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+      }
+
       // If opening in analysis mode, start the analysis conversation
       if (mode === 'analysis') {
         startAnalysisMode();
@@ -322,10 +328,34 @@ if (currentHour >= 12 && currentHour < 17) {
       modal.classList.add('scale-0', 'opacity-0', 'invisible');
       modal.classList.remove('scale-100', 'opacity-100', 'visible');
       
+      // Clear input field
+      if (projectInput) {
+        projectInput.value = '';
+        projectInput.style.height = 'auto';
+      }
+      
       // Reset conversation when closing modal
       conversationHistory = [];
       userMessageCount = 0;
       sessionId = crypto.randomUUID();
+      
+      // Reset email verification state
+      isCollectingEmailForAnalysis = false;
+      userEmail = '';
+      isEmailVerified = false;
+      
+      // Clear chat messages
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+        chatMessages.classList.add('hidden');
+      }
+      
+      // Show greeting section again
+      const greetingSection = document.querySelector('.text-center.mb-4.flex-shrink-0');
+      if (greetingSection) {
+        greetingSection.classList.remove('hidden');
+      }
       
       // Show floating dock when modal is closed
       const floatingDock = document.getElementById('floatingDock');
@@ -362,6 +392,11 @@ if (currentHour >= 12 && currentHour < 17) {
       conversationHistory = [];
       userMessageCount = 0;
       sessionId = crypto.randomUUID();
+      
+      // Reset email verification state
+      isCollectingEmailForAnalysis = false;
+      userEmail = '';
+      isEmailVerified = false;
       
       // Show greeting section again
       if (greetingSection) {

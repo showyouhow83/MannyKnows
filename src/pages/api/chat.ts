@@ -2,9 +2,15 @@ import type { APIRoute } from 'astro';
 import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
 import { getServiceBranding, getAvailableUserServices } from '../../lib/services/components/userServices';
 import { devLog } from '../../utils/debug';
-import { PromptBuilder } from '../../lib/chatbot/promptBuilder';
+import { sally } from '../../lib/sally/SallyManager';
 
 export const prerender = false;
+
+// Email validation function
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+}
 
 // Ultra-simplified tools for debugging
 const AVAILABLE_TOOLS = [
@@ -36,6 +42,28 @@ const AVAILABLE_TOOLS = [
         required: []
       }
     }
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "create_modal_link",
+      description: "Create a clickable link in chat that opens the AI analysis modal",
+      parameters: {
+        type: "object",
+        properties: {
+          text: {
+            type: "string",
+            description: "The text to display for the link"
+          },
+          mode: {
+            type: "string",
+            enum: ["analysis", "chat"],
+            description: "Which modal mode to open"
+          }
+        },
+        required: ["text", "mode"]
+      }
+    }
   }
 ];
 
@@ -48,10 +76,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const kv = (locals as any).runtime?.env?.CHATBOT_KV;
     
-    // Get environment config and build personality-driven prompt
+    // Get environment config and set Sally's persona
     const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
     const config = await import('../../config/chatbot/environments.json');
     const envConfig = config.default[environment as keyof typeof config.default];
+
+    // Switch Sally's persona based on environment config
+    if (envConfig.persona && envConfig.persona !== sally.getSettings().active_persona) {
+      sally.switchPersona(envConfig.persona);
+    }
 
     if (!envConfig.chatbot_enabled) {
       return new Response(JSON.stringify({
@@ -79,9 +112,32 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (isAnalysisRequest && mode === 'analysis') {
       // Analysis mode - implement email verification workflow first
       if (message.toLowerCase().includes('verify email:')) {
-        // Handle email verification
-        systemPrompt = `You are Sally from MK. The user provided an email for verification. Confirm the email is valid and proceed with next steps. If email is valid, respond with verification success and ask for their website URL.`;
-        toolChoice = "auto";
+        // Handle email verification - extract email from message
+        const emailMatch = message.match(/verify email:\s*([^\s]+)/i);
+        const email = emailMatch ? emailMatch[1] : '';
+        
+        if (email && isValidEmail(email)) {
+          // Email is valid, respond directly without tools
+          return new Response(JSON.stringify({
+            reply: `Perfect! I've verified ${email} and am preparing your comprehensive AI website analysis. Now, what's your website URL so I can run the analysis?`,
+            verification_success: true,
+            session_id,
+            email_verified: email
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } else {
+          // Invalid email format
+          return new Response(JSON.stringify({
+            reply: 'Please provide a valid email address so I can send you the detailed analysis results.',
+            verification_success: false,
+            session_id
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
       } else if (hasEmail && (message.includes('http') || message.includes('www.'))) {
         // Both email and URL provided - proceed with analysis
         systemPrompt = `You are Sally from MK. The user provided both email and website URL. Proceed with analyzing the website using the analyze_website function.`;
@@ -100,19 +156,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
         toolChoice = "auto";
       }
     } else if (mode === 'chat') {
-      // Chat mode - no tools, conversational Sally
-      systemPrompt = `You are Sally, an MK sales specialist. Be helpful and professional. Available services: AI Web Intelligence Scan, Market Intelligence Report, Digital Presence Optimizer, Growth Acceleration Analysis. 
-
-For website analysis, recommend: "I'd suggest using our AI Web Intelligence Scan tool for a comprehensive analysis." 
-
-Answer questions about MK services, availability, and help schedule calls. Be conversational but focused on MK offerings.`;
+      // Chat mode - use Sally's centralized personality system
+      systemPrompt = sally.buildSystemPrompt();
     } else {
-      // Get available services from catalog (modal mode with tools)
+      // Modal mode - compact professional system
       const availableServices = getAvailableUserServices();
       const servicesList = availableServices.map(s => `${s.displayName}`).join(', ');
       
-      // Professional MK-focused system prompt
-      systemPrompt = `You are an MK sales specialist. Available services: ${servicesList}. Be professional and direct. Only offer MK services.`;
+      systemPrompt = `You are Sally, MK's business consultant. Focus on connecting user needs with MK services: ${servicesList}. Be professional, direct, solution-oriented.`;
     }
 
     // Prepare OpenAI request with function calling
@@ -138,12 +189,16 @@ Answer questions about MK services, availability, and help schedule calls. Be co
     const requestBody: any = {
       model: envConfig.model,
       messages: openaiMessages,
-      max_completion_tokens: envConfig.max_tokens,
-      temperature: envConfig.temperature
+      max_completion_tokens: envConfig.max_tokens
     };
 
-    // Only include tools for non-chat modes
-    if (mode !== 'chat') {
+    // Include tools based on mode
+    if (mode === 'chat') {
+      // Chat mode gets ALL tools - Sally should be fully capable
+      requestBody.tools = AVAILABLE_TOOLS;
+      requestBody.tool_choice = "auto";
+    } else if (mode !== 'chat') {
+      // Analysis and modal modes get full tools
       requestBody.tools = AVAILABLE_TOOLS;
       requestBody.tool_choice = toolChoice;
     }
@@ -205,6 +260,10 @@ Answer questions about MK services, availability, and help schedule calls. Be co
             toolResult = getAvailableServicesInfo();
             break;
             
+          case 'create_modal_link':
+            toolResult = createModalLink(functionArgs.text, functionArgs.mode);
+            break;
+            
           case 'request_email_verification':
             toolResult = await handleEmailVerification(functionArgs.email, session_id, kv);
             break;
@@ -239,8 +298,7 @@ Answer questions about MK services, availability, and help schedule calls. Be co
         body: JSON.stringify({
           model: envConfig.model,
           messages: followUpMessages,
-          max_completion_tokens: 300, // Keep responses short
-          temperature: envConfig.temperature
+          max_completion_tokens: 300 // Keep responses short
         }),
       });
 
@@ -337,6 +395,18 @@ function getAvailableServicesInfo() {
     success: true,
     services: userServices,
     formatted_text: `Here are our available AI services:\n\n${servicesText}\n\nWhich service interests you most?`
+  };
+}
+
+// Create a clickable modal link for the chat interface
+function createModalLink(text: string, mode: string) {
+  return {
+    success: true,
+    link_type: 'modal',
+    modal_mode: mode,
+    display_text: text,
+    action: 'open_modal',
+    formatted_text: `<modal-link data-mode="${mode}">${text}</modal-link>`
   };
 }
 
