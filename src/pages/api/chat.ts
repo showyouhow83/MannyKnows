@@ -279,11 +279,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
 
       // Let AI craft natural response using tool data
-      const toolMessages = toolResults.map(result => ({
-        role: "tool" as const,
-        content: JSON.stringify(result.result),
-        tool_call_id: result.tool_call_id
-      }));
+      const toolMessages = toolResults.map(result => {
+        // Limit tool response size to prevent API errors
+        let resultContent = JSON.stringify(result.result);
+        if (resultContent.length > 4000) {
+          // Truncate large responses but keep essential data
+          const truncatedResult = {
+            ...result.result,
+            truncated: true,
+            originalSize: resultContent.length
+          };
+          resultContent = JSON.stringify(truncatedResult).substring(0, 4000) + '...}';
+        }
+        
+        return {
+          role: "tool" as const,
+          content: resultContent,
+          tool_call_id: result.tool_call_id
+        };
+      });
 
       const followUpRequestBody = {
         model: envConfig.model,
@@ -306,6 +320,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
 
       if (!followUpResponse.ok) {
+        const errorData = await followUpResponse.text();
+        devLog('Follow-up OpenAI API error:', `${followUpResponse.status} - ${errorData}`);
+        devLog('Follow-up request body:', JSON.stringify(followUpRequestBody, null, 2));
         throw new Error(`OpenAI API error: ${followUpResponse.status}`);
       }
 
@@ -606,7 +623,16 @@ async function executeIndustryInsights(industry: string, profile: any, profileMa
  * Execute calendar scheduling for discovery call - returns pure data
  */
 async function executeScheduleCall(functionArgs: any, profile: any, profileManager: ProfileManager) {
+  // Validate required arguments
   const { name, email, phone, preferred_times, timezone, project_details } = functionArgs;
+  
+  if (!name || !email) {
+    return {
+      status: 'validation_error',
+      error: 'Name and email are required for scheduling',
+      required_fields: ['name', 'email']
+    };
+  }
   
   // Track calendar scheduling usage
   await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
@@ -659,7 +685,8 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
             calendar_link: schedulingResult.calendarLink,
             event_id: schedulingResult.eventId,
             attendee_email: email,
-            contact_name: name
+            contact_name: name,
+            scheduled_time: preferred_times
           }
         };
       } else {
@@ -668,16 +695,17 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
           scheduled: false,
           requested_time: preferred_times,
           available_times: availableSlots.slice(0, 3),
-          contact_info: { name, email, phone, project_details }
+          contact_info: { name, email, project_details }
         };
       }
     } else {
       // User is flexible, show available times
       return {
         status: 'showing_availability',
-        available_times: availableSlots.slice(0, 5),
-        contact_info: { name, email, phone, project_details },
-        timezone: timezone || 'America/Los_Angeles'
+        available_times: availableSlots.slice(0, 3), // Limit to 3 slots to reduce response size
+        contact_info: { name, email, project_details },
+        timezone: timezone || 'America/Los_Angeles',
+        message: 'Here are some available time slots for your discovery call'
       };
     }
 
