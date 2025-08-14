@@ -62,17 +62,13 @@ export class ServiceArchitecture {
   // Load services from KV first, fallback to hardcoded defaults
   async ensureServicesLoaded(): Promise<void> {
     if (this.initialized && this.isCacheValid()) {
-      console.log('Using cached services');
       return;
     }
-
-    console.log('Loading services...');
 
     try {
       // Try loading from KV first
       const kvServices = await this.loadFromKV();
       if (kvServices && kvServices.length > 0) {
-        console.log(`Successfully loaded ${kvServices.length} services from KV`);
         this.loadServicesFromArray(kvServices);
         this.updateCache(kvServices);
         this.initialized = true;
@@ -83,39 +79,29 @@ export class ServiceArchitecture {
     }
 
     // Fallback to default services
-    console.log('Loading default services as fallback');
     this.loadDefaultServices();
     this.initialized = true;
   }
 
   private async loadFromKV(): Promise<BusinessService[] | null> {
-    // Use KV_SERVICES binding as specified in wrangler.jsonc
-    const kvNamespace = this.environment?.KV_SERVICES;
-    if (!kvNamespace) {
-      console.log('KV_SERVICES namespace not available in environment');
+    if (!this.environment?.KV_SERVICES) {
       return null;
     }
 
     try {
       // Get latest version pointer
-      const latestVersion = await kvNamespace.get('services_latest');
+      const latestVersion = await this.environment.KV_SERVICES.get('services_latest');
       if (!latestVersion) {
-        console.log('No services_latest pointer found in KV');
         return null;
       }
 
-      console.log('Loading services from KV version:', latestVersion);
-
       // Load the actual service data
-      const serviceDataRaw = await kvNamespace.get(latestVersion);
+      const serviceDataRaw = await this.environment.KV_SERVICES.get(latestVersion);
       if (!serviceDataRaw) {
-        console.log('No service data found for version:', latestVersion);
         return null;
       }
 
       const serviceData: KVServiceData = JSON.parse(serviceDataRaw);
-      console.log(`Loaded ${serviceData.services.length} services from KV`);
-      
       return serviceData.services.filter(service => service.isActive !== false);
     } catch (error) {
       console.error('Error loading services from KV:', error);

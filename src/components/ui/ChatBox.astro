@@ -11,26 +11,35 @@ const { className = '' } = Astro.props;
   <div class="flex justify-between items-center p-4 border-b border-white/20 dark:border-white/10">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-        <span class="text-white font-bold text-lg">C</span>
+        <span class="text-white font-bold text-lg">M</span>
       </div>
       <div>
-        <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">Chat with Sally</h3>
-        <p class="text-text-light-secondary dark:text-text-dark-secondary m-0 text-sm">Your MK assistant</p>
+        <h3 class="text-text-light-primary dark:text-text-dark-primary m-0 text-lg font-semibold">Chat with Manny</h3>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary m-0 text-sm">Your MK solutions architect</p>
       </div>
     </div>
-    <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-2 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
+    <div class="flex items-center gap-2">
+      <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-2 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClear" title="Clear conversation">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+        </svg>
+      </button>
+      <button type="button" class="group bg-none border-none text-text-light-tertiary dark:text-text-dark-tertiary cursor-pointer p-2 rounded-md transition-all duration-300 flex items-center justify-center hover:bg-black/10 dark:hover:bg-white/10 hover:text-text-light-primary dark:hover:text-text-dark-primary" id="chatBoxClose">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
   </div>
   <div class="flex flex-col chat-body">
     <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" id="chatBoxMessages">
       <div class="flex gap-3 items-start">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">S</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">M</div>
         <div class="chat-message-bubble bot-message">
-          Hi! I'm Sally from MannyKnows. I'm here to help answer questions about our services and assist with your business needs. How can I help you today?
+          Hey there! I'm Manny 🤓 what challenge can I help you solve today?
         </div>
       </div>
     </div>
@@ -48,7 +57,7 @@ const { className = '' } = Astro.props;
 </div>
 
 <script>
-  // Chat Box functionality with Sally API integration
+  // Chat Box functionality with Manny AI integration
   function initChatBox() {
     const chatBox = document.getElementById('chatBox');
     const topChatToggle = document.getElementById('topChatToggle');
@@ -63,7 +72,7 @@ const { className = '' } = Astro.props;
 
     let isOpen = false;
     
-    // Session management for Sally API
+    // Session management for Manny AI
     let sessionId = crypto.randomUUID();
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
@@ -94,9 +103,27 @@ const { className = '' } = Astro.props;
       chatBox.classList.add('scale-0', 'opacity-0', 'invisible');
       chatBox.classList.remove('scale-100', 'opacity-100', 'visible');
       
-      // Reset conversation when closing
+      // Keep conversation history and session when closing
+      // User can continue conversation when reopening
+    };
+
+    // Clear conversation function
+    const clearChatHistory = () => {
       conversationHistory = [];
       sessionId = crypto.randomUUID();
+      
+      // Clear messages in UI
+      const messagesContainer = document.getElementById('chatBoxMessages');
+      if (messagesContainer) {
+        messagesContainer.innerHTML = `
+          <div class="flex gap-3 items-start">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">M</div>
+            <div class="chat-message-bubble bot-message">
+              Hey there! I'm Manny from MK 👋 What business challenge can I help you solve today?
+            </div>
+          </div>
+        `;
+      }
     };
 
     // Toggle chat box function
@@ -113,6 +140,9 @@ const { className = '' } = Astro.props;
     dockChatToggle?.addEventListener('click', toggleChatBox);
     heroChatButton?.addEventListener('click', openChatBox);
     chatBoxClose?.addEventListener('click', closeChatBox);
+    
+    // Clear chat button
+    document.getElementById('chatBoxClear')?.addEventListener('click', clearChatHistory);
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
@@ -136,10 +166,24 @@ const { className = '' } = Astro.props;
       }
     });
 
-    // Send message to Sally API
+    // Input disabling functionality
+    const setInputDisabled = (disabled: boolean) => {
+      if (chatBoxInput) {
+        chatBoxInput.disabled = disabled;
+        chatBoxInput.style.opacity = disabled ? '0.5' : '1';
+        chatBoxInput.placeholder = disabled ? 'Manny is responding...' : 'Type your message...';
+      }
+      if (chatBoxSend) {
+        (chatBoxSend as HTMLButtonElement).disabled = disabled;
+        chatBoxSend.style.opacity = disabled ? '0.5' : '1';
+        chatBoxSend.style.cursor = disabled ? 'not-allowed' : 'pointer';
+      }
+    };
+
+    // Send message to Manny AI
     const sendMessage = async () => {
       const message = chatBoxInput?.value.trim();
-      if (!message) return;
+      if (!message || chatBoxInput?.disabled) return;
 
       const sanitizedMessage = sanitizeInput(message);
       if (!sanitizedMessage) {
@@ -156,14 +200,15 @@ const { className = '' } = Astro.props;
       // Add user message
       addUserMessage(sanitizedMessage);
 
-      // Clear input
+      // Clear input and disable it while processing
       if (chatBoxInput) chatBoxInput.value = '';
+      setInputDisabled(true);
 
       // Add loading indicator
       addLoadingMessage();
 
       try {
-        // Send to Sally API in chat mode (not analysis mode)
+        // Send to Manny AI in chat mode (not analysis mode)
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -171,7 +216,7 @@ const { className = '' } = Astro.props;
             message: sanitizedMessage,
             session_id: sessionId,
             conversation_history: conversationHistory,
-            mode: 'chat' // This ensures Sally uses conversational mode, not analysis mode
+            mode: 'chat' // This ensures Manny uses conversational mode, not analysis mode
           })
         });
 
@@ -181,7 +226,7 @@ const { className = '' } = Astro.props;
         removeLoadingMessage();
 
         if (data.reply) {
-          // Add Sally's response
+          // Add Manny's response
           addBotMessage(data.reply);
           
           // Update conversation history
@@ -196,9 +241,15 @@ const { className = '' } = Astro.props;
           addBotMessage("I'm having trouble connecting right now. Please try again in a moment.");
         }
 
+        // Re-enable input after response
+        setInputDisabled(false);
+
       } catch (error) {
         removeLoadingMessage();
         addBotMessage("Sorry, I encountered an error. Please try again.");
+        
+        // Re-enable input after error
+        setInputDisabled(false);
       }
     };
 
@@ -215,7 +266,7 @@ const { className = '' } = Astro.props;
       scrollToBottom();
     };
 
-    // Add bot message to chat (Sally)
+    // Add bot message to chat (Manny)
     const addBotMessage = (message: string) => {
       const botResponse = document.createElement('div');
       botResponse.className = 'flex gap-3 items-start';
@@ -243,7 +294,7 @@ const { className = '' } = Astro.props;
               <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
               <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
             </div>
-            <span class="text-sm text-gray-600 dark:text-gray-400">Sally is typing...</span>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Manny is typing...</span>
           </div>
         </div>
       `;
@@ -260,7 +311,7 @@ const { className = '' } = Astro.props;
       }
     };
 
-    // Simple markdown parser for Sally's responses
+    // Simple markdown parser for Manny's responses
     const parseMarkdown = (text: string): string => {
       return text
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -277,11 +328,15 @@ const { className = '' } = Astro.props;
     };
 
     // Send on button click
-    chatBoxSend?.addEventListener('click', sendMessage);
+    chatBoxSend?.addEventListener('click', (e) => {
+      if (!(chatBoxSend as HTMLButtonElement)?.disabled) {
+        sendMessage();
+      }
+    });
 
     // Send on Enter key
     chatBoxInput?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && !chatBoxInput?.disabled) {
         e.preventDefault();
         sendMessage();
       }

@@ -3,7 +3,7 @@
 
 import { ProfileManager } from '../user/ProfileManager.js';
 import type { UserProfile } from '../user/ProfileManager.js';
-import { serviceArchitecture } from './ServiceArchitecture.js';
+import { createServiceArchitecture, type ServiceArchitecture } from './ServiceArchitecture.js';
 
 export interface EmailCollectionContext {
   serviceName?: string;

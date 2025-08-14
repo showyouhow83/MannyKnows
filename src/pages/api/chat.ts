@@ -2,13 +2,109 @@ import type { APIRoute } from 'astro';
 import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
 import { devLog } from '../../utils/debug';
 import { ProfileManager } from '../../lib/user/ProfileManager';
-import { serviceArchitecture } from '../../lib/services/ServiceArchitecture';
-import EmailCollectionManager from '../../lib/services/EmailCollectionManager';
+import { createServiceArchitecture } from '../../lib/services/ServiceArchitecture';
+import TokenBudgetManager from '../../lib/services/TokenBudgetManager';
+import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
+import GoogleCalendarService from '../../lib/services/GoogleCalendarService';
 
 export const prerender = false;
 
-// Get available tools from service architecture
-const AVAILABLE_TOOLS = serviceArchitecture.getAvailableTools();
+// Helper function to convert services to OpenAI function tools
+function getAvailableToolsFromServices(serviceArchitecture: any, profile: any) {
+  const accessibleServices = serviceArchitecture.getAccessibleServices(profile);
+  
+  const serviceTools = accessibleServices
+    .filter((service: any) => service.functionName && service.canDemoInChat)
+    .map((service: any) => {
+      // Convert Google Sheets parameter format to OpenAI JSON Schema
+      const convertToOpenAISchema = (googleSheetsParams: any) => {
+        let parsedParams = googleSheetsParams;
+        
+        // Handle both string parameters (old format) and object parameters (new format)
+        if (typeof googleSheetsParams === 'string') {
+          try {
+            parsedParams = JSON.parse(googleSheetsParams);
+          } catch (e) {
+            console.warn('Failed to parse parameters:', googleSheetsParams);
+            return { properties: {}, required: [] };
+          }
+        }
+        
+        if (!parsedParams || typeof parsedParams !== 'object') {
+          return { properties: {}, required: [] };
+        }
+        
+        const properties: any = {};
+        const required: string[] = [];
+        
+        Object.entries(parsedParams).forEach(([key, type]) => {
+          if (typeof type === 'string') {
+            // Convert simple types to JSON Schema format
+            switch (type) {
+              case 'string':
+                properties[key] = { type: 'string', description: `${key} parameter` };
+                break;
+              case 'number':
+                properties[key] = { type: 'number', description: `${key} parameter` };
+                break;
+              case 'boolean':
+                properties[key] = { type: 'boolean', description: `${key} parameter` };
+                break;
+              case 'array':
+                properties[key] = { type: 'array', items: { type: 'string' }, description: `${key} parameter` };
+                break;
+              case 'json':
+                properties[key] = { type: 'object', description: `${key} parameter` };
+                break;
+              default:
+                properties[key] = { type: 'string', description: `${key} parameter` };
+            }
+            required.push(key);
+          }
+        });
+        
+        return { properties, required };
+      };
+
+      const schemaData = convertToOpenAISchema(service.parameters);
+      
+      return {
+        type: "function",
+        function: {
+          name: service.functionName,
+          description: service.description,
+          parameters: {
+            type: "object",
+            properties: schemaData.properties,
+            required: schemaData.required
+          }
+        }
+      };
+    });
+
+  // Add calendar scheduling tool
+  const calendarTool = {
+    type: "function",
+    function: {
+      name: "schedule_discovery_call",
+      description: "Schedule a discovery call when user shows interest in services, asks about pricing, or wants to discuss their specific business needs. Use to capture leads and move conversations forward.",
+      parameters: {
+        type: "object",
+        properties: {
+          name: { type: "string", description: "Contact's full name" },
+          email: { type: "string", description: "Contact's email address" },
+          phone: { type: "string", description: "Contact's phone number (optional)" },
+          preferred_times: { type: "string", description: "Preferred meeting times or availability (e.g., 'Tomorrow 2 PM' or 'flexible')" },
+          timezone: { type: "string", description: "Contact's timezone (default: America/Los_Angeles)" },
+          project_details: { type: "string", description: "Brief description of their project, business challenge, or goals" }
+        },
+        required: ["name", "email", "project_details"]
+      }
+    }
+  };
+
+  return [...serviceTools, calendarTool];
+}
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -18,19 +114,30 @@ export const POST: APIRoute = async ({ request, locals }) => {
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
     const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const environment = (locals as any).runtime?.env; // Pass full environment for KV access
+    
+    // Initialize service architecture with KV environment
+    const serviceArchitecture = createServiceArchitecture(environment);
+    await serviceArchitecture.ensureServicesLoaded();
     
     // Initialize managers
     const profileManager = new ProfileManager(kv);
-    const emailManager = new EmailCollectionManager(profileManager);
     
     // Get or create user profile
     const profile = await profileManager.getUserProfile(session_id);
     devLog('User profile:', { id: profile.id, interactions: profile.interactions, trustScore: profile.trustScore });
     
     // Get environment config
-    const environment = import.meta.env.MODE === 'development' ? 'development' : 'production';
+    const envMode = import.meta.env.MODE === 'development' ? 'development' : 'production';
     const config = await import('../../config/chatbot/environments.json');
-    const envConfig = config.default[environment as keyof typeof config.default];
+    const envConfig = config.default[envMode as keyof typeof config.default];
+
+    // Initialize token budget manager
+    const tokenBudgetManager = new TokenBudgetManager(kv, envConfig);
+    
+    // Calculate token allocation based on user tier and usage
+    const tokenAllocation = await tokenBudgetManager.calculateTokenAllocation(profile);
+    devLog('Token allocation:', tokenAllocation);
 
     if (!envConfig.chatbot_enabled) {
       return new Response(JSON.stringify({
@@ -42,45 +149,48 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Check if we should request email before processing
-    const emailContext = {
-      message,
-      serviceName: extractServiceName(message),
-      userIntent: classifyUserIntent(message)
-    };
-
-    const emailEvaluation = await emailManager.evaluateEmailRequest(profile, emailContext);
+    // Build system prompt using the structured prompt builder
+    const promptBuilder = createPromptBuilder('business_consultant', 'business_consultation');
     
-    if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'now') {
-      // Mark email as requested and return collection message
-      await profileManager.markEmailRequested(profile);
-      
-      return new Response(JSON.stringify({
-        reply: emailEvaluation.message,
-        action: 'request_email',
-        strategy: emailEvaluation.strategy,
-        session_id
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
+    // Get all services for Manny's knowledge, regardless of user tier
+    const allServices = serviceArchitecture.getUserFacingServices();
+    const servicesList = allServices.map((s: any) => s.displayName).join(', ');
+    const categories = Array.from(new Set(allServices.map((s: any) => s.businessCategory)))
+      .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '');
+    
+    const systemPrompt = promptBuilder.buildSystemPrompt(
+      servicesList,
+      categories.length,
+      allServices.length,
+      profile
+    );
+
+    // Get available tools based on current service architecture
+    const AVAILABLE_TOOLS = getAvailableToolsFromServices(serviceArchitecture, profile);
+
+    // Prepare OpenAI request with function calling and conversation history
+    const openaiMessages: Array<{role: "system" | "user" | "assistant", content: string}> = [
+      {
+        role: "system",
+        content: systemPrompt
+      }
+    ];
+
+    // Add conversation history if provided
+    if (conversation_history && conversation_history.length > 0) {
+      conversation_history.forEach((msg: any) => {
+        openaiMessages.push({
+          role: msg.role as "user" | "assistant",
+          content: msg.content
+        });
       });
     }
 
-    // Build system prompt based on user profile and accessible services
-    const accessibleServices = serviceArchitecture.getAccessibleServices(profile);
-    const systemPrompt = buildAdaptiveSystemPrompt(profile, accessibleServices, emailEvaluation);
-
-    // Prepare OpenAI request with function calling
-    const openaiMessages = [
-      {
-        role: "system" as const,
-        content: systemPrompt
-      },
-      {
-        role: "user" as const,
-        content: message
-      }
-    ];
+    // Add current message
+    openaiMessages.push({
+      role: "user",
+      content: message
+    });
 
     devLog('System prompt length:', systemPrompt.length);
     devLog('Available tools count:', AVAILABLE_TOOLS.length);
@@ -91,7 +201,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const requestBody = {
       model: envConfig.model,
       messages: openaiMessages,
-      max_completion_tokens: envConfig.max_tokens,
+      max_completion_tokens: tokenAllocation.maxTokensForResponse,
       tools: AVAILABLE_TOOLS,
       tool_choice: "auto" as const
     };
@@ -132,15 +242,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
         // Route function calls through service architecture
         switch (functionName) {
           case 'analyze_website':
-            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv, profile, profileManager);
+            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv, profile, profileManager, serviceArchitecture);
             break;
             
           case 'show_available_services':
-            toolResult = await executeShowServices(profile, profileManager);
-            break;
-            
-          case 'request_email_verification':
-            toolResult = await executeEmailVerification(functionArgs.email, session_id, kv, profile, profileManager, emailManager);
+            toolResult = await executeShowServices(profile, profileManager, serviceArchitecture);
             break;
 
           case 'get_seo_tips':
@@ -152,7 +258,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
             break;
 
           case 'get_industry_insights':
-            toolResult = await executeIndustryInsights(functionArgs.industry, profile, profileManager);
+            toolResult = await executeIndustryInsights(functionArgs.industry, profile, profileManager, serviceArchitecture);
+            break;
+
+          case 'schedule_discovery_call':
+            toolResult = await executeScheduleCall(functionArgs, profile, profileManager);
             break;
             
           default:
@@ -168,23 +278,81 @@ export const POST: APIRoute = async ({ request, locals }) => {
         });
       }
 
-      // Format the final response based on tool results
-      finalResponse = formatToolResults(toolResults);
+      // Let AI craft natural response using tool data
+      const toolMessages = toolResults.map(result => ({
+        role: "tool" as const,
+        content: JSON.stringify(result.result),
+        tool_call_id: result.tool_call_id
+      }));
+
+      const followUpRequestBody = {
+        model: envConfig.model,
+        messages: [
+          ...openaiMessages,
+          { role: "assistant" as const, content: choice.message.content || "", tool_calls: choice.message.tool_calls },
+          ...toolMessages
+        ],
+        max_completion_tokens: tokenAllocation.maxTokensForResponse,
+        temperature: 0.7
+      };
+
+      const followUpResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(followUpRequestBody)
+      });
+
+      if (!followUpResponse.ok) {
+        throw new Error(`OpenAI API error: ${followUpResponse.status}`);
+      }
+
+      const followUpData = await followUpResponse.json();
+      finalResponse = followUpData.choices[0].message.content || "I apologize, but I'm having trouble processing that request right now.";
     } else {
-      finalResponse = choice.message.content;
+      // Handle direct content response
+      finalResponse = choice.message.content || '';
+      
+      // Handle case where response was truncated due to length
+      if (data.choices[0].finish_reason === 'length') {
+        if (!finalResponse.trim()) {
+          finalResponse = "I was going to give you a detailed response, but it got cut off. Let me try again with a shorter answer. Could you please repeat your question?";
+        } else {
+          finalResponse += "\n\n(Note: My response was cut short - feel free to ask for more details!)";
+        }
+      }
+      
+      // Ensure we always have some response
+      if (!finalResponse.trim()) {
+        finalResponse = "I understand your question, but I'm having trouble formulating a complete response right now. Could you try rephrasing your question?";
+      }
     }
+
+    // Track token usage
+    const promptTokens = data.usage?.prompt_tokens || 0;
+    const completionTokens = data.usage?.completion_tokens || 0;
+    await tokenBudgetManager.trackTokenUsage(profile.id, promptTokens, completionTokens);
 
     // Track interaction
     await profileManager.trackInteraction(profile, 'message_sent', {
       messageLength: message.length,
       responseLength: finalResponse.length,
-      toolsUsed: choice.message.tool_calls?.length || 0
+      toolsUsed: choice.message.tool_calls?.length || 0,
+      tokensUsed: promptTokens + completionTokens,
+      userTier: tokenAllocation.userTier
     });
 
-    // Check if we should suggest email after service completion
-    if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'after_service') {
-      finalResponse += `\n\n${emailEvaluation.message}`;
+    // Add budget warnings if needed
+    if (tokenAllocation.budgetWarning) {
+      finalResponse += `\n\n💡 ${tokenAllocation.budgetWarning}`;
     }
+
+    devLog('Final response being sent:', { finalResponse, length: finalResponse.length });
+
+    // Get updated usage summary for response
+    const usageSummary = await tokenBudgetManager.getUsageSummary(profile);
 
     return new Response(JSON.stringify({
       reply: finalResponse,
@@ -192,7 +360,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
       profile_summary: {
         interactions: profile.interactions,
         trustScore: profile.trustScore,
-        servicesUsed: profile.freeServicesUsed.length + profile.premiumServicesUsed.length
+        servicesUsed: profile.freeServicesUsed.length + profile.premiumServicesUsed.length,
+        tier: usageSummary.tier,
+        usage: {
+          daily: usageSummary.dailyUsage,
+          session: usageSummary.sessionUsage
+        }
       }
     }), {
       status: 200,
@@ -259,44 +432,17 @@ function classifyUserIntent(message: string): string {
   return 'general';
 }
 
-/**
- * Build adaptive system prompt based on user profile
- */
-function buildAdaptiveSystemPrompt(profile: any, accessibleServices: any[], emailEvaluation: any): string {
-  const userType = profile.emailVerified ? 'verified user' : 
-                  profile.interactions >= 3 ? 'engaged visitor' : 'new visitor';
-  
-  const servicesList = accessibleServices.map(s => s.displayName).join(', ');
-  
-  let prompt = `You are Sally, MK's AI business consultant. User type: ${userType} (${profile.interactions} interactions, trust: ${profile.trustScore}).
-
-Available services: ${servicesList}
-
-Guidelines:
-- Be helpful and professional
-- For new visitors: Focus on demonstrating value with free services
-- For engaged visitors: Highlight premium features they can unlock
-- For verified users: Provide full access to all services
-- Keep responses concise (1-2 sentences when possible)`;
-
-  if (emailEvaluation.shouldRequest && emailEvaluation.timing === 'after_service') {
-    prompt += `\n- After helping, mention: "${emailEvaluation.message}"`;
-  }
-
-  return prompt;
-}
-
 // Service Execution Functions
 
 /**
  * Execute website analysis with access control
  */
-async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any, profile: any, profileManager: ProfileManager) {
+async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any, profile: any, profileManager: ProfileManager, serviceArchitecture: any) {
   try {
     const normalizedUrl = url.startsWith('http') ? url : `https://${url}`;
     
-    // Check service access
-    const accessCheck = serviceArchitecture.checkServiceAccess('analyze_website', profile);
+    // Check service access using the passed serviceArchitecture
+    const accessCheck = serviceArchitecture.checkAccess('analyze_website', profile);
     
     if (!accessCheck.allowed) {
       // Track attempted premium service
@@ -330,80 +476,43 @@ async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any, p
 }
 
 /**
- * Execute show available services
+ * Execute show available services - returns pure service data
  */
-async function executeShowServices(profile: any, profileManager: ProfileManager): Promise<any> {
-  const allServices = serviceArchitecture.getServicesByCategory('free')
-    .concat(serviceArchitecture.getServicesByCategory('premium'));
+async function executeShowServices(profile: any, profileManager: ProfileManager, serviceArchitecture: any): Promise<any> {
+  // Get all user-facing services (no tier restrictions)
+  const allServices = serviceArchitecture.getUserFacingServices();
   
-  const accessibleServices = serviceArchitecture.getAccessibleServices(profile);
-  const lockedServices = allServices.filter(service => 
-    !accessibleServices.find(accessible => accessible.name === service.name)
-  );
+  if (allServices.length === 0) {
+    return {
+      available_services: [],
+      total_services: 0,
+      categories: []
+    };
+  }
 
   // Track interaction
   await profileManager.trackServiceUsage(profile, 'show_available_services', 'free', true);
 
+  const categories = Array.from(new Set(allServices.map((s: any) => s.businessCategory)))
+    .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '');
+
   return {
-    available_services: accessibleServices.map(s => ({
+    available_services: allServices.map((s: any) => ({
       name: s.displayName,
       description: s.description,
-      category: s.category,
+      category: s.businessCategory,
+      type: s.serviceType,
+      delivery: s.deliveryMethod,
       status: 'available'
     })),
-    locked_services: lockedServices.map(s => ({
-      name: s.displayName,
-      description: s.description,
-      category: s.category,
-      status: 'locked',
-      requirement: s.requiresEmail ? 'Email verification required' : 'More engagement needed'
-    })),
-    message: `Here are your available AI services. You have access to ${accessibleServices.length} services.`
+    total_services: allServices.length,
+    categories: categories,
+    service_catalog: 'MannyKnows'
   };
 }
 
 /**
- * Execute email verification
- */
-async function executeEmailVerification(email: string, sessionId: string, kv: any, profile: any, profileManager: ProfileManager, emailManager: EmailCollectionManager) {
-  try {
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return {
-        status: 'invalid_email',
-        message: 'Please provide a valid email address.'
-      };
-    }
-
-    // Handle email provided
-    await emailManager.handleEmailProvided(profile, email);
-
-    // TODO: Implement actual email sending
-    // For now, simulate verification
-    const verificationToken = crypto.randomUUID();
-    await kv.put(`verify:${verificationToken}`, JSON.stringify({
-      email,
-      sessionId,
-      timestamp: Date.now()
-    }));
-
-    return {
-      status: 'verification_sent',
-      email: email,
-      message: emailManager.getEmailVerificationMessage(email),
-      token: verificationToken // Remove in production
-    };
-  } catch (error) {
-    return {
-      status: 'error',
-      message: 'Failed to send verification email'
-    };
-  }
-}
-
-/**
- * Execute SEO tips (free service)
+ * Execute SEO tips (free service) - returns pure data
  */
 async function executeGetSeoTips(topic: string, profile: any, profileManager: ProfileManager) {
   // Track free service usage
@@ -413,17 +522,23 @@ async function executeGetSeoTips(topic: string, profile: any, profileManager: Pr
     'general': [
       'Focus on high-quality, relevant content',
       'Optimize your page titles and meta descriptions',
-      'Improve your website loading speed'
+      'Improve your website loading speed',
+      'Use schema markup for better search visibility',
+      'Build quality backlinks from relevant websites'
     ],
     'content': [
       'Write for your audience, not just search engines',
       'Use header tags (H1, H2, H3) to structure content',
-      'Include relevant keywords naturally in your content'
+      'Include relevant keywords naturally in your content',
+      'Create comprehensive, in-depth content',
+      'Update old content regularly'
     ],
     'technical': [
       'Ensure your website is mobile-friendly',
       'Create an XML sitemap',
-      'Fix broken links and 404 errors'
+      'Fix broken links and 404 errors',
+      'Optimize images with alt text',
+      'Improve Core Web Vitals scores'
     ]
   };
 
@@ -432,7 +547,8 @@ async function executeGetSeoTips(topic: string, profile: any, profileManager: Pr
   return {
     topic,
     tips: relevantTips,
-    message: `Here are ${relevantTips.length} SEO tips for ${topic}:`
+    tip_count: relevantTips.length,
+    category: topic
   };
 }
 
@@ -457,9 +573,9 @@ async function executeCheckDomain(domain: string, profile: any, profileManager: 
 /**
  * Execute industry insights (engaged user service)
  */
-async function executeIndustryInsights(industry: string, profile: any, profileManager: ProfileManager) {
-  // Check access
-  const accessCheck = serviceArchitecture.checkServiceAccess('get_industry_insights', profile);
+async function executeIndustryInsights(industry: string, profile: any, profileManager: ProfileManager, serviceArchitecture: any) {
+  // Check access using passed serviceArchitecture
+  const accessCheck = serviceArchitecture.checkAccess('get_industry_insights', profile);
   
   if (!accessCheck.allowed) {
     return {
@@ -487,38 +603,93 @@ async function executeIndustryInsights(industry: string, profile: any, profileMa
 }
 
 /**
- * Format tool results into readable response
+ * Execute calendar scheduling for discovery call - returns pure data
  */
-function formatToolResults(toolResults: any[]): string {
-  let response = '';
+async function executeScheduleCall(functionArgs: any, profile: any, profileManager: ProfileManager) {
+  const { name, email, phone, preferred_times, timezone, project_details } = functionArgs;
   
-  for (const result of toolResults) {
-    const data = result.result;
+  // Track calendar scheduling usage
+  await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
+
+  try {
+    // Initialize Google Calendar service
+    const googleAccessToken = process.env.GOOGLE_CALENDAR_ACCESS_TOKEN;
+    const ownerEmail = process.env.OWNER_EMAIL || 'manny@mannyknows.com';
+    const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
     
-    if (data.status === 'access_denied') {
-      response += data.message + '\n\n';
-    } else if (data.message) {
-      response += data.message + '\n\n';
-    } else if (data.available_services) {
-      response += `📋 Available Services:\n`;
-      data.available_services.forEach((service: any) => {
-        response += `• ${service.name}: ${service.description}\n`;
-      });
-      if (data.locked_services && data.locked_services.length > 0) {
-        response += `\n🔒 Premium Services (${data.locked_services[0].requirement}):\n`;
-        data.locked_services.forEach((service: any) => {
-          response += `• ${service.name}: ${service.description}\n`;
-        });
-      }
-    } else if (data.tips) {
-      response += `💡 SEO Tips for ${data.topic}:\n`;
-      data.tips.forEach((tip: string, index: number) => {
-        response += `${index + 1}. ${tip}\n`;
-      });
-    } else {
-      response += JSON.stringify(data, null, 2) + '\n\n';
+    if (!googleAccessToken) {
+      return {
+        status: 'configuration_error',
+        calendar_available: false,
+        contact_info: { name, email, phone, preferred_times, project_details },
+        fallback_email: 'manny@mannyknows.com'
+      };
     }
+
+    const calendarService = new GoogleCalendarService(googleAccessToken, calendarId, ownerEmail);
+    
+    // Get available time slots first
+    const availableSlots = await calendarService.getFormattedAvailability(timezone || 'America/Los_Angeles');
+    
+    if (availableSlots.length === 0) {
+      return {
+        status: 'no_availability',
+        available_times: [],
+        contact_info: { name, email, phone, preferred_times, project_details },
+        fallback_email: 'manny@mannyknows.com'
+      };
+    }
+
+    // If user provided preferred times, try to schedule
+    if (preferred_times && preferred_times.toLowerCase() !== 'flexible') {
+      const schedulingResult = await calendarService.createDiscoveryCall(
+        name,
+        email,
+        preferred_times,
+        timezone || 'America/Los_Angeles',
+        project_details
+      );
+
+      if (schedulingResult.success) {
+        return {
+          status: 'meeting_scheduled',
+          scheduled: true,
+          meeting_details: {
+            meeting_link: schedulingResult.meetingLink,
+            calendar_link: schedulingResult.calendarLink,
+            event_id: schedulingResult.eventId,
+            attendee_email: email,
+            contact_name: name
+          }
+        };
+      } else {
+        return {
+          status: 'scheduling_conflict',
+          scheduled: false,
+          requested_time: preferred_times,
+          available_times: availableSlots.slice(0, 3),
+          contact_info: { name, email, phone, project_details }
+        };
+      }
+    } else {
+      // User is flexible, show available times
+      return {
+        status: 'showing_availability',
+        available_times: availableSlots.slice(0, 5),
+        contact_info: { name, email, phone, project_details },
+        timezone: timezone || 'America/Los_Angeles'
+      };
+    }
+
+  } catch (error) {
+    console.error('Calendar scheduling error:', error);
+    
+    return {
+      status: 'error',
+      error_type: 'calendar_error',
+      contact_info: { name, email, phone, preferred_times, project_details },
+      fallback_email: 'manny@mannyknows.com',
+      error_message: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
-  
-  return response.trim();
 }

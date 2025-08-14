@@ -1,16 +1,48 @@
 {
   "development": {
     "persona": "business_consultant",
-    "model": "gpt-5-nano",
-    "max_tokens": 500,
+    "model": "gpt-5-nano-2025-08-07",
     "debug_logging": true,
-    "chatbot_enabled": true
+    "chatbot_enabled": true,
+    "token_budget": {
+      "anonymous": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      },
+      "engaged": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      },
+      "verified": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      }
+    }
   },
   "production": {
     "persona": "business_consultant", 
-    "model": "gpt-5-nano",
-    "max_tokens": 500,
+    "model": "gpt-5-nano-2025-08-07",
     "debug_logging": false,
-    "chatbot_enabled": false
+    "chatbot_enabled": true,
+    "token_budget": {
+      "anonymous": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      },
+      "engaged": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      },
+      "verified": {
+        "max_tokens_per_response": 25000,
+        "daily_token_budget": 25000,
+        "session_token_budget": 25000
+      }
+    }
   }
 }

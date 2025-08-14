@@ -11,7 +11,10 @@
     "CLOUDFLARE_R2_ENDPOINT": "https://f2cb7f9c07dd4587efbd7772ff8e324f.r2.cloudflarestorage.com",
     "CLOUDFLARE_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
     "CF_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
-    "CF_PAGES_PROJECT_NAME": "mannyknows"
+    "CF_PAGES_PROJECT_NAME": "mannyknows",
+    "OWNER_EMAIL": "showyouhow83@gmail.com",
+    "GOOGLE_CALENDAR_ID": "dc147fc2eeb2536a35b17c1f294b3dde7a7a8d27c69696dd188d6ffd0eef711a@group.calendar.google.com",
+    "GOOGLE_CLIENT_ID": "198938333831-uq29c7o205v7kv7ple9qmippr4f27dl3.apps.googleusercontent.com"
   },
   "assets": {
     "binding": "ASSETS",
@@ -27,6 +30,11 @@
       "binding": "SESSION",
       "id": "ed368c98eef342b79e8f7c4b96b3fb62",
       "preview_id": "6ef503c2554244e4a2432f3c1d2e522c"
+    },
+    {
+      "binding": "KV_SERVICES",
+      "id": "13e95a5db28a4a9da5f517fe0a1e4250",
+      "preview_id": "13e95a5db28a4a9da5f517fe0a1e4250"
     }
   ],
   "r2_buckets": [
