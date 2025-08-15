@@ -72,8 +72,13 @@ const { className = '' } = Astro.props;
 
     let isOpen = false;
     
-    // Session management for Manny AI
-    let sessionId = crypto.randomUUID();
+    // Session management for Manny AI (persist across refreshes)
+    let sessionId = (typeof localStorage !== 'undefined' && localStorage.getItem('mk_chat_session_id')) || crypto.randomUUID();
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('mk_chat_session_id', sessionId);
+      }
+    } catch {}
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
 
@@ -111,6 +116,11 @@ const { className = '' } = Astro.props;
     const clearChatHistory = () => {
       conversationHistory = [];
       sessionId = crypto.randomUUID();
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('mk_chat_session_id', sessionId);
+        }
+      } catch {}
       
       // Clear messages in UI
       const messagesContainer = document.getElementById('chatBoxMessages');
@@ -208,15 +218,15 @@ const { className = '' } = Astro.props;
       addLoadingMessage();
 
       try {
-        // Send to Manny AI in chat mode (not analysis mode)
-        const response = await fetch('/api/chat', {
+        // Send to Manny AI - use proper format for tool calling
+    const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             message: sanitizedMessage,
             session_id: sessionId,
-            conversation_history: conversationHistory,
-            mode: 'chat' // This ensures Manny uses conversational mode, not analysis mode
+      // Provide full conversation history so the API can maintain memory
+      conversation_history: conversationHistory
           })
         });
 
@@ -225,18 +235,23 @@ const { className = '' } = Astro.props;
         // Remove loading indicator
         removeLoadingMessage();
 
-        if (data.reply) {
+        if (data.finalResponse) {
           // Add Manny's response
-          addBotMessage(data.reply);
+          addBotMessage(data.finalResponse);
           
-          // Update conversation history
+          // Update conversation history in simple format for UI
           conversationHistory.push({role: 'user', content: sanitizedMessage});
-          conversationHistory.push({role: 'assistant', content: data.reply});
+          conversationHistory.push({role: 'assistant', content: data.finalResponse});
           
           // Keep history manageable
           if (conversationHistory.length > 20) {
             conversationHistory = conversationHistory.slice(-16);
           }
+        } else if (data.reply) {
+          // Fallback for old response format
+          addBotMessage(data.reply);
+          conversationHistory.push({role: 'user', content: sanitizedMessage});
+          conversationHistory.push({role: 'assistant', content: data.reply});
         } else {
           addBotMessage("I'm having trouble connecting right now. Please try again in a moment.");
         }
@@ -286,7 +301,7 @@ const { className = '' } = Astro.props;
       loadingDiv.id = 'loading-message';
       
       loadingDiv.innerHTML = `
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">S</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">M</div>
         <div class="chat-message-bubble bot-message">
           <div class="flex items-center gap-3">
             <div class="flex gap-1">
@@ -313,13 +328,39 @@ const { className = '' } = Astro.props;
 
     // Simple markdown parser for Manny's responses
     const parseMarkdown = (text: string): string => {
-      return text
+      if (!text) return '';
+
+      // 1) Markdown links: [label](https://example.com)
+      let out = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (
+        _match: string,
+        label: string,
+        url: string
+      ) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      });
+
+      // 2) Autolink bare URLs (http(s) or www.)
+      out = out.replace(/(^|[\s(>])((?:https?:\/\/|www\.)[^\s<)]+)(?=[\s<)])/g, (
+        _m: string,
+        pre: string,
+        url: string
+      ) => {
+        // Avoid double-wrapping if already inside an anchor tag
+        if (/^<a\b/i.test(url)) return pre + url;
+        const href = url.startsWith('http') ? url : `https://${url}`;
+        return `${pre}<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+
+      // 3) Basic formatting
+      out = out
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         .replace(/`(.*?)`/g, '<code>$1</code>')
-        .replace(/<modal-link data-mode="(.*?)">(.*?)<\/modal-link>/g, 
+        .replace(/<modal-link data-mode="(.*?)">(.*?)<\/modal-link>/g,
           '<button class="modal-link-button" data-mode="$1" onclick="globalOpenModal(\'$1\')">$2</button>')
         .replace(/\n/g, '<br>');
+
+      return out;
     };
 
     // Scroll to bottom of messages

@@ -1,13 +1,45 @@
 import type { APIRoute } from 'astro';
 import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
-import { devLog } from '../../utils/debug';
+import { devLog, errorLog } from '../../utils/debug';
 import { ProfileManager } from '../../lib/user/ProfileManager';
 import { createServiceArchitecture } from '../../lib/services/ServiceArchitecture';
 import TokenBudgetManager from '../../lib/services/TokenBudgetManager';
 import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
-import GoogleCalendarService from '../../lib/services/GoogleCalendarService';
+import envConfigs from '../../config/chatbot/environments.json';
+// Google Calendar removed. Scheduling now uses KV storage + email notification via Resend API.
 
 export const prerender = false;
+
+// Load .dev.vars in Node dev when Worker runtime env is absent
+async function readDevVarsFromFile(): Promise<Record<string, string> | undefined> {
+  try {
+    // Only attempt in Node environments
+    // @ts-ignore
+    const isNode = typeof process !== 'undefined' && !!(process as any).versions?.node;
+    if (!isNode) return undefined;
+    const { readFile } = await import('node:fs/promises');
+    const path = `${process.cwd()}/.dev.vars`;
+    const raw = await readFile(path, 'utf8');
+    const env: Record<string, string> = {};
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const idx = trimmed.indexOf('=');
+      if (idx < 0) continue;
+      const key = trimmed.slice(0, idx).trim();
+      let val = trimmed.slice(idx + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith('\'') && val.endsWith('\''))) {
+        val = val.slice(1, -1);
+      }
+      env[key] = val;
+    }
+    return env;
+  } catch {
+    return undefined;
+  }
+}
+
+// Note: In local dev, ensure your process.env is set (e.g., via shell or dev server tooling).
 
 // Helper function to convert services to OpenAI function tools
 function getAvailableToolsFromServices(serviceArchitecture: any, profile: any) {
@@ -98,12 +130,140 @@ function getAvailableToolsFromServices(serviceArchitecture: any, profile: any) {
           timezone: { type: "string", description: "Contact's timezone (default: America/Los_Angeles)" },
           project_details: { type: "string", description: "Brief description of their project, business challenge, or goals" }
         },
-        required: ["name", "email", "project_details"]
+        required: ["name", "email", "phone"]
       }
     }
   };
 
   return [...serviceTools, calendarTool];
+}
+
+/**
+ * Check if conversation contains all info needed for discovery call booking
+ */
+function checkIfShouldForceBooking(messages: Array<{role: string, content: string}>): boolean {
+  const conversationText = messages.map(m => m.content).join(' ').toLowerCase();
+  
+  // Check for discovery call interest
+  const hasDiscoveryCallIntent = /(?:schedule|book|discovery call|meeting|appointment)/i.test(conversationText);
+  
+  // Check for email pattern
+  const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(conversationText);
+  
+  // Check for name pattern (looking for "my name is" or "name is" or similar)
+  const hasName = /(?:my name is|name is|i'm|i am)\s+[a-zA-Z]+/i.test(conversationText);
+  
+  // Check for project/business details
+  const hasProjectDetails = /(?:help with|need|challenge|problem|conversion|ecommerce|website|business)/i.test(conversationText);
+  
+  // Check for explicit booking request
+  const hasExplicitBookingRequest = /(?:book the|schedule the|please book|please schedule)/i.test(conversationText);
+  
+  // Only force if we have explicit booking request + basic info
+  const shouldForce = hasDiscoveryCallIntent && hasEmail && hasName && hasProjectDetails && hasExplicitBookingRequest;
+  
+  if (shouldForce) {
+    console.log('🎯 Forcing discovery call booking - all conditions met:', {
+      hasDiscoveryCallIntent,
+      hasEmail,
+      hasName,
+      hasProjectDetails,
+      hasExplicitBookingRequest
+    });
+  }
+  
+  return shouldForce;
+}
+
+/**
+ * Get a valid Google access token. If refresh credentials exist, refresh first.
+ */
+function getEnvVal(key: string, environment?: any): string | undefined {
+  // Prefer platform runtime env, then import.meta.env (Astro/Vite), then process.env
+  const envFromRuntime = environment && typeof environment === 'object' ? environment[key] : undefined;
+  let envFromImportMeta: any;
+  try {
+    // @ts-ignore - import.meta may not exist in some runtimes
+    envFromImportMeta = (import.meta as any)?.env;
+  } catch {
+    envFromImportMeta = undefined;
+  }
+  const envFromProcess = (typeof process !== 'undefined' && process.env) ? (process.env as any)[key] : undefined;
+  const metaVal = envFromImportMeta && typeof envFromImportMeta === 'object' ? envFromImportMeta[key] : undefined;
+  return envFromRuntime ?? metaVal ?? envFromProcess;
+}
+
+// getGoogleAccessTokenFromEnv removed with Google Calendar integration
+
+/**
+ * Extract booking details from recent conversation messages.
+ * Heuristics: looks for name, email, phone, preferred time phrases, timezone, and explicit booking intent.
+ */
+function extractBookingDetails(messages: Array<{ role: "system" | "user" | "assistant"; content: string }>) {
+  // Analyze ONLY user-authored text to avoid matching examples in the system prompt
+  const userMessages = messages.filter(m => m.role === 'user');
+  const recentUsers = userMessages.slice(-4);
+  const joinedUser = recentUsers.map(m => m.content).join("\n");
+  const lastUser = userMessages[userMessages.length - 1];
+  const lastUserText = lastUser?.content || '';
+  const lowerLast = lastUserText.toLowerCase();
+
+  // Guard: ignore super-short greetings
+  const isGreetingOnly = /^(hi|hey|hello|yo|sup|howdy)[.!\s]*$/i.test(lastUserText.trim());
+
+  // Explicit booking intent must be in the LAST user message
+  const explicitBooking = /\b(please\s+book|book\s+(?:a|the)?\s*call|schedule\s+(?:a|the)?\s*call|go\s+ahead\s+and\s+book|let'?s\s+(?:book|schedule)|set\s*up\s*(?:a|the)?\s*call)\b/i.test(lastUserText);
+
+  // Email (from user text only)
+  const emailMatch = joinedUser.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  let email = emailMatch ? emailMatch[0] : undefined;
+
+  // Phone (very permissive; from user text only)
+  const phoneMatch = joinedUser.match(/\b(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b/);
+  const phone = phoneMatch ? phoneMatch[0] : undefined;
+
+  // Name: from explicit patterns in user text
+  const namePatterns = [
+    /\bmy\s+name\s+is\s+([A-Za-z][A-Za-z'\-]+(?:\s+[A-Za-z][A-Za-z'\-]+){0,2})/i,
+    /\bi\s*am\s+([A-Za-z][A-Za-z'\-]+(?:\s+[A-Za-z][A-Za-z'\-]+){0,2})/i,
+    /\bi'?m\s+([A-Za-z][A-Za-z'\-]+(?:\s+[A-Za-z][A-Za-z'\-]+){0,2})/i,
+    /\bthis\s+is\s+([A-Za-z][A-Za-z'\-]+(?:\s+[A-Za-z][A-Za-z'\-]+){0,2})/i
+  ];
+  let name: string | undefined;
+  for (const re of namePatterns) {
+    const m = joinedUser.match(re);
+    if (m?.[1]) { name = m[1].trim(); break; }
+  }
+  // Do NOT derive a name from the email local-part to avoid false positives
+
+  // Preferred times: capture phrases in user text
+  const dayRe = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|thur|fri|sat|sun|today|tomorrow|next\s+(?:week|monday|tuesday|wednesday|thursday|friday|saturday|sunday))/i;
+  const timeRe = /\b\d{1,2}(:\d{2})?\s?(am|pm)\b/i;
+  const flexRe = /\b(flexible|any\s*time|whenever|you\s*pick|open)\b/i;
+
+  let preferred_times: string | undefined;
+  if (flexRe.test(lowerLast)) {
+    preferred_times = 'flexible';
+  } else {
+    const idx = lastUserText.search(new RegExp(`${dayRe.source}|${timeRe.source}`, 'i'));
+    if (idx !== -1) {
+      const window = lastUserText.substring(Math.max(0, idx - 30), Math.min(lastUserText.length, idx + 60)).replace(/\n+/g, ' ').trim();
+      preferred_times = window;
+    }
+  }
+
+  // Timezone (user text only)
+  const tzMatch = lastUserText.match(/\b(ACDT|ACST|ACT|ADT|AEDT|AEST|AKDT|AKST|AST|AWST|BST|CDT|CEST|CET|CST|EAT|EDT|EEST|EET|EST|GMT|HKT|HST|IST|JST|KST|MDT|MSK|MST|NZDT|NZST|PDT|PET|PKT|PHT|PST|SGT|UTC|WAT|WET)\b/i);
+  const timezone = tzMatch ? tzMatch[0].toUpperCase() : undefined;
+
+  // Project details: from last user message
+  let project_details = lastUserText.trim();
+  if (project_details && project_details.length > 500) project_details = project_details.slice(0, 500) + '...';
+
+  // Must have explicit booking intent in last user message and a real email to proceed
+  const ready = Boolean(!isGreetingOnly && explicitBooking && email && project_details && project_details.length >= 8);
+
+  return { ready, explicitBooking, name, email, phone, preferred_times, timezone, project_details };
 }
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -113,8 +273,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-    const environment = (locals as any).runtime?.env; // Pass full environment for KV access
+  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+  const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
+    let environment = (locals as any).runtime?.env as any; // Pass full environment for KV access
+    if (!environment || Object.keys(environment).length === 0) {
+      const devVars = await readDevVarsFromFile();
+      if (devVars) environment = devVars;
+    }
     
     // Initialize service architecture with KV environment
     const serviceArchitecture = createServiceArchitecture(environment);
@@ -128,9 +293,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     devLog('User profile:', { id: profile.id, interactions: profile.interactions, trustScore: profile.trustScore });
     
     // Get environment config
-    const envMode = import.meta.env.MODE === 'development' ? 'development' : 'production';
-    const config = await import('../../config/chatbot/environments.json');
-    const envConfig = config.default[envMode as keyof typeof config.default];
+  const envMode = import.meta.env.MODE === 'development' ? 'development' : 'production';
+  devLog('Env mode:', envMode);
+  const envConfig = envConfigs[envMode as keyof typeof envConfigs];
 
     // Initialize token budget manager
     const tokenBudgetManager = new TokenBudgetManager(kv, envConfig);
@@ -195,30 +360,109 @@ export const POST: APIRoute = async ({ request, locals }) => {
     devLog('System prompt length:', systemPrompt.length);
     devLog('Available tools count:', AVAILABLE_TOOLS.length);
 
+  // Server-side fallback: if user explicitly asked to book and we have details, schedule directly
+  const bookingDetails = extractBookingDetails(openaiMessages);
+  devLog('Booking details extracted:', bookingDetails);
+  if (bookingDetails.ready && bookingDetails.explicitBooking) {
+    try {
+      devLog('Attempting server-side direct booking...');
+      // Track service usage (same as tool path)
+      await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
+
+  const result = await executeScheduleCall({
+        name: bookingDetails.name,
+        email: bookingDetails.email,
+        phone: bookingDetails.phone,
+        preferred_times: bookingDetails.preferred_times || 'flexible',
+        timezone: bookingDetails.timezone || 'America/Los_Angeles',
+        project_details: bookingDetails.project_details || 'Not specified'
+  }, profile, profileManager, environment, schedulerKv);
+      
+      devLog('Direct booking result:', result);
+      if (result?.status === 'error') {
+        errorLog('Calendar booking error (direct fallback):', result);
+      }
+      
+      let finalResponseText = '';
+      if (result?.status === 'meeting_requested' && result.tracking_id) {
+        finalResponseText = `Got it — I’ve sent your request to our team and we’ll confirm the meeting time by email.\n\n• Name: ${bookingDetails.name}\n• Email: ${bookingDetails.email}\n• Preferred: ${bookingDetails.preferred_times || 'Flexible'}\n• Reference: ${result.tracking_id}${result.proposed_time ? `\n• Proposed: ${result.proposed_time}` : ''}${result.meeting_link ? `\n• Meeting: ${result.meeting_link}` : ''}`;
+      } else if (result?.status === 'validation_error') {
+          finalResponseText = `I need a couple details to book: ${result.required_fields?.join(', ')}.`;
+      } else if (result?.status === 'error') {
+          finalResponseText = `I had trouble sending the request. Please email ${result.fallback_email || 'manny@mannyknows.com'} and we’ll confirm manually.`;
+        } else {
+          finalResponseText = `I had trouble booking that just now. Please share a time window and I’ll try again.`;
+        }
+
+        // Return immediately to avoid any secondary KV calls causing failures
+        return new Response(JSON.stringify({
+          reply: finalResponseText,
+          finalResponse: finalResponseText,
+          session_id
+        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      } catch (e) {
+        devLog('Direct booking fallback failed:', e);
+      }
+    }
+
     // Call OpenAI with function calling
-    const apiKey = import.meta.env.OPENAI_API_KEY;
+  const apiKey = getEnvVal('OPENAI_API_KEY', environment);
     
-    const requestBody = {
+    // Cap tokens to avoid model limits (e.g., 16,384 for many models)
+    const SAFE_MODEL_COMPLETION_CAP = 12000;
+    const maxTokensThisCall = Math.max(256, Math.min(SAFE_MODEL_COMPLETION_CAP, tokenAllocation.maxTokensForResponse));
+
+    const requestBody: any = {
       model: envConfig.model,
       messages: openaiMessages,
-      max_completion_tokens: tokenAllocation.maxTokensForResponse,
+      max_completion_tokens: maxTokensThisCall,
       tools: AVAILABLE_TOOLS,
-      tool_choice: "auto" as const
+      tool_choice: "auto"
     };
 
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Support custom-compatible API base and auth header
+    const baseUrl = (getEnvVal('OPENAI_BASE_URL', environment) || 'https://api.openai.com').replace(/\/+$/,'');
+    const apiHeaderName = getEnvVal('OPENAI_AUTH_HEADER', environment) || 'Authorization';
+    const apiHeaderScheme = getEnvVal('OPENAI_AUTH_SCHEME', environment) || 'Bearer';
+    const headersInit: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+    headersInit[apiHeaderName] = `${apiHeaderScheme} ${apiKey}`;
+
+    // Allow extra headers via JSON env var (e.g., OpenRouter requires HTTP-Referer, X-Title)
+    try {
+      const extra = getEnvVal('OPENAI_EXTRA_HEADERS', environment);
+      if (extra) {
+        const parsed = JSON.parse(extra);
+        if (parsed && typeof parsed === 'object') {
+          for (const [k, v] of Object.entries(parsed)) {
+            if (typeof v === 'string') headersInit[k] = v;
+          }
+        }
+      }
+    } catch {}
+
+    const openaiResponse = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers: headersInit,
       body: JSON.stringify(requestBody),
     });
 
     if (!openaiResponse.ok) {
-      const error = await openaiResponse.text();
-      devLog('OpenAI API error:', `${openaiResponse.status} - ${error}`);
-      throw new Error(`OpenAI API error: ${openaiResponse.status} - ${error}`);
+      const errorText = await openaiResponse.text();
+      devLog('OpenAI API error:', `${openaiResponse.status} - ${errorText}`);
+
+      // Friendly handling for invalid API key in dev
+      if (openaiResponse.status === 401) {
+        const fallbackText = `I'm temporarily offline because my AI key is invalid or missing. Please check OPENAI_API_KEY in your environment and try again.`;
+        return new Response(JSON.stringify({
+          reply: fallbackText,
+          finalResponse: fallbackText,
+          session_id
+        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      throw new Error(`OpenAI API error: ${openaiResponse.status} - ${errorText}`);
     }
 
     const data = await openaiResponse.json();
@@ -229,7 +473,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Handle function calls
     if (choice.message.tool_calls) {
-      const toolResults = [];
+  const toolResults: Array<{ tool_call_id: string; result: any; name: string }> = [];
 
       for (const toolCall of choice.message.tool_calls) {
         const functionName = toolCall.function.name;
@@ -262,7 +506,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             break;
 
           case 'schedule_discovery_call':
-            toolResult = await executeScheduleCall(functionArgs, profile, profileManager);
+            toolResult = await executeScheduleCall(functionArgs, profile, profileManager, environment, schedulerKv);
             break;
             
           default:
@@ -274,12 +518,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         toolResults.push({
           tool_call_id: toolCall.id,
-          result: toolResult
+          result: toolResult,
+          name: functionName
         });
       }
 
       // Let AI craft natural response using tool data
-      const toolMessages = toolResults.map(result => {
+    const toolMessages = toolResults.map(result => {
         // Limit tool response size to prevent API errors
         let resultContent = JSON.stringify(result.result);
         if (resultContent.length > 4000) {
@@ -295,28 +540,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
         return {
           role: "tool" as const,
           content: resultContent,
-          tool_call_id: result.tool_call_id
+      tool_call_id: result.tool_call_id,
+      name: result.name
         };
       });
 
-      const followUpRequestBody = {
+  const followUpRequestBody = {
         model: envConfig.model,
         messages: [
           ...openaiMessages,
           { role: "assistant" as const, content: choice.message.content || "", tool_calls: choice.message.tool_calls },
           ...toolMessages
         ],
-        max_completion_tokens: tokenAllocation.maxTokensForResponse,
-        temperature: 0.7
+  max_completion_tokens: Math.max(256, Math.min(2000, maxTokensThisCall))
       };
 
-      const followUpResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      const followUpResponse = await fetch(`${baseUrl}/v1/chat/completions`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(followUpRequestBody)
+        headers: headersInit,
+  body: JSON.stringify(followUpRequestBody)
       });
 
       if (!followUpResponse.ok) {
@@ -328,6 +570,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
       const followUpData = await followUpResponse.json();
       finalResponse = followUpData.choices[0].message.content || "I apologize, but I'm having trouble processing that request right now.";
+      // If scheduling happened, append the reference details to ensure user sees them
+      const scheduleResult = toolResults.find(t => t.name === 'schedule_discovery_call')?.result;
+      if (scheduleResult?.status === 'meeting_requested' && scheduleResult?.tracking_id) {
+        const extras = `\n\nReference: ${scheduleResult.tracking_id}`
+          + (scheduleResult.proposed_time ? `\nProposed: ${scheduleResult.proposed_time}` : '')
+          + (scheduleResult.meeting_link ? `\nMeeting: ${scheduleResult.meeting_link}` : '');
+        if (!finalResponse.includes(scheduleResult.tracking_id)) {
+          finalResponse += extras;
+        }
+      }
     } else {
       // Handle direct content response
       finalResponse = choice.message.content || '';
@@ -373,6 +625,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     return new Response(JSON.stringify({
       reply: finalResponse,
+      finalResponse: finalResponse, // For frontend compatibility
       session_id,
       profile_summary: {
         interactions: profile.interactions,
@@ -622,7 +875,7 @@ async function executeIndustryInsights(industry: string, profile: any, profileMa
 /**
  * Execute calendar scheduling for discovery call - returns pure data
  */
-async function executeScheduleCall(functionArgs: any, profile: any, profileManager: ProfileManager) {
+async function executeScheduleCall(functionArgs: any, profile: any, profileManager: ProfileManager, environment?: any, kv?: any) {
   // Validate required arguments
   const { name, email, phone, preferred_times, timezone, project_details } = functionArgs;
   
@@ -634,90 +887,111 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     };
   }
   
-  // Track calendar scheduling usage
+  // Track scheduling usage
   await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
 
   try {
-    // Initialize Google Calendar service
-    const googleAccessToken = process.env.GOOGLE_CALENDAR_ACCESS_TOKEN;
-    const ownerEmail = process.env.OWNER_EMAIL || 'manny@mannyknows.com';
-    const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
-    
-    if (!googleAccessToken) {
-      return {
-        status: 'configuration_error',
-        calendar_available: false,
-        contact_info: { name, email, phone, preferred_times, project_details },
-        fallback_email: 'manny@mannyknows.com'
-      };
-    }
+    const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com';
+    const trackingId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 
-    const calendarService = new GoogleCalendarService(googleAccessToken, calendarId, ownerEmail);
-    
-    // Get available time slots first
-    const availableSlots = await calendarService.getFormattedAvailability(timezone || 'America/Los_Angeles');
-    
-    if (availableSlots.length === 0) {
-      return {
-        status: 'no_availability',
-        available_times: [],
-        contact_info: { name, email, phone, preferred_times, project_details },
-        fallback_email: 'manny@mannyknows.com'
-      };
+    // Simple 15-min slot selection (best-effort): pick earliest 15-min slot mentioned or default to flexible
+    function pickProposedTime(text?: string, tz?: string): string {
+      if (!text) return 'Flexible (we will confirm by email)';
+      const lower = text.toLowerCase();
+      const now = new Date();
+      let day = new Date(now);
+      if (/tomorrow/.test(lower)) {
+        day = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      }
+      // Find first explicit time like 2 or 2:30 pm
+      const m = text.match(/\b(\d{1,2})(?::(\d{2}))?\s?(am|pm)\b/i);
+      let hours = 14, minutes = 0, ampm = 'pm';
+      if (m) {
+        hours = parseInt(m[1], 10);
+        minutes = m[2] ? parseInt(m[2], 10) : 0;
+        ampm = (m[3] || '').toLowerCase();
+      }
+      // Normalize to 24h
+      if (ampm === 'pm' && hours < 12) hours += 12;
+      if (ampm === 'am' && hours === 12) hours = 0;
+      // Snap minutes to nearest 15 down
+      minutes = Math.floor(minutes / 15) * 15;
+      const scheduled = new Date(day);
+      scheduled.setHours(hours, minutes, 0, 0);
+      const tzLabel = tz || 'America/Los_Angeles';
+      // Return readable text; not shifting timezone server-side to avoid Intl dependency issues
+      return `${scheduled.toDateString()} ${('0'+((hours%12)||12)).slice(-2)}:${('0'+minutes).slice(-2)} ${ampm.toUpperCase()} (${tzLabel})`;
     }
+    const proposedTime = pickProposedTime(preferred_times, timezone);
 
-    // If user provided preferred times, try to schedule
-    if (preferred_times && preferred_times.toLowerCase() !== 'flexible') {
-      const schedulingResult = await calendarService.createDiscoveryCall(
+  // Optional Jitsi link generation
+  const jitsiAuto = (getEnvVal('JITSI_AUTO_LINK', environment) ?? 'true').toString().toLowerCase() !== 'false';
+  const jitsiBase = (getEnvVal('JITSI_BASE_URL', environment) || 'https://meet.jit.si').replace(/\/$/, '');
+  const roomName = `mk-${trackingId}`;
+  const meetingLink = jitsiAuto ? `${jitsiBase}/${encodeURIComponent(roomName)}` : undefined;
+
+    // Persist request in KV for backoffice processing
+    if (kv && typeof kv.put === 'function') {
+      const record = {
+        id: trackingId,
+        type: 'discovery_call_request',
+        createdAt: Date.now(),
         name,
         email,
-        preferred_times,
-        timezone || 'America/Los_Angeles',
-        project_details
-      );
-
-      if (schedulingResult.success) {
-        return {
-          status: 'meeting_scheduled',
-          scheduled: true,
-          meeting_details: {
-            meeting_link: schedulingResult.meetingLink,
-            calendar_link: schedulingResult.calendarLink,
-            event_id: schedulingResult.eventId,
-            attendee_email: email,
-            contact_name: name,
-            scheduled_time: preferred_times
-          }
-        };
-      } else {
-        return {
-          status: 'scheduling_conflict',
-          scheduled: false,
-          requested_time: preferred_times,
-          available_times: availableSlots.slice(0, 3),
-          contact_info: { name, email, project_details }
-        };
-      }
-    } else {
-      // User is flexible, show available times
-      return {
-        status: 'showing_availability',
-        available_times: availableSlots.slice(0, 3), // Limit to 3 slots to reduce response size
-        contact_info: { name, email, project_details },
+        phone,
+        preferred_times: preferred_times || 'flexible',
         timezone: timezone || 'America/Los_Angeles',
-        message: 'Here are some available time slots for your discovery call'
+        project_details: project_details || '',
+        proposed_time: proposedTime,
+  meeting_link: meetingLink,
+        status: 'pending'
       };
+      try {
+        await kv.put(`meetreq:${trackingId}`, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 14 }); // 14 days
+      } catch (e) {
+        devLog('KV put failed for meeting request', e as any);
+      }
     }
 
+    // Send notification email via Resend (best-effort)
+    try {
+      const resendKey = getEnvVal('RESEND_API_KEY', environment);
+      const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <onboarding@resend.dev>';
+      if (resendKey) {
+        const emailResp = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${resendKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: resendFrom,
+            to: [ownerEmail],
+            subject: 'New Discovery Call Request',
+    text: `New discovery call request\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'N/A'}\nPreferred: ${preferred_times || 'flexible'}\nTimezone: ${timezone || 'America/Los_Angeles'}\nProposed time: ${proposedTime}${meetingLink ? `\nMeeting link: ${meetingLink}` : ''}\nDetails: ${project_details || ''}\nTracking: ${trackingId}`
+          })
+        });
+        try {
+          const emailText = await emailResp.text();
+          devLog('Resend email response:', { status: emailResp.status, body: emailText });
+        } catch {}
+      }
+    } catch (e) {
+      devLog('Resend email failed for meeting request', e as any);
+    }
+
+    return {
+      status: 'meeting_requested',
+      tracking_id: trackingId,
+  contact: { name, email },
+  proposed_time: proposedTime,
+  meeting_link: meetingLink
+    };
   } catch (error) {
-    console.error('Calendar scheduling error:', error);
-    
+    errorLog('Meeting request error:', error);
     return {
       status: 'error',
-      error_type: 'calendar_error',
-      contact_info: { name, email, phone, preferred_times, project_details },
-      fallback_email: 'manny@mannyknows.com',
-      error_message: error instanceof Error ? error.message : 'Unknown error'
+      fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com'
     };
   }
 }
