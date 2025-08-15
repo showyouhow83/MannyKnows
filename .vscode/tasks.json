@@ -7,6 +7,46 @@
 			"command": "npm run build",
 			"group": "build",
 			"problemMatcher": []
+		},
+		{
+			"label": "Type check project",
+			"type": "shell",
+			"command": "npm run -s build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build MannyKnows Website",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "Build MannyKnows Website",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "Build MannyKnows Website",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
+		},
+		{
+			"label": "Build MannyKnows Website",
+			"type": "shell",
+			"command": "npm run build:clean",
+			"group": "build"
+		},
+		{
+			"label": "Build MannyKnows Website",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build"
 		}
 	]
 }

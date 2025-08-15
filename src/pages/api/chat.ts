@@ -156,16 +156,17 @@ function getAvailableToolsFromServices(serviceArchitecture: any, profile: any) {
     type: "function",
     function: {
       name: "manage_meeting",
-      description: "Cancel or request changes to an existing meeting. Use when user wants to cancel, reschedule, or modify their appointment.",
+      description: "Cancel or request changes to an existing meeting. Use when user wants to cancel, reschedule, or modify their appointment. Users can provide either their email address or meeting tracking ID.",
       parameters: {
         type: "object",
         properties: {
           action: { type: "string", enum: ["cancel", "reschedule"], description: "Action to perform on the meeting" },
-          tracking_id: { type: "string", description: "Meeting reference/tracking ID" },
+          email: { type: "string", description: "User's email address associated with the meeting (preferred method)" },
+          tracking_id: { type: "string", description: "Meeting reference/tracking ID (alternative to email)" },
           new_preferred_times: { type: "string", description: "New preferred times (only for reschedule action)" },
           reason: { type: "string", description: "Reason for cancellation or change (optional)" }
         },
-        required: ["action", "tracking_id"]
+        required: ["action"]
       }
     }
   };
@@ -1265,13 +1266,14 @@ async function executeLookupExistingMeetings(functionArgs: any, profile: any, pr
  * Manage existing meetings (cancel or reschedule)
  */
 async function executeManageMeeting(functionArgs: any, profile: any, profileManager: ProfileManager, environment?: any, kv?: any) {
-  const { action, tracking_id, new_preferred_times, reason } = functionArgs;
+  const { action, email, tracking_id, new_preferred_times, reason } = functionArgs;
   
-  if (!action || !tracking_id) {
+  // Accept either email or tracking_id, but prefer email for user convenience
+  if (!action || (!email && !tracking_id)) {
     return {
       status: 'validation_error',
-      error: 'Action and tracking ID are required',
-      required_fields: ['action', 'tracking_id']
+      error: 'Action and either email or tracking ID are required',
+      required_fields: ['action', 'email (or tracking_id)']
     };
   }
 
@@ -1283,112 +1285,240 @@ async function executeManageMeeting(functionArgs: any, profile: any, profileMana
   }
 
   try {
-    // Find the meeting
-    const meetingData = await kv.get(`meetreq:${tracking_id}`);
-    if (!meetingData) {
-      return {
-        status: 'not_found',
-        error: `Meeting with ID ${tracking_id} not found`
-      };
-    }
+    let meeting = null;
+    let meetingKey = null;
 
-    const meeting = JSON.parse(meetingData);
-    const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com';
-    const resendKey = getEnvVal('RESEND_API_KEY', environment);
-    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <noreply@mannyknows.com>';
-
-    if (action === 'cancel') {
-      // Update meeting status
-      meeting.status = 'cancelled';
-      meeting.cancelled_at = Date.now();
-      meeting.cancellation_reason = reason || 'Cancelled by user';
+    if (email) {
+      // Search for meeting by email
+      // First try to list all meetings and find by email
+      const meetings = await kv.list({ prefix: 'meetreq:' });
       
-      await kv.put(`meetreq:${tracking_id}`, JSON.stringify(meeting));
-
-      // Send cancellation notification
-      if (resendKey) {
-        const subject = `Meeting Cancelled — ${meeting.name} (${tracking_id})`;
-        const textBody = `Meeting cancellation notification\n\nThe discovery call has been cancelled:\n\nName: ${meeting.name}\nEmail: ${meeting.email}\nOriginal Time: ${meeting.proposed_time}\nReason: ${reason || 'User requested cancellation'}\nTracking: ${tracking_id}`;
-        
-        await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: resendFrom,
-            to: [ownerEmail],
-            subject: subject,
-            text: textBody
-          })
-        });
+      for (const key of meetings.keys) {
+        const meetingData = await kv.get(key.name);
+        if (meetingData) {
+          const parsedMeeting = JSON.parse(meetingData);
+          if (parsedMeeting.email && parsedMeeting.email.toLowerCase() === email.toLowerCase()) {
+            // Find the most recent non-cancelled meeting
+            if (!meeting || (parsedMeeting.status !== 'cancelled' && parsedMeeting.created_at > meeting.created_at)) {
+              meeting = parsedMeeting;
+              meetingKey = key.name;
+            }
+          }
+        }
       }
 
-      await profileManager.trackServiceUsage(profile, 'manage_meeting', 'free', true);
-
-      return {
-        status: 'cancelled',
-        tracking_id: tracking_id,
-        message: 'Meeting has been cancelled successfully'
-      };
-      
-    } else if (action === 'reschedule') {
-      if (!new_preferred_times) {
+      if (!meeting) {
         return {
-          status: 'validation_error',
-          error: 'New preferred times are required for rescheduling',
-          required_fields: ['new_preferred_times']
+          status: 'not_found',
+          error: `No active meeting found for email ${email}. Please check your email address or contact support.`
         };
       }
-
-      // Update meeting with reschedule request
-      meeting.status = 'reschedule_requested';
-      meeting.reschedule_requested_at = Date.now();
-      meeting.new_preferred_times = new_preferred_times;
-      meeting.reschedule_reason = reason || 'User requested reschedule';
-      
-      await kv.put(`meetreq:${tracking_id}`, JSON.stringify(meeting));
-
-      // Send reschedule notification
-      if (resendKey) {
-        const subject = `Meeting Reschedule Request — ${meeting.name} (${tracking_id})`;
-        const textBody = `Meeting reschedule request\n\nName: ${meeting.name}\nEmail: ${meeting.email}\nOriginal Time: ${meeting.proposed_time}\nNew Preferred Times: ${new_preferred_times}\nReason: ${reason || 'User requested reschedule'}\nTracking: ${tracking_id}`;
-        
-        await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: resendFrom,
-            to: [ownerEmail],
-            subject: subject,
-            text: textBody
-          })
-        });
+      } else {
+        // Legacy support: Find by tracking_id
+        const meetingData = await kv.get(`meetreq:${tracking_id}`);
+        if (!meetingData) {
+          return {
+            status: 'not_found',
+            error: `Meeting with ID ${tracking_id} not found`
+          };
+        }
+        meeting = JSON.parse(meetingData);
+        meetingKey = `meetreq:${tracking_id}`;
       }
-
-      await profileManager.trackServiceUsage(profile, 'manage_meeting', 'free', true);
-
+    
+    // Security check: Ensure meeting hasn't already been processed
+    if (meeting.status === 'cancelled') {
       return {
-        status: 'reschedule_requested',
-        tracking_id: tracking_id,
-        new_preferred_times: new_preferred_times,
-        message: 'Reschedule request has been sent. You will receive an email confirmation with the new meeting time.'
+        status: 'already_cancelled',
+        error: 'This meeting has already been cancelled'
       };
-    } else {
+    }    const resendKey = getEnvVal('RESEND_API_KEY', environment);
+    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <noreply@mannyknows.com>';
+
+    if (!resendKey) {
       return {
-        status: 'validation_error',
-        error: 'Invalid action. Must be "cancel" or "reschedule"'
+        status: 'error',
+        error: 'Email verification system not available'
       };
     }
+
+    // Generate secure verification token
+    const verificationToken = crypto.randomUUID();
+    const verificationExpiry = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+
+    // Store pending verification action
+    const pendingAction = {
+      action: action,
+      trackingId: meeting.id, // Use the actual meeting ID
+      meetingKey: meetingKey, // Store the KV key for later lookup
+      reason: reason,
+      newPreferredTimes: new_preferred_times,
+      requestedAt: Date.now(),
+      expiresAt: verificationExpiry,
+      email: meeting.email,
+      name: meeting.name
+    };
+
+    await kv.put(`verify:${verificationToken}`, JSON.stringify(pendingAction), {
+      expirationTtl: 86400 // 24 hours in seconds
+    });
+
+    // Send verification email
+    const verificationUrl = `https://${getEnvVal('CF_PAGES_PROJECT_NAME', environment) || 'mannyknows'}.showyouhow83.workers.dev/api/verify-meeting-action?token=${verificationToken}&action=${action}`;
+    
+    const actionText = action === 'cancel' ? 'cancellation' : 'reschedule request';
+    const actionEmoji = action === 'cancel' ? '❌' : '🔄';
+    
+    const htmlBody = generateVerificationEmail(meeting, action, verificationUrl, reason, new_preferred_times);
+
+    const emailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: resendFrom,
+        to: [meeting.email],
+        subject: `${actionEmoji} Verify your meeting ${actionText} - MannyKnows`,
+        html: htmlBody
+      })
+    });
+
+    if (!emailResponse.ok) {
+      throw new Error('Failed to send verification email');
+    }
+
+    await profileManager.trackServiceUsage(profile, 'manage_meeting_verification', 'free', true);
+
+    return {
+      status: 'verification_sent',
+      tracking_id: meeting.id,
+      action: action,
+      message: `A verification email has been sent to ${meeting.email}. Please check your email and click the verification link to confirm your ${actionText}.`,
+      verification_required: true,
+      email_sent_to: meeting.email,
+      meeting_details: {
+        name: meeting.name,
+        proposed_time: meeting.proposed_time,
+        meeting_link: meeting.meeting_link || 'TBD'
+      }
+    };
+
   } catch (error) {
     errorLog('Meeting management error:', error);
     return {
       status: 'error',
-      error: 'Failed to manage meeting'
+      error: 'Failed to process meeting management request'
     };
   }
+}
+
+// Generate verification email HTML
+function generateVerificationEmail(meeting: any, action: string, verificationUrl: string, reason?: string, newPreferredTimes?: string): string {
+  const actionText = action === 'cancel' ? 'cancellation' : 'reschedule request';
+  const actionTitle = action === 'cancel' ? 'Cancel Meeting' : 'Reschedule Meeting';
+  const actionColor = action === 'cancel' ? '#ef4444' : '#f59e0b';
+  const actionEmoji = action === 'cancel' ? '❌' : '🔄';
+
+  return `
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Verify Meeting ${actionTitle} - MannyKnows</title>
+      <style>
+        body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;line-height:1.6}
+        .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
+        .container{max-width:680px;margin:0 auto}
+        .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05)}
+        .header{padding:32px 40px;background:linear-gradient(135deg,${actionColor} 0%,${actionColor}dd 100%);color:#ffffff}
+        .brand{font-weight:700;font-size:28px;letter-spacing:-0.025em}
+        .subtitle{font-size:16px;margin-top:6px;font-weight:500;opacity:0.95}
+        .content{padding:40px 40px 32px}
+        .alert{background:#fffbeb;border:1px solid #fed7aa;border-radius:12px;padding:20px;margin:20px 0;color:#92400e}
+        .meeting-details{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:24px;margin:24px 0}
+        .field{margin:12px 0}
+        .label{display:block;color:#71717a;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;font-weight:600}
+        .value{font-size:16px;color:#18181b;font-weight:500}
+        .btn-container{text-align:center;margin:32px 0}
+        .btn{display:inline-block;background:${actionColor};color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;transition:all 0.3s ease;letter-spacing:-0.025em}
+        .btn:hover{opacity:0.9;transform:translateY(-1px)}
+        .security-note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:16px;margin:24px 0;color:#0c4a6e;font-size:14px}
+        .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
+      </style>
+    </head>
+    <body>
+      <div class="outer">
+        <div class="container">
+          <div class="card">
+            <div class="header">
+              <div class="brand">MK</div>
+              <div class="subtitle">${actionEmoji} Verify Meeting ${actionTitle}</div>
+            </div>
+            <div class="content">
+              <div class="alert">
+                <strong>Action Required:</strong> Please verify your meeting ${actionText} by clicking the button below.
+              </div>
+              
+              <h2>Meeting Details</h2>
+              <div class="meeting-details">
+                <div class="field">
+                  <span class="label">Meeting Reference</span>
+                  <div class="value">${meeting.id}</div>
+                </div>
+                <div class="field">
+                  <span class="label">Scheduled Time</span>
+                  <div class="value">${meeting.proposed_time}</div>
+                </div>
+                <div class="field">
+                  <span class="label">Meeting Link</span>
+                  <div class="value">${meeting.meeting_link || 'TBD'}</div>
+                </div>
+                ${reason ? `
+                  <div class="field">
+                    <span class="label">Reason</span>
+                    <div class="value">${reason}</div>
+                  </div>
+                ` : ''}
+                ${newPreferredTimes ? `
+                  <div class="field">
+                    <span class="label">New Preferred Times</span>
+                    <div class="value">${newPreferredTimes}</div>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <div class="btn-container">
+                <a class="btn" href="${verificationUrl}" target="_blank" rel="noopener noreferrer">
+                  ${actionEmoji} Verify ${actionTitle} →
+                </a>
+              </div>
+              
+              <div class="security-note">
+                <strong>🔒 Security Notice:</strong> This verification link is required to prevent unauthorized changes to your meeting. 
+                The link will expire in 24 hours and can only be used once.
+              </div>
+              
+              <p><strong>What happens next?</strong></p>
+              <ul>
+                <li>Click the verification button above</li>
+                <li>Your ${actionText} will be processed immediately</li>
+                <li>You'll receive a confirmation email</li>
+                <li>Our team will be notified of the change</li>
+              </ul>
+              
+              <p>If you didn't request this ${actionText}, please ignore this email or contact us at showyouhow83@gmail.com</p>
+            </div>
+            <div class="footer">
+              This verification email was sent by <strong>MannyKnows</strong><br>
+              Secure meeting management · Professional business operations
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 }

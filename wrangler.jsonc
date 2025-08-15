@@ -15,6 +15,7 @@
     "CF_ACCOUNT_ID": "f2cb7f9c07dd4587efbd7772ff8e324f",
     "CF_PAGES_PROJECT_NAME": "mannyknows",
   "OWNER_EMAIL": "showyouhow83@gmail.com",
+  "OWNER_TIMEZONE": "America/New_York",
   // Sender for Resend (use a verified domain)
   "RESEND_FROM": "MannyKnows <noreply@mannyknows.com>"
   },

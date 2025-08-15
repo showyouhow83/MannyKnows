@@ -233,10 +233,11 @@ export class ProfileManager {
   private calculateEngagementScore(profile: UserProfile): number {
     const baseScore = profile.interactions * 2;
     const serviceBonus = profile.freeServicesUsed.length * 5;
+    const discoveryCallBonus = profile.freeServicesUsed.includes('schedule_discovery_call') ? 25 : 0;
     const timeBonus = Math.min(profile.totalTimeSpent / 60000, 10); // Max 10 points for time
     const returnVisitBonus = profile.sessionsCount * 3;
 
-    return Math.min(baseScore + serviceBonus + timeBonus + returnVisitBonus, 100);
+    return Math.min(baseScore + serviceBonus + discoveryCallBonus + timeBonus + returnVisitBonus, 100);
   }
 
   /**
@@ -247,6 +248,7 @@ export class ProfileManager {
       profile.interactions >= 3 ? 0.2 : 0,
       profile.freeServicesUsed.length >= 2 ? 0.25 : 0,
       profile.premiumServicesAttempted.length > 0 ? 0.3 : 0,
+      profile.freeServicesUsed.includes('schedule_discovery_call') ? 0.4 : 0, // Discovery call scheduled = high intent
       profile.trustScore >= 15 ? 0.15 : 0,
       profile.sessionsCount >= 2 ? 0.1 : 0
     ];

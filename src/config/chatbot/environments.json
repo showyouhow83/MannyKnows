@@ -1,47 +1,47 @@
 {
   "development": {
     "persona": "business_consultant",
-    "model": "gpt-5-nano-2025-08-07",
+  "model": "gpt-4o-mini",
     "debug_logging": true,
     "chatbot_enabled": true,
     "token_budget": {
       "anonymous": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 32000,
+        "daily_token_budget": 80000,
+        "session_token_budget": 40000
       },
       "engaged": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 40000,
+        "daily_token_budget": 120000,
+        "session_token_budget": 60000
       },
       "verified": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 48000,
+        "daily_token_budget": 160000,
+        "session_token_budget": 80000
       }
     }
   },
   "production": {
     "persona": "business_consultant", 
-    "model": "gpt-5-nano-2025-08-07",
+  "model": "gpt-4o-mini",
     "debug_logging": false,
     "chatbot_enabled": true,
     "token_budget": {
       "anonymous": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 32000,
+        "daily_token_budget": 80000,
+        "session_token_budget": 40000
       },
       "engaged": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 40000,
+        "daily_token_budget": 120000,
+        "session_token_budget": 60000
       },
       "verified": {
-        "max_tokens_per_response": 25000,
-        "daily_token_budget": 25000,
-        "session_token_budget": 25000
+        "max_tokens_per_response": 48000,
+        "daily_token_budget": 160000,
+        "session_token_budget": 80000
       }
     }
   }
