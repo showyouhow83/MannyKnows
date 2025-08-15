@@ -20,6 +20,7 @@ export interface BusinessService {
   price?: string;
   isActive?: boolean;
   sortOrder?: number;
+  components?: string[]; // List of component names to execute for this service
 }
 
 export interface KVServiceData {

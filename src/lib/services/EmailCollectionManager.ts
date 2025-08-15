@@ -32,7 +32,8 @@ export class EmailCollectionManager {
    */
   async evaluateEmailRequest(
     profile: UserProfile, 
-    context: EmailCollectionContext
+    context: EmailCollectionContext,
+    serviceArchitecture: ServiceArchitecture
   ): Promise<EmailCollectionResult> {
     
     // Never request if already requested or verified
@@ -47,7 +48,7 @@ export class EmailCollectionManager {
     }
 
     // Evaluate different triggers
-    const triggers = this.evaluateTriggers(profile, context);
+    const triggers = this.evaluateTriggers(profile, context, serviceArchitecture);
     
     if (!triggers.shouldRequest) {
       return {
@@ -66,7 +67,7 @@ export class EmailCollectionManager {
   /**
    * Evaluate all possible triggers for email collection
    */
-  private evaluateTriggers(profile: UserProfile, context: EmailCollectionContext): {
+  private evaluateTriggers(profile: UserProfile, context: EmailCollectionContext, serviceArchitecture: ServiceArchitecture): {
     shouldRequest: boolean;
     triggerType: string;
     confidence: number;
@@ -95,7 +96,7 @@ export class EmailCollectionManager {
       // Service-based triggers
       {
         name: 'premium_service_request',
-        condition: context.serviceName && serviceArchitecture.isPremiumService(context.serviceName),
+        condition: context.serviceName && serviceArchitecture.getService(context.serviceName)?.accessLevel === 'premium',
         confidence: 0.9,
         weight: 1.2
       },
@@ -230,10 +231,10 @@ export class EmailCollectionManager {
   }
 
   /**
-   * Get email request message based on context
+   * Get personalized email request message
    */
-  async getEmailRequestMessage(profile: UserProfile, context: EmailCollectionContext): Promise<string> {
-    const evaluation = await this.evaluateEmailRequest(profile, context);
+  async getEmailRequestMessage(profile: UserProfile, context: EmailCollectionContext, serviceArchitecture: ServiceArchitecture): Promise<string> {
+    const evaluation = await this.evaluateEmailRequest(profile, context, serviceArchitecture);
     return evaluation.message;
   }
 
@@ -277,15 +278,11 @@ export class EmailCollectionManager {
   /**
    * Get alternative value proposition for email refusal
    */
-  getAlternativeValue(profile: UserProfile): string {
-    const freeServices = serviceArchitecture.getServicesByCategory('free');
-    const accessibleFree = freeServices.filter(service => {
-      const access = serviceArchitecture.checkServiceAccess(service.name, profile);
-      return access.allowed;
-    });
+  getAlternativeValue(profile: UserProfile, serviceArchitecture: ServiceArchitecture): string {
+    const allServices = serviceArchitecture.getUserFacingServices().filter((service: any) => service.accessLevel === 'public');
 
-    if (accessibleFree.length > 0) {
-      const serviceNames = accessibleFree.slice(0, 2).map(s => s.displayName).join(' and ');
+    if (allServices.length > 0) {
+      const serviceNames = allServices.slice(0, 2).map((s: any) => s.displayName).join(' and ');
       return `No problem! You can still use ${serviceNames} without providing your email. Just ask me about them anytime!`;
     }
 

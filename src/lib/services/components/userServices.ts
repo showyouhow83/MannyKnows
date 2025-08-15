@@ -15,7 +15,7 @@ import {
 
 // Advanced AI Web Analysis Service (previously "Website Analysis")
 export function createAdvancedWebAnalysisService(): Service {
-  const service = new Service('advanced_web_analysis', {
+  const service = new Service('analyze_website', {
     enabled: true,
     requiresVerification: true,
     maxExecutionTime: 30000
@@ -92,7 +92,7 @@ export function createBusinessGrowthOptimizerService(): Service {
  * Maps internal service names to user-facing branding
  */
 export const USER_SERVICE_BRANDING = {
-  'advanced_web_analysis': {
+  'analyze_website': {
     displayName: 'AI Web Intelligence Scan',
     shortDescription: 'Advanced AI-powered website analysis + AI readiness assessment',
     detailedDescription: 'Comprehensive analysis covering performance, SEO, security, growth opportunities, and AI automation readiness',

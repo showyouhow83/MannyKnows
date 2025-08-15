@@ -74,11 +74,32 @@ const { className = '' } = Astro.props;
     
     // Session management for Manny AI (persist across refreshes)
     let sessionId = (typeof localStorage !== 'undefined' && localStorage.getItem('mk_chat_session_id')) || crypto.randomUUID();
+    let csrfToken = '';
+    
+    // Initialize session and get CSRF token
+    const initializeSession = async () => {
+      try {
+        const response = await fetch(`/api/chat?session_id=${sessionId}`, {
+          method: 'GET',
+          headers: { 'Origin': window.location.origin }
+        });
+        const data = await response.json();
+        if (data.csrf_token) {
+          csrfToken = data.csrf_token;
+        }
+      } catch (error) {
+        console.warn('Failed to initialize CSRF token:', error);
+      }
+    };
+    
     try {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('mk_chat_session_id', sessionId);
       }
     } catch {}
+    
+    // Initialize CSRF token when component loads
+    initializeSession();
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
 
@@ -125,6 +146,9 @@ const { className = '' } = Astro.props;
           localStorage.setItem('mk_chat_session_id', sessionId);
         }
       } catch {}
+      
+      // Reinitialize CSRF token for new session
+      initializeSession();
       
       // Clear messages in UI
       const messagesContainer = document.getElementById('chatBoxMessages');
@@ -223,14 +247,18 @@ const { className = '' } = Astro.props;
 
       try {
         // Send to Manny AI - use proper format for tool calling
-    const response = await fetch('/api/chat', {
+        const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Origin': window.location.origin
+          },
           body: JSON.stringify({ 
             message: sanitizedMessage,
             session_id: sessionId,
-      // Provide full conversation history so the API can maintain memory
-      conversation_history: conversationHistory
+            csrf_token: csrfToken,
+            // Provide full conversation history so the API can maintain memory
+            conversation_history: conversationHistory
           })
         });
 

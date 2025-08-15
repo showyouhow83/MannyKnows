@@ -175,6 +175,7 @@ export class ServiceOrchestrator {
           ]
         };
 
+        // Store session using the passed KV instance (which should be encrypted)
         await context.kv.put(`session:${context.session_id}`, JSON.stringify(updatedSession), {
           expirationTtl: 3600
         });

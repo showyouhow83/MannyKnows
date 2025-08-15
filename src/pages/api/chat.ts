@@ -6,24 +6,97 @@ import { createServiceArchitecture } from '../../lib/services/ServiceArchitectur
 import TokenBudgetManager from '../../lib/services/TokenBudgetManager';
 import { createPromptBuilder } from '../../lib/chatbot/promptBuilder';
 import envConfigs from '../../config/chatbot/environments.json';
+import RateLimiter from '../../lib/security/rateLimiter';
+import DomainValidator from '../../lib/security/domainValidator';
+import CSRFProtection from '../../lib/security/csrfProtection';
+import InputValidator from '../../lib/security/inputValidator';
+import EncryptedKV from '../../lib/security/kvEncryption';
+import DynamicServiceExecutor from '../../lib/services/dynamicServiceExecutor';
 // Google Calendar removed. Scheduling now uses KV storage + email notification via Resend API.
 
 export const prerender = false;
 
-// CORS headers for security
-const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://mannyknows.com',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Max-Age': '86400' // 24 hours
+// CORS headers for security - will be updated per request
+const getCorsHeaders = (request: Request) => {
+  const domainValidator = new DomainValidator();
+  const origin = request.headers.get('origin');
+  return domainValidator.getCORSHeaders(origin || undefined);
 };
 
 // Handle CORS preflight requests
-export const OPTIONS: APIRoute = async () => {
+export const OPTIONS: APIRoute = async ({ request }) => {
+  const corsHeaders = getCorsHeaders(request);
   return new Response(null, {
     status: 200,
     headers: corsHeaders
   });
+};
+
+// Provide CSRF tokens for authenticated sessions
+export const GET: APIRoute = async ({ request, locals, url }) => {
+  try {
+    const corsHeaders = getCorsHeaders(request);
+    
+    // Get session_id from query params
+    const sessionId = url.searchParams.get('session_id');
+    if (!sessionId) {
+      return new Response(JSON.stringify({
+        error: 'Missing session_id parameter'
+      }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    }
+
+    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    if (!kv) {
+      return new Response(JSON.stringify({
+        error: 'Service temporarily unavailable'
+      }), {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    }
+
+    const csrfProtection = new CSRFProtection(kv);
+    const token = await csrfProtection.getSessionToken(sessionId);
+
+    return new Response(JSON.stringify({
+      csrf_token: token,
+      session_id: sessionId,
+      timestamp: new Date().toISOString(),
+      client_script: csrfProtection.generateClientScript(token)
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'X-CSRF-Protection': 'enabled',
+        ...corsHeaders
+      }
+    });
+
+  } catch (error) {
+    console.error('CSRF token generation error:', error);
+    const corsHeaders = getCorsHeaders(request);
+    
+    return new Response(JSON.stringify({
+      error: 'Failed to generate CSRF token',
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        ...corsHeaders
+      }
+    });
+  }
 };
 
 // Basic rate limiting helper
@@ -346,34 +419,84 @@ function extractBookingDetails(messages: Array<{ role: "system" | "user" | "assi
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    // Domain validation first (security layer)
+    const domainValidator = new DomainValidator();
+    const domainValidation = domainValidator.validateRequest(request);
+    
+    if (!domainValidation.valid) {
+      const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+      await domainValidator.logSecurityViolation(domainValidation, request, kv);
+      return domainValidator.createDomainErrorResponse(domainValidation);
+    }
+
     const body = await request.json();
-    const { message, session_id = crypto.randomUUID(), conversation_history = [] } = body;
+    
+    // Input validation (security layer)
+    const validation = InputValidator.validate(body, InputValidator.schemas.chatMessage);
+    if (!validation.valid) {
+      devLog('Input validation failed:', validation.errors);
+      const corsHeaders = getCorsHeaders(request);
+      
+      return new Response(JSON.stringify({
+        error: 'Invalid input data',
+        details: validation.errors,
+        timestamp: new Date().toISOString()
+      }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    }
+    
+    // Use sanitized data
+    const { message, session_id = crypto.randomUUID(), conversation_history = [] } = validation.sanitizedData!;
     
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
     const kv = (locals as any).runtime?.env?.CHATBOT_KV;
     const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
     
-    // Basic rate limiting
+    // Initialize encrypted KV wrapper for sensitive data
+    let encryptedKv: EncryptedKV | null = null;
     if (kv) {
+      const encryptionKey = (locals as any).runtime?.env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
+      encryptedKv = new EncryptedKV(kv, encryptionKey);
+    }
+    
+    // CSRF Protection (security layer)
+    if (kv) {
+      const csrfProtection = new CSRFProtection(kv);
+      const csrfValidation = await csrfProtection.validateRequestWithBody(request, session_id, body);
+      
+      if (!csrfValidation.valid) {
+        devLog('CSRF validation failed:', csrfValidation.reason);
+        return csrfProtection.createCSRFErrorResponse(csrfValidation.reason || 'CSRF validation failed');
+      }
+    }
+    
+    // Enhanced rate limiting with user tiers
+    if (kv) {
+      const rateLimiter = new RateLimiter(kv);
       const clientIP = request.headers.get('CF-Connecting-IP') || 
                       request.headers.get('X-Forwarded-For') || 
                       'unknown';
-      const rateLimit = await checkRateLimit(kv, clientIP);
+      
+      // Quick profile check for rate limiting (we'll get full profile later)
+      const quickProfileData = await kv.get(`session:${session_id}`);
+      const quickProfile = quickProfileData ? JSON.parse(quickProfileData) : null;
+      const userTier = RateLimiter.getUserTier(quickProfile, null);
+      
+      const rateLimit = await rateLimiter.checkRateLimit(clientIP, userTier);
       
       if (!rateLimit.allowed) {
-        return new Response(JSON.stringify({
-          error: 'Rate limit exceeded. Please wait a moment before sending another message.',
-          retryAfter: 60
-        }), {
-          status: 429,
-          headers: { 
-            'Content-Type': 'application/json',
-            'Retry-After': '60',
-            ...corsHeaders
-          }
-        });
+        return rateLimiter.createRateLimitResponse(rateLimit);
       }
+      
+      // Store rate limit info for response headers
+      (locals as any).rateLimit = rateLimit;
+      (locals as any).rateLimiter = rateLimiter;
     }
 
     let environment = (locals as any).runtime?.env as any; // Pass full environment for KV access
@@ -584,45 +707,44 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         let toolResult = null;
 
-        // Route function calls through service architecture
-        switch (functionName) {
-          case 'analyze_website':
-            toolResult = await executeWebsiteAnalysis(functionArgs.url, session_id, kv, profile, profileManager, serviceArchitecture);
-            break;
-            
-          case 'show_available_services':
-            toolResult = await executeShowServices(profile, profileManager, serviceArchitecture);
-            break;
+        // Dynamic service execution based on Google Sheets configuration
+        const dynamicExecutor = new DynamicServiceExecutor();
+        
+        // Find the service in serviceArchitecture
+        const service = serviceArchitecture.getUserFacingServices().find((s: any) => s.functionName === functionName);
+        
+        if (service) {
+          // Execute service dynamically
+          toolResult = await dynamicExecutor.executeService(
+            service,
+            functionArgs,
+            { session_id, kv: encryptedKv || kv, email: profile?.email }
+          );
+        } else {
+          // Legacy hardcoded functions (gradually migrate these to Google Sheets)
+          switch (functionName) {
+            case 'show_available_services':
+              toolResult = await executeShowServices(profile, profileManager, serviceArchitecture);
+              break;
 
-          case 'get_seo_tips':
-            toolResult = await executeGetSeoTips(functionArgs.topic, profile, profileManager);
-            break;
+            case 'schedule_discovery_call':
+              toolResult = await executeScheduleCall(functionArgs, profile, profileManager, environment, schedulerKv);
+              break;
 
-          case 'check_domain_status':
-            toolResult = await executeCheckDomain(functionArgs.domain, profile, profileManager);
-            break;
+            case 'lookup_existing_meetings':
+              toolResult = await executeLookupExistingMeetings(functionArgs, profile, profileManager, environment, schedulerKv);
+              break;
 
-          case 'get_industry_insights':
-            toolResult = await executeIndustryInsights(functionArgs.industry, profile, profileManager, serviceArchitecture);
-            break;
-
-          case 'schedule_discovery_call':
-            toolResult = await executeScheduleCall(functionArgs, profile, profileManager, environment, schedulerKv);
-            break;
-
-          case 'lookup_existing_meetings':
-            toolResult = await executeLookupExistingMeetings(functionArgs, profile, profileManager, environment, schedulerKv);
-            break;
-
-          case 'manage_meeting':
-            toolResult = await executeManageMeeting(functionArgs, profile, profileManager, environment, schedulerKv);
-            break;
-            
-          default:
-            toolResult = {
-              error: `Function ${functionName} not implemented`,
-              message: `Sorry, ${functionName} is not available yet.`
-            };
+            case 'manage_meeting':
+              toolResult = await executeManageMeeting(functionArgs, profile, profileManager, environment, schedulerKv);
+              break;
+              
+            default:
+              toolResult = {
+                error: `Function ${functionName} not implemented`,
+                message: `Sorry, ${functionName} is not available yet. Please add it to Google Sheets or implement as legacy function.`
+              };
+          }
         }
 
         toolResults.push({
@@ -732,6 +854,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Get updated usage summary for response
     const usageSummary = await tokenBudgetManager.getUsageSummary(profile);
 
+    // Get CORS headers for this request
+    const corsHeaders = getCorsHeaders(request);
+
     return new Response(JSON.stringify({
       reply: finalResponse,
       finalResponse: finalResponse, // For frontend compatibility
@@ -750,12 +875,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
       status: 200,
       headers: { 
         'Content-Type': 'application/json',
-        ...corsHeaders
+        ...corsHeaders,
+        // Add rate limit headers if available
+        ...((locals as any).rateLimit && (locals as any).rateLimiter ? 
+          (locals as any).rateLimiter.getRateLimitHeaders((locals as any).rateLimit) : {})
       }
     });
 
   } catch (error) {
     devLog('Chat error:', error);
+    
+    // Get CORS headers for error response
+    const corsHeaders = getCorsHeaders(request);
+    
     return new Response(JSON.stringify({
       error: 'Failed to process your request',
       details: error instanceof Error ? error.message : 'Unknown error'
@@ -843,7 +975,7 @@ async function executeWebsiteAnalysis(url: string, sessionId: string, kv: any, p
 
     // Execute the analysis
     const result = await serviceOrchestrator.executeUserService(
-      'advanced_web_analysis',
+      'analyze_website',
       { url: normalizedUrl },
       { session_id: sessionId, kv }
     );
