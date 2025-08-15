@@ -1,0 +1,52 @@
+---
+// Import the Layout component and navigation
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import NotFoundSection from '../components/sections/NotFoundSection.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
+
+// ========================================
+// NAVBAR CONFIGURATION
+// ========================================
+const NAVBAR_CONFIG = {
+	// Search gradient animations in navbar
+	searchGradientEnabled: true,
+	searchScrollDelay: 0,
+	
+	// Debug mode for development
+	debugMode: false,
+};
+
+// Set response status to 404
+Astro.response.status = 404;
+---
+
+<BaseLayout title="404 - Page Not Found | MannyKnows - AI Solutions">
+	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+		<!-- Marquee Announcement Section -->
+		<MarqueeSimple />
+
+		<!-- Header Container with Subtle Background -->
+		<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+            <!-- Navigation -->
+            <NavBar
+				animationConfig={{
+					searchGradientEnabled: NAVBAR_CONFIG.searchGradientEnabled,
+					debugMode: NAVBAR_CONFIG.debugMode,
+					searchScrollDelay: NAVBAR_CONFIG.searchScrollDelay
+				}}
+			/>
+        </header>
+
+		<!-- 404 Section (replaces hero, services, etc.) -->
+		<NotFoundSection />
+
+		<!-- Chat Box (keep this for user support) -->
+		<ChatBox />
+
+		<!-- Floating Dock Menu -->
+		<DockMenu />
+	</main>
+</BaseLayout>

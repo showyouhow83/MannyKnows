@@ -1,0 +1,153 @@
+---
+// 404 Section Component with MannyKnows design
+---
+
+<section class="relative bg-gradient-to-br from-light-primary via-gray-50 to-light-secondary dark:from-dark-primary dark:via-gray-900 dark:to-dark-secondary min-h-screen flex items-center justify-center transition-colors duration-300">
+  <!-- Background decoration -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-secondary/10 to-primary/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 text-center px-6 sm:px-8 lg:px-12 max-w-4xl mx-auto">
+    <!-- Large 404 -->
+    <div class="mb-8">
+      <h1 class="text-8xl sm:text-9xl lg:text-[12rem] font-black bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent leading-none">
+        404
+      </h1>
+    </div>
+
+    <!-- Error message -->
+    <div class="mb-12">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">
+        Oops! Page Not Found
+      </h2>
+      <p class="text-lg sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto leading-relaxed">
+        The page you're looking for seems to have vanished into the digital void. 
+        Don't worry though – our AI is still here to help you navigate back to where you need to be!
+      </p>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+      <!-- Primary CTA with glassmorphism -->
+      <a 
+        href="/" 
+        class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold backdrop-blur-lg border rounded-full transition-all duration-300 hover:scale-105 overflow-hidden bg-gradient-to-r from-primary to-secondary text-white border-primary/30"
+        style="box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+      >
+        <!-- Enhanced glassmorphism overlay on hover -->
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+             style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
+        
+        <span class="mr-2 relative z-10">🏠</span>
+        <span class="relative z-10">Back to Home</span>
+        <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+
+      <!-- Secondary CTA with glassmorphism and theme-aware styling -->
+      <button 
+        onclick="document.querySelector('[data-chatbox]')?.scrollIntoView({ behavior: 'smooth' })"
+        class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold backdrop-blur-lg border rounded-full transition-all duration-300 hover:scale-105 overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+        style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+      >
+        <!-- Enhanced glassmorphism overlay on hover -->
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+             style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
+        
+        <span class="mr-2 relative z-10">💬</span>
+        <span class="relative z-10">Ask Manny AI</span>
+        <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Popular links with glassmorphism styling -->
+    <div class="border-t border-gray-200/30 dark:border-white/20 pt-12">
+      <h3 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary mb-6">
+        Popular Destinations
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <a 
+          href="/#services" 
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+          style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2), 0 1px 3px rgba(34, 197, 94, 0.1);"
+        >
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.05));"></div>
+          
+          <div class="relative z-10">
+            <div class="text-2xl mb-2">🚀</div>
+            <h4 class="font-semibold mb-1">Services</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Our AI solutions</p>
+          </div>
+        </a>
+
+        <a 
+          href="/#process" 
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+          style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.08)); box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2), 0 1px 3px rgba(168, 85, 247, 0.1);"
+        >
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(168, 85, 247, 0.05));"></div>
+          
+          <div class="relative z-10">
+            <div class="text-2xl mb-2">⚙️</div>
+            <h4 class="font-semibold mb-1">Process</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">How we work</p>
+          </div>
+        </a>
+
+        <a 
+          href="/#reviews" 
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+          style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+        >
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
+          
+          <div class="relative z-10">
+            <div class="text-2xl mb-2">⭐</div>
+            <h4 class="font-semibold mb-1">Reviews</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Client testimonials</p>
+          </div>
+        </a>
+
+        <a 
+          href="/#products" 
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+          style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.08)); box-shadow: 0 4px 20px rgba(236, 72, 153, 0.2), 0 1px 3px rgba(236, 72, 153, 0.1);"
+        >
+          <!-- Enhanced glassmorphism overlay on hover -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(236, 72, 153, 0.05));"></div>
+          
+          <div class="relative z-10">
+            <div class="text-2xl mb-2">💼</div>
+            <h4 class="font-semibold mb-1">Products</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Our offerings</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Fun fact with glassmorphism -->
+    <div class="mt-12 backdrop-blur-lg border rounded-2xl p-6 relative overflow-hidden border-gray-200/30 dark:border-white/20"
+         style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.10), rgba(168, 85, 247, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), 0 1px 3px rgba(59, 130, 246, 0.1);">
+      <!-- Subtle glassmorphism overlay -->
+      <div class="absolute inset-0 opacity-50"
+           style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(168, 85, 247, 0.03));"></div>
+      
+      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary relative z-10">
+        <span class="font-semibold">Fun fact:</span> HTTP 404 errors get their name from Room 404 at CERN, 
+        where the original web servers were located. Now you know! 🤓
+      </p>
+    </div>
+  </div>
+</section>
