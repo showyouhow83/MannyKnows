@@ -82,12 +82,16 @@ const { className = '' } = Astro.props;
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
 
-    // Input sanitization to prevent issues
+    // Enhanced input sanitization to prevent XSS and other security issues
     const sanitizeInput = (input: string): string => {
       return input
-        .replace(/[<>]/g, '')
+        .replace(/[<>]/g, '') // Remove HTML tags
+        .replace(/javascript:/gi, '') // Remove javascript: protocols
+        .replace(/data:/gi, '') // Remove data: protocols
+        .replace(/vbscript:/gi, '') // Remove vbscript: protocols
+        .replace(/on\w+=/gi, '') // Remove event handlers
         .trim()
-        .substring(0, 1000);
+        .substring(0, 1000); // Limit length
     };
 
     // Open chat box
@@ -328,17 +332,36 @@ const { className = '' } = Astro.props;
       }
     };
 
-    // Simple markdown parser for Manny's responses
+    // Enhanced secure markdown parser for Manny's responses
     const parseMarkdown = (text: string): string => {
       if (!text) return '';
 
-      // 1) Markdown links: [label](https://example.com)
-      let out = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (
+      // First, escape any potentially dangerous HTML
+      let out = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+      // 1) Markdown links: [label](https://example.com) - with URL validation
+      out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (
         _match: string,
         label: string,
         url: string
       ) => {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+        // Validate URL is safe
+        try {
+          const urlObj = new URL(url);
+          if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+            const safeLabel = label.replace(/[<>]/g, '');
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
+          }
+        } catch (e) {
+          // Invalid URL, return original text
+          return `[${label}](${url})`;
+        }
+        return `[${label}](${url})`;
       });
 
       // 2) Autolink bare URLs (http(s) or www.)

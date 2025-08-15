@@ -2,6 +2,14 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
+// CORS headers for security
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'https://mannyknows.com',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Max-Age': '86400'
+};
+
 export const GET: APIRoute = async ({ url, request, locals }) => {
   try {
     const params = new URL(request.url).searchParams;

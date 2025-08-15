@@ -10,6 +10,41 @@ import envConfigs from '../../config/chatbot/environments.json';
 
 export const prerender = false;
 
+// CORS headers for security
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'https://mannyknows.com',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400' // 24 hours
+};
+
+// Handle CORS preflight requests
+export const OPTIONS: APIRoute = async () => {
+  return new Response(null, {
+    status: 200,
+    headers: corsHeaders
+  });
+};
+
+// Basic rate limiting helper
+async function checkRateLimit(kv: any, clientIP: string): Promise<{ allowed: boolean; remaining: number }> {
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minute window
+  const maxRequests = 30; // 30 requests per minute
+  
+  const key = `rate_limit:${clientIP}:${Math.floor(now / windowMs)}`;
+  const current = await kv.get(key);
+  const count = current ? parseInt(current) : 0;
+  
+  if (count >= maxRequests) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  // Increment counter
+  await kv.put(key, (count + 1).toString(), { expirationTtl: Math.ceil(windowMs / 1000) });
+  return { allowed: true, remaining: maxRequests - count - 1 };
+}
+
 // Load .dev.vars in Node dev when Worker runtime env is absent
 async function readDevVarsFromFile(): Promise<Record<string, string> | undefined> {
   try {
@@ -316,8 +351,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
-  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-  const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
+    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
+    
+    // Basic rate limiting
+    if (kv) {
+      const clientIP = request.headers.get('CF-Connecting-IP') || 
+                      request.headers.get('X-Forwarded-For') || 
+                      'unknown';
+      const rateLimit = await checkRateLimit(kv, clientIP);
+      
+      if (!rateLimit.allowed) {
+        return new Response(JSON.stringify({
+          error: 'Rate limit exceeded. Please wait a moment before sending another message.',
+          retryAfter: 60
+        }), {
+          status: 429,
+          headers: { 
+            'Content-Type': 'application/json',
+            'Retry-After': '60',
+            ...corsHeaders
+          }
+        });
+      }
+    }
+
     let environment = (locals as any).runtime?.env as any; // Pass full environment for KV access
     if (!environment || Object.keys(environment).length === 0) {
       const devVars = await readDevVarsFromFile();
@@ -690,7 +748,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
     }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        ...corsHeaders
+      }
     });
 
   } catch (error) {
@@ -700,7 +761,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       details: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        ...corsHeaders
+      }
     });
   }
 };
