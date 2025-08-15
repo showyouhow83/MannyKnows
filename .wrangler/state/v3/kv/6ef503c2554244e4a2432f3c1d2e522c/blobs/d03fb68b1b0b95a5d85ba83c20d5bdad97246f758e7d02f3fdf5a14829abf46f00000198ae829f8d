@@ -1,1 +1,0 @@
-{"timestamp":"2025-08-15T16:14:12.869Z","type":"DOMAIN_VIOLATION","reason":"Missing origin header","ip":"::1","userAgent":"curl/8.7.1","method":"POST","url":"http://mannyknows.com/api/chat"}
