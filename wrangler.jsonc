@@ -36,5 +36,10 @@
     { "binding": "MANNYKNOWS_R2", "bucket_name": "mannyknows-website-analysis" }
   ],
 
+  "routes": [
+    { "pattern": "mannyknows.com/*", "zone_name": "mannyknows.com" },
+    { "pattern": "www.mannyknows.com/*", "zone_name": "mannyknows.com" }
+  ],
+
   "observability": { "enabled": true }
 }

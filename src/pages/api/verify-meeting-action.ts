@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ url, request }) => {
+export const GET: APIRoute = async ({ url, request, locals }) => {
   try {
     const params = new URL(request.url).searchParams;
     const token = params.get('token');
@@ -29,22 +29,23 @@ export const GET: APIRoute = async ({ url, request }) => {
         </html>
       `, {
         status: 400,
-        headers: { 'Content-Type': 'text/html' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }
 
-    // Get KV binding from environment
-    const env = (globalThis as any).SCHEDULER_KV || (globalThis as any).process?.env;
-    if (!env?.SCHEDULER_KV) {
+    // Get KV binding from environment (using the same pattern as chat.ts)
+    const kv = (locals as any).runtime?.env?.SCHEDULER_KV;
+    const environment = (locals as any).runtime?.env;
+    
+    if (!kv) {
       throw new Error('KV binding not available');
     }
-    const kv = env.SCHEDULER_KV;
 
     // Look up pending verification
     const pendingActionKey = `verify:${token}`;
-    const pendingData = await kv.get(pendingActionKey, 'json');
+    const pendingDataRaw = await kv.get(pendingActionKey);
     
-    if (!pendingData) {
+    if (!pendingDataRaw) {
       return new Response(`
         <!DOCTYPE html>
         <html>
@@ -65,9 +66,12 @@ export const GET: APIRoute = async ({ url, request }) => {
         </html>
       `, {
         status: 410,
-        headers: { 'Content-Type': 'text/html' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }
+
+    // Parse the pending action data
+    const pendingData = JSON.parse(pendingDataRaw);
 
     // Verify the action matches
     if (pendingData.action !== action) {
@@ -91,15 +95,15 @@ export const GET: APIRoute = async ({ url, request }) => {
         </html>
       `, {
         status: 400,
-        headers: { 'Content-Type': 'text/html' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }
 
-    // Get the original meeting
-    const meetingKey = `meetreq:${pendingData.trackingId}`;
-    const meeting = await kv.get(meetingKey, 'json');
+    // Get the original meeting using the stored meeting key
+    const meetingKey = pendingData.meetingKey || `meetreq:${pendingData.trackingId}`;
+    const meetingDataRaw = await kv.get(meetingKey);
     
-    if (!meeting) {
+    if (!meetingDataRaw) {
       return new Response(`
         <!DOCTYPE html>
         <html>
@@ -120,9 +124,12 @@ export const GET: APIRoute = async ({ url, request }) => {
         </html>
       `, {
         status: 404,
-        headers: { 'Content-Type': 'text/html' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }
+
+    // Parse the meeting data
+    const meeting = JSON.parse(meetingDataRaw);
 
     // Process the verified action
     let resultMessage = '';
@@ -140,7 +147,7 @@ export const GET: APIRoute = async ({ url, request }) => {
       resultMessage = `Your meeting scheduled for ${meeting.proposed_time} has been successfully cancelled.`;
       
       // Send cancellation confirmation email to owner
-      await sendOwnerNotification(meeting, 'cancelled', pendingData);
+      await sendOwnerNotification(meeting, 'cancelled', pendingData, environment);
       
     } else if (action === 'reschedule') {
       // Update meeting status to reschedule requested
@@ -155,7 +162,7 @@ export const GET: APIRoute = async ({ url, request }) => {
       resultMessage = `Your reschedule request for the meeting originally scheduled for ${meeting.proposed_time} has been submitted. Our team will contact you within 24 hours with new time options.`;
       
       // Send reschedule notification email to owner
-      await sendOwnerNotification(meeting, 'reschedule', pendingData);
+      await sendOwnerNotification(meeting, 'reschedule', pendingData, environment);
     }
 
     // Clean up the verification token
@@ -164,8 +171,10 @@ export const GET: APIRoute = async ({ url, request }) => {
     // Return success page
     return new Response(`
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
       <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${actionTitle} - MannyKnows</title>
         <style>
           body { 
@@ -184,7 +193,26 @@ export const GET: APIRoute = async ({ url, request }) => {
             padding: 40px; 
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
           }
-          .success { color: #10b981; }
+          .success { color: #10b981; display: flex; align-items: center; gap: 8px; }
+          .checkmark { 
+            display: inline-block; 
+            width: 24px; 
+            height: 24px; 
+            background: #10b981; 
+            border-radius: 50%; 
+            position: relative;
+          }
+          .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+          }
           .brand { 
             background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%);
             -webkit-background-clip: text;
@@ -212,7 +240,10 @@ export const GET: APIRoute = async ({ url, request }) => {
       <body>
         <div class="container">
           <div class="brand">MK</div>
-          <h1 class="success">✓ ${actionTitle}</h1>
+          <h1 class="success">
+            <span class="checkmark"></span>
+            ${actionTitle}
+          </h1>
           <p>${resultMessage}</p>
           
           <div class="details">
@@ -238,7 +269,7 @@ export const GET: APIRoute = async ({ url, request }) => {
       </html>
     `, {
       status: 200,
-      headers: { 'Content-Type': 'text/html' }
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
 
   } catch (error) {
@@ -264,19 +295,18 @@ export const GET: APIRoute = async ({ url, request }) => {
       </html>
     `, {
       status: 500,
-      headers: { 'Content-Type': 'text/html' }
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
   }
 };
 
 // Helper function to send owner notifications
-async function sendOwnerNotification(meeting: any, actionType: string, pendingData: any) {
+async function sendOwnerNotification(meeting: any, actionType: string, pendingData: any, environment: any) {
   try {
-    // Get environment variables
-    const env = (globalThis as any).process?.env || globalThis;
-    const resendApiKey = env.RESEND_API_KEY;
-    const ownerEmail = env.OWNER_EMAIL || 'showyouhow83@gmail.com';
-    const resendFrom = env.RESEND_FROM || 'MannyKnows <noreply@mannyknows.com>';
+    // Get environment variables from the passed environment
+    const resendApiKey = environment?.RESEND_API_KEY;
+    const ownerEmail = environment?.OWNER_EMAIL || 'showyouhow83@gmail.com';
+    const resendFrom = environment?.RESEND_FROM || 'MannyKnows <noreply@mannyknows.com>';
 
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not available for owner notification');

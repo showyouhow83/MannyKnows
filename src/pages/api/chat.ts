@@ -1224,7 +1224,7 @@ async function executeLookupExistingMeetings(functionArgs: any, profile: any, pr
         if (meetingData) {
           const meeting = JSON.parse(meetingData);
           if (meeting.email && meeting.email.toLowerCase() === email.toLowerCase()) {
-            meetings.push({
+            const meetingInfo: any = {
               id: meeting.id,
               name: meeting.name,
               email: meeting.email,
@@ -1233,7 +1233,28 @@ async function executeLookupExistingMeetings(functionArgs: any, profile: any, pr
               meeting_link: meeting.meeting_link,
               created_at: meeting.createdAt,
               project_details: meeting.project_details
-            });
+            };
+
+            // Include reschedule information if applicable
+            if (meeting.status === 'reschedule_requested') {
+              meetingInfo.reschedule_info = {
+                new_preferred_times: meeting.new_preferred_times || meeting.newPreferredTimes,
+                reschedule_reason: meeting.reschedule_reason || meeting.rescheduleReason,
+                requested_at: meeting.reschedule_requested_at || meeting.rescheduleRequestedAt
+              };
+              meetingInfo.display_message = `PENDING RESCHEDULE: Originally ${meeting.proposed_time}, requested to reschedule to ${meeting.new_preferred_times || meeting.newPreferredTimes}`;
+            }
+
+            // Include cancellation info if applicable
+            if (meeting.status === 'cancelled') {
+              meetingInfo.cancellation_info = {
+                reason: meeting.cancellation_reason || meeting.cancellationReason,
+                cancelled_at: meeting.cancelled_at || meeting.cancelledAt
+              };
+              meetingInfo.display_message = `CANCELLED: Was scheduled for ${meeting.proposed_time}`;
+            }
+
+            meetings.push(meetingInfo);
           }
         }
       } catch (e) {
@@ -1364,7 +1385,7 @@ async function executeManageMeeting(functionArgs: any, profile: any, profileMana
     });
 
     // Send verification email
-    const verificationUrl = `https://${getEnvVal('CF_PAGES_PROJECT_NAME', environment) || 'mannyknows'}.showyouhow83.workers.dev/api/verify-meeting-action?token=${verificationToken}&action=${action}`;
+    const verificationUrl = `https://mannyknows.com/api/verify-meeting-action?token=${verificationToken}&action=${action}`;
     
     const actionText = action === 'cancel' ? 'cancellation' : 'reschedule request';
     const actionEmoji = action === 'cancel' ? '❌' : '🔄';
