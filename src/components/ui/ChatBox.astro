@@ -256,15 +256,17 @@ const { className = '' } = Astro.props;
           addBotMessage("I'm having trouble connecting right now. Please try again in a moment.");
         }
 
-        // Re-enable input after response
+        // Re-enable input after response and refocus
         setInputDisabled(false);
+        setTimeout(() => chatBoxInput?.focus(), 100);
 
       } catch (error) {
         removeLoadingMessage();
         addBotMessage("Sorry, I encountered an error. Please try again.");
         
-        // Re-enable input after error
+        // Re-enable input after error and refocus
         setInputDisabled(false);
+        setTimeout(() => chatBoxInput?.focus(), 100);
       }
     };
 
