@@ -1,0 +1,130 @@
+---
+// MK Discovery Call Email Template - Astro Component Version
+// Usage: <EmailTemplate name={name} email={email} phone={phone} {...otherProps} />
+
+export interface Props {
+  name: string;
+  email: string;
+  phone?: string;
+  preferred_times?: string;
+  timezone?: string;
+  proposedTime: string;
+  meetingLink?: string;
+  project_details?: string;
+  trackingId: string;
+}
+
+const { 
+  name, 
+  email, 
+  phone, 
+  preferred_times, 
+  timezone = 'America/New_York', 
+  proposedTime, 
+  meetingLink, 
+  project_details, 
+  trackingId 
+} = Astro.props;
+---
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Call Request</title>
+  <style>
+    body{margin:0;padding:0;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+    .outer{background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);min-height:100vh;padding:40px 20px}
+    .container{max-width:680px;margin:0 auto}
+    .card{background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.2);border-radius:24px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.15)}
+    .header{padding:32px 40px;background:linear-gradient(135deg,rgba(16,185,129,0.9),rgba(5,150,105,0.9));backdrop-filter:blur(10px);position:relative}
+    .header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.1) 50%,transparent 70%);pointer-events:none}
+    .brand{font-weight:700;font-size:24px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.2);letter-spacing:0.5px}
+    .subtitle{color:rgba(255,255,255,0.9);font-size:14px;margin-top:4px;font-weight:400}
+    .content{padding:40px 40px 32px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 32px;margin-bottom:32px}
+    .field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;backdrop-filter:blur(10px)}
+    .field:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);transition:all 0.3s ease}
+    .label{display:block;color:rgba(255,255,255,0.7);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;font-weight:600}
+    .value{font-size:16px;color:#fff;line-height:1.4;word-break:break-word}
+    .full-width{grid-column:1/-1}
+    .details-field{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:24px;margin-bottom:24px}
+    .btn-container{text-align:center;margin:32px 0}
+    .btn{display:inline-block;background:linear-gradient(135deg,#10b981,#059669);color:#fff;text-decoration:none;padding:16px 32px;border-radius:16px;font-weight:600;font-size:16px;box-shadow:0 8px 25px rgba(16,185,129,0.3);transition:all 0.3s ease}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(16,185,129,0.4)}
+    .meta{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;text-align:center;margin-top:24px}
+    .tracking{color:rgba(255,255,255,0.8);font-size:13px;font-family:monospace}
+    .footer{text-align:center;margin-top:32px;padding:24px;color:rgba(255,255,255,0.6);font-size:12px;background:rgba(255,255,255,0.03);border-radius:16px;border:1px solid rgba(255,255,255,0.05)}
+    @media (max-width:640px){
+      .outer{padding:20px 16px}
+      .content{padding:24px 24px 20px}
+      .grid{grid-template-columns:1fr;gap:16px}
+      .brand{font-size:20px}
+      .btn{padding:14px 24px;font-size:15px}
+    }
+  </style>
+  <!--[if mso]><style>.btn{font-family:Arial, sans-serif !important}</style><![endif]-->
+</head>
+<body>
+  <div class="outer">
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="brand">MK</div>
+          <div class="subtitle">Discovery Call Request</div>
+        </div>
+        <div class="content">
+          <div class="grid">
+            <div class="field">
+              <span class="label">Name</span>
+              <div class="value">{name}</div>
+            </div>
+            <div class="field">
+              <span class="label">Email</span>
+              <div class="value">{email}</div>
+            </div>
+            <div class="field">
+              <span class="label">Phone</span>
+              <div class="value">{phone || 'Not provided'}</div>
+            </div>
+            <div class="field">
+              <span class="label">Timezone</span>
+              <div class="value">{timezone}</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Preferred Time</span>
+              <div class="value">{preferred_times || 'Flexible'}</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Proposed Meeting Time</span>
+              <div class="value">{proposedTime}</div>
+            </div>
+          </div>
+          
+          {project_details && (
+            <div class="details-field full-width">
+              <span class="label">Project Details</span>
+              <div class="value">{project_details}</div>
+            </div>
+          )}
+          
+          {meetingLink && (
+            <div class="btn-container">
+              <a class="btn" href={meetingLink} target="_blank" rel="noopener noreferrer">🎯 Join Meeting</a>
+            </div>
+          )}
+          
+          <div class="meta">
+            <div class="tracking">Tracking ID: {trackingId}</div>
+          </div>
+        </div>
+        <div class="footer">
+          This notification was sent by the MannyKnows AI assistant.<br>
+          Automated lead capture · Intelligent business operations
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

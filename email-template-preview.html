@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MK Discovery Call Email Template Preview</title>
+  <style>
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;line-height:1.6}
+    .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
+    .container{max-width:680px;margin:0 auto}
+    .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
+    .header{padding:32px 40px;background:linear-gradient(135deg,#10d1ff 0%,#ff4faa 100%);position:relative}
+    .brand{font-weight:700;font-size:28px;color:#ffffff;letter-spacing:-0.025em}
+    .subtitle{color:rgba(255,255,255,0.95);font-size:16px;margin-top:6px;font-weight:500}
+    .content{padding:40px 40px 32px;background:#ffffff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+    .field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:20px;transition:all 0.3s ease}
+    .field:hover{background:#f4f4f5;border-color:#e4e4e7}
+    .label{display:block;color:#71717a;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;font-weight:600}
+    .value{font-size:16px;color:#18181b;line-height:1.5;word-break:break-word;font-weight:500}
+    .full-width{grid-column:1/-1}
+    .details-field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:24px;margin-bottom:24px}
+    .btn-container{text-align:center;margin:32px 0}
+    .btn{display:inline-block;background:linear-gradient(135deg,#10d1ff,#ff4faa);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(16,209,255,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(16,209,255,0.3)}
+    .meta{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:16px;text-align:center;margin-top:24px}
+    .tracking{color:#71717a;font-size:13px;font-family:"SF Mono",Monaco,monospace;font-weight:500}
+    .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
+    .highlight{background:linear-gradient(135deg,#10d1ff,#ff4faa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+    @media (max-width:640px){
+      .outer{padding:20px 16px}
+      .content{padding:24px 24px 20px}
+      .grid{grid-template-columns:1fr;gap:16px}
+      .brand{font-size:24px}
+      .btn{padding:14px 24px;font-size:15px}
+      .header{padding:24px 24px}
+    }
+    
+    /* Preview-only styles */
+    .preview-note{background:#ffffff;border:2px dashed #e4e4e7;border-radius:12px;padding:20px;margin:20px 0;text-align:center;color:#71717a;font-size:14px}
+    .variable{background:#f4f4f5;padding:2px 6px;border-radius:4px;font-family:"SF Mono",Monaco,monospace;font-size:13px;color:#18181b}
+  </style>
+  <!--[if mso]><style>.btn{font-family:Arial, sans-serif !important;background:#10d1ff !important}</style><![endif]-->
+</head>
+<body>
+  <div class="outer">
+    <div class="preview-note">
+      <strong>📧 MK Email Template Preview</strong><br>
+      Now matches your site's clean aesthetic with subtle gradients and refined colors. Variables like <span class="variable">${name}</span> are replaced with actual data.
+    </div>
+    
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="brand">MK</div>
+          <div class="subtitle">Discovery Call Request</div>
+        </div>
+        <div class="content">
+          <div class="grid">
+            <div class="field">
+              <span class="label">Name</span>
+              <div class="value">Manuel Rodriguez</div>
+            </div>
+            <div class="field">
+              <span class="label">Email</span>
+              <div class="value">manuel@example.com</div>
+            </div>
+            <div class="field">
+              <span class="label">Phone</span>
+              <div class="value">+1 (555) 123-4567</div>
+            </div>
+            <div class="field">
+              <span class="label">Timezone</span>
+              <div class="value">America/New_York</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Preferred Time</span>
+              <div class="value">I'd like to schedule a call for tomorrow between 2 PM and 5 PM EST. I'm flexible with the exact time within that window.</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Proposed Meeting Time</span>
+              <div class="value">Fri Aug 16 2025 02:00 PM (America/New_York)</div>
+            </div>
+          </div>
+          
+          <div class="details-field full-width">
+            <span class="label">Project Details</span>
+            <div class="value">I need help optimizing our e-commerce conversion funnel. We're seeing good traffic but conversions are low at about 1.2%. Looking for AI automation solutions to improve our customer journey and boost sales performance.</div>
+          </div>
+          
+          <div class="btn-container">
+            <a class="btn" href="https://meet.jit.si/mk-sample-meeting-room" target="_blank" rel="noopener noreferrer">Join Meeting →</a>
+          </div>
+          
+          <div class="meta">
+            <div class="tracking">Reference: b102ce57-5bcc-4075-9c40-4427717c01e8</div>
+          </div>
+        </div>
+        <div class="footer">
+          This notification was sent by the <span class="highlight">MannyKnows</span> AI assistant<br>
+          Automated lead capture · Intelligent business operations
+        </div>
+      </div>
+    </div>
+    
+    <div class="preview-note">
+      <strong>🎨 Template Features:</strong><br>
+      • Clean, minimal design matching your site's aesthetic<br>
+      • Subtle gradients and refined color palette<br>
+      • Proper spacing and typography hierarchy<br>
+      • Your signature blue-to-pink gradient branding<br>
+      • Mobile-first responsive design
+    </div>
+  </div>
+</body>
+</html>

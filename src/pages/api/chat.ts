@@ -135,7 +135,42 @@ function getAvailableToolsFromServices(serviceArchitecture: any, profile: any) {
     }
   };
 
-  return [...serviceTools, calendarTool];
+  // Add meeting lookup tool
+  const meetingLookupTool = {
+    type: "function",
+    function: {
+      name: "lookup_existing_meetings",
+      description: "Look up existing meetings for a user by their email address. Use when user asks about their scheduled calls, meetings, or appointments.",
+      parameters: {
+        type: "object",
+        properties: {
+          email: { type: "string", description: "User's email address to search for existing meetings" }
+        },
+        required: ["email"]
+      }
+    }
+  };
+
+  // Add meeting management tool
+  const meetingManagementTool = {
+    type: "function",
+    function: {
+      name: "manage_meeting",
+      description: "Cancel or request changes to an existing meeting. Use when user wants to cancel, reschedule, or modify their appointment.",
+      parameters: {
+        type: "object",
+        properties: {
+          action: { type: "string", enum: ["cancel", "reschedule"], description: "Action to perform on the meeting" },
+          tracking_id: { type: "string", description: "Meeting reference/tracking ID" },
+          new_preferred_times: { type: "string", description: "New preferred times (only for reschedule action)" },
+          reason: { type: "string", description: "Reason for cancellation or change (optional)" }
+        },
+        required: ["action", "tracking_id"]
+      }
+    }
+  };
+
+  return [...serviceTools, calendarTool, meetingLookupTool, meetingManagementTool];
 }
 
 /**
@@ -146,6 +181,9 @@ function checkIfShouldForceBooking(messages: Array<{role: string, content: strin
   
   // Check for discovery call interest
   const hasDiscoveryCallIntent = /(?:schedule|book|discovery call|meeting|appointment)/i.test(conversationText);
+  
+  // Check for meeting lookup intent
+  const hasMeetingLookupIntent = /(?:do I have|my meeting|my appointment|scheduled call|existing meeting|upcoming call|meeting.*coming up)/i.test(conversationText);
   
   // Check for email pattern
   const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(conversationText);
@@ -247,8 +285,12 @@ function extractBookingDetails(messages: Array<{ role: "system" | "user" | "assi
   } else {
     const idx = lastUserText.search(new RegExp(`${dayRe.source}|${timeRe.source}`, 'i'));
     if (idx !== -1) {
-      const window = lastUserText.substring(Math.max(0, idx - 30), Math.min(lastUserText.length, idx + 60)).replace(/\n+/g, ' ').trim();
-      preferred_times = window;
+      // Capture a wider window around the first time/day mention to avoid truncation
+      const start = Math.max(0, idx - 120);
+      const end = Math.min(lastUserText.length, idx + 240);
+      const window = lastUserText.substring(start, end).replace(/\n+/g, ' ').trim();
+      // Cap length to a reasonable size for storage/email
+      preferred_times = window.length > 400 ? window.slice(0, 397) + '...' : window;
     }
   }
 
@@ -507,6 +549,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
           case 'schedule_discovery_call':
             toolResult = await executeScheduleCall(functionArgs, profile, profileManager, environment, schedulerKv);
+            break;
+
+          case 'lookup_existing_meetings':
+            toolResult = await executeLookupExistingMeetings(functionArgs, profile, profileManager, environment, schedulerKv);
+            break;
+
+          case 'manage_meeting':
+            toolResult = await executeManageMeeting(functionArgs, profile, profileManager, environment, schedulerKv);
             break;
             
           default:
@@ -887,15 +937,57 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     };
   }
   
+  // Check for existing meetings to prevent duplicates
+  if (kv && typeof kv.list === 'function') {
+    try {
+      const existingMeetings = [];
+      const allMeetings = await kv.list({ prefix: 'meetreq:' });
+      
+      for (const key of allMeetings.keys) {
+        try {
+          const meetingData = await kv.get(key.name);
+          if (meetingData) {
+            const meeting = JSON.parse(meetingData);
+            if (meeting.email && meeting.email.toLowerCase() === email.toLowerCase() && 
+                meeting.status === 'pending') {
+              existingMeetings.push(meeting);
+            }
+          }
+        } catch (e) {
+          // Skip invalid meetings
+          continue;
+        }
+      }
+      
+      if (existingMeetings.length > 0) {
+        const latestMeeting = existingMeetings[0];
+        return {
+          status: 'duplicate_meeting',
+          error: 'You already have a pending discovery call request',
+          existing_meeting: {
+            id: latestMeeting.id,
+            proposed_time: latestMeeting.proposed_time,
+            meeting_link: latestMeeting.meeting_link
+          },
+          message: `You already have a discovery call scheduled for ${latestMeeting.proposed_time}. If you need to make changes, please let me know and I can help you reschedule or cancel it.`
+        };
+      }
+    } catch (e) {
+      // Continue with scheduling if duplicate check fails
+      devLog('Duplicate check failed, proceeding with scheduling', e as any);
+    }
+  }
+  
   // Track scheduling usage
   await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
 
   try {
-    const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com';
+  const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com';
+  const ownerTimezone = getEnvVal('OWNER_TIMEZONE', environment) || 'America/New_York';
     const trackingId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 
     // Simple 15-min slot selection (best-effort): pick earliest 15-min slot mentioned or default to flexible
-    function pickProposedTime(text?: string, tz?: string): string {
+  function pickProposedTime(text?: string, tz?: string): string {
       if (!text) return 'Flexible (we will confirm by email)';
       const lower = text.toLowerCase();
       const now = new Date();
@@ -918,7 +1010,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
       minutes = Math.floor(minutes / 15) * 15;
       const scheduled = new Date(day);
       scheduled.setHours(hours, minutes, 0, 0);
-      const tzLabel = tz || 'America/Los_Angeles';
+      const tzLabel = tz || ownerTimezone;
       // Return readable text; not shifting timezone server-side to avoid Intl dependency issues
       return `${scheduled.toDateString()} ${('0'+((hours%12)||12)).slice(-2)}:${('0'+minutes).slice(-2)} ${ampm.toUpperCase()} (${tzLabel})`;
     }
@@ -940,7 +1032,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
         email,
         phone,
         preferred_times: preferred_times || 'flexible',
-        timezone: timezone || 'America/Los_Angeles',
+        timezone: timezone || ownerTimezone,
         project_details: project_details || '',
         proposed_time: proposedTime,
   meeting_link: meetingLink,
@@ -958,6 +1050,108 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
       const resendKey = getEnvVal('RESEND_API_KEY', environment);
       const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <onboarding@resend.dev>';
       if (resendKey) {
+        const subject = `New Discovery Call Request — ${name}${proposedTime ? ` (${proposedTime})` : ''}`;
+        const textBody = `New discovery call request\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'N/A'}\nPreferred: ${preferred_times || 'flexible'}\nTimezone: ${timezone || ownerTimezone}\nProposed time: ${proposedTime}${meetingLink ? `\nMeeting link: ${meetingLink}` : ''}\nDetails: ${project_details || ''}\nTracking: ${trackingId}`;
+
+        const htmlBody = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Call Request</title>
+  <style>
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;line-height:1.6}
+    .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
+    .container{max-width:680px;margin:0 auto}
+    .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
+    .header{padding:32px 40px;background:linear-gradient(135deg,#10d1ff 0%,#ff4faa 100%);position:relative}
+    .brand{font-weight:700;font-size:28px;color:#ffffff;letter-spacing:-0.025em}
+    .subtitle{color:rgba(255,255,255,0.95);font-size:16px;margin-top:6px;font-weight:500}
+    .content{padding:40px 40px 32px;background:#ffffff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+    .field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:20px;transition:all 0.3s ease}
+    .field:hover{background:#f4f4f5;border-color:#e4e4e7}
+    .label{display:block;color:#71717a;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;font-weight:600}
+    .value{font-size:16px;color:#18181b;line-height:1.5;word-break:break-word;font-weight:500}
+    .full-width{grid-column:1/-1}
+    .details-field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:24px;margin-bottom:24px}
+    .btn-container{text-align:center;margin:32px 0}
+    .btn{display:inline-block;background:linear-gradient(135deg,#10d1ff,#ff4faa);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(16,209,255,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(16,209,255,0.3)}
+    .meta{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:16px;text-align:center;margin-top:24px}
+    .tracking{color:#71717a;font-size:13px;font-family:"SF Mono",Monaco,monospace;font-weight:500}
+    .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
+    .highlight{background:linear-gradient(135deg,#10d1ff,#ff4faa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+    @media (max-width:640px){
+      .outer{padding:20px 16px}
+      .content{padding:24px 24px 20px}
+      .grid{grid-template-columns:1fr;gap:16px}
+      .brand{font-size:24px}
+      .btn{padding:14px 24px;font-size:15px}
+      .header{padding:24px 24px}
+    }
+  </style>
+  <!--[if mso]><style>.btn{font-family:Arial, sans-serif !important;background:#10d1ff !important}</style><![endif]-->
+</head>
+<body>
+  <div class="outer">
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="brand">MK</div>
+          <div class="subtitle">Discovery Call Request</div>
+        </div>
+        <div class="content">
+          <div class="grid">
+            <div class="field">
+              <span class="label">Name</span>
+              <div class="value">${name}</div>
+            </div>
+            <div class="field">
+              <span class="label">Email</span>
+              <div class="value">${email}</div>
+            </div>
+            <div class="field">
+              <span class="label">Phone</span>
+              <div class="value">${phone || 'Not provided'}</div>
+            </div>
+            <div class="field">
+              <span class="label">Timezone</span>
+              <div class="value">${timezone || ownerTimezone}</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Preferred Time</span>
+              <div class="value">${(preferred_times || 'Flexible').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+            </div>
+            <div class="field full-width">
+              <span class="label">Proposed Meeting Time</span>
+              <div class="value">${proposedTime}</div>
+            </div>
+          </div>
+          
+          ${project_details ? `<div class="details-field full-width">
+            <span class="label">Project Details</span>
+            <div class="value">${project_details.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>` : ''}
+          
+          ${meetingLink ? `<div class="btn-container">
+            <a class="btn" href="${meetingLink}" target="_blank" rel="noopener noreferrer">Join Meeting →</a>
+          </div>` : ''}
+          
+          <div class="meta">
+            <div class="tracking">Reference: ${trackingId}</div>
+          </div>
+        </div>
+        <div class="footer">
+          This notification was sent by the <span class="highlight">MannyKnows</span> AI assistant<br>
+          Automated lead capture · Intelligent business operations
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
         const emailResp = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -967,8 +1161,9 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
           body: JSON.stringify({
             from: resendFrom,
             to: [ownerEmail],
-            subject: 'New Discovery Call Request',
-    text: `New discovery call request\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'N/A'}\nPreferred: ${preferred_times || 'flexible'}\nTimezone: ${timezone || 'America/Los_Angeles'}\nProposed time: ${proposedTime}${meetingLink ? `\nMeeting link: ${meetingLink}` : ''}\nDetails: ${project_details || ''}\nTracking: ${trackingId}`
+            subject: subject,
+            text: textBody,
+            html: htmlBody
           })
         });
         try {
@@ -992,6 +1187,208 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     return {
       status: 'error',
       fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com'
+    };
+  }
+}
+
+/**
+ * Look up existing meetings for a user by email address
+ */
+async function executeLookupExistingMeetings(functionArgs: any, profile: any, profileManager: ProfileManager, environment?: any, kv?: any) {
+  const { email } = functionArgs;
+  
+  if (!email) {
+    return {
+      status: 'validation_error',
+      error: 'Email address is required for lookup',
+      required_fields: ['email']
+    };
+  }
+
+  if (!kv || typeof kv.list !== 'function') {
+    return {
+      status: 'error',
+      error: 'Meeting storage not available'
+    };
+  }
+
+  try {
+    // Search for meetings by email
+    const meetings = [];
+    const allMeetings = await kv.list({ prefix: 'meetreq:' });
+    
+    for (const key of allMeetings.keys) {
+      try {
+        const meetingData = await kv.get(key.name);
+        if (meetingData) {
+          const meeting = JSON.parse(meetingData);
+          if (meeting.email && meeting.email.toLowerCase() === email.toLowerCase()) {
+            meetings.push({
+              id: meeting.id,
+              name: meeting.name,
+              email: meeting.email,
+              proposed_time: meeting.proposed_time,
+              status: meeting.status,
+              meeting_link: meeting.meeting_link,
+              created_at: meeting.createdAt,
+              project_details: meeting.project_details
+            });
+          }
+        }
+      } catch (e) {
+        // Skip invalid meetings
+        continue;
+      }
+    }
+
+    // Sort by creation date (newest first)
+    meetings.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+
+    await profileManager.trackServiceUsage(profile, 'lookup_existing_meetings', 'free', true);
+
+    return {
+      status: 'success',
+      email: email,
+      meetings: meetings,
+      total_count: meetings.length
+    };
+  } catch (error) {
+    errorLog('Meeting lookup error:', error);
+    return {
+      status: 'error',
+      error: 'Failed to look up meetings'
+    };
+  }
+}
+
+/**
+ * Manage existing meetings (cancel or reschedule)
+ */
+async function executeManageMeeting(functionArgs: any, profile: any, profileManager: ProfileManager, environment?: any, kv?: any) {
+  const { action, tracking_id, new_preferred_times, reason } = functionArgs;
+  
+  if (!action || !tracking_id) {
+    return {
+      status: 'validation_error',
+      error: 'Action and tracking ID are required',
+      required_fields: ['action', 'tracking_id']
+    };
+  }
+
+  if (!kv || typeof kv.get !== 'function') {
+    return {
+      status: 'error',
+      error: 'Meeting storage not available'
+    };
+  }
+
+  try {
+    // Find the meeting
+    const meetingData = await kv.get(`meetreq:${tracking_id}`);
+    if (!meetingData) {
+      return {
+        status: 'not_found',
+        error: `Meeting with ID ${tracking_id} not found`
+      };
+    }
+
+    const meeting = JSON.parse(meetingData);
+    const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'manny@mannyknows.com';
+    const resendKey = getEnvVal('RESEND_API_KEY', environment);
+    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <noreply@mannyknows.com>';
+
+    if (action === 'cancel') {
+      // Update meeting status
+      meeting.status = 'cancelled';
+      meeting.cancelled_at = Date.now();
+      meeting.cancellation_reason = reason || 'Cancelled by user';
+      
+      await kv.put(`meetreq:${tracking_id}`, JSON.stringify(meeting));
+
+      // Send cancellation notification
+      if (resendKey) {
+        const subject = `Meeting Cancelled — ${meeting.name} (${tracking_id})`;
+        const textBody = `Meeting cancellation notification\n\nThe discovery call has been cancelled:\n\nName: ${meeting.name}\nEmail: ${meeting.email}\nOriginal Time: ${meeting.proposed_time}\nReason: ${reason || 'User requested cancellation'}\nTracking: ${tracking_id}`;
+        
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${resendKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: resendFrom,
+            to: [ownerEmail],
+            subject: subject,
+            text: textBody
+          })
+        });
+      }
+
+      await profileManager.trackServiceUsage(profile, 'manage_meeting', 'free', true);
+
+      return {
+        status: 'cancelled',
+        tracking_id: tracking_id,
+        message: 'Meeting has been cancelled successfully'
+      };
+      
+    } else if (action === 'reschedule') {
+      if (!new_preferred_times) {
+        return {
+          status: 'validation_error',
+          error: 'New preferred times are required for rescheduling',
+          required_fields: ['new_preferred_times']
+        };
+      }
+
+      // Update meeting with reschedule request
+      meeting.status = 'reschedule_requested';
+      meeting.reschedule_requested_at = Date.now();
+      meeting.new_preferred_times = new_preferred_times;
+      meeting.reschedule_reason = reason || 'User requested reschedule';
+      
+      await kv.put(`meetreq:${tracking_id}`, JSON.stringify(meeting));
+
+      // Send reschedule notification
+      if (resendKey) {
+        const subject = `Meeting Reschedule Request — ${meeting.name} (${tracking_id})`;
+        const textBody = `Meeting reschedule request\n\nName: ${meeting.name}\nEmail: ${meeting.email}\nOriginal Time: ${meeting.proposed_time}\nNew Preferred Times: ${new_preferred_times}\nReason: ${reason || 'User requested reschedule'}\nTracking: ${tracking_id}`;
+        
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${resendKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: resendFrom,
+            to: [ownerEmail],
+            subject: subject,
+            text: textBody
+          })
+        });
+      }
+
+      await profileManager.trackServiceUsage(profile, 'manage_meeting', 'free', true);
+
+      return {
+        status: 'reschedule_requested',
+        tracking_id: tracking_id,
+        new_preferred_times: new_preferred_times,
+        message: 'Reschedule request has been sent. You will receive an email confirmation with the new meeting time.'
+      };
+    } else {
+      return {
+        status: 'validation_error',
+        error: 'Invalid action. Must be "cancel" or "reschedule"'
+      };
+    }
+  } catch (error) {
+    errorLog('Meeting management error:', error);
+    return {
+      status: 'error',
+      error: 'Failed to manage meeting'
     };
   }
 }
