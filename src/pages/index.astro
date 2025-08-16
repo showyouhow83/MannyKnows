@@ -80,3 +80,44 @@ const NAVBAR_CONFIG = {
 		<DockMenu />
 	</main>
 </BaseLayout>
+
+<script>
+  // Handle URL parameters for chat opening and reference tracking
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const chatParam = urlParams.get('chat');
+    const refParam = urlParams.get('ref');
+    
+    // Auto-open chat if ?chat=open parameter is present
+    if (chatParam === 'open') {
+      // Small delay to ensure ChatBox component is initialized
+      setTimeout(() => {
+        const chatToggle = document.getElementById('dockChatToggle') || 
+                          document.getElementById('topChatToggle') || 
+                          document.getElementById('heroChatButton');
+        
+        if (chatToggle) {
+          chatToggle.click();
+          
+          // If there's a reference parameter, store it for potential context lookup
+          if (refParam) {
+            try {
+              sessionStorage.setItem('mk_chat_reference', refParam);
+              console.log('📧 Chat opened with reference:', refParam);
+            } catch (e) {
+              console.warn('Could not store chat reference:', e);
+            }
+          }
+        } else {
+          console.warn('Chat toggle button not found');
+        }
+      }, 500);
+    }
+    
+    // Clean up URL parameters after processing (optional - keeps URL clean)
+    if (chatParam || refParam) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  });
+</script>
