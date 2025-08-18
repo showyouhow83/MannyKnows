@@ -26,8 +26,8 @@ temp_*
 debug-*.html
 email-template-preview.html
 
-# wrangler local state
-.wrangler/state/
+# wrangler local state and cache
+.wrangler/
 
 # macOS-specific files
 .DS_Store
