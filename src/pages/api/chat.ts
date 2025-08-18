@@ -456,6 +456,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
     const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const profilesKv = (locals as any).runtime?.env?.PROFILES; // Dedicated KV for profiles
+    const sessionsKv = (locals as any).runtime?.env?.SESSIONS; // Dedicated KV for sessions
     const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
     
     // Initialize encrypted KV wrapper for sensitive data
@@ -484,7 +486,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                       'unknown';
       
       // Quick profile check for rate limiting (we'll get full profile later)
-      const quickProfileData = await kv.get(`session:${session_id}`);
+      const quickProfileData = await (sessionsKv || kv).get(`session:${session_id}`);
       const quickProfile = quickProfileData ? JSON.parse(quickProfileData) : null;
       const userTier = RateLimiter.getUserTier(quickProfile, null);
       
@@ -507,10 +509,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     // Initialize service architecture with KV environment
     const serviceArchitecture = createServiceArchitecture(environment);
-    await serviceArchitecture.ensureServicesLoaded();
+    await serviceArchitecture.ensureAllLoaded(); // Load both services and products
     
     // Initialize managers
-    const profileManager = new ProfileManager(kv);
+    const profileManager = new ProfileManager(profilesKv || kv, sessionsKv || kv); // Use separate KV instances
     
     // Get or create user profile
     const profile = await profileManager.getUserProfile(session_id);

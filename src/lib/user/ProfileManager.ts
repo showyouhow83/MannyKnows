@@ -39,10 +39,12 @@ export interface UserProfile {
 }
 
 export class ProfileManager {
-  private kv: any;
+  private profilesKv: any;
+  private sessionsKv: any;
 
-  constructor(kv: any) {
-    this.kv = kv;
+  constructor(profilesKv: any, sessionsKv?: any) {
+    this.profilesKv = profilesKv;
+    this.sessionsKv = sessionsKv || profilesKv; // Fallback to profilesKv if sessionsKv not provided
   }
 
   /**
@@ -50,12 +52,12 @@ export class ProfileManager {
    */
   async getUserProfile(sessionId: string): Promise<UserProfile> {
     // Try to get existing profile by session
-    const sessionData = await this.kv.get(`session:${sessionId}`);
+    const sessionData = await this.sessionsKv.get(`session:${sessionId}`);
     
     if (sessionData) {
       const session = JSON.parse(sessionData);
       if (session.profileId) {
-        const profile = await this.kv.get(`profile:${session.profileId}`);
+        const profile = await this.profilesKv.get(`profile:${session.profileId}`);
         if (profile) {
           const userProfile = JSON.parse(profile);
           userProfile.currentSessionId = sessionId;
@@ -174,7 +176,7 @@ export class ProfileManager {
     
     // Save with new ID and clean up old ID
     await this.saveProfile(profile);
-    await this.kv.delete(`profile:${oldId}`);
+    await this.profilesKv.delete(`profile:${oldId}`);
     
     return profile;
   }
@@ -278,13 +280,13 @@ export class ProfileManager {
    * Save profile to KV storage
    */
   private async saveProfile(profile: UserProfile): Promise<void> {
-    await this.kv.put(`profile:${profile.id}`, JSON.stringify(profile));
+    await this.profilesKv.put(`profile:${profile.id}`, JSON.stringify(profile));
   }
 
   /**
    * Link session to profile
    */
   private async linkSessionToProfile(sessionId: string, profileId: string): Promise<void> {
-    await this.kv.put(`session:${sessionId}`, JSON.stringify({ profileId }));
+    await this.sessionsKv.put(`session:${sessionId}`, JSON.stringify({ profileId }));
   }
 }
