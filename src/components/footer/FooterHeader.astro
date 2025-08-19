@@ -302,6 +302,7 @@ const blogArticles = [
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   let csrfToken: string | null = null;
+  let sessionId: string | null = null;
   
   // Get CSRF token
   try {
@@ -309,6 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (tokenResponse.ok) {
       const tokenData = await tokenResponse.json();
       csrfToken = tokenData.csrf_token; // Fixed: API returns csrf_token, not token
+      sessionId = tokenData.session_id; // Store session ID
       
       // Enable submit button once token is loaded
       const submitButton = document.querySelector('#contactForm button[type="submit"]') as HTMLButtonElement;
@@ -327,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      if (!csrfToken) {
+      if (!csrfToken || !sessionId) {
         showError('Security token not available. Please refresh the page.');
         return;
       }
@@ -359,13 +361,15 @@ document.addEventListener('DOMContentLoaded', async () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken
+            'x-csrf-token': csrfToken // Fixed: Use lowercase header name
           },
           body: JSON.stringify({
             name: formData.get('name'),
             email: formData.get('email'),
             subject: formData.get('subject'),
-            message: formData.get('message')
+            message: formData.get('message'),
+            csrf_token: csrfToken, // Include in body as fallback
+            session_id: sessionId // Include session ID
           })
         });
         
@@ -381,6 +385,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (newTokenResponse.ok) {
               const newTokenData = await newTokenResponse.json();
               csrfToken = newTokenData.csrf_token; // Fixed: API returns csrf_token, not token
+              sessionId = newTokenData.session_id; // Update session ID
             }
           } catch (error) {
             console.error('Failed to refresh CSRF token:', error);
