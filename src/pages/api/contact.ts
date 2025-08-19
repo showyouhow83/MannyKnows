@@ -145,6 +145,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
 
     if (resendKey) {
+      console.log(`🔧 Attempting to send email notification to: ${ownerEmail}`);
       try {
         const emailHtml = generateContactNotificationEmail(contactRecord);
         
@@ -163,20 +164,27 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
         });
 
         if (emailResponse.ok) {
-          console.log(`✅ Contact notification sent for: ${submissionId}`);
+          const emailResult = await emailResponse.json();
+          console.log(`✅ Contact notification sent for: ${submissionId}`, emailResult);
+        } else {
+          const errorText = await emailResponse.text();
+          console.error(`❌ Failed to send contact notification. Status: ${emailResponse.status}, Response: ${errorText}`);
         }
       } catch (emailError) {
-        console.error('Failed to send contact notification:', emailError);
+        console.error('❌ Email sending exception:', emailError);
         // Continue without failing - contact is still stored
       }
+    } else {
+      console.error('❌ RESEND_API_KEY not found in environment variables');
     }
 
     // Send auto-reply to user
     if (resendKey) {
+      console.log(`🔧 Attempting to send auto-reply to: ${contactRecord.email}`);
       try {
         const autoReplyHtml = generateAutoReplyEmail(contactRecord);
         
-        await fetch('https://api.resend.com/emails', {
+        const autoReplyResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${resendKey}`,
@@ -189,8 +197,16 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
             html: autoReplyHtml
           })
         });
+
+        if (autoReplyResponse.ok) {
+          const autoReplyResult = await autoReplyResponse.json();
+          console.log(`✅ Auto-reply sent to: ${contactRecord.email}`, autoReplyResult);
+        } else {
+          const errorText = await autoReplyResponse.text();
+          console.error(`❌ Failed to send auto-reply. Status: ${autoReplyResponse.status}, Response: ${errorText}`);
+        }
       } catch (autoReplyError) {
-        console.error('Failed to send auto-reply:', autoReplyError);
+        console.error('❌ Auto-reply exception:', autoReplyError);
       }
     }
 
