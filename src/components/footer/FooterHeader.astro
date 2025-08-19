@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenResponse = await fetch('/api/contact');
     if (tokenResponse.ok) {
       const tokenData = await tokenResponse.json();
-      csrfToken = tokenData.token;
+      csrfToken = tokenData.csrf_token; // Fixed: API returns csrf_token, not token
       
       // Enable submit button once token is loaded
       const submitButton = document.querySelector('#contactForm button[type="submit"]') as HTMLButtonElement;
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const newTokenResponse = await fetch('/api/contact');
             if (newTokenResponse.ok) {
               const newTokenData = await newTokenResponse.json();
-              csrfToken = newTokenData.token;
+              csrfToken = newTokenData.csrf_token; // Fixed: API returns csrf_token, not token
             }
           } catch (error) {
             console.error('Failed to refresh CSRF token:', error);
