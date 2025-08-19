@@ -20,20 +20,13 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		
 		<!-- Security Headers -->
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		
 		<!-- PERFORMANCE: Resource hints for faster loading -->
 		<link rel="dns-prefetch" href="//www.googletagmanager.com">
-		<link rel="dns-prefetch" href="//fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		
-		<!-- OPTIMIZED: System fonts with Inter fallback (swap for better performance) -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 		
 		<!-- Google Analytics -->
 		<GoogleAnalytics />
@@ -98,9 +91,9 @@ const { title } = Astro.props;
 
 <style is:global>
 	:root {
-		/* Apple-inspired Font System */
-		--bs-body-font-family: 'SF Pro Display', 'SF Pro Icons', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
-		--bs-font-family-heading: 'SF Pro Display', 'Inter', sans-serif;
+		/* Native System Font Stack */
+		--bs-body-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+		--bs-font-family-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		--bs-body-font-size: 1rem;
 		--bs-body-font-weight: 400;
 		--bs-body-line-height: 1.1666666667;
@@ -189,9 +182,9 @@ const { title } = Astro.props;
 		height: 100%;
 	}
 
-	/* Apple System Font Classes */
+	/* Native System Font Classes */
 	.sf-light {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 300;
 		font-style: normal;
@@ -200,7 +193,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-regular {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 400;
 		font-style: normal;
@@ -209,7 +202,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-medium {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 500;
 		font-style: normal;
@@ -218,7 +211,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-semibold {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 600;
 		font-style: normal;
@@ -227,7 +220,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-bold {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 700;
 		font-style: normal;
@@ -236,7 +229,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-extrabold {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 800;
 		font-style: normal;
@@ -245,7 +238,7 @@ const { title } = Astro.props;
 	}
 
 	.sf-black {
-		font-family: "SF Pro Display", "Inter", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 900;
 		font-style: normal;

@@ -29,6 +29,40 @@ export default {
       '2xl': '1536px',
     },
     extend: {
+      // Native system fonts - fast, secure, and great looking
+      fontFamily: {
+        'sans': [
+          '-apple-system',
+          'BlinkMacSystemFont', 
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"', 
+          'Arial',
+          '"Noto Sans"',
+          'sans-serif',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"'
+        ],
+        'serif': [
+          'ui-serif',
+          'Georgia', 
+          'Cambria',
+          '"Times New Roman"',
+          'Times',
+          'serif'
+        ],
+        'mono': [
+          'ui-monospace',
+          'SFMono-Regular',
+          '"SF Mono"',
+          'Consolas',
+          '"Liberation Mono"',
+          'Menlo',
+          'monospace'
+        ]
+      },
       colors: {
         primary: {
           blue: '#10d1ff',

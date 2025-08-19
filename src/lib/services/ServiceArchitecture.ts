@@ -20,6 +20,7 @@ export interface BusinessService {
   price?: string;
   isActive?: boolean;
   sortOrder?: number;
+  components?: string[]; // Array of component names for dynamic service execution
 }
 
 export interface BusinessProduct {

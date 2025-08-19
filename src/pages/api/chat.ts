@@ -1259,7 +1259,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Discovery Call Request</title>
   <style>
-    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;line-height:1.6}
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
     .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
     .container{max-width:680px;margin:0 auto}
     .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
@@ -1278,7 +1278,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     .btn{display:inline-block;background:linear-gradient(135deg,#10d1ff,#ff4faa);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(16,209,255,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
     .btn:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(16,209,255,0.3)}
     .meta{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:16px;text-align:center;margin-top:24px}
-    .tracking{color:#71717a;font-size:13px;font-family:"SF Mono",Monaco,monospace;font-weight:500}
+    .tracking{color:#71717a;font-size:13px;font-family:ui-monospace,SFMono-Regular,'SF Mono',Consolas,'Liberation Mono',Menlo,monospace;font-weight:500}
     .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
     .highlight{background:linear-gradient(135deg,#10d1ff,#ff4faa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
     @media (max-width:640px){
@@ -1648,7 +1648,7 @@ function generateVerificationEmail(meeting: any, action: string, verificationUrl
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Verify Meeting ${actionTitle} - MannyKnows</title>
       <style>
-        body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;line-height:1.6}
+        body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
         .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
         .container{max-width:680px;margin:0 auto}
         .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05)}
