@@ -10,7 +10,7 @@
     "CLOUDFLARE_R2_BUCKET_NAME": "mannyknows-website-analysis",
     "CLOUDFLARE_R2_REGION": "auto",
     "CF_PAGES_PROJECT_NAME": "mannyknows",
-    "OWNER_EMAIL": "showyouhow83@gmail.com",
+    "OWNER_EMAIL": "mk@mannyknows.com",
     "OWNER_TIMEZONE": "America/New_York",
     // Sender for Resend (use a verified domain)
     "RESEND_FROM": "MannyKnows <noreply@mannyknows.com>"

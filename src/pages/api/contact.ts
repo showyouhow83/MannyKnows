@@ -141,7 +141,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     );
 
     // Send notification email using Resend
-    const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'showyouhow83@gmail.com';
+    const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'mk@mannyknows.com';
     const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
 
     if (resendKey) {
