@@ -13,7 +13,7 @@
     "OWNER_EMAIL": "mk@mannyknows.com",
     "OWNER_TIMEZONE": "America/New_York",
     // Sender for Resend (use a verified domain)
-    "RESEND_FROM": "MannyKnows <noreply@mannyknows.com>"
+    "RESEND_FROM": "MannyKnows <contact@mannyknows.com>"
   },
 
   "assets": {
