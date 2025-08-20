@@ -18,6 +18,9 @@ export default defineConfig({
     })
   ],
   vite: {
+    ssr: {
+      external: ['node:fs/promises']
+    },
     build: {
       cssCodeSplit: true,
       rollupOptions: {
