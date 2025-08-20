@@ -615,7 +615,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       } else if (result?.status === 'validation_error') {
           finalResponseText = `I need a couple details to book: ${result.required_fields?.join(', ')}.`;
       } else if (result?.status === 'error') {
-          finalResponseText = `I had trouble sending the request. Please email ${result.fallback_email || 'verified@mailroute.mannyknows.com'} and we’ll confirm manually.`;
+          finalResponseText = `I had trouble sending the request. Please email ${result.fallback_email || 'manny@mannyknows.com'} and we’ll confirm manually.`;
         } else {
           finalResponseText = `I had trouble booking that just now. Please share a time window and I’ll try again.`;
         }
@@ -1181,7 +1181,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
   await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
 
   try {
-  const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'verified@mailroute.mannyknows.com';
+  const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'mk@mannyknows.com';
   const ownerTimezone = getEnvVal('OWNER_TIMEZONE', environment) || 'America/New_York';
     const trackingId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 
@@ -1385,7 +1385,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     errorLog('Meeting request error:', error);
     return {
       status: 'error',
-      fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'verified@mailroute.mannyknows.com'
+      fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'mk@mannyknows.com'
     };
   }
 }
@@ -1728,7 +1728,7 @@ function generateVerificationEmail(meeting: any, action: string, verificationUrl
                 <li>Our team will be notified of the change</li>
               </ul>
               
-              <p>If you didn't request this ${actionText}, please ignore this email or contact us at verified@mailroute.mannyknows.com</p>
+              <p>If you didn't request this ${actionText}, please ignore this email or contact us at mk@mannyknows.com</p>
             </div>
             <div class="footer">
               This verification email was sent by <strong>MannyKnows</strong><br>
