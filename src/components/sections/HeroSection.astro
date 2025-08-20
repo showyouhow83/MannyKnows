@@ -12,7 +12,7 @@ const { title, highlightedText, subtitle, className = "" } = Astro.props;
 <section id="hero" class={`py-6 text-center min-h-[calc(45vh+50px)] flex items-center apple-gradient-container ${className}`}>
   <div class="max-w-[1440px] mx-auto px-2">
     <div class="max-w-16xl mx-auto">
-      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline">
+      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline" style="font-size: clamp(2.5rem, 5vw, 4.5rem);">
         {title} <span class="apple-gradient-text" data-colorful-title>{highlightedText}</span> exponentially with AI
       </h1>
       <p class="sf-regular text-xl mb-10 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
