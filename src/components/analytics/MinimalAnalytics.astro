@@ -1,0 +1,81 @@
+---
+// Ultra-minimal Google Analytics for maximum performance
+export interface Props {
+  measurementId?: string;
+  enableInDev?: boolean;
+}
+
+const { 
+  measurementId = import.meta.env.GA_MEASUREMENT_ID || 'G-J0V35RZNZB',
+  enableInDev = false 
+} = Astro.props;
+
+// Only load in production unless specifically enabled for dev
+const shouldLoad = import.meta.env.PROD || enableInDev;
+---
+
+{shouldLoad && (
+  <!-- Minimal Google Analytics with maximum performance optimization -->
+  <script is:inline define:vars={{ measurementId }}>
+    // Ultra-minimal GA4 implementation
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    // Configure with minimal features for best performance
+    gtag('config', measurementId, {
+      // Disable automatic page view tracking to reduce JS
+      send_page_view: false,
+      // Disable enhanced measurement to reduce unused JS
+      enhanced_measurement_settings: {
+        scrolls: false,
+        outbound_clicks: false,
+        site_search: false,
+        video_engagement: false,
+        file_downloads: false
+      },
+      // Optimize loading
+      transport_type: 'beacon',
+      anonymize_ip: true
+    });
+
+    // Send only essential page view
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
+
+    // Load Google Analytics script with minimal impact
+    let gaLoaded = false;
+    
+    function loadMinimalGA() {
+      if (gaLoaded) return;
+      gaLoaded = true;
+      
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+      script.onerror = () => console.log('GA failed to load');
+      document.head.appendChild(script);
+    }
+
+    // Load only after user interaction for Core Web Vitals
+    const interactionEvents = ['click', 'scroll', 'keydown', 'mousemove'];
+    const loadOnFirstInteraction = () => {
+      loadMinimalGA();
+      interactionEvents.forEach(event => 
+        document.removeEventListener(event, loadOnFirstInteraction)
+      );
+    };
+    
+    interactionEvents.forEach(event => 
+      document.addEventListener(event, loadOnFirstInteraction, { 
+        passive: true, 
+        once: true 
+      })
+    );
+    
+    // Fallback: load after 5 seconds if no interaction
+    setTimeout(loadMinimalGA, 5000);
+  </script>
+)}

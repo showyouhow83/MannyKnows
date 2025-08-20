@@ -1,13 +1,15 @@
 ---
-// Google Analytics component with exact configuration from user
+// Optimized Google Analytics component with deferred loading
 export interface Props {
   measurementId?: string;
   enableInDev?: boolean;
+  deferLoad?: boolean;
 }
 
 const { 
   measurementId = import.meta.env.GA_MEASUREMENT_ID || 'G-J0V35RZNZB',
-  enableInDev = false 
+  enableInDev = false,
+  deferLoad = true
 } = Astro.props;
 
 // Only load in production unless specifically enabled for dev
@@ -16,14 +18,49 @@ const shouldLoad = import.meta.env.PROD || enableInDev;
 
 {shouldLoad && (
   <>
-    <!-- Google tag (gtag.js) -->
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
-    <script is:inline define:vars={{ measurementId }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    {deferLoad ? (
+      <!-- Deferred Google Analytics for better performance -->
+      <script is:inline define:vars={{ measurementId }}>
+        // Initialize dataLayer immediately but defer script loading
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', measurementId);
 
-      gtag('config', measurementId);
-    </script>
+        // Defer loading until user interaction or after initial page load
+        let gaLoaded = false;
+        
+        function loadGoogleAnalytics() {
+          if (gaLoaded) return;
+          gaLoaded = true;
+          
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+          document.head.appendChild(script);
+        }
+
+        // Load on first user interaction for better Core Web Vitals
+        const events = ['mousedown', 'touchstart', 'scroll', 'keydown'];
+        const loadOnInteraction = () => {
+          loadGoogleAnalytics();
+          events.forEach(event => document.removeEventListener(event, loadOnInteraction));
+        };
+        
+        events.forEach(event => document.addEventListener(event, loadOnInteraction, { passive: true }));
+        
+        // Fallback: load after 3 seconds if no interaction
+        setTimeout(loadGoogleAnalytics, 3000);
+      </script>
+    ) : (
+      <!-- Traditional immediate loading (fallback) -->
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
+      <script is:inline define:vars={{ measurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', measurementId);
+      </script>
+    )}
   </>
 )}
