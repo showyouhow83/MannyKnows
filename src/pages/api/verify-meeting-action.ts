@@ -271,7 +271,7 @@ export const GET: APIRoute = async ({ url, request, locals }) => {
           <p><strong>What happens next?</strong></p>
           <p>A confirmation email has been sent to our team. ${action === 'reschedule' ? 'We will contact you within 24 hours with new time options.' : 'Your cancellation has been processed.'}</p>
           
-          <p>If you have any questions, please contact us at <a href="mailto:mk@mannyknows.com">mk@mannyknows.com</a></p>
+          <p>If you have any questions, please contact us at <a href="mailto:verified@mailroute.mannyknows.com">verified@mailroute.mannyknows.com</a></p>
         </div>
       </body>
       </html>
@@ -297,7 +297,7 @@ export const GET: APIRoute = async ({ url, request, locals }) => {
       <body>
         <div class="container">
           <h1 class="error">Verification Error</h1>
-          <p>There was an error processing your verification. Please contact support at mk@mannyknows.com if this issue persists.</p>
+          <p>There was an error processing your verification. Please contact support at verified@mailroute.mannyknows.com if this issue persists.</p>
         </div>
       </body>
       </html>
@@ -313,7 +313,7 @@ async function sendOwnerNotification(meeting: any, actionType: string, pendingDa
   try {
     // Get environment variables from the passed environment
     const resendApiKey = environment?.RESEND_API_KEY;
-    const ownerEmail = environment?.OWNER_EMAIL || 'mk@mannyknows.com';
+    const ownerEmail = environment?.OWNER_EMAIL || 'verified@mailroute.mannyknows.com';
     const resendFrom = environment?.RESEND_FROM || 'MannyKnows <noreply@mannyknows.com>';
 
     if (!resendApiKey) {

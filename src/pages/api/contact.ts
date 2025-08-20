@@ -141,7 +141,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     );
 
     // Send notification email using Resend
-    const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'mk@mannyknows.com';
+    const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'verified@mailroute.mannyknows.com';
     const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
 
     if (resendKey) {
@@ -156,7 +156,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'MannyKnows Contact <contact@mannyknows.com>',
+            from: 'MannyKnows Contact <verified@mailroute.mannyknows.com>',
             to: [ownerEmail],
             subject: `📧 New Contact Form Submission: ${contactRecord.subject}`,
             html: emailHtml
@@ -191,7 +191,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'MannyKnows <contact@mannyknows.com>',
+            from: 'MannyKnows <verified@mailroute.mannyknows.com>',
             to: [contactRecord.email],
             subject: `✅ Message Received - We'll Get Back to You Soon!`,
             html: autoReplyHtml
@@ -278,25 +278,26 @@ function generateContactNotificationEmail(contact: any): string {
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>New Contact Form Submission - MannyKnows</title>
       <style>
-        body { margin: 0; padding: 0; background: #fafafa; color: #18181b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
+        body { margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
-        .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 28px; padding: 16px 24px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 8px 32px rgba(16, 209, 255, 0.3); }
+        .subtitle { color: #4f46e5; font-size: 18px; font-weight: 600; }
         .content { margin-bottom: 24px; }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .field { background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 16px; }
-        .label { display: block; color: #71717a; font-size: 14px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .value { color: #18181b; font-size: 16px; word-wrap: break-word; }
-        .message-field { background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 20px; }
-        .message-content { color: #18181b; font-size: 16px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
-        .footer { text-align: center; color: #a1a1aa; font-size: 14px; margin-top: 32px; }
-        .meta { margin-top: 24px; padding-top: 20px; border-top: 1px solid #f4f4f5; }
-        .tracking { color: #71717a; font-size: 12px; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .field { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; padding: 20px; backdrop-filter: blur(10px); }
+        .label { display: block; color: #6366f1; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .value { color: #1f2937; font-size: 16px; font-weight: 500; word-wrap: break-word; }
+        .message-field { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; padding: 24px; backdrop-filter: blur(10px); grid-column: 1 / -1; }
+        .message-content { color: #1f2937; font-size: 16px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
+        .footer { text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-top: 32px; }
+        .meta { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .tracking { color: #6366f1; font-size: 12px; text-align: center; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace; font-weight: 500; }
         @media (max-width: 600px) {
-          .container { padding: 10px; }
-          .card { padding: 20px; }
+          .container { padding: 20px 10px; }
+          .card { padding: 24px; }
+          .grid { grid-template-columns: 1fr; }
         }
       </style>
     </head>
@@ -357,22 +358,23 @@ function generateAutoReplyEmail(contact: any): string {
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Message Received - MannyKnows</title>
       <style>
-        body { margin: 0; padding: 0; background: #fafafa; color: #18181b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
+        body { margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
-        .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 28px; padding: 16px 24px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 8px 32px rgba(16, 209, 255, 0.3); }
+        .subtitle { color: #4f46e5; font-size: 18px; font-weight: 600; }
         .content { margin-bottom: 24px; text-align: center; }
-        .message { color: #18181b; font-size: 18px; margin-bottom: 24px; }
-        .details { background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left; }
-        .label { display: block; color: #71717a; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-        .value { color: #18181b; font-size: 16px; margin-bottom: 16px; }
-        .footer { text-align: center; color: #a1a1aa; font-size: 14px; margin-top: 32px; }
-        .btn { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+        .message { color: #1f2937; font-size: 18px; margin-bottom: 24px; font-weight: 500; }
+        .details { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: left; backdrop-filter: blur(10px); }
+        .label { display: block; color: #6366f1; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .value { color: #1f2937; font-size: 16px; margin-bottom: 16px; font-weight: 500; }
+        .footer { text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-top: 32px; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: 700; margin: 20px 0; box-shadow: 0 8px 32px rgba(16, 209, 255, 0.3); transition: transform 0.2s ease; }
+        .btn:hover { transform: translateY(-2px); }
         @media (max-width: 600px) {
-          .container { padding: 10px; }
-          .card { padding: 20px; }
+          .container { padding: 20px 10px; }
+          .card { padding: 24px; }
         }
       </style>
     </head>
@@ -400,7 +402,7 @@ function generateAutoReplyEmail(contact: any): string {
             
             <p>While you wait, feel free to explore our AI chatbot for instant website analysis and business insights!</p>
             
-            <a href="/" class="btn">Try Our AI Chat →</a>
+            <a href="https://mannyknows.com/" class="btn">Try Our AI Chat →</a>
           </div>
           <div class="footer">
             This confirmation was sent by MannyKnows<br>
