@@ -5,7 +5,9 @@ import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
   output: 'server', // Server mode for API routes
-  adapter: cloudflare(), // Cloudflare adapter for production
+  adapter: cloudflare({
+    imageService: 'compile' // Explicitly set image service for Cloudflare
+  }),
   image: {
     service: {
       entrypoint: 'astro/assets/services/compile'
