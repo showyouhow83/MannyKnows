@@ -199,7 +199,11 @@ const blogArticles = [
               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300"
               placeholder="Enter your full name"
               maxlength="100"
+              minlength="2"
             />
+            <div id="contactNameValidation" class="hidden mt-1 text-xs transition-all duration-300">
+              <span class="validation-text">Minimum 2 characters required</span>
+            </div>
           </div>
 
           <!-- Email Field -->
@@ -216,6 +220,9 @@ const blogArticles = [
               placeholder="your.email@example.com"
               maxlength="255"
             />
+            <div id="contactEmailValidation" class="hidden mt-1 text-xs transition-all duration-300">
+              <span class="validation-text">Please enter a valid email address</span>
+            </div>
           </div>
 
           <!-- Subject Field -->
@@ -231,7 +238,12 @@ const blogArticles = [
               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300"
               placeholder="How can we help you?"
               maxlength="200"
+              minlength="5"
             />
+            <div id="contactSubjectValidation" class="hidden mt-1 text-xs transition-all duration-300">
+              <span class="validation-text">Minimum 5 characters required</span>
+              <span class="character-count ml-2"></span>
+            </div>
           </div>
 
           <!-- Message Field -->
@@ -247,7 +259,12 @@ const blogArticles = [
               class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300 resize-vertical"
               placeholder="Tell us about your project or question..."
               maxlength="2000"
+              minlength="20"
             ></textarea>
+            <div id="contactMessageValidation" class="hidden mt-1 text-xs transition-all duration-300">
+              <span class="validation-text">Minimum 20 characters required</span>
+              <span class="character-count ml-2"></span>
+            </div>
           </div>
 
           <!-- Submit Button -->
@@ -299,6 +316,41 @@ const blogArticles = [
   </div>
 </div>
 
+<style>
+  /* Real-time validation styles */
+  .field-valid {
+    @apply border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 dark:focus:border-green-400;
+  }
+  
+  .field-invalid {
+    @apply border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-400 dark:focus:border-red-400;
+  }
+  
+  .validation-text {
+    @apply transition-colors duration-300;
+  }
+  
+  .validation-valid .validation-text {
+    @apply text-green-600 dark:text-green-400;
+  }
+  
+  .validation-invalid .validation-text {
+    @apply text-red-600 dark:text-red-400;
+  }
+  
+  .character-count {
+    @apply text-gray-500 dark:text-gray-400 transition-colors duration-300;
+  }
+  
+  .validation-valid .character-count {
+    @apply text-green-600 dark:text-green-400;
+  }
+  
+  .validation-invalid .character-count {
+    @apply text-red-600 dark:text-red-400;
+  }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   let csrfToken: string | null = null;
@@ -322,6 +374,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Failed to get CSRF token:', error);
     showError('Security validation failed. Please refresh the page.');
   }
+  
+  // Real-time validation setup
+  setupRealTimeValidation();
   
   // Handle form submission
   const contactForm = document.getElementById('contactForm') as HTMLFormElement;
@@ -391,7 +446,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Failed to refresh CSRF token:', error);
           }
         } else {
-          throw new Error(result.error || 'Failed to send message');
+          // Handle validation errors with details
+          if (result.details && Array.isArray(result.details)) {
+            const detailedErrors = result.details.join('. ');
+            throw new Error(detailedErrors);
+          } else {
+            throw new Error(result.error || 'Failed to send message');
+          }
         }
       } catch (error) {
         console.error('Contact form error:', error);
@@ -459,6 +520,113 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (statusDiv) statusDiv.classList.add('hidden');
     if (successDiv) successDiv.classList.add('hidden');
     if (errorDiv) errorDiv.classList.add('hidden');
+  }
+  
+  // Real-time validation function
+  function setupRealTimeValidation() {
+    const fields = [
+      {
+        input: document.getElementById('contactName') as HTMLInputElement,
+        validation: document.getElementById('contactNameValidation'),
+        minLength: 2,
+        type: 'text'
+      },
+      {
+        input: document.getElementById('contactEmail') as HTMLInputElement,
+        validation: document.getElementById('contactEmailValidation'),
+        minLength: 0,
+        type: 'email'
+      },
+      {
+        input: document.getElementById('contactSubject') as HTMLInputElement,
+        validation: document.getElementById('contactSubjectValidation'),
+        minLength: 5,
+        type: 'text'
+      },
+      {
+        input: document.getElementById('contactMessage') as HTMLTextAreaElement,
+        validation: document.getElementById('contactMessageValidation'),
+        minLength: 20,
+        type: 'text'
+      }
+    ];
+
+    fields.forEach(field => {
+      if (!field.input || !field.validation) return;
+
+      // Show validation on focus
+      field.input.addEventListener('focus', () => {
+        field.validation!.classList.remove('hidden');
+        validateField(field);
+      });
+
+      // Hide validation on blur
+      field.input.addEventListener('blur', () => {
+        field.validation!.classList.add('hidden');
+        // Reset field styling to default
+        field.input.classList.remove('field-valid', 'field-invalid');
+      });
+
+      // Real-time validation on input
+      field.input.addEventListener('input', () => {
+        if (!field.validation!.classList.contains('hidden')) {
+          validateField(field);
+        }
+      });
+    });
+
+    function validateField(field: any) {
+      const value = field.input.value;
+      const isValid = field.type === 'email' 
+        ? validateEmail(value)
+        : value.length >= field.minLength;
+
+      const validationDiv = field.validation;
+      const validationText = validationDiv.querySelector('.validation-text');
+      const characterCount = validationDiv.querySelector('.character-count');
+
+      // Update styling
+      field.input.classList.remove('field-valid', 'field-invalid');
+      validationDiv.classList.remove('validation-valid', 'validation-invalid');
+
+      if (value.length > 0) {
+        if (isValid) {
+          field.input.classList.add('field-valid');
+          validationDiv.classList.add('validation-valid');
+          if (field.type === 'email') {
+            validationText.textContent = '✓ Valid email address';
+          } else {
+            validationText.textContent = `✓ ${field.minLength}+ characters required`;
+          }
+        } else {
+          field.input.classList.add('field-invalid');
+          validationDiv.classList.add('validation-invalid');
+          if (field.type === 'email') {
+            validationText.textContent = '✗ Please enter a valid email address';
+          } else {
+            validationText.textContent = `✗ Minimum ${field.minLength} characters required`;
+          }
+        }
+      } else {
+        // Reset to neutral state when empty
+        if (field.type === 'email') {
+          validationText.textContent = 'Please enter a valid email address';
+        } else {
+          validationText.textContent = `Minimum ${field.minLength} characters required`;
+        }
+      }
+
+      // Update character count for fields that have it
+      if (characterCount && field.type !== 'email') {
+        const maxLength = field.input.getAttribute('maxlength') || '∞';
+        characterCount.textContent = `(${value.length}/${maxLength})`;
+      }
+    }
+
+    function validateEmail(email: string): boolean {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
   }
 });
 </script>
