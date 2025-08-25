@@ -1,0 +1,206 @@
+---
+export const prerender = false;
+
+const url = Astro.url;
+const subscriptionId = url.searchParams.get('id');
+
+let unsubscribeResult = { success: false, message: '', email: '' };
+
+if (subscriptionId && Astro.request.method === 'POST') {
+  try {
+    const kv = (Astro.locals as any).runtime?.env?.CHATBOT_KV;
+    
+    if (!kv) {
+      unsubscribeResult.message = 'Service temporarily unavailable';
+    } else {
+      // Find subscription by ID
+      const subscriptionData = await kv.get(`newsletter_id:${subscriptionId}`);
+      
+      if (subscriptionData) {
+        const subscription = JSON.parse(subscriptionData);
+        
+        // Update subscription status to unsubscribed
+        subscription.status = 'unsubscribed';
+        subscription.unsubscribedAt = new Date().toISOString();
+        
+        // Update both records
+        await kv.put(`newsletter:${subscription.email}`, JSON.stringify(subscription));
+        await kv.put(`newsletter_id:${subscriptionId}`, JSON.stringify(subscription));
+        
+        unsubscribeResult = {
+          success: true,
+          message: 'You have been successfully unsubscribed from our newsletter.',
+          email: subscription.email
+        };
+      } else {
+        unsubscribeResult.message = 'Subscription not found or already processed.';
+      }
+    }
+  } catch (error) {
+    console.error('Unsubscribe error:', error);
+    unsubscribeResult.message = 'Failed to process unsubscribe request.';
+  }
+}
+
+// Get subscription details for display
+let subscriptionEmail = '';
+if (subscriptionId && !unsubscribeResult.success) {
+  try {
+    const kv = (Astro.locals as any).runtime?.env?.CHATBOT_KV;
+    if (kv) {
+      const subscriptionData = await kv.get(`newsletter_id:${subscriptionId}`);
+      if (subscriptionData) {
+        const subscription = JSON.parse(subscriptionData);
+        subscriptionEmail = subscription.email;
+        
+        if (subscription.status === 'unsubscribed') {
+          unsubscribeResult = {
+            success: true,
+            message: 'This email address has already been unsubscribed.',
+            email: subscription.email
+          };
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching subscription:', error);
+  }
+}
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+  <title>Unsubscribe - MannyKnows Newsletter</title>
+  <meta name="description" content="Unsubscribe from MannyKnows AI Insights newsletter" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'primary-blue': '#10d1ff',
+            'primary-pink': '#ff4faa'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex items-center justify-center">
+  <div class="max-w-md w-full mx-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center border border-gray-200 dark:border-gray-700">
+      <!-- Logo -->
+      <div class="mb-6">
+        <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary-blue to-primary-pink rounded-xl flex items-center justify-center">
+          <span class="text-white font-black text-2xl">MK</span>
+        </div>
+      </div>
+
+      {unsubscribeResult.success ? (
+        <!-- Success State -->
+        <div>
+          <div class="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Unsubscribed Successfully
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            {unsubscribeResult.message}
+          </p>
+          {unsubscribeResult.email && (
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 font-mono bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg">
+              {unsubscribeResult.email}
+            </p>
+          )}
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+            You'll no longer receive our AI Insights newsletter. If you change your mind, you can always subscribe again on our website.
+          </p>
+          <a 
+            href="/" 
+            class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+          >
+            Return to MannyKnows
+          </a>
+        </div>
+      ) : subscriptionId ? (
+        <!-- Confirmation Form -->
+        <div>
+          <div class="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Confirm Unsubscribe
+          </h1>
+          {unsubscribeResult.message ? (
+            <div class="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+              {unsubscribeResult.message}
+            </div>
+          ) : null}
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Are you sure you want to unsubscribe from our AI Insights newsletter?
+          </p>
+          {subscriptionEmail && (
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 font-mono bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg">
+              {subscriptionEmail}
+            </p>
+          )}
+          <form method="POST" class="space-y-4">
+            <button 
+              type="submit"
+              class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            >
+              Yes, Unsubscribe Me
+            </button>
+            <a 
+              href="/" 
+              class="block w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-semibold text-center transition-colors"
+            >
+              Cancel
+            </a>
+          </form>
+        </div>
+      ) : (
+        <!-- Invalid Link -->
+        <div>
+          <div class="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Invalid Link
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            This unsubscribe link is invalid or has expired. Please check your email for the correct link or contact us for assistance.
+          </p>
+          <a 
+            href="/" 
+            class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+          >
+            Return to MannyKnows
+          </a>
+        </div>
+      )}
+
+      <!-- Footer -->
+      <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          MannyKnows - AI-powered business solutions
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

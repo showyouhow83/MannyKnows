@@ -1,0 +1,464 @@
+---
+export const prerender = false;
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+  <title>Admin Dashboard - MannyKnows</title>
+  <meta name="description" content="Secure admin dashboard for MannyKnows newsletter management" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'primary-blue': '#10d1ff',
+            'primary-pink': '#ff4faa'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%);
+    }
+    .loading {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+  <!-- Header -->
+  <header class="gradient-bg shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+            <span class="text-white font-black text-xl">MK</span>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
+            <p class="text-white/80 text-sm">Newsletter Management System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div id="authStatus" class="text-white/90 text-sm"></div>
+          <button id="logoutBtn" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Login Form (shown when not authenticated) -->
+    <div id="loginForm" class="max-w-md mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 mx-auto gradient-bg rounded-xl flex items-center justify-center mb-4">
+            <span class="text-white font-black text-2xl">MK</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Admin Login</h2>
+          <p class="text-gray-600 dark:text-gray-300 mt-2">Secure access to newsletter management</p>
+        </div>
+
+        <form id="adminLoginForm" class="space-y-4">
+          <div>
+            <label for="adminEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Admin Email
+            </label>
+            <input 
+              type="email" 
+              id="adminEmail"
+              required
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-blue focus:border-transparent dark:bg-gray-700 dark:text-white"
+              placeholder="mk@mannyknows.com"
+            />
+          </div>
+
+          <div>
+            <label for="adminKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Admin Key
+            </label>
+            <input 
+              type="password" 
+              id="adminKey"
+              required
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-blue focus:border-transparent dark:bg-gray-700 dark:text-white"
+              placeholder="Enter secure admin key"
+            />
+          </div>
+
+          <button 
+            type="submit"
+            id="loginSubmitBtn"
+            class="w-full gradient-bg text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            <span id="loginBtnText">Login</span>
+          </button>
+        </form>
+
+        <div id="loginError" class="hidden mt-4 p-3 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p class="text-red-800 dark:text-red-400 text-sm" id="loginErrorMessage"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard (shown when authenticated) -->
+    <div id="dashboard" class="hidden">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">Total Subscribers</p>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white" id="totalCount">-</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">Active</p>
+              <p class="text-2xl font-bold text-green-600 dark:text-green-400" id="activeCount">-</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">Today</p>
+              <p class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="todayCount">-</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">Unsubscribed</p>
+              <p class="text-2xl font-bold text-red-600 dark:text-red-400" id="unsubscribedCount">-</p>
+            </div>
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Newsletter Subscribers</h3>
+            <div class="flex items-center space-x-2">
+              <label for="statusFilter" class="text-sm text-gray-600 dark:text-gray-400">Filter:</label>
+              <select id="statusFilter" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm dark:bg-gray-700 dark:text-white">
+                <option value="all">All Status</option>
+                <option value="active">Active Only</option>
+                <option value="unsubscribed">Unsubscribed Only</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-2">
+            <button id="refreshBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg transition-colors">
+              <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              Refresh
+            </button>
+            <button id="exportCsvBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+              <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscribers Table -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Subscribed</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Source</th>
+              </tr>
+            </thead>
+            <tbody id="subscribersTableBody" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <!-- Table content loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="loadingIndicator" class="text-center py-8">
+          <div class="loading">
+            <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 mt-2">Loading subscribers...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let sessionToken = null;
+    let csrfToken = null;
+    let sessionId = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check for existing session
+      sessionToken = localStorage.getItem('admin_session');
+      if (sessionToken) {
+        await validateSession();
+      } else {
+        showLoginForm();
+      }
+
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Login form
+      document.getElementById('adminLoginForm').addEventListener('submit', handleLogin);
+      
+      // Dashboard controls
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('refreshBtn').addEventListener('click', loadSubscribers);
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCSV);
+      document.getElementById('statusFilter').addEventListener('change', loadSubscribers);
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('loginSubmitBtn');
+      const btnText = document.getElementById('loginBtnText');
+      const originalText = btnText.textContent;
+      
+      submitBtn.disabled = true;
+      btnText.textContent = 'Authenticating...';
+      hideLoginError();
+
+      try {
+        // Get CSRF token
+        if (!csrfToken) {
+          const tokenResponse = await fetch('/api/admin-login');
+          if (tokenResponse.ok) {
+            const tokenData = await tokenResponse.json();
+            csrfToken = tokenData.csrf_token;
+            sessionId = tokenData.session_id;
+          }
+        }
+
+        const email = document.getElementById('adminEmail').value;
+        const adminKey = document.getElementById('adminKey').value;
+
+        const response = await fetch('/api/admin-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            adminKey,
+            csrf_token: csrfToken,
+            session_id: sessionId
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          sessionToken = result.sessionToken;
+          localStorage.setItem('admin_session', sessionToken);
+          showDashboard();
+          await loadSubscribers();
+          document.getElementById('authStatus').textContent = `Authenticated as: ${email}`;
+        } else {
+          throw new Error(result.message || 'Authentication failed');
+        }
+      } catch (error) {
+        showLoginError(error.message);
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = originalText;
+      }
+    }
+
+    async function validateSession() {
+      try {
+        const response = await fetch(`/api/newsletter-admin?session=${sessionToken}&limit=1`);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            showDashboard();
+            await loadSubscribers();
+            document.getElementById('authStatus').textContent = `Authenticated as: ${result.authenticated_as}`;
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Session validation failed:', error);
+      }
+      
+      // Session invalid
+      logout();
+    }
+
+    async function loadSubscribers() {
+      if (!sessionToken) return;
+
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      const tableBody = document.getElementById('subscribersTableBody');
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      loadingIndicator.classList.remove('hidden');
+      tableBody.innerHTML = '';
+
+      try {
+        const url = `/api/newsletter-admin?session=${sessionToken}&status=${statusFilter}&limit=500`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error('Failed to load subscribers');
+        }
+
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('totalCount').textContent = data.stats.total;
+        document.getElementById('activeCount').textContent = data.stats.active;
+        document.getElementById('todayCount').textContent = data.stats.todaySubscriptions;
+        document.getElementById('unsubscribedCount').textContent = data.stats.unsubscribed;
+
+        // Populate table
+        tableBody.innerHTML = data.subscriptions.map(sub => `
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-mono">
+              ${sub.email}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                sub.status === 'active' 
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' 
+                  : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+              }">
+                ${sub.status}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+              ${new Date(sub.subscribedAt).toLocaleDateString()}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+              ${sub.source || 'unknown'}
+            </td>
+          </tr>
+        `).join('');
+
+      } catch (error) {
+        console.error('Error loading subscribers:', error);
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4" class="px-6 py-4 text-center text-red-600 dark:text-red-400">
+              Error loading subscribers: ${error.message}
+            </td>
+          </tr>
+        `;
+      } finally {
+        loadingIndicator.classList.add('hidden');
+      }
+    }
+
+    async function exportCSV() {
+      if (!sessionToken) return;
+
+      try {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const url = `/api/newsletter-admin?session=${sessionToken}&export=csv&status=${statusFilter}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Export failed');
+        }
+
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `newsletter_subscribers_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+      } catch (error) {
+        alert(`Export failed: ${error.message}`);
+      }
+    }
+
+    function logout() {
+      sessionToken = null;
+      localStorage.removeItem('admin_session');
+      showLoginForm();
+    }
+
+    function showLoginForm() {
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+    }
+
+    function showLoginError(message) {
+      const errorDiv = document.getElementById('loginError');
+      const errorMessage = document.getElementById('loginErrorMessage');
+      errorMessage.textContent = message;
+      errorDiv.classList.remove('hidden');
+    }
+
+    function hideLoginError() {
+      document.getElementById('loginError').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

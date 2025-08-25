@@ -135,8 +135,9 @@ const blogArticles = [
           <p class="text-gray-700 dark:text-white/80 text-xs mb-4 leading-relaxed transition-colors duration-300">
             Get exclusive tips and trends delivered to your inbox.
           </p>
-          <form class="space-y-3" data-np-autofill-form-type="subscribe" data-np-checked="1" data-np-watching="1">
+          <form id="newsletterForm" class="space-y-3" data-np-autofill-form-type="subscribe" data-np-checked="1" data-np-watching="1">
             <input 
+              id="newsletterEmail"
               type="email" 
               placeholder="Your email" 
               class="w-full px-3 py-2 backdrop-blur-lg border border-gray-200/30 dark:border-white/20 rounded-lg text-gray-800 dark:text-white placeholder-gray-600 dark:placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 transition-all duration-500 text-sm"
@@ -145,8 +146,10 @@ const blogArticles = [
               data-np-autofill-field-type="email"
             />
             <button 
+              id="newsletterSubmit"
               type="submit" 
               class="w-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-3 px-6 rounded-xl text-sm hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient no-underline font-semibold inline-flex items-center justify-center relative transition-all duration-300 group"
+              disabled
             >
               <span class="relative z-10 flex items-center gap-2">
                 <span>Subscribe</span>
@@ -162,6 +165,8 @@ const blogArticles = [
               </svg>
               No spam. Unsubscribe anytime.
             </div>
+            <!-- Newsletter status message -->
+            <div id="newsletterStatus" class="hidden text-xs text-center py-2 px-3 rounded-lg"></div>
           </form>
         </div>
       </div>
@@ -355,8 +360,10 @@ const blogArticles = [
 document.addEventListener('DOMContentLoaded', async () => {
   let csrfToken: string | null = null;
   let sessionId: string | null = null;
+  let newsletterCsrfToken: string | null = null;
+  let newsletterSessionId: string | null = null;
   
-  // Get CSRF token
+  // Get CSRF tokens for both forms
   try {
     const tokenResponse = await fetch('/api/contact');
     if (tokenResponse.ok) {
@@ -368,6 +375,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       const submitButton = document.querySelector('#contactForm button[type="submit"]') as HTMLButtonElement;
       if (submitButton) {
         submitButton.disabled = false;
+      }
+    }
+
+    const newsletterTokenResponse = await fetch('/api/newsletter');
+    if (newsletterTokenResponse.ok) {
+      const newsletterTokenData = await newsletterTokenResponse.json();
+      newsletterCsrfToken = newsletterTokenData.csrf_token;
+      newsletterSessionId = newsletterTokenData.session_id;
+      
+      // Enable newsletter submit button once token is loaded
+      const newsletterSubmitButton = document.querySelector('#newsletterSubmit') as HTMLButtonElement;
+      if (newsletterSubmitButton) {
+        newsletterSubmitButton.disabled = false;
       }
     }
   } catch (error) {
@@ -469,6 +489,88 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+
+  // Handle newsletter form submission
+  const newsletterForm = document.getElementById('newsletterForm') as HTMLFormElement;
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!newsletterCsrfToken || !newsletterSessionId) {
+        showNewsletterError('Security token not available. Please refresh the page.');
+        return;
+      }
+      
+      const emailInput = document.getElementById('newsletterEmail') as HTMLInputElement;
+      const submitButton = document.getElementById('newsletterSubmit') as HTMLButtonElement;
+      const buttonText = submitButton?.querySelector('span');
+      const originalText = buttonText?.innerHTML || '';
+      
+      // Show loading state
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+      if (buttonText) {
+        buttonText.innerHTML = `
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Subscribing...
+        `;
+      }
+      
+      hideNewsletterStatus();
+      
+      try {
+        const response = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-csrf-token': newsletterCsrfToken
+          },
+          body: JSON.stringify({
+            email: emailInput.value,
+            csrf_token: newsletterCsrfToken,
+            session_id: newsletterSessionId
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          showNewsletterSuccess(result.message || 'Thank you for subscribing! Check your email for confirmation.');
+          newsletterForm.reset();
+          
+          // Get new CSRF token for next submission
+          try {
+            const newTokenResponse = await fetch('/api/newsletter');
+            if (newTokenResponse.ok) {
+              const newTokenData = await newTokenResponse.json();
+              newsletterCsrfToken = newTokenData.csrf_token;
+              newsletterSessionId = newTokenData.session_id;
+            }
+          } catch (error) {
+            console.error('Failed to refresh newsletter CSRF token:', error);
+          }
+        } else {
+          throw new Error(result.error || 'Failed to subscribe');
+        }
+      } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to subscribe. Please try again.';
+        showNewsletterError(errorMessage);
+      } finally {
+        // Restore button state
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+        if (buttonText) {
+          buttonText.innerHTML = originalText;
+        }
+      }
+    });
+  }
   
   function showSuccess(message: string) {
     const statusDiv = document.getElementById('contactStatus');
@@ -520,6 +622,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (statusDiv) statusDiv.classList.add('hidden');
     if (successDiv) successDiv.classList.add('hidden');
     if (errorDiv) errorDiv.classList.add('hidden');
+  }
+
+  // Newsletter status functions
+  function showNewsletterSuccess(message: string) {
+    const statusDiv = document.getElementById('newsletterStatus');
+    
+    if (statusDiv) {
+      statusDiv.textContent = message;
+      statusDiv.className = 'text-xs text-center py-2 px-3 rounded-lg bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border border-green-200 dark:border-green-800';
+      statusDiv.classList.remove('hidden');
+      
+      // Auto-hide after 10 seconds
+      setTimeout(() => {
+        hideNewsletterStatus();
+      }, 10000);
+    }
+  }
+  
+  function showNewsletterError(message: string) {
+    const statusDiv = document.getElementById('newsletterStatus');
+    
+    if (statusDiv) {
+      statusDiv.textContent = message;
+      statusDiv.className = 'text-xs text-center py-2 px-3 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800';
+      statusDiv.classList.remove('hidden');
+      
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        hideNewsletterStatus();
+      }, 8000);
+    }
+  }
+  
+  function hideNewsletterStatus() {
+    const statusDiv = document.getElementById('newsletterStatus');
+    if (statusDiv) {
+      statusDiv.classList.add('hidden');
+    }
   }
   
   // Real-time validation function
