@@ -206,7 +206,7 @@ const blogArticles = [
               maxlength="100"
               minlength="2"
             />
-            <div id="contactNameValidation" class="hidden mt-1 text-xs transition-all duration-300">
+            <div id="contactNameValidation" class="validation-message mt-1 text-xs h-4 opacity-0">
               <span class="validation-text">Minimum 2 characters required</span>
             </div>
           </div>
@@ -225,7 +225,7 @@ const blogArticles = [
               placeholder="your.email@example.com"
               maxlength="255"
             />
-            <div id="contactEmailValidation" class="hidden mt-1 text-xs transition-all duration-300">
+            <div id="contactEmailValidation" class="validation-message mt-1 text-xs h-4 opacity-0">
               <span class="validation-text">Please enter a valid email address</span>
             </div>
           </div>
@@ -245,7 +245,7 @@ const blogArticles = [
               maxlength="200"
               minlength="5"
             />
-            <div id="contactSubjectValidation" class="hidden mt-1 text-xs transition-all duration-300">
+            <div id="contactSubjectValidation" class="validation-message mt-1 text-xs h-4 opacity-0">
               <span class="validation-text">Minimum 5 characters required</span>
               <span class="character-count ml-2"></span>
             </div>
@@ -266,7 +266,7 @@ const blogArticles = [
               maxlength="2000"
               minlength="20"
             ></textarea>
-            <div id="contactMessageValidation" class="hidden mt-1 text-xs transition-all duration-300">
+            <div id="contactMessageValidation" class="validation-message mt-1 text-xs h-4 opacity-0">
               <span class="validation-text">Minimum 20 characters required</span>
               <span class="character-count ml-2"></span>
             </div>
@@ -696,20 +696,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Show validation on focus
       field.input.addEventListener('focus', () => {
-        field.validation!.classList.remove('hidden');
+        field.validation!.classList.remove('opacity-0');
+        field.validation!.classList.add('opacity-100');
         validateField(field);
       });
 
       // Hide validation on blur
       field.input.addEventListener('blur', () => {
-        field.validation!.classList.add('hidden');
+        field.validation!.classList.remove('opacity-100');
+        field.validation!.classList.add('opacity-0');
         // Reset field styling to default
         field.input.classList.remove('field-valid', 'field-invalid');
       });
 
       // Real-time validation on input
       field.input.addEventListener('input', () => {
-        if (!field.validation!.classList.contains('hidden')) {
+        if (field.validation!.classList.contains('opacity-100')) {
           validateField(field);
         }
       });
@@ -791,5 +793,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     75% { 
       background-position: 0% 100%; 
     }
+  }
+
+  /* Contact form validation states */
+  .field-valid {
+    @apply border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/10;
+  }
+
+  .field-invalid {
+    @apply border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/10;
+  }
+
+  .validation-valid {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .validation-invalid {
+    @apply text-red-600 dark:text-red-400;
+  }
+
+  /* Smooth transitions for validation messages */
+  .validation-message {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .validation-message.opacity-0 {
+    transform: translateY(-2px);
+  }
+
+  .validation-message.opacity-100 {
+    transform: translateY(0);
   }
 </style>
