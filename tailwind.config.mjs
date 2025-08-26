@@ -68,6 +68,9 @@ export default {
           blue: '#10d1ff',
           pink: '#ff4faa',
         },
+        // Backward compatibility for admin panel
+        'primary-blue': '#10d1ff',
+        'primary-pink': '#ff4faa',
         // Enhanced dark theme - much darker and richer
         dark: {
           primary: '#0a0b0d',      // Much darker base
