@@ -801,7 +801,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
       const statusColor = statusColors[meeting.status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
 
-      const createdDate = meeting.createdAt ? new Date(meeting.createdAt).toLocaleDateString() : 'Unknown';
+      const createdDate = meeting.createdAt ? 
+        (() => {
+          const date = new Date(meeting.createdAt);
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const day = date.getDate().toString().padStart(2, '0');
+          const time = date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: true 
+          });
+          return `${month}/${day} @ ${time}`;
+        })() : 'Unknown';
       const projectPreview = (meeting.project_details || '').substring(0, 40);
       
       return `
@@ -822,11 +833,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
             <div class="font-medium truncate" title="${meeting.proposed_time || 'No meeting time set'}">
               ${meeting.proposed_time ? 
-                meeting.proposed_time.replace(/^(\w+) (\w+) (\d+) (\d+) (.+)$/, '$2 $3 $5') : 
+                (() => {
+                  const match = meeting.proposed_time.match(/^(\w+) (\w+) (\d+) (\d+) (.+?) \(.*\)$/);
+                  if (match) {
+                    const [, , month, date, , time] = match;
+                    const monthNum = new Date(`${month} 1, 2000`).getMonth() + 1;
+                    return `${monthNum.toString().padStart(2, '0')}/${date.padStart(2, '0')} @ ${time}`;
+                  }
+                  return meeting.proposed_time;
+                })() : 
                 'Not scheduled'
               }
             </div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">Req: ${(meeting.preferred_times || 'Flexible').substring(0, 15)}${(meeting.preferred_times || '').length > 15 ? '...' : ''}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">Req: ${(meeting.preferred_times || 'Flexible').substring(0, 60)}${(meeting.preferred_times || '').length > 60 ? '...' : ''}</div>
           </td>
           <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
             <div title="${meeting.project_details || 'No details'}" class="truncate">${projectPreview}${projectPreview.length === 40 ? '...' : ''}</div>

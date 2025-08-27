@@ -690,14 +690,12 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
           // Append new notes to existing ones with timestamp
           const timestamp = new Date().toLocaleString('en-US', { 
             timeZone: 'America/New_York',
-            month: 'numeric',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            month: '2-digit',
+            day: '2-digit'
           });
           const newNote = `[${timestamp}] ${data.notes}`;
           meeting.adminNotes = meeting.adminNotes 
-            ? `${meeting.adminNotes}\n\n${newNote}`
+            ? `${meeting.adminNotes}\n${newNote}`
             : newNote;
         }
         
@@ -712,14 +710,12 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
         // Append new notes to existing ones with timestamp
         const timestamp = new Date().toLocaleString('en-US', { 
           timeZone: 'America/New_York',
-          month: 'numeric',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+          month: '2-digit',
+          day: '2-digit'
         });
         const newNote = `[${timestamp}] ${data.notes}`;
         meeting.adminNotes = meeting.adminNotes 
-          ? `${meeting.adminNotes}\n\n${newNote}`
+          ? `${meeting.adminNotes}\n${newNote}`
           : newNote;
         meeting.updatedAt = Date.now();
         meeting.updatedBy = data.adminEmail;
