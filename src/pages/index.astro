@@ -99,11 +99,19 @@ const NAVBAR_CONFIG = {
         if (chatToggle) {
           chatToggle.click();
           
-          // If there's a reference parameter, store it for potential context lookup
+          // If there's a reference parameter, store it and trigger contextual greeting
           if (refParam) {
             try {
               sessionStorage.setItem('mk_chat_reference', refParam);
               console.log('📧 Chat opened with reference:', refParam);
+              
+              // Trigger contextual AI greeting after chat opens
+              setTimeout(() => {
+                const chatInput = document.getElementById('chatBoxInput');
+                if (chatInput && (window as any).triggerContextualGreeting) {
+                  (window as any).triggerContextualGreeting(refParam);
+                }
+              }, 1000);
             } catch (e) {
               console.warn('Could not store chat reference:', e);
             }

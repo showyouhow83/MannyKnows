@@ -195,12 +195,13 @@ const stats = [
     <!-- Call to Action -->
     <div class="text-center">
       <Button 
-        href="/contact-us" 
+        href="#" 
         text="Join Our Success Stories" 
         variant="cta" 
         size="lg" 
         arrow={true}
-        sparkleTheme='cyan' />
+        sparkleTheme='cyan'
+        id="joinSuccessButton" />
     </div>
     </div>
   </Container>
@@ -598,10 +599,45 @@ const stats = [
     // Analytics tracking removed for simplicity
   }
 
+  // Handle "Join Our Success Stories" button click
+  const handleJoinSuccessClick = (e: Event) => {
+    e.preventDefault();
+    
+    // Scroll to footer contact form
+    const contactForm = document.getElementById('contactForm');
+    const contactName = document.getElementById('contactName');
+    
+    if (contactForm && contactName) {
+      // Smooth scroll to the form
+      contactForm.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+      
+      // Focus on name input after scroll completes
+      setTimeout(() => {
+        contactName.focus();
+        // Add a subtle highlight effect
+        contactName.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.3), 0 2px 10px rgba(0,0,0,0.1)';
+        setTimeout(() => {
+          contactName.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        }, 2000);
+      }, 800);
+    }
+  };
+
   // Initialize when DOM is loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initReviewsSection);
   } else {
     initReviewsSection();
   }
+
+  // Add click handler for join success button
+  document.addEventListener('DOMContentLoaded', () => {
+    const joinButton = document.getElementById('joinSuccessButton');
+    if (joinButton) {
+      joinButton.addEventListener('click', handleJoinSuccessClick);
+    }
+  });
 </script>

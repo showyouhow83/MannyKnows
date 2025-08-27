@@ -302,7 +302,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
     switch (newStatus) {
       case 'confirmed':
         subject = `Discovery Call Confirmed — ${userName}`;
-        textBody = `Hi ${userName},\n\nGreat news! Your discovery call has been confirmed.\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}${meeting.phone ? `Phone: ${meeting.phone}\n` : ''}\nReference: ${meeting.id}\n\n**What's Next:**\n• Save the meeting details in your calendar\n• Join the meeting at the scheduled time\n• Come prepared to discuss your project needs\n\nLooking forward to speaking with you!\n\nBest regards,\nManny\nMannyKnows.com`;
+        textBody = `Hi ${userName},\n\nGreat news! Your discovery call has been confirmed.\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}${meeting.phone ? `Phone: ${meeting.phone}\n` : ''}\nReference: ${meeting.id}\n\n**What's Next:**\n• Save the meeting details in your calendar\n• Join the meeting at the scheduled time\n• Come prepared to discuss your project needs\n\nLooking forward to speaking with you!\n\nBest regards,\nManny\nMannyKnows.com\n\n---\nNeed to reschedule? Chat with our AI assistant Manny™: https://mannyknows.com?chat=open&ref=${meeting.id}`;
         
         htmlBody = `<!doctype html>
 <html>
@@ -350,6 +350,28 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
       
       <p>Looking forward to speaking with you!</p>
       <p>Best regards,<br>Manny</p>
+      
+      <p style="font-size: 13px; color: #64748b; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+        <strong>Need to reschedule?</strong><br>
+        <a href="https://mannyknows.com?chat=open&ref=${meeting.id}" 
+           style="color: #22c55e; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; margin-top: 4px;">
+          <span style="display: inline-flex; 
+                       width: 20px; 
+                       height: 20px; 
+                       background: linear-gradient(135deg, #22c55e, #16a34a); 
+                       color: white;
+                       border-radius: 50%; 
+                       align-items: center;
+                       justify-content: center;
+                       margin-right: 10px;
+                       font-weight: bold;
+                       font-size: 12px;
+                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                       vertical-align: middle;
+                       box-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);">M</span>
+          Chat with our AI assistant Manny&trade; &rarr;
+        </a>
+      </p>
     </div>
     <div class="footer">
       This confirmation was sent by <span class="highlight">MannyKnows</span><br>
@@ -362,7 +384,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
 
       case 'cancelled':
         subject = `Discovery Call Cancelled — ${userName}`;
-        textBody = `Hi ${userName},\n\nI need to let you know that your scheduled discovery call has been cancelled.\n\n**Original Meeting Details:**\nDate & Time: ${meetingTime}\nReference: ${meeting.id}\n\n**What's Next:**\nIf you'd like to reschedule, please visit MannyKnows.com and request a new meeting time that works better for both of us.\n\nI apologize for any inconvenience this may cause.\n\nBest regards,\nManny\nMannyKnows.com`;
+        textBody = `Hi ${userName},\n\nI need to let you know that your scheduled discovery call has been cancelled.\n\n**Original Meeting Details:**\nDate & Time: ${meetingTime}\nReference: ${meeting.id}\n\n**What's Next:**\nIf you'd like to reschedule, you can get instant help from our AI assistant Manny™:\n\n🤖 Chat to Reschedule: https://mannyknows.com?chat=open&ref=${meeting.id}\n\nour AI assistant Manny™ will help you find a new time that works for both of us.\n\nI apologize for any inconvenience this may cause.\n\nBest regards,\nManny\nMannyKnows.com`;
         
         htmlBody = `<!doctype html>
 <html>
@@ -400,7 +422,41 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
       </div>
       
       <p><strong>What's Next:</strong></p>
-      <p>If you'd like to reschedule, please visit <a href="https://mannyknows.com">MannyKnows.com</a> and request a new meeting time that works better for both of us.</p>
+      <p>If you'd like to reschedule, you can easily get help through our AI assistant Manny&trade;:</p>
+      
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="https://mannyknows.com?chat=open&ref=${meeting.id}" 
+           style="background: linear-gradient(to right, #4ade80, #10b981, #059669); 
+                  color: white; 
+                  text-decoration: none; 
+                  padding: 16px 32px; 
+                  border-radius: 8px; 
+                  font-weight: 600; 
+                  font-size: 16px; 
+                  display: inline-flex;
+                  align-items: center;
+                  box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.4), 0 4px 6px -2px rgba(34, 197, 94, 0.25); 
+                  transition: all 0.3s ease;">
+          <span style="display: inline-flex; 
+                       width: 24px; 
+                       height: 24px; 
+                       background: rgba(255, 255, 255, 0.25); 
+                       border-radius: 50%; 
+                       align-items: center;
+                       justify-content: center;
+                       margin-right: 12px;
+                       font-weight: bold;
+                       font-size: 14px;
+                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                       vertical-align: middle;
+                       color: white;">M</span>
+          Chat to Reschedule
+        </a>
+      </div>
+      
+      <p style="font-size: 14px; color: #64748b; text-align: center; margin-top: 12px;">
+        our AI assistant Manny&trade; will help you find a new time that works for both of us
+      </p>
       
       <p>I apologize for any inconvenience this may cause.</p>
       <p>Best regards,<br>Manny</p>
@@ -631,7 +687,18 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
         meeting.updatedAt = Date.now();
         meeting.updatedBy = data.adminEmail;
         if (data.notes) {
-          meeting.adminNotes = data.notes;
+          // Append new notes to existing ones with timestamp
+          const timestamp = new Date().toLocaleString('en-US', { 
+            timeZone: 'America/New_York',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          const newNote = `[${timestamp}] ${data.notes}`;
+          meeting.adminNotes = meeting.adminNotes 
+            ? `${meeting.adminNotes}\n\n${newNote}`
+            : newNote;
         }
         
         // For completed status, require call summary
@@ -642,7 +709,18 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
         break;
         
       case 'add_notes':
-        meeting.adminNotes = data.notes;
+        // Append new notes to existing ones with timestamp
+        const timestamp = new Date().toLocaleString('en-US', { 
+          timeZone: 'America/New_York',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        const newNote = `[${timestamp}] ${data.notes}`;
+        meeting.adminNotes = meeting.adminNotes 
+          ? `${meeting.adminNotes}\n\n${newNote}`
+          : newNote;
         meeting.updatedAt = Date.now();
         meeting.updatedBy = data.adminEmail;
         break;

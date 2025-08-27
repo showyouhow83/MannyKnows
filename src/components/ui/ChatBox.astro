@@ -246,6 +246,14 @@ const { className = '' } = Astro.props;
       addLoadingMessage();
 
       try {
+        // Get chat reference if available
+        let chatReference = null;
+        try {
+          chatReference = sessionStorage.getItem('mk_chat_reference');
+        } catch (e) {
+          // sessionStorage not available
+        }
+
         // Send to Manny AI - use proper format for tool calling
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -258,7 +266,9 @@ const { className = '' } = Astro.props;
             session_id: sessionId,
             csrf_token: csrfToken,
             // Provide full conversation history so the API can maintain memory
-            conversation_history: conversationHistory
+            conversation_history: conversationHistory,
+            // Include chat reference for context
+            chat_reference: chatReference
           })
         });
 
@@ -436,6 +446,28 @@ const { className = '' } = Astro.props;
       }
     });
   }
+
+  // Contextual greeting function for email links
+  const triggerContextualGreeting = async (referenceId: string) => {
+    const messagesContainer = document.getElementById('chatBoxMessages');
+    if (!messagesContainer) return;
+
+    // Clear the default greeting and add contextual one with proper styling
+    messagesContainer.innerHTML = `
+      <div class="flex gap-3 items-start">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">M</div>
+        <div class="chat-message-bubble bot-message" data-astro-cid-wqmercx5="">
+          Hi there! 👋 I see you're coming from an email about your discovery call (Reference: ${referenceId}). I'm here to help with any changes or questions you might have. What can I assist you with?
+        </div>
+      </div>
+    `;
+
+    // Scroll to show the message
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  };
+
+  // Make function globally available
+  (window as any).triggerContextualGreeting = triggerContextualGreeting;
 
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
