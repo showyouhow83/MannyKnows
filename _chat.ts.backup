@@ -611,12 +611,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       
       let finalResponseText = '';
       if (result?.status === 'meeting_requested' && result.tracking_id) {
-        const emailStatus = result.email_status;
-        const emailMessage = emailStatus?.confirmation_sent 
-          ? `📧 **Check your email** - You should receive a confirmation shortly`
-          : `📧 **Email delivery in progress** - If you don't receive a confirmation email within 5 minutes, please check your spam folder`;
-        
-        finalResponseText = `Perfect! I've submitted your discovery call request.\n\n${emailMessage}\n\n**Your Request:**\n• Name: ${bookingDetails.name}\n• Email: ${bookingDetails.email}\n• Preferred: ${bookingDetails.preferred_times || 'Flexible'}\n• Reference: ${result.tracking_id}${result.proposed_time ? `\n• Proposed: ${result.proposed_time}` : ''}${result.meeting_link ? `\n• Meeting Link: ${result.meeting_link}` : ''}\n\nI've notified Manny and he'll confirm the exact time with you via email within 24 hours.`;
+        finalResponseText = `Got it — I’ve sent your request to our team and we’ll confirm the meeting time by email.\n\n• Name: ${bookingDetails.name}\n• Email: ${bookingDetails.email}\n• Preferred: ${bookingDetails.preferred_times || 'Flexible'}\n• Reference: ${result.tracking_id}${result.proposed_time ? `\n• Proposed: ${result.proposed_time}` : ''}${result.meeting_link ? `\n• Meeting: ${result.meeting_link}` : ''}`;
       } else if (result?.status === 'validation_error') {
           finalResponseText = `I need a couple details to book: ${result.required_fields?.join(', ')}.`;
       } else if (result?.status === 'error') {
@@ -1192,7 +1187,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
 
     // Simple 15-min slot selection (best-effort): pick earliest 15-min slot mentioned or default to flexible
   function pickProposedTime(text?: string, tz?: string): string {
-      if (!text) return 'Flexible scheduling';
+      if (!text) return 'Flexible (we will confirm by email)';
       const lower = text.toLowerCase();
       const now = new Date();
       let day = new Date(now);
@@ -1250,9 +1245,6 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     }
 
     // Send notification email via Resend (best-effort)
-    let emailNotificationSent = false;
-    let userConfirmationSent = false;
-    
     try {
       const resendKey = getEnvVal('RESEND_API_KEY', environment);
       const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <onboarding@resend.dev>';
@@ -1376,167 +1368,10 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
         try {
           const emailText = await emailResp.text();
           devLog('Resend email response:', { status: emailResp.status, body: emailText });
-          emailNotificationSent = emailResp.ok;
-        } catch {
-          emailNotificationSent = false;
-        }
-
-        // Send confirmation email to the user
-        const userSubject = `Discovery Call Request Confirmation — ${name}`;
-        const userTextBody = `Hi ${name},\n\nThanks for your interest in working with MannyKnows! I've received your discovery call request and will get back to you within 24 hours to confirm the meeting time.\n\n**Your Request Details:**\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nPreferred Time: ${preferred_times || 'Flexible'}\nTimezone: ${timezone || ownerTimezone}\nProposed Time: ${proposedTime}${meetingLink ? `\nMeeting Link: ${meetingLink}` : ''}\nReference: ${trackingId}\n\n**What's Next:**\n• I'll review your request and preferred times\n• You'll receive a calendar invitation with the confirmed time\n• We'll use the meeting link above for our call\n\nLooking forward to discussing your project!\n\nBest regards,\nManny\nMannyKnows.com\n\nP.S. If you need to make any changes, just reply to this email with your reference number: ${trackingId}`;
-
-        const userHtmlBody = `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Discovery Call Request Confirmed</title>
-  <style>
-    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
-    .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
-    .container{max-width:680px;margin:0 auto}
-    .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
-    .header{padding:32px 40px;background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);position:relative}
-    .brand{font-weight:700;font-size:28px;color:#ffffff;letter-spacing:-0.025em}
-    .subtitle{color:rgba(255,255,255,0.95);font-size:16px;margin-top:6px;font-weight:500}
-    .content{padding:40px 40px 32px;background:#ffffff}
-    .greeting{font-size:18px;margin-bottom:24px;color:#18181b}
-    .status{background:#dcfce7;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:24px 0;color:#166534}
-    .status-icon{display:inline-block;margin-right:8px;font-size:16px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
-    .field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:20px;transition:all 0.3s ease}
-    .field:hover{background:#f4f4f5;border-color:#e4e4e7}
-    .label{display:block;color:#71717a;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;font-weight:600}
-    .value{font-size:16px;color:#18181b;line-height:1.5;word-break:break-word;font-weight:500}
-    .full-width{grid-column:1/-1}
-    .next-steps{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:24px;margin:24px 0}
-    .next-steps h3{margin:0 0 16px 0;color:#0c4a6e;font-size:18px}
-    .next-steps ul{margin:0;padding-left:20px;color:#0c4a6e}
-    .next-steps li{margin-bottom:8px}
-    .btn-container{text-align:center;margin:32px 0}
-    .btn{display:inline-block;background:linear-gradient(135deg,#22c55e,#16a34a);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(34,197,94,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(34,197,94,0.3)}
-    .meta{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:16px;text-align:center;margin-top:24px}
-    .tracking{color:#71717a;font-size:13px;font-family:ui-monospace,SFMono-Regular,'SF Mono',Consolas,'Liberation Mono',Menlo,monospace;font-weight:500}
-    .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
-    .highlight{background:linear-gradient(135deg,#22c55e,#16a34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
-    @media (max-width:640px){
-      .outer{padding:20px 16px}
-      .content{padding:24px 24px 20px}
-      .grid{grid-template-columns:1fr;gap:16px}
-      .brand{font-size:24px}
-      .btn{padding:14px 24px;font-size:15px}
-      .header{padding:24px 24px}
-    }
-  </style>
-</head>
-<body>
-  <div class="outer">
-    <div class="container">
-      <div class="card">
-        <div class="header">
-          <div class="brand">MK</div>
-          <div class="subtitle">Discovery Call Request Confirmed</div>
-        </div>
-        <div class="content">
-          <div class="greeting">Hi ${name}!</div>
-          
-          <div class="status">
-            <span class="status-icon">✅</span>
-            <strong>Your discovery call request has been received!</strong> I'll get back to you within 24 hours to confirm the meeting time.
-          </div>
-          
-          <h3>Your Request Details:</h3>
-          <div class="grid">
-            <div class="field">
-              <span class="label">Name</span>
-              <div class="value">${name}</div>
-            </div>
-            <div class="field">
-              <span class="label">Email</span>
-              <div class="value">${email}</div>
-            </div>
-            <div class="field">
-              <span class="label">Phone</span>
-              <div class="value">${phone || 'Not provided'}</div>
-            </div>
-            <div class="field">
-              <span class="label">Timezone</span>
-              <div class="value">${timezone || ownerTimezone}</div>
-            </div>
-            <div class="field full-width">
-              <span class="label">Preferred Time</span>
-              <div class="value">${(preferred_times || 'Flexible').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-            </div>
-            <div class="field full-width">
-              <span class="label">Proposed Meeting Time</span>
-              <div class="value">${proposedTime}</div>
-            </div>
-          </div>
-          
-          ${project_details ? `<div class="field full-width" style="margin-bottom: 24px;">
-            <span class="label">Project Details</span>
-            <div class="value">${project_details.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-          </div>` : ''}
-          
-          <div class="next-steps">
-            <h3>What's Next:</h3>
-            <ul>
-              <li>I'll review your request and preferred times</li>
-              <li>You'll receive a calendar invitation with the confirmed time</li>
-              <li>We'll use the meeting link below for our call</li>
-            </ul>
-          </div>
-          
-          ${meetingLink ? `<div class="btn-container">
-            <a class="btn" href="${meetingLink}" target="_blank" rel="noopener noreferrer">Join Meeting Link →</a>
-          </div>` : ''}
-          
-          <div class="meta">
-            <div class="tracking">Reference: ${trackingId}</div>
-          </div>
-          
-          <p style="margin-top: 32px; color: #71717a; font-size: 14px;">
-            <strong>Need to make changes?</strong> Just reply to this email with your reference number: ${trackingId}
-          </p>
-        </div>
-        <div class="footer">
-          Thanks for your interest in <span class="highlight">MannyKnows</span>!<br>
-          Looking forward to discussing your project · Professional business solutions
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
-
-        // Send confirmation email to user
-        const userEmailResp = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: resendFrom,
-            to: [email],
-            subject: userSubject,
-            text: userTextBody,
-            html: userHtmlBody
-          })
-        });
-        try {
-          const userEmailText = await userEmailResp.text();
-          devLog('User confirmation email response:', { status: userEmailResp.status, body: userEmailText });
-          userConfirmationSent = userEmailResp.ok;
-        } catch {
-          userConfirmationSent = false;
-        }
+        } catch {}
       }
     } catch (e) {
       devLog('Resend email failed for meeting request', e as any);
-      emailNotificationSent = false;
-      userConfirmationSent = false;
     }
 
     return {
@@ -1544,11 +1379,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
       tracking_id: trackingId,
   contact: { name, email },
   proposed_time: proposedTime,
-  meeting_link: meetingLink,
-  email_status: {
-    notification_sent: emailNotificationSent,
-    confirmation_sent: userConfirmationSent
-  }
+  meeting_link: meetingLink
     };
   } catch (error) {
     errorLog('Meeting request error:', error);

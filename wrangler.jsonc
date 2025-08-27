@@ -13,7 +13,7 @@
     "OWNER_EMAIL": "mk@mannyknows.com",
     "OWNER_TIMEZONE": "America/New_York",
     // Sender for Resend (use a verified domain)
-    "RESEND_FROM": "MannyKnows <noreply@mannyknows.com>",
+    "RESEND_FROM": "Manny <mk@mannyknows.com>",
     // Secure admin authentication
     "ADMIN_KEY": "mk_admin_merh3t5d_c37019aff77f4677_637b7da191124a68",
     "ADMIN_EMAIL": "mk@mannyknows.com"
