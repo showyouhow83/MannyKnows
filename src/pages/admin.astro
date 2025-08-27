@@ -774,7 +774,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const statusColor = statusColors[meeting.status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
 
       const createdDate = meeting.createdAt ? new Date(meeting.createdAt).toLocaleDateString() : 'Unknown';
-      const projectPreview = (meeting.project_details || '').substring(0, 100);
+      const projectPreview = (meeting.project_details || '').substring(0, 40);
       
       return `
         <tr>
@@ -792,11 +792,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${createdDate}
           </td>
           <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
-            <div class="font-medium truncate" title="${meeting.proposed_time || 'No meeting time set'}">${meeting.proposed_time ? meeting.proposed_time.replace(/^.*?(\d{1,2}:\d{2} [AP]M.*)/, '$1') : 'Not scheduled'}</div>
+            <div class="font-medium truncate" title="${meeting.proposed_time || 'No meeting time set'}">
+              ${meeting.proposed_time ? 
+                meeting.proposed_time.replace(/^(\w+) (\w+) (\d+) (\d+) (.+)$/, '$2 $3 $5') : 
+                'Not scheduled'
+              }
+            </div>
             <div class="text-xs text-gray-500 dark:text-gray-400 truncate">Req: ${(meeting.preferred_times || 'Flexible').substring(0, 15)}${(meeting.preferred_times || '').length > 15 ? '...' : ''}</div>
           </td>
-          <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-sm">
-            <div title="${meeting.project_details || 'No details'}" class="truncate">${projectPreview}${projectPreview.length === 100 ? '...' : ''}</div>
+          <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
+            <div title="${meeting.project_details || 'No details'}" class="truncate">${projectPreview}${projectPreview.length === 40 ? '...' : ''}</div>
           </td>
           <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
             <div class="flex space-x-1">
