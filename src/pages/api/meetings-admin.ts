@@ -4,9 +4,10 @@ import { AdminRateLimiter } from '../../lib/security/adminRateLimiter.js';
 
 export const GET: APIRoute = async ({ locals, url, request }) => {
   try {
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV;
+    const chatbotKv = (locals as any).runtime?.env?.CHATBOT_KV;
     
-    if (!kv) {
+    if (!schedulerKv || !chatbotKv) {
       return new Response(JSON.stringify({ 
         error: 'KV storage not available' 
       }), { 
@@ -19,7 +20,7 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     // Enhanced rate limiting for admin API
-    const rateLimiter = new AdminRateLimiter(kv);
+    const rateLimiter = new AdminRateLimiter(chatbotKv);
     const rateResult = await rateLimiter.checkAdminRateLimit(clientIP, 'admin_api');
     
     if (!rateResult.allowed) {
@@ -34,7 +35,7 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
     }
 
     // Multi-layer authentication (same as newsletter admin)
-    const authenticator = new AdminAuthenticator(kv);
+    const authenticator = new AdminAuthenticator(chatbotKv);
     
     const sessionToken = url.searchParams.get('session') || 
                         request.headers.get('Authorization')?.replace('Bearer ', '') ||
@@ -92,22 +93,21 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
     // Log admin access
     console.log(`[MEETINGS-ADMIN] ${adminEmail} accessed from ${clientIP} at ${new Date().toISOString()}`);
 
-    // Handle export requests
+    // Check for export request
     const exportFormat = url.searchParams.get('export');
-    if (exportFormat === 'csv') {
-      return await handleMeetingsExport(kv);
+    if (exportFormat) {
+      return await handleMeetingsExport(schedulerKv);
     }
 
-    // Get query parameters
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 500);
+    // Get meetings data
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000);
     const status = url.searchParams.get('status') || 'all';
-    const sortBy = url.searchParams.get('sort') || 'date_desc';
-
-    // Fetch all meeting requests
-    const meetings = await fetchMeetings(kv, { limit, status, sortBy });
+    const sortBy = url.searchParams.get('sortBy') || 'newest';
     
-    // Get summary stats
-    const stats = await getMeetingStats(kv);
+    const meetings = await fetchMeetings(schedulerKv, { limit, status, sortBy });
+    
+    // Calculate statistics
+    const stats = await getMeetingStats(schedulerKv);
 
     return new Response(JSON.stringify({
       success: true,
@@ -140,9 +140,10 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
 
 export const POST: APIRoute = async ({ locals, url, request }) => {
   try {
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV;
+    const chatbotKv = (locals as any).runtime?.env?.CHATBOT_KV;
     
-    if (!kv) {
+    if (!schedulerKv || !chatbotKv) {
       return new Response(JSON.stringify({ 
         error: 'KV storage not available' 
       }), { 
@@ -155,7 +156,7 @@ export const POST: APIRoute = async ({ locals, url, request }) => {
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     // Rate limiting
-    const rateLimiter = new AdminRateLimiter(kv);
+    const rateLimiter = new AdminRateLimiter(chatbotKv);
     const rateResult = await rateLimiter.checkAdminRateLimit(clientIP, 'admin_api');
     
     if (!rateResult.allowed) {
@@ -170,7 +171,7 @@ export const POST: APIRoute = async ({ locals, url, request }) => {
     }
 
     // Authentication (same as GET)
-    const authenticator = new AdminAuthenticator(kv);
+    const authenticator = new AdminAuthenticator(chatbotKv);
     
     const sessionToken = url.searchParams.get('session') || 
                         request.headers.get('Authorization')?.replace('Bearer ', '') ||
@@ -240,7 +241,7 @@ export const POST: APIRoute = async ({ locals, url, request }) => {
     }
 
     // Handle meeting updates
-    const result = await updateMeeting(kv, meetingId, action, { status, notes, adminEmail });
+    const result = await updateMeeting(schedulerKv, meetingId, action, { status, notes, adminEmail });
 
     return new Response(JSON.stringify({
       success: true,
