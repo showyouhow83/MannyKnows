@@ -1383,7 +1383,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
 
         // Send confirmation email to the user
         const userSubject = `Discovery Call Request Confirmation — ${name}`;
-        const userTextBody = `Hi ${name},\n\nThanks for your interest in working with MannyKnows! I've received your discovery call request and will get back to you within 24 hours to confirm the meeting time.\n\n**Your Request Details:**\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nPreferred Time: ${preferred_times || 'Flexible'}\nTimezone: ${timezone || ownerTimezone}\nProposed Time: ${proposedTime}${meetingLink ? `\nMeeting Link: ${meetingLink}` : ''}\nReference: ${trackingId}\n\n**What's Next:**\n• I'll review your request and preferred times\n• You'll receive a calendar invitation with the confirmed time\n• We'll use the meeting link above for our call\n\nLooking forward to discussing your project!\n\nBest regards,\nManny\nMannyKnows.com\n\nP.S. If you need to make any changes, just reply to this email with your reference number: ${trackingId}`;
+        const userTextBody = `Hi ${name},\n\nThanks for your interest in working with MannyKnows! Your discovery call request has been received.\n\n**Your Request Details:**\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nPreferred Time: ${preferred_times || 'Flexible'}\nTimezone: ${timezone || ownerTimezone}\nProposed Meeting Time: ${proposedTime}${meetingLink ? `\nMeeting Link: ${meetingLink}` : ''}\nProject Details: ${project_details || 'Not specified'}\nReference: ${trackingId}\n\n**What's Next:**\n• I'll review your request and preferred times\n• I'll confirm the final meeting time within 24 hours\n• We'll use the meeting link above for our call${meetingLink ? '\n• Save the meeting link - you\'ll need it for our call' : ''}\n\nLooking forward to discussing your project!\n\nBest regards,\nManny\nMannyKnows.com\n\nP.S. If you need to make any changes, just reply to this email with your reference number: ${trackingId}`;
 
         const userHtmlBody = `<!doctype html>
 <html>
@@ -1483,8 +1483,9 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
             <h3>What's Next:</h3>
             <ul>
               <li>I'll review your request and preferred times</li>
-              <li>You'll receive a calendar invitation with the confirmed time</li>
+              <li>I'll confirm the final meeting time within 24 hours</li>
               <li>We'll use the meeting link below for our call</li>
+              ${meetingLink ? '<li>Save the meeting link - you\'ll need it for our call</li>' : ''}
             </ul>
           </div>
           
