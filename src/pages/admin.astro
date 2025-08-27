@@ -30,7 +30,7 @@ export const prerender = false;
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
   <!-- Header -->
   <header class="gradient-bg shadow-lg">
-    <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="w-full mx-auto px-4 py-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -51,7 +51,7 @@ export const prerender = false;
     </div>
   </header>
 
-  <div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="w-full mx-auto px-4 py-8">
     <!-- Login Form (shown when not authenticated) -->
     <div id="loginForm" class="max-w-md mx-auto">
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
@@ -143,7 +143,7 @@ export const prerender = false;
             </div>
             <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
               <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
               </svg>
             </div>
           </div>
@@ -373,6 +373,7 @@ export const prerender = false;
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Requested</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Meeting Time</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Project</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Admin Notes</th>
                   <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -662,19 +663,45 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function validateSession(): Promise<void> {
     if (!sessionToken) return;
     
+    let sessionValid = false;
+    let authenticatedAs = '';
+    
+    // Try meetings-admin first (more reliable)
     try {
-      const response = await fetch(`/api/newsletter-admin?session=${sessionToken}&limit=1`);
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          showDashboard();
-          await loadSubscribers();
-          authStatusEl && (authStatusEl.textContent = `Authenticated as: ${result.authenticated_as}`);
-          return;
+      const meetingsResponse = await fetch(`/api/meetings-admin?session=${sessionToken}&limit=1`);
+      if (meetingsResponse.ok) {
+        const meetingsResult = await meetingsResponse.json();
+        if (meetingsResult.success) {
+          sessionValid = true;
+          authenticatedAs = meetingsResult.authenticated_as || 'Admin';
         }
       }
     } catch (error) {
-      console.error('Session validation failed:', error);
+      console.warn('Meetings admin validation failed:', error);
+    }
+    
+    // Fallback to newsletter-admin if meetings failed
+    if (!sessionValid) {
+      try {
+        const newsletterResponse = await fetch(`/api/newsletter-admin?session=${sessionToken}&limit=1`);
+        if (newsletterResponse.ok) {
+          const newsletterResult = await newsletterResponse.json();
+          if (newsletterResult.success) {
+            sessionValid = true;
+            authenticatedAs = newsletterResult.authenticated_as || 'Admin';
+          }
+        }
+      } catch (error) {
+        console.warn('Newsletter admin validation failed:', error);
+      }
+    }
+    
+    if (sessionValid) {
+      showDashboard();
+      await loadSubscribers();
+      await loadMeetings(); // Load meetings data
+      authStatusEl && (authStatusEl.textContent = `Authenticated as: ${authenticatedAs}`);
+      return;
     }
     
     // Session invalid
@@ -768,6 +795,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const statusColors: Record<string, string> = {
         'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
         'confirmed': 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+        'joined': 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
         'completed': 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
         'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
       };
@@ -803,24 +831,32 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
             <div title="${meeting.project_details || 'No details'}" class="truncate">${projectPreview}${projectPreview.length === 40 ? '...' : ''}</div>
           </td>
+          <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
+            <div title="${meeting.adminNotes || 'No notes'}" class="truncate">${(meeting.adminNotes || '').substring(0, 40)}${(meeting.adminNotes || '').length > 40 ? '...' : ''}</div>
+          </td>
           <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-            <div class="flex space-x-1">
+            <div class="flex flex-wrap gap-1 sm:space-x-1 sm:flex-nowrap">
               <button onclick="updateMeetingStatus('${meeting.id}', 'confirmed')" 
-                class="px-2 py-1 text-xs bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 rounded" 
+                class="px-2 py-1 text-xs bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 rounded whitespace-nowrap" 
                 title="Confirm Meeting">
-                Confirm
+                ✓ Confirm
+              </button>
+              <button onclick="updateMeetingStatus('${meeting.id}', 'joined')" 
+                class="px-2 py-1 text-xs bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300 rounded whitespace-nowrap" 
+                title="Notify User You've Joined">
+                👋 Joined
               </button>
               <button onclick="updateMeetingStatus('${meeting.id}', 'completed')" 
-                class="px-2 py-1 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 rounded" 
+                class="px-2 py-1 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 rounded whitespace-nowrap" 
                 title="Mark as Done">
-                Done
+                ✅ Done
               </button>
               <button onclick="updateMeetingStatus('${meeting.id}', 'cancelled')" 
-                class="px-2 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 rounded" 
+                class="px-2 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 rounded whitespace-nowrap" 
                 title="Cancel Meeting">
-                Cancel
+                ❌ Cancel
               </button>
-              ${meeting.meeting_link ? `<a href="${meeting.meeting_link}" target="_blank" class="px-2 py-1 text-xs bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300 rounded inline-block" title="Join Meeting">Join</a>` : ''}
+              ${meeting.meeting_link ? `<a href="${meeting.meeting_link}" target="_blank" class="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-300 rounded inline-block whitespace-nowrap" title="Open Meeting Link">🔗 Link</a>` : ''}
             </div>
           </td>
         </tr>
@@ -831,14 +867,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function updateMeetingStatus(meetingId: string, status: string): Promise<void> {
     if (!sessionToken) return;
 
+    // For completed status, show summary modal
+    if (status === 'completed') {
+      showSummaryModal(meetingId);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/meetings-admin', {
+      const response = await fetch(`/api/meetings-admin?session=${sessionToken}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          session: sessionToken,
           action: 'update_status',
           meetingId,
           status
@@ -848,17 +889,29 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          // Reload meetings to show updated status
           await loadMeetings();
+          
+          // Show confirmation for email-triggering statuses
+          if (['confirmed', 'cancelled', 'joined'].includes(status)) {
+            showModal('Success', `Meeting status updated to "${status}" and email notification sent to user.`, [
+              { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg' }
+            ]);
+          }
         } else {
-          alert('Failed to update meeting status: ' + (result.message || 'Unknown error'));
+          showModal('Error', 'Failed to update meeting status: ' + (result.message || 'Unknown error'), [
+            { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+          ]);
         }
       } else {
-        alert('Failed to update meeting status: HTTP ' + response.status);
+        showModal('Error', 'Failed to update meeting status: HTTP ' + response.status, [
+          { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+        ]);
       }
     } catch (error) {
       console.error('Error updating meeting status:', error);
-      alert('Failed to update meeting status: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      showModal('Error', 'Failed to update meeting status: ' + (error instanceof Error ? error.message : 'Unknown error'), [
+        { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+      ]);
     }
   }
 
@@ -892,10 +945,165 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Make updateMeetingStatus globally available for onclick handlers
   (window as any).updateMeetingStatus = updateMeetingStatus;
 
+  // Modal functions
+  function showModal(title: string, content: string, actions: { text: string, onClick: () => void, style?: string }[] = []) {
+    const modal = document.getElementById('modalOverlay')!;
+    const titleEl = document.getElementById('modalTitle')!;
+    const contentEl = document.getElementById('modalContent')!;
+    const actionsEl = document.getElementById('modalActions')!;
+    
+    titleEl.textContent = title;
+    contentEl.innerHTML = content;
+    
+    actionsEl.innerHTML = '';
+    actions.forEach(action => {
+      const button = document.createElement('button');
+      button.textContent = action.text;
+      button.onclick = action.onClick;
+      button.className = action.style || 'px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 rounded-lg';
+      actionsEl.appendChild(button);
+    });
+    
+    modal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay')!.classList.add('hidden');
+  }
+
+  let currentMeetingIdForSummary = '';
+
+  function showSummaryModal(meetingId: string) {
+    currentMeetingIdForSummary = meetingId;
+    document.getElementById('summaryModal')!.classList.remove('hidden');
+    (document.getElementById('callSummaryInput') as HTMLTextAreaElement).focus();
+  }
+
+  function closeSummaryModal() {
+    document.getElementById('summaryModal')!.classList.add('hidden');
+    (document.getElementById('callSummaryInput') as HTMLTextAreaElement).value = '';
+    currentMeetingIdForSummary = '';
+  }
+
+  async function submitCallSummary() {
+    const summaryInput = document.getElementById('callSummaryInput') as HTMLTextAreaElement;
+    const summary = summaryInput.value.trim();
+    
+    if (!summary) {
+      showModal('Error', 'Call summary is required to mark as completed.', [
+        { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg' }
+      ]);
+      return;
+    }
+    
+    // Save the meetingId before closing modal (which resets it)
+    const meetingId = currentMeetingIdForSummary;
+    closeSummaryModal();
+    await updateMeetingStatusWithSummary(meetingId, 'completed', summary);
+  }
+
+  async function updateMeetingStatusWithSummary(meetingId: string, status: string, summary: string) {
+    if (!sessionToken) return;
+
+    try {
+      const response = await fetch(`/api/meetings-admin?session=${sessionToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'update_status',
+          meetingId,
+          status,
+          notes: summary
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          await loadMeetings();
+          showModal('Success', 'Meeting marked as completed with call summary.', [
+            { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg' }
+          ]);
+        } else {
+          showModal('Error', 'Failed to update meeting status: ' + (result.message || 'Unknown error'), [
+            { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+          ]);
+        }
+      } else {
+        showModal('Error', 'Failed to update meeting status: HTTP ' + response.status, [
+          { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error updating meeting status:', error);
+      showModal('Error', 'Failed to update meeting status: ' + (error instanceof Error ? error.message : 'Unknown error'), [
+        { text: 'OK', onClick: closeModal, style: 'px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg' }
+      ]);
+    }
+  }
+
+  // Make modal functions globally available
+  (window as any).showModal = showModal;
+  (window as any).closeModal = closeModal;
+  (window as any).showSummaryModal = showSummaryModal;
+  (window as any).closeSummaryModal = closeSummaryModal;
+  (window as any).submitCallSummary = submitCallSummary;
+
   // Initialize and setup
   await initializePage();
   setupEventListeners();
 });
 </script>
+
+<!-- Modal System -->
+<div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full mx-4 shadow-xl">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 id="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white"></h3>
+          <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div id="modalContent" class="text-gray-700 dark:text-gray-300 mb-6"></div>
+        <div id="modalActions" class="flex justify-end space-x-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call Summary Modal -->
+<div id="summaryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg max-w-lg w-full mx-4 shadow-xl">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Call Summary Required</h3>
+          <button onclick="closeSummaryModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">Please provide a summary of the call and next steps:</p>
+        <textarea 
+          id="callSummaryInput" 
+          rows="4" 
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+          placeholder="Call went well. Discussed project requirements. Next steps: send proposal by Friday..."></textarea>
+        <div class="flex justify-end space-x-3 mt-6">
+          <button onclick="closeSummaryModal()" class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+          <button onclick="submitCallSummary()" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">Mark as Completed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

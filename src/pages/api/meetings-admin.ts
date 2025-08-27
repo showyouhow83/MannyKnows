@@ -1,6 +1,13 @@
 import type { APIRoute } from 'astro';
-import { AdminAuthenticator } from '../../lib/security/adminAuthenticator.js';
-import { AdminRateLimiter } from '../../lib/security/adminRateLimiter.js';
+import { AdminAuthenticator } from '../../lib/security/adminAuthenticator';
+import { AdminRateLimiter } from '../../lib/security/adminRateLimiter';
+
+// Helper function to get environment variables
+function getEnvVal(key: string, env: any): string | undefined {
+  if (env && env[key]) return env[key];
+  if (typeof process !== 'undefined' && process.env && process.env[key]) return process.env[key];
+  return undefined;
+}
 
 export const GET: APIRoute = async ({ locals, url, request }) => {
   try {
@@ -240,8 +247,15 @@ export const POST: APIRoute = async ({ locals, url, request }) => {
       });
     }
 
+    // Get environment for email functionality  
+    let environment = (locals as any).runtime?.env as any;
+    if (!environment || Object.keys(environment).length === 0) {
+      // Fallback to dev vars if runtime env not available
+      environment = {};
+    }
+
     // Handle meeting updates
-    const result = await updateMeeting(schedulerKv, meetingId, action, { status, notes, adminEmail });
+    const result = await updateMeeting(schedulerKv, meetingId, action, { status, notes, adminEmail, environment });
 
     return new Response(JSON.stringify({
       success: true,
@@ -265,6 +279,231 @@ export const POST: APIRoute = async ({ locals, url, request }) => {
 };
 
 // Helper Functions
+
+// Email notification function
+async function sendMeetingStatusEmail(meeting: any, newStatus: string, environment: any) {
+  try {
+    const resendKey = getEnvVal('RESEND_API_KEY', environment);
+    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <noreply@mannyknows.com>';
+    
+    if (!resendKey || !meeting.email) {
+      console.log('[MEETINGS-ADMIN] Email notification skipped - missing API key or email');
+      return false;
+    }
+
+    let subject = '';
+    let textBody = '';
+    let htmlBody = '';
+
+    const userName = meeting.name || 'there';
+    const meetingTime = meeting.proposed_time || 'TBD';
+    const meetingLink = meeting.meeting_link || '';
+
+    switch (newStatus) {
+      case 'confirmed':
+        subject = `Discovery Call Confirmed — ${userName}`;
+        textBody = `Hi ${userName},\n\nGreat news! Your discovery call has been confirmed.\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}${meeting.phone ? `Phone: ${meeting.phone}\n` : ''}\nReference: ${meeting.id}\n\n**What's Next:**\n• Save the meeting details in your calendar\n• Join the meeting at the scheduled time\n• Come prepared to discuss your project needs\n\nLooking forward to speaking with you!\n\nBest regards,\nManny\nMannyKnows.com`;
+        
+        htmlBody = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Call Confirmed</title>
+  <style>
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
+    .container{max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
+    .header{background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%);padding:32px;text-align:center;color:#ffffff}
+    .brand{font-size:24px;font-weight:700;margin-bottom:8px}
+    .content{padding:32px}
+    .meeting-details{background:#f8fafc;padding:20px;border-radius:8px;margin:20px 0}
+    .meeting-details h3{margin:0 0 12px 0;color:#1e293b}
+    .detail-item{margin:8px 0}
+    .footer{padding:20px 32px;background:#f8fafc;text-align:center;color:#64748b;font-size:14px}
+    .highlight{color:#22c55e;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">MannyKnows</div>
+      <div>Your Discovery Call is Confirmed!</div>
+    </div>
+    <div class="content">
+      <p>Hi ${userName},</p>
+      <p>Great news! Your discovery call has been <strong>confirmed</strong>.</p>
+      
+      <div class="meeting-details">
+        <h3>Meeting Details</h3>
+        <div class="detail-item"><strong>Date & Time:</strong> ${meetingTime}</div>
+        ${meetingLink ? `<div class="detail-item"><strong>Meeting Link:</strong> <a href="${meetingLink}">${meetingLink}</a></div>` : ''}
+        ${meeting.phone ? `<div class="detail-item"><strong>Phone:</strong> ${meeting.phone}</div>` : ''}
+        <div class="detail-item"><strong>Reference:</strong> ${meeting.id}</div>
+      </div>
+      
+      <p><strong>What's Next:</strong></p>
+      <ul>
+        <li>Save the meeting details in your calendar</li>
+        <li>Join the meeting at the scheduled time</li>
+        <li>Come prepared to discuss your project needs</li>
+      </ul>
+      
+      <p>Looking forward to speaking with you!</p>
+      <p>Best regards,<br>Manny</p>
+    </div>
+    <div class="footer">
+      This confirmation was sent by <span class="highlight">MannyKnows</span><br>
+      Intelligent business operations
+    </div>
+  </div>
+</body>
+</html>`;
+        break;
+
+      case 'cancelled':
+        subject = `Discovery Call Cancelled — ${userName}`;
+        textBody = `Hi ${userName},\n\nI need to let you know that your scheduled discovery call has been cancelled.\n\n**Original Meeting Details:**\nDate & Time: ${meetingTime}\nReference: ${meeting.id}\n\n**What's Next:**\nIf you'd like to reschedule, please visit MannyKnows.com and request a new meeting time that works better for both of us.\n\nI apologize for any inconvenience this may cause.\n\nBest regards,\nManny\nMannyKnows.com`;
+        
+        htmlBody = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Call Cancelled</title>
+  <style>
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
+    .container{max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
+    .header{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);padding:32px;text-align:center;color:#ffffff}
+    .brand{font-size:24px;font-weight:700;margin-bottom:8px}
+    .content{padding:32px}
+    .meeting-details{background:#f8fafc;padding:20px;border-radius:8px;margin:20px 0}
+    .meeting-details h3{margin:0 0 12px 0;color:#1e293b}
+    .detail-item{margin:8px 0}
+    .footer{padding:20px 32px;background:#f8fafc;text-align:center;color:#64748b;font-size:14px}
+    .highlight{color:#ef4444;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">MannyKnows</div>
+      <div>Discovery Call Cancelled</div>
+    </div>
+    <div class="content">
+      <p>Hi ${userName},</p>
+      <p>I need to let you know that your scheduled discovery call has been <strong>cancelled</strong>.</p>
+      
+      <div class="meeting-details">
+        <h3>Original Meeting Details</h3>
+        <div class="detail-item"><strong>Date & Time:</strong> ${meetingTime}</div>
+        <div class="detail-item"><strong>Reference:</strong> ${meeting.id}</div>
+      </div>
+      
+      <p><strong>What's Next:</strong></p>
+      <p>If you'd like to reschedule, please visit <a href="https://mannyknows.com">MannyKnows.com</a> and request a new meeting time that works better for both of us.</p>
+      
+      <p>I apologize for any inconvenience this may cause.</p>
+      <p>Best regards,<br>Manny</p>
+    </div>
+    <div class="footer">
+      This notification was sent by <span class="highlight">MannyKnows</span><br>
+      Intelligent business operations
+    </div>
+  </div>
+</body>
+</html>`;
+        break;
+
+      case 'joined':
+        subject = `I'm Ready for Our Call — ${userName}`;
+        textBody = `Hi ${userName},\n\nI've joined our scheduled discovery call and am ready when you are!\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}Reference: ${meeting.id}\n\n**Join Now:**\n${meetingLink ? `Click here to join: ${meetingLink}` : 'Please use the meeting link provided earlier or call the number shared with you.'}\n\nI'm looking forward to discussing your project!\n\nBest regards,\nManny\nMannyKnows.com`;
+        
+        htmlBody = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ready for Our Call</title>
+  <style>
+    body{margin:0;padding:0;background:#fafafa;color:#18181b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6}
+    .container{max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
+    .header{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);padding:32px;text-align:center;color:#ffffff}
+    .brand{font-size:24px;font-weight:700;margin-bottom:8px}
+    .content{padding:32px}
+    .meeting-details{background:#f8fafc;padding:20px;border-radius:8px;margin:20px 0}
+    .meeting-details h3{margin:0 0 12px 0;color:#1e293b}
+    .detail-item{margin:8px 0}
+    .join-button{display:inline-block;background:#3b82f6;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:600;margin:16px 0}
+    .footer{padding:20px 32px;background:#f8fafc;text-align:center;color:#64748b;font-size:14px}
+    .highlight{color:#3b82f6;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">MannyKnows</div>
+      <div>I'm Ready for Our Call!</div>
+    </div>
+    <div class="content">
+      <p>Hi ${userName},</p>
+      <p>I've joined our scheduled discovery call and am <strong>ready when you are!</strong></p>
+      
+      <div class="meeting-details">
+        <h3>Meeting Details</h3>
+        <div class="detail-item"><strong>Date & Time:</strong> ${meetingTime}</div>
+        ${meetingLink ? `<div class="detail-item"><strong>Meeting Link:</strong> <a href="${meetingLink}">${meetingLink}</a></div>` : ''}
+        <div class="detail-item"><strong>Reference:</strong> ${meeting.id}</div>
+      </div>
+      
+      ${meetingLink ? `<div style="text-align:center;margin:24px 0;">
+        <a href="${meetingLink}" class="join-button">Join the Call Now</a>
+      </div>` : '<p><strong>Please use the meeting link provided earlier or call the number shared with you.</strong></p>'}
+      
+      <p>I'm looking forward to discussing your project!</p>
+      <p>Best regards,<br>Manny</p>
+    </div>
+    <div class="footer">
+      This notification was sent by <span class="highlight">MannyKnows</span><br>
+      Intelligent business operations
+    </div>
+  </div>
+</body>
+</html>`;
+        break;
+
+      default:
+        return false;
+    }
+
+    const emailResp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: resendFrom,
+        to: [meeting.email],
+        subject: subject,
+        text: textBody,
+        html: htmlBody
+      })
+    });
+
+    const success = emailResp.ok;
+    if (success) {
+      console.log(`[MEETINGS-ADMIN] Email sent successfully for ${newStatus} status to ${meeting.email}`);
+    } else {
+      const errorText = await emailResp.text();
+      console.error(`[MEETINGS-ADMIN] Email failed for ${newStatus} status:`, errorText);
+    }
+    
+    return success;
+  } catch (error) {
+    console.error('[MEETINGS-ADMIN] Email notification error:', error);
+    return false;
+  }
+}
 
 async function fetchMeetings(kv: any, options: { limit: number, status: string, sortBy: string }) {
   const meetings = [];
@@ -383,6 +622,7 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
     }
     
     const meeting = JSON.parse(meetingData);
+    const previousStatus = meeting.status;
     
     // Update meeting based on action
     switch (action) {
@@ -393,6 +633,12 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
         if (data.notes) {
           meeting.adminNotes = data.notes;
         }
+        
+        // For completed status, require call summary
+        if (data.status === 'completed' && !data.notes) {
+          throw new Error('Call summary is required when marking as completed');
+        }
+        
         break;
         
       case 'add_notes':
@@ -411,6 +657,19 @@ async function updateMeeting(kv: any, meetingId: string, action: string, data: a
     
     // Save updated meeting
     await kv.put(meetingKey, JSON.stringify(meeting));
+    
+    // Send email notification for status changes (except completed - that's internal only)
+    if (action === 'update_status' && data.status !== previousStatus && data.environment) {
+      const emailStatuses = ['confirmed', 'cancelled', 'joined'];
+      if (emailStatuses.includes(data.status)) {
+        try {
+          await sendMeetingStatusEmail(meeting, data.status, data.environment);
+        } catch (emailError) {
+          console.error('[MEETINGS-ADMIN] Email notification failed:', emailError);
+          // Don't fail the entire update if email fails
+        }
+      }
+    }
     
     return { action, meetingId, updated: meeting };
     
