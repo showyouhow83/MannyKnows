@@ -18,6 +18,13 @@ export const prerender = false;
     .loading {
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
+    .tab-button.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+    .tab-content.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
@@ -31,7 +38,7 @@ export const prerender = false;
           </div>
           <div>
             <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
-            <p class="text-white/80 text-sm">Newsletter Management System</p>
+            <p class="text-white/80 text-sm">Newsletter & Discovery Calls Management</p>
           </div>
         </div>
         <div class="flex items-center space-x-4">
@@ -100,7 +107,33 @@ export const prerender = false;
 
     <!-- Dashboard (shown when authenticated) -->
     <div id="dashboard" class="hidden">
-      <!-- Stats Cards -->
+      <!-- Tab Navigation -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 border border-gray-200 dark:border-gray-700">
+        <nav class="flex space-x-8 px-6" aria-label="Tabs">
+          <button 
+            id="newsletterTab"
+            class="tab-button active border-b-2 border-blue-500 py-4 px-1 text-sm font-medium text-blue-600 dark:text-blue-400"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Newsletter Subscribers
+          </button>
+          <button 
+            id="meetingsTab"
+            class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Discovery Calls
+          </button>
+        </nav>
+      </div>
+
+      <!-- Newsletter Tab Content -->
+      <div id="newsletterContent" class="tab-content">
+        <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
           <div class="flex items-center justify-between">
@@ -218,6 +251,147 @@ export const prerender = false;
           <p class="text-gray-600 dark:text-gray-400 mt-2">Loading subscribers...</p>
         </div>
       </div>
+      </div>
+
+      <!-- Discovery Calls Tab Content -->
+      <div id="meetingsContent" class="tab-content hidden">
+        <!-- Meeting Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Total Calls</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white" id="totalMeetings">-</p>
+              </div>
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Pending</p>
+                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="pendingMeetings">-</p>
+              </div>
+              <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Confirmed</p>
+                <p class="text-2xl font-bold text-green-600 dark:text-green-400" id="confirmedMeetings">-</p>
+              </div>
+              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Completed</p>
+                <p class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="completedMeetings">-</p>
+              </div>
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Last 24h</p>
+                <p class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="recent24hMeetings">-</p>
+              </div>
+              <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meeting Controls -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Discovery Call Requests</h3>
+              <div class="flex items-center space-x-2">
+                <label for="meetingStatusFilter" class="text-sm text-gray-600 dark:text-gray-400">Filter:</label>
+                <select id="meetingStatusFilter" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm dark:bg-gray-700 dark:text-white">
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending Only</option>
+                  <option value="confirmed">Confirmed Only</option>
+                  <option value="completed">Completed Only</option>
+                  <option value="cancelled">Cancelled Only</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <button id="refreshMeetingsBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg transition-colors">
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Refresh
+              </button>
+              <button id="exportMeetingsCsvBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Discovery Calls Table -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Requested</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Preferred Time</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Project</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="meetingsTableBody" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <!-- Table content loaded by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="meetingsLoadingIndicator" class="text-center py-8">
+            <div class="loading">
+              <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Loading discovery calls...</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -231,8 +405,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const adminLoginForm = document.getElementById('adminLoginForm') as HTMLFormElement | null;
   const adminEmailInput = document.getElementById('adminEmail') as HTMLInputElement | null;
   const adminKeyInput = document.getElementById('adminKey') as HTMLInputElement | null;
-  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement | null;
-  const btnText = submitBtn?.querySelector('span') as HTMLSpanElement | null;
+  const submitBtn = document.getElementById('loginSubmitBtn') as HTMLButtonElement | null;
+  const btnText = document.getElementById('loginBtnText') as HTMLSpanElement | null;
   const loginFormDiv = document.getElementById('loginForm') as HTMLDivElement | null;
   const dashboardDiv = document.getElementById('dashboard') as HTMLDivElement | null;
   const authStatusEl = document.getElementById('authStatus') as HTMLElement | null;
@@ -244,6 +418,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const logoutBtn = document.getElementById('logoutBtn') as HTMLButtonElement | null;
   const tableBody = document.getElementById('subscribersTableBody') as HTMLTableSectionElement | null;
   const loadingIndicator = document.getElementById('loadingIndicator') as HTMLElement | null;
+
+  // Tab system elements
+  const newsletterTab = document.getElementById('newsletterTab') as HTMLButtonElement | null;
+  const meetingsTab = document.getElementById('meetingsTab') as HTMLButtonElement | null;
+  const newsletterContent = document.getElementById('newsletterContent') as HTMLDivElement | null;
+  const meetingsContent = document.getElementById('meetingsContent') as HTMLDivElement | null;
+
+  // Meeting elements
+  const meetingStatusFilter = document.getElementById('meetingStatusFilter') as HTMLSelectElement | null;
+  const refreshMeetingsBtn = document.getElementById('refreshMeetingsBtn') as HTMLButtonElement | null;
+  const exportMeetingsCsvBtn = document.getElementById('exportMeetingsCsvBtn') as HTMLButtonElement | null;
+  const meetingsTableBody = document.getElementById('meetingsTableBody') as HTMLTableSectionElement | null;
+  const meetingsLoadingIndicator = document.getElementById('meetingsLoadingIndicator') as HTMLElement | null;
   
   // Statistics elements
   const totalCountEl = document.getElementById('totalCount') as HTMLElement | null;
@@ -261,6 +448,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     refreshBtn?.addEventListener('click', loadSubscribers);
     exportCsvBtn?.addEventListener('click', exportCSV);
     statusFilter?.addEventListener('change', loadSubscribers);
+
+    // Tab switching
+    newsletterTab?.addEventListener('click', () => switchTab('newsletter'));
+    meetingsTab?.addEventListener('click', () => switchTab('meetings'));
+
+    // Meeting controls
+    refreshMeetingsBtn?.addEventListener('click', loadMeetings);
+    exportMeetingsCsvBtn?.addEventListener('click', exportMeetingsCSV);
+    meetingStatusFilter?.addEventListener('change', loadMeetings);
   }
 
   async function handleLogin(e: Event): Promise<void> {
@@ -484,6 +680,212 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Session invalid
     logout();
   }
+
+  // Tab Management Functions
+  function switchTab(tabName: 'newsletter' | 'meetings'): void {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.classList.remove('active', 'border-blue-500', 'text-blue-600');
+      button.classList.add('border-transparent', 'text-gray-500');
+    });
+
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.add('hidden');
+    });
+
+    if (tabName === 'newsletter') {
+      newsletterTab?.classList.add('active', 'border-blue-500', 'text-blue-600');
+      newsletterTab?.classList.remove('border-transparent', 'text-gray-500');
+      newsletterContent?.classList.remove('hidden');
+    } else if (tabName === 'meetings') {
+      meetingsTab?.classList.add('active', 'border-blue-500', 'text-blue-600');  
+      meetingsTab?.classList.remove('border-transparent', 'text-gray-500');
+      meetingsContent?.classList.remove('hidden');
+      
+      // Load meetings data when tab is first opened
+      loadMeetings();
+    }
+  }
+
+  // Meeting Management Functions
+  async function loadMeetings(): Promise<void> {
+    if (!sessionToken || !meetingsTableBody) return;
+
+    try {
+      meetingsLoadingIndicator?.classList.remove('hidden');
+      
+      const status = meetingStatusFilter?.value || 'all';
+      const response = await fetch(`/api/meetings-admin?session=${sessionToken}&status=${status}&limit=100`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        displayMeetingsData(data.meetings, data.stats);
+      } else {
+        throw new Error(data.message || 'Failed to load meetings');
+      }
+    } catch (error) {
+      console.error('Failed to load meetings:', error);
+      meetingsTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="px-6 py-4 text-center text-red-600 dark:text-red-400">
+            Failed to load meetings: ${error instanceof Error ? error.message : 'Unknown error'}
+          </td>
+        </tr>
+      `;
+    } finally {
+      meetingsLoadingIndicator?.classList.add('hidden');
+    }
+  }
+
+  function displayMeetingsData(meetings: any[], stats: any): void {
+    if (!meetingsTableBody) return;
+
+    // Update stats
+    document.getElementById('totalMeetings')!.textContent = stats.total.toString();
+    document.getElementById('pendingMeetings')!.textContent = stats.pending.toString();
+    document.getElementById('confirmedMeetings')!.textContent = stats.confirmed.toString();
+    document.getElementById('completedMeetings')!.textContent = stats.completed.toString();
+    document.getElementById('recent24hMeetings')!.textContent = stats.recent24h.toString();
+
+    if (meetings.length === 0) {
+      meetingsTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+            No discovery calls found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    meetingsTableBody.innerHTML = meetings.map(meeting => {
+      const statusColors: Record<string, string> = {
+        'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
+        'confirmed': 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+        'completed': 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+        'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+      };
+      const statusColor = statusColors[meeting.status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
+
+      const createdDate = meeting.createdAt ? new Date(meeting.createdAt).toLocaleDateString() : 'Unknown';
+      const projectPreview = (meeting.project_details || '').substring(0, 100);
+      
+      return `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900 dark:text-white">${meeting.name || 'Unknown'}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">${meeting.email || 'No email'}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">${meeting.phone || 'No phone'}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColor}">
+              ${meeting.status || 'pending'}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+            ${createdDate}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+            <div title="${meeting.preferred_times || 'Not specified'}">${(meeting.preferred_times || 'Flexible').substring(0, 50)}${(meeting.preferred_times || '').length > 50 ? '...' : ''}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">${meeting.timezone || 'No timezone'}</div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+            <div title="${meeting.project_details || 'No details'}">${projectPreview}${projectPreview.length === 100 ? '...' : ''}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+              <button onclick="updateMeetingStatus('${meeting.id}', 'confirmed')" 
+                class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300" 
+                title="Mark as Confirmed">
+                ✓
+              </button>
+              <button onclick="updateMeetingStatus('${meeting.id}', 'completed')" 
+                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" 
+                title="Mark as Completed">
+                ✓✓
+              </button>
+              <button onclick="updateMeetingStatus('${meeting.id}', 'cancelled')" 
+                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" 
+                title="Cancel">
+                ✗
+              </button>
+              ${meeting.meeting_link ? `<a href="${meeting.meeting_link}" target="_blank" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300" title="Join Meeting">🔗</a>` : ''}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function updateMeetingStatus(meetingId: string, status: string): Promise<void> {
+    if (!sessionToken) return;
+
+    try {
+      const response = await fetch('/api/meetings-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session: sessionToken,
+          action: 'update_status',
+          meetingId,
+          status
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          // Reload meetings to show updated status
+          await loadMeetings();
+        } else {
+          alert('Failed to update meeting status: ' + (result.message || 'Unknown error'));
+        }
+      } else {
+        alert('Failed to update meeting status: HTTP ' + response.status);
+      }
+    } catch (error) {
+      console.error('Error updating meeting status:', error);
+      alert('Failed to update meeting status: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  }
+
+  async function exportMeetingsCSV(): Promise<void> {
+    if (!sessionToken) return;
+
+    try {
+      const status = meetingStatusFilter?.value || 'all';
+      const response = await fetch(`/api/meetings-admin?session=${sessionToken}&export=csv&status=${status}`);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `discovery_calls_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        alert('Failed to export meetings CSV');
+      }
+    } catch (error) {
+      console.error('Error exporting meetings CSV:', error);
+      alert('Failed to export meetings CSV: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  }
+
+  // Make updateMeetingStatus globally available for onclick handlers
+  (window as any).updateMeetingStatus = updateMeetingStatus;
 
   // Initialize and setup
   await initializePage();

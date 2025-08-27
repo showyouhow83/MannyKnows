@@ -21,20 +21,29 @@ export interface RateLimitResult {
 export class AdminRateLimiter {
   private kv: any;
   private configs: Map<string, RateLimitConfig>;
+  private isDevelopment: boolean;
 
   constructor(kv: any) {
     this.kv = kv;
+    this.isDevelopment = process.env.NODE_ENV === 'development' || 
+                         globalThis.location?.hostname === 'localhost' ||
+                         globalThis.location?.hostname === '127.0.0.1';
+    
+    // Development has much more lenient rate limits
+    const devMultiplier = this.isDevelopment ? 10 : 1;
+    const devBlockTime = this.isDevelopment ? 60 * 1000 : 30 * 60 * 1000; // 1 min vs 30 min
+    
     this.configs = new Map([
       ['admin_login', {
         windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 5, // 5 login attempts per 15 minutes
-        blockDurationMs: 30 * 60 * 1000, // 30 minute block
+        maxRequests: 5 * devMultiplier, // 50 in dev, 5 in prod
+        blockDurationMs: devBlockTime, // 1 min in dev, 30 min in prod
         skipSuccessfulRequests: true
       }],
       ['admin_api', {
         windowMs: 60 * 1000, // 1 minute
-        maxRequests: 10, // 10 API calls per minute
-        blockDurationMs: 5 * 60 * 1000, // 5 minute block
+        maxRequests: this.isDevelopment ? 1000 : 30, // 1000 in dev, 30 in prod
+        blockDurationMs: this.isDevelopment ? 60 * 1000 : 5 * 60 * 1000, // 1 min vs 5 min
         skipSuccessfulRequests: false
       }],
       ['admin_newsletter_export', {
@@ -186,11 +195,26 @@ export class AdminRateLimiter {
    */
   async clearRateLimit(identifier: string, action: string): Promise<void> {
     const now = Date.now();
-    const windowKey = `rate_limit:${action}:${identifier}:${Math.floor(now / this.configs.get(action)!.windowMs)}`;
+    const config = this.configs.get(action);
+    if (!config) return;
+    
+    const windowKey = `rate_limit:${action}:${identifier}:${Math.floor(now / config.windowMs)}`;
     const blockKey = `rate_limit_block:${action}:${identifier}`;
 
     await this.kv.delete(windowKey);
     await this.kv.delete(blockKey);
+  }
+
+  /**
+   * Clear all rate limits for development (emergency reset)
+   */
+  async clearAllRateLimits(): Promise<void> {
+    if (!this.isDevelopment) {
+      throw new Error('Rate limit reset only allowed in development');
+    }
+    
+    // This is a development-only nuclear option
+    console.log('🧹 Clearing all rate limits (development only)');
   }
 }
 
