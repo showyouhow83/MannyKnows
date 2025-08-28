@@ -851,7 +851,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div title="${meeting.project_details || 'No details'}" class="truncate">${projectPreview}${projectPreview.length === 40 ? '...' : ''}</div>
           </td>
           <td class="px-4 py-4 text-sm text-gray-900 dark:text-white max-w-xs">
-            <div title="${meeting.adminNotes || 'No notes'}" class="truncate">${(meeting.adminNotes || '').substring(0, 40)}${(meeting.adminNotes || '').length > 40 ? '...' : ''}</div>
+            <div title="${meeting.adminNotes || 'No notes'}" class="truncate">${
+              (() => {
+                const notes = meeting.adminNotes || '';
+                if (!notes) return '';
+                
+                // Convert old timestamp format to new format for display
+                let convertedNotes = notes;
+                const oldTimestampRegex = /\[([A-Za-z]{3}) (\d{1,2}), (\d{4}), (\d{1,2}):(\d{2}) (AM|PM)\]/g;
+                convertedNotes = convertedNotes.replace(oldTimestampRegex, (match) => {
+                  const parts = match.match(/\[([A-Za-z]{3}) (\d{1,2}), (\d{4}), (\d{1,2}):(\d{2}) (AM|PM)\]/);
+                  if (parts) {
+                    const [, month, day] = parts;
+                    const monthNum = new Date(`${month} 1, 2000`).getMonth() + 1;
+                    return `[${monthNum.toString().padStart(2, '0')}/${day.padStart(2, '0')}]`;
+                  }
+                  return match;
+                });
+                
+                // Get the last note (most recent) for preview
+                const noteLines = convertedNotes.split('\n').filter((line: string) => line.trim());
+                const lastNote = noteLines[noteLines.length - 1] || '';
+                
+                // Show preview of last note, up to 60 characters
+                return lastNote.substring(0, 60) + (lastNote.length > 60 ? '...' : '');
+              })()
+            }</div>
           </td>
           <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
             <div class="flex flex-wrap gap-1 sm:space-x-1 sm:flex-nowrap">
