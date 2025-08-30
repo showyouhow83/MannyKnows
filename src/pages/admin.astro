@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Convert old timestamp format to new format for display
                 let convertedNotes = notes;
                 const oldTimestampRegex = /\[([A-Za-z]{3}) (\d{1,2}), (\d{4}), (\d{1,2}):(\d{2}) (AM|PM)\]/g;
-                convertedNotes = convertedNotes.replace(oldTimestampRegex, (match) => {
+                convertedNotes = convertedNotes.replace(oldTimestampRegex, (match: string) => {
                   const parts = match.match(/\[([A-Za-z]{3}) (\d{1,2}), (\d{4}), (\d{1,2}):(\d{2}) (AM|PM)\]/);
                   if (parts) {
                     const [, month, day] = parts;
