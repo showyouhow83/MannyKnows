@@ -413,6 +413,11 @@ export class InputValidator {
         type: 'string' as const,
         minLength: 32,
         maxLength: 64
+      },
+      chat_reference: {
+        required: false,
+        type: 'string' as const,
+        maxLength: 100
       }
     },
 
