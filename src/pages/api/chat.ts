@@ -51,7 +51,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
       });
     }
 
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'Service temporarily unavailable'
@@ -424,7 +424,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const domainValidation = domainValidator.validateRequest(request);
     
     if (!domainValidation.valid) {
-      const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+      const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
       await domainValidator.logSecurityViolation(domainValidation, request, kv);
       return domainValidator.createDomainErrorResponse(domainValidation);
     }
@@ -455,10 +455,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-    const profilesKv = (locals as any).runtime?.env?.PROFILES; // Dedicated KV for profiles
-    const sessionsKv = (locals as any).runtime?.env?.SESSIONS; // Dedicated KV for sessions
-    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV || kv;
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const profilesKv = (locals as any).runtime?.env?.MK_KV_PROFILES; // Dedicated KV for profiles
+    const sessionsKv = (locals as any).runtime?.env?.MK_KV_SESSIONS; // Dedicated KV for sessions
+    const schedulerKv = (locals as any).runtime?.env?.MK_KV_SCHEDULER || kv;
     
     // Initialize encrypted KV wrapper for sensitive data
     let encryptedKv: EncryptedKV | null = null;

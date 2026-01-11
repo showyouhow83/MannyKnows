@@ -1,7 +1,7 @@
 // Service and Product Architecture with Progressive Access Control
 // Manages business services and products with user tier-based access and token allocation
-// Services: Consultations/Projects loaded from KV_SERVICES
-// Products: Software tools/solutions loaded from KV_PRODUCTS
+// Services: Consultations/Projects loaded from MK_KV_SERVICES
+// Products: Software tools/solutions loaded from MK_KV_PRODUCTS
 
 export interface BusinessService {
   name: string;

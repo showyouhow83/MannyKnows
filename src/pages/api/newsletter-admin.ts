@@ -4,7 +4,7 @@ import { AdminRateLimiter } from '../../lib/security/adminRateLimiter.js';
 
 export const GET: APIRoute = async ({ locals, url, request }) => {
   try {
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     
     if (!kv) {
       return new Response(JSON.stringify({ 

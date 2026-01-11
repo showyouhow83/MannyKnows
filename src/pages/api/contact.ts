@@ -5,7 +5,7 @@ import { RateLimiter } from '../../lib/security/rateLimiter.js';
 import { DomainValidator } from '../../lib/security/domainValidator.js';
 
 export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
-  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 
@@ -217,7 +217,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
 
 // Get CSRF token for contact form
 export const GET: APIRoute = async ({ url, locals }) => {
-  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 

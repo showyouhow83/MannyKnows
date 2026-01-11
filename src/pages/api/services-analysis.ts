@@ -13,11 +13,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Get KV_SERVICES namespace
-    const kvServices = (locals as any).runtime?.env?.KV_SERVICES;
+    // Get MK_KV_SERVICES namespace
+    const kvServices = (locals as any).runtime?.env?.MK_KV_SERVICES;
     if (!kvServices) {
       return new Response(JSON.stringify({ 
-        error: 'KV_SERVICES namespace not available',
+        error: 'MK_KV_SERVICES namespace not available',
         available_namespaces: Object.keys((locals as any).runtime?.env || {}).filter(key => key.includes('KV'))
       }), {
         status: 500,
@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // List all keys in KV_SERVICES
+    // List all keys in MK_KV_SERVICES
     const listResult = await kvServices.list();
     const keys = listResult.keys.map((key: any) => key.name);
 
@@ -49,7 +49,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     const response = {
-      namespace: 'KV_SERVICES',
+      namespace: 'MK_KV_SERVICES',
       totalKeys: keys.length,
       allKeys: keys,
       latestVersion,
@@ -70,7 +70,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
   } catch (error) {
     return new Response(JSON.stringify({
-      error: 'Failed to analyze KV_SERVICES',
+      error: 'Failed to analyze MK_KV_SERVICES',
       details: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 500,

@@ -25,16 +25,16 @@
   },
 
   "kv_namespaces": [
-    { "binding": "CHATBOT_KV", "id": "ed368c98eef342b79e8f7c4b96b3fb62", "preview_id": "6ef503c2554244e4a2432f3c1d2e522c" },
-    { "binding": "PROFILES", "id": "901abbf5b0484165a8eaa35a035f1ba8", "preview_id": "901abbf5b0484165a8eaa35a035f1ba8" },
-    { "binding": "SESSIONS", "id": "4c1513b546c040678d266ba4f103a057", "preview_id": "4c1513b546c040678d266ba4f103a057" },
-    { "binding": "KV_SERVICES", "id": "13e95a5db28a4a9da5f517fe0a1e4250", "preview_id": "13e95a5db28a4a9da5f517fe0a1e4250" },
-    { "binding": "KV_PRODUCTS", "id": "d5cc59ddbef24b8db748c977aee91bb0", "preview_id": "d5cc59ddbef24b8db748c977aee91bb0" },
-    { "binding": "SCHEDULER_KV", "id": "22c4ca99de924d07996d6b44d538602a", "preview_id": "22c4ca99de924d07996d6b44d538602a" }
+    { "binding": "MK_KV_CHATBOT", "id": "ed368c98eef342b79e8f7c4b96b3fb62", "preview_id": "6ef503c2554244e4a2432f3c1d2e522c" },
+    { "binding": "MK_KV_PROFILES", "id": "901abbf5b0484165a8eaa35a035f1ba8", "preview_id": "901abbf5b0484165a8eaa35a035f1ba8" },
+    { "binding": "MK_KV_SESSIONS", "id": "4c1513b546c040678d266ba4f103a057", "preview_id": "4c1513b546c040678d266ba4f103a057" },
+    { "binding": "MK_KV_SERVICES", "id": "13e95a5db28a4a9da5f517fe0a1e4250", "preview_id": "13e95a5db28a4a9da5f517fe0a1e4250" },
+    { "binding": "MK_KV_PRODUCTS", "id": "d5cc59ddbef24b8db748c977aee91bb0", "preview_id": "d5cc59ddbef24b8db748c977aee91bb0" },
+    { "binding": "MK_KV_SCHEDULER", "id": "22c4ca99de924d07996d6b44d538602a", "preview_id": "22c4ca99de924d07996d6b44d538602a" }
   ],
 
   "r2_buckets": [
-    { "binding": "MANNYKNOWS_R2", "bucket_name": "mannyknows-website-analysis" }
+    { "binding": "MK_R2", "bucket_name": "mannyknows-website-analysis" }
   ],
 
   "routes": [

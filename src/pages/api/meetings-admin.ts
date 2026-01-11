@@ -11,8 +11,8 @@ function getEnvVal(key: string, env: any): string | undefined {
 
 export const GET: APIRoute = async ({ locals, url, request }) => {
   try {
-    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV;
-    const chatbotKv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const schedulerKv = (locals as any).runtime?.env?.MK_KV_SCHEDULER;
+    const chatbotKv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     
     if (!schedulerKv || !chatbotKv) {
       return new Response(JSON.stringify({ 
@@ -147,8 +147,8 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
 
 export const POST: APIRoute = async ({ locals, url, request }) => {
   try {
-    const schedulerKv = (locals as any).runtime?.env?.SCHEDULER_KV;
-    const chatbotKv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const schedulerKv = (locals as any).runtime?.env?.MK_KV_SCHEDULER;
+    const chatbotKv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     
     if (!schedulerKv || !chatbotKv) {
       return new Response(JSON.stringify({ 

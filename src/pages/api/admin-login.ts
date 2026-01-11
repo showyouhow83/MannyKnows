@@ -6,12 +6,12 @@ import { CSRFProtection } from '../../lib/security/csrfProtection.js';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-    
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+
     if (!kv) {
-      return new Response(JSON.stringify({ 
-        error: 'Service temporarily unavailable' 
-      }), { 
+      return new Response(JSON.stringify({
+        error: 'Service temporarily unavailable'
+      }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -165,12 +165,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ locals }) => {
   // Return CSRF token for admin login form
-  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
-  
+  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+
   if (!kv) {
-    return new Response(JSON.stringify({ 
-      error: 'Service temporarily unavailable' 
-    }), { 
+    return new Response(JSON.stringify({
+      error: 'Service temporarily unavailable'
+    }), {
       status: 503,
       headers: { 'Content-Type': 'application/json' }
     });

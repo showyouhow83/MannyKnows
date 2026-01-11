@@ -18,7 +18,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
       });
     }
 
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'KV storage not available'

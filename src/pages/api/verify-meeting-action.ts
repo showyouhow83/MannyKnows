@@ -42,7 +42,7 @@ export const GET: APIRoute = async ({ url, request, locals }) => {
     }
 
     // Get KV binding from environment (using the same pattern as chat.ts)
-    const kv = (locals as any).runtime?.env?.SCHEDULER_KV;
+    const kv = (locals as any).runtime?.env?.MK_KV_SCHEDULER;
     const environment = (locals as any).runtime?.env;
     
     if (!kv) {

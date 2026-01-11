@@ -8,7 +8,7 @@ let unsubscribeResult = { success: false, message: '', email: '' };
 
 if (subscriptionId && Astro.request.method === 'POST') {
   try {
-    const kv = (Astro.locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (Astro.locals as any).runtime?.env?.MK_KV_CHATBOT;
     
     if (!kv) {
       unsubscribeResult.message = 'Service temporarily unavailable';
@@ -46,7 +46,7 @@ if (subscriptionId && Astro.request.method === 'POST') {
 let subscriptionEmail = '';
 if (subscriptionId && !unsubscribeResult.success) {
   try {
-    const kv = (Astro.locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (Astro.locals as any).runtime?.env?.MK_KV_CHATBOT;
     if (kv) {
       const subscriptionData = await kv.get(`newsletter_id:${subscriptionId}`);
       if (subscriptionData) {

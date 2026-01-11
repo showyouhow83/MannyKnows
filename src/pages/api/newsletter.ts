@@ -3,7 +3,7 @@ import { InputValidator } from '../../lib/security/inputValidator.js';
 import { CSRFProtection } from '../../lib/security/csrfProtection.js';
 
 export const GET: APIRoute = async ({ url, locals }) => {
-  const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 
@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const kv = (locals as any).runtime?.env?.CHATBOT_KV;
+    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
     const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
     
     if (!kv) {
