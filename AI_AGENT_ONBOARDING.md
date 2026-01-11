@@ -10,7 +10,7 @@
 - **eCommerce Solutions** - Web scraping, smart forms, personalized recommendations, dynamic pricing
 - **Workflow Automation** - Data entry, invoice processing, CRM automation, smart scheduling
 - **Creative Services** - Photography (wedding, portrait, product, real estate), 360° services
-- **Business Analytics** - Competitor analysis, data visualization, operational analytics
+- **Business Analytics** - AI web intelligence, competitor analysis, data visualization, operational analytics
 - **AI Content Generation** - Product descriptions, videos, photography
 - **Training & Consulting** - AI training, consulting, office hours
 
@@ -18,7 +18,7 @@
 
 ### Framework Stack
 - **Frontend**: Astro.js 5.13.0 (Server-side rendering)
-- **Styling**: Tailwind CSS + Custom Apple-inspired design system
+- **Styling**: Tailwind CSS 3.4.17 + Custom Apple-inspired design system
 - **Runtime**: Cloudflare Workers (Node.js compatibility enabled)
 - **Database**: Cloudflare KV (multiple namespaces)
 - **Storage**: Cloudflare R2 Buckets
@@ -34,6 +34,12 @@ tailwindcss: ^3.4.17             # CSS framework
 typescript: ^5.9.2               # Type safety
 wrangler: ^4.30.0                # Cloudflare deployment
 ```
+
+### Project Statistics
+- **41 Astro Components**: Modular, reusable UI components
+- **42 TypeScript Files**: Type-safe business logic and services
+- **Version**: 6.0.0 (currently on main-v7 branch)
+- **Last Updated**: August 29, 2025
 
 ### Repository Structure
 ```
@@ -97,6 +103,11 @@ rateLimiter.ts          // General rate limiting
 ADMIN_KEY: "mk_admin_merh3t5d_c37019aff77f4677_637b7da191124a68"
 ADMIN_EMAIL: "mk@mannyknows.com"
 ```
+
+### Recent Security Updates
+- **Chat API Fix**: Added `chat_reference` field to input validation schema (Dec 2025)
+- **Admin Dashboard**: Enhanced timestamp conversion and display formatting
+- **Input Validation**: Comprehensive field validation including optional chat reference
 
 ## 💾 Data Storage Architecture
 
@@ -166,10 +177,16 @@ wrangler.jsonc               # Production environment variables
 
 ### Git Workflow
 ```bash
-# Current branch: main-v6 (latest)
+# Current branch: main-v7 (latest production)
+# Version: 6.0.0
 git add .
 git commit -m "feat: description of changes"
-git push --set-upstream origin main-v6
+git push origin main-v7
+
+# Recent commits:
+# 14e1411 - fix: Improve timestamp conversion logic in admin dashboard
+# bbc9963 - fix: Add chat_reference field to input validation schema
+# 53ff763 - Remove unauthorized deployment checklist that caused issues
 ```
 
 ## 🌐 API Endpoints
@@ -182,11 +199,17 @@ git push --set-upstream origin main-v6
 - POST: Process chat messages, handle discovery call scheduling
 
 // Admin APIs
-/api/newsletter-admin.ts      // Newsletter management
-/api/meetings-admin.ts        // Discovery calls management
+/api/admin-login.ts          // Admin authentication
+/api/newsletter-admin.ts     // Newsletter management
+/api/meetings-admin.ts       // Discovery calls management
 
-// Legacy admin (basic auth)
-/api/admin/leads.ts          // Simple leads view
+// Utility APIs
+/api/contact.ts              // Contact form processing
+/api/newsletter.ts           // Newsletter subscription
+/api/calendar-health.ts      // System health checks
+/api/security-status.ts      // Security monitoring
+/api/services-analysis.ts    // Service analytics
+/api/verify-meeting-action.ts // Meeting verification
 ```
 
 ### API Authentication Patterns
@@ -197,6 +220,10 @@ headers: { 'X-CSRF-Token': csrfToken }
 // Admin APIs - Session token authentication  
 URL: `/api/meetings-admin?session=${sessionToken}`
 Body: { action, ...params }
+
+// Input validation for all APIs
+- chat_reference field now supported in chat API
+- Comprehensive security validation via InputValidator
 ```
 
 ## 📧 Email System
@@ -306,12 +333,24 @@ routes: [
 - Email notifications on status changes
 - CSV export functionality
 - Mobile-responsive design with professional modals
+- Enhanced timestamp formatting ([MM/DD] format)
+- Real-time data refresh and filtering
 ```
 
 ### 2. Adding New Services
 ```astro
 // File: src/components/sections/ServicesSection.astro
-// Pattern:
+// Current services include:
+{
+  title: "AI-Powered E-commerce Websites",
+  title: "AI Web Intelligence & Analytics", 
+  title: "Smart Business Automation",
+  title: "AI Training & Business Consulting",
+  title: "E-commerce Photography & Creative"
+  // ... more services
+}
+
+// Pattern for new services:
 {
   title: "Service Name",
   description: "Detailed description with benefits and metrics",
@@ -322,33 +361,85 @@ routes: [
 }
 ```
 
-### 3. Email Template Updates
+### 3. Core AI Services Available
+```typescript
+// File: src/lib/services/components/userServices.ts
+- AI Web Intelligence Scan (analyze_website)
+- Competitive Intelligence Service (upcoming)
+- Digital Marketing Audit Service (upcoming)  
+- Business Growth Optimizer Service (upcoming)
+
+// Key capabilities:
+- SEO analysis and recommendations
+- Performance optimization suggestions
+- AI readiness assessment
+- Automation opportunity identification
+- Business impact calculations
+```
+
+### 4. Email Template Updates
 ```typescript
 // File: src/pages/api/chat.ts
 // Functions:
 - discoveryCallConfirmation(): Email when call scheduled
 - sendMeetingStatusEmail(): Email on status changes
 
-// Best practices:
+// Email capabilities:
 - HTML + text versions
-- Professional tone
+- Professional tone with chat buttons
 - Clear call-to-action
-- Avoid promising features not implemented
+- Meeting link integration
+- Status change notifications (confirmed, cancelled, joined, completed)
 ```
 
-### 4. Security Updates
+### 5. Chat System Management
 ```typescript
+// File: src/components/ui/ChatBox.astro
+// Recent fixes:
+- Added chat_reference field support
+- Session management improvements
+- Error handling for 400 responses
+- localStorage integration for session persistence
+
+// Key features:
+- AI-powered conversation handling
+- Discovery call booking integration
+- Session reference tracking
+- Mobile-responsive design
+```
+
+### 6. Security Management
+```typescript
+// Security utilities in src/lib/security/:
+adminAuthenticator.ts     // Admin login/session management
+adminRateLimiter.ts      // Environment-aware rate limiting
+csrfProtection.ts        // CSRF token validation
+domainValidator.ts       // Domain whitelist validation
+inputValidator.ts        // Input sanitization (recently updated)
+kvEncryption.ts         // KV data encryption
+rateLimiter.ts          // General rate limiting
+
 // Pattern for new API endpoints:
 1. Import security classes from src/lib/security/
 2. Implement rate limiting
-3. Validate inputs
+3. Validate inputs (including chat_reference field)
 4. Use proper CORS headers
 5. Handle authentication
 6. Log security events
 ```
 
-### 5. UI Component Development
+### 7. UI Component Development
 ```astro
+// Component architecture (41 total Astro components):
+src/components/
+├── analytics/           # GA and tracking components
+├── content/            # Content-specific components
+├── footer/             # Modular footer sections
+├── layout/             # Layout components (Container, Section, PageSection)
+├── navigation/         # NavBar, DockMenu
+├── sections/           # HeroSection, ServicesSection, ReviewsSection
+└── ui/                 # Base UI components (Button, ChatBox, Tag, etc.)
+
 // Pattern for new components:
 ---
 // TypeScript props interface
@@ -376,33 +467,48 @@ const { title, variant = 'primary' } = Astro.props;
 
 ### Common Issues
 
-#### 1. Admin Notes Not Displaying
+#### 1. Chat API Errors (Recently Fixed)
+```bash
+Problem: "Missing session_id parameter" or "Unexpected field: chat_reference"
+Solution: ✅ FIXED - Added chat_reference to input validation schema
+File: src/lib/security/inputValidator.ts
+Status: Deployed to production (August 29, 2025)
+```
+
+#### 2. Admin Notes Not Displaying
 ```bash
 Problem: Admin notes saved but not visible
 Solution: Check if Admin Notes column added to both table header AND data rows
 File: src/pages/admin.astro
+Recent: Enhanced timestamp formatting and display logic
 ```
 
-#### 2. Deployment Issues
+#### 3. Deployment Issues
 ```bash
 Problem: Changes not appearing in production
 Solution: Build before deploy
 Commands: npm run build && npx wrangler deploy
+Auto: ./deploy.sh (recommended - handles build + deploy)
 ```
 
-#### 3. Authentication Failures
+#### 4. Authentication Failures
 ```bash
 Problem: Admin login failing
 Check: wrangler.jsonc ADMIN_KEY and ADMIN_EMAIL values
 Check: Browser localStorage for stale sessions
+Clear: localStorage.removeItem('admin_session')
 ```
 
-#### 4. KV Namespace Issues
+#### 5. KV Namespace Issues
 ```bash
 Problem: Data not loading
 Check: Correct KV namespace in API calls
 SCHEDULER_KV: Discovery calls
 CHATBOT_KV: Newsletter, admin sessions
+PROFILES: User profiles
+SESSIONS: User session data
+KV_SERVICES: Service configurations
+KV_PRODUCTS: Product data
 ```
 
 #### 5. Email Not Sending
@@ -523,22 +629,31 @@ const isValid = await csrf.validateToken(token, sessionId);
 ### Key Files to Master
 ```bash
 # Core application logic
-src/pages/admin.astro           # Admin dashboard
-src/pages/api/chat.ts           # Main chat/scheduling API
+src/pages/admin.astro           # Admin dashboard (recently enhanced)
+src/pages/api/chat.ts           # Main chat/scheduling API (chat_reference support)
 src/pages/api/meetings-admin.ts # Meeting management
+src/pages/api/admin-login.ts    # Admin authentication
 src/pages/index.astro           # Homepage
 
+# Security (Critical)
+src/lib/security/inputValidator.ts  # Input validation (recently updated)
+src/lib/security/               # All security utilities
+
+# AI Services
+src/lib/services/ServiceArchitecture.ts    # Service definitions
+src/lib/services/components/userServices.ts # User-facing AI services
+src/lib/services/components/websiteComponents.ts # Core analysis components
+
 # Configuration
-wrangler.jsonc                  # Production config
-astro.config.mjs               # Build config
-package.json                   # Dependencies
+wrangler.jsonc                  # Production config (6 KV namespaces, R2 bucket)
+astro.config.mjs               # Build config (server mode, Cloudflare adapter)
+package.json                   # Dependencies (v6.0.0)
+tailwind.config.mjs            # UI styling (Apple-inspired design)
 
-# Security
-src/lib/security/              # All security utilities
-
-# UI Components
+# UI Components (41 files)
 src/components/sections/       # Main page sections
 src/layouts/BaseLayout.astro   # Main layout
+src/components/ui/ChatBox.astro # AI chat interface (recently fixed)
 ```
 
 ## 🔗 External Dependencies
@@ -558,4 +673,4 @@ src/layouts/BaseLayout.astro   # Main layout
 
 ---
 
-*This documentation is generated from current codebase analysis. Keep it updated as the project evolves.*
+*This documentation is generated from current codebase analysis and updated on August 29, 2025. Current version: 6.0.0 on main-v7 branch. Keep it updated as the project evolves.*
