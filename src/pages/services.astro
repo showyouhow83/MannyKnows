@@ -1,0 +1,236 @@
+---
+// Services Landing Page - Overview of all MannyKnows services
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
+import Button from '../components/ui/Button.astro';
+
+// Service categories with their services
+const serviceCategories = [
+  {
+    id: "ai-agents",
+    title: "AI Agents",
+    description: "Intelligent AI agents that handle sales, support, and customer interactions 24/7. From lead generation to customer service, our agents work tirelessly to grow your business.",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>`,
+    gradient: "from-blue-500 to-cyan-500",
+    services: [
+      { name: "AI Sales Agents", href: "/services/sales-agents", description: "Automated sales conversations that qualify and convert leads" },
+      { name: "Lead Generation Bots", href: "/services/lead-generation-bots", description: "Capture and nurture leads automatically" },
+      { name: "Phone Agents", href: "/services/ai-phone-agents", description: "AI-powered voice agents for calls" },
+      { name: "24/7 Customer Service", href: "/services/customer-service-bots", description: "Round-the-clock support automation" },
+      { name: "Voice Assistants", href: "/services/voice-assistants", description: "Natural voice interactions for your business" },
+      { name: "Virtual Receptionists", href: "/services/virtual-receptionists", description: "AI concierge and reception services" }
+    ]
+  },
+  {
+    id: "automation",
+    title: "Business Automation",
+    description: "Streamline operations with intelligent workflow automation. From data entry to invoice processing, we eliminate manual tasks and reduce errors by 95%.",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      <polyline points="7.5,4.21 12,6.81 16.5,4.21"></polyline>
+      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+    </svg>`,
+    gradient: "from-green-500 to-emerald-500",
+    services: [
+      { name: "Workflow Automation", href: "/services/workflow-automation", description: "End-to-end process automation" },
+      { name: "Data Entry Automation", href: "/services/data-entry-automation", description: "Eliminate manual data input" },
+      { name: "Invoice Processing", href: "/services/invoice-processing", description: "Automated invoice handling" },
+      { name: "CRM Automation", href: "/services/crm-automation", description: "Smart CRM workflows and updates" },
+      { name: "Document Processing", href: "/services/document-processing", description: "AI-powered document handling" },
+      { name: "Email Automation", href: "/services/email-automation", description: "Intelligent email workflows" }
+    ]
+  },
+  {
+    id: "web-intelligence",
+    title: "Web Intelligence",
+    description: "Smart eCommerce and web solutions powered by AI. From personalized recommendations to behavioral analytics, drive conversions with intelligent digital experiences.",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H19"></path>
+      <circle cx="17" cy="21" r="2"></circle>
+      <circle cx="9" cy="21" r="2"></circle>
+    </svg>`,
+    gradient: "from-indigo-500 to-purple-500",
+    services: [
+      { name: "Web Scraping", href: "/services/web-scraping", description: "Intelligent data extraction" },
+      { name: "Smart Forms", href: "/services/interactive-forms", description: "AI-powered interactive forms" },
+      { name: "Personalized Recommendations", href: "/services/personalized-recommendations", description: "AI product suggestions" },
+      { name: "AI-Powered Search", href: "/services/smart-search", description: "Intelligent site search" },
+      { name: "Behavioral Analytics", href: "/services/behavioral-analytics", description: "User behavior insights" },
+      { name: "Conversion Optimization", href: "/services/conversion-optimization", description: "AI-driven CRO" }
+    ]
+  },
+  {
+    id: "photography",
+    title: "Photography & 360",
+    description: "Professional photography and immersive 360-degree experiences. From product shots to virtual tours, we capture your business in stunning detail.",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+      <circle cx="12" cy="13" r="4"></circle>
+    </svg>`,
+    gradient: "from-rose-500 to-pink-500",
+    services: [
+      { name: "Product Photography", href: "/services/product-photography", description: "Professional product shots" },
+      { name: "Real Estate Photography", href: "/services/real-estate-photography", description: "Property photography" },
+      { name: "360 Virtual Tours", href: "/services/360-virtual-tours", description: "Immersive property tours" },
+      { name: "360 Videos", href: "/services/360-videos", description: "360-degree video production" },
+      { name: "AI Product Photography", href: "/services/ai-product-photography", description: "AI-enhanced product images" }
+    ]
+  },
+  {
+    id: "analytics",
+    title: "Analytics & Training",
+    description: "Transform data into insights and empower your team with AI knowledge. From competitive analysis to hands-on training, we help you make smarter decisions.",
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="20" x2="18" y2="10"></line>
+      <line x1="12" y1="20" x2="12" y2="4"></line>
+      <line x1="6" y1="20" x2="6" y2="14"></line>
+    </svg>`,
+    gradient: "from-orange-500 to-amber-500",
+    services: [
+      { name: "Competitor Analysis", href: "/services/competitor-analysis", description: "AI-powered competitive intelligence" },
+      { name: "Data Visualization", href: "/services/data-visualization", description: "Clear, actionable dashboards" },
+      { name: "AI Training", href: "/services/ai-training", description: "Team AI upskilling" },
+      { name: "AI Consulting", href: "/services/ai-consulting", description: "Strategic AI guidance" },
+      { name: "AI Office Hours", href: "/services/ai-office-hours", description: "Ongoing AI support" }
+    ]
+  }
+];
+
+// Stats for social proof
+const stats = [
+  { value: "200+", label: "Businesses Transformed" },
+  { value: "10x", label: "Productivity Boost" },
+  { value: "95%", label: "Error Reduction" },
+  { value: "24/7", label: "AI Availability" }
+];
+---
+
+<BaseLayout title="Our Services - AI Solutions & Automation | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Hero Section -->
+      <div class="pt-24 pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6">
+              Our Services
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">AI Solutions</span>
+              <span class="text-text-light-primary dark:text-text-dark-primary"> That Scale</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-10">
+              From intelligent automation to AI-powered agents, we deliver solutions that transform how businesses operate. Reduce costs, boost productivity, and scale with confidence.
+            </p>
+
+            <!-- Stats Row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+              {stats.map((stat) => (
+                <div class="text-center">
+                  <div class="text-3xl md:text-4xl font-bold apple-gradient-text mb-1">{stat.value}</div>
+                  <div class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Service Categories -->
+    <Section id="categories" variant="default">
+      <Container>
+        <div class="space-y-20">
+          {serviceCategories.map((category, index) => (
+            <div class="relative" id={category.id}>
+              <!-- Category Header -->
+              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+                <div class={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-white shadow-lg`}>
+                  <Fragment set:html={category.icon} />
+                </div>
+                <div>
+                  <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">{category.title}</h2>
+                  <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-2xl">{category.description}</p>
+                </div>
+              </div>
+
+              <!-- Services Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {category.services.map((service) => (
+                  <a
+                    href={service.href}
+                    class="group block p-6 bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+                  >
+                    <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                      {service.name}
+                    </h3>
+                    <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                      {service.description}
+                    </p>
+                    <div class="mt-4 flex items-center text-sm text-primary-blue font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                      Learn more
+                      <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="alternate">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Transform</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> Your Business?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free discovery call to discuss your needs and explore how AI can accelerate your growth.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>

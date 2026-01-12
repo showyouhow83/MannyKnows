@@ -22,10 +22,10 @@ const {
 } = Astro.props;
 
 const navLinks = [
-  { href: "#services", label: "Services" },
-  { href: "#products", label: "Products" },
-  { href: "#process", label: "Process" },
-  { href: "#reviews", label: "Reviews" },
+  { href: "/#services", label: "Services" },
+  { href: "/#products", label: "Products" },
+  { href: "/#process", label: "Process" },
+  { href: "/#reviews", label: "Reviews" },
 ];
 ---
 
@@ -46,7 +46,7 @@ const navLinks = [
           <li>
             <a
               href={link.href}
-              class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 hover:-translate-y-1 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none"
+              class="nav-gradient text-text-light-primary dark:text-text-dark-primary font-medium transition-all duration-500 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none"
             >
               {link.label}
             </a>
@@ -75,7 +75,7 @@ const navLinks = [
       <!-- Navigation Actions -->
       <div class="flex items-center gap-2 relative">
         <Button
-          href="#instant-quote"
+          href="/#instant-quote"
           text="FREE 360 PHOTO"
           subtext="CLAIM NOW"
           id="instant-quote-btn"
@@ -85,7 +85,7 @@ const navLinks = [
         />
 
         <Button
-          href="#apple-quote"
+          href="/#apple-quote"
           text="FREE WEBSITE"
           subtext="AI ANALYSIS"
           variant="emoji"
@@ -95,7 +95,7 @@ const navLinks = [
           className="text-[10px] text-white/80 leading-none"
         />
 
-        <button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-105 hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle" aria-label="Open chat" title="Talk to Us">
+        <button type="button" class="group bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 bg-200 border border-green-400/30 rounded-lg text-white w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:shadow-[0_8px_25px_rgba(34,197,94,0.4)] animate-green-gradient-flow before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-green-shimmer" id="topChatToggle" aria-label="Open chat" title="Talk to Us">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10" aria-hidden="true">
             <path d="M12 8V4H8"/>
             <rect width="16" height="12" x="4" y="8" rx="2"/>
@@ -152,12 +152,12 @@ const navLinks = [
           aria-label="Toggle mobile menu"
           aria-expanded="false"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hamburger-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hamburger-icon" aria-hidden="true">
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="close-icon hidden">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="close-icon hidden" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -176,13 +176,13 @@ const navLinks = [
       <!-- Header with Close Button -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary">Menu</h2>
-        <button 
-          type="button" 
+        <button
+          type="button"
           id="mobile-menu-close"
           class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
           aria-label="Close mobile menu"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-light-primary dark:text-text-dark-primary">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-light-primary dark:text-text-dark-primary" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -205,14 +205,14 @@ const navLinks = [
       <div class="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
         <div class="flex gap-3">
           <Button
-            href="#instant-quote"
+            href="/#instant-quote"
             text="FREE 360 PHOTO"
             subtext="CLAIM NOW"
             variant="theme-aware"
             className="flex-1 text-center"
           />
           <Button
-            href="#apple-quote"
+            href="/#apple-quote"
             text="FREE WEBSITE"
             subtext="AI ANALYSIS"
             variant="emoji"
@@ -235,13 +235,13 @@ const navLinks = [
           >
             <div class="flex items-center gap-3">
               <!-- User Preferences Icon -->
-              <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
               </svg>
               <span class="text-gray-700 dark:text-gray-300 font-medium">User preferences</span>
             </div>
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200" id="settingsChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200" id="settingsChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <polyline points="6,9 12,15 18,9"></polyline>
             </svg>
           </button>
@@ -252,7 +252,7 @@ const navLinks = [
             <!-- Theme Setting -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-md flex items-center justify-center">
+                <div class="w-6 h-6 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-md flex items-center justify-center" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600 dark:text-blue-400">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
@@ -294,7 +294,7 @@ const navLinks = [
             <!-- Marquee Setting -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-md flex items-center justify-center">
+                <div class="w-6 h-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-md flex items-center justify-center" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600 dark:text-green-400">
                     <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z"/>
                     <path d="M8 21l4-7 4 7M13 10V7"/>
@@ -331,7 +331,7 @@ const navLinks = [
             <!-- Colorful Titles Setting -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-md flex items-center justify-center">
+                <div class="w-6 h-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-md flex items-center justify-center" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-600 dark:text-purple-400">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>

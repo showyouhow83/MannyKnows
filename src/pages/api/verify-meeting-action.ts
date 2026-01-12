@@ -222,7 +222,7 @@ export const GET: APIRoute = async ({ url, request, locals }) => {
             transform: rotate(45deg);
           }
           .brand { 
-            background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%);
+            background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;

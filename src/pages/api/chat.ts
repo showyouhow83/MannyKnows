@@ -1271,7 +1271,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     .outer{background:linear-gradient(to-t,rgba(244,244,245,0.5) 0%,rgba(250,250,250,0.3) 50%,rgba(244,244,245,0.2) 100%);min-height:100vh;padding:40px 20px}
     .container{max-width:680px;margin:0 auto}
     .card{background:#ffffff;border:1px solid #e4e4e7;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03)}
-    .header{padding:32px 40px;background:linear-gradient(135deg,#10d1ff 0%,#ff4faa 100%);position:relative}
+    .header{padding:32px 40px;background:linear-gradient(135deg,#0071e3 0%,#ff4faa 100%);position:relative}
     .brand{font-weight:700;font-size:28px;color:#ffffff;letter-spacing:-0.025em}
     .subtitle{color:rgba(255,255,255,0.95);font-size:16px;margin-top:6px;font-weight:500}
     .content{padding:40px 40px 32px;background:#ffffff}
@@ -1283,12 +1283,12 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     .full-width{grid-column:1/-1}
     .details-field{background:#fafafa;border:1px solid #f4f4f5;border-radius:12px;padding:24px;margin-bottom:24px}
     .btn-container{text-align:center;margin:32px 0}
-    .btn{display:inline-block;background:linear-gradient(135deg,#10d1ff,#ff4faa);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(16,209,255,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
+    .btn{display:inline-block;background:linear-gradient(135deg,#0071e3,#ff4faa);color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:12px;font-weight:600;font-size:16px;box-shadow:0 4px 14px rgba(16,209,255,0.25);transition:all 0.3s ease;letter-spacing:-0.025em}
     .btn:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(16,209,255,0.3)}
     .meta{background:#f4f4f5;border:1px solid #e4e4e7;border-radius:12px;padding:16px;text-align:center;margin-top:24px}
     .tracking{color:#71717a;font-size:13px;font-family:ui-monospace,SFMono-Regular,'SF Mono',Consolas,'Liberation Mono',Menlo,monospace;font-weight:500}
     .footer{text-align:center;margin-top:32px;padding:24px;color:#71717a;font-size:13px;background:#f4f4f5;border-radius:12px;border:1px solid #e4e4e7;font-weight:500}
-    .highlight{background:linear-gradient(135deg,#10d1ff,#ff4faa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+    .highlight{background:linear-gradient(135deg,#0071e3,#ff4faa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
     @media (max-width:640px){
       .outer{padding:20px 16px}
       .content{padding:24px 24px 20px}
@@ -1298,7 +1298,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
       .header{padding:24px 24px}
     }
   </style>
-  <!--[if mso]><style>.btn{font-family:Arial, sans-serif !important;background:#10d1ff !important}</style><![endif]-->
+  <!--[if mso]><style>.btn{font-family:Arial, sans-serif !important;background:#0071e3 !important}</style><![endif]-->
 </head>
 <body>
   <div class="outer">

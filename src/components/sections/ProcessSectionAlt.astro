@@ -1,875 +1,253 @@
 ---
-// ProcessSectionAlt.astro - AI E-commerce Transformation Process
+// ProcessSectionAlt.astro - AI Transformation Process (3 Steps Horizontal)
+// SLPainting layout with MannyKnows styling
+import Section from '../layout/Section.astro';
+import Container from '../layout/Container.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+
 export interface Props {
   className?: string;
 }
 
 const { className = '' } = Astro.props;
 
-// Apple gradient colors for individual numbers - 6-color distribution
-const gradientColors = [
-  "#10d1ff", // 1 - Cyan
-  "#0071e3", // 2 - Apple blue
-  "#3b5bd6", // 3 - Blue-purple blend
-  "#5856d6", // 4 - Purple
-  "#a855f7", // 5 - Magenta
-  "#ec4899"  // 6 - Pink
-];
-
 const processSteps = [
   {
-    number: "1.",
-    title: "AI Strategy & Discovery",
-    description: "We analyze your business goals, current e-commerce setup, and identify AI automation opportunities to maximize growth potential.",
-    color: "#10d1ff", // Primary blue
-    bgColor: "rgba(16, 209, 255, 0.08)",
-    iconColor: "#10d1ff",
-    gradient: "from-blue-500 to-cyan-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-      <line x1="9" y1="9" x2="9.01" y2="9"/>
-      <line x1="15" y1="9" x2="15.01" y2="9"/>
-    </svg>`
+    number: "1",
+    title: "Discovery & Strategy",
+    description: "We analyze your business goals, current systems, and identify AI opportunities to maximize your growth potential."
   },
   {
-    number: "2.",
-    title: "E-commerce Architecture Design",
-    description: "Design scalable, AI-ready e-commerce architecture with planned integrations, data flows, and user experience blueprints.",
-    color: "#0071e3", // Secondary blue
-    bgColor: "rgba(0, 113, 227, 0.08)",
-    iconColor: "#0071e3",
-    gradient: "from-indigo-500 to-blue-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-      <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-      <path d="M2 2l7.586 7.586"/>
-      <circle cx="11" cy="11" r="2"/>
-    </svg>`
+    number: "2",
+    title: "Build & Implement",
+    description: "We develop custom AI solutions tailored to your needs—from automation to intelligent assistants and analytics."
   },
   {
-    number: "3.",
-    title: "AI Implementation & Development",
-    description: "Build custom AI solutions, integrate automation tools, and develop responsive, high-converting interfaces tailored to your needs.",
-    color: "#5856d6", // Purple
-    bgColor: "rgba(88, 86, 214, 0.08)",
-    iconColor: "#5856d6",
-    gradient: "from-purple-500 to-pink-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="16,18 22,12 16,6"/>
-      <polyline points="8,6 2,12 8,18"/>
-    </svg>`
-  },
-  {
-    number: "4.",
-    title: "Testing & Optimization",
-    description: "Rigorous testing of AI functionality, user experience optimization, performance tuning, and conversion rate validation.",
-    color: "#22c55e", // Green
-    bgColor: "rgba(34, 197, 94, 0.08)",
-    iconColor: "#22c55e",
-    gradient: "from-green-500 to-emerald-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="9,11 12,14 22,4"/>
-      <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C13.3968 3 14.7178 3.35587 15.8871 4"/>
-    </svg>`
-  },
-  {
-    number: "5.",
+    number: "3",
     title: "Launch & Scale",
-    description: "Deploy your AI-powered e-commerce solution, monitor performance, and implement continuous improvement strategies for scaling.",
-    color: "#f59e0b", // Amber/Gold
-    bgColor: "rgba(245, 158, 11, 0.08)",
-    iconColor: "#f59e0b",
-    gradient: "from-orange-500 to-yellow-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M6 3h12l4 6-10 13L2 9l4-6z"/>
-      <path d="M11 3L8 9l4 13 4-13-3-6"/>
-      <path d="M2 9h20"/>
-    </svg>`
-  },
-  {
-    number: "6.",
-    title: "Growth & Support",
-    description: "Ongoing support, performance monitoring, and strategic growth initiatives to maximize your e-commerce success and ROI.",
-    color: "#ef4444", // Red
-    bgColor: "rgba(239, 68, 68, 0.08)",
-    iconColor: "#ef4444",
-    gradient: "from-rose-500 to-pink-500",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-    </svg>`
+    description: "We deploy your AI solution, monitor performance, and provide ongoing support to help you scale confidently."
   }
 ];
 ---
 
-<div class={`ai-process-container max-w-[1440px] mx-auto relative z-10 ${className}`}>
-  <div class="process-grid">
-    {processSteps.map((step, index) => (
-      <div class={`process-card-wrapper ${index % 2 === 0 ? 'left-number-right-card' : 'right-number-left-card'}`} data-step={index}>
-        
-        {/* Timeline Layout: Complete number+card groups alternate sides */}
-        <div class="step-row">
-          {/* Left Side Content */}
-          <div class="step-left">
-            {index % 2 === 0 ? (
-              // Even steps (1,3,5): Number and card together on left side
-              <div class="step-group">
-                <div class={`step-number-large`} 
-                     style={`color: ${gradientColors[index]}`}
-                     data-target-step={index}
-                     role="button"
-                     tabindex="0"
-                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
-                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
-                </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
-                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
-                     data-step-index={index}
-                     role="article"
-                     aria-labelledby={`step-title-${index}-left`}>
-                  <div class="step-content">
-                    <div class="step-header">
-                      <div class="step-icon-container" 
-                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
-                           aria-hidden="true">
-                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
-                          <Fragment set:html={step.icon} />
-                        </div>
-                      </div>
-                      
-                      <h3 class="step-title sf-semibold" id={`step-title-${index}-left`}>{step.title}</h3>
-                    </div>
-                    
-                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // Odd steps: Empty left side
-              <div class="empty-side"></div>
-            )}
+<Section id="process" variant="default" hasOverflow={true} className={className}>
+  <Container className="relative z-10">
+    <SectionHeader
+      badge="How It Works"
+      title="Our Process"
+      subtitle="From discovery to deployment we follow a proven methodology to transform your AI vision into reality"
+    />
+
+    <!-- Horizontal 3-Step Process (SLPainting Layout) -->
+    <div class="steps-grid grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24 max-w-6xl mx-auto">
+      {processSteps.map((step, index) => (
+        <div class="step-item group relative flex flex-col items-center text-center" data-step={index}>
+          <!-- Step Number with Info Icon -->
+          <div class="relative">
+            <div class="step-number" aria-hidden="true">
+              {step.number}
+            </div>
+            <!-- Hover Hint Icon -->
+            <div class="hover-hint">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+            </div>
           </div>
-          
-          {/* Right Side Content */}
-          <div class="step-right">
-            {index % 2 === 1 ? (
-              // Odd steps (2,4,6): Number and card together on right side
-              <div class="step-group">
-                <div class={`step-number-large`} 
-                     style={`color: ${gradientColors[index]}`}
-                     data-target-step={index}
-                     role="button"
-                     tabindex="0"
-                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
-                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
-                </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
-                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
-                     data-step-index={index}
-                     role="article"
-                     aria-labelledby={`step-title-${index}-right`}>
-                  <div class="step-content">
-                    <div class="step-header">
-                      <div class="step-icon-container" 
-                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
-                           aria-hidden="true">
-                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
-                          <Fragment set:html={step.icon} />
-                        </div>
-                      </div>
-                      
-                      <h3 class="step-title sf-semibold" id={`step-title-${index}-right`}>{step.title}</h3>
-                    </div>
-                    
-                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // Even steps on mobile: Show content on right side too
-              <div class="mobile-content">
-                <div class={`step-number-large number-mobile`} 
-                     style={`color: ${gradientColors[index]}`}
-                     data-target-step={index}
-                     role="button"
-                     tabindex="0"
-                     aria-label={`Step ${step.number.slice(0, -1)}: ${step.title}`}>
-                  <span class="sf-black"><span class="number-part">{step.number.slice(0, -1)}</span><span class="dot-part">.</span></span>
-                </div>
-                <div class="process-card group backdrop-blur-lg border rounded-xl p-8 text-center relative overflow-hidden"
-                     style={`background: linear-gradient(135deg, ${gradientColors[index]}15, ${gradientColors[index]}08); border-color: ${gradientColors[index]}40; box-shadow: 0 4px 20px ${gradientColors[index]}20, 0 1px 3px ${gradientColors[index]}10;`}
-                     data-step-index={index}
-                     role="article"
-                     aria-labelledby={`step-title-${index}-mobile`}>
-                  <div class="step-content">
-                    <div class="step-header">
-                      <div class="step-icon-container" 
-                           style={`background-color: ${gradientColors[index]}15; border: 2px solid ${gradientColors[index]}40`}
-                           aria-hidden="true">
-                        <div class="step-icon" style={`color: ${gradientColors[index]}`}>
-                          <Fragment set:html={step.icon} />
-                        </div>
-                      </div>
-                      
-                      <h3 class="step-title sf-semibold" id={`step-title-${index}-mobile`}>{step.title}</h3>
-                    </div>
-                    
-                    <p class="text-text-light-primary dark:text-text-dark-primary text-lg leading-relaxed mb-6 font-medium">{step.description}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+
+          <!-- Step Title -->
+          <h3 class="step-title">{step.title}</h3>
+
+          <!-- Step Description (shown on hover as overlay) -->
+          <div class="step-description-overlay">
+            <p class="text-sm lg:text-base text-text-light-secondary dark:text-white/80 leading-relaxed">
+              {step.description}
+            </p>
           </div>
         </div>
-        
-
-      </div>
-    ))}
-  </div>
-  
-  {/* Final Arrow at bottom of section */}
-  <div class="final-arrow" style={`color: ${gradientColors[5]}`}>
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="6,9 12,15 18,9"></polyline>
-    </svg>
-  </div>
-</div>
+      ))}
+    </div>
+  </Container>
+</Section>
 
 <style>
-  /* AI Process Section Styles */
-  .ai-process-container {
-    width: 100%;
-    /* Removed max-width, margin, padding - now handled by Tailwind classes */
+  /* Step Grid Layout */
+  .steps-grid {
+    margin-top: -2rem;
   }
 
-  .process-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
+  /* Step item styling */
+  .step-item {
+    min-height: 280px;
+    padding: 1rem;
     position: relative;
-    max-width: 1440px;
-    margin: 0 auto;
   }
 
-  /* Central Timeline Line - Hidden for cleaner desktop design */
-  .process-grid::before {
-    display: none;
-  }
-
-  /* Mobile: Timeline hidden on mobile */
-  @media (max-width: 768px) {
-    .process-grid::before {
-      display: none;
-    }
-  }
-
-  .process-card-wrapper {
+  /* Number styling - Apple-style gradient animation */
+  .step-number {
     position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 2;
-  }
-
-  .step-row {
-    display: flex;
-    align-items: center;
-    min-height: 250px; /* Increased from 160px for better desktop spacing */
-    gap: 2rem;
-  }
-
-  .step-left,
-  .step-right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .step-left {
-    justify-content: flex-end;
-  }
-
-  .step-right {
-    justify-content: flex-start;
-  }
-
-  /* Step group container for number + card together */
-  .step-group {
-    display: flex;
-    align-items: center;
-    gap: 0rem; /* Changed from 2rem */
-    max-width: 600px;
-  }
-
-  /* Empty side placeholder */
-  .empty-side {
-    min-height: 1px;
-  }
-
-  .step-number-large {
-    font-size: 12rem; /* Changed from 6rem */
+    font-size: 180px;
     font-weight: 900;
-    line-height: 1;
-    cursor: pointer;
-    text-shadow: 0 2px 10px currentColor;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex-shrink: 0;
-    will-change: transform, opacity;
-    transform: translateZ(0);
-  }
-
-  /* Hide mobile content on desktop */
-  .mobile-content {
-    display: none;
-  }
-
-  .dot-part {
-    font-size: 0.15em;
-    opacity: 0.8;
-  }
-
-  /* Process card styling */
-  .process-card {
-    max-width: 350px;
-    width: 100%;
-    backdrop-filter: blur(20px);
-    will-change: transform, box-shadow;
-    transform: translateZ(0);
-  }
-
-  .process-card {
-    position: relative;
-    width: 400px;
-    max-width: 100%;
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.95) 0%, 
-      rgba(248, 250, 252, 0.98) 100%);
-    /* Fallback for browsers without backdrop-filter support */
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    /* Webkit fallback for Windows browsers */
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
-      0 4px 20px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    /* Simplified will-change for better Windows compatibility */
-    will-change: transform;
-  }
-
-  /* Fallback styles for browsers that don't support backdrop-filter */
-  @supports not (backdrop-filter: blur(20px)) {
-    .process-card {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.98) 0%, 
-        rgba(248, 250, 252, 1) 100%);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  /* Disabled default card hover animations */
-  .process-card:hover {
-    /* No hover effects for cleaner interaction */
-  }
-
-  .step-content {
-    text-align: left;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .step-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .step-icon-container {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    line-height: 0.8;
     margin: 0;
-    transition: all 0.3s ease;
-    position: relative;
-    flex-shrink: 0;
-    will-change: transform;
+
+    /* MK gradient: blue to pink (no light blue) */
+    background: linear-gradient(90deg, #0071e3, #ff4faa);
+    background-size: 400% 100%;
+    animation: numberGradientFlow 35s ease-in-out infinite;
+
+    /* Gradient text */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  /* Disabled icon hover animation */
-  .process-card:hover .step-icon-container {
-    /* No hover effects for cleaner interaction */
+  @keyframes numberGradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 
-  .step-icon {
-    transition: all 0.3s ease;
-  }
-
+  /* Step title styling - white text */
   .step-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1a202c;
-    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+    max-width: 220px;
     line-height: 1.3;
-    text-align: left;
-  }
-
-  /* Arrow styles */
-  .step-arrow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-    opacity: 0.7;
-    transition: all 0.3s ease;
-  }
-
-  .final-arrow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem auto;
-    opacity: 0.8;
-    animation: bounce 2s infinite;
-  }
-
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-4px);
-    }
-    60% {
-      transform: translateY(-2px);
-    }
-  }
-
-  /* Dark mode support */
-  :global(.dark) .process-grid::before {
-    background: linear-gradient(180deg, 
-      #10d1ff 0%, 
-      #0071e3 20%, 
-      #3b5bd6 40%,
-      #5856d6 60%,
-      #a855f7 80%,
-      #ec4899 100%);
-    filter: drop-shadow(0 0 10px #10d1ff) drop-shadow(0 0 20px #10d1ff);
-  }
-
-  :global(.dark) .process-card {
-    background: linear-gradient(135deg, 
-      rgba(30, 41, 59, 0.95) 0%, 
-      rgba(51, 65, 85, 0.98) 100%);
-    /* Fallback for browsers without backdrop-filter support */
-    background-color: rgba(30, 41, 59, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      0 4px 20px rgba(0, 0, 0, 0.3),
-      0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-
-  /* Dark mode fallback for browsers that don't support backdrop-filter */
-  @supports not (backdrop-filter: blur(20px)) {
-    :global(.dark) .process-card {
-      background: linear-gradient(135deg, 
-        rgba(30, 41, 59, 0.98) 0%, 
-        rgba(51, 65, 85, 1) 100%);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-  }
-
-  /* Disabled dark mode hover animations */
-  :global(.dark) .process-card:hover {
-    /* No hover effects for cleaner interaction */
+    color: #1f2937;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   :global(.dark) .step-title {
-    color: #f7fafc;
+    color: #ffffff;
   }
 
-  :global(.dark) .step-number-large {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  /* Hover hint icon */
+  .hover-hint {
+    position: absolute;
+    top: -8px;
+    right: -24px;
+    color: #5856d6;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
   }
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .ai-process-container {
-      padding: 0; /* Updated from 0 1rem */
-    }
-
-    .process-grid {
-      gap: 1rem; /* Changed from 3rem */
-      max-width: 400px;
-      align-items: flex-start; /* Confirmed consistent with user spec */
-      padding-left: 0rem; /* Removed timeline space */
-    }
-
-    .step-row {
-      flex-direction: row; /* Keep horizontal layout on mobile */
-      gap: 0rem; /* Updated from 1rem */
-      margin-bottom: 0rem; /* Changed from 3rem */
-      min-height: auto;
-      width: 100%;
-    }
-
-    .step-left,
-    .step-right {
-      flex-direction: row; /* Reset to row for mobile */
-      justify-content: flex-start !important;
-      width: 100%;
-      gap: 1rem;
-    }
-
-    /* On mobile, show all content on right side of timeline */
-    .step-left {
-      display: none; /* Hide left side completely */
-    }
-
-    .step-right {
-      display: flex; /* Always show right side */
-      align-items: center;
-    }
-
-    /* Mobile-specific number and card layout */
-    .mobile-content {
-      display: flex !important; /* Show on mobile */
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    /* Hide mobile content on desktop */
-    @media (min-width: 769px) {
-      .mobile-content {
-        display: none !important;
-      }
-    }
-
-    .process-card {
-      width: 100%;
-      max-width: 400px; /* Updated from 280px */
-      padding: 2.2rem 0.5rem 2.2rem 6rem; /* Updated padding values */
-    }
-
-    .step-number-large {
-      font-size: 10rem; /* Updated from 12rem */
-      margin: 0;
-      height: auto;
-      flex-shrink: 0;
-      position: absolute; /* Changed from relative */
-      left: -25px; /* Updated positioning */
-      z-index: 10; /* Fixed consistent z-index for all numbers */
-    }
-
-    .number-left,
-    .number-right,
-    .number-mobile {
-      margin: 0;
-    }
-
-    .dot-part {
-      font-size: 0.125em;
-    }
-
-    .step-title {
-      font-size: 1.25rem;
-    }
-
-    .step-icon-container {
-      width: 45px; /* Updated from 24px */
-      height: 35px; /* Updated from 24px */
-    }
-
-    .step-content {
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .step-header {
-      flex-direction: row;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .step-title {
-      text-align: left;
-      margin: 0;
-      font-size: 0.9rem;
-    }
-  }
-
-  /* Tablet and intermediate screen sizes */
-  @media (min-width: 769px) and (max-width: 1023px) {
-    .step-row {
-      min-height: 200px; /* Intermediate height between mobile and desktop */
-      gap: 3rem; /* Intermediate gap */
-    }
-
-    .process-card {
-      width: 380px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .process-grid {
-      max-width: 1440px;
-    }
-
-    .step-row {
-      gap: 5rem; /* Improved desktop spacing */
-    }
-
-    .process-card {
-      width: 450px;
-    }
-  }
-
-  /* Animation on scroll - hardware accelerated */
-  .process-card-wrapper {
+  /* Desktop step description - glassmorphism overlay */
+  .step-description-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    /* Transparent with blur */
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(209, 213, 219, 0.3);
     opacity: 0;
-    transform: translateY(30px) translateZ(0);
-    animation: slideInUp 0.6s ease forwards;
-    will-change: opacity, transform;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
   }
 
-  .process-card-wrapper:nth-child(1) { animation-delay: 0.1s; }
-  .process-card-wrapper:nth-child(2) { animation-delay: 0.2s; }
-  .process-card-wrapper:nth-child(3) { animation-delay: 0.3s; }
-  .process-card-wrapper:nth-child(4) { animation-delay: 0.4s; }
-  .process-card-wrapper:nth-child(5) { animation-delay: 0.5s; }
+  /* Dark mode glassmorphism */
+  :global(.dark) .step-description-overlay {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-  @keyframes slideInUp {
+  /* Hover effects - keep number visible, blur handles it */
+  .step-item:hover .step-title {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .step-item:hover .hover-hint {
+    opacity: 0;
+  }
+
+  .step-item:hover .step-description-overlay {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .step-number {
+      font-size: 200px;
+      line-height: 1;
+    }
+
+    .step-title {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+    }
+  }
+
+  /* Mobile: Show descriptions below, no hover effect */
+  @media (max-width: 767px) {
+    .hover-hint {
+      display: none;
+    }
+
+    .step-item {
+      min-height: auto;
+      padding-bottom: 2rem;
+    }
+
+    .step-number {
+      font-size: 140px;
+    }
+
+    .step-item:hover .step-number,
+    .step-item:hover .step-title {
+      opacity: 1;
+      transform: none;
+    }
+
+    .step-description-overlay {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      background: transparent;
+      box-shadow: none;
+      border: none;
+      padding: 1rem 0;
+      margin-top: 0.5rem;
+    }
+  }
+
+  /* Entrance animation */
+  .step-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: stepFadeIn 0.6s ease forwards;
+  }
+
+  .step-item:nth-child(1) { animation-delay: 0.1s; }
+  .step-item:nth-child(2) { animation-delay: 0.2s; }
+  .step-item:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes stepFadeIn {
     to {
       opacity: 1;
-      transform: translateY(0) translateZ(0);
+      transform: translateY(0);
     }
   }
-
-  /* Optimized hover effects - handled by JavaScript for better performance */
 </style>
-
-<script>
-  // Optimized hover interaction system with Windows compatibility
-  document.addEventListener('DOMContentLoaded', function() {
-    // Browser compatibility detection - using userAgent instead of deprecated platform
-    const isWindows = navigator.userAgent.indexOf('Windows') !== -1;
-    const supportsBackdropFilter = CSS.supports('backdrop-filter', 'blur(20px)') || CSS.supports('-webkit-backdrop-filter', 'blur(20px)');
-    const supportsWillChange = CSS.supports('will-change', 'transform');
-    
-    // Cache DOM elements for better performance
-    const numbers = document.querySelectorAll('[data-target-step]');
-    const processCards = document.querySelectorAll('.process-card');
-    const processCardWrappers = document.querySelectorAll('.process-card-wrapper');
-    
-    // Optimized gradient colors array
-    const gradientColors = [
-      "#10d1ff", "#0071e3", "#3b5bd6", 
-      "#5856d6", "#a855f7", "#ec4899"
-    ];
-    
-    // Set custom properties for connector colors
-    processCardWrappers.forEach((wrapper, index) => {
-      if (wrapper instanceof HTMLElement) {
-        wrapper.style.setProperty('--step-color', gradientColors[index]);
-      }
-    });
-    
-    // Windows-compatible animation function
-    function applyHoverEffect(element: HTMLElement, options: {
-      transform?: string;
-      brightness?: number;
-      boxShadow?: string;
-      borderColor?: string;
-    }) {
-      if (!(element instanceof HTMLElement)) return;
-      
-      try {
-        // Simplified transforms for Windows compatibility
-        if (options.transform) {
-          // Break down complex transforms for better compatibility
-          element.style.setProperty('transform', options.transform, 'important');
-        }
-        
-        // Use opacity changes instead of filter brightness on Windows if needed
-        if (options.brightness) {
-          if (isWindows && !CSS.supports('filter', 'brightness(1.2)')) {
-            // Fallback: use opacity for Windows browsers that don't support filter
-            element.style.setProperty('opacity', '0.9', 'important');
-          } else {
-            element.style.setProperty('filter', `brightness(${options.brightness})`, 'important');
-          }
-        }
-        
-        if (options.boxShadow) {
-          element.style.setProperty('box-shadow', options.boxShadow, 'important');
-        }
-        
-        if (options.borderColor) {
-          element.style.setProperty('border-color', options.borderColor, 'important');
-        }
-      } catch (error) {
-        // Silent error handling in production
-      }
-    }
-    
-    // Windows-compatible cleanup function
-    function removeHoverEffect(element: HTMLElement) {
-      if (!(element instanceof HTMLElement)) return;
-      
-      try {
-        element.style.removeProperty('transform');
-        element.style.removeProperty('filter');
-        element.style.removeProperty('opacity');
-        element.style.removeProperty('box-shadow');
-        element.style.removeProperty('border-color');
-      } catch (error) {
-        // Silent error handling in production
-      }
-    }
-    
-    // Performance-optimized hover effects for process cards
-    processCards.forEach((card, index) => {
-      if (!(card instanceof HTMLElement)) return;
-      
-      // Get the actual step index from data attribute
-      const stepIndex = card.getAttribute('data-step-index');
-      if (!stepIndex) return;
-      
-      const color = gradientColors[parseInt(stepIndex)];
-      // Simplified transforms for Windows compatibility
-      const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
-      const hoverBorderColor = `${color}60`;
-      // Removed transforms for cleaner interaction - only keep glow effects
-      
-      card.addEventListener('mouseenter', () => {
-        requestAnimationFrame(() => {
-          applyHoverEffect(card, {
-            brightness: 1.2,
-            boxShadow: hoverShadow,
-            borderColor: hoverBorderColor
-          });
-          
-          // Also affect corresponding number - only brightness, no transform
-          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
-          if (correspondingNumber instanceof HTMLElement) {
-            applyHoverEffect(correspondingNumber, {
-              brightness: 1.2
-            });
-          }
-        });
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        requestAnimationFrame(() => {
-          removeHoverEffect(card);
-          
-          // Also remove effects from corresponding number
-          const correspondingNumber = document.querySelector(`[data-target-step="${stepIndex}"]`);
-          if (correspondingNumber instanceof HTMLElement) {
-            removeHoverEffect(correspondingNumber);
-          }
-        });
-      });
-    });
-    
-    // Cross-component interaction system with Windows compatibility
-    numbers.forEach(number => {
-      if (!(number instanceof HTMLElement)) return;
-      
-      const stepIndex = number.getAttribute('data-target-step');
-      const correspondingCard = document.querySelector(`[data-step-index="${stepIndex}"]`);
-      
-      if (stepIndex && correspondingCard instanceof HTMLElement) {
-        const color = gradientColors[parseInt(stepIndex)];
-        const hoverBorderColor = `${color}60`;
-        const hoverShadow = `0 0 40px ${color}30, 0 0 20px ${color}20, 0 4px 20px rgba(0, 0, 0, 0.1)`;
-        
-        // Mouse interactions - cross-component awareness (removed transforms)
-        number.addEventListener('mouseenter', () => {
-          requestAnimationFrame(() => {
-            applyHoverEffect(correspondingCard, {
-              brightness: 1.2,
-              borderColor: hoverBorderColor,
-              boxShadow: hoverShadow
-            });
-          });
-        });
-        
-        number.addEventListener('mouseleave', () => {
-          requestAnimationFrame(() => {
-            removeHoverEffect(correspondingCard);
-          });
-        });
-        
-        // Touch support with Windows compatibility (removed transforms)
-        number.addEventListener('touchstart', () => {
-          requestAnimationFrame(() => {
-            applyHoverEffect(correspondingCard, {
-              brightness: 1.2,
-              borderColor: hoverBorderColor,
-              boxShadow: hoverShadow
-            });
-          });
-        }, { passive: true });
-        
-        number.addEventListener('touchend', () => {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              removeHoverEffect(correspondingCard);
-            });
-          }, 300);
-        }, { passive: true });
-        
-        // Card affects Number - Windows compatible (removed transforms)
-        correspondingCard.addEventListener('mouseenter', () => {
-          requestAnimationFrame(() => {
-            applyHoverEffect(number, {
-              brightness: 1.2
-            });
-          });
-        });
-        
-        correspondingCard.addEventListener('mouseleave', () => {
-          requestAnimationFrame(() => {
-            removeHoverEffect(number);
-          });
-        });
-        
-        // Touch support for card affecting number (removed transforms)
-        correspondingCard.addEventListener('touchstart', () => {
-          requestAnimationFrame(() => {
-            applyHoverEffect(number, {
-              brightness: 1.2
-            });
-          });
-        }, { passive: true });
-        
-        correspondingCard.addEventListener('touchend', () => {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              removeHoverEffect(number);
-            });
-          }, 300);
-        }, { passive: true });
-      }
-    });
-    
-  });
-
-  // Debug logging for Windows troubleshooting - removed in production
-  // Windows compatibility mode handled automatically
-
-</script>

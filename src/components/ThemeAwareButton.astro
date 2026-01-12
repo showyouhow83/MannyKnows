@@ -14,7 +14,7 @@ const { href, text, subtext, id, className = "" } = Astro.props;
 <a 
   href={href}
   id={id ? `${id}-light` : undefined}
-  class={`light-mode-only bg-white border border-black/20 text-black py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+  class={`light-mode-only bg-white border border-black/20 text-black py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
 >
   <pixel-canvas 
     data-colors="#000000, #1f2937, #374151" 
@@ -31,7 +31,7 @@ const { href, text, subtext, id, className = "" } = Astro.props;
 <a 
   href={href}
   id={id ? `${id}-dark` : undefined}
-  class={`dark-mode-only bg-black border border-white/20 text-white py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+  class={`dark-mode-only bg-black border border-white/20 text-white py-3 px-6 rounded-lg no-underline font-semibold text-sm h-12 flex flex-col items-center justify-center relative transition-all duration-300 overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
 >
   <pixel-canvas 
     data-colors="#ffffff, #f8fafc, #e2e8f0" 

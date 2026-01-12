@@ -10,13 +10,15 @@
     "build:optimized": "npm run build && npm run optimize:all",
     "preview": "astro preview",
     "astro": "astro",
-  "deploy": "./deploy.sh",
-  "deploy:production": "./deploy.sh production",
+    "deploy": "./deploy.sh",
+    "deploy:production": "./deploy.sh production",
     "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.6.1",
     "@astrojs/tailwind": "^6.0.2",
+    "@microsoft/clarity": "^1.0.2",
     "astro": "5.13.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",

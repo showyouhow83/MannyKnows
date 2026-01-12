@@ -18,10 +18,10 @@ const {
 } = Astro.props;
 
 const variantClasses = {
-  default: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
-  brand: 'animate-button-gradient text-white backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
-  chat: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1',
-  settings: 'backdrop-blur-lg border rounded-lg transition-all duration-300 hover:scale-110 hover:-translate-y-1'
+  default: 'backdrop-blur-lg border rounded-lg transition-all duration-300',
+  brand: 'animate-button-gradient text-white backdrop-blur-lg border rounded-lg transition-all duration-300',
+  chat: 'backdrop-blur-lg border rounded-lg transition-all duration-300',
+  settings: 'backdrop-blur-lg border rounded-lg transition-all duration-300'
 };
 
 const variantStyles = {
@@ -48,17 +48,17 @@ const iconClasses = {
   <div class={`w-full h-full aspect-square sm:w-12 sm:h-12 ${variantClasses[variant]} flex items-center justify-center text-text-light-primary dark:text-text-dark-primary relative overflow-hidden`} style={variantStyles[variant]}>
     
     {variant === 'brand' ? (
-      <span class="text-white font-black text-sm sm:text-lg relative z-10">MK</span>
+      <span class="text-white font-black text-sm sm:text-lg relative z-10" aria-hidden="true">MK</span>
     ) : variant === 'chat' ? (
-      <div class="scale-75 sm:scale-100 text-green-400">
+      <div class="scale-75 sm:scale-100 text-green-400" aria-hidden="true">
         <Fragment set:html={icon} />
       </div>
     ) : variant === 'settings' ? (
-      <div class="scale-75 sm:scale-100 text-purple-400 transition-all duration-300 group-hover:rotate-90">
+      <div class="scale-75 sm:scale-100 text-purple-400 transition-all duration-300 group-hover:rotate-90" aria-hidden="true">
         <Fragment set:html={icon} />
       </div>
     ) : (
-      <div class="scale-75 sm:scale-100 text-blue-400">
+      <div class="scale-75 sm:scale-100 text-blue-400" aria-hidden="true">
         <Fragment set:html={icon} />
       </div>
     )}

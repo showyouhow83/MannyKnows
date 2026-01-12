@@ -10,134 +10,123 @@
   </div>
 
   <div class="relative z-10 text-center px-6 sm:px-8 lg:px-12 max-w-4xl mx-auto">
-    <!-- Large 404 -->
+    <!-- Large 404 with MK gradient -->
     <div class="mb-8">
-      <h1 class="text-8xl sm:text-9xl lg:text-[12rem] font-black bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent leading-none" style="font-size: clamp(6rem, 12vw, 12rem);">
+      <h1 class="notfound-number text-8xl sm:text-9xl lg:text-[12rem] font-black bg-clip-text text-transparent leading-none" style="font-size: clamp(6rem, 12vw, 12rem);">
         404
       </h1>
     </div>
 
     <!-- Error message -->
     <div class="mb-12">
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
         Oops! Page Not Found
       </h2>
-      <p class="text-lg sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto leading-relaxed">
-        The page you're looking for seems to have vanished into the digital void. 
+      <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+        The page you're looking for seems to have vanished into the digital void.
         Don't worry though – our AI is still here to help you navigate back to where you need to be!
       </p>
     </div>
 
     <!-- Action buttons -->
-    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-      <!-- Primary CTA with glassmorphism -->
-      <a 
-        href="/" 
-        class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold backdrop-blur-lg border rounded-full transition-all duration-300 hover:scale-105 overflow-hidden bg-gradient-to-r from-primary to-secondary text-white border-primary/30"
-        style="box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+    <div class="flex flex-col sm:flex-row gap-3 justify-center items-center mb-16">
+      <!-- Primary CTA - Back to Home -->
+      <a
+        href="/"
+        class="bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-3 px-6 rounded-xl text-sm hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient no-underline font-semibold inline-flex items-center justify-center relative transition-all duration-300 group"
+        aria-label="Return to MannyKnows homepage"
       >
-        <!-- Enhanced glassmorphism overlay on hover -->
-        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-             style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
-        
-        <span class="mr-2 relative z-10">🏠</span>
-        <span class="relative z-10">Back to Home</span>
-        <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
+        <span class="relative z-10 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          <span>Back to Home</span>
+        </span>
       </a>
 
-      <!-- Secondary CTA with glassmorphism and theme-aware styling -->
-      <button 
-        onclick="document.querySelector('[data-chatbox]')?.scrollIntoView({ behavior: 'smooth' })"
-        class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold backdrop-blur-lg border rounded-full transition-all duration-300 hover:scale-105 overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
-        style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
-        aria-label="Get AI assistance"
-        title="Get AI assistance"
+      <!-- Secondary CTA - Open Manny Chat -->
+      <button
+        id="notFoundChatButton"
+        type="button"
+        class="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white py-3 px-6 rounded-xl text-sm hover:shadow-[0_20px_40px_rgba(34,197,94,0.3)] animate-button-gradient no-underline font-semibold inline-flex items-center justify-center relative transition-all duration-300 group"
+        aria-label="Chat with Manny AI assistant"
       >
-        <!-- Enhanced glassmorphism overlay on hover -->
-        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-             style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
-        
-        <span class="mr-2 relative z-10">💬</span>
-        <span class="relative z-10">Ask Manny AI</span>
-        <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
+        <span class="relative z-10 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+          <span>Ask Manny</span>
+        </span>
       </button>
     </div>
 
     <!-- Popular links with glassmorphism styling -->
-    <div class="border-t border-gray-200/30 dark:border-white/20 pt-12">
-      <h3 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary mb-6">
+    <nav class="border-t border-gray-200/30 dark:border-white/20 pt-12" aria-label="Popular site sections">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
         Popular Destinations
       </h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-        <a 
-          href="/#services" 
-          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+        <a
+          href="/#services"
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300  relative overflow-hidden text-gray-900 dark:text-white border-gray-200/30 dark:border-white/20"
           style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2), 0 1px 3px rgba(34, 197, 94, 0.1);"
+          aria-label="View our AI services"
         >
-          <!-- Enhanced glassmorphism overlay on hover -->
           <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.05));"></div>
-          
           <div class="relative z-10">
-            <div class="text-2xl mb-2">🚀</div>
+            <div class="text-2xl mb-2" aria-hidden="true">🚀</div>
             <h4 class="font-semibold mb-1">Services</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Our AI solutions</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Our AI solutions</p>
           </div>
         </a>
 
-        <a 
-          href="/#process" 
-          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+        <a
+          href="/#process"
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300  relative overflow-hidden text-gray-900 dark:text-white border-gray-200/30 dark:border-white/20"
           style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.08)); box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2), 0 1px 3px rgba(168, 85, 247, 0.1);"
+          aria-label="Learn about our process"
         >
-          <!-- Enhanced glassmorphism overlay on hover -->
           <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(168, 85, 247, 0.05));"></div>
-          
           <div class="relative z-10">
-            <div class="text-2xl mb-2">⚙️</div>
+            <div class="text-2xl mb-2" aria-hidden="true">⚙️</div>
             <h4 class="font-semibold mb-1">Process</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">How we work</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">How we work</p>
           </div>
         </a>
 
-        <a 
-          href="/#reviews" 
-          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+        <a
+          href="/#reviews"
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300  relative overflow-hidden text-gray-900 dark:text-white border-gray-200/30 dark:border-white/20"
           style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);"
+          aria-label="Read client reviews"
         >
-          <!-- Enhanced glassmorphism overlay on hover -->
           <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));"></div>
-          
           <div class="relative z-10">
-            <div class="text-2xl mb-2">⭐</div>
+            <div class="text-2xl mb-2" aria-hidden="true">⭐</div>
             <h4 class="font-semibold mb-1">Reviews</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Client testimonials</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Client testimonials</p>
           </div>
         </a>
 
-        <a 
-          href="/#products" 
-          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 relative overflow-hidden text-text-light-primary dark:text-text-dark-primary border-gray-200/30 dark:border-white/20"
+        <a
+          href="/#products"
+          class="group backdrop-blur-lg border rounded-xl p-6 transition-all duration-300  relative overflow-hidden text-gray-900 dark:text-white border-gray-200/30 dark:border-white/20"
           style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.08)); box-shadow: 0 4px 20px rgba(236, 72, 153, 0.2), 0 1px 3px rgba(236, 72, 153, 0.1);"
+          aria-label="Browse our products"
         >
-          <!-- Enhanced glassmorphism overlay on hover -->
           <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(236, 72, 153, 0.05));"></div>
-          
           <div class="relative z-10">
-            <div class="text-2xl mb-2">💼</div>
+            <div class="text-2xl mb-2" aria-hidden="true">💼</div>
             <h4 class="font-semibold mb-1">Products</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Our offerings</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Our offerings</p>
           </div>
         </a>
       </div>
-    </div>
+    </nav>
 
     <!-- Fun fact with glassmorphism -->
     <div class="mt-12 backdrop-blur-lg border rounded-2xl p-6 relative overflow-hidden border-gray-200/30 dark:border-white/20"
@@ -145,11 +134,147 @@
       <!-- Subtle glassmorphism overlay -->
       <div class="absolute inset-0 opacity-50"
            style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(168, 85, 247, 0.03));"></div>
-      
-      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary relative z-10">
-        <span class="font-semibold">Fun fact:</span> HTTP 404 errors get their name from Room 404 at CERN, 
+
+      <p class="text-sm text-gray-600 dark:text-gray-300 relative z-10">
+        <span class="font-semibold">Fun fact:</span> HTTP 404 errors get their name from Room 404 at CERN,
         where the original web servers were located. Now you know! 🤓
       </p>
     </div>
+
+    <!-- Auto-redirect notice -->
+    <div id="redirectNotice" class="mt-6 text-xs text-gray-500 dark:text-gray-400">
+      Redirecting to homepage in <span id="redirectCountdown">20</span> seconds...
+      <button id="cancelRedirect" class="ml-2 underline hover:text-primary-blue transition-colors">Cancel</button>
+    </div>
   </div>
 </section>
+
+<script>
+  // Connect 404 page chat button to Manny and handle auto-redirect
+  document.addEventListener('DOMContentLoaded', () => {
+    const notFoundChatButton = document.getElementById('notFoundChatButton');
+
+    if (notFoundChatButton) {
+      notFoundChatButton.addEventListener('click', () => {
+        // Directly open the chat box
+        const chatBox = document.getElementById('chatBox');
+        if (chatBox) {
+          chatBox.classList.remove('scale-0', 'opacity-0', 'invisible');
+          chatBox.classList.add('scale-100', 'opacity-100', 'visible');
+
+          // Focus on input after chat opens
+          const chatInput = document.getElementById('chatBoxInput') as HTMLInputElement;
+          if (chatInput) {
+            setTimeout(() => chatInput.focus(), 300);
+          }
+
+          // Cancel redirect when user engages with chat
+          cancelAutoRedirect();
+        }
+      });
+    }
+
+    // Auto-redirect after 20 seconds of inactivity
+    let redirectTimeout: ReturnType<typeof setTimeout> | null = null;
+    let countdownInterval: ReturnType<typeof setInterval> | null = null;
+    let countdown = 20;
+    let redirectCancelled = false;
+
+    const countdownEl = document.getElementById('redirectCountdown');
+    const redirectNotice = document.getElementById('redirectNotice');
+    const cancelButton = document.getElementById('cancelRedirect');
+
+    function startRedirectCountdown() {
+      countdown = 20;
+      if (countdownEl) countdownEl.textContent = String(countdown);
+
+      countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdownEl) countdownEl.textContent = String(countdown);
+
+        if (countdown <= 0) {
+          clearInterval(countdownInterval);
+          if (!redirectCancelled) {
+            window.location.href = '/';
+          }
+        }
+      }, 1000);
+    }
+
+    function resetRedirectTimer() {
+      if (redirectCancelled) return;
+
+      // Clear existing timers
+      if (redirectTimeout) clearTimeout(redirectTimeout);
+      if (countdownInterval) clearInterval(countdownInterval);
+      countdown = 20;
+      if (countdownEl) countdownEl.textContent = String(countdown);
+
+      // Start new countdown
+      startRedirectCountdown();
+    }
+
+    function cancelAutoRedirect() {
+      redirectCancelled = true;
+      if (redirectTimeout) clearTimeout(redirectTimeout);
+      if (countdownInterval) clearInterval(countdownInterval);
+      if (redirectNotice) {
+        redirectNotice.textContent = 'Auto-redirect cancelled';
+        setTimeout(() => {
+          redirectNotice.style.display = 'none';
+        }, 2000);
+      }
+    }
+
+    // Cancel button handler
+    if (cancelButton) {
+      cancelButton.addEventListener('click', cancelAutoRedirect);
+    }
+
+    // Activity events that reset the timer
+    const activityEvents = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, resetRedirectTimer, { passive: true });
+    });
+
+    // Start the initial countdown
+    startRedirectCountdown();
+  });
+</script>
+
+<style>
+  /* 404 number with MK gradient (blue to pink) */
+  .notfound-number {
+    background: linear-gradient(90deg, #0071e3, #ff4faa);
+    background-size: 400% 100%;
+    animation: notfound-gradient 25s ease-in-out infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @keyframes notfound-gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Button gradient animation */
+  .animate-button-gradient {
+    background-size: 400% 400%;
+    animation: button-gradient 16s ease-in-out infinite;
+  }
+
+  @keyframes button-gradient {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    25% {
+      background-position: 100% 50%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    75% {
+      background-position: 0% 100%;
+    }
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+// HeroSwiper.astro - Swiper Studio Material You Slider
+// Uses coral-fanya-470 preset from Swiper Studio CDN
+
+export interface Slide {
+  image: string;
+  title: string;
+  href?: string; // Link to internal page (e.g., '/#services', '/about')
+}
+
+export interface Props {
+  slides?: Slide[];
+}
+
+// Default slides - customize these for your site
+const defaultSlides: Slide[] = [
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/10.jpg',
+    title: 'AI Solutions',
+    href: '/#services'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/11.jpg',
+    title: 'Automation',
+    href: '/#services'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/12.jpg',
+    title: 'Our Process',
+    href: '/#process'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/13.jpg',
+    title: 'Innovation',
+    href: '/#services'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/14.jpg',
+    title: 'Reviews',
+    href: '/#reviews'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/15.jpg',
+    title: 'Products',
+    href: '/#products'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/16.jpg',
+    title: 'Contact',
+    href: '/#contact'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/17.jpg',
+    title: 'About Us',
+    href: '/about'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/18.jpg',
+    title: 'Support',
+    href: '/#contact'
+  },
+  {
+    image: 'https://studio.swiperjs.com/demo-images/models/19.jpg',
+    title: 'Get Started',
+    href: '/#services'
+  },
+];
+
+const { slides = defaultSlides } = Astro.props;
+---
+
+<section id="hero-swiper" class="hero-swiper-section">
+  <div class="swiper swiper-coral-fanya-470">
+    <div class="swiper-wrapper">
+      {slides.map((slide) => (
+        <div class="swiper-slide swiper-slide-1990">
+          <div class="swiper-material-wrapper">
+            <div class="swiper-material-content">
+              <img
+                class="swiper-slide-bg-image swiper-slide-bg-image-bdb6"
+                data-swiper-material-scale="1.25"
+                loading="lazy"
+                src={slide.image}
+                alt={slide.title}
+              />
+              <div class="swiper-lazy-preloader"></div>
+              {slide.href ? (
+                <a
+                  href={slide.href}
+                  class="swiper-slide-content swiper-material-animate-opacity swiper-slide-content-609f slide-link"
+                >
+                  <div class="swiper-slide-text swiper-slide-text-66a3">{slide.title}</div>
+                </a>
+              ) : (
+                <div class="swiper-slide-content swiper-material-animate-opacity swiper-slide-content-609f">
+                  <div class="swiper-slide-text swiper-slide-text-66a3">{slide.title}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
+</section>
+
+<style>
+  /* Hero Swiper Section wrapper */
+  .hero-swiper-section {
+    width: 100%;
+    height: 70vh;
+    min-height: 500px;
+    max-height: 800px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  }
+
+  /* Slide link styling */
+  .slide-link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .slide-link:hover {
+    opacity: 0.95;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .hero-swiper-section {
+      height: 50vh;
+      min-height: 400px;
+    }
+  }
+</style>

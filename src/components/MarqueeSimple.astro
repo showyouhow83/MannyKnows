@@ -2,48 +2,53 @@
 // Simple CSS marquee that works reliably
 ---
 
-<div class="h-[50px] bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink overflow-hidden relative flex items-center z-10 animate-button-gradient" data-marquee>
+<div
+  class="h-[50px] bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink overflow-hidden relative flex items-center z-10 animate-button-gradient"
+  data-marquee
+  role="region"
+  aria-label="Announcements and promotions"
+>
   <div class="flex whitespace-nowrap animate-scroll">
     <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">🚀 New Launch</strong>
-      <span>Get your free e-commerce store audit - Limited time offer!</span>
+      <strong class="font-bold"><span aria-hidden="true">🚀</span> New</strong>
+      <span>Get your free AI readiness assessment - Limited time offer!</span>
     </div>
     <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">📈 Revenue Growth</strong>
-      <span>AI solutions that increase e-commerce sales by 40%</span>
+      <strong class="font-bold"><span aria-hidden="true">📈</span> Results</strong>
+      <span>AI solutions that boost productivity by 10x</span>
     </div>
     <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">🎯 Results Driven</strong>
-      <span>Join 200+ e-commerce store owners who trust MannyKnows</span>
+      <strong class="font-bold"><span aria-hidden="true">🎯</span> Trusted</strong>
+      <span>Join 200+ businesses transforming with MannyKnows AI</span>
     </div>
     <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">💎 Fast Implementation</strong>
-      <span>E-commerce solutions delivered in 2-4 weeks</span>
+      <strong class="font-bold"><span aria-hidden="true">💎</span> Fast</strong>
+      <span>AI solutions delivered in 2-4 weeks</span>
     </div>
     <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">💪 Satisfaction</strong>
-      <span>100% money-back guarantee on all store solutions</span>
+      <strong class="font-bold"><span aria-hidden="true">💪</span> Guaranteed</strong>
+      <span>100% satisfaction guarantee on all AI solutions</span>
     </div>
     <!-- Duplicate for seamless loop -->
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">🚀 New Launch</strong>
-      <span>Get your free e-commerce store audit - Limited time offer!</span>
+    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
+      <strong class="font-bold"><span>🚀</span> New</strong>
+      <span>Get your free AI readiness assessment - Limited time offer!</span>
     </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">📈 Revenue Growth</strong>
-      <span>AI solutions that increase e-commerce sales by 40%</span>
+    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
+      <strong class="font-bold"><span>📈</span> Results</strong>
+      <span>AI solutions that boost productivity by 10x</span>
     </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">🎯 Results Driven</strong>
-      <span>Join 200+ e-commerce store owners who trust MannyKnows</span>
+    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
+      <strong class="font-bold"><span>🎯</span> Trusted</strong>
+      <span>Join 200+ businesses transforming with MannyKnows AI</span>
     </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">💎 Fast Implementation</strong>
-      <span>E-commerce solutions delivered in 2-4 weeks</span>
+    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
+      <strong class="font-bold"><span>💎</span> Fast</strong>
+      <span>AI solutions delivered in 2-4 weeks</span>
     </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold">💪 Satisfaction</strong>
-      <span>100% money-back guarantee on all store solutions</span>
+    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
+      <strong class="font-bold"><span>💪</span> Guaranteed</strong>
+      <span>100% satisfaction guarantee on all AI solutions</span>
     </div>
   </div>
 </div>
@@ -57,12 +62,12 @@
       transform: translateX(-50%);
     }
   }
-  
+
   .animate-scroll {
     animation: scroll 60s linear infinite;
     will-change: transform;
   }
-  
+
   .animate-scroll:hover {
     animation-play-state: paused;
   }

@@ -262,16 +262,16 @@ function generateNewsletterConfirmationEmail(email: string, subscriptionId: stri
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
         .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
         .content { margin-bottom: 24px; text-align: center; }
         .welcome-message { color: #18181b; font-size: 18px; margin-bottom: 24px; }
         .features { background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left; }
         .feature { display: flex; align-items: flex-start; margin-bottom: 16px; }
-        .feature-icon { color: #10d1ff; margin-right: 12px; font-size: 18px; }
+        .feature-icon { color: #0071e3; margin-right: 12px; font-size: 18px; }
         .feature-text { color: #18181b; font-size: 14px; }
         .footer { text-align: center; color: #a1a1aa; font-size: 14px; margin-top: 32px; }
-        .btn { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
         .unsubscribe { color: #a1a1aa; font-size: 12px; text-align: center; margin-top: 20px; }
         .unsubscribe a { color: #a1a1aa; text-decoration: underline; }
         @media (max-width: 600px) {
@@ -360,17 +360,17 @@ function generateNewsletterResubscriptionEmail(email: string, subscriptionId: st
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
         .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
         .content { margin-bottom: 24px; text-align: center; }
         .welcome-message { color: #18181b; font-size: 18px; margin-bottom: 24px; }
-        .welcome-back { background: linear-gradient(135deg, #10d1ff10 0%, #ff4faa10 100%); border: 1px solid #10d1ff30; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center; }
+        .welcome-back { background: linear-gradient(135deg, #0071e310 0%, #ff4faa10 100%); border: 1px solid #0071e330; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center; }
         .features { background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left; }
         .feature { display: flex; align-items: flex-start; margin-bottom: 16px; }
-        .feature-icon { color: #10d1ff; margin-right: 12px; font-size: 18px; }
+        .feature-icon { color: #0071e3; margin-right: 12px; font-size: 18px; }
         .feature-text { color: #18181b; font-size: 14px; }
         .footer { text-align: center; color: #a1a1aa; font-size: 14px; margin-top: 32px; }
-        .btn { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
         .unsubscribe { color: #a1a1aa; font-size: 12px; text-align: center; margin-top: 20px; }
         .unsubscribe a { color: #a1a1aa; text-decoration: underline; }
         @media (max-width: 600px) {

@@ -266,7 +266,7 @@ function generateContactNotificationEmail(contact: any): string {
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
         .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
         .content { margin-bottom: 24px; }
         .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -345,7 +345,7 @@ function generateAutoReplyEmail(contact: any): string {
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 32px; margin-bottom: 20px; }
         .header { text-align: center; margin-bottom: 32px; }
-        .brand { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
+        .brand { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; font-weight: 900; font-size: 24px; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; }
         .subtitle { color: #71717a; font-size: 16px; font-weight: 500; }
         .content { margin-bottom: 24px; text-align: center; }
         .message { color: #18181b; font-size: 18px; margin-bottom: 24px; }
@@ -353,7 +353,7 @@ function generateAutoReplyEmail(contact: any): string {
         .label { display: block; color: #71717a; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
         .value { color: #18181b; font-size: 16px; margin-bottom: 16px; }
         .footer { text-align: center; color: #a1a1aa; font-size: 14px; margin-top: 32px; }
-        .btn { display: inline-block; background: linear-gradient(135deg, #10d1ff 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #0071e3 0%, #ff4faa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
         @media (max-width: 600px) {
           .container { padding: 10px; }
           .card { padding: 20px; }

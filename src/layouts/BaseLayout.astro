@@ -1,15 +1,15 @@
 ---
 import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
-import GoogleAnalytics from '../components/analytics/GoogleAnalytics.astro';
-import MinimalAnalytics from '../components/analytics/MinimalAnalytics.astro';
+
+// Swiper Studio version - update this when you publish changes in Swiper Studio
+const SWIPER_VERSION = '6';
 
 export interface Props {
 	title: string;
-	useMinimalAnalytics?: boolean;
 }
 
-const { title, useMinimalAnalytics = true } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -22,21 +22,19 @@ const { title, useMinimalAnalytics = true } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		
 		<!-- Security Headers -->
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://www.google-analytics.com https://static.cloudflareinsights.com https://meet.jit.si; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://meet.jit.si https://cdn.jsdelivr.net https://cdn.studio.swiperjs.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdn.studio.swiperjs.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://static.cloudflareinsights.com https://meet.jit.si https://www.clarity.ms https://*.clarity.ms; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		
-		<!-- PERFORMANCE: Optimized resource hints for deferred analytics -->
-		<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
-		<link rel="dns-prefetch" href="//www.googletagmanager.com" />
-		
-		<!-- Analytics (Choose minimal or full version) -->
-		{useMinimalAnalytics ? (
-			<MinimalAnalytics />
-		) : (
-			<GoogleAnalytics deferLoad={true} />
-		)}
+		<!-- Swiper Studio Slider -->
+		<link href={`https://cdn.studio.swiperjs.com/coral-fanya-470.css?v=${SWIPER_VERSION}`} rel="stylesheet" />
+
+		<!-- Microsoft Clarity Analytics -->
+		<script>
+			import Clarity from '@microsoft/clarity';
+			Clarity.init('v0ixsac9id');
+		</script>
 		
 		<!-- OPTIMIZED: Load pixel canvas only when needed -->
 		<script>
@@ -115,8 +113,11 @@ const { title, useMinimalAnalytics = true } = Astro.props;
 		<SettingsModal />
 		
 		<slot />
-		
+
 		<FooterMain />
+
+		<!-- Swiper Studio Script -->
+		<script src={`https://cdn.studio.swiperjs.com/coral-fanya-470.js?v=${SWIPER_VERSION}`} type="module"></script>
 	</body>
 </html>
 
@@ -303,96 +304,56 @@ const { title, useMinimalAnalytics = true } = Astro.props;
 		max-width: 75%;
 	}
 
-	/* Subtle gradient border animation with ultra-smooth color transition */
+	/* Subtle gradient border animation - MK colors (blue to pink, no light blue) */
 	.animate-gradient-slide {
-		background: linear-gradient(90deg, transparent, #10d1ff, transparent);
+		background: linear-gradient(90deg, transparent, #0071e3, transparent);
 		background-size: 200% 100%;
 		animation: gradient-slide-color 30s ease-in-out infinite;
 	}
 
 	@keyframes gradient-slide-color {
 		0% {
-			background: linear-gradient(90deg, transparent, #10d1ff, transparent);
+			background: linear-gradient(90deg, transparent, #0071e3, transparent);
 			background-position: 0% 50%;
 		}
-		5% {
-			background: linear-gradient(90deg, transparent, #10d1ff, transparent);
-			background-position: 50% 50%;
-		}
 		10% {
-			background: linear-gradient(90deg, transparent, #10d1ff, transparent);
-			background-position: 100% 50%;
-		}
-		15% {
-			background: linear-gradient(90deg, transparent, #20c9ff, transparent);
+			background: linear-gradient(90deg, transparent, #0071e3, transparent);
 			background-position: 100% 50%;
 		}
 		20% {
-			background: linear-gradient(90deg, transparent, #30c1ff, transparent);
+			background: linear-gradient(90deg, transparent, #3366e3, transparent);
 			background-position: 50% 50%;
-		}
-		25% {
-			background: linear-gradient(90deg, transparent, #40b9ff, transparent);
-			background-position: 0% 50%;
 		}
 		30% {
-			background: linear-gradient(90deg, transparent, #50b1ff, transparent);
+			background: linear-gradient(90deg, transparent, #6655e3, transparent);
 			background-position: 0% 50%;
 		}
-		35% {
-			background: linear-gradient(90deg, transparent, #60a9ff, transparent);
-			background-position: 50% 50%;
-		}
 		40% {
-			background: linear-gradient(90deg, transparent, #70a1ff, transparent);
-			background-position: 100% 50%;
-		}
-		45% {
-			background: linear-gradient(90deg, transparent, #8099ff, transparent);
+			background: linear-gradient(90deg, transparent, #9944d3, transparent);
 			background-position: 100% 50%;
 		}
 		50% {
-			background: linear-gradient(90deg, transparent, #9091ff, transparent);
+			background: linear-gradient(90deg, transparent, #cc44bb, transparent);
 			background-position: 50% 50%;
-		}
-		55% {
-			background: linear-gradient(90deg, transparent, #a089ff, transparent);
-			background-position: 0% 50%;
 		}
 		60% {
-			background: linear-gradient(90deg, transparent, #b081ff, transparent);
+			background: linear-gradient(90deg, transparent, #ff4faa, transparent);
 			background-position: 0% 50%;
 		}
-		65% {
-			background: linear-gradient(90deg, transparent, #c079ff, transparent);
-			background-position: 50% 50%;
-		}
 		70% {
-			background: linear-gradient(90deg, transparent, #d071ff, transparent);
-			background-position: 100% 50%;
-		}
-		75% {
-			background: linear-gradient(90deg, transparent, #e069dd, transparent);
+			background: linear-gradient(90deg, transparent, #ff4faa, transparent);
 			background-position: 100% 50%;
 		}
 		80% {
-			background: linear-gradient(90deg, transparent, #f061bb, transparent);
+			background: linear-gradient(90deg, transparent, #cc44bb, transparent);
 			background-position: 50% 50%;
-		}
-		85% {
-			background: linear-gradient(90deg, transparent, #ff5999, transparent);
-			background-position: 0% 50%;
 		}
 		90% {
-			background: linear-gradient(90deg, transparent, #ff51aa, transparent);
+			background: linear-gradient(90deg, transparent, #6655e3, transparent);
 			background-position: 0% 50%;
 		}
-		95% {
-			background: linear-gradient(90deg, transparent, #ff4faa, transparent);
-			background-position: 50% 50%;
-		}
 		100% {
-			background: linear-gradient(90deg, transparent, #10d1ff, transparent);
+			background: linear-gradient(90deg, transparent, #0071e3, transparent);
 			background-position: 0% 50%;
 		}
 	}
@@ -440,7 +401,7 @@ const { title, useMinimalAnalytics = true } = Astro.props;
 	}
 
 	.apple-gradient-text {
-		background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
+		background: linear-gradient(45deg, #0071e3, #ff4faa);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		background-clip: text;

@@ -50,14 +50,14 @@ const sizeClasses = {
   lg: 'py-4 px-8 text-lg h-14'
 };
 
-// Variant style configurations
+// Variant style configurations (glow reduced by ~50% for subtlety)
 const variantClasses = {
-  primary: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/40',
-  apple: 'bg-gradient-to-r from-[#0071e3] via-[#ff4faa] to-[#10d1ff] text-white shadow-lg shadow-blue-500/40',
-  green: 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/40',
-  urgent: 'bg-red-500 text-white animate-pulse shadow-xl shadow-red-500/60 border-4 border-yellow-400',
-  emoji: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/40',
-  cta: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl text-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(16,209,255,0.3)] animate-button-gradient',
+  primary: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/20',
+  apple: 'bg-gradient-to-r from-[#0071e3] via-[#ff4faa] to-[#0071e3] text-white shadow-lg shadow-blue-500/20',
+  green: 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/20',
+  urgent: 'bg-red-500 text-white animate-pulse shadow-xl shadow-red-500/30 border-4 border-yellow-400',
+  emoji: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/20',
+  cta: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl text-lg hover:shadow-[0_20px_40px_rgba(0,113,227,0.15)] animate-button-gradient',
   'theme-aware': '' // Special handling below
 };
 
@@ -90,7 +90,7 @@ const themeAwareSparkles = {
 //Base button classes
 const sizeClass = variant === 'cta' ? '' : sizeClasses[size]; // CTA has its own sizing
 const borderRadius = variant === 'cta' ? '' : 'rounded-lg'; // CTA has its own border radius
-const hoverTransform = variant === 'cta' ? '' : 'hover:scale-105 hover:-translate-y-0.5'; // CTA has its own hover
+const hoverTransform = ''; // Removed scale/translate hover for cleaner interaction
 const flexType = variant === 'cta' ? 'inline-flex' : 'flex'; // CTA should be inline-flex
 const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${flexType} items-center justify-center relative transition-all duration-300 ${hoverTransform} group`;
 ---

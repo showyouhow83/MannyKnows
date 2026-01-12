@@ -1,12 +1,13 @@
 ---
 export interface Props {
+  badge?: string;
   title: string;
   subtitle?: string;
   alignment?: 'left' | 'center' | 'right';
   className?: string;
 }
 
-const { title, subtitle, alignment = 'center', className = "" } = Astro.props;
+const { badge, title, subtitle, alignment = 'center', className = "" } = Astro.props;
 
 const alignmentClasses = {
   left: 'text-left',
@@ -16,10 +17,17 @@ const alignmentClasses = {
 ---
 
 <div class={`${alignmentClasses[alignment]} mb-20 ${className}`}>
+  {badge && (
+    <div class="mb-4">
+      <span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+        {badge}
+      </span>
+    </div>
+  )}
   <h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
     <span class="apple-gradient-text" data-colorful-title>{title}</span>
   </h2>
-  
+
   {subtitle && (
     <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
       {subtitle}

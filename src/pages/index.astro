@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import MarqueeSimple from '../components/MarqueeSimple.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import HeroSection from '../components/sections/HeroSection.astro';
+import HeroSwiper from '../components/sections/HeroSwiper.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
 import ReviewsSection from '../components/sections/ReviewsSection.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
@@ -47,12 +48,16 @@ const NAVBAR_CONFIG = {
             />
         </header>
 
+		<!-- Hero Swiper Slider -->
+		<HeroSwiper />
+
 		<!-- Services Section -->
 		<ServicesSection />
 
 		<!-- Products Section -->
 		<PageSection
 			id="products"
+			badge="What We Build"
 			title="Our Products"
 			subtitle="Discover our range of AI-powered e-commerce solutions designed to elevate your business."
 			variant="alternate"
@@ -61,14 +66,7 @@ const NAVBAR_CONFIG = {
 		</PageSection>
 
 		<!-- Process Section -->
-		<PageSection
-			id="process"
-			title="Our Process"
-			subtitle="From discovery to deployment we follow a proven methodology to transform your e-commerce vision into reality"
-			variant="alternate"
-		>
-			<ProcessSectionAlt />
-		</PageSection>
+		<ProcessSectionAlt />
 
 		<!-- Customer Reviews Section -->
 		<ReviewsSection />
