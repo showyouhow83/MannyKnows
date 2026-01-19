@@ -2,9 +2,6 @@
 import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
 
-// Swiper Studio version - update this when you publish changes in Swiper Studio
-const SWIPER_VERSION = '6';
-
 export interface Props {
 	title: string;
 }
@@ -22,13 +19,14 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		
 		<!-- Security Headers -->
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://meet.jit.si https://cdn.jsdelivr.net https://cdn.studio.swiperjs.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdn.studio.swiperjs.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://static.cloudflareinsights.com https://meet.jit.si https://www.clarity.ms https://*.clarity.ms; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://meet.jit.si https://cdn.jsdelivr.net https://www.clarity.ms https://scripts.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.openai.com https://api.resend.com https://static.cloudflareinsights.com https://meet.jit.si https://www.clarity.ms https://*.clarity.ms; frame-src 'self' https://meet.jit.si; media-src 'self' https: blob:;" />
+
+		<!-- Swiper + Carousel Effect Slider -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+		<link rel="stylesheet" href="/effect-carousel.min.css" />
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
-		
-		<!-- Swiper Studio Slider -->
-		<link href={`https://cdn.studio.swiperjs.com/coral-fanya-470.css?v=${SWIPER_VERSION}`} rel="stylesheet" />
 
 		<!-- Microsoft Clarity Analytics -->
 		<script>
@@ -116,8 +114,9 @@ const { title } = Astro.props;
 
 		<FooterMain />
 
-		<!-- Swiper Studio Script -->
-		<script src={`https://cdn.studio.swiperjs.com/coral-fanya-470.js?v=${SWIPER_VERSION}`} type="module"></script>
+		<!-- Swiper + Carousel Effect Scripts -->
+		<script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+		<script is:inline src="/effect-carousel.min.js"></script>
 	</body>
 </html>
 
@@ -532,5 +531,14 @@ const { title } = Astro.props;
 		transform: none !important;
 		animation: none !important;
 		color: inherit !important;
+	}
+
+	/* Service card buttons - limit width and center */
+	article a[href*="chat"] {
+		width: fit-content;
+		max-width: 33%;
+		min-width: 140px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 </style>

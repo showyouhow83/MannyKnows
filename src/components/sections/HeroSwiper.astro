@@ -1,138 +1,330 @@
 ---
-// HeroSwiper.astro - Swiper Studio Material You Slider
-// Uses coral-fanya-470 preset from Swiper Studio CDN
+// HeroSwiper.astro - Carousel Slider
+// Uses UIInitiative Carousel Effect for Swiper
 
 export interface Slide {
   image: string;
   title: string;
-  href?: string; // Link to internal page (e.g., '/#services', '/about')
+  description?: string;
+  href?: string;
 }
 
 export interface Props {
   slides?: Slide[];
 }
 
-// Default slides - customize these for your site
+// Default slides - Main service categories
 const defaultSlides: Slide[] = [
   {
-    image: 'https://studio.swiperjs.com/demo-images/models/10.jpg',
-    title: 'AI Solutions',
-    href: '/#services'
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
+    title: 'AI Agents',
+    description: 'Intelligent agents that automate your sales, support, and business processes.',
+    href: '/services/ai-agents'
   },
   {
-    image: 'https://studio.swiperjs.com/demo-images/models/11.jpg',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
     title: 'Automation',
-    href: '/#services'
+    description: 'Streamline workflows and eliminate repetitive tasks with smart automation.',
+    href: '/services/automation'
   },
   {
-    image: 'https://studio.swiperjs.com/demo-images/models/12.jpg',
-    title: 'Our Process',
-    href: '/#process'
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+    title: 'Web Intelligence',
+    description: 'Data-driven insights and eCommerce solutions to grow your business.',
+    href: '/services/web-intelligence'
   },
   {
-    image: 'https://studio.swiperjs.com/demo-images/models/13.jpg',
-    title: 'Innovation',
-    href: '/#services'
+    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80',
+    title: 'Photography & 360',
+    description: 'Professional photography and immersive 360° virtual experiences.',
+    href: '/services/photography'
   },
   {
-    image: 'https://studio.swiperjs.com/demo-images/models/14.jpg',
-    title: 'Reviews',
-    href: '/#reviews'
-  },
-  {
-    image: 'https://studio.swiperjs.com/demo-images/models/15.jpg',
-    title: 'Products',
-    href: '/#products'
-  },
-  {
-    image: 'https://studio.swiperjs.com/demo-images/models/16.jpg',
-    title: 'Contact',
-    href: '/#contact'
-  },
-  {
-    image: 'https://studio.swiperjs.com/demo-images/models/17.jpg',
-    title: 'About Us',
-    href: '/about'
-  },
-  {
-    image: 'https://studio.swiperjs.com/demo-images/models/18.jpg',
-    title: 'Support',
-    href: '/#contact'
-  },
-  {
-    image: 'https://studio.swiperjs.com/demo-images/models/19.jpg',
-    title: 'Get Started',
-    href: '/#services'
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+    title: 'Analytics & Training',
+    description: 'Business analytics, content generation, and team training services.',
+    href: '/services/analytics'
   },
 ];
 
 const { slides = defaultSlides } = Astro.props;
+
+// Duplicate slides for seamless looping with carousel effect
+const allSlides = [...slides, ...slides];
 ---
 
-<section id="hero-swiper" class="hero-swiper-section">
-  <div class="swiper swiper-coral-fanya-470">
-    <div class="swiper-wrapper">
-      {slides.map((slide) => (
-        <div class="swiper-slide swiper-slide-1990">
-          <div class="swiper-material-wrapper">
-            <div class="swiper-material-content">
-              <img
-                class="swiper-slide-bg-image swiper-slide-bg-image-bdb6"
-                data-swiper-material-scale="1.25"
-                loading="lazy"
-                src={slide.image}
-                alt={slide.title}
-              />
-              <div class="swiper-lazy-preloader"></div>
+<section id="hero-swiper" class="hero-carousel-section">
+  <div class="carousel-container">
+    <div class="swiper hero-carousel">
+      <div class="swiper-wrapper">
+        {allSlides.map((slide) => (
+          <div class="swiper-slide">
+            <div class="swiper-carousel-animate-opacity">
+              <img src={slide.image} alt={slide.title} />
               {slide.href ? (
-                <a
-                  href={slide.href}
-                  class="swiper-slide-content swiper-material-animate-opacity swiper-slide-content-609f slide-link"
-                >
-                  <div class="swiper-slide-text swiper-slide-text-66a3">{slide.title}</div>
+                <a href={slide.href} class="slide-content">
+                  <h2>{slide.title}</h2>
+                  {slide.description && <p>{slide.description}</p>}
                 </a>
               ) : (
-                <div class="swiper-slide-content swiper-material-animate-opacity swiper-slide-content-609f">
-                  <div class="swiper-slide-text swiper-slide-text-66a3">{slide.title}</div>
+                <div class="slide-content">
+                  <h2>{slide.title}</h2>
+                  {slide.description && <p>{slide.description}</p>}
                 </div>
               )}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-
+    <button class="nav-arrow nav-prev" aria-label="Previous slide">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button class="nav-arrow nav-next" aria-label="Next slide">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
     <div class="swiper-pagination"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
   </div>
 </section>
 
-<style>
-  /* Hero Swiper Section wrapper */
-  .hero-swiper-section {
+<script is:inline>
+  (function() {
+    function initCarouselSlider() {
+      if (typeof Swiper === 'undefined' || typeof EffectCarousel === 'undefined') {
+        setTimeout(initCarouselSlider, 100);
+        return;
+      }
+
+      if (document.querySelector('.hero-carousel.swiper-initialized')) {
+        return;
+      }
+
+      new Swiper('.hero-carousel', {
+        modules: [EffectCarousel],
+        effect: 'carousel',
+        carouselEffect: {
+          opacityStep: 0.33,
+          scaleStep: 0.2,
+          sideSlides: 2,
+        },
+        grabCursor: true,
+        loop: true,
+        loopAdditionalSlides: 4,
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        navigation: {
+          nextEl: '.nav-next',
+          prevEl: '.nav-prev',
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCarouselSlider);
+    } else {
+      initCarouselSlider();
+    }
+  })();
+</script>
+
+<style is:global>
+  :root {
+    --swiper-navigation-color: #fff;
+    --swiper-pagination-color: #fff;
+    --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .hero-carousel-section {
     width: 100%;
-    height: 70vh;
-    min-height: 500px;
-    max-height: 800px;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    padding: 3rem 0;
   }
 
-  /* Slide link styling */
-  .slide-link {
+  .carousel-container {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .hero-carousel {
+    padding-bottom: 48px;
+  }
+
+  .hero-carousel .swiper-slide {
+    width: 520px;
+    height: 380px;
+    border-radius: 16px;
+    background: #18212b;
+    max-width: calc(100% - 48px);
+    overflow: hidden;
+  }
+
+  .hero-carousel .swiper-carousel-animate-opacity {
+    height: 100%;
+    position: relative;
+  }
+
+  .hero-carousel img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .hero-carousel .slide-content {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    padding: 80px 20px 24px;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    border-radius: 0 0 16px 16px;
     text-decoration: none;
+    color: #fff;
+    display: block;
+  }
+
+  .hero-carousel a.slide-content:hover h2 {
+    color: #0071e3;
+  }
+
+  .hero-carousel .slide-content h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+  }
+
+  .hero-carousel .slide-content p {
+    margin: 10px 0 0;
+    opacity: 0.8;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .hero-carousel .swiper-pagination {
+    bottom: 0 !important;
+  }
+
+  .hero-carousel .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .hero-carousel .swiper-pagination-bullet-active {
+    width: 24px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #0071e3, #ff4faa);
+  }
+
+  .nav-arrow {
+    position: absolute;
+    top: calc(50% - 24px);
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border: none;
+    color: #fff;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, transform 0.3s ease;
   }
 
-  .slide-link:hover {
-    opacity: 0.95;
+  .nav-arrow:hover {
+    color: #0071e3;
+    transform: translateY(-50%) scale(1.2);
   }
 
-  /* Responsive adjustments */
+  .nav-arrow svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-prev {
+    left: 10px;
+  }
+
+  .nav-next {
+    right: 10px;
+  }
+
+  .nav-arrow.swiper-button-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Responsive */
   @media (max-width: 768px) {
-    .hero-swiper-section {
-      height: 50vh;
-      min-height: 400px;
+    .hero-carousel .swiper-slide {
+      width: 320px;
+      height: 280px;
+    }
+
+    .hero-carousel .slide-content h2 {
+      font-size: 22px;
+    }
+
+    .hero-carousel .slide-content p {
+      font-size: 13px;
+    }
+
+    .carousel-container {
+      padding: 0 20px;
+    }
+
+    .nav-arrow {
+      display: none !important;
+    }
+
+    .hero-carousel-section {
+      padding: 2rem 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-carousel .swiper-slide {
+      width: 280px;
+      height: 240px;
+    }
+
+    .hero-carousel .slide-content {
+      padding: 60px 16px 20px;
+    }
+
+    .hero-carousel .slide-content h2 {
+      font-size: 18px;
+    }
+
+    .hero-carousel .slide-content p {
+      font-size: 12px;
+      -webkit-line-clamp: 2;
     }
   }
 </style>

@@ -1,0 +1,393 @@
+---
+// Web Intelligence Service Category Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Home', url: '/' },
+  { label: 'Services', url: '/services' },
+  { label: 'Web Intelligence', url: '' }
+];
+
+// eCommerce services
+const ecommerceServices = [
+  {
+    id: "web-scraping",
+    name: "Web Scraping",
+    description: "Intelligent data extraction from websites, competitors, and marketplaces to fuel your business decisions with real-time data.",
+    features: [
+      "Competitor price monitoring",
+      "Product catalog extraction",
+      "Review aggregation",
+      "Market research data",
+      "Lead generation scraping",
+      "Scheduled data updates"
+    ]
+  },
+  {
+    id: "interactive-forms",
+    name: "Interactive Smart Forms",
+    description: "AI-powered forms that adapt to user responses, pre-fill data, and guide customers through complex processes seamlessly.",
+    features: [
+      "Conditional logic",
+      "Auto-fill suggestions",
+      "Multi-step wizards",
+      "Real-time validation",
+      "Integration with CRM",
+      "Analytics & insights"
+    ]
+  },
+  {
+    id: "personalized-recommendations",
+    name: "Personalized Recommendations",
+    description: "AI-driven product and content recommendations that increase engagement, average order value, and customer satisfaction.",
+    features: [
+      "Behavioral analysis",
+      "Collaborative filtering",
+      "Real-time personalization",
+      "Cross-sell & upsell",
+      "A/B testing built-in",
+      "Performance analytics"
+    ]
+  },
+  {
+    id: "dynamic-pricing",
+    name: "Dynamic Pricing Engine",
+    description: "Automated pricing optimization that adjusts prices based on demand, competition, inventory, and market conditions.",
+    features: [
+      "Competitor monitoring",
+      "Demand-based pricing",
+      "Rule-based adjustments",
+      "Margin protection",
+      "Price testing",
+      "Revenue optimization"
+    ]
+  },
+  {
+    id: "smart-search",
+    name: "AI-Powered Search",
+    description: "Intelligent site search that understands natural language, handles typos, and delivers relevant results instantly.",
+    features: [
+      "Natural language queries",
+      "Typo tolerance",
+      "Synonyms & context",
+      "Faceted filtering",
+      "Search analytics",
+      "Autocomplete suggestions"
+    ]
+  },
+  {
+    id: "behavioral-analytics",
+    name: "Behavioral Analytics",
+    description: "Deep insights into how users interact with your site, identifying opportunities to improve conversion and engagement.",
+    features: [
+      "Session recordings",
+      "Heatmaps & click maps",
+      "Funnel analysis",
+      "User journey mapping",
+      "Conversion tracking",
+      "Cohort analysis"
+    ]
+  },
+  {
+    id: "conversion-optimization",
+    name: "Conversion Optimization",
+    description: "Data-driven CRO strategies powered by AI that identify and fix conversion bottlenecks across your customer journey.",
+    features: [
+      "A/B testing platform",
+      "Multivariate testing",
+      "Personalization engine",
+      "Exit intent detection",
+      "Form optimization",
+      "Checkout optimization"
+    ]
+  },
+  {
+    id: "adaptive-layouts",
+    name: "Adaptive Website Layouts",
+    description: "AI-powered layouts that automatically adapt to user preferences, device, and behavior for optimal engagement.",
+    features: [
+      "Device optimization",
+      "User preference learning",
+      "Content prioritization",
+      "Load time optimization",
+      "Accessibility compliance",
+      "Performance monitoring"
+    ]
+  }
+];
+
+// Web Development services
+const webDevServices = [
+  {
+    id: "custom-themes",
+    name: "Custom Themes",
+    description: "Bespoke website themes designed for your brand with AI-enhanced user experience and conversion optimization built-in.",
+    features: [
+      "Brand-aligned design",
+      "Mobile-first approach",
+      "Performance optimized",
+      "SEO-friendly structure",
+      "Easy customization",
+      "Regular updates"
+    ]
+  },
+  {
+    id: "custom-apps",
+    name: "Custom Web Apps",
+    description: "Tailored web applications built with modern frameworks and AI capabilities to solve your unique business challenges.",
+    features: [
+      "Custom functionality",
+      "API integrations",
+      "AI/ML capabilities",
+      "Scalable architecture",
+      "Security focused",
+      "Ongoing support"
+    ]
+  }
+];
+
+// Related service categories
+const relatedServices = [
+  {
+    title: "AI Agents",
+    description: "Intelligent AI agents for sales and customer support.",
+    href: "/services/ai-agents",
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    title: "Business Automation",
+    description: "Streamline operations with workflow automation.",
+    href: "/services/automation",
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    title: "Analytics & Training",
+    description: "Transform data into insights and empower your team.",
+    href: "/services/analytics",
+    gradient: "from-orange-500 to-amber-500"
+  }
+];
+---
+
+<BaseLayout title="Web Intelligence - eCommerce & Smart Web Solutions | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span>}
+              {crumb.url ? (
+                <a href={crumb.url} class="hover:text-primary-blue transition-colors">{crumb.label}</a>
+              ) : (
+                <span class="text-text-light-primary dark:text-text-dark-primary font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H19"></path>
+                <circle cx="17" cy="21" r="2"></circle>
+                <circle cx="9" cy="21" r="2"></circle>
+              </svg>
+            </div>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">Web Intelligence</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Smart eCommerce and web solutions powered by AI. From personalized recommendations to behavioral analytics, drive conversions with intelligent digital experiences.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- eCommerce Services Section -->
+    <Section id="ecommerce" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4"></path>
+                <circle cx="17" cy="21" r="2"></circle>
+                <circle cx="9" cy="21" r="2"></circle>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">eCommerce Intelligence</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            AI-powered tools to optimize your online store, increase conversions, and deliver personalized shopping experiences.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ecommerceServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-indigo-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Web Development Section -->
+    <Section id="web-dev" variant="alternate">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-gray-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">Web Design & Development</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Custom web solutions built with modern technology and AI capabilities to deliver exceptional user experiences.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+          {webDevServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-slate-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Related Services -->
+    <Section id="related" variant="default">
+      <Container>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+          <span class="apple-gradient-text">Explore More Services</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedServices.map((service) => (
+            <a
+              href={service.href}
+              class="group block bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+            >
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-white mb-4`}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                {service.title}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+                {service.description}
+              </p>
+              <span class="text-sm text-primary-blue font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Explore
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="alternate">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Boost</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> Your Conversions?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free discovery call to explore how AI-powered web intelligence can transform your digital presence.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>

@@ -1,0 +1,432 @@
+---
+// Analytics & Training Service Category Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Home', url: '/' },
+  { label: 'Services', url: '/services' },
+  { label: 'Analytics & Training', url: '' }
+];
+
+// Analytics services
+const analyticsServices = [
+  {
+    id: "competitor-analysis",
+    name: "Competitor Analysis",
+    description: "AI-powered competitive intelligence that monitors competitors, tracks market changes, and identifies opportunities.",
+    features: [
+      "Competitor monitoring",
+      "Pricing intelligence",
+      "Market positioning",
+      "SWOT analysis",
+      "Trend identification",
+      "Strategy recommendations"
+    ]
+  },
+  {
+    id: "data-visualization",
+    name: "Data Visualization",
+    description: "Transform complex data into clear, actionable dashboards that make decision-making faster and more confident.",
+    features: [
+      "Custom dashboards",
+      "Real-time updates",
+      "Interactive charts",
+      "KPI tracking",
+      "Automated reports",
+      "Mobile accessible"
+    ]
+  },
+  {
+    id: "operational-analytics",
+    name: "Operational Analytics",
+    description: "Deep insights into your business operations to identify inefficiencies, bottlenecks, and optimization opportunities.",
+    features: [
+      "Process analysis",
+      "Performance metrics",
+      "Cost analysis",
+      "Efficiency tracking",
+      "Forecasting",
+      "Anomaly detection"
+    ]
+  }
+];
+
+// AI Content services
+const contentServices = [
+  {
+    id: "ai-product-descriptions",
+    name: "AI Product Descriptions",
+    description: "Generate compelling, SEO-optimized product descriptions at scale using AI trained on your brand voice.",
+    features: [
+      "Brand voice matching",
+      "SEO optimization",
+      "Multi-language support",
+      "Bulk generation",
+      "A/B testing ready",
+      "Easy customization"
+    ]
+  },
+  {
+    id: "ai-product-videos",
+    name: "AI Product Videos",
+    description: "Create engaging product videos automatically using AI, from script generation to final render.",
+    features: [
+      "Script generation",
+      "Voiceover synthesis",
+      "Dynamic templates",
+      "Music & effects",
+      "Multiple formats",
+      "Fast turnaround"
+    ]
+  },
+  {
+    id: "ai-product-photography",
+    name: "AI Product Photography",
+    description: "Generate professional product images using AI, creating lifestyle shots and variations from simple photos.",
+    features: [
+      "Background generation",
+      "Lifestyle scenes",
+      "Model integration",
+      "Seasonal variations",
+      "Consistent styling",
+      "Scalable production"
+    ]
+  }
+];
+
+// Training services
+const trainingServices = [
+  {
+    id: "ai-training",
+    name: "AI Training",
+    description: "Hands-on training programs to upskill your team on AI tools, prompt engineering, and AI-powered workflows.",
+    features: [
+      "Custom curriculum",
+      "Hands-on workshops",
+      "Tool-specific training",
+      "Prompt engineering",
+      "Best practices",
+      "Certification available"
+    ]
+  },
+  {
+    id: "ai-consulting",
+    name: "AI Consulting",
+    description: "Strategic AI guidance to identify opportunities, plan implementations, and maximize ROI on AI investments.",
+    features: [
+      "AI readiness assessment",
+      "Use case identification",
+      "Implementation roadmap",
+      "Vendor evaluation",
+      "ROI analysis",
+      "Change management"
+    ]
+  },
+  {
+    id: "ai-office-hours",
+    name: "AI Office Hours",
+    description: "Ongoing support sessions where your team can ask questions, troubleshoot issues, and learn new AI techniques.",
+    features: [
+      "Weekly sessions",
+      "Q&A format",
+      "Screen sharing",
+      "Recording provided",
+      "Priority support",
+      "Flexible scheduling"
+    ]
+  }
+];
+
+// Related service categories
+const relatedServices = [
+  {
+    title: "AI Agents",
+    description: "Intelligent AI agents for sales and customer support.",
+    href: "/services/ai-agents",
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    title: "Business Automation",
+    description: "Streamline operations with workflow automation.",
+    href: "/services/automation",
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    title: "Web Intelligence",
+    description: "Smart eCommerce and web solutions powered by AI.",
+    href: "/services/web-intelligence",
+    gradient: "from-indigo-500 to-purple-500"
+  }
+];
+---
+
+<BaseLayout title="Analytics & Training - Business Intelligence & AI Education | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span>}
+              {crumb.url ? (
+                <a href={crumb.url} class="hover:text-primary-blue transition-colors">{crumb.label}</a>
+              ) : (
+                <span class="text-text-light-primary dark:text-text-dark-primary font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">Analytics & Training</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Transform data into insights and empower your team with AI knowledge. From competitive analysis to hands-on training, we help you make smarter decisions.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Business Analytics Section -->
+    <Section id="analytics" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">Business Analytics</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Data-driven insights that help you understand your market, track performance, and make confident decisions.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {analyticsServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-orange-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- AI Content Generation Section -->
+    <Section id="content-generation" variant="alternate">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14,2 14,8 20,8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">AI Content Generation</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Scale your content production with AI-powered tools that create descriptions, videos, and images while maintaining your brand voice.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {contentServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-purple-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Training Section -->
+    <Section id="training" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">Training & Support</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Empower your team with AI knowledge through hands-on training, strategic consulting, and ongoing support.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {trainingServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-teal-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Related Services -->
+    <Section id="related" variant="alternate">
+      <Container>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+          <span class="apple-gradient-text">Explore More Services</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedServices.map((service) => (
+            <a
+              href={service.href}
+              class="group block bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+            >
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-white mb-4`}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                {service.title}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+                {service.description}
+              </p>
+              <span class="text-sm text-primary-blue font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Explore
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="default">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Level Up</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> Your AI Skills?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free consultation to discuss your analytics needs or explore our AI training programs.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>

@@ -1,0 +1,326 @@
+---
+// Business Automation Service Category Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Home', url: '/' },
+  { label: 'Services', url: '/services' },
+  { label: 'Business Automation', url: '' }
+];
+
+// Automation services
+const automationServices = [
+  {
+    id: "workflow-automation",
+    name: "Workflow Automation",
+    description: "End-to-end process automation that connects your tools, eliminates manual tasks, and ensures consistent execution every time.",
+    features: [
+      "Multi-app integrations",
+      "Conditional logic & branching",
+      "Error handling & retries",
+      "Audit trails & logging",
+      "Real-time notifications",
+      "Custom workflow builder"
+    ]
+  },
+  {
+    id: "data-entry-automation",
+    name: "Data Entry Automation",
+    description: "Eliminate manual data entry with AI-powered extraction that reads documents, forms, and emails to populate your systems automatically.",
+    features: [
+      "OCR document scanning",
+      "Email data extraction",
+      "Form processing",
+      "Data validation",
+      "Duplicate detection",
+      "Multi-system sync"
+    ]
+  },
+  {
+    id: "invoice-processing",
+    name: "Invoice Processing",
+    description: "Automate your entire accounts payable workflow from invoice receipt to payment approval with intelligent document processing.",
+    features: [
+      "Invoice data extraction",
+      "3-way matching",
+      "Approval workflows",
+      "Payment scheduling",
+      "Vendor management",
+      "Accounting integration"
+    ]
+  },
+  {
+    id: "crm-automation",
+    name: "CRM Automation",
+    description: "Keep your CRM data clean and current with automated updates, lead routing, and activity tracking across all touchpoints.",
+    features: [
+      "Contact enrichment",
+      "Lead assignment rules",
+      "Activity logging",
+      "Pipeline updates",
+      "Task automation",
+      "Reporting automation"
+    ]
+  },
+  {
+    id: "scheduling-automation",
+    name: "Smart Scheduling",
+    description: "Intelligent scheduling that optimizes appointments, resource allocation, and team calendars automatically.",
+    features: [
+      "Calendar optimization",
+      "Resource allocation",
+      "Conflict resolution",
+      "Buffer time management",
+      "Team availability sync",
+      "Customer preferences"
+    ]
+  },
+  {
+    id: "document-processing",
+    name: "Document Processing",
+    description: "AI-powered document handling that reads, categorizes, extracts data, and routes documents to the right workflows.",
+    features: [
+      "Document classification",
+      "Key data extraction",
+      "Contract analysis",
+      "Signature detection",
+      "Version control",
+      "Secure archiving"
+    ]
+  },
+  {
+    id: "inventory-management",
+    name: "Inventory Management",
+    description: "Automated inventory tracking and reordering that keeps stock levels optimized and prevents stockouts.",
+    features: [
+      "Real-time tracking",
+      "Auto-reorder points",
+      "Multi-location sync",
+      "Demand forecasting",
+      "Supplier integration",
+      "Stock alerts"
+    ]
+  },
+  {
+    id: "expense-tracking",
+    name: "Expense Tracking",
+    description: "Streamline expense management with automated receipt capture, categorization, and approval workflows.",
+    features: [
+      "Receipt scanning",
+      "Auto-categorization",
+      "Policy compliance",
+      "Approval routing",
+      "Reimbursement processing",
+      "Budget tracking"
+    ]
+  },
+  {
+    id: "email-automation",
+    name: "Email Workflow Automation",
+    description: "Intelligent email processing that sorts, responds, and triggers actions based on email content and context.",
+    features: [
+      "Smart inbox sorting",
+      "Auto-responses",
+      "Email-to-task creation",
+      "Follow-up reminders",
+      "Template management",
+      "Analytics & insights"
+    ]
+  }
+];
+
+// Related service categories
+const relatedServices = [
+  {
+    title: "AI Agents",
+    description: "Intelligent AI agents for sales and customer support.",
+    href: "/services/ai-agents",
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    title: "Web Intelligence",
+    description: "Smart eCommerce and web solutions powered by AI.",
+    href: "/services/web-intelligence",
+    gradient: "from-indigo-500 to-purple-500"
+  },
+  {
+    title: "Analytics & Training",
+    description: "Transform data into insights and empower your team.",
+    href: "/services/analytics",
+    gradient: "from-orange-500 to-amber-500"
+  }
+];
+---
+
+<BaseLayout title="Business Automation - Workflow & Process Automation | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span>}
+              {crumb.url ? (
+                <a href={crumb.url} class="hover:text-primary-blue transition-colors">{crumb.label}</a>
+              ) : (
+                <span class="text-text-light-primary dark:text-text-dark-primary font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white shadow-lg mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="7.5,4.21 12,6.81 16.5,4.21"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">Business Automation</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Streamline operations with intelligent workflow automation. From data entry to invoice processing, we eliminate manual tasks and reduce errors by 95%.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Automation Services Section -->
+    <Section id="automation-services" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">Automation Solutions</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Comprehensive automation solutions that connect your systems, eliminate repetitive tasks, and free your team to focus on high-value work.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {automationServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-green-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Related Services -->
+    <Section id="related" variant="alternate">
+      <Container>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+          <span class="apple-gradient-text">Explore More Services</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedServices.map((service) => (
+            <a
+              href={service.href}
+              class="group block bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+            >
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-white mb-4`}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                {service.title}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+                {service.description}
+              </p>
+              <span class="text-sm text-primary-blue font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Explore
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="default">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Automate</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> Your Business?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free discovery call to identify automation opportunities and see how we can streamline your operations.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>

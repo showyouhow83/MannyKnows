@@ -1,0 +1,377 @@
+---
+// AI Agents Service Category Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Home', url: '/' },
+  { label: 'Services', url: '/services' },
+  { label: 'AI Agents', url: '' }
+];
+
+// AI Sales Agents services
+const salesAgentServices = [
+  {
+    id: "ai-sales-agents",
+    name: "AI Sales Agents",
+    description: "Intelligent AI agents that handle sales conversations 24/7, qualifying leads and guiding prospects through your sales funnel automatically.",
+    features: [
+      "24/7 lead qualification",
+      "Personalized sales conversations",
+      "CRM integration",
+      "Multi-channel support",
+      "Real-time analytics",
+      "Custom training on your products"
+    ]
+  },
+  {
+    id: "lead-generation",
+    name: "Lead Generation & Follow-Up",
+    description: "Automated lead capture and nurturing system that engages prospects, collects information, and follows up at optimal times.",
+    features: [
+      "Smart lead capture forms",
+      "Automated follow-up sequences",
+      "Lead scoring & prioritization",
+      "Email & SMS outreach",
+      "Appointment scheduling",
+      "Integration with your CRM"
+    ]
+  },
+  {
+    id: "appointment-booking",
+    name: "Appointment Booking",
+    description: "AI-powered scheduling assistant that handles appointment booking, rescheduling, and reminders without human intervention.",
+    features: [
+      "Calendar integration",
+      "Automated reminders",
+      "Timezone handling",
+      "Rescheduling management",
+      "No-show follow-up",
+      "Custom booking flows"
+    ]
+  },
+  {
+    id: "phone-agents",
+    name: "AI Phone Agents",
+    description: "Voice-enabled AI agents that handle inbound and outbound calls with natural conversation abilities.",
+    features: [
+      "Natural voice interactions",
+      "Call routing & transfers",
+      "Voicemail handling",
+      "Call transcription",
+      "Sentiment analysis",
+      "Multi-language support"
+    ]
+  },
+  {
+    id: "sales-automation",
+    name: "Sales Automation",
+    description: "End-to-end sales process automation from initial contact to close, reducing manual work and increasing conversion rates.",
+    features: [
+      "Pipeline automation",
+      "Quote generation",
+      "Contract management",
+      "Commission tracking",
+      "Sales forecasting",
+      "Performance analytics"
+    ]
+  }
+];
+
+// AI Customer Support services
+const supportServices = [
+  {
+    id: "customer-service-bots",
+    name: "24/7 Customer Service",
+    description: "Round-the-clock AI support that handles customer inquiries, resolves issues, and escalates when needed.",
+    features: [
+      "Instant response times",
+      "Knowledge base integration",
+      "Ticket management",
+      "Smart escalation",
+      "Customer history context",
+      "Satisfaction tracking"
+    ]
+  },
+  {
+    id: "voice-assistants",
+    name: "Voice Assistants",
+    description: "Custom voice-enabled AI assistants for your business that handle spoken customer interactions naturally.",
+    features: [
+      "Natural language understanding",
+      "Custom wake words",
+      "Multi-accent support",
+      "Background noise handling",
+      "Context retention",
+      "Hands-free operation"
+    ]
+  },
+  {
+    id: "multilingual-support",
+    name: "Multilingual Support",
+    description: "AI agents that communicate fluently in multiple languages, expanding your reach to global customers.",
+    features: [
+      "50+ languages supported",
+      "Real-time translation",
+      "Cultural context awareness",
+      "Consistent brand voice",
+      "Language detection",
+      "Localized responses"
+    ]
+  },
+  {
+    id: "virtual-receptionists",
+    name: "AI Concierge Services",
+    description: "Virtual receptionist and concierge AI that handles front-desk duties, visitor management, and customer routing.",
+    features: [
+      "Visitor check-in",
+      "Call screening",
+      "Meeting room booking",
+      "Package notifications",
+      "Directory assistance",
+      "VIP recognition"
+    ]
+  }
+];
+
+// Related service categories
+const relatedServices = [
+  {
+    title: "Business Automation",
+    description: "Streamline operations with intelligent workflow automation.",
+    href: "/services/automation",
+    gradient: "from-green-500 to-emerald-500"
+  },
+  {
+    title: "Web Intelligence",
+    description: "Smart eCommerce and web solutions powered by AI.",
+    href: "/services/web-intelligence",
+    gradient: "from-indigo-500 to-purple-500"
+  },
+  {
+    title: "Analytics & Training",
+    description: "Transform data into insights and empower your team.",
+    href: "/services/analytics",
+    gradient: "from-orange-500 to-amber-500"
+  }
+];
+---
+
+<BaseLayout title="AI Agents - Sales & Support Automation | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span>}
+              {crumb.url ? (
+                <a href={crumb.url} class="hover:text-primary-blue transition-colors">{crumb.label}</a>
+              ) : (
+                <span class="text-text-light-primary dark:text-text-dark-primary font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">AI Agents</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Intelligent AI agents that handle sales, support, and customer interactions 24/7. From lead generation to customer service, our agents work tirelessly to grow your business.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- AI Sales Agents Section -->
+    <Section id="sales-agents" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">AI Sales Agents</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Automate your sales process with intelligent AI agents that qualify leads, handle conversations, and drive conversions around the clock.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {salesAgentServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-primary-blue font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- AI Customer Support Section -->
+    <Section id="customer-support" variant="alternate">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">AI Customer Support</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Deliver exceptional customer experiences with AI-powered support that's always available, always helpful, and always learning.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {supportServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-green-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Related Services -->
+    <Section id="related" variant="default">
+      <Container>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+          <span class="apple-gradient-text">Explore More Services</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedServices.map((service) => (
+            <a
+              href={service.href}
+              class="group block bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+            >
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-white mb-4`}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                {service.title}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+                {service.description}
+              </p>
+              <span class="text-sm text-primary-blue font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Explore
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="alternate">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Deploy</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> AI Agents?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free discovery call to discuss your needs and see how our AI agents can transform your sales and support operations.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>

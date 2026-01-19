@@ -1,0 +1,391 @@
+---
+// Photography & 360 Service Category Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Home', url: '/' },
+  { label: 'Services', url: '/services' },
+  { label: 'Photography & 360', url: '' }
+];
+
+// Photography services
+const photographyServices = [
+  {
+    id: "product-photography",
+    name: "Product Photography",
+    description: "Professional product shots that showcase your items in their best light, optimized for eCommerce and marketing.",
+    features: [
+      "Studio lighting setup",
+      "Multiple angles",
+      "Background removal",
+      "Color correction",
+      "eCommerce optimization",
+      "Batch processing"
+    ]
+  },
+  {
+    id: "real-estate-photography",
+    name: "Real Estate Photography",
+    description: "Stunning property photography that sells homes faster with professional lighting and composition.",
+    features: [
+      "Wide-angle interiors",
+      "Twilight exteriors",
+      "HDR processing",
+      "Virtual staging ready",
+      "Aerial/drone shots",
+      "Fast turnaround"
+    ]
+  },
+  {
+    id: "portrait-photography",
+    name: "Portrait Photography",
+    description: "Professional headshots and portraits for business profiles, teams, and personal branding.",
+    features: [
+      "Professional lighting",
+      "Multiple backgrounds",
+      "Retouching included",
+      "Team sessions",
+      "On-location available",
+      "Quick delivery"
+    ]
+  },
+  {
+    id: "ai-product-photography",
+    name: "AI Product Photography",
+    description: "AI-enhanced product images that create stunning visuals from simple photos, saving time and costs.",
+    features: [
+      "Background generation",
+      "Lifestyle scene creation",
+      "Model integration",
+      "Seasonal variations",
+      "A/B testing assets",
+      "Scalable production"
+    ]
+  }
+];
+
+// 360 services
+const services360 = [
+  {
+    id: "360-virtual-tours",
+    name: "360° Virtual Tours",
+    description: "Immersive virtual tours that let customers explore your space from anywhere, increasing engagement and conversions.",
+    features: [
+      "High-resolution capture",
+      "Interactive hotspots",
+      "Floor plan integration",
+      "Mobile optimized",
+      "Embed anywhere",
+      "Analytics tracking"
+    ]
+  },
+  {
+    id: "360-videos",
+    name: "360° Videos",
+    description: "Immersive 360-degree video production for marketing, training, and virtual experiences.",
+    features: [
+      "Professional capture",
+      "Post-production editing",
+      "Spatial audio",
+      "Platform optimization",
+      "VR-ready output",
+      "Social media formats"
+    ]
+  },
+  {
+    id: "360-photos",
+    name: "360° Photos",
+    description: "Spherical photography that captures entire spaces for virtual tours, Google Business, and marketing.",
+    features: [
+      "Full spherical capture",
+      "HDR processing",
+      "Color correction",
+      "Google compatible",
+      "Social media ready",
+      "Quick turnaround"
+    ]
+  },
+  {
+    id: "360-ecommerce-tours",
+    name: "360° eCommerce Virtual Tours",
+    description: "Virtual showroom experiences that let customers browse your products in an immersive 3D environment.",
+    features: [
+      "Product hotspots",
+      "Add-to-cart integration",
+      "Product information popups",
+      "Mobile responsive",
+      "Easy embedding",
+      "Analytics & tracking"
+    ]
+  },
+  {
+    id: "360-wedding-videos",
+    name: "360° Wedding Videos",
+    description: "Capture your special day in immersive 360-degree video that lets you relive every moment from any angle.",
+    features: [
+      "Ceremony coverage",
+      "Reception highlights",
+      "VR headset compatible",
+      "Traditional edit included",
+      "Online gallery",
+      "Physical delivery"
+    ]
+  },
+  {
+    id: "360-event-videos",
+    name: "360° Event Videos",
+    description: "Immersive event coverage that captures the full atmosphere and energy of your corporate or social events.",
+    features: [
+      "Multi-camera setup",
+      "Live streaming option",
+      "Post-event editing",
+      "Highlight reels",
+      "VR experience ready",
+      "Quick delivery"
+    ]
+  }
+];
+
+// Related service categories
+const relatedServices = [
+  {
+    title: "AI Agents",
+    description: "Intelligent AI agents for sales and customer support.",
+    href: "/services/ai-agents",
+    gradient: "from-blue-500 to-cyan-500"
+  },
+  {
+    title: "Web Intelligence",
+    description: "Smart eCommerce and web solutions powered by AI.",
+    href: "/services/web-intelligence",
+    gradient: "from-indigo-500 to-purple-500"
+  },
+  {
+    title: "Analytics & Training",
+    description: "Transform data into insights and empower your team.",
+    href: "/services/analytics",
+    gradient: "from-orange-500 to-amber-500"
+  }
+];
+---
+
+<BaseLayout title="Photography & 360 - Professional Visual Content | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <!-- Marquee -->
+    <MarqueeSimple />
+
+    <!-- Header -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          {breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center">
+              {index > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span>}
+              {crumb.url ? (
+                <a href={crumb.url} class="hover:text-primary-blue transition-colors">{crumb.label}</a>
+              ) : (
+                <span class="text-text-light-primary dark:text-text-dark-primary font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="pb-16 px-4">
+        <Container>
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-white shadow-lg mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text">Photography & 360</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Professional photography and immersive 360-degree experiences. From product shots to virtual tours, we capture your business in stunning detail.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Photography Services Section -->
+    <Section id="photography" variant="default">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">Photography Services</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Professional photography services that showcase your products, properties, and people in their best light.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {photographyServices.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-rose-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- 360 Services Section -->
+    <Section id="360-services" variant="alternate">
+      <Container>
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 12h8"></path>
+                <path d="M12 8v8"></path>
+              </svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">360° Services</h2>
+          </div>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-3xl">
+            Immersive 360-degree experiences that let your customers explore, engage, and connect with your spaces and products.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services360.map((service) => (
+            <article id={service.id} class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+                {service.name}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 leading-relaxed">
+                {service.description}
+              </p>
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <span class="text-pink-500 font-bold mt-0.5">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="/?chat=open"
+                text="Learn More"
+                variant="secondary"
+                arrow={true}
+              />
+            </article>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Related Services -->
+    <Section id="related" variant="default">
+      <Container>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+          <span class="apple-gradient-text">Explore More Services</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedServices.map((service) => (
+            <a
+              href={service.href}
+              class="group block bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300"
+            >
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-white mb-4`}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue transition-colors mb-2">
+                {service.title}
+              </h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">
+                {service.description}
+              </p>
+              <span class="text-sm text-primary-blue font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                Explore
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section id="cta" variant="alternate">
+      <Container>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            <span class="apple-gradient-text">Ready to Capture</span>
+            <span class="text-text-light-primary dark:text-text-dark-primary"> Your Vision?</span>
+          </h2>
+          <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary mb-8">
+            Schedule a free consultation to discuss your photography and 360° content needs.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              href="/?chat=open"
+              text="Chat with Manny"
+              variant="cta"
+              arrow={true}
+            />
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-semibold border-2 border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Chat Box -->
+    <ChatBox />
+
+    <!-- Floating Dock Menu -->
+    <DockMenu />
+  </main>
+</BaseLayout>
