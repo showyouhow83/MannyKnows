@@ -10,6 +10,7 @@ import ReviewsSection from '../components/sections/ReviewsSection.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
+import ContractorSuite from '../components/sections/ContractorSuite.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 // ========================================
 // NAVBAR CONFIGURATION
@@ -46,10 +47,10 @@ const NAVBAR_CONFIG = {
                 highlightedText="business operations"
                 subtitle="Optimize your operations from end to end with intelligent AI. We automate critical tasks across your marketing, sales, and support workflows to boost productivity, cut costs, and drive scalable growth."
             />
-        </header>
 
-		<!-- Hero Swiper Slider -->
-		<HeroSwiper />
+            <!-- Hero Swiper Slider -->
+            <HeroSwiper />
+        </header>
 
 		<!-- Services Section -->
 		<ServicesSection />
@@ -59,10 +60,10 @@ const NAVBAR_CONFIG = {
 			id="products"
 			badge="What We Build"
 			title="Our Products"
-			subtitle="Discover our range of AI-powered e-commerce solutions designed to elevate your business."
+			subtitle="Turnkey platforms we've productized from real client work — software you can run your whole operation on."
 			variant="alternate"
 		>
-
+			<ContractorSuite />
 		</PageSection>
 
 		<!-- Process Section -->

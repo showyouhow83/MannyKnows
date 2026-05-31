@@ -48,16 +48,16 @@ const defaultSlides: Slide[] = [
 ];
 
 const { slides = defaultSlides } = Astro.props;
-
-// Duplicate slides for seamless looping with carousel effect
-const allSlides = [...slides, ...slides];
+// Looping is handled by Swiper's `loop: true` below — Swiper clones slides as
+// needed. Previously the slides were ALSO duplicated here, so two looping
+// mechanisms ran at once and the same slide showed up twice on screen.
 ---
 
 <section id="hero-swiper" class="hero-carousel-section">
   <div class="carousel-container">
     <div class="swiper hero-carousel">
       <div class="swiper-wrapper">
-        {allSlides.map((slide) => (
+        {slides.map((slide) => (
           <div class="swiper-slide">
             <div class="swiper-carousel-animate-opacity">
               <img src={slide.image} alt={slide.title} />
@@ -147,17 +147,23 @@ const allSlides = [...slides, ...slides];
     --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.5);
   }
 
+  /* The section itself is transparent so the slider sits on the hero's
+     backdrop and reads as one continuous unit. The dark gradient now lives on
+     the inset, rounded "stage" below — a deliberate showcase, not a full-bleed
+     band slapped onto the page. */
   .hero-carousel-section {
     width: 100%;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-    padding: 3rem 0;
+    background: transparent;
+    padding: 0.5rem 0 2.5rem;
   }
 
   .carousel-container {
     position: relative;
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 60px;
+    padding: 2.5rem 60px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    border-radius: 28px;
   }
 
   .hero-carousel {
@@ -296,7 +302,8 @@ const allSlides = [...slides, ...slides];
     }
 
     .carousel-container {
-      padding: 0 20px;
+      padding: 1.75rem 16px;
+      border-radius: 20px;
     }
 
     .nav-arrow {
