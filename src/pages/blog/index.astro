@@ -1,0 +1,82 @@
+---
+// Blog index — lists published posts
+export const prerender = true;
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title="Blog — Automation, AI & Lead Generation | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Blog</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="text-center max-w-3xl mx-auto">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The Blog</span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>Ideas that put your business to work</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Practical notes on automation, AI, and turning a website into a machine that actually generates and manages work.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="posts" variant="default">
+      <Container>
+        {posts.length === 0 ? (
+          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">No posts yet — check back soon.</p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <article class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300 flex flex-col">
+                <div class="flex flex-wrap gap-2 mb-3">
+                  {post.data.tags.slice(0, 2).map((tag) => (
+                    <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue bg-primary-blue/10 rounded-full px-2.5 py-1">{tag}</span>
+                  ))}
+                </div>
+                <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2 leading-snug">
+                  <a href={`/blog/${post.id}`} class="hover:text-primary-blue transition-colors">{post.data.title}</a>
+                </h2>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4 flex-1">{post.data.description}</p>
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-light-tertiary dark:border-dark-accent">
+                  <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{fmt(post.data.pubDate)}</span>
+                  <a href={`/blog/${post.id}`} class="text-sm text-primary-blue font-medium flex items-center gap-1 group">
+                    Read
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>

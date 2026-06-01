@@ -1,0 +1,94 @@
+---
+// Individual blog post
+export const prerender = true;
+
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title={`${post.data.title} | MannyKnows Blog`}>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/blog" class="hover:text-primary-blue transition-colors">Blog</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium truncate max-w-[40ch]">{post.data.title}</span></li>
+        </ol>
+      </nav>
+      <div class="pb-10 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto">
+            <div class="flex flex-wrap gap-2 mb-4">
+              {post.data.tags.map((tag) => (
+                <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue bg-primary-blue/10 rounded-full px-2.5 py-1">{tag}</span>
+              ))}
+            </div>
+            <h1 class="sf-bold apple-headline text-3xl md:text-4xl lg:text-5xl mb-5 leading-tight">
+              <span class="apple-gradient-text" data-colorful-title>{post.data.title}</span>
+            </h1>
+            <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-5">{post.data.description}</p>
+            <div class="flex items-center gap-3 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+              <span class="font-medium text-text-light-secondary dark:text-text-dark-secondary">{post.data.author}</span>
+              <span>·</span>
+              <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="post" variant="default">
+      <Container>
+        <article class="blog-prose max-w-3xl mx-auto">
+          <Content />
+        </article>
+        <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent">
+          <a href="/blog" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
+            <svg class="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            All posts
+          </a>
+        </div>
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-prose { color: inherit; font-size: 1.075rem; line-height: 1.8; }
+  .blog-prose :global(h2) { font-size: 1.6rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
+  .blog-prose :global(h3) { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.5rem; }
+  .blog-prose :global(p) { margin: 0 0 1.25rem; }
+  .blog-prose :global(ul), .blog-prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+  .blog-prose :global(li) { margin: 0.4rem 0; }
+  .blog-prose :global(ul) { list-style: disc; }
+  .blog-prose :global(ol) { list-style: decimal; }
+  .blog-prose :global(a) { color: #0071e3; text-decoration: underline; text-underline-offset: 2px; }
+  .blog-prose :global(a:hover) { color: #ff4faa; }
+  .blog-prose :global(strong) { font-weight: 700; }
+  .blog-prose :global(blockquote) { border-left: 3px solid #0071e3; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; opacity: 0.9; }
+  .blog-prose :global(code) { background: rgba(127,127,127,0.15); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+</style>
