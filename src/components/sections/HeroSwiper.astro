@@ -45,6 +45,12 @@ const defaultSlides: Slide[] = [
     description: 'Business analytics, content generation, and team training services.',
     href: '/services/analytics'
   },
+  {
+    image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80',
+    title: 'Contractor Suite',
+    description: 'Turn your website into a lead engine — manage leads, crews, scheduling, and job photos from one place.',
+    href: '/#products'
+  },
 ];
 
 const { slides = defaultSlides } = Astro.props;
@@ -112,8 +118,10 @@ const { slides = defaultSlides } = Astro.props;
           sideSlides: 2,
         },
         grabCursor: true,
-        loop: true,
-        loopAdditionalSlides: 4,
+        // `rewind` (not `loop`) advances through the slides and snaps back to the
+        // start at the end. The carousel effect's loop needs ~10-12 slides to
+        // clone; with our handful, loop silently freezes — rewind needs no clones.
+        rewind: true,
         slidesPerView: 'auto',
         centeredSlides: true,
         navigation: {
