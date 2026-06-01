@@ -450,17 +450,29 @@ const { className = '' } = Astro.props;
     });
   }
 
-  // Contextual greeting function for email links
+  // Contextual greeting. Some references are on-site topics (e.g. a CTA with
+  // ?ref=contractor-suite); anything else is treated as an email/meeting id.
   const triggerContextualGreeting = async (referenceId: string) => {
     const messagesContainer = document.getElementById('chatBoxMessages');
     if (!messagesContainer) return;
 
-    // Clear the default greeting and add contextual one with proper styling
+    // Sanitize the reference before it ever touches innerHTML (it comes from the URL).
+    const safeRef = (referenceId || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+
+    // Topic greetings for on-site CTAs; fall back to the email/meeting greeting.
+    const topicGreetings: Record<string, string> = {
+      'contractor-suite': "Hi there! 👋 Interested in the Contractor Suite? It turns your website into a lead engine and gives you one place to manage leads, crews, scheduling, and job photos — the same setup running SL Painting. Tell me a bit about your business and I'll show you how it could work for you.",
+    };
+
+    const message = topicGreetings[safeRef]
+      || `Hi there! 👋 I see you're coming from an email about your discovery call (Reference: ${safeRef}). I'm here to help with any changes or questions you might have. What can I assist you with?`;
+
+    // Clear the default greeting and add the contextual one with proper styling
     messagesContainer.innerHTML = `
       <div class="flex gap-3 items-start">
         <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">M</div>
         <div class="chat-message-bubble bot-message" data-astro-cid-wqmercx5="">
-          Hi there! 👋 I see you're coming from an email about your discovery call (Reference: ${referenceId}). I'm here to help with any changes or questions you might have. What can I assist you with?
+          ${message}
         </div>
       </div>
     `;
