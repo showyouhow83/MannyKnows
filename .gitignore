@@ -16,6 +16,7 @@ pnpm-debug.log*
 .env
 .env.production
 .dev.vars*
+!.dev.vars.example
 
 # temporary and test files
 temp_*.json

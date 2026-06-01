@@ -1,0 +1,23 @@
+# .dev.vars.example — copy to `.dev.vars` (gitignored) and fill in for local dev.
+#
+# WHERE THINGS GO:
+#   • Secrets (below)                  → here for local, `wrangler secret put NAME` for prod
+#   • Non-secret config                → wrangler.jsonc "vars" (GA_MEASUREMENT_ID, RESEND_FROM,
+#                                          OWNER_EMAIL, OWNER_TIMEZONE) — already set there
+#   • KV / R2 access                   → bindings in wrangler.jsonc (MK_KV_*, MK_R2), NOT env vars
+#   • CLOUDFLARE_API_TOKEN / account id → shell env + GitHub Actions secret, NOT this file
+#
+# `wrangler dev` auto-loads wrangler.jsonc "vars", so this file only needs the SECRETS.
+#
+# Generate the three random keys:
+#   node -e "const c=require('crypto');console.log('KV_ENCRYPTION_KEY='+c.randomBytes(32).toString('hex'));console.log('ADMIN_KEY='+c.randomBytes(24).toString('base64url'));console.log('ADMIN_API_KEY='+c.randomBytes(32).toString('base64url'))"
+
+# --- Providers (get these from the provider dashboards) ---
+OPENAI_API_KEY=
+RESEND_API_KEY=
+# OPENAI_BASE_URL=https://api.openai.com/   # uncomment only to override the default
+
+# --- App secrets (generate with the one-liner above) ---
+KV_ENCRYPTION_KEY=     # encrypts data in KV — set ONCE in prod and keep it stable, or you lose access to encrypted data
+ADMIN_KEY=             # admin dashboard login (admin-login / newsletter-admin / meetings-admin)
+ADMIN_API_KEY=         # analysis/debug API routes (services-analysis / kv-analysis / security-status)
