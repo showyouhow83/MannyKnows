@@ -155,10 +155,8 @@ const { slides = defaultSlides } = Astro.props;
     --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.5);
   }
 
-  /* The section itself is transparent so the slider sits on the hero's
-     backdrop and reads as one continuous unit. The dark gradient now lives on
-     the inset, rounded "stage" below — a deliberate showcase, not a full-bleed
-     band slapped onto the page. */
+  /* Section and container are both transparent, so the slider sits directly on
+     the hero's backdrop (no separate dark stage). */
   .hero-carousel-section {
     width: 100%;
     background: transparent;
@@ -169,9 +167,7 @@ const { slides = defaultSlides } = Astro.props;
     position: relative;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 2.5rem 60px;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-    border-radius: 28px;
+    padding: 1.5rem 60px;
   }
 
   .hero-carousel {
@@ -310,8 +306,7 @@ const { slides = defaultSlides } = Astro.props;
     }
 
     .carousel-container {
-      padding: 1.75rem 16px;
-      border-radius: 20px;
+      padding: 1.25rem 16px;
     }
 
     .nav-arrow {

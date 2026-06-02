@@ -1,0 +1,66 @@
+---
+// BlogHighlights.astro — replaces the old "What We Offer / Artificial Intelligence"
+// section on the homepage, reusing its exact styling. The boxes are now blog
+// posts. (The original section is preserved in ServicesSection.astro.)
+import Section from '../layout/Section.astro';
+import Container from '../layout/Container.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6);
+
+// Same colour variants the service cards used, cycled across the posts.
+const variants = [
+  { style: "background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08)); border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2), 0 1px 3px rgba(99, 102, 241, 0.1);", text: "text-indigo-400" },
+  { style: "background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)); border-color: rgba(34, 197, 94, 0.4); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2), 0 1px 3px rgba(34, 197, 94, 0.1);", text: "text-green-400" },
+  { style: "background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)); border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(59, 130, 246, 0.1);", text: "text-blue-400" },
+  { style: "background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08)); border-color: rgba(249, 115, 22, 0.4); box-shadow: 0 4px 20px rgba(249, 115, 22, 0.2), 0 1px 3px rgba(249, 115, 22, 0.1);", text: "text-orange-400" },
+  { style: "background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.08)); border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2), 0 1px 3px rgba(168, 85, 247, 0.1);", text: "text-purple-400" },
+  { style: "background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(20, 184, 166, 0.08)); border-color: rgba(20, 184, 166, 0.4); box-shadow: 0 4px 20px rgba(20, 184, 166, 0.2), 0 1px 3px rgba(20, 184, 166, 0.1);", text: "text-teal-400" },
+];
+---
+
+<Section id="blog-highlights" variant="default" hasOverflow={true}>
+  <Container className="relative z-10">
+    <SectionHeader
+      badge="From the Blog"
+      title="New Playbooks"
+      subtitle="Replacing old processes with new ones — set up by a human, run by AI"
+    />
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto mb-16">
+      <!-- New-process copy block (same slot the "We specialize…" card used) -->
+      <div class="lg:col-span-2 flex items-center">
+        <div>
+          <p class="apple-gradient-text sf-medium apple-body-text text-xl md:text-2xl lg:text-3xl text-text-light-secondary dark:text-text-dark-secondary leading-7 mb-8" data-colorful-title>
+            Out with the old way of working, in with the new — designed by a human who actually gets your business, and run by AI so it happens on its own.
+          </p>
+          <a href="/blog" class="inline-flex items-center gap-2 text-primary-blue font-semibold text-lg group">
+            Read the blog
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      {posts.map((post, i) => {
+        const v = variants[i % variants.length];
+        return (
+          <a href={`/blog/${post.id}`} class="group backdrop-blur-lg border rounded-xl p-4 transition-all duration-300 relative overflow-hidden no-underline flex flex-col hover:-translate-y-0.5" style={v.style}>
+            <div class="relative z-10 flex flex-col h-full">
+              <div class={`${v.text} text-xs font-bold uppercase tracking-wide mb-2`}>{post.data.tags[0] || 'Article'}</div>
+              <h3 class="text-lg text-text-light-primary dark:text-text-dark-primary font-semibold leading-tight mb-2 group-hover:text-primary-blue transition-colors">{post.data.title}</h3>
+              <p class="text-text-light-secondary dark:text-text-dark-secondary text-sm leading-snug mb-4 flex-1">{post.data.description}</p>
+              <div class={`${v.text} text-sm font-medium flex items-center gap-1 mt-auto`}>
+                Read
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </Container>
+</Section>
