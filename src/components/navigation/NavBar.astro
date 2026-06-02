@@ -23,7 +23,6 @@ const {
 } = Astro.props;
 
 const navLinks = [
-  { href: "/#services", label: "Services" },
   { href: "/#products", label: "Products" },
   { href: "/blog", label: "Blog" },
   { href: "/#process", label: "Process" },
@@ -34,12 +33,6 @@ const navLinks = [
 const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft);
 const searchIndex = [
   { title: "Home", description: "AI-powered software, automation & e-commerce.", url: "/", type: "Page" },
-  { title: "Services", description: "Everything we offer, from AI agents to analytics.", url: "/services", type: "Page" },
-  { title: "AI Agents", description: "Intelligent agents that automate sales, support, and ops.", url: "/services/ai-agents", type: "Service" },
-  { title: "Business Automation", description: "Workflow and process automation that saves hours.", url: "/services/automation", type: "Service" },
-  { title: "Web Intelligence", description: "Data-driven eCommerce and web solutions.", url: "/services/web-intelligence", type: "Service" },
-  { title: "Photography & 360", description: "Professional photography and 360° virtual tours.", url: "/services/photography", type: "Service" },
-  { title: "Analytics & Training", description: "Business analytics, content, and team training.", url: "/services/analytics", type: "Service" },
   { title: "Contractor Suite", description: "Lead-gen website plus admin to manage leads, crews & scheduling.", url: "/#products", type: "Product" },
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog", type: "Page" },
   ...blogPosts.map((p) => ({ title: p.data.title, description: p.data.description, url: `/blog/${p.id}`, type: "Blog", tags: p.data.tags.join(" ") })),
