@@ -1,6 +1,7 @@
 ---
 // Footer Header Component - Brand, Social Links, Blog Articles, and Newsletter
 import BlogArticleCard from './BlogArticleCard.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   brandTitle?: string;
@@ -24,30 +25,22 @@ const {
   target = "_blank"
 } = Astro.props;
 
-// Blog articles data - could be passed as props or fetched from CMS
-const blogArticles = [
-  {
-    icon: "chat" as const,
-    category: "AI & Technology",
-    title: "How AI is Transforming E-commerce",
-    categoryColor: "blue" as const,
-    href: "/contact-us"
-  },
-  {
-    icon: "document" as const,
-    category: "Content Strategy",
-    title: "AI Content Creation: The Future of Marketing",
-    categoryColor: "purple" as const,
-    href: "/contact-us"
-  },
-  {
-    icon: "analytics" as const,
-    category: "Data Analytics",
-    title: "Predictive Analytics: Making Data-Driven Decisions", 
-    categoryColor: "orange" as const,
-    href: "/contact-us"
-  }
+// Latest published posts power the "Latest AI Insights" cards.
+const cardStyles = [
+  { icon: "chat" as const, categoryColor: "blue" as const },
+  { icon: "document" as const, categoryColor: "purple" as const },
+  { icon: "analytics" as const, categoryColor: "orange" as const },
 ];
+const blogArticles = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map((post, i) => ({
+    ...cardStyles[i % cardStyles.length],
+    category: post.data.tags?.[0] ?? "Insights",
+    title: post.data.title,
+    href: `/blog/${post.id}`,
+  }));
 ---
 
 <div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0">
