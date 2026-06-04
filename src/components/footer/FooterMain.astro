@@ -1,6 +1,7 @@
 ---
 // Modular footer with reusable components
 import FooterHeader from './FooterHeader.astro';
+import FooterServices from './FooterServices.astro';
 import FooterBottom from './FooterBottom.astro';
 
 // Footer configuration can be passed as props for full customization
@@ -31,6 +32,9 @@ const props = Astro.props;
 
   <!-- Header Section: Brand, Social, Blog Articles, Newsletter -->
   <FooterHeader {...props} />
+
+  <!-- Services Section -->
+  <FooterServices />
 </footer>
 
 <!-- Footer Bottom -->
