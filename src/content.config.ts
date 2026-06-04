@@ -11,6 +11,9 @@ const blog = defineCollection({
     author: z.string().default('Manny'),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    // Optional 16:9 banner image, e.g. "/blog/my-post.jpg" (file lives in public/blog/).
+    // When omitted, cards fall back to a colored gradient placeholder.
+    image: z.string().optional(),
   }),
 });
 

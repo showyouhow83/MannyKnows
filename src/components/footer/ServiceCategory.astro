@@ -1,7 +1,10 @@
 ---
-// Service Category Component - Reusable service category with services list
+// Service Category Component - Reusable service category with services list.
+// NOTE: service items render as plain text (not links) for now — the /services/*
+// pages don't exist yet, so linking them would 404. The `href` is kept in the data
+// so these can be flipped back to <a> links once the pages are built.
 interface Service {
-  href: string;
+  href?: string;
   label: string;
 }
 
@@ -29,7 +32,7 @@ interface Props {
   borderClasses?: string;
 }
 
-const { 
+const {
   title,
   icon,
   iconGradient,
@@ -60,6 +63,10 @@ const getHoverColor = (textColor: string) => {
   if (textColor.includes('rose')) return '244, 63, 94';
   if (textColor.includes('blue')) return '59, 130, 246';
   if (textColor.includes('teal')) return '20, 184, 166';
+  if (textColor.includes('slate')) return '100, 116, 139';
+  if (textColor.includes('orange')) return '249, 115, 22';
+  if (textColor.includes('purple')) return '168, 85, 247';
+  if (textColor.includes('pink')) return '236, 72, 153';
   return '99, 102, 241'; // default fallback
 };
 
@@ -79,11 +86,9 @@ const hoverColorRGB = getHoverColor(textColor);
   </div>
   <ul class={`space-y-2 ${hasSecondarySection ? 'mb-6' : ''}`}>
     {services.map((service) => (
-      <li>
-        <a href={service.href} class={`${textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
-          <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full`}></span>
-          {service.label}
-        </a>
+      <li class={`${textColor} text-sm flex items-center gap-2`}>
+        <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+        {service.label}
       </li>
     ))}
   </ul>
@@ -92,7 +97,7 @@ const hoverColorRGB = getHoverColor(textColor);
     <>
       <!-- Divider -->
       <div class="h-px bg-white/10 mb-4"></div>
-      
+
       <!-- Secondary Section -->
       <div class="flex items-center gap-3 mb-3">
         <div class={`w-8 h-8 bg-gradient-to-r ${secondaryIconGradient} rounded-lg flex items-center justify-center`}>
@@ -102,11 +107,9 @@ const hoverColorRGB = getHoverColor(textColor);
       </div>
       <ul class={`space-y-2 ${hasThirdSection ? 'mb-6' : ''}`}>
         {secondaryServices.map((service) => (
-          <li>
-            <a href={service.href} class={`${secondaryTextColor || textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
-              <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
-              {service.label}
-            </a>
+          <li class={`${secondaryTextColor || textColor} text-sm flex items-center gap-2`}>
+            <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+            {service.label}
           </li>
         ))}
       </ul>
@@ -117,7 +120,7 @@ const hoverColorRGB = getHoverColor(textColor);
     <>
       <!-- Divider -->
       <div class="h-px bg-white/10 mb-4"></div>
-      
+
       <!-- Third Section -->
       <div class="flex items-center gap-3 mb-3">
         <div class={`w-8 h-8 bg-gradient-to-r ${thirdIconGradient} rounded-lg flex items-center justify-center`}>
@@ -127,11 +130,9 @@ const hoverColorRGB = getHoverColor(textColor);
       </div>
       <ul class="space-y-2">
         {thirdServices.map((service) => (
-          <li>
-            <a href={service.href} class={`${thirdTextColor || textColor} transition-colors duration-300 text-sm flex items-center gap-2`}>
-              <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full`}></span>
-              {service.label}
-            </a>
+          <li class={`${thirdTextColor || textColor} text-sm flex items-center gap-2`}>
+            <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+            {service.label}
           </li>
         ))}
       </ul>

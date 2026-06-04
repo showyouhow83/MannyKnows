@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { 
-  brandTitle = "MK",
+  brandTitle = "MK 🚀",
   brandDescription = "We specialize in custom AI agent development, workflow automation, and intelligent process optimization that reduces operational costs while maximizing efficiency. Our AI solutions integrate seamlessly with existing business systems, delivering measurable ROI through automated customer service, predictive analytics, and smart decision-making tools.",
   socialLinks = {
     linkedin: "https://www.linkedin.com/in/mrmanu/",
@@ -25,7 +25,7 @@ const {
   target = "_blank"
 } = Astro.props;
 
-// Latest published posts power the "Latest AI Insights" cards.
+// Latest published posts power the "AI News for Small Businesses" cards.
 const cardStyles = [
   { icon: "chat" as const, categoryColor: "blue" as const },
   { icon: "document" as const, categoryColor: "purple" as const },
@@ -40,6 +40,7 @@ const blogArticles = (await getCollection('blog'))
     category: post.data.tags?.[0] ?? "Insights",
     title: post.data.title,
     href: `/blog/${post.id}`,
+    image: post.data.image,
   }));
 ---
 
@@ -176,10 +177,10 @@ const blogArticles = (await getCollection('blog'))
       </div>
     </div>
 
-    <!-- Column 2: Latest AI Insights Blog Articles (1 column = 33%) -->
+    <!-- Column 2: AI News for Small Businesses Blog Articles (1 column = 33%) -->
     <div class="lg:col-span-1 space-y-6 px-4 lg:px-6">
       <div>
-        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">Latest AI Insights</h4>
+        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">AI News for Small Businesses</h4>
         
         <div class="space-y-6">
           {blogArticles.map((article) => (
