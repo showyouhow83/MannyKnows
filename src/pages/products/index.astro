@@ -1,0 +1,71 @@
+---
+// Products index — lists the apps & services we offer
+export const prerender = true;
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import ProductCard from '../../components/products/ProductCard.astro';
+
+const products = (await getCollection('products'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Products — Apps & Services for Small Business | MannyKnows">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Products</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="text-center max-w-3xl mx-auto">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Apps &amp; Services</span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>Software and services you can put to work</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              These are the apps and services we build and run for small businesses — turnkey platforms productized from real client work, plus the AI services that power them. Explore any of them, then we tailor it to how you operate.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="products-list" variant="default">
+      <Container>
+        {products.length === 0 ? (
+          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">New products are on the way — check back soon.</p>
+        ) : (
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2">
+            {products.map((p) => (
+              <ProductCard
+                href={`/products/${p.id}`}
+                title={p.data.title}
+                tagline={p.data.tagline}
+                type={p.data.type}
+                image={p.data.image}
+                services={p.data.services}
+              />
+            ))}
+          </div>
+        )}
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>

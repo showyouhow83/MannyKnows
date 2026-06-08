@@ -1,0 +1,125 @@
+---
+// Individual product — an app or service we offer
+export const prerender = true;
+
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+import Button from '../../components/ui/Button.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products
+    .filter((p) => !p.data.draft)
+    .map((product) => ({ params: { slug: product.id }, props: { product } }));
+}
+
+const { product } = Astro.props;
+const { Content } = await render(product);
+const d = product.data;
+
+const typeBadge = {
+  App: 'bg-blue-500/15 text-blue-600 dark:text-blue-300',
+  Service: 'bg-green-500/15 text-green-600 dark:text-green-300',
+  Platform: 'bg-purple-500/15 text-purple-600 dark:text-purple-300',
+}[d.type] ?? 'bg-green-500/15 text-green-600 dark:text-green-300';
+---
+
+<BaseLayout title={`${d.title} — ${d.type} | MannyKnows`}>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/products" class="hover:text-primary-blue transition-colors">Products</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium truncate max-w-[40ch]">{d.title}</span></li>
+        </ol>
+      </nav>
+      <div class="pb-10 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto">
+            <span class={`inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-4 ${typeBadge}`}>{d.type}</span>
+            <h1 class="sf-bold apple-headline text-3xl md:text-4xl lg:text-5xl mb-5 leading-tight">
+              <span class="apple-gradient-text" data-colorful-title>{d.title}</span>
+            </h1>
+            <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{d.description}</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <Button href={`/?chat=open&ref=product-${product.id}`} text="Talk to us about this" variant="cta" arrow={true} />
+              {d.liveUrl && (
+                <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                  View live
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              )}
+            </div>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="product" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          {d.image && (
+            <div class="rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent mb-10 aspect-[16/9]">
+              <img src={d.image} alt={d.title} class="w-full h-full object-cover" />
+            </div>
+          )}
+
+          {d.services.length > 0 && (
+            <div class="mb-10 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6 md:p-8">
+              <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-4">What's included</h2>
+              <ul class="grid sm:grid-cols-2 gap-3">
+                {d.services.map((s) => (
+                  <li class="flex items-start gap-3 text-text-light-primary dark:text-text-dark-primary">
+                    <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span class="text-sm leading-relaxed">{s}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <article class="blog-prose">
+            <Content />
+          </article>
+
+          <div class="mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent flex items-center justify-between flex-wrap gap-4">
+            <a href="/products" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
+              <svg class="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              All products
+            </a>
+            <Button href={`/?chat=open&ref=product-${product.id}`} text="Get started" variant="cta" arrow={true} />
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-prose { color: inherit; font-size: 1.075rem; line-height: 1.8; }
+  .blog-prose :global(h2) { font-size: 1.6rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
+  .blog-prose :global(h3) { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.5rem; }
+  .blog-prose :global(p) { margin: 0 0 1.25rem; }
+  .blog-prose :global(ul), .blog-prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+  .blog-prose :global(li) { margin: 0.4rem 0; }
+  .blog-prose :global(ul) { list-style: disc; }
+  .blog-prose :global(ol) { list-style: decimal; }
+  .blog-prose :global(a) { color: #0071e3; text-decoration: underline; text-underline-offset: 2px; }
+  .blog-prose :global(a:hover) { color: #ff4faa; }
+  .blog-prose :global(strong) { font-weight: 700; }
+  .blog-prose :global(blockquote) { border-left: 3px solid #0071e3; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; opacity: 0.9; }
+  .blog-prose :global(code) { background: rgba(127,127,127,0.15); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+</style>
