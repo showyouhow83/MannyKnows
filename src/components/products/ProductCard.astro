@@ -1,0 +1,53 @@
+---
+// Product Card — reusable card for the products grid (homepage highlight + /products listing).
+// Shows a banner image when provided, otherwise a type-colored gradient with the product's initials.
+interface Props {
+  href: string;
+  title: string;
+  tagline: string;
+  type?: 'App' | 'Service' | 'Platform';
+  image?: string;
+  services?: string[];
+}
+
+const { href, title, tagline, type = 'Service', image, services = [] } = Astro.props;
+
+const typeStyles = {
+  App:      { gradient: 'from-blue-500/20 to-cyan-500/20',     badge: 'bg-blue-500/15 text-blue-600 dark:text-blue-300',     hover: 'hover:border-blue-400/40' },
+  Service:  { gradient: 'from-green-500/20 to-emerald-500/20', badge: 'bg-green-500/15 text-green-600 dark:text-green-300',   hover: 'hover:border-green-400/40' },
+  Platform: { gradient: 'from-purple-500/20 to-indigo-500/20', badge: 'bg-purple-500/15 text-purple-600 dark:text-purple-300', hover: 'hover:border-purple-400/40' },
+};
+const t = typeStyles[type] ?? typeStyles.Service;
+const initials = title.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+---
+
+<a href={href} class={`group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 ${t.hover}`}>
+  <!-- Banner -->
+  <div class="relative aspect-[16/9] overflow-hidden">
+    {image ? (
+      <img src={image} alt={title} loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    ) : (
+      <div class={`w-full h-full flex items-center justify-center bg-gradient-to-br ${t.gradient}`}>
+        <span class="text-4xl font-black text-text-light-primary/25 dark:text-text-dark-primary/25 tracking-tight">{initials}</span>
+      </div>
+    )}
+    <span class={`absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full backdrop-blur-sm ${t.badge}`}>{type}</span>
+  </div>
+
+  <!-- Body -->
+  <div class="flex flex-col flex-1 p-5">
+    <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-1.5 leading-snug group-hover:text-primary-blue transition-colors">{title}</h3>
+    <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4 flex-1">{tagline}</p>
+    {services.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        {services.slice(0, 3).map((s) => (
+          <span class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary bg-gray-100 dark:bg-dark-accent/40 rounded-full px-2.5 py-1">{s}</span>
+        ))}
+      </div>
+    )}
+    <span class="mt-auto text-sm text-primary-blue font-medium inline-flex items-center gap-1">
+      Explore
+      <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </span>
+  </div>
+</a>

@@ -11,6 +11,7 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import ContractorSuite from '../components/sections/ContractorSuite.astro';
+import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 // ========================================
 // NAVBAR CONFIGURATION
@@ -60,10 +61,11 @@ const NAVBAR_CONFIG = {
 			id="products"
 			badge="What We Build"
 			title="Our Products"
-			subtitle="Turnkey platforms we've productized from real client work — software you can run your whole operation on."
+			subtitle="Apps and services you can put to work in your business — turnkey software we've productized from real client builds, plus the AI services that power them."
 			variant="alternate"
 		>
 			<ContractorSuite />
+			<ProductsHighlight />
 		</PageSection>
 
 		<!-- Process Section -->
