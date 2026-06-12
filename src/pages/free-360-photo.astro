@@ -19,11 +19,12 @@ import Button from '../components/ui/Button.astro';
 // (small-business 360° tours run ~$200–$500; GBP setup ~$300–$499; 1-page sites
 // with an AI agent ~$800–$1,500). Tune them to your market.
 // ─────────────────────────────────────────────────────────────────────────────
-const PHONE_DISPLAY = '(413) 555-0123';   // TODO: your real number
-const PHONE_TEL = '+14135550123';         // digits only, for tap-to-call
-const BOOKING_URL = '';                   // optional Google Calendar booking link; leave '' to hide the button
+const PHONE_DISPLAY = '(413) 361-8451';
+const PHONE_TEL = '+14133618451';
+const BOOKING_URL = 'https://calendar.app.google/FTYeET27mKVjngB29';  // Google Calendar booking page; leave '' to hide the "Book a time" button
 const EMAIL = 'mk@mannyknows.com';
 const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
+const FREE_TRAVEL = 'within ~25 min of Springfield'; // free-shoot radius; beyond this a small gas/travel fee may apply
 
 const PACKAGES = [
   {
@@ -33,7 +34,7 @@ const PACKAGES = [
     highlight: true,
     badge: 'Start here',
     blurb: 'One professional 360° photo of your business, published straight to your Google Business Profile.',
-    features: ['1 immersive 360° photo', 'I travel to your business', 'Published to your Google listing', 'Yours to keep — no strings'],
+    features: ['1 immersive 360° photo', `I come to you — free ${FREE_TRAVEL}`, 'Published to your Google listing', 'Yours to keep — no strings'],
     cta: { label: 'Claim it free', href: '#claim' },
   },
   {
@@ -97,7 +98,7 @@ const FAQS = [
   { q: 'What if I do not have a profile yet?', a: 'No problem. My Profile Setup + Verification service (from $149) creates your listing, fills it out properly, and handles Google’s verification so you show up in local search.' },
   { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack adds 2–4 photos so customers can virtually walk through your space — a mini “see inside” tour on Google.' },
   { q: 'How soon does it go live?', a: 'Most 360° photos are published within a few days of the shoot, once processing and Google publishing are complete.' },
-  { q: 'Do you serve my area?', a: 'I am based in Springfield, MA and serve the surrounding Pioneer Valley in person. Profile setup and the AI website can be done from anywhere.' },
+  { q: 'Do you serve my area?', a: 'I am based in Springfield, MA and shoot on-site across the surrounding Pioneer Valley. The free 360° photo covers locations within about 25 minutes of Springfield; a little farther out I may add a small gas/travel fee, always quoted up front before we book. Profile setup and the AI website can be done from anywhere.' },
   { q: 'What is the AI website?', a: 'An optional fast, one-page site with an AI sales agent trained on your voice. It includes Hero, Blog, Services, Reviews, FAQs, a virtual tour for your 360° photos, and Contact — all optimized to score well on Google Lighthouse.' },
 ];
 
@@ -269,7 +270,7 @@ const jsonLd = {
           ))}
         </div>
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Every package is customized and optimized for your business. Final pricing depends on your space and goals — get an exact quote in the form below.
+          Every package is customized and optimized for your business. The free 360° photo covers locations {FREE_TRAVEL} — a little farther out, a small gas/travel fee may apply (always quoted up front). Final pricing depends on your space and goals — get an exact quote in the form below.
         </p>
       </Container>
     </Section>
