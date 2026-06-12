@@ -4,16 +4,24 @@ import FooterMain from '../components/footer/FooterMain.astro';
 
 export interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const {
+	title,
+	description = "MannyKnows - Professional AI-powered business solutions. Transform your business with intelligent automation, data-driven insights, and cutting-edge AI services.",
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="MannyKnows - Professional AI-powered business solutions. Transform your business with intelligent automation, data-driven insights, and cutting-edge AI services." />
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />

@@ -1,0 +1,480 @@
+---
+// Free 360° Photo landing page — the destination for the "FREE 360 PHOTO / CLAIM NOW"
+// button in the navbar. Lead magnet (1 free 360° photo on a Google Business Profile)
+// plus paid tiers: 360° photo packs, GBP setup + verification, and a 1-page AI website.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
+import Button from '../components/ui/Button.astro';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EDIT ME — contact details, service area & pricing. Safe to change anytime.
+// Prices below are starting recommendations based on 2025–2026 market research
+// (small-business 360° tours run ~$200–$500; GBP setup ~$300–$499; 1-page sites
+// with an AI agent ~$800–$1,500). Tune them to your market.
+// ─────────────────────────────────────────────────────────────────────────────
+const PHONE_DISPLAY = '(413) 555-0123';   // TODO: your real number
+const PHONE_TEL = '+14135550123';         // digits only, for tap-to-call
+const BOOKING_URL = '';                   // optional Google Calendar booking link; leave '' to hide the button
+const EMAIL = 'mk@mannyknows.com';
+const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
+
+const PACKAGES = [
+  {
+    name: 'Free 360° Photo',
+    price: 'Free',
+    cadence: 'no obligation',
+    highlight: true,
+    badge: 'Start here',
+    blurb: 'One professional 360° photo of your business, published straight to your Google Business Profile.',
+    features: ['1 immersive 360° photo', 'I travel to your business', 'Published to your Google listing', 'Yours to keep — no strings'],
+    cta: { label: 'Claim it free', href: '#claim' },
+  },
+  {
+    name: '360° Photo Pack',
+    price: 'from $199',
+    cadence: 'one-time',
+    blurb: '2–4 360° photos that turn your listing into a mini “see inside” tour customers can walk through on Google.',
+    features: ['2–4 professional 360° photos', 'Mini virtual tour on Google', 'Optimized & published for you', 'Perfect for shops, salons, clinics, restaurants'],
+    cta: { label: 'Get a quote', href: '#claim' },
+  },
+  {
+    name: 'Profile Setup + Verification',
+    price: 'from $149',
+    cadence: 'one-time',
+    blurb: 'No Google Business Profile yet? I create it, fill it out the right way, and get you verified.',
+    features: ['Profile created & optimized', 'Categories, hours, services, photos', 'Verification handled end-to-end', 'Ready to show up in local search'],
+    cta: { label: 'Set mine up', href: '#claim' },
+  },
+  {
+    name: 'AI Website (1-page)',
+    price: 'from $999',
+    cadence: 'one-time + optional $79/mo',
+    blurb: 'A fast one-page site with an AI sales agent trained on your voice — built to score top marks on Google Lighthouse.',
+    features: ['AI sales agent in your voice', 'Hero, Blog, Services, Reviews, FAQs', 'Virtual tour for your 360° photos', 'Contact + Lighthouse-optimized'],
+    cta: { label: 'See what’s included', href: '#ai-website' },
+  },
+];
+
+const STEPS = [
+  { n: '1', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule — it only takes a minute.' },
+  { n: '2', title: 'I come to you', body: 'I show up at your business and capture a crisp, professional 360° photo. Most shoots take under 30 minutes.' },
+  { n: '3', title: 'It goes live on Google', body: 'I publish your 360° photo to your Google Business Profile so customers can step inside before they visit — free.' },
+];
+
+const WHY = [
+  { stat: '42%', label: 'more direction requests', body: 'Google reports that listings with photos get 42% more requests for directions to their location.' },
+  { stat: '35%', label: 'more clicks to your site', body: 'Photo-rich profiles see 35% more click-throughs to their website, according to Google.' },
+  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers look inside any time of day — building trust before they ever call.' },
+];
+
+const SITE_SECTIONS = [
+  { name: 'Hero', body: 'A fast, clear first impression with your main offer and call-to-action.' },
+  { name: 'Blog', body: 'Simple posts that feed local SEO and give AI answer engines something to cite.' },
+  { name: 'Products / Services', body: 'What you sell, laid out so customers — and AI agents — instantly get it.' },
+  { name: 'Reviews', body: 'Your best Google reviews, front and center as social proof.' },
+  { name: 'FAQs', body: 'Common questions answered in a format built for search and AI assistants.' },
+  { name: 'Virtual Tour', body: 'Your 360° photos embedded so visitors can look around right on your site.' },
+  { name: 'Contact', body: 'Tap-to-call, a short form, and your hours — every easy way to reach you.' },
+];
+
+const LIGHTHOUSE = [
+  { name: 'Performance', body: 'Loads fast on any phone — no waiting, no bounce.' },
+  { name: 'Accessibility', body: 'Usable by everyone, which Google rewards.' },
+  { name: 'Best Practices', body: 'Secure, modern, built to current web standards.' },
+  { name: 'SEO + AI', body: 'Structured so Google and AI agents can read, rank, and recommend you.' },
+];
+
+const FAQS = [
+  { q: 'Is the 360° photo really free?', a: 'Yes. I come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost and no obligation. It is how I introduce my work.' },
+  { q: 'What is a Google Business Profile and do I need one?', a: 'It is your free listing on Google Search and Maps — where customers find your hours, photos, reviews, and directions. If you do not have one yet, I can create it and get you verified.' },
+  { q: 'What if I do not have a profile yet?', a: 'No problem. My Profile Setup + Verification service (from $149) creates your listing, fills it out properly, and handles Google’s verification so you show up in local search.' },
+  { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack adds 2–4 photos so customers can virtually walk through your space — a mini “see inside” tour on Google.' },
+  { q: 'How soon does it go live?', a: 'Most 360° photos are published within a few days of the shoot, once processing and Google publishing are complete.' },
+  { q: 'Do you serve my area?', a: 'I am based in Springfield, MA and serve the surrounding Pioneer Valley in person. Profile setup and the AI website can be done from anywhere.' },
+  { q: 'What is the AI website?', a: 'An optional fast, one-page site with an AI sales agent trained on your voice. It includes Hero, Blog, Services, Reviews, FAQs, a virtual tour for your 360° photos, and Contact — all optimized to score well on Google Lighthouse.' },
+];
+
+const META_DESCRIPTION = `Claim a FREE 360° photo for your Google Business Profile. Serving ${SERVICE_AREA}. I come to your business, shoot an immersive 360° photo, and publish it to Google — plus 360° photo packs, profile setup & verification, and AI-powered one-page websites.`;
+
+// Structured data for SEO + AI answer engines (FAQ + Service offers)
+const siteUrl = 'https://mannyknows.com';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${siteUrl}/free-360-photo#service`,
+      name: 'Free 360° Photo for Google Business Profile',
+      serviceType: '360° virtual tour photography & Google Business Profile services',
+      description: META_DESCRIPTION,
+      areaServed: { '@type': 'City', name: 'Springfield, Massachusetts' },
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'MannyKnows',
+        email: EMAIL,
+        telephone: PHONE_TEL,
+        url: siteUrl,
+        areaServed: 'Springfield, MA & the Pioneer Valley',
+      },
+      offers: PACKAGES.map((p) => ({
+        '@type': 'Offer',
+        name: p.name,
+        description: p.blurb,
+        price: p.price === 'Free' ? '0' : p.price.replace(/[^0-9]/g, ''),
+        priceCurrency: 'USD',
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/free-360-photo#faq`,
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Free 360° Photo for Your Google Business Profile | MannyKnows" description={META_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <!-- ───────────────────────── Hero ───────────────────────── -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Free 360° Photo</span></li>
+        </ol>
+      </nav>
+
+      <div class="pb-14 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto text-center">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+              {SERVICE_AREA} · Google Business Profile
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+              Claim a <span class="apple-gradient-text" data-colorful-title>free 360° photo</span> for your Google Business Profile
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+              Call or book a time, I come to your business, and shoot one immersive 360° photo — then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button href="#claim" text="Claim my free 360° photo" variant="cta" arrow={true} />
+              <a
+                href={`tel:${PHONE_TEL}`}
+                class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11 11 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                Call {PHONE_DISPLAY}
+              </a>
+              {BOOKING_URL && (
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  Book a time
+                </a>
+              )}
+            </div>
+            <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+              No cost · No obligation · Live on Google in days
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- ───────────────────────── How it works ───────────────────────── -->
+    <Section id="how-it-works" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">How the <span class="apple-gradient-text" data-colorful-title>free shoot</span> works</h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three simple steps from a phone call to a live, immersive photo on your Google listing.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {STEPS.map((s) => (
+            <div class="relative bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-7">
+              <div class="w-11 h-11 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black flex items-center justify-center mb-5">{s.n}</div>
+              <h3 class="text-lg font-bold mb-2">{s.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Why it matters ───────────────────────── -->
+    <Section id="why" variant="gradient">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Why a 360° photo <span class="apple-gradient-text" data-colorful-title>wins customers</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {WHY.map((w) => (
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-7 text-center">
+              <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
+              <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{w.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Packages / pricing ───────────────────────── -->
+    <Section id="packages" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Plans &amp; pricing</span>
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Start free, <span class="apple-gradient-text" data-colorful-title>grow when ready</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Begin with your free 360° photo. When you are ready for more, every package is tailored to your business.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PACKAGES.map((p) => (
+            <div class={`relative flex flex-col rounded-2xl border p-6 ${p.highlight ? 'border-primary-blue/50 bg-white dark:bg-dark-secondary shadow-lg shadow-primary-blue/10' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
+              {p.badge && (
+                <span class="absolute -top-3 left-6 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-gradient-to-r from-primary-blue to-primary-pink text-white">{p.badge}</span>
+              )}
+              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{p.name}</h3>
+              <div class="flex items-baseline gap-1.5 mb-3">
+                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">{p.price}</span>
+                {p.cadence && <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{p.cadence}</span>}
+              </div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{p.blurb}</p>
+              <ul class="space-y-2 mb-6 flex-1">
+                {p.features.map((f) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href={p.cta.href} class={`mt-auto inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${p.highlight ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white hover:shadow-lg hover:shadow-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue/40'}`}>
+                {p.cta.label}
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+          Every package is customized and optimized for your business. Final pricing depends on your space and goals — get an exact quote in the form below.
+        </p>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── AI Website add-on ───────────────────────── -->
+    <Section id="ai-website" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto text-center mb-14">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The complete package</span>
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">A one-page site with an <span class="apple-gradient-text" data-colorful-title>AI sales agent</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Pair your 360° photos with a fast, single-page website that sells for you. It includes an AI sales agent trained on your style — answering questions and booking customers day and night.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto mb-12">
+          {SITE_SECTIONS.map((s) => (
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5">
+              <h3 class="text-sm font-bold text-primary-blue mb-1.5">{s.name}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-6">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Built to ace Google Lighthouse</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Every site is engineered for the four scores Google grades — and for the AI agents now sending customers your way.</p>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {LIGHTHOUSE.map((l) => (
+              <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-500 font-black mb-3">100</div>
+                <h4 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h4>
+                <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Claim / contact form ───────────────────────── -->
+    <Section id="claim" variant="default">
+      <Container>
+        <div class="max-w-2xl mx-auto">
+          <div class="text-center mb-8">
+            <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Claim your <span class="apple-gradient-text" data-colorful-title>free 360° photo</span></h2>
+            <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below — I will reach out to set up your free shoot.
+            </p>
+          </div>
+
+          <form id="claimForm" class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 md:p-8 space-y-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="cf-name" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Your name *</label>
+                <input id="cf-name" name="name" type="text" required autocomplete="name" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+              </div>
+              <div>
+                <label for="cf-business" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Business name</label>
+                <input id="cf-business" name="business" type="text" autocomplete="organization" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+              </div>
+              <div>
+                <label for="cf-email" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Email *</label>
+                <input id="cf-email" name="email" type="email" required autocomplete="email" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+              </div>
+              <div>
+                <label for="cf-phone" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Phone</label>
+                <input id="cf-phone" name="phone" type="tel" autocomplete="tel" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+              </div>
+            </div>
+            <div>
+              <label for="cf-notes" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">What do you need? <span class="text-text-light-tertiary dark:text-text-dark-tertiary font-normal">(optional)</span></label>
+              <textarea id="cf-notes" name="notes" rows="3" placeholder="e.g. I'd like the free 360° photo, and I'm curious about a photo pack for my shop." class="w-full px-3.5 py-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition resize-y"></textarea>
+            </div>
+            <button id="claimSubmit" type="submit" class="w-full h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+              Claim my free 360° photo
+            </button>
+            <p id="claimStatus" role="status" aria-live="polite" class="text-sm text-center hidden"></p>
+            <p class="text-xs text-center text-text-light-tertiary dark:text-text-dark-tertiary">Prefer to talk? Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> or email <a href={`mailto:${EMAIL}`} class="text-primary-blue hover:underline">{EMAIL}</a>.</p>
+          </form>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── FAQ ───────────────────────── -->
+    <Section id="faq" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Questions, <span class="apple-gradient-text" data-colorful-title>answered</span></h2>
+          </div>
+          <div class="space-y-3">
+            {FAQS.map((f) => (
+              <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">
+                <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {f.q}
+                  <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Final CTA ───────────────────────── -->
+    <Section id="cta" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/5 via-purple-500/5 to-primary-pink/5 p-10 md:p-14">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Ready when you are</h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8 max-w-xl mx-auto">Your free 360° photo is one phone call away. Let’s get your business looking its best on Google.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button href="#claim" text="Claim my free 360° photo" variant="cta" arrow={true} />
+            <a href={`tel:${PHONE_TEL}`} class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11 11 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              Call {PHONE_DISPLAY}
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>
+
+<script>
+  // Wire the claim form to the existing CSRF-protected /api/contact endpoint.
+  (function () {
+    const form = document.getElementById('claimForm');
+    if (!form) return;
+    const statusEl = document.getElementById('claimStatus');
+    const submitBtn = document.getElementById('claimSubmit');
+    let csrfToken = null;
+    let sessionId = null;
+
+    async function loadToken() {
+      try {
+        const res = await fetch('/api/contact');
+        const data = await res.json();
+        csrfToken = data.csrf_token;
+        sessionId = data.session_id;
+      } catch (_) { /* form will surface an error on submit if this failed */ }
+    }
+    loadToken();
+
+    function setStatus(msg, ok) {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.classList.remove('hidden');
+      statusEl.classList.toggle('text-green-600', !!ok);
+      statusEl.classList.toggle('text-red-500', !ok);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const get = (id) => (document.getElementById(id) || {}).value || '';
+      const name = get('cf-name').trim();
+      const business = get('cf-business').trim();
+      const email = get('cf-email').trim();
+      const phone = get('cf-phone').trim();
+      const notes = get('cf-notes').trim();
+
+      if (name.length < 2 || !/.+@.+\..+/.test(email)) {
+        setStatus('Please add your name and a valid email.', false);
+        return;
+      }
+      if (!csrfToken) { await loadToken(); }
+
+      const subject = `Free 360° Photo request — ${business || name}`;
+      const message =
+        `Business: ${business || '(not provided)'}\n` +
+        `Phone: ${phone || '(not provided)'}\n\n` +
+        `${notes || 'I would like to claim my free 360° photo for my Google Business Profile.'}`;
+
+      submitBtn.disabled = true;
+      const original = submitBtn.textContent;
+      submitBtn.textContent = 'Sending…';
+      setStatus('', true);
+      statusEl && statusEl.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, subject, message, session_id: sessionId, csrf_token: csrfToken }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setStatus('Thanks! Your request is in — I’ll reach out shortly to set up your free shoot.', true);
+          form.reset();
+          loadToken(); // refresh token for any follow-up submission
+        } else {
+          setStatus(data.error || 'Something went wrong. Please call or email instead.', false);
+        }
+      } catch (_) {
+        setStatus('Network error. Please call or email instead.', false);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+      }
+    });
+  })();
+</script>
