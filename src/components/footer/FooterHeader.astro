@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 
 interface Props {
   brandTitle?: string;
+  brandEmoji?: string;
   brandDescription?: string;
   socialLinks?: {
     linkedin?: string;
@@ -15,7 +16,8 @@ interface Props {
 }
 
 const { 
-  brandTitle = "MK 🚀",
+  brandTitle = "MK",
+  brandEmoji = "🚀",
   brandDescription = "We specialize in custom AI agent development, workflow automation, and intelligent process optimization that reduces operational costs while maximizing efficiency. Our AI solutions integrate seamlessly with existing business systems, delivering measurable ROI through automated customer service, predictive analytics, and smart decision-making tools.",
   socialLinks = {
     linkedin: "https://www.linkedin.com/in/mrmanu/",
@@ -51,10 +53,13 @@ const blogArticles = (await getCollection('blog'))
     <div id="about" class="lg:col-span-1 space-y-8 px-4 lg:px-6">
       <!-- Brand Section -->
       <div class="text-left">
-        <h3 class="text-6xl font-black text-gray-800 dark:text-white mb-6 transition-colors duration-300">
+        <h3 class="text-6xl font-black text-gray-800 dark:text-white mb-6 transition-colors duration-300 flex items-center gap-2 flex-wrap">
           <span class="apple-gradient-text bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-clip-text text-transparent animate-button-gradient">
             {brandTitle}
           </span>
+          {brandEmoji && (
+            <span aria-hidden="true" style="-webkit-text-fill-color: initial; background: none;">{brandEmoji}</span>
+          )}
         </h3>
         <p class="text-gray-700 dark:text-white/80 leading-relaxed text-sm mb-8 transition-colors duration-300">
           {brandDescription}
