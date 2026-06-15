@@ -2,18 +2,27 @@
 export interface Props {
   title: string;
   highlightedText: string;
+  /** Text rendered after the highlighted span (e.g. ", less busywork — for Western Mass contractors."). */
+  titleAfter?: string;
   subtitle: string;
+  /** Optional small pill shown above the headline (e.g. a location / niche tag). */
+  badge?: string;
   className?: string;
 }
 
-const { title, highlightedText, subtitle, className = "" } = Astro.props;
+const { title, highlightedText, titleAfter = "", subtitle, badge, className = "" } = Astro.props;
 ---
 
 <section id="hero" class={`pt-12 pb-6 md:pt-16 md:pb-8 text-center apple-gradient-container ${className}`}>
   <div class="max-w-[1440px] mx-auto px-2">
     <div class="max-w-16xl mx-auto">
+      {badge && (
+        <span class="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-gray-200/40 dark:border-white/15 bg-white/50 dark:bg-white/5 backdrop-blur-md text-sm sf-medium text-text-light-secondary dark:text-text-dark-secondary">
+          {badge}
+        </span>
+      )}
       <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline" style="font-size: clamp(2.5rem, 5vw, 4.5rem);">
-        {title} <span class="apple-gradient-text" data-colorful-title>{highlightedText}</span> exponentially with Manny
+        {title} <span class="apple-gradient-text" data-colorful-title>{highlightedText}</span>{titleAfter}
       </h1>
       <p class="sf-regular text-xl mb-0 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
         {subtitle}
