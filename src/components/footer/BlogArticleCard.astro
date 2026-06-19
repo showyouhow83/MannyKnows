@@ -58,8 +58,8 @@ const colors = colorMap[categoryColor];
 ---
 
 <a href={href} class="group block no-underline space-y-3">
-  <!-- Banner -->
-  <div class="relative w-full aspect-[16/9] rounded-lg overflow-hidden border border-gray-200/30 dark:border-white/20 transition-all duration-500"
+  <!-- Banner — aspect-[64/9] keeps full width at 1/4 of the former 16:9 height -->
+  <div class="relative w-full aspect-[64/9] rounded-lg overflow-hidden border border-gray-200/30 dark:border-white/20 transition-all duration-500"
        style={`box-shadow: 0 4px 20px ${colors.shadowColor};`}
        onmouseenter={`this.style.boxShadow='0 8px 32px ${colors.hoverShadowColor}';`}
        onmouseleave={`this.style.boxShadow='0 4px 20px ${colors.shadowColor}';`}>
