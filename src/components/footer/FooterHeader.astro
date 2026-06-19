@@ -27,7 +27,7 @@ const {
   target = "_blank"
 } = Astro.props;
 
-// Latest published posts power the "AI News for Small Businesses" cards.
+// Latest published posts power the "AI News for Western Mass Businesses" cards.
 const cardStyles = [
   { icon: "chat" as const, categoryColor: "blue" as const },
   { icon: "document" as const, categoryColor: "purple" as const },
@@ -182,10 +182,10 @@ const blogArticles = (await getCollection('blog'))
       </div>
     </div>
 
-    <!-- Column 2: AI News for Small Businesses Blog Articles (1 column = 33%) -->
+    <!-- Column 2: AI News for Western Mass Businesses Blog Articles (1 column = 33%) -->
     <div class="lg:col-span-1 space-y-6 px-4 lg:px-6">
       <div>
-        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">AI News for Small Businesses</h4>
+        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">AI News for Western Mass Businesses</h4>
         
         <div class="space-y-6">
           {blogArticles.map((article) => (
