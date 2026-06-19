@@ -9,8 +9,11 @@ export interface Props {
 
 const {
 	title,
-	description = "MannyKnows - Professional AI-powered business solutions. Transform your business with intelligent automation, data-driven insights, and cutting-edge AI services.",
+	description = "MannyKnows builds custom apps, websites, and AI automation for established small businesses across Western Massachusetts.",
 } = Astro.props;
+
+// Canonical / Open Graph URL — normalized to the production origin + path.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://mannyknows.com');
 ---
 
 <!DOCTYPE html>
@@ -21,7 +24,13 @@ const {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:site_name" content="MannyKnows" />
+		<meta property="og:locale" content="en_US" />
+		<link rel="canonical" href={canonicalURL} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />

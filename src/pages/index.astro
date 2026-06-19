@@ -33,7 +33,7 @@ const structuredData = {
       '@id': `${siteUrl}/#business`,
       name: 'MannyKnows',
       description:
-        'Lead-generating websites, local SEO, and AI automation for contractors and home-service businesses across Springfield and Western Massachusetts.',
+        'Custom apps, websites, and AI automation for established small businesses across Springfield and Western Massachusetts. Manny turns the manual processes that slow a business down into software that runs them — from lead-generating sites to a full contractor CRM (Contractor Suite, built for SL Painting).',
       url: siteUrl,
       email: EMAIL,
       telephone: PHONE_TEL,
@@ -47,7 +47,15 @@ const structuredData = {
       },
       areaServed: [
         { '@type': 'City', name: 'Springfield, Massachusetts' },
+        { '@type': 'City', name: 'Chicopee, Massachusetts' },
+        { '@type': 'City', name: 'Holyoke, Massachusetts' },
+        { '@type': 'City', name: 'Westfield, Massachusetts' },
+        { '@type': 'City', name: 'West Springfield, Massachusetts' },
+        { '@type': 'City', name: 'Agawam, Massachusetts' },
+        { '@type': 'City', name: 'Northampton, Massachusetts' },
+        { '@type': 'City', name: 'Amherst, Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Pioneer Valley' },
+        { '@type': 'AdministrativeArea', name: 'Hampden County, Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
       ],
       founder: { '@id': `${siteUrl}/#manny` },
@@ -66,8 +74,11 @@ const structuredData = {
       url: siteUrl,
       sameAs: ['https://www.linkedin.com/in/mrmanu/'],
       knowsAbout: [
+        'Custom app & software development for small businesses',
+        'Turning manual business processes into software',
         'Web development',
         'AI automation',
+        'CRM development',
         'Local SEO',
         'Google Business Profile',
         'Lead generation for contractors',
@@ -97,8 +108,8 @@ const NAVBAR_CONFIG = {
 ---
 
 <BaseLayout
-	title="Contractor Websites & AI in Springfield, MA | MannyKnows"
-	description="Lead-getting websites, local SEO & AI automation for contractors and home-service pros in Springfield & Western Massachusetts. Built by Manny."
+	title="Custom Apps, Websites & AI for Western Mass Businesses | MannyKnows"
+	description="Custom apps, websites & AI for established Western Massachusetts businesses — Springfield, the Pioneer Valley & beyond. Manny turns slow processes into software that runs them."
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -118,11 +129,11 @@ const NAVBAR_CONFIG = {
 
             <!-- Hero Section -->
             <HeroSection
-                badge="Springfield, MA · AI & websites for local contractors"
-                title="More"
-                highlightedText="booked jobs"
-                titleAfter=", less busywork — for Western Mass contractors."
-                subtitle="I'm Manny, based in Springfield. I build lead-getting websites and job-management systems for painters, roofers, and remodelers — capture every lead, schedule crews, and keep clients updated without living in your inbox. Proven with SL Painting."
+                badge="Western Massachusetts · Custom apps, websites & AI"
+                title="Your worst process,"
+                highlightedText="turned into software"
+                titleAfter=" that runs it for you."
+                subtitle="I'm Manny, based in Springfield. I help established Western Mass businesses fix the workflows slowing them down — building the websites, apps, and AI behind them. Like the contractor CRM running SL Painting's whole operation."
             />
 
             <!-- Hero Swiper Slider -->
@@ -137,7 +148,7 @@ const NAVBAR_CONFIG = {
 			id="products"
 			badge="What We Build"
 			title="Our Products"
-			subtitle="Apps and services you can put to work in your business — turnkey software we've productized from real client builds, plus the AI services that power them."
+			subtitle="Software I built to fix a real client's process problem, then productized so other established businesses can put it to work — plus the AI services that power it."
 			variant="alternate"
 		>
 			<ContractorSuite />
