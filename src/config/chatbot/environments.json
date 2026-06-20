@@ -1,7 +1,8 @@
 {
   "development": {
     "persona": "business_consultant",
-  "model": "gpt-4o-mini",
+  "model": "gemini-2.5-flash",
+  "provider": "gemini",
     "debug_logging": true,
     "chatbot_enabled": true,
     "token_budget": {
@@ -24,7 +25,8 @@
   },
   "production": {
     "persona": "business_consultant", 
-  "model": "gpt-4o-mini",
+  "model": "gemini-2.5-flash",
+  "provider": "gemini",
     "debug_logging": false,
     "chatbot_enabled": true,
     "token_budget": {
