@@ -2,6 +2,7 @@
 // Footer Header Component - Brand, Social Links, Blog Articles, and Newsletter
 import BlogArticleCard from './BlogArticleCard.astro';
 import { getCollection } from 'astro:content';
+import { getPostImage } from '../../utils/postImage';
 
 interface Props {
   brandTitle?: string;
@@ -42,7 +43,7 @@ const blogArticles = (await getCollection('blog'))
     category: post.data.tags?.[0] ?? "Insights",
     title: post.data.title,
     href: `/blog/${post.id}`,
-    image: post.data.image,
+    image: getPostImage(post),
   }));
 ---
 

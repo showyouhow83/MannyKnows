@@ -9,6 +9,7 @@
     "build:clean": "rm -rf dist .astro && astro build",
     "build:optimized": "npm run build && npm run optimize:all",
     "preview": "astro preview",
+    "blog:thumbs": "node scripts/generate-blog-thumbnails.mjs",
     "astro": "astro",
     "deploy": "./deploy.sh",
     "deploy:production": "./deploy.sh production",
