@@ -22,6 +22,12 @@ const argUrl = (() => {
 })();
 const BASE = (argUrl || process.env.CHAT_URL || 'http://localhost:8787').replace(/\/+$/, '');
 
+// The endpoint only accepts an allowed Origin (mannyknows.com). We send that header
+// regardless of where the server runs, so this works against both localhost
+// (wrangler dev, where NODE_ENV isn't "development") and the deployed site.
+const originIdx = process.argv.indexOf('--origin');
+const ORIGIN = (originIdx !== -1 ? process.argv[originIdx + 1] : process.env.CHAT_ORIGIN) || 'https://mannyknows.com';
+
 // A realistic warm-lead script for MannyKnows (local contractor, wants leads).
 const SCRIPT = [
   "Hey — my contractor website never gets me any calls. I'm based in Springfield MA.",
@@ -36,7 +42,7 @@ async function main() {
   // 1) Obtain a CSRF token (the widget does this before sending).
   let csrf = '';
   try {
-    const r = await fetch(`${BASE}/api/chat?session_id=${sessionId}`, { headers: { Origin: BASE } });
+    const r = await fetch(`${BASE}/api/chat?session_id=${sessionId}`, { headers: { Origin: ORIGIN } });
     const j = await r.json().catch(() => ({}));
     csrf = j.csrf_token || '';
     console.log(csrf ? '✓ Got CSRF token' : `✗ No csrf_token in GET response (HTTP ${r.status})`);
@@ -53,7 +59,7 @@ async function main() {
     try {
       const r = await fetch(`${BASE}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Origin: BASE },
+        headers: { 'Content-Type': 'application/json', Origin: ORIGIN },
         body: JSON.stringify({ message, session_id: sessionId, csrf_token: csrf, conversation_history: history }),
       });
       status = r.status;
