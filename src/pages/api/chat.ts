@@ -1152,8 +1152,10 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
           const meetingData = await kv.get(key.name);
           if (meetingData) {
             const meeting = JSON.parse(meetingData);
-            if (meeting.email && meeting.email.toLowerCase() === email.toLowerCase() && 
-                meeting.status === 'pending') {
+            const ageMs = Date.now() - (meeting.createdAt || 0);
+            const RECENT_MS = 14 * 24 * 60 * 60 * 1000; // only a recent pending request should block a new one
+            if (meeting.email && meeting.email.toLowerCase() === email.toLowerCase() &&
+                meeting.status === 'pending' && ageMs < RECENT_MS) {
               existingMeetings.push(meeting);
             }
           }
@@ -1243,9 +1245,10 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
         status: 'pending'
       };
       try {
-        await kv.put(`meetreq:${trackingId}`, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 14 }); // 14 days
+        // Persist leads indefinitely — a captured lead must never silently expire before the owner sees it.
+        await kv.put(`meetreq:${trackingId}`, JSON.stringify(record));
       } catch (e) {
-        devLog('KV put failed for meeting request', e as any);
+        console.error('KV put FAILED for meeting request (lead not stored!):', e);
       }
     }
 
@@ -1375,10 +1378,26 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
         });
         try {
           const emailText = await emailResp.text();
-          devLog('Resend email response:', { status: emailResp.status, body: emailText });
           emailNotificationSent = emailResp.ok;
-        } catch {
+          if (!emailResp.ok) {
+            // Surface the failure (devLog is silenced in production). A rejected owner
+            // notification is exactly how a lead gets captured yet never reaches the inbox.
+            console.error('Owner notification REJECTED by Resend:', { status: emailResp.status, body: emailText, from: resendFrom, to: ownerEmail });
+            // Fallback to Resend's shared sender, which still delivers to the account owner
+            // even when the custom domain has not been verified yet.
+            if (resendFrom !== 'MannyKnows <onboarding@resend.dev>') {
+              const retry = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ from: 'MannyKnows <onboarding@resend.dev>', to: [ownerEmail], subject, text: textBody, html: htmlBody })
+              });
+              emailNotificationSent = retry.ok;
+              if (!retry.ok) console.error('Owner notification FALLBACK also failed:', { status: retry.status, body: await retry.text() });
+            }
+          }
+        } catch (err) {
           emailNotificationSent = false;
+          console.error('Owner notification threw:', err);
         }
 
         // Send confirmation email to the user
@@ -1528,14 +1547,14 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
         });
         try {
           const userEmailText = await userEmailResp.text();
-          devLog('User confirmation email response:', { status: userEmailResp.status, body: userEmailText });
           userConfirmationSent = userEmailResp.ok;
+          if (!userEmailResp.ok) console.error('User confirmation REJECTED by Resend:', { status: userEmailResp.status, body: userEmailText, from: resendFrom, to: email });
         } catch {
           userConfirmationSent = false;
         }
       }
     } catch (e) {
-      devLog('Resend email failed for meeting request', e as any);
+      console.error('Resend email threw for meeting request:', e);
       emailNotificationSent = false;
       userConfirmationSent = false;
     }

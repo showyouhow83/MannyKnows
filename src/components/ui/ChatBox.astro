@@ -248,6 +248,13 @@ const { className = '' } = Astro.props;
       // Add loading indicator
       addLoadingMessage();
 
+      // Ensure a CSRF token exists before the first send. initializeSession() is fired
+      // on load but not awaited, so the very first message could otherwise POST an empty
+      // token and be rejected — silently costing the first (and most valuable) lead.
+      if (!csrfToken) {
+        await initializeSession();
+      }
+
       try {
         // Get chat reference if available
         let chatReference = null;
