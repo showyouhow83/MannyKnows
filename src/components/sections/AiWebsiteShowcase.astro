@@ -1,0 +1,185 @@
+---
+// AiWebsiteShowcase.astro
+// Flagship offer for the "My Services" section: an AI-powered website that books
+// appointments, gives rough estimates, and answers customers 24/7 — with every
+// lead landing in a connected admin. SL Painting is the live build.
+//
+// Renders inner content only (no <section>) — it lives inside the existing
+// <PageSection id="products"> in index.astro.
+//
+// SCREENSHOTS: the two framed panels in the showcase ("site" + "admin") are CSS
+// mockups, built to be swapped for real screenshots. When ready, drop images in
+// public/products/ (e.g. ai-website-site.png, ai-website-admin.png) and replace
+// the contents of each `data-shot` figure with an <img>. See notes inline below.
+import Button from '../ui/Button.astro';
+
+// What the AI website does for the customer (and for you)
+const pillars = [
+  {
+    title: 'Books appointments',
+    desc: 'Customers pick a time and book right on your site — the assistant checks availability and confirms. No phone tag.',
+    gradient: 'from-blue-500 to-cyan-500',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
+  },
+  {
+    title: 'Instant estimates',
+    desc: 'Visitors describe the job and get a rough price on the spot, so the leads that reach you are ready to buy.',
+    gradient: 'from-indigo-500 to-purple-500',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`
+  },
+  {
+    title: 'Answers 24/7',
+    desc: 'An assistant trained on your business answers questions about services, pricing, and hours — even after hours.',
+    gradient: 'from-green-500 to-emerald-500',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`
+  },
+  {
+    title: 'Every lead captured',
+    desc: 'Each conversation becomes a lead in your admin with the details you need to follow up and close.',
+    gradient: 'from-pink-500 to-rose-500',
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>`
+  }
+];
+
+// How the pieces connect, end to end
+const connectionPoints = [
+  'Instant answers and rough estimates for every visitor',
+  'Appointments booked straight from the website',
+  'Every lead lands in your admin, ready to work',
+  'Quotes, jobs, and client updates in one place'
+];
+---
+
+<div class="max-w-6xl mx-auto -mt-8">
+  <!-- Product identity -->
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+      AI Website
+    </span>
+    <h3 class="sf-bold text-2xl md:text-4xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">
+      A website that <span class="apple-gradient-text" data-colorful-title>books the job and answers customers</span> — while you work
+    </h3>
+    <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+      The same setup running SL Painting: visitors get instant answers and rough estimates, book
+      appointments themselves, and every lead lands in your admin — day or night.
+    </p>
+  </div>
+
+  <!-- The four pillars -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+    {pillars.map((pillar) => (
+      <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+        <div class={`w-12 h-12 rounded-xl bg-gradient-to-br ${pillar.gradient} flex items-center justify-center text-white mb-4`}>
+          <Fragment set:html={pillar.icon} />
+        </div>
+        <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">
+          {pillar.title}
+        </h4>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+          {pillar.desc}
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <!-- Flagship showcase: SL Painting, end to end -->
+  <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-dark-secondary dark:via-dark-secondary dark:to-dark-primary p-8 md:p-10">
+    <div class="flex flex-col lg:flex-row items-center gap-10">
+      <!-- Story -->
+      <div class="flex-1 w-full">
+        <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-blue mb-3">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          Flagship build · Live now
+        </span>
+        <h3 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+          SL Painting, end to end
+        </h3>
+        <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
+          Here's how it all connects for a real client: the website does the talking — answering
+          questions, quoting, and booking — and the work shows up in the admin where the team runs it.
+        </p>
+        <ul class="space-y-3 mb-8">
+          {connectionPoints.map((point) => (
+            <li class="flex items-start gap-3 text-text-light-primary dark:text-text-dark-primary">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <Button
+            href="/?chat=open&ref=ai-website"
+            text="Get this for your business"
+            variant="cta"
+            arrow={true}
+          />
+        </div>
+        <p class="text-sm text-text-light-tertiary dark:text-text-dark-tertiary mt-5">
+          Built for contractors, salons, clinics, studios &amp; any Western Mass business that books work.
+        </p>
+      </div>
+
+      <!-- Connected visual: site → admin (swap each figure for a real screenshot) -->
+      <div class="flex-1 w-full">
+        <!-- SITE panel: replace inner markup with <img src="/products/ai-website-site.png" alt="..."> -->
+        <figure data-shot="site" class="rounded-2xl bg-white dark:bg-dark-primary border border-light-tertiary dark:border-dark-accent shadow-xl overflow-hidden">
+          <div class="flex items-center gap-1.5 px-3 py-2 border-b border-light-tertiary dark:border-dark-accent">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+            <span class="ml-2 text-[10px] font-medium text-text-light-tertiary dark:text-text-dark-tertiary">slpainting.com</span>
+          </div>
+          <div class="p-3 space-y-2">
+            <div class="flex justify-end">
+              <p class="bg-blue-500 text-white text-[11px] leading-snug rounded-2xl rounded-br-sm px-3 py-1.5 max-w-[80%]">How much to paint a 12×14 bedroom?</p>
+            </div>
+            <div class="flex justify-start">
+              <p class="bg-gray-100 dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-[11px] leading-snug rounded-2xl rounded-bl-sm px-3 py-1.5 max-w-[88%]">Usually $450–$650 for a standard repaint. Want a free on-site quote?</p>
+            </div>
+            <div class="flex justify-end">
+              <p class="bg-blue-500 text-white text-[11px] leading-snug rounded-2xl rounded-br-sm px-3 py-1.5 max-w-[80%]">Yes — this Thursday?</p>
+            </div>
+            <div class="flex justify-start">
+              <p class="bg-gray-100 dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-[11px] leading-snug rounded-2xl rounded-bl-sm px-3 py-1.5 max-w-[88%]">Booked Thursday 2:00 PM ✓ I'll text you a confirmation.</p>
+            </div>
+          </div>
+        </figure>
+
+        <!-- Connector -->
+        <div class="flex items-center justify-center gap-2 py-3 text-xs font-semibold text-text-light-tertiary dark:text-text-dark-tertiary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+          lands in your admin
+        </div>
+
+        <!-- ADMIN panel: replace inner markup with <img src="/products/ai-website-admin.png" alt="..."> -->
+        <figure data-shot="admin" class="rounded-2xl bg-white dark:bg-dark-primary border border-light-tertiary dark:border-dark-accent shadow-xl p-3">
+          <div class="flex items-center justify-between px-1 mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Admin · New leads</span>
+            <span class="text-[10px] font-medium text-text-light-tertiary dark:text-text-dark-tertiary">Today</span>
+          </div>
+          <div class="rounded-lg border border-green-400/50 bg-green-50 dark:bg-green-500/10 p-2 mb-2">
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Kitchen repaint · 12×14</p>
+              <span class="text-[9px] font-bold uppercase tracking-wide text-green-600 dark:text-green-400">New</span>
+            </div>
+            <p class="text-[10px] text-text-light-secondary dark:text-text-dark-secondary mt-0.5">Thu 2:00 PM · est. $450–$650 · booked via site</p>
+          </div>
+          <div class="rounded-lg border border-light-tertiary dark:border-dark-accent p-2 mb-2 opacity-80">
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Exterior trim</p>
+              <span class="text-[9px] font-bold uppercase tracking-wide text-yellow-600 dark:text-yellow-400">Estimate sent</span>
+            </div>
+          </div>
+          <div class="rounded-lg border border-light-tertiary dark:border-dark-accent p-2 opacity-60">
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Office lobby</p>
+              <span class="text-[9px] font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Scheduled</span>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </div>
+</div>
