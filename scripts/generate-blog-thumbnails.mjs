@@ -3,27 +3,37 @@
  * Blog thumbnail generator (AI illustrations)
  * ------------------------------------------------------------------
  * For every published blog post that has NO image of its own, this generates a
- * branded illustration with an image model and caches it at:
+ * branded illustration and caches it at:
  *     public/blog/<slug>.png
  * and records the slug in src/data/generated-thumbnails.json so the site knows
  * the file exists. The resolver (src/utils/postImage.ts) prefers, in order:
  *     1) frontmatter `image`   2) first image in the body   3) this generated PNG
  *
- * It is IDEMPOTENT: a post is skipped if it already has a frontmatter image, an
- * image in its body, a cached PNG, or is already in the manifest. So it only
- * spends money on posts that actually need a thumbnail. Run it whenever you add
- * a post, then commit the new PNG(s) + the manifest:
+ * PROVIDERS — Gemini (default when GEMINI_API_KEY is set) or OpenAI:
+ *     GEMINI_API_KEY=...  npm run blog:thumbs          # Google Gemini / Imagen
+ *     OPENAI_API_KEY=sk-... THUMB_PROVIDER=openai npm run blog:thumbs
+ * The key is read from the environment, falling back to .dev.vars.
  *
- *     OPENAI_API_KEY=sk-... npm run blog:thumbs
+ * It is IDEMPOTENT: a post is skipped if it already has a frontmatter image, an
+ * image in its body, a cached PNG, or is already in the manifest — so it only
+ * spends money on posts that actually need a thumbnail. Run it whenever you add
+ * a post, then commit the new PNG(s) + the manifest.
  *
  * Flags:
  *     --force      regenerate even if a thumbnail already exists
  *     --dry-run    print the prompts and what would be generated; no API calls
  *
  * Config via env (sensible defaults):
- *     THUMB_MODEL    default "gpt-image-1"
- *     THUMB_SIZE     default "1536x1024"  (landscape; cards crop to fit)
- *     THUMB_QUALITY  default "medium"     (low | medium | high)
+ *     THUMB_PROVIDER     "gemini" | "openai"  (auto: gemini if GEMINI_API_KEY set)
+ *   Gemini:
+ *     GEMINI_IMAGE_MODEL default "gemini-2.5-flash-image" (Nano Banana). Set an
+ *                        "imagen-*" model (e.g. imagen-4.0-generate-001) for
+ *                        native aspect-ratio control / higher fidelity.
+ *     GEMINI_ASPECT      default "16:9" (only applied for imagen-* models)
+ *   OpenAI:
+ *     THUMB_MODEL        default "gpt-image-1"
+ *     THUMB_SIZE         default "1536x1024"
+ *     THUMB_QUALITY      default "medium"  (low | medium | high)
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -33,9 +43,18 @@ const BLOG_DIR = resolve(ROOT, 'src/content/blog');
 const OUT_DIR = resolve(ROOT, 'public/blog');
 const MANIFEST = resolve(ROOT, 'src/data/generated-thumbnails.json');
 
-const MODEL = process.env.THUMB_MODEL || 'gpt-image-1';
-const SIZE = process.env.THUMB_SIZE || '1536x1024';
-const QUALITY = process.env.THUMB_QUALITY || 'medium';
+// Provider: explicit THUMB_PROVIDER, else auto — Gemini if its key is set, else OpenAI.
+const PROVIDER = (process.env.THUMB_PROVIDER || (process.env.GEMINI_API_KEY ? 'gemini' : 'openai')).toLowerCase();
+
+// Gemini knobs
+const GEMINI_MODEL = process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image';
+const GEMINI_ASPECT = process.env.GEMINI_ASPECT || '16:9';
+
+// OpenAI knobs
+const OPENAI_MODEL = process.env.THUMB_MODEL || 'gpt-image-1';
+const OPENAI_SIZE = process.env.THUMB_SIZE || '1536x1024';
+const OPENAI_QUALITY = process.env.THUMB_QUALITY || 'medium';
+
 const FORCE = process.argv.includes('--force');
 const DRY_RUN = process.argv.includes('--dry-run');
 
@@ -65,14 +84,14 @@ function parsePost(raw) {
 
 const hasBodyImage = (body) => /!\[[^\]]*\]\([^)]+\)/.test(body);
 
-/** Load OPENAI_API_KEY from the environment, falling back to .dev.vars. */
-function loadApiKey() {
-  if (process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY;
+/** Load a key from the environment, falling back to .dev.vars. */
+function loadKey(name) {
+  if (process.env[name]) return process.env[name];
   const devVars = resolve(ROOT, '.dev.vars');
   if (existsSync(devVars)) {
     const line = readFileSync(devVars, 'utf8')
       .split('\n')
-      .find((l) => l.trim().startsWith('OPENAI_API_KEY='));
+      .find((l) => l.trim().startsWith(`${name}=`));
     if (line) return line.split('=').slice(1).join('=').trim().replace(/^["']|["']$/g, '');
   }
   return undefined;
@@ -92,33 +111,67 @@ function buildPrompt({ title, description, tags }) {
     .join(' ');
 }
 
-async function generateImage(apiKey, prompt) {
-  const payload = { model: MODEL, prompt, size: SIZE, n: 1 };
-  if (MODEL.startsWith('gpt-image')) {
-    payload.quality = QUALITY;
+// --- providers -------------------------------------------------------------
+
+async function generateOpenAI(apiKey, prompt) {
+  const payload = { model: OPENAI_MODEL, prompt, size: OPENAI_SIZE, n: 1 };
+  if (OPENAI_MODEL.startsWith('gpt-image')) {
+    payload.quality = OPENAI_QUALITY;
   } else {
     payload.response_format = 'b64_json';
-    if (MODEL === 'dall-e-3') payload.quality = QUALITY === 'high' ? 'hd' : 'standard';
+    if (OPENAI_MODEL === 'dall-e-3') payload.quality = OPENAI_QUALITY === 'high' ? 'hd' : 'standard';
   }
-
   const res = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`OpenAI ${res.status}: ${text.slice(0, 400)}`);
-  }
-  const json = await res.json();
-  const item = json.data?.[0];
+  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${(await res.text()).slice(0, 400)}`);
+  const item = (await res.json()).data?.[0];
   if (item?.b64_json) return Buffer.from(item.b64_json, 'base64');
-  if (item?.url) {
-    const img = await fetch(item.url);
-    return Buffer.from(await img.arrayBuffer());
-  }
-  throw new Error('No image returned by the API.');
+  if (item?.url) return Buffer.from(await (await fetch(item.url)).arrayBuffer());
+  throw new Error('No image returned by OpenAI.');
 }
+
+async function generateGemini(apiKey, prompt) {
+  const base = 'https://generativelanguage.googleapis.com/v1beta/models';
+  const headers = { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey };
+
+  // Imagen models use the predict endpoint with native aspect-ratio control.
+  if (GEMINI_MODEL.startsWith('imagen')) {
+    const res = await fetch(`${base}/${GEMINI_MODEL}:predict`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        instances: [{ prompt }],
+        parameters: { sampleCount: 1, aspectRatio: GEMINI_ASPECT },
+      }),
+    });
+    if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 400)}`);
+    const b64 = (await res.json()).predictions?.[0]?.bytesBase64Encoded;
+    if (b64) return Buffer.from(b64, 'base64');
+    throw new Error('No image returned by Imagen.');
+  }
+
+  // Native Gemini image generation (generateContent). Cards crop to fit, so a
+  // square render is fine; the prompt still asks for a 16:9 composition.
+  const res = await fetch(`${base}/${GEMINI_MODEL}:generateContent`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { responseModalities: ['IMAGE'] },
+    }),
+  });
+  if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 400)}`);
+  const parts = (await res.json()).candidates?.[0]?.content?.parts || [];
+  const b64 = parts.map((p) => p.inlineData?.data || p.inline_data?.data).find(Boolean);
+  if (b64) return Buffer.from(b64, 'base64');
+  throw new Error('No image returned by Gemini.');
+}
+
+const generateImage = (keys, prompt) =>
+  PROVIDER === 'gemini' ? generateGemini(keys.gemini, prompt) : generateOpenAI(keys.openai, prompt);
 
 // --- main ------------------------------------------------------------------
 
@@ -156,7 +209,8 @@ async function main() {
     return;
   }
 
-  console.log(`\n${todo.length} post(s) need a thumbnail (model: ${MODEL}, size: ${SIZE}).\n`);
+  const modelLabel = PROVIDER === 'gemini' ? GEMINI_MODEL : `${OPENAI_MODEL} ${OPENAI_SIZE}`;
+  console.log(`\n${todo.length} post(s) need a thumbnail (provider: ${PROVIDER}, model: ${modelLabel}).\n`);
 
   if (DRY_RUN) {
     for (const t of todo) console.log(`— ${t.slug}\n   ${t.prompt}\n`);
@@ -164,17 +218,26 @@ async function main() {
     return;
   }
 
-  const apiKey = loadApiKey();
-  if (!apiKey) {
-    console.error('Missing OPENAI_API_KEY. Set it in your environment or .dev.vars and retry.');
-    process.exit(1);
+  const keys = {};
+  if (PROVIDER === 'gemini') {
+    keys.gemini = loadKey('GEMINI_API_KEY');
+    if (!keys.gemini) {
+      console.error('Missing GEMINI_API_KEY. Set it in your environment or .dev.vars and retry.');
+      process.exit(1);
+    }
+  } else {
+    keys.openai = loadKey('OPENAI_API_KEY');
+    if (!keys.openai) {
+      console.error('Missing OPENAI_API_KEY. Set it in your environment or .dev.vars and retry.');
+      process.exit(1);
+    }
   }
   if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 
   for (const t of todo) {
     process.stdout.write(`→ generating ${t.slug} ... `);
     try {
-      const buf = await generateImage(apiKey, t.prompt);
+      const buf = await generateImage(keys, t.prompt);
       writeFileSync(t.pngPath, buf);
       generated.add(t.slug);
       console.log(`saved public/blog/${t.slug}.png`);
