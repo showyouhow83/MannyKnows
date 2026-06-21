@@ -13,7 +13,8 @@
 #   node -e "const c=require('crypto');console.log('KV_ENCRYPTION_KEY='+c.randomBytes(32).toString('hex'));console.log('ADMIN_KEY='+c.randomBytes(24).toString('base64url'));console.log('ADMIN_API_KEY='+c.randomBytes(32).toString('base64url'))"
 
 # --- Providers (get these from the provider dashboards) ---
-OPENAI_API_KEY=
+GEMINI_API_KEY=                             # powers Manny chat (provider=gemini in environments.json) + blog thumbnails
+OPENAI_API_KEY=                             # only needed if you switch chat provider back to "openai"
 RESEND_API_KEY=
 # OPENAI_BASE_URL=https://api.openai.com/   # uncomment only to override the default
 

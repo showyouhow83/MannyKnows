@@ -10,6 +10,7 @@ import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
+import { getPostImage } from '../../utils/postImage';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -20,10 +21,11 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const heroImage = getPostImage(post);
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<BaseLayout title={`${post.data.title} | MannyKnows Blog`}>
+<BaseLayout title={`${post.data.title} | MannyKnows Blog`} image={heroImage}>
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
     <MarqueeSimple />
 
@@ -53,6 +55,11 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
               <span>·</span>
               <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
             </div>
+            {heroImage && (
+              <div class="mt-8 rounded-xl overflow-hidden border border-light-tertiary dark:border-dark-accent aspect-[16/9]">
+                <img src={heroImage} alt={post.data.title} loading="eager" class="w-full h-full object-cover" />
+              </div>
+            )}
           </div>
         </Container>
       </div>

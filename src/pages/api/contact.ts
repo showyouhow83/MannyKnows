@@ -133,21 +133,19 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       status: 'pending'
     };
 
-    // Store in KV with 30-day expiration
-    await kv.put(
-      `contact:${submissionId}`, 
-      JSON.stringify(contactRecord), 
-      { expirationTtl: 60 * 60 * 24 * 30 }
-    );
+    // Persist contact leads indefinitely so they never expire before being actioned.
+    await kv.put(`contact:${submissionId}`, JSON.stringify(contactRecord));
 
     // Send notification email using Resend
     const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'mk@mannyknows.com';
     const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
+    const resendFrom = (locals as any).runtime?.env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
 
     if (resendKey) {
       try {
         const emailHtml = generateContactNotificationEmail(contactRecord);
-        
+        const subject = `📧 New Contact Form Submission: ${contactRecord.subject}`;
+
         const emailResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -155,15 +153,27 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'MK Contact <contact@mannyknows.com>',
+            from: resendFrom,
             to: [ownerEmail],
-            subject: `📧 New Contact Form Submission: ${contactRecord.subject}`,
+            subject,
             html: emailHtml
           })
         });
 
         if (emailResponse.ok) {
           console.log(`✅ Contact notification sent for: ${submissionId}`);
+        } else {
+          console.error('Contact notification REJECTED by Resend:', { status: emailResponse.status, body: await emailResponse.text(), from: resendFrom, to: ownerEmail });
+          // Fallback to Resend's shared sender so the owner is still notified when the
+          // custom domain isn't verified yet.
+          if (resendFrom !== 'MannyKnows <onboarding@resend.dev>') {
+            const retry = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ from: 'MannyKnows <onboarding@resend.dev>', to: [ownerEmail], subject, html: emailHtml })
+            });
+            if (!retry.ok) console.error('Contact notification FALLBACK also failed:', { status: retry.status, body: await retry.text() });
+          }
         }
       } catch (emailError) {
         console.error('Failed to send contact notification:', emailError);
@@ -183,7 +193,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'Manny <manny@mannyknows.com>',
+            from: resendFrom,
             to: [contactRecord.email],
             subject: `✅ Thanks For Your Message - We'll Get Back to You Soon!`,
             html: autoReplyHtml

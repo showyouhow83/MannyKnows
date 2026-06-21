@@ -10,6 +10,7 @@ import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
+import { getPostImage } from '../../utils/postImage';
 
 const posts = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
@@ -51,8 +52,17 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
           <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">No posts yet — check back soon.</p>
         ) : (
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
+            {posts.map((post) => { const img = getPostImage(post); return (
               <article class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300 flex flex-col">
+                <a href={`/blog/${post.id}`} class="block aspect-[16/9] rounded-lg overflow-hidden mb-4 border border-light-tertiary dark:border-dark-accent">
+                  {img ? (
+                    <img src={img} alt={post.data.title} loading="lazy" class="w-full h-full object-cover" />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-primary-blue/60"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14,2 14,8 20,8"></polyline></svg>
+                    </div>
+                  )}
+                </a>
                 <div class="flex flex-wrap gap-2 mb-3">
                   {post.data.tags.slice(0, 2).map((tag) => (
                     <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue bg-primary-blue/10 rounded-full px-2.5 py-1">{tag}</span>
@@ -70,7 +80,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
                   </a>
                 </div>
               </article>
-            ))}
+            ); })}
           </div>
         )}
       </Container>
