@@ -12,7 +12,7 @@ A website should do better than wait. It should **work**.
 
 ## What a lead engine actually does
 
-When we built the Contractor Suite around SL Painting, the goal was simple: every visitor who's ready to buy should be able to start a job in under a minute, and every lead should land somewhere it won't get lost.
+When I built the Contractor Suite for a local painting contractor, the goal was simple: every visitor who's ready to buy should be able to start a job in under a minute, and every lead should land somewhere it won't get lost.
 
 - **Capture** — quote forms, click-to-chat, and callback requests on every page, not just a buried contact form.
 - **Qualify** — a few smart questions up front (project type, timeline, location) so you know which leads are worth a same-day call.

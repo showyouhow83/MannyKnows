@@ -14,7 +14,7 @@ order: 1
 # image: "/products/contractor-suite.jpg"   # optional 16:9 banner in public/products/
 ---
 
-Contractor Suite is the platform behind our flagship build, **SL Painting** — a painting contractor running its entire operation from one place.
+Contractor Suite is the platform behind a real lead-to-job build I shipped for a local painting contractor — running its entire operation from one place.
 
 ## Your website does the selling
 
