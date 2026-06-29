@@ -15,6 +15,7 @@ import PageSection from '../components/layout/PageSection.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
 import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
+import SelectedWork from '../components/sections/SelectedWork.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
 // ========================================
@@ -139,6 +140,16 @@ const NAVBAR_CONFIG = {
             <!-- Hero Swiper Slider -->
             <HeroSwiper />
         </header>
+
+		<!-- Selected Work (real client sites) — portfolio proof, placed right after the hero -->
+		<PageSection
+			id="work"
+			badge="Portfolio"
+			title="Selected Work"
+			subtitle="A few of the real sites I've built for established businesses — click any to see it live."
+		>
+			<SelectedWork />
+		</PageSection>
 
 		<!-- Products Section -->
 		<PageSection
