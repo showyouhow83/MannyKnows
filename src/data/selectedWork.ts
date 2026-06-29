@@ -28,9 +28,9 @@ export const selectedWork: WorkItem[] = [
     // image: '/work/jkdaycare.png',
   },
   {
-    name: 'Shein → Shopify Importer',
-    blurb: 'Data-scraping pipeline that pulls Shein product catalogs and transforms them into Shopify-ready listings — images, variants, and pricing imported automatically.',
-    tags: ['eCommerce', 'Data scraping', 'Shopify', 'Automation'],
+    name: 'eCommerce Product Importer',
+    blurb: 'A pipeline that pulls product catalogs from major ecommerce sites and turns them into Shopify-ready listings — images, variants, and pricing imported automatically. Adapts to any source store.',
+    tags: ['eCommerce', 'Data pipeline', 'Shopify', 'Automation'],
     // No public URL (internal automation) — add a store URL here to make the card clickable.
   },
   // TODO (Manny): one factual line + tags for each of these — the sandbox can't
