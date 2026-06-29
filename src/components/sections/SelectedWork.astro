@@ -1,0 +1,56 @@
+---
+// Selected Work grid — real client sites + capability projects as cards.
+// Items with a `url` link out to the live site; items without one (e.g. internal
+// automation projects) render as a non-clickable card. Data: src/data/selectedWork.ts.
+import { selectedWork } from '../../data/selectedWork';
+
+const initial = (name: string) => name.trim().charAt(0).toUpperCase();
+const host = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+const baseCard =
+  'group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300';
+---
+
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {selectedWork.map((item) => {
+    const Wrapper = item.url ? 'a' : 'div';
+    const wrapperAttrs = item.url
+      ? { href: item.url, target: '_blank', rel: 'noopener noreferrer' }
+      : {};
+    return (
+      <Wrapper {...wrapperAttrs} class={`${baseCard} ${item.url ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
+        <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
+          {item.image ? (
+            <img src={item.image} alt={item.name} loading="lazy" class="w-full h-full object-cover" />
+          ) : (
+            <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
+              <span class="text-3xl font-bold apple-gradient-text">{initial(item.name)}</span>
+            </div>
+          )}
+        </div>
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary">{item.name}</h3>
+            {item.url && (
+              <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary group-hover:text-primary-blue transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H8M17 7v9" />
+              </svg>
+            )}
+          </div>
+          {item.tags && item.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              {item.tags.map((t) => (
+                <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue bg-primary-blue/10 rounded-full px-2 py-0.5">{t}</span>
+              ))}
+            </div>
+          )}
+          {item.blurb && (
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-3 leading-relaxed">{item.blurb}</p>
+          )}
+          {item.url && (
+            <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-auto pt-3">{host(item.url)}</span>
+          )}
+        </div>
+      </Wrapper>
+    );
+  })}
+</div>
