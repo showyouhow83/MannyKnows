@@ -2,7 +2,7 @@
 // AiWebsiteShowcase.astro
 // Flagship offer for the "My Services" section: an AI-powered website that books
 // appointments, gives rough estimates, and answers customers 24/7 — with every
-// lead landing in a connected admin. SL Painting is the live build.
+// lead landing in a connected admin.
 //
 // Renders inner content only (no <section>) — it lives inside the existing
 // <PageSection id="products"> in index.astro.
@@ -60,7 +60,7 @@ const connectionPoints = [
       A website that <span class="apple-gradient-text" data-colorful-title>books the job and answers customers</span> — while you work
     </h3>
     <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-      The same setup running SL Painting: visitors get instant answers and rough estimates, book
+      The same setup I build for clients: visitors get instant answers and rough estimates, book
       appointments themselves, and every lead lands in your admin — day or night.
     </p>
   </div>
@@ -82,21 +82,21 @@ const connectionPoints = [
     ))}
   </div>
 
-  <!-- Flagship showcase: SL Painting, end to end -->
+  <!-- Showcase: site -> admin, end to end -->
   <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-dark-secondary dark:via-dark-secondary dark:to-dark-primary p-8 md:p-10">
     <div class="flex flex-col lg:flex-row items-center gap-10">
       <!-- Story -->
       <div class="flex-1 w-full">
         <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-blue mb-3">
-          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          Flagship build · Live now
+          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          Site → admin
         </span>
         <h3 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
-          SL Painting, end to end
+          From visitor to booked job, end to end
         </h3>
         <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-          Here's how it all connects for a real client: the website does the talking — answering
-          questions, quoting, and booking — and the work shows up in the admin where the team runs it.
+          Here's how it all connects: the website does the talking — answering
+          questions, quoting, and booking — and the work shows up in the admin where you run it.
         </p>
         <ul class="space-y-3 mb-8">
           {connectionPoints.map((point) => (
@@ -117,7 +117,7 @@ const connectionPoints = [
           />
         </div>
         <p class="text-sm text-text-light-tertiary dark:text-text-dark-tertiary mt-5">
-          Built for contractors, salons, clinics, studios &amp; any Western Mass business that books work.
+          Works for any business that books work — salons, clinics, studios, trades and more.
         </p>
       </div>
 
@@ -129,14 +129,14 @@ const connectionPoints = [
             <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
             <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
             <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-            <span class="ml-2 text-[10px] font-medium text-text-light-tertiary dark:text-text-dark-tertiary">slpainting.com</span>
+            <span class="ml-2 text-[10px] font-medium text-text-light-tertiary dark:text-text-dark-tertiary">yoursite.com</span>
           </div>
           <div class="p-3 space-y-2">
             <div class="flex justify-end">
-              <p class="bg-blue-500 text-white text-[11px] leading-snug rounded-2xl rounded-br-sm px-3 py-1.5 max-w-[80%]">How much to paint a 12×14 bedroom?</p>
+              <p class="bg-blue-500 text-white text-[11px] leading-snug rounded-2xl rounded-br-sm px-3 py-1.5 max-w-[80%]">What would a job like mine cost?</p>
             </div>
             <div class="flex justify-start">
-              <p class="bg-gray-100 dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-[11px] leading-snug rounded-2xl rounded-bl-sm px-3 py-1.5 max-w-[88%]">Usually $450–$650 for a standard repaint. Want a free on-site quote?</p>
+              <p class="bg-gray-100 dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-[11px] leading-snug rounded-2xl rounded-bl-sm px-3 py-1.5 max-w-[88%]">Usually $450–$650 for a job like that. Want a free on-site quote?</p>
             </div>
             <div class="flex justify-end">
               <p class="bg-blue-500 text-white text-[11px] leading-snug rounded-2xl rounded-br-sm px-3 py-1.5 max-w-[80%]">Yes — this Thursday?</p>
@@ -161,20 +161,20 @@ const connectionPoints = [
           </div>
           <div class="rounded-lg border border-green-400/50 bg-green-50 dark:bg-green-500/10 p-2 mb-2">
             <div class="flex items-center justify-between">
-              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Kitchen repaint · 12×14</p>
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">New job · booked online</p>
               <span class="text-[9px] font-bold uppercase tracking-wide text-green-600 dark:text-green-400">New</span>
             </div>
             <p class="text-[10px] text-text-light-secondary dark:text-text-dark-secondary mt-0.5">Thu 2:00 PM · est. $450–$650 · booked via site</p>
           </div>
           <div class="rounded-lg border border-light-tertiary dark:border-dark-accent p-2 mb-2 opacity-80">
             <div class="flex items-center justify-between">
-              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Exterior trim</p>
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Quote request</p>
               <span class="text-[9px] font-bold uppercase tracking-wide text-yellow-600 dark:text-yellow-400">Estimate sent</span>
             </div>
           </div>
           <div class="rounded-lg border border-light-tertiary dark:border-dark-accent p-2 opacity-60">
             <div class="flex items-center justify-between">
-              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Office lobby</p>
+              <p class="text-[11px] font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">Repeat client</p>
               <span class="text-[9px] font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Scheduled</span>
             </div>
           </div>

@@ -38,18 +38,21 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
+    image: '/works/cherry-vibes-d.png',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
+    image: '/works/vl-d.png',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'Springfield en Victoria',
     url: 'https://springfieldenvictoria.com',
+    image: '/works/enVictoria-d.png',
     // blurb: '',
     // tags: [],
   },
