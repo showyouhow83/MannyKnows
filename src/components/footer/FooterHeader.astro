@@ -59,7 +59,7 @@ const blogArticles = (await getCollection('blog'))
             {brandTitle}
           </span>
           {brandEmoji && (
-            <span aria-hidden="true" style="-webkit-text-fill-color: initial; background: none;">{brandEmoji}</span>
+            <span class="rocket-emoji" aria-hidden="true" style="-webkit-text-fill-color: initial; background: none;">{brandEmoji}</span>
           )}
         </h3>
         <p class="text-gray-700 dark:text-white/80 leading-relaxed text-sm mb-8 transition-colors duration-300">
@@ -840,5 +840,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   .validation-message.opacity-100 {
     transform: translateY(0);
+  }
+
+  /* Floating rocket in the MK 🚀 brand mark */
+  .rocket-emoji {
+    display: inline-block;
+    transform-origin: 60% 60%;
+    animation: rocketFloat 3s ease-in-out infinite;
+    will-change: transform;
+  }
+  @keyframes rocketFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-6px) rotate(-8deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rocket-emoji { animation: none; }
   }
 </style>

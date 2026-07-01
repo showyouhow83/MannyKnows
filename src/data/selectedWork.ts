@@ -18,7 +18,7 @@ export const selectedWork: WorkItem[] = [
     url: 'https://slpainting.co',
     blurb: 'Painting contractor — website plus the lead-to-job platform that runs the whole operation.',
     tags: ['Contractor', 'Website', 'Lead platform'],
-    // image: '/work/slpainting.png',
+    image: '/works/slpainting-desktop.png',
   },
   {
     name: 'JK Daycare',
