@@ -842,16 +842,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     transform: translateY(0);
   }
 
-  /* Floating rocket in the MK 🚀 brand mark */
+  /* Floating rocket in the MK 🚀 brand mark — three independent transforms on
+     coprime durations, so drift/tilt/pulse desync and the motion never quite
+     repeats (organic, not mechanical). */
   .rocket-emoji {
     display: inline-block;
     transform-origin: 60% 60%;
-    animation: rocketFloat 3s ease-in-out infinite;
-    will-change: transform;
+    animation:
+      rocketDrift 3.2s ease-in-out infinite,
+      rocketTilt 4.7s ease-in-out infinite,
+      rocketPulse 6.1s ease-in-out infinite;
+    will-change: translate, rotate, scale;
   }
-  @keyframes rocketFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-6px) rotate(-8deg); }
+  @keyframes rocketDrift {
+    0%   { translate: 0 0; }
+    25%  { translate: 2px -5px; }
+    50%  { translate: -2px -8px; }
+    75%  { translate: 1px -3px; }
+    100% { translate: 0 0; }
+  }
+  @keyframes rocketTilt {
+    0%   { rotate: 0deg; }
+    33%  { rotate: -11deg; }
+    66%  { rotate: 8deg; }
+    100% { rotate: 0deg; }
+  }
+  @keyframes rocketPulse {
+    0%, 100% { scale: 1; }
+    50%      { scale: 1.08; }
   }
   @media (prefers-reduced-motion: reduce) {
     .rocket-emoji { animation: none; }
