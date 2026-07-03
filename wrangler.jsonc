@@ -1,7 +1,8 @@
 {
   // Cloudflare Worker config for Astro on Workers
   "name": "mannyknows",
-  "main": "./dist/_worker.js/index.js",
+  // v14 @astrojs/cloudflare injects its own worker entrypoint; a `main` pointing
+  // at the (not-yet-built) output makes @cloudflare/vite-plugin fail config resolution.
   "compatibility_date": "2025-08-08",
   "compatibility_flags": ["nodejs_compat"],
 

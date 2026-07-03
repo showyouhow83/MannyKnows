@@ -25,7 +25,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -35,7 +35,10 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Workers
-        run: npx wrangler deploy
+        # Astro 7 / @astrojs/cloudflare v14 emits a self-contained deploy config
+        # (main + merged bindings) under dist/server/. Deploy from that, not the
+        # root wrangler.jsonc (which no longer carries `main`).
+        run: npx wrangler deploy -c dist/server/wrangler.json
         env:
           # Repo → Settings → Secrets and variables → Actions
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
