@@ -1,10 +1,11 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { AdminAuthenticator } from '../../lib/security/adminAuthenticator.js';
 import { AdminRateLimiter } from '../../lib/security/adminRateLimiter.js';
 
 export const GET: APIRoute = async ({ locals, url, request }) => {
   try {
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
     
     if (!kv) {
       return new Response(JSON.stringify({ 
@@ -69,7 +70,7 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
     // Method 3: Legacy admin key (less secure, for backwards compatibility)
     if (!authenticated) {
       const adminKey = url.searchParams.get('key');
-      const storedAdminKey = (locals as any).runtime?.env?.ADMIN_KEY;
+      const storedAdminKey = env?.ADMIN_KEY;
       
       if (adminKey && storedAdminKey && adminKey === storedAdminKey) {
         authenticated = true;

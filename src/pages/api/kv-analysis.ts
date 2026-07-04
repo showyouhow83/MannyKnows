@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
@@ -7,7 +8,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
     // Check for admin authentication
     const authHeader = request.headers.get('authorization');
-    const adminKey = (locals as any).runtime?.env?.ADMIN_API_KEY;
+    const adminKey = env?.ADMIN_API_KEY;
     
     if (!authHeader || !adminKey || authHeader !== `Bearer ${adminKey}`) {
       return new Response(JSON.stringify({
@@ -18,7 +19,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
       });
     }
 
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'KV storage not available'
