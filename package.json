@@ -17,27 +17,25 @@
     "size:check": "du -sh dist/ && find dist/ -type f -name '*.js' -o -name '*.css' -o -name '*.html' | head -10 | xargs du -h | sort -hr"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/sitemap": "^3.6.1",
-    "@astrojs/tailwind": "^6.0.2",
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/sitemap": "^3.7.3",
     "@microsoft/clarity": "^1.0.2",
-    "astro": "5.13.0",
+    "astro": "^7.0.6",
     "swiper": "^12.0.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "web-vitals": "^5.0.3"
   },
   "devDependencies": {
-    "@astrojs/cloudflare": "^12.6.3",
-    "astro-compress": "^2.3.8",
+    "@astrojs/cloudflare": "^14.1.1",
     "autoprefixer": "^10.4.21",
-    "cssnano": "^7.1.0",
+    "postcss": "^8.4.49",
     "terser": "^5.43.1",
     "vite-bundle-analyzer": "^1.1.0",
     "wrangler": "^4.30.0"
   },
   "engines": {
-    "node": ">=18.17.0",
+    "node": ">=22.12.0",
     "npm": ">=10.0.0"
   }
 }

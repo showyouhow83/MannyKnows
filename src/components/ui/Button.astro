@@ -96,9 +96,8 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
 ---
 
 {isThemeAware ? (
-  <!-- Theme-Aware Button: Two versions for light/dark modes -->
   <>
-    <!-- Light Mode Version -->
+    {/* Light Mode Version */}
     <a
       href={href}
       id={id ? `${id}-light` : undefined}
@@ -119,7 +118,7 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
       </div>
     </a>
 
-    <!-- Dark Mode Version -->
+    {/* Dark Mode Version */}
     <a
       href={href}
       id={id ? `${id}-dark` : undefined}
@@ -141,7 +140,6 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
     </a>
   </>
 ) : (
-  <!-- Regular Button: Single version with variant styling -->
   <a
     href={href}
     id={id}

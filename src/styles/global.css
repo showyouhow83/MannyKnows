@@ -1,0 +1,6 @@
+/* Tailwind 3 base styles (processed by PostCSS; config is tailwind.config.mjs).
+   Imported once in BaseLayout so every page gets it — same output as the old
+   @astrojs/tailwind integration (applyBaseStyles: true). */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

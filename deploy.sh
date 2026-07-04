@@ -23,7 +23,7 @@ elif [ "$1" = "--update-secrets" ]; then
 	echo "⚠️  No .dev.vars file found - skipping secret updates"
 fi
 
-CLOUDFLARE_API_TOKEN="" CF_API_TOKEN="" npx wrangler deploy
+CLOUDFLARE_API_TOKEN="" CF_API_TOKEN="" npx wrangler deploy -c dist/server/wrangler.json
 
 echo "✅ Deployment completed."
 echo "🌐 Production: https://mannyknows.showyouhow83.workers.dev"

@@ -1,25 +1,19 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
+// Tailwind runs via PostCSS (postcss.config.js) — no Astro integration needed.
 export default defineConfig({
   site: 'https://mannyknows.com',
   output: 'server', // Server mode for API routes
   adapter: cloudflare({
-    imageService: 'compile' // Explicitly set image service for Cloudflare
+    imageService: 'compile', // Explicitly set image service for Cloudflare
+    // v14 auto-enables Astro Sessions on a KV binding; point it at our existing
+    // namespace instead of the default "SESSION" binding (which we don't have).
+    sessionKVBindingName: 'MK_KV_SESSIONS'
   }),
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/compile'
-    }
-  },
   integrations: [
-    tailwind({
-      // Keep base styles for proper styling
-      applyBaseStyles: true,
-    }),
     sitemap({
       filter: (page) =>
         !page.includes('/admin') &&
@@ -35,20 +29,7 @@ export default defineConfig({
       external: ['node:fs/promises']
     },
     build: {
-      cssCodeSplit: true,
-      rollupOptions: {
-        output: {
-          assetFileNames: (assetInfo) => {
-            if (assetInfo.name && assetInfo.name.endsWith('.css')) {
-              return '_astro/[name].[hash][extname]';
-            }
-            return '_astro/[name].[hash][extname]';
-          }
-        }
-      }
-    },
-    css: {
-      transformer: 'postcss'
+      cssCodeSplit: true
     }
   },
   build: {
