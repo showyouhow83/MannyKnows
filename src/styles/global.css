@@ -1,8 +1,6 @@
-/* Tailwind v4 entry.
-   - @config keeps the existing JS config (custom colors, the xl:1111px screen,
-     fonts, animations) so the design carries over unchanged.
-   - @custom-variant restores class-based dark mode (the site toggles a `.dark`
-     class on <html>), which v4 no longer enables by default. */
-@import "tailwindcss";
-@config "../../tailwind.config.mjs";
-@custom-variant dark (&:where(.dark, .dark *));
+/* Tailwind 3 base styles (processed by PostCSS; config is tailwind.config.mjs).
+   Imported once in BaseLayout so every page gets it — same output as the old
+   @astrojs/tailwind integration (applyBaseStyles: true). */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

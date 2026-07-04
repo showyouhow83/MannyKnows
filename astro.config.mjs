@@ -1,9 +1,9 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
+// Tailwind runs via PostCSS (postcss.config.js) — no Astro integration needed.
 export default defineConfig({
   site: 'https://mannyknows.com',
   output: 'server', // Server mode for API routes
@@ -25,8 +25,6 @@ export default defineConfig({
     })
   ],
   vite: {
-    // Tailwind v4 runs as a Vite plugin (replaces the old @astrojs/tailwind integration).
-    plugins: [tailwindcss()],
     ssr: {
       external: ['node:fs/promises']
     },
