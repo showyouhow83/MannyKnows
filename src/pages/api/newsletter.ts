@@ -1,9 +1,10 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { InputValidator } from '../../lib/security/inputValidator.js';
 import { CSRFProtection } from '../../lib/security/csrfProtection.js';
 
 export const GET: APIRoute = async ({ url, locals }) => {
-  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+  const kv = env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 
@@ -40,9 +41,9 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
-    const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
-    const resendFrom = (locals as any).runtime?.env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
+    const kv = env?.MK_KV_CHATBOT;
+    const resendKey = env?.RESEND_API_KEY;
+    const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
     
     if (!kv) {
       throw new Error('KV storage not available');

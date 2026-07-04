@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { AdminAuthenticator } from '../../lib/security/adminAuthenticator.js';
 import { AdminRateLimiter } from '../../lib/security/adminRateLimiter.js';
@@ -6,7 +7,7 @@ import { CSRFProtection } from '../../lib/security/csrfProtection.js';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
 
     if (!kv) {
       return new Response(JSON.stringify({
@@ -85,8 +86,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Verify admin credentials
-    const storedAdminKey = (locals as any).runtime?.env?.ADMIN_KEY;
-    const allowedAdminEmail = (locals as any).runtime?.env?.ADMIN_EMAIL || 'mk@mannyknows.com';
+    const storedAdminKey = env?.ADMIN_KEY;
+    const allowedAdminEmail = env?.ADMIN_EMAIL || 'mk@mannyknows.com';
     
     const keyValid = storedAdminKey && adminKey === storedAdminKey;
     const emailValid = validationResult.sanitizedData.email === allowedAdminEmail;
@@ -165,7 +166,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ locals }) => {
   // Return CSRF token for admin login form
-  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+  const kv = env?.MK_KV_CHATBOT;
 
   if (!kv) {
     return new Response(JSON.stringify({

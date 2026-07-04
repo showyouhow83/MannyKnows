@@ -1,10 +1,11 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
     // Check admin authentication
     const authHeader = request.headers.get('Authorization');
-    const expectedToken = (locals as any).runtime?.env?.ADMIN_API_KEY;
+    const expectedToken = env?.ADMIN_API_KEY;
     
     if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.slice(7) !== expectedToken) {
       return new Response(JSON.stringify({ error: 'Unauthorized - Admin access required' }), {
@@ -14,11 +15,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Get MK_KV_SERVICES namespace
-    const kvServices = (locals as any).runtime?.env?.MK_KV_SERVICES;
+    const kvServices = env?.MK_KV_SERVICES;
     if (!kvServices) {
       return new Response(JSON.stringify({ 
         error: 'MK_KV_SERVICES namespace not available',
-        available_namespaces: Object.keys((locals as any).runtime?.env || {}).filter(key => key.includes('KV'))
+        available_namespaces: Object.keys(env || {}).filter(key => key.includes('KV'))
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }

@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import RateLimiter from '../../lib/security/rateLimiter';
 import DomainValidator from '../../lib/security/domainValidator';
@@ -11,7 +12,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
     // Check for admin authentication (basic implementation)
     const authHeader = request.headers.get('authorization');
-    const adminKey = (locals as any).runtime?.env?.ADMIN_API_KEY;
+    const adminKey = env?.ADMIN_API_KEY;
     
     if (!authHeader || !adminKey || authHeader !== `Bearer ${adminKey}`) {
       return new Response(JSON.stringify({
@@ -22,7 +23,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
       });
     }
 
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'KV storage not available'
@@ -33,7 +34,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
     }
 
     // Initialize security components
-    const encryptionKey = (locals as any).runtime?.env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
+    const encryptionKey = env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
     const encryptedKv = new EncryptedKV(kv, encryptionKey);
     const csrfProtection = new CSRFProtection(kv);
     const rateLimiter = new RateLimiter(kv);
@@ -86,9 +87,9 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
         nodeEnv: process.env.NODE_ENV || 'unknown',
         httpsEnforced: !domainValidator.isDevMode(),
         environmentVariablesSecure: {
-          encryptionKey: !!(locals as any).runtime?.env?.KV_ENCRYPTION_KEY,
-          adminApiKey: !!(locals as any).runtime?.env?.ADMIN_API_KEY,
-          openaiApiKey: !!(locals as any).runtime?.env?.OPENAI_API_KEY
+          encryptionKey: !!env?.KV_ENCRYPTION_KEY,
+          adminApiKey: !!env?.ADMIN_API_KEY,
+          openaiApiKey: !!env?.OPENAI_API_KEY
         }
       }
     };
@@ -159,7 +160,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Check for admin authentication
     const authHeader = request.headers.get('authorization');
-    const adminKey = (locals as any).runtime?.env?.ADMIN_API_KEY;
+    const adminKey = env?.ADMIN_API_KEY;
     
     if (!authHeader || !adminKey || authHeader !== `Bearer ${adminKey}`) {
       return new Response(JSON.stringify({
@@ -173,7 +174,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const body = await request.json();
     const { action, parameters } = body;
 
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'KV storage not available'
@@ -183,7 +184,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const encryptionKey = (locals as any).runtime?.env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
+    const encryptionKey = env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
     const encryptedKv = new EncryptedKV(kv, encryptionKey);
 
     let result;

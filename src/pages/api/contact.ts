@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { InputValidator } from '../../lib/security/inputValidator.js';
 import { CSRFProtection } from '../../lib/security/csrfProtection.js';
@@ -5,7 +6,7 @@ import { RateLimiter } from '../../lib/security/rateLimiter.js';
 import { DomainValidator } from '../../lib/security/domainValidator.js';
 
 export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
-  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+  const kv = env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 
@@ -137,9 +138,9 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     await kv.put(`contact:${submissionId}`, JSON.stringify(contactRecord));
 
     // Send notification email using Resend
-    const ownerEmail = (locals as any).runtime?.env?.OWNER_EMAIL || 'mk@mannyknows.com';
-    const resendKey = (locals as any).runtime?.env?.RESEND_API_KEY;
-    const resendFrom = (locals as any).runtime?.env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
+    const ownerEmail = env?.OWNER_EMAIL || 'mk@mannyknows.com';
+    const resendKey = env?.RESEND_API_KEY;
+    const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
 
     if (resendKey) {
       try {
@@ -227,7 +228,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
 
 // Get CSRF token for contact form
 export const GET: APIRoute = async ({ url, locals }) => {
-  const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+  const kv = env?.MK_KV_CHATBOT;
   
   if (!kv) {
     return new Response(JSON.stringify({ 

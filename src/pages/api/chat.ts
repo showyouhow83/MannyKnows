@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { serviceOrchestrator } from '../../lib/services/serviceOrchestrator';
 import { devLog, errorLog } from '../../utils/debug';
@@ -51,7 +52,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
       });
     }
 
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+    const kv = env?.MK_KV_CHATBOT;
     if (!kv) {
       return new Response(JSON.stringify({
         error: 'Service temporarily unavailable'
@@ -424,7 +425,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const domainValidation = domainValidator.validateRequest(request);
     
     if (!domainValidation.valid) {
-      const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
+      const kv = env?.MK_KV_CHATBOT;
       await domainValidator.logSecurityViolation(domainValidation, request, kv);
       return domainValidator.createDomainErrorResponse(domainValidation);
     }
@@ -455,15 +456,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
     
     devLog('Architecture 2 chat request:', { message, session_id, history_length: conversation_history.length });
 
-    const kv = (locals as any).runtime?.env?.MK_KV_CHATBOT;
-    const profilesKv = (locals as any).runtime?.env?.MK_KV_PROFILES; // Dedicated KV for profiles
-    const sessionsKv = (locals as any).runtime?.env?.MK_KV_SESSIONS; // Dedicated KV for sessions
-    const schedulerKv = (locals as any).runtime?.env?.MK_KV_SCHEDULER || kv;
+    const kv = env?.MK_KV_CHATBOT;
+    const profilesKv = env?.MK_KV_PROFILES; // Dedicated KV for profiles
+    const sessionsKv = env?.MK_KV_SESSIONS; // Dedicated KV for sessions
+    const schedulerKv = env?.MK_KV_SCHEDULER || kv;
     
     // Initialize encrypted KV wrapper for sensitive data
     let encryptedKv: EncryptedKV | null = null;
     if (kv) {
-      const encryptionKey = (locals as any).runtime?.env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
+      const encryptionKey = env?.KV_ENCRYPTION_KEY || 'default-dev-key-change-in-production';
       encryptedKv = new EncryptedKV(kv, encryptionKey);
     }
     
@@ -501,7 +502,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       (locals as any).rateLimiter = rateLimiter;
     }
 
-    let environment = (locals as any).runtime?.env as any; // Pass full environment for KV access
+    let environment = env as any; // Pass full environment for KV access
     if (!environment || Object.keys(environment).length === 0) {
       const devVars = await readDevVarsFromFile();
       if (devVars) environment = devVars;
