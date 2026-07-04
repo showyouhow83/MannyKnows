@@ -133,9 +133,10 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 
 		<FooterMain />
 
-		<!-- Swiper + Carousel Effect Scripts -->
-		<script is:inline src="/swiper-bundle.min.js"></script>
-		<script is:inline src="/effect-carousel.min.js"></script>
+		<!-- Swiper + Carousel Effect Scripts — deferred so they don't block render
+		     (the carousel init polls for the Swiper global, so load order is safe). -->
+		<script is:inline defer src="/swiper-bundle.min.js"></script>
+		<script is:inline defer src="/effect-carousel.min.js"></script>
 	</body>
 </html>
 
