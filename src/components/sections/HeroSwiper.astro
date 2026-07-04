@@ -241,7 +241,22 @@ const { slides = defaultSlides } = Astro.props;
   .hero-carousel .swiper-pagination-bullet {
     width: 10px;
     height: 10px;
+    margin: 0 7px !important;
+    position: relative;
     transition: all 0.3s ease;
+  }
+
+  /* Enlarge the tap target to 24×24 (WCAG 2.5.8) without changing the visible
+     dot — a transparent pseudo-element centered over each bullet. The 7px
+     horizontal margins keep neighboring tap areas from overlapping. */
+  .hero-carousel .swiper-pagination-bullet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    transform: translate(-50%, -50%);
   }
 
   .hero-carousel .swiper-pagination-bullet-active {

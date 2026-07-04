@@ -18,7 +18,7 @@ export const selectedWork: WorkItem[] = [
     url: 'https://slpainting.co',
     blurb: 'Painting contractor — website plus the lead-to-job platform that runs the whole operation.',
     tags: ['Contractor', 'Website', 'Lead platform'],
-    image: '/works/slpainting-desktop.png',
+    image: '/works/slpainting-desktop.webp',
   },
   {
     name: 'JK Daycare',
@@ -38,21 +38,21 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
-    image: '/works/cherry-vibes-d.png',
+    image: '/works/cherry-vibes-d.webp',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
-    image: '/works/vl-d.png',
+    image: '/works/vl-d.webp',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'Springfield en Victoria',
     url: 'https://springfieldenvictoria.com',
-    image: '/works/enVictoria-d.png',
+    image: '/works/enVictoria-d.webp',
     // blurb: '',
     // tags: [],
   },

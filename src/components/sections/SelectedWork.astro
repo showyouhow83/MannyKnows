@@ -20,7 +20,7 @@ const baseCard =
       <Wrapper {...wrapperAttrs} class={`${baseCard} ${item.url ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
         <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
           {item.image ? (
-            <img src={item.image} alt={item.name} loading="lazy" class="w-full h-full object-cover" />
+            <img src={item.image} alt={item.name} loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover" />
           ) : (
             <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
               <span class="text-3xl font-bold apple-gradient-text">{initial(item.name)}</span>
@@ -39,7 +39,7 @@ const baseCard =
           {item.tags && item.tags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-2">
               {item.tags.map((t) => (
-                <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue bg-primary-blue/10 rounded-full px-2 py-0.5">{t}</span>
+                <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2 py-0.5">{t}</span>
               ))}
             </div>
           )}
