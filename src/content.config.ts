@@ -36,4 +36,40 @@ const products = defineCollection({
   }),
 });
 
-export const collections = { blog, products };
+// Portfolio = case studies for client & capability projects. Markdown in
+// src/content/portfolio/*.md — the frontmatter drives the structured "at a
+// glance" panel (tech stack, role, timeline, results) and the Markdown body is
+// the narrative (Challenge → Approach → Outcome).
+//
+// Honesty rule (same as selectedWork.ts): only publish what's true. Keep a case
+// study `draft: true` until every field is real — draft entries never build a
+// page. Duplicate an existing file to start a new one.
+const portfolio = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/portfolio' }),
+  schema: z.object({
+    title: z.string(),
+    client: z.string().optional(),          // client/business name if different from title
+    tagline: z.string(),                    // one-line hook shown under the title
+    summary: z.string(),                    // 1–2 sentence intro + listing/SEO description
+    industry: z.string().optional(),        // e.g. "Painting contractor"
+    // "At a glance" panel:
+    role: z.string().optional(),            // what MannyKnows did, e.g. "Design, build & deploy"
+    timeline: z.string().optional(),        // e.g. "3 weeks"
+    year: z.number().optional(),
+    services: z.array(z.string()).default([]),   // what was delivered (Website, Lead platform…)
+    techStack: z.array(z.string()).default([]),  // tools used (Astro, Cloudflare, Twilio…)
+    goals: z.array(z.string()).default([]),      // what the client set out to achieve
+    // Outcome metrics — each renders as a stat tile. Keep them true & specific.
+    results: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+    liveUrl: z.string().optional(),         // live site / demo
+    // Hero + gallery images. Use a `public/works/<base>-<width>.<ext>` responsive
+    // base name (like selectedWork) OR a literal path/URL (contains "/" or ".").
+    heroImage: z.string().optional(),
+    gallery: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),   // pin to the top of the index
+    order: z.number().default(99),          // ascending sort within (featured, order)
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, products, portfolio };

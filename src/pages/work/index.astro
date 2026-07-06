@@ -1,0 +1,110 @@
+---
+// Work index — the portfolio of case studies (src/content/portfolio/*.md).
+// Draft entries are hidden; featured pins to the top, then `order` ascending.
+export const prerender = true;
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import ChatBox from '../../components/ui/ChatBox.astro';
+
+const projects = (await getCollection('portfolio'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => (Number(b.data.featured) - Number(a.data.featured)) || (a.data.order - b.data.order));
+
+// Same responsive image pipeline as the detail page / homepage cards.
+const WIDTHS = [400, 640, 960, 1280];
+const isLiteral = (v: string) => v.includes('/') || v.includes('.');
+const srcset = (base: string, ext: 'avif' | 'webp') =>
+  WIDTHS.map((w) => `/works/${base}-${w}.${ext} ${w}w`).join(', ');
+const CARD_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw';
+const initial = (name: string) => name.trim().charAt(0).toUpperCase();
+---
+
+<BaseLayout title="Work — Case Studies | MannyKnows" description="Real projects MannyKnows has designed, built, and shipped for small businesses — the goals, the tech, and the outcome.">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Work</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="text-center max-w-3xl mx-auto">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Case Studies</span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>Work I've shipped</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Real projects for real businesses — the goal behind each one, how it was built, and what it changed. Click any project for the full story.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="work-list" variant="default">
+      <Container>
+        {projects.length === 0 ? (
+          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">Case studies are on the way — check back soon.</p>
+        ) : (
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 px-2">
+            {projects.map((p) => {
+              const d = p.data;
+              return (
+                <a href={`/work/${p.id}`} class="group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary-blue/30">
+                  <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
+                    {d.heroImage ? (
+                      isLiteral(d.heroImage) ? (
+                        <img src={d.heroImage} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <picture>
+                          <source type="image/avif" srcset={srcset(d.heroImage, 'avif')} sizes={CARD_SIZES} />
+                          <source type="image/webp" srcset={srcset(d.heroImage, 'webp')} sizes={CARD_SIZES} />
+                          <img src={`/works/${d.heroImage}-960.webp`} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </picture>
+                      )
+                    ) : (
+                      <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
+                        <span class="text-3xl font-bold apple-gradient-text">{initial(d.title)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div class="p-5 flex flex-col flex-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <h2 class="font-semibold text-text-light-primary dark:text-text-dark-primary">{d.title}</h2>
+                      <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary group-hover:text-primary-blue transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                    {d.industry && (
+                      <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1">{d.industry}</span>
+                    )}
+                    <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-3 leading-relaxed flex-1">{d.tagline}</p>
+                    {d.techStack.length > 0 && (
+                      <div class="flex flex-wrap gap-1.5 mt-4">
+                        {d.techStack.slice(0, 4).map((t) => (
+                          <span class="text-[11px] font-medium text-text-light-secondary dark:text-text-dark-secondary bg-black/5 dark:bg-white/10 rounded-full px-2 py-0.5">{t}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>

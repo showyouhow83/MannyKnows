@@ -22,12 +22,17 @@ const baseCard =
 
 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
   {selectedWork.map((item) => {
-    const Wrapper = item.url ? 'a' : 'div';
-    const wrapperAttrs = item.url
-      ? { href: item.url, target: '_blank', rel: 'noopener noreferrer' }
+    // A finished case study wins: link internally to /work/<slug>. Otherwise fall
+    // back to the live site (external), or a non-clickable card if neither exists.
+    const linked = item.caseStudy || item.url;
+    const Wrapper = linked ? 'a' : 'div';
+    const wrapperAttrs = item.caseStudy
+      ? { href: `/work/${item.caseStudy}` }
+      : item.url
+      ? { href: item.url, target: '_blank' as const, rel: 'noopener noreferrer' }
       : {};
     return (
-      <Wrapper {...wrapperAttrs} class={`${baseCard} ${item.url ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
+      <Wrapper {...wrapperAttrs} class={`${baseCard} ${linked ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
         <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
           {item.image ? (
             <picture>

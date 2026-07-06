@@ -47,6 +47,23 @@ for small businesses in Western Massachusetts).
 - Performance is a priority: pages are tuned for near-100 Lighthouse
   (image optimization AVIF/WebP via `<picture>`, no render-blocking, a11y).
 
+## Portfolio / case studies
+
+- Content collection **`portfolio`** (`src/content/portfolio/*.md`, schema in
+  `src/content.config.ts`) drives per-project case-study pages.
+- Detail page: `src/pages/work/[...slug].astro` (hero, "at a glance" panel with
+  tech stack/role/timeline, goals, result stat tiles, narrative, gallery).
+  Index: `src/pages/work/index.astro`. Route base is **`/work`**.
+- **Honesty rule (matches `selectedWork.ts`): never publish invented details.**
+  New case studies start `draft: true` — draft entries build no page. Duplicate
+  `sl-painting.md` (the template) to add one; fill every field, then flip
+  `draft: false`.
+- Homepage cards (`selectedWork.ts` → `SelectedWork.astro`) link to `/work/<slug>`
+  when the item has a `caseStudy` slug; otherwise to the live site. Only set
+  `caseStudy` once that case study is published.
+- Images reuse the responsive pipeline: `public/works/<base>-<width>.<ext>`
+  (AVIF/WebP). `heroImage`/`gallery` accept a base name OR a literal path/URL.
+
 ## Key commands
 
 - `npm run dev` — local dev server

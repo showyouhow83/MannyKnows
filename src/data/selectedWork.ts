@@ -13,6 +13,10 @@ export interface WorkItem {
   image?: string;     // screenshot base name — responsive AVIF/WebP variants live at
                       // public/works/<base>-<width>.<ext> (run scripts/optimize-work-images.mjs
                       // after dropping a high-res source into src/assets/works). e.g. "slpainting-desktop"
+  caseStudy?: string; // slug of a published case study in src/content/portfolio/*.md
+                      // (the filename without .md). When set, the card links to
+                      // /work/<slug> instead of the live site. Only set it once
+                      // that case study is finished and `draft: false`.
 }
 
 export const selectedWork: WorkItem[] = [
@@ -22,6 +26,7 @@ export const selectedWork: WorkItem[] = [
     blurb: 'Painting contractor — website plus the lead-to-job platform that runs the whole operation.',
     tags: ['Contractor', 'Website', 'Lead platform'],
     image: 'slpainting-desktop',
+    // caseStudy: 'sl-painting',  // ← uncomment once src/content/portfolio/sl-painting.md is finished (draft: false)
   },
   {
     name: 'JK Daycare',
