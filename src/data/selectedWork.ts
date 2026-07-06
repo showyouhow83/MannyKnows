@@ -2,14 +2,17 @@
 // homepage "Selected Work" section (src/components/sections/SelectedWork.astro).
 //
 // Honesty rule: only describe what's true. `blurb` and `tags` are optional —
-// a card renders fine with just name + URL. Drop a screenshot into
-// public/work/<slug>.png and set `image` to show a real thumbnail.
+// a card renders fine with just name + URL. Drop a high-res screenshot into
+// src/assets/works/<file> and set `image` to that filename — SelectedWork.astro
+// runs it through astro:assets <Picture>, which emits responsive AVIF/WebP.
 export interface WorkItem {
   name: string;
   url?: string;       // live site — omit for internal/automation projects (card won't link out)
   blurb?: string;     // one factual line: industry + what was built
   tags?: string[];    // short chips (industry / what was built)
-  image?: string;     // optional screenshot, e.g. "/work/slpainting.png"
+  image?: string;     // screenshot base name — responsive AVIF/WebP variants live at
+                      // public/works/<base>-<width>.<ext> (run scripts/optimize-work-images.mjs
+                      // after dropping a high-res source into src/assets/works). e.g. "slpainting-desktop"
 }
 
 export const selectedWork: WorkItem[] = [
@@ -18,7 +21,7 @@ export const selectedWork: WorkItem[] = [
     url: 'https://slpainting.co',
     blurb: 'Painting contractor — website plus the lead-to-job platform that runs the whole operation.',
     tags: ['Contractor', 'Website', 'Lead platform'],
-    image: '/works/slpainting-desktop.webp',
+    image: 'slpainting-desktop',
   },
   {
     name: 'JK Daycare',
@@ -38,21 +41,21 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
-    image: '/works/cherry-vibes-d.webp',
+    image: 'cherry-vibes-d',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
-    image: '/works/vl-d.webp',
+    image: 'vl-d',
     // blurb: '',
     // tags: [],
   },
   {
     name: 'Springfield en Victoria',
     url: 'https://springfieldenvictoria.com',
-    image: '/works/enVictoria-d.webp',
+    image: 'enVictoria-d',
     // blurb: '',
     // tags: [],
   },

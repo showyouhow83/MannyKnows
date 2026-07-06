@@ -4,6 +4,16 @@
 // automation projects) render as a non-clickable card. Data: src/data/selectedWork.ts.
 import { selectedWork } from '../../data/selectedWork';
 
+// Responsive screenshots: pre-generated AVIF + WebP variants live at
+// public/works/<base>-<width>.<ext> for each width below (built with sharp).
+// The homepage is server-rendered, so we hand-write <picture> rather than use
+// astro:assets (which only pre-optimizes images on prerendered pages).
+const WORK_WIDTHS = [400, 640, 960, 1280];
+const workSrcset = (base: string, ext: 'avif' | 'webp') =>
+  WORK_WIDTHS.map((w) => `/works/${base}-${w}.${ext} ${w}w`).join(', ');
+// Card renders at ~30vw (3-col) on desktop, ~45vw (2-col) on tablets, ~92vw on phones.
+const WORK_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw';
+
 const initial = (name: string) => name.trim().charAt(0).toUpperCase();
 const host = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
 const baseCard =
@@ -20,7 +30,19 @@ const baseCard =
       <Wrapper {...wrapperAttrs} class={`${baseCard} ${item.url ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
         <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
           {item.image ? (
-            <img src={item.image} alt={item.name} loading="lazy" decoding="async" width="1200" height="675" class="w-full h-full object-cover" />
+            <picture>
+              <source type="image/avif" srcset={workSrcset(item.image, 'avif')} sizes={WORK_SIZES} />
+              <source type="image/webp" srcset={workSrcset(item.image, 'webp')} sizes={WORK_SIZES} />
+              <img
+                src={`/works/${item.image}-960.webp`}
+                alt={item.name}
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover"
+              />
+            </picture>
           ) : (
             <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
               <span class="text-3xl font-bold apple-gradient-text">{initial(item.name)}</span>
