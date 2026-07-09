@@ -2,18 +2,18 @@
 draft: false
 title: "SL Painting"
 client: "SL Painting"
-tagline: "From no online presence to a full digital operation — website, CRM, a 24/7 AI agent, and an AI paint-preview app."
-summary: "SL Painting had a strong offline reputation and nothing online. I built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and an AI app that lets homeowners preview their home in any color."
+tagline: "From invisible on Google to ranking for “exterior painting” across Western Mass — with a website, CRM, a 24/7 AI agent, and AI Painter Lab."
+summary: "SL Painting had a strong offline reputation and nothing online — they didn't even show up on Google. I built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in any color. Today they rank for “exterior painting” across Western Massachusetts."
 industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
 role: "Design, build & deploy"
 services:
   - "Website design & build"
+  - "Technical & local SEO"
   - "Admin CRM"
   - "AI lead agent"
-  - "AI paint-preview app"
-  - "Local SEO"
+  - "AI Painter Lab (paint preview)"
 techStack:
   - "Astro"
   - "Cloudflare Workers"
@@ -21,13 +21,14 @@ techStack:
   - "AI / LLM"
   - "JavaScript"
 goals:
-  - "Establish an online presence from scratch — a real website customers can find"
+  - "Get found on Google — from no presence to ranking for local painting searches"
   - "Capture and organize every lead instead of losing them to phone tag"
   - "Give homeowners a way to picture the finished job before they commit"
 
-# Outcome metrics — real, verifiable deliverables (not invented ROI figures).
+# Outcome metrics — real, verifiable results (not invented ROI figures).
 results:
-  - { value: "0→1", label: "From no website to a full online presence" }
+  - { value: "0→1", label: "From invisible on Google to ranking across Western Mass" }
+  - { value: "100", label: "Lighthouse score — flawless, always optimized" }
   - { value: "98", label: "AI paint colors homeowners can preview" }
   - { value: "24/7", label: "AI agent answering & qualifying leads" }
 
@@ -37,21 +38,22 @@ heroImage: "slpainting-desktop"
 
 ## The challenge
 
-SL Painting had the reputation and the crews — and nothing online. No website, no way for new customers to find them or picture the work, and every lead handled by phone and memory. They needed to exist on the internet, and they needed a system to catch and manage the work once it started coming in.
+SL Painting had the reputation and the crews — and nothing online. No website, nothing on Google, no way for new customers to find them or picture the work, and every lead handled by phone and memory. They needed to get found, and they needed a system to catch and manage the work once it started coming in.
 
 ## What I built
 
 A complete digital operation, from scratch:
 
 - **A website** that shows the work and turns visitors into leads — fast, modern, and easy to find locally.
+- **Technical & local SEO** built in from day one, so the site actually ranks for the searches that bring in work.
 - **An admin CRM** that captures every inquiry and tracks it from first contact to finished job, so nothing slips through the cracks.
 - **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours.
-- **An AI paint-preview app** that lets homeowners see their own house in any of ~98 colors before they commit — turning "I'm not sure" into "let's do that one."
+- **AI Painter Lab** — an app that lets homeowners see their own house in any of ~98 colors before they commit, turning "I'm not sure" into "let's do that one."
 
 ## How it works
 
-The website brings people in and hands every lead straight to the CRM — no copying from voicemail into a notebook. The AI agent works the front line 24/7, answering questions and sorting serious leads from tire-kickers. And the paint-preview app gives homeowners something no local competitor offered: a way to picture the finished job first. It all runs on Cloudflare's edge (Workers + D1) with local SEO pages, so it's fast, reliable, and findable.
+The website brings people in and hands every lead straight to the CRM — no copying from voicemail into a notebook. The AI agent works the front line 24/7, answering questions and sorting serious leads from tire-kickers. And AI Painter Lab gives homeowners something no local competitor offered: a way to picture the finished job first. It all runs on Cloudflare's edge (Workers + D1), with local SEO pages and a flawless Lighthouse score — so it's fast, reliable, and findable.
 
 ## The outcome
 
-SL Painting went from invisible online to a full digital presence: a site that brings in work, one place to manage it, an AI agent that never sleeps, and a paint-preview tool that gets homeowners excited before the first conversation.
+SL Painting went from invisible online — not even showing up on Google — to owning "exterior painting" across Western Massachusetts: a fast, flawless-Lighthouse site that brings in work, one place to manage it, an AI agent that never sleeps, and AI Painter Lab getting homeowners excited before the first conversation. And it's still being optimized.
