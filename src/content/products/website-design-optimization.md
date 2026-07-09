@@ -1,0 +1,26 @@
+---
+title: "Website Design, Build & Optimization"
+tagline: "I design and build fast, modern sites — and tune the one you already have toward a near-perfect Lighthouse score."
+description: "New site or existing, I make it fast, accessible, and built to convert: hand-coded performance, Core Web Vitals, and the kind of polish that earns trust."
+type: "Service"
+services:
+  - "Web design & development"
+  - "Performance & Core Web Vitals"
+  - "Accessibility"
+  - "Astro + Cloudflare builds"
+order: 2
+---
+
+A slow, clunky site loses customers before they ever reach you. I build sites that load instantly and feel effortless — and I can do the same for the site you already have.
+
+## Built fast, by hand
+
+I hand-code the front end on a modern stack — Astro on Cloudflare's edge — so pages load in a blink, everywhere. (This very site is tuned for a near-100 Lighthouse score.)
+
+## Optimized, not just pretty
+
+Core Web Vitals, image delivery, accessibility, clean semantic markup — the unglamorous work that makes both Google and real people trust your site.
+
+## Already have a site?
+
+I'll audit it, show you exactly what's dragging it down, and fix it: performance, SEO foundations, and the friction points quietly turning visitors away.

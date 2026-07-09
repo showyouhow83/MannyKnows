@@ -33,7 +33,8 @@ const navLinks = [
 const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft);
 const searchIndex = [
   { title: "Home", description: "AI-powered software, automation & e-commerce.", url: "/", type: "Page" },
-  { title: "Contractor Suite", description: "Lead-gen website plus admin to manage leads, crews & scheduling.", url: "/#products", type: "Product" },
+  { title: "Services", description: "Website design & optimization, technical SEO, automation & AI consulting.", url: "/#products", type: "Page" },
+  { title: "Launch your app", description: "Bring an idea — if it has potential, I build and market it.", url: "/#launchpad", type: "Page" },
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog", type: "Page" },
   ...blogPosts.map((p) => ({ title: p.data.title, description: p.data.description, url: `/blog/${p.id}`, type: "Blog", tags: p.data.tags.join(" ") })),
 ];
