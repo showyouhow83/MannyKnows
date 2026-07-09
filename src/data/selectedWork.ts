@@ -23,8 +23,8 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'SL Painting',
     url: 'https://slpainting.co',
-    blurb: 'Painting contractor — full online presence: website, admin CRM, a 24/7 AI agent, and an AI paint-preview app.',
-    tags: ['Contractor', 'Website', 'AI agent'],
+    blurb: 'Painting contractor — from invisible on Google to ranking for “exterior painting” across Western Mass: website, admin CRM, a 24/7 AI agent, and AI Painter Lab.',
+    tags: ['Contractor', 'SEO', 'AI agent'],
     image: 'slpainting-desktop',
     caseStudy: 'sl-painting',  // published case study → card links to /work/sl-painting
   },
