@@ -23,10 +23,10 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'SL Painting',
     url: 'https://slpainting.co',
-    blurb: 'Painting contractor — website plus the lead-to-job platform that runs the whole operation.',
-    tags: ['Contractor', 'Website', 'Lead platform'],
+    blurb: 'Painting contractor — full online presence: website, admin CRM, a 24/7 AI agent, and an AI paint-preview app.',
+    tags: ['Contractor', 'Website', 'AI agent'],
     image: 'slpainting-desktop',
-    // caseStudy: 'sl-painting',  // ← uncomment once src/content/portfolio/sl-painting.md is finished (draft: false)
+    caseStudy: 'sl-painting',  // published case study → card links to /work/sl-painting
   },
   {
     name: 'JK Daycare',
