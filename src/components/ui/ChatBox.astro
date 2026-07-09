@@ -341,7 +341,7 @@ const { className = '' } = Astro.props;
       botResponse.className = 'flex gap-3 items-start';
       botResponse.setAttribute('data-astro-cid-wqmercx5', '');
       botResponse.innerHTML = `
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0" data-astro-cid-wqmercx5="">S</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0" data-astro-cid-wqmercx5="">M</div>
         <div class="chat-message-bubble bot-message" data-astro-cid-wqmercx5="">${parseMarkdown(message)}</div>
       `;
       chatBoxMessages?.appendChild(botResponse);
@@ -570,8 +570,11 @@ const { className = '' } = Astro.props;
     box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2), 0 2px 8px rgba(34, 197, 94, 0.1);
   }
 
-  /* Message bubbles with green theme */
-  .chat-message-bubble {
+  /* Message bubbles — MUST be :global. Chat messages are injected by JS at
+     runtime; Astro's scoped (data-astro-cid) selectors only match elements built
+     at compile time, never JS-created nodes. Keeping these global is what lets
+     every live message get a bubble, not just the initial greeting. */
+  :global(.chat-message-bubble) {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(34, 197, 94, 0.3);
     padding: 0.75rem 1rem;
@@ -583,26 +586,26 @@ const { className = '' } = Astro.props;
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
   }
 
-  .bot-message {
+  :global(.chat-message-bubble.bot-message) {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
   }
 
-  :global(.dark) .chat-message-bubble {
+  :global(.dark .chat-message-bubble) {
     color: var(--text-dark-primary);
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.06));
     border-color: rgba(34, 197, 94, 0.4);
   }
 
-  :global(.dark) .bot-message {
+  :global(.dark .chat-message-bubble.bot-message) {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
   }
 
-  .user-message {
+  :global(.chat-message-bubble.user-message) {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.06));
     border-color: rgba(59, 130, 246, 0.4);
   }
 
-  :global(.dark) .user-message {
+  :global(.dark .chat-message-bubble.user-message) {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
   }
 
