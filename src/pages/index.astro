@@ -16,6 +16,7 @@ import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
 import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
 import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
+import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
 // ========================================
@@ -110,8 +111,8 @@ const NAVBAR_CONFIG = {
 ---
 
 <BaseLayout
-	title="Custom Apps, Websites & AI for Western Mass Businesses | MannyKnows"
-	description="Custom apps, websites & AI for established Western Massachusetts businesses — Springfield, the Pioneer Valley & beyond. Manny turns slow processes into software that runs them."
+	title="Website Optimization, SEO & AI Automation Consulting | MannyKnows — Springfield, MA"
+	description="Manny is a Springfield-based consultant who designs, builds, and optimizes websites, runs technical SEO, and automates the processes slowing your Western Mass business down — applying AI where it actually pays off."
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -156,16 +157,26 @@ const NAVBAR_CONFIG = {
 			<SelectedWork />
 		</PageSection>
 
-		<!-- Products Section -->
+		<!-- Services Section — consulting-led: find the friction, then fix it -->
 		<PageSection
 			id="products"
-			badge="Websites · Apps · AI"
-			title="My Services"
-			subtitle="Start with an AI-powered website that books jobs and answers customers around the clock, then add the ecommerce, automation, and integration work that runs the rest of your business."
+			badge="Consulting · Web · SEO · AI · Automation"
+			title="Find the friction. Then fix it."
+			subtitle="I'm a fractional AI & operations consultant with 20+ years in eCommerce and implementation. I come into your business, map how it actually runs, and act on the highest-leverage fixes — website design and optimization, technical SEO, workflow automation, and practical AI — filling the data and tooling gaps that were holding you back."
 			variant="alternate"
 		>
 			<AiWebsiteShowcase />
 			<ProductsHighlight />
+		</PageSection>
+
+		<!-- Idea Launchpad — bring an idea, I build & market it (partnership offer) -->
+		<PageSection
+			id="launchpad"
+			badge="Got an idea?"
+			title="Bring the idea. I'll build it."
+			subtitle="No upfront cost. If your idea has real potential, I design, build, and market it — and we only formalize a partnership if it takes off. You bring the vision; I bring the build."
+		>
+			<IdeaLaunchpad />
 		</PageSection>
 
 		<!-- Process Section -->

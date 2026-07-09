@@ -12,7 +12,7 @@ A website should do better than wait. It should **work**.
 
 ## What a lead engine actually does
 
-When I built the Contractor Suite for a local painting contractor, the goal was simple: every visitor who's ready to buy should be able to start a job in under a minute, and every lead should land somewhere it won't get lost.
+When I built a lead-to-job platform for a local painting contractor, the goal was simple: every visitor who's ready to buy should be able to start a job in under a minute, and every lead should land somewhere it won't get lost.
 
 - **Capture** — quote forms, click-to-chat, and callback requests on every page, not just a buried contact form.
 - **Qualify** — a few smart questions up front (project type, timeline, location) so you know which leads are worth a same-day call.
@@ -26,6 +26,6 @@ That's why the website hands off instantly—no copy-pasting from email into a s
 
 ## Where it goes from here
 
-Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the suite—and it's a topic for another post.
+Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform—and it's a topic for another post.
 
-Want to see how this would work for your business? [Start a chat](/?chat=open&ref=contractor-suite) and tell me what you do.
+Want to see how this would work for your business? [Start a chat](/?chat=open&ref=ai-website) and tell me what you do.

@@ -458,7 +458,7 @@ const { className = '' } = Astro.props;
   }
 
   // Contextual greeting. Some references are on-site topics (e.g. a CTA with
-  // ?ref=contractor-suite); anything else is treated as an email/meeting id.
+  // ?ref=idea or ?ref=ai-website); anything else is treated as an email/meeting id.
   const triggerContextualGreeting = async (referenceId: string) => {
     const messagesContainer = document.getElementById('chatBoxMessages');
     if (!messagesContainer) return;
@@ -468,7 +468,9 @@ const { className = '' } = Astro.props;
 
     // Topic greetings for on-site CTAs; fall back to the email/meeting greeting.
     const topicGreetings: Record<string, string> = {
-      'contractor-suite': "Hi there! 👋 Interested in the Contractor Suite? It turns your website into a lead engine and gives you one place to manage leads, crews, scheduling, and job photos. Tell me a bit about your business and I'll show you how it could work for you.",
+      'idea': "Love it — you've got an idea. 💡 Tell me what it is in a sentence or two: what it does and who it's for. If it has real potential I'll build and market it, and we figure out a fair partnership from there. What's the idea?",
+      'ai-website': "Hi there! 👋 Curious about a site that books jobs and answers customers 24/7? Tell me a bit about your business and I'll show you how it could work for you.",
+      'audit': "Hi! 👋 Thinking about a Process & AI Opportunity Audit? Tell me a bit about how your business runs today and where it feels slow — I'll point out where the quick wins are.",
     };
 
     const message = topicGreetings[safeRef]
