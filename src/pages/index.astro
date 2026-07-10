@@ -17,6 +17,7 @@ import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
 import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
+import PricingPlans from '../components/sections/PricingPlans.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
 // ========================================
@@ -167,6 +168,16 @@ const NAVBAR_CONFIG = {
 		>
 			<AiWebsiteShowcase />
 			<ProductsHighlight />
+		</PageSection>
+
+		<!-- Plans — monthly retainers, "starting at" pricing, tailored per client -->
+		<PageSection
+			id="plans"
+			badge="Monthly plans"
+			title="Hire me by the month"
+			subtitle="Ongoing partnership, not one-off invoices — pick where you need me most, then we adjust scope and price to fit. The numbers below are where each plan starts."
+		>
+			<PricingPlans />
 		</PageSection>
 
 		<!-- Idea Launchpad — bring an idea, I build & market it (partnership offer) -->
