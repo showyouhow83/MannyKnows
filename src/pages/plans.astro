@@ -1,0 +1,111 @@
+---
+// Dedicated Plans & Pricing page — better for SEO and for linking in proposals
+// and DMs than the homepage anchor. Reuses <PricingPlans /> so the tiers stay a
+// single source of truth.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
+import PricingPlans from '../components/sections/PricingPlans.astro';
+
+const faqs = [
+  {
+    q: 'Can a plan be customized?',
+    a: "Yes — every plan is a starting point. I adjust the scope and the price to what your business actually needs, so you only pay for what moves the needle.",
+  },
+  {
+    q: "What if I don't have a website yet?",
+    a: "The plans keep an existing site fast, found, and converting. A brand-new website or app is a one-time project — then you roll onto a plan to keep it winning.",
+  },
+  {
+    q: 'Is there a contract?',
+    a: "Month-to-month — cancel anytime. Prefer to commit for a year? You get 2 months free (pay for 10).",
+  },
+  {
+    q: 'How do we start?',
+    a: "Tell me about your business and site in the chat, or book a quick call. We scope a plan together before anything is locked in.",
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Plans & Pricing — Website, SEO & AI Retainers | MannyKnows"
+  description="Monthly retainer plans for Western Massachusetts businesses — website optimization, technical SEO, speed, and AI — starting at $350/mo. Tune-Up, Optimize, Growth & Fractional Partner, each tailored to you."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Plans</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="text-center max-w-3xl mx-auto">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Plans &amp; pricing</span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>Hire me by the month</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Ongoing help, priced by the month. Pick the tier that fits where you are — I tailor the scope and price to your business, and you can move up or down as things change. The numbers are where each plan starts.
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <Section id="plans-list" variant="default">
+      <Container>
+        <PricingPlans />
+      </Container>
+    </Section>
+
+    <Section id="plans-faq" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
+          </h2>
+          <div class="space-y-4">
+            {faqs.map((f) => (
+              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="text-center mt-12">
+            <a href="/?chat=open&ref=plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Build your plan
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>

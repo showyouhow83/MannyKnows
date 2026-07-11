@@ -5,7 +5,7 @@
 interface Plan {
   name: string;
   icon: string;
-  price: string;              // shown as "Starting at $<price>/mo"
+  price: number;              // monthly $ — shown as "Starting at $X/mo"; annual = ×10 (2 months free)
   promise: string;
   note?: string;              // small line under the name (e.g. "For a site you already have")
   inherits?: string;          // "Everything in <inherits>, plus:"
@@ -17,7 +17,7 @@ const plans: Plan[] = [
   {
     name: 'Tune-Up',
     icon: '⚙️',
-    price: '350',
+    price: 350,
     promise: 'Keep your site sharp — fast, found, and converting.',
     note: 'For a site you already have — no website build.',
     features: [
@@ -31,7 +31,7 @@ const plans: Plan[] = [
   {
     name: 'Optimize',
     icon: '🔧',
-    price: '700',
+    price: 700,
     promise: 'Make it measurably better, every month.',
     inherits: 'Tune-Up',
     features: [
@@ -45,7 +45,7 @@ const plans: Plan[] = [
   {
     name: 'Growth',
     icon: '📈',
-    price: '1,200',
+    price: 1200,
     promise: 'Grow traffic and conversions on purpose.',
     inherits: 'Optimize',
     features: [
@@ -58,7 +58,7 @@ const plans: Plan[] = [
   {
     name: 'Fractional Partner',
     icon: '🧩',
-    price: '2,000',
+    price: 2000,
     promise: 'Your part-time technical team.',
     inherits: 'Growth',
     features: [
@@ -100,8 +100,11 @@ const cardBase =
 
         <div class="mt-4">
           <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-          <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price}</span>
+          <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span>
           <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+          <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+            or ${(p.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+          </p>
         </div>
 
         <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.promise}</p>
