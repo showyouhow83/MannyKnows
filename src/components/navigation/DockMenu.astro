@@ -23,37 +23,37 @@ import DockButton from '../ui/DockButton.astro';
           <rect x="14" y="14" width="7" height="7"/>
           <rect x="3" y="14" width="7" height="7"/>
         </svg>`}
-        onClick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})"
+        onClick="window.location.href='/services'"
       />
 
       <!-- Products -->
       <DockButton 
-        tooltip="Products" 
+        tooltip="Plans" 
         icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>`}
-        onClick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})"
+        onClick="window.location.href='/plans'"
       />
 
       <!-- Process -->
       <DockButton 
-        tooltip="Process" 
+        tooltip="How it works" 
         icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="9,11 12,14 22,4"/>
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>`}
-        onClick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})"
+        onClick="window.location.href='/how-it-works'"
       />
 
       <!-- Reviews -->
       <DockButton 
-        tooltip="Reviews" 
+        tooltip="Work" 
         icon={`<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
         </svg>`}
-        onClick="document.getElementById('reviews').scrollIntoView({behavior: 'smooth'})"
+        onClick="window.location.href='/work'"
       />
 
       <!-- Contact (chat hidden for now; kept in code) -->

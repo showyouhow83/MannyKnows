@@ -1,0 +1,35 @@
+---
+// How it works — the "From process to app" section, now on its own page.
+// The homepage links here via a banner.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
+---
+
+<BaseLayout
+  title="How It Works — From Process to App | MannyKnows"
+  description="How I work: from the first call to working software, I find the process slowing your business down and turn it into an app that runs it — built around how you actually operate."
+>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-2">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">How it works</span></li>
+        </ol>
+      </nav>
+    </header>
+
+    <h1 class="sr-only">How it works — from process to app</h1>
+    <ProcessSectionAlt />
+
+    <DockMenu />
+  </main>
+</BaseLayout>

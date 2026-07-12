@@ -12,9 +12,7 @@ import BlogHighlights from '../components/sections/BlogHighlights.astro';
 // import ReviewsSection from '../components/sections/ReviewsSection.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
-import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
-import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
-import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
+import LinkBanner from '../components/layout/LinkBanner.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
@@ -158,17 +156,16 @@ const NAVBAR_CONFIG = {
 			<SelectedWork />
 		</PageSection>
 
-		<!-- Services Section — consulting-led: find the friction, then fix it -->
-		<PageSection
-			id="products"
+		<!-- Services — the full section now lives at /services (kept, not deleted);
+		     the homepage shows a banner that links to it. -->
+		<LinkBanner
 			badge="Consulting · Web · SEO · AI · Automation"
 			title="Find the friction. Then fix it."
-			subtitle="I'm a fractional AI & operations consultant with 20+ years in eCommerce and implementation. I come into your business, map how it actually runs, and act on the highest-leverage fixes — website design and optimization, technical SEO, workflow automation, and practical AI — filling the data and tooling gaps that were holding you back."
+			text="Website design & optimization, technical SEO, workflow automation, and practical AI — I map how your business runs and fix what's slowing it down."
+			href="/services"
+			cta="Explore services"
 			variant="alternate"
-		>
-			<AiWebsiteShowcase />
-			<ProductsHighlight />
-		</PageSection>
+		/>
 
 		<!-- Plans — monthly retainers, "starting at" pricing, tailored per client -->
 		<PageSection
@@ -190,8 +187,14 @@ const NAVBAR_CONFIG = {
 			<IdeaLaunchpad />
 		</PageSection>
 
-		<!-- Process Section -->
-		<ProcessSectionAlt />
+		<!-- How it works — the full section now lives at /how-it-works; banner links to it. -->
+		<LinkBanner
+			badge="How it works"
+			title="From process to app"
+			text="From the first call to working software, I turn the process that's slowing you down into an app that runs it."
+			href="/how-it-works"
+			cta="See how it works"
+		/>
 
 		<!-- "New Playbooks" (blog highlights) — moved here so it sits last, right above the footer. -->
 		<BlogHighlights />
