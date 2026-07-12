@@ -1,0 +1,71 @@
+---
+// Full plan comparison matrix — driven by src/data/plans.ts so it always stays
+// in sync with the cards. Cumulative: a ✓ means the feature is included in that
+// plan and every plan to its right.
+import { plans, featureGroups, includes } from '../../data/plans';
+
+const footnotes = featureGroups
+  .flatMap((g) => g.rows)
+  .filter((r) => r.footnote)
+  .map((r, i) => ({ ...r, marker: i + 1 }));
+const markerFor = (label: string) => footnotes.find((f) => f.label === label)?.marker;
+---
+
+<div class="max-w-5xl mx-auto">
+  <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent">
+    <table class="w-full border-collapse text-left min-w-[720px]">
+      <thead>
+        <tr class="bg-gray-50 dark:bg-dark-secondary">
+          <th class="sticky left-0 z-10 bg-gray-50 dark:bg-dark-secondary p-4 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+            What's included
+          </th>
+          {plans.map((p) => (
+            <th class={`p-4 text-center align-bottom ${p.featured ? 'bg-primary-blue/5' : ''}`}>
+              <span class="block text-base font-bold text-text-light-primary dark:text-text-dark-primary">{p.icon} {p.name}</span>
+              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">from ${p.price.toLocaleString('en-US')}/mo</span>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {featureGroups.map((g) => (
+          <Fragment>
+            <tr>
+              <td colspan={plans.length + 1} class="bg-gray-100/70 dark:bg-dark-accent/30 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">
+                {g.title}
+              </td>
+            </tr>
+            {g.rows.map((r) => (
+              <tr class="border-t border-light-tertiary/60 dark:border-dark-accent/50">
+                <td class="sticky left-0 z-10 bg-white dark:bg-dark-primary p-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                  {r.label}{markerFor(r.label) && <sup class="text-primary-blue dark:text-blue-300">{markerFor(r.label)}</sup>}
+                </td>
+                {plans.map((p) => (
+                  <td class={`p-4 text-center ${p.featured ? 'bg-primary-blue/5' : ''}`}>
+                    {includes(p.slug, r.from) ? (
+                      <svg class="w-5 h-5 mx-auto text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-label="Included"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    ) : (
+                      <span class="text-text-light-tertiary/40 dark:text-text-dark-tertiary/40" aria-label="Not included">–</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </Fragment>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {footnotes.length > 0 && (
+    <ol class="mt-4 space-y-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+      {footnotes.map((f) => (
+        <li><sup>{f.marker}</sup> {f.footnote}</li>
+      ))}
+    </ol>
+  )}
+
+  <p class="mt-6 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary">
+    Bilingual (English + Spanish) is standard on every plan. Prices are where each plan starts — we tailor scope and price to your business.
+  </p>
+</div>
