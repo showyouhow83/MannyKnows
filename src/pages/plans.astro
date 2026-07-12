@@ -12,6 +12,7 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
+import PlanComparison from '../components/sections/PlanComparison.astro';
 
 const faqs = [
   {
@@ -45,7 +46,7 @@ const faqSchema = {
 
 <BaseLayout
   title="Plans & Pricing — Website, SEO & AI Retainers | MannyKnows"
-  description="Monthly retainer plans for Western Massachusetts businesses — website optimization, technical SEO, speed, and AI — starting at $350/mo. Tune-Up, Optimize, Growth & Fractional Partner, each tailored to you."
+  description="Monthly plans for Western Massachusetts businesses — a bilingual website with an AI booking agent, online store, full marketing, or your own tech team. Starting at $200/mo: Website, Store, Marketing & Everything, each tailored to you."
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -64,7 +65,7 @@ const faqSchema = {
           <div class="text-center max-w-3xl mx-auto">
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Plans &amp; pricing</span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>Hire me by the month</span>
+              <span class="apple-gradient-text" data-colorful-title>Plans that grow with you</span>
             </h1>
             <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               Ongoing help, priced by the month. Pick the tier that fits where you are — I tailor the scope and price to your business, and you can move up or down as things change. The numbers are where each plan starts.
@@ -80,7 +81,19 @@ const faqSchema = {
       </Container>
     </Section>
 
-    <Section id="plans-faq" variant="gradient">
+    <Section id="plans-compare" variant="gradient">
+      <Container>
+        <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-3">
+          <span class="apple-gradient-text" data-colorful-title>Compare every plan</span>
+        </h2>
+        <p class="text-center text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-10">
+          Each plan includes everything in the one before it. Here's the full picture.
+        </p>
+        <PlanComparison />
+      </Container>
+    </Section>
+
+    <Section id="plans-faq" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto">
           <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
