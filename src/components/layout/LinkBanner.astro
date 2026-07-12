@@ -1,0 +1,44 @@
+---
+// A compact, full-width clickable banner used on the homepage to point at a
+// section that now lives on its own page (Services, How it works, …).
+export interface Props {
+  badge?: string;
+  title: string;
+  text?: string;
+  href: string;
+  cta?: string;
+  variant?: 'default' | 'alternate';
+}
+const { badge, title, text, href, cta = 'Learn more', variant = 'default' } = Astro.props;
+const bandBg =
+  variant === 'alternate'
+    ? 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10'
+    : 'bg-light-primary dark:bg-dark-primary';
+---
+
+<section class={`relative py-14 ${bandBg} transition-colors duration-300`}>
+  <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
+    <a
+      href={href}
+      class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 md:p-10 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300"
+    >
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="max-w-2xl">
+          {badge && (
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-blue-300 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider mb-3">
+              {badge}
+            </span>
+          )}
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">
+            {title}
+          </h2>
+          {text && <p class="text-text-light-secondary dark:text-text-dark-secondary mt-2 leading-relaxed">{text}</p>}
+        </div>
+        <span class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-3 text-sm font-semibold whitespace-nowrap group-hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all duration-300">
+          {cta}
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </span>
+      </div>
+    </a>
+  </div>
+</section>
