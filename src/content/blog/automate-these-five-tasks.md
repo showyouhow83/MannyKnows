@@ -32,4 +32,4 @@ Instead of building the same report by hand each month, have it assembled and wa
 
 If you do it the same way more than a few times a week, it's a candidate. Start with one, get it boringly reliable, then move to the next.
 
-Curious which one would save you the most? [Let's talk it through.](/?chat=open)
+Curious which one would save you the most? [Let's talk it through.](#contact)
