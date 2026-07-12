@@ -1,0 +1,132 @@
+---
+// Global contact modal. Opened by:
+//   • any <a href="#contact"> or element with [data-contact]
+//   • window.openContactModal(context)
+//   • a ?contact=open or ?chat=open URL param (e.g. links from emails)
+// Submits to /api/contact (same endpoint as the footer form).
+// Rendered once in BaseLayout so it's available on every page.
+---
+
+<div id="contactModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+  <div id="contactModalBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+  <div class="relative w-full max-w-md rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 shadow-2xl">
+    <button type="button" id="contactModalClose" aria-label="Close" class="absolute top-4 right-4 p-1 text-text-light-tertiary dark:text-text-dark-tertiary hover:text-text-light-primary dark:hover:text-text-dark-primary transition-colors">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <h2 id="contactModalTitle" class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary pr-6">Let's talk</h2>
+    <p id="contactModalSubtitle" class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-1 mb-4">
+      Tell me a bit about your business and I'll get back to you personally.
+    </p>
+
+    <form id="contactModalForm" class="space-y-3">
+      <input type="text" name="name" required autocomplete="name" placeholder="Your name" maxlength="100" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
+      <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
+      <input type="text" name="business" placeholder="Business or website (optional)" maxlength="200" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
+      <textarea name="message" required rows="3" placeholder="What do you need help with?" maxlength="2000" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm resize-none"></textarea>
+
+      <button type="submit" id="contactModalSubmit" class="w-full bg-gradient-to-r from-primary-blue to-primary-pink text-white py-3 rounded-xl text-sm font-semibold hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all duration-300 disabled:opacity-60">
+        Send
+      </button>
+      <p id="contactModalStatus" class="text-sm text-center hidden" role="status"></p>
+      <p class="text-[11px] text-center text-text-light-tertiary dark:text-text-dark-tertiary">Or email <a href="mailto:mk@mannyknows.com" class="text-primary-blue dark:text-blue-300">mk@mannyknows.com</a></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('contactModal');
+    if (!modal) return;
+    const form = document.getElementById('contactModalForm') as HTMLFormElement | null;
+    const statusEl = document.getElementById('contactModalStatus');
+    const subtitle = document.getElementById('contactModalSubtitle');
+    const submitBtn = document.getElementById('contactModalSubmit') as HTMLButtonElement | null;
+    let csrfToken: string | null = null;
+    let sessionId: string | null = null;
+    let context = '';
+
+    async function getToken() {
+      try {
+        const r = await fetch('/api/contact');
+        if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
+      } catch { /* offline — the mailto fallback still works */ }
+    }
+
+    function open(ctx?: string) {
+      context = (ctx || '').trim();
+      if (subtitle) {
+        subtitle.textContent = context
+          ? `About: ${context}. Tell me a bit and I'll get back to you personally.`
+          : "Tell me a bit about your business and I'll get back to you personally.";
+      }
+      modal!.classList.remove('hidden');
+      modal!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      if (!csrfToken) getToken();
+      setTimeout(() => (form?.querySelector('input') as HTMLInputElement | null)?.focus(), 60);
+    }
+    function close() {
+      modal!.classList.add('hidden');
+      modal!.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+    (window as any).openContactModal = open;
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const trigger = target.closest('a[href="#contact"], [data-contact]');
+      if (trigger) {
+        e.preventDefault();
+        open(trigger.getAttribute('data-contact-context') || '');
+        return;
+      }
+      if (target.id === 'contactModalClose' || target.closest('#contactModalClose') || target.id === 'contactModalBackdrop') close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+    // Open from a URL param (e.g. reschedule links in emails).
+    const params = new URLSearchParams(location.search);
+    if (params.get('contact') === 'open' || params.get('chat') === 'open') {
+      setTimeout(() => open(params.get('ref') || ''), 300);
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!csrfToken) await getToken();
+      const fd = new FormData(form);
+      const business = (fd.get('business') || '').toString().trim();
+      const userMsg = (fd.get('message') || '').toString().trim();
+      const message =
+        `Interested in: ${context || 'General inquiry'}.\n` +
+        (business ? `Business / site: ${business}.\n` : '') +
+        `\n${userMsg}`;
+      const subject = context ? `${context} — inquiry via mannyknows.com` : 'New inquiry via mannyknows.com';
+
+      const orig = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+      statusEl?.classList.add('hidden');
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken || '' },
+          body: JSON.stringify({ name: fd.get('name'), email: fd.get('email'), subject, message, csrf_token: csrfToken, session_id: sessionId }),
+        });
+        const result = await res.json().catch(() => ({}));
+        if (res.ok) {
+          form.reset();
+          if (statusEl) { statusEl.textContent = "Thanks — I'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          getToken();
+        } else {
+          throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
+        }
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mk@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
+        statusEl?.classList.remove('hidden');
+      }
+    });
+  })();
+</script>

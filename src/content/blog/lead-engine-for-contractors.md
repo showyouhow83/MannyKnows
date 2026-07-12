@@ -28,4 +28,4 @@ That's why the website hands off instantly—no copy-pasting from email into a s
 
 Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform—and it's a topic for another post.
 
-Want to see how this would work for your business? [Start a chat](/?chat=open&ref=ai-website) and tell me what you do.
+Want to see how this would work for your business? [Get in touch](#contact) and tell me what you do.

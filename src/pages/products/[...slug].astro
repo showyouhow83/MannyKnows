@@ -52,7 +52,7 @@ const typeBadge = {
             </h1>
             <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{d.description}</p>
             <div class="flex flex-col sm:flex-row gap-4">
-              <Button href={`/?chat=open&ref=product-${product.id}`} text="Talk to us about this" variant="cta" arrow={true} />
+              <Button href="#contact" text="Talk to us about this" variant="cta" arrow={true} />
               {d.liveUrl && (
                 <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
                   View live
@@ -97,7 +97,7 @@ const typeBadge = {
               <svg class="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
               All products
             </a>
-            <Button href={`/?chat=open&ref=product-${product.id}`} text="Get started" variant="cta" arrow={true} />
+            <Button href="#contact" text="Get started" variant="cta" arrow={true} />
           </div>
         </div>
       </Container>

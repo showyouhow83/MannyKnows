@@ -56,7 +56,8 @@ const cardBase =
         </div>
 
         <a
-          href="/?chat=open&ref=plan"
+          href="#contact"
+          data-contact-context={`${p.name} plan`}
           class={`mt-6 inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
             p.featured
               ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)]'
@@ -71,6 +72,6 @@ const cardBase =
 
   <p class="mt-10 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
     Every plan is tailored — I adjust scope and price to what your business actually needs, so the numbers above are a starting point, not a ceiling.
-    <a href="/?chat=open&ref=plan" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Let's build your plan →</a>
+    <a href="#contact" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Let's build your plan →</a>
   </p>
 </div>

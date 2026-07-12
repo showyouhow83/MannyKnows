@@ -24,4 +24,4 @@ The point isn't to remove the human touch—it's to protect your time for the co
 
 You don't rebuild everything overnight. Add an assistant, watch what people ask, and let those questions tell you what to automate next. The site gets smarter because your customers are teaching it.
 
-Want a site that earns its keep around the clock? [Start a conversation.](/?chat=open)
+Want a site that earns its keep around the clock? [Start a conversation.](#contact)

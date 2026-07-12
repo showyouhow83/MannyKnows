@@ -71,7 +71,7 @@ const facts = [
             <p class="text-lg md:text-xl text-text-light-primary dark:text-text-dark-primary font-medium mb-3 leading-snug">{d.tagline}</p>
             <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{d.summary}</p>
             <div class="flex flex-col sm:flex-row gap-4">
-              <Button href={`/?chat=open&ref=work-${project.id}`} text="Start a project like this" variant="cta" arrow={true} />
+              <Button href="#contact" text="Start a project like this" variant="cta" arrow={true} />
               {d.liveUrl && (
                 <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
                   Visit live site
@@ -205,7 +205,7 @@ const facts = [
               <svg class="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
               All work
             </a>
-            <Button href={`/?chat=open&ref=work-${project.id}`} text="Get started" variant="cta" arrow={true} />
+            <Button href="#contact" text="Get started" variant="cta" arrow={true} />
           </div>
         </div>
       </Container>
