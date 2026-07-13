@@ -111,7 +111,7 @@ const NAVBAR_CONFIG = {
 
 <BaseLayout
 	title="Websites, SEO & Software for Western Mass Businesses | MannyKnows"
-	description="A local father-and-son shop in Springfield. I build and optimize the websites, technical SEO, and software that small Western Massachusetts businesses run on — real results, long-term, and you work directly with me."
+	description="I design, build, and optimize websites, technical SEO, automation, and custom software for small businesses across Western Massachusetts. Twenty years in eCommerce operations and implementation. Based in Springfield."
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -131,18 +131,18 @@ const NAVBAR_CONFIG = {
 
             <!-- Hero Section -->
             <HeroSection
-                badge="Springfield · a local father-and-son shop"
-                title="I build the websites, SEO, and "
-                highlightedText="software local businesses run on"
+                badge="Springfield · Western Massachusetts"
+                title="Websites, SEO, and software, "
+                highlightedText="done right"
                 titleAfter="."
-                subtitle="You work directly with me — 20 years turning messy operations into software that just works, backed by real results, not buzzwords. My son and I are local, and we're in it for the long haul, not a one-off invoice."
+                subtitle="Twenty years building for enterprise and startups — including eCommerce for a national retailer. Now we bring that same standard to businesses across Western Massachusetts, and we maintain what we build."
             />
 
             <!-- Hero Swiper Slider -->
             <HeroSwiper />
 
             <!-- Brand mascot — floats at the lower-left of the header, below the slider -->
-            <div class="astronaut-mascot hidden lg:block" aria-hidden="true"></div>
+            <div class="astronaut-mascot" aria-hidden="true"></div>
         </header>
 
 		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
@@ -150,7 +150,7 @@ const NAVBAR_CONFIG = {
 			id="work"
 			badge="Proof"
 			title="Latest Work"
-			subtitle="Real sites for real businesses — built to rank and to keep running for years, not months. Click any to see it live."
+			subtitle="Sites I've designed and built for real businesses. Click any to see it live."
 			variant="alternate"
 		>
 			<SelectedWork />
@@ -160,8 +160,8 @@ const NAVBAR_CONFIG = {
 		     the homepage shows a banner that links to it. -->
 		<LinkBanner
 			badge="Consulting · Web · SEO · AI · Automation"
-			title="Find the friction. Then fix it."
-			text="I map how your business actually runs, then fix what's slowing it down — websites, technical SEO, automation, and AI. Twenty years of doing exactly this."
+			title="What I do for your business"
+			text="I map how your business runs and fix what slows it down — websites, technical SEO, automation, and AI. Twenty years of operations and implementation experience."
 			href="/services"
 			cta="Explore services"
 			variant="alternate"
@@ -172,7 +172,7 @@ const NAVBAR_CONFIG = {
 			id="plans"
 			badge="Monthly plans"
 			title="Plans that grow with you"
-			subtitle="Hire me like a teammate, not a vendor. Start where you need help most — a site that books jobs, an online store, full marketing, or your own tech team — and we shape it around your business. Month-to-month, and you can change it any time."
+			subtitle="Monthly plans, scoped to your business. Start with what you need — a website, an online store, marketing, or a full tech team — and adjust anytime."
 		>
 			<PricingPlans />
 		</PageSection>
@@ -182,7 +182,7 @@ const NAVBAR_CONFIG = {
 			id="launchpad"
 			badge="Got an idea?"
 			title="Have an idea? Let's build it together."
-			subtitle="No upfront cost. You bring the idea; I design, build, and market it as your technical co-founder — and we co-own what we launch. If it has real legs, we agree on a fair split. Real skin in the game, both sides."
+			subtitle="No upfront cost. You bring the idea; we design, build, and market it, and we co-own what we launch. If it has real potential, we agree on a fair equity split."
 		>
 			<IdeaLaunchpad />
 		</PageSection>
@@ -191,7 +191,7 @@ const NAVBAR_CONFIG = {
 		<LinkBanner
 			badge="How it works"
 			title="From process to app"
-			text="From the first call to working software: I find the process slowing you down and turn it into something that runs it for you. No jargon, no mystery."
+			text="From the first call to working software: I identify the process slowing you down and turn it into an app that runs it."
 			href="/how-it-works"
 			cta="See how it works"
 		/>
@@ -268,7 +268,7 @@ const NAVBAR_CONFIG = {
     position: absolute;
     bottom: 10vh;
     left: max(0.75rem, 1.5vw);
-    width: clamp(160px, 25vw, 530px);
+    width: clamp(120px, 25vw, 530px);
     aspect-ratio: 1 / 1;
     background: url('/art/astronaut-rocket.png') center / contain no-repeat;
     pointer-events: none;
