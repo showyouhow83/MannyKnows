@@ -17,7 +17,7 @@
 
     <h2 id="contactModalTitle" class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary pr-6">Let's talk</h2>
     <p id="contactModalSubtitle" class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-1 mb-4">
-      Tell me what you need to fix — I read every message myself and reply personally.
+      Tell us what you need to fix — we read every message ourselves and reply personally.
     </p>
 
     <form id="contactModalForm" class="space-y-3">
@@ -58,8 +58,8 @@
       context = (ctx || '').trim();
       if (subtitle) {
         subtitle.textContent = context
-          ? `About: ${context}. Tell me what you're trying to fix — I read every message myself.`
-          : "Tell me what you need to fix — I read every message myself and reply personally.";
+          ? `About: ${context}. Tell us what you're trying to fix — we read every message ourselves.`
+          : "Tell us what you need to fix — we read every message ourselves and reply personally.";
       }
       modal!.classList.remove('hidden');
       modal!.classList.add('flex');
@@ -116,7 +116,7 @@
         const result = await res.json().catch(() => ({}));
         if (res.ok) {
           form.reset();
-          if (statusEl) { statusEl.textContent = "Thanks — I'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          if (statusEl) { statusEl.textContent = "Thanks — we'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
           getToken();
         } else {
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
