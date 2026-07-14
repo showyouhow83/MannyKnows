@@ -26,4 +26,4 @@ You get a short, prioritized plan — quick wins first, bigger builds flagged fo
 
 This isn't a report that sits in a drawer. We stay on to build the automations, wire up the tools, and ship the fixes — with you in the loop the whole way.
 
-This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans) (from $2,000/mo) makes us your full media and tech team.
+This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) makes us your full media and tech team.

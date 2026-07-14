@@ -13,7 +13,7 @@ import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
 
 const projects = (await getCollection('portfolio'))
-  .filter((p) => !p.data.draft)
+  .filter((p) => !p.data.draft && !p.data.demo)
   .sort((a, b) => (Number(b.data.featured) - Number(a.data.featured)) || (a.data.order - b.data.order));
 
 // Same responsive image pipeline as the detail page / homepage cards.

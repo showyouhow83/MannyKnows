@@ -8,8 +8,9 @@ import HeroSwiper from '../components/sections/HeroSwiper.astro';
 import BlogHighlights from '../components/sections/BlogHighlights.astro';
 // Reviews section is temporarily hidden from the homepage until we have a real
 // client testimonial to display. The fabricated testimonials were removed from
-// ReviewsSection.astro — re-import and re-enable below once a real review is ready.
-// import ReviewsSection from '../components/sections/ReviewsSection.astro';
+// Testimonials render from src/data/testimonials.ts — hidden while the real
+// list is empty; add real quotes there to make the section appear.
+import Testimonials from '../components/sections/Testimonials.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import LinkBanner from '../components/layout/LinkBanner.astro';
@@ -155,6 +156,11 @@ const NAVBAR_CONFIG = {
 		>
 			<SelectedWork />
 		</PageSection>
+
+		<!-- Testimonials — driven by src/data/testimonials.ts; renders NOTHING
+		     while the real list is empty. Preview format: /preview/testimonials.
+		     (Replaces the retired ReviewsSection carousel.) -->
+		<Testimonials />
 
 		<!-- Services — the full section now lives at /services (kept, not deleted);
 		     the homepage shows a banner that links to it. -->

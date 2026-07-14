@@ -1,13 +1,30 @@
 ---
-// Plan cards — driven by src/data/plans.ts (shared with the /plans comparison
-// table). Prices are "Starting at"; every plan is tailored per client.
-import { plans } from '../../data/plans';
+// Plan cards — driven by src/data/plans.ts (shared with the /plans/<slug>
+// detail pages). Prices are "Starting at"; every plan is tailored per client.
+// The Monthly/Yearly toggle swaps between the month-to-month rate and the
+// annual-agreement rate (12-month contract, billed monthly, 2 months free).
+import { plans, yearlyTotal, yearlyMonthly } from '../../data/plans';
 
 const cardBase =
   'relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300';
 ---
 
-<div class="max-w-6xl mx-auto">
+<div class="max-w-6xl mx-auto" id="pricingPlans">
+  <!-- Billing toggle -->
+  <div class="flex flex-col items-center gap-2 mb-10">
+    <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
+      <button type="button" data-billing-btn="monthly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
+        Monthly
+      </button>
+      <button type="button" data-billing-btn="yearly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
+        Yearly <span class="font-bold text-primary-blue dark:text-blue-300 billing-btn-note">· 2 months free</span>
+      </button>
+    </div>
+    <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
+      Month-to-month · cancel anytime
+    </p>
+  </div>
+
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
     {plans.map((p) => (
       <div
@@ -30,11 +47,20 @@ const cardBase =
 
         <div class="mt-4">
           <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-          <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span>
-          <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-          <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-            or ${(p.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-          </p>
+          <span data-billing-view="monthly">
+            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span>
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+              or ${yearlyTotal(p).toLocaleString('en-US')}/yr on a 12-month plan — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+            </p>
+          </span>
+          <span data-billing-view="yearly" hidden>
+            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span>
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+              ${yearlyTotal(p).toLocaleString('en-US')}/yr total · 12-month agreement · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+            </p>
+          </span>
         </div>
 
         <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.tagline}</p>
@@ -53,9 +79,17 @@ const cardBase =
         </div>
 
         <a
+          href={`/plans/${p.slug}`}
+          class="mt-4 inline-flex items-center justify-center gap-1 text-sm font-medium text-primary-blue dark:text-blue-300 hover:underline"
+        >
+          See everything included
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </a>
+
+        <a
           href="#contact"
           data-contact-context={`${p.name} plan`}
-          class={`mt-6 inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+          class={`mt-3 inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
             p.featured
               ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)]'
               : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'
@@ -72,6 +106,9 @@ const cardBase =
     <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
       <span class="font-semibold text-text-light-primary dark:text-text-dark-primary">Every plan includes:</span> fast, secure hosting on a global CDN, a domain if you need one, SSL, all graphic design and stock photos &amp; video, and unlimited traffic — no surprise bills.
     </p>
+    <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
+      Yearly pricing is a 12-month agreement billed monthly — you get 2 months free without paying anything up front. Details in our <a href="/terms" class="underline hover:text-primary-blue">terms</a>.
+    </p>
   </div>
 
   <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
@@ -79,3 +116,39 @@ const cardBase =
     <a href="#contact" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Let's build your plan →</a>
   </p>
 </div>
+
+<script>
+  // Monthly ⇄ Yearly toggle: swaps card prices between the month-to-month rate
+  // and the annual-agreement monthly rate (values pre-rendered in data attrs).
+  (function () {
+    const root = document.getElementById('pricingPlans');
+    if (!root) return;
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
+    const caption = root.querySelector('[data-billing-caption]');
+    const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
+    const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
+
+    function setBilling(mode: 'monthly' | 'yearly') {
+      root.querySelectorAll<HTMLElement>('[data-billing-view]').forEach((el) => {
+        el.hidden = el.dataset.billingView !== mode;
+      });
+      if (caption) {
+        caption.textContent = mode === 'monthly'
+          ? 'Month-to-month · cancel anytime'
+          : 'Billed monthly on a 12-month agreement — nothing to prepay';
+      }
+      buttons.forEach((b) => {
+        const active = b.dataset.billingBtn === mode;
+        b.setAttribute('aria-pressed', String(active));
+        activeCls.forEach((c) => b.classList.toggle(c, active));
+        inactiveCls.forEach((c) => b.classList.toggle(c, !active));
+        const note = b.querySelector('.billing-btn-note');
+        if (note) note.classList.toggle('text-white', active);
+      });
+    }
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
+    );
+  })();
+</script>

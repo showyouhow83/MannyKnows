@@ -48,9 +48,16 @@ const facts = [
   title={`${d.title} — Case Study | MannyKnows`}
   description={d.summary}
   image={d.heroImage && isLiteral(d.heroImage) ? d.heroImage : undefined}
+  noindex={d.demo}
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
     <MarqueeSimple />
+
+    {d.demo && (
+      <div class="relative z-10 bg-amber-100 dark:bg-amber-900/40 border-b border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-sm text-center px-4 py-2.5">
+        <strong>Sample content.</strong> This page shows the case-study format with example details — the real project story is being finalized with the client.
+      </div>
+    )}
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
       <NavBar />

@@ -27,4 +27,4 @@ We'll audit it, show you exactly what's dragging it down, and fix it: performanc
 
 ## Then keep it winning
 
-The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI agent answering customers and booking appointments around the clock — roll onto the [Smart Website (AI) plan](/plans), from $200/mo.
+The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI agent answering customers and booking appointments around the clock — roll onto the [Smart Website (AI) plan](/plans/smart-website), from $200/mo.

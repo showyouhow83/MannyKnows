@@ -1,0 +1,42 @@
+---
+// Testimonials — renders the given quotes (defaults to the real list from
+// src/data/testimonials.ts). Renders NOTHING while the list is empty, so it
+// can sit mounted on the homepage until real quotes exist.
+import { testimonials as realTestimonials, type Testimonial } from '../../data/testimonials';
+
+interface Props {
+  items?: Testimonial[];
+  heading?: string;
+}
+
+const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
+---
+
+{items.length > 0 && (
+  <section aria-label="Client testimonials" class="py-16">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
+      <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-12">
+        <span class="apple-gradient-text" data-colorful-title>{heading}</span>
+      </h2>
+      <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+        {items.map((t) => (
+          <figure class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <svg class="w-7 h-7 text-primary-blue/40 dark:text-blue-300/40 mb-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7.17 6.17A5.5 5.5 0 002 11.5V18h6.5v-6.5H4.83a3.5 3.5 0 013.5-3.5l-1.16-1.83zM17.17 6.17a5.5 5.5 0 00-5.17 5.33V18h6.5v-6.5h-3.67a3.5 3.5 0 013.5-3.5l-1.16-1.83z" />
+            </svg>
+            <blockquote class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              “{t.quote}”
+            </blockquote>
+            <figcaption class="mt-4 pt-4 border-t border-light-tertiary dark:border-dark-accent">
+              <span class="block text-sm font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</span>
+              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+                {t.role ? `${t.role}, ` : ''}
+                {t.href ? <a href={t.href} class="hover:text-primary-blue transition-colors">{t.business}</a> : t.business}
+              </span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
