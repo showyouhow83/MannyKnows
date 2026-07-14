@@ -381,7 +381,7 @@ function generateAutoReplyEmail(contact: any): string {
           <div class="content">
             <div class="message">
               Hi ${contact.name}! 👋<br><br>
-              Thanks for reaching out to MannyKnows. We've received your message and will get back to you within 24 hours.
+              Thanks for reaching out to MannyKnows. We've got your message, and we'll get back to you personally — usually within a day.
             </div>
             
             <div class="details">
@@ -393,13 +393,13 @@ function generateAutoReplyEmail(contact: any): string {
               <div class="value">${contact.id}</div>
             </div>
             
-            <p>While you wait, feel free to explore our AI chatbot for instant website analysis and business insights!</p>
-            
-            <a href="/" class="btn">Try Our AI Chat →</a>
+            <p>In the meantime, take a look at some of the work we've done for other businesses.</p>
+
+            <a href="https://mannyknows.com/work" class="btn">See our recent work →</a>
           </div>
           <div class="footer">
             This confirmation was sent by MannyKnows<br>
-            AI-powered business solutions · Professional web services
+            Web, SEO &amp; software · Western Massachusetts
           </div>
         </div>
       </div>
