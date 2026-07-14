@@ -6,11 +6,11 @@ author: "Manny"
 tags: ["automation", "small business", "productivity"]
 ---
 
-Automation gets oversold. You don't need an AI for everything—you need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.
+Automation gets oversold. You don't need an AI for everything — you need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.
 
 ## 1. Lead intake
 
-Every new inquiry should be logged, tagged, and assigned without anyone retyping it. If a human is copying details from an email into a spreadsheet, that's a bug.
+Every new inquiry should be logged, tagged, and assigned without anyone retyping it. If a human is retyping details from an email into a spreadsheet, that's a bug.
 
 ## 2. Follow-ups
 

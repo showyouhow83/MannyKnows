@@ -38,7 +38,7 @@ export const selectedWork: WorkItem[] = [
   },
   {
     name: 'eCommerce Product Importer',
-    blurb: 'A pipeline that pulls product catalogs from major ecommerce sites and turns them into Shopify-ready listings — images, variants, and pricing imported automatically. Adapts to any source store.',
+    blurb: 'A pipeline that pulls product catalogs from major eCommerce sites and turns them into Shopify-ready listings — images, variants, and pricing imported automatically. Adapts to any source store.',
     tags: ['eCommerce', 'Data pipeline', 'Shopify', 'Automation'],
     // No public URL (internal automation) — add a store URL here to make the card clickable.
   },

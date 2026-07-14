@@ -1,7 +1,7 @@
 ---
 title: "Website Design, Build & Optimization"
 tagline: "We design and build fast, modern sites — and tune the one you already have toward a near-perfect Lighthouse score."
-description: "New site or existing, we make it fast, accessible, and built to convert: hand-coded performance, Core Web Vitals, and the kind of polish that earns trust."
+description: "New site or existing, we make it fast, accessible, and ready to convert: hand-coded performance, Core Web Vitals, and the kind of polish that earns trust."
 type: "Service"
 services:
   - "Web design & development"

@@ -55,7 +55,7 @@ export const plans: Plan[] = [
     ],
     headline: 'Your website, working around the clock',
     blurb:
-      "Most local businesses lose the customers they never hear from — the ones who searched at 9pm, found nothing (or a dead site), and called someone else. The Smart Website plan fixes that: a fast, multilingual website with an AI agent that answers questions and books appointments 24/7, kept ranking and up to date by us — for a monthly price instead of a big upfront bill.",
+      "Most local businesses lose the customers they never hear from — the ones who searched at 9 p.m., found nothing (or a dead site), and called someone else. The Smart Website (AI) plan fixes that: a fast, multilingual website with an AI agent that answers questions and books appointments 24/7, kept ranking and up to date by us — for a monthly price instead of a big upfront bill.",
     whoFor:
       'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
     deliverables: [
@@ -97,13 +97,13 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'A short call: what you do, who your customers are, what a good month looks like. That’s all we need to start.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
-      { title: 'The AI learns your business', body: 'We train the agent on your services, prices, and hours — then test it hard before it ever talks to a customer.' },
+      { title: 'The AI learns your business', body: 'We train the agent on your business — then test it hard before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning — plus a report you can read in two minutes.' },
     ],
     faq: [
       { q: 'I already have a website — do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'How does the AI agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers actually ask you. You review how it answers before it goes live, and we keep refining it.' },
+      { q: 'How does the AI agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers keep asking you. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "multilingual" include?', a: 'The site and the AI agent both work in the languages your customers speak — for most of Western Mass that means English and Spanish, but it’s not limited to that.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, you can cancel anytime and keep your domain and content. On an annual agreement, the discounted rate is tied to the 12-month term — the details are in our terms of service.' },
     ],
@@ -113,7 +113,7 @@ export const plans: Plan[] = [
     name: 'Online Store (AI)',
     icon: '🛒',
     price: 350,
-    tagline: 'A full online store that actually sells — designed, themed, and optimized.',
+    tagline: 'A full online store that sells — designed, themed, and optimized.',
     highlights: [
       'Multilingual storefront with an AI shopping assistant',
       'A full online store (Shopify) with a custom theme, set up for you',
@@ -165,11 +165,11 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We look at what you sell, how you fulfill, and what’s worked so far — in your shop or on a call.' },
       { title: 'Store build', body: 'Theme design, product setup, payments, shipping, emails — we build the whole machine and you approve it before launch.' },
-      { title: 'Launch & learn', body: 'The store goes live with the AI assistant trained on your catalog. Early traffic tells us what to tune first.' },
+      { title: 'Launch & learn', body: 'The store goes live with the AI shopping assistant trained on your catalog. Early traffic tells us what to tune first.' },
       { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus the monthly report.' },
     ],
     faq: [
-      { q: 'Why Shopify?', a: 'It’s the most reliable platform for small-business eCommerce — payments, shipping, and inventory just work, and you’re never locked into us to operate your own store. We customize the theme so it doesn’t look like everyone else’s.' },
+      { q: 'Why Shopify?', a: 'It’s the most reliable platform for small-business eCommerce — payments, shipping, and inventory just work, and you never need us just to operate your own store. We customize the theme so it doesn’t look like everyone else’s.' },
       { q: 'Are Shopify’s own fees included?', a: 'No — Shopify charges its own subscription and payment processing fees directly to you (that’s standard for any store). Our plan covers the design, build, optimization, and monthly operation.' },
       { q: 'I already have a store that isn’t selling. Can you fix it?', a: 'Yes — that’s half the work we do. We audit it, fix the theme, products, SEO, and emails, and run it forward under the same plan.' },
       { q: 'Who handles the orders?', a: 'You do — it’s your business. We build and run the machine that brings the orders in and makes them easy to manage.' },
@@ -193,14 +193,14 @@ export const plans: Plan[] = [
     blurb:
       "Traffic isn’t the goal; customers are. The Business Ads plan runs your visibility end to end — social content, managed Google and social ads, SEO campaigns — and then makes the traffic count with landing pages, banners, videos, and widgets built to convert. We watch what the numbers do and keep correcting.",
     whoFor:
-      'Businesses whose website or store already works, and now need more of the right people finding it — steadily, not in one lucky spike.',
+      'Businesses whose website or store already works — and who now need more of the right people finding it, steadily, not in one lucky spike.',
     deliverables: [
       {
         title: 'Social media growth',
         items: [
           'Content created, branded, and posted for you',
-          'A consistent presence on the platforms where your customers actually are',
-          'Community responses and engagement watched, not ignored',
+          'A consistent presence on the platforms where your customers spend their time',
+          'Comments and messages answered — engagement watched, not ignored',
         ],
       },
       {
@@ -235,10 +235,10 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Is ad spend included in the plan price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The plan covers strategy, creative, management, and optimization. We never mark up your spend.' },
-      { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses start meaningfully at a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
+      { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
       { q: 'How fast will I see results?', a: 'Ads produce data within days and leads within weeks; SEO content compounds over months. We report both honestly — no invented numbers, ever.' },
       { q: 'Which platforms do you manage?', a: 'Google, Facebook/Instagram, and the platforms your customers actually use — chosen per business, not a fixed menu.' },
-      { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with the Smart Website or Online Store plan (or pair them), then pour traffic on.' },
+      { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with the Smart Website (AI) or Online Store (AI) plan (or pair them), then pour traffic on.' },
     ],
   },
   {
@@ -265,7 +265,7 @@ export const plans: Plan[] = [
         items: [
           'Your website designed, built, and kept fast — or your existing one rebuilt right',
           'A full online store added whenever you’re ready, done for you',
-          'Everything in the Smart Website and Online Store plans, under one roof',
+          'Everything in the Smart Website (AI) and Online Store (AI) plans, under one roof',
         ],
       },
       {
@@ -302,8 +302,8 @@ export const plans: Plan[] = [
     faq: [
       { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
       { q: 'How do we decide what gets done each month?', a: 'A shared roadmap we review together monthly. You bring what’s changed in the business; we bring the numbers; the roadmap gets reprioritized accordingly.' },
-      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This gives you engineering, design, marketing, and AI experience on the same retainer.' },
-      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Smart Website or Online Store and move up when they’re ready for the full team. Plans are standalone, so nothing is wasted.' },
+      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This gives you engineering, design, marketing, and AI expertise on the same retainer.' },
+      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Smart Website (AI) or Online Store (AI) and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
       { q: 'Is there a minimum commitment?', a: 'Month-to-month at the standard rate, cancel anytime. The discounted annual rate comes with a 12-month agreement — details in our terms of service.' },
     ],
   },

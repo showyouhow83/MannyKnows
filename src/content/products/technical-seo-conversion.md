@@ -1,6 +1,6 @@
 ---
 title: "Technical SEO & Conversion"
-tagline: "Get found, then turn traffic into customers — technical SEO, structured data, and Lighthouse-plus-analytics to cut friction."
+tagline: "Get found, then turn traffic into customers — technical SEO, structured data, and Lighthouse audits plus analytics to cut friction."
 description: "We make your site legible to search engines and to buyers: technical SEO, structured data, and a steady loop of measuring real traffic and removing whatever stands between a visit and a conversion."
 type: "Service"
 services:
@@ -25,6 +25,6 @@ We run Lighthouse and analytics to see where visitors really drop off, then remo
 
 Clear dashboards and reporting, so you can see what's working instead of guessing.
 
-## Then keep it winning
+## Then keep it ranking
 
 SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $550/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.

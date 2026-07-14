@@ -29,7 +29,7 @@ goals:
 # Outcome metrics — keep them true & specific.
 results:
   - { value: "0→1", label: "From referral-only to a site that brings in its own quote requests" }
-  - { value: "8", label: "Service pages, each written for the searches homeowners actually make" }
+  - { value: "8", label: "Service pages — one for every job homeowners search for" }
   - { value: "24/7", label: "Quote requests come in any time — not just when the phone is free" }
   - { value: "100", label: "Lighthouse score — fast for homeowners on any device" }
 
@@ -39,21 +39,21 @@ heroImage: "vl-d"
 
 ## The challenge
 
-VL Home Services did work homeowners recommended to their neighbors — and had nothing online to show for it. Every job came through referrals, every quote started with phone tag, and homeowners comparing contractors found competitors with websites and photo galleries instead. They needed to look as professional online as the work is in person.
+VL Home Services did work homeowners recommended to their neighbors — and had nothing online to show for it. Every job came through referrals, every quote meant calls chased back and forth, and homeowners comparing contractors found competitors with websites and photo galleries instead. They needed to look as professional online as the work is in person.
 
 ## What we built
 
 A contractor site built to produce quote requests:
 
-- **A page for every service** — each one written around the searches homeowners actually make, so the site meets them at the exact job they need done.
-- **A clear service area** — homeowners know instantly whether VL covers their town, before anyone’s time is spent.
+- **A page for every service** — each one written around the searches homeowners make, so the site meets them at the exact job they need done.
+- **A clear service area** — homeowners see right away whether VL covers their town, before anyone’s time is spent.
 - **Proof of work** — photo galleries of completed jobs, because homeowners hire what they can see.
 - **A quote request form** — job type, location, and details captured up front, so the first callback is an informed one.
 - **A fast, mobile-first build with local SEO** — tuned for homeowners searching from their phone.
 
 ## How it works
 
-A homeowner searches for the job they need done, lands on the matching service page, sees photos of similar completed work, and confirms VL covers their area. Instead of leaving a voicemail, they submit a quote request with the details already filled in — so VL calls back with real answers, not questions. The whole site runs on Cloudflare’s edge, loading instantly for someone standing in the room they want fixed.
+A homeowner searches for the job they need done, lands on the matching service page, sees photos of similar completed work, and confirms VL covers their area. Instead of leaving a voicemail, they submit a quote request with the details already filled in — so VL calls back with real answers, not questions. And the site is fast enough to keep up with someone standing in the room they want fixed.
 
 ## The outcome
 

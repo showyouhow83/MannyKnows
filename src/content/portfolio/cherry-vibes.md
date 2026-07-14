@@ -4,7 +4,7 @@ draft: false
 title: "Cherry Vibes"
 client: "Cherry Vibes"
 tagline: "From social-only to an online home of their own — a fast, brand-first website that shows the products and tells the story."
-summary: "Cherry Vibes had a brand people loved and no website to call home — everything lived on social platforms. We designed and built a brand-first site that shows the collections, tells the story, and turns online interest into in-person visits."
+summary: "Cherry Vibes had a brand people loved — and no website to call home — everything lived on social platforms. We designed and built a brand-first site that shows the collections, tells the story, and turns online interest into in-person visits."
 industry: "Retail & lifestyle brand"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ results:
   - { value: "0→1", label: "From social-only to a website the brand fully owns" }
   - { value: "6", label: "Collection pages that show the range without a full online store" }
   - { value: "100", label: "Lighthouse score — instant loads on mobile" }
-  - { value: "24/7", label: "Hours, new arrivals, and the story — online even when the shop isn’t open" }
+  - { value: "3", label: "Weeks from kickoff to a live site" }
 
 liveUrl: "https://cherryvibes.com"
 heroImage: "cherry-vibes-d"
@@ -46,15 +46,15 @@ Cherry Vibes had a brand people loved in person and on social — and no website
 A brand-first website designed around look and feel:
 
 - **A design that matches the brand** — color, type, and photography-forward layouts that feel like Cherry Vibes, not a template.
-- **Product & collection pages** — the range on display without the overhead of a full online store, so browsing online feels like browsing in person.
+- **Product & collection pages** — the range on display without the overhead of running a storefront, so browsing online feels like browsing in person.
 - **The story, front and center** — an about page that tells people what Cherry Vibes is and why it exists.
 - **The practical layer** — hours, location, and contact, impossible to miss.
 - **A fast, mobile-first build** — most visitors arrive from a phone, so every page is tuned to load instantly.
 
 ## How it works
 
-Someone taps through from social — or searches the name — and lands on a site that carries the brand instead of a feed. The collections show what’s in store, the story page builds the connection, and clear hours and location turn interest into a visit. Built on Astro and served from Cloudflare’s edge, it stays fast on any connection, so nobody bounces waiting for images to load.
+Someone taps through from social — or searches the name — and lands on a site that carries the brand instead of a feed. The collections show what’s in store, the story page builds the connection, and clear hours and location turn interest into a visit. And it stays fast on any connection, so nobody bounces waiting for images to load.
 
 ## The outcome
 
-Cherry Vibes owns its online presence instead of renting it from an algorithm. The link in bio now leads somewhere that does the brand justice — products, story, and practical details in one fast place — and online interest has a clear path to the shop door.
+Cherry Vibes owns its online presence now — no algorithm in the middle. The link in bio now leads somewhere that does the brand justice — products, story, and practical details in one fast place — and online interest has a clear path to the shop door.

@@ -22,7 +22,7 @@ import Button from '../components/ui/Button.astro';
 const PHONE_DISPLAY = '(413) 361-8451';
 const PHONE_TEL = '+14133618451';
 const BOOKING_URL = 'https://calendar.app.google/FTYeET27mKVjngB29';  // Google Calendar booking page; leave '' to hide the "Book a time" button
-const EMAIL = 'mm@mannyknows.com';
+const EMAIL = 'mk@mannyknows.com';
 const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
 const FREE_TRAVEL = 'within ~25 min of Springfield'; // free-shoot radius; beyond this a small gas/travel fee may apply
 
@@ -82,24 +82,24 @@ const SITE_SECTIONS = [
   { name: 'Reviews', body: 'Your best Google reviews, front and center as social proof.' },
   { name: 'FAQs', body: 'Common questions answered in a format built for search and AI assistants.' },
   { name: 'Virtual Tour', body: 'Your 360° photos embedded so visitors can look around right on your site.' },
-  { name: 'Contact', body: 'Tap-to-call, a short form, and your hours — every easy way to reach you.' },
+  { name: 'Contact', body: 'Tap-to-call, a short form, and your hours — all the easy ways to reach you.' },
 ];
 
 const LIGHTHOUSE = [
   { name: 'Performance', body: 'Loads fast on any phone — no waiting, no bounce.' },
   { name: 'Accessibility', body: 'Usable by everyone, which Google rewards.' },
   { name: 'Best Practices', body: 'Secure, modern, built to current web standards.' },
-  { name: 'SEO + AI', body: 'Structured so Google and AI agents can read, rank, and recommend you.' },
+  { name: 'SEO-ready', body: 'Structured so Google and AI agents can read, rank, and recommend you.' },
 ];
 
 const FAQS = [
-  { q: 'Is the 360° photo really free?', a: 'Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost and no obligation. It is how we introduce our work.' },
-  { q: 'What is a Google Business Profile and do I need one?', a: 'It is your free listing on Google Search and Maps — where customers find your hours, photos, reviews, and directions. If you do not have one yet, we can create it and get you verified.' },
+  { q: 'Is the 360° photo really free?', a: "Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost, with no obligation. It's how we introduce our work." },
+  { q: 'What is a Google Business Profile and do I need one?', a: "It's your free listing on Google Search and Maps — where customers find your hours, photos, reviews, and directions. If you don't have one yet, our Profile Setup service creates it and gets you verified." },
   { q: 'What if I do not have a profile yet?', a: 'No problem. Our Profile Setup + Verification service (from $149) creates your listing, fills it out properly, and handles Google’s verification so you show up in local search.' },
-  { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack adds 2–4 photos so customers can virtually walk through your space — a mini “see inside” tour on Google.' },
+  { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack adds 2–4 more photos so customers can virtually walk through your space — a mini “see inside” tour on Google.' },
   { q: 'How soon does it go live?', a: 'Most 360° photos are published within a few days of the shoot, once processing and Google publishing are complete.' },
-  { q: 'Do you serve my area?', a: 'We are based in Springfield, MA and shoot on-site across the surrounding Pioneer Valley. The free 360° photo covers locations within about 25 minutes of Springfield; a little farther out we may add a small gas/travel fee, always quoted up front before we book. Profile setup and the AI website can be done from anywhere.' },
-  { q: 'What is the AI website?', a: 'An optional fast, one-page site with an AI sales agent trained on your voice. It includes Hero, Blog, Services, Reviews, FAQs, a virtual tour for your 360° photos, and Contact — all optimized to score well on Google Lighthouse.' },
+  { q: 'Do you serve my area?', a: "We're based in Springfield, MA, and shoot on-site across the Pioneer Valley. The free 360° photo covers locations within about 25 minutes of Springfield; a little farther out we may add a small gas/travel fee, always quoted up front before we book. Profile setup and the AI website can be done from anywhere." },
+  { q: 'What is the AI website?', a: 'An optional fast one-page site with an AI sales agent trained on your voice. It includes Hero, Blog, Services, Reviews, FAQs, a virtual tour for your 360° photos, and Contact — all optimized to score well on Google Lighthouse.' },
 ];
 
 const META_DESCRIPTION = `Claim a FREE 360° photo for your Google Business Profile. Serving ${SERVICE_AREA}. We come to your business, shoot an immersive 360° photo, and publish it to Google — plus 360° photo packs, profile setup & verification, and AI-powered one-page websites.`;
@@ -171,7 +171,7 @@ const jsonLd = {
               Claim a <span class="apple-gradient-text" data-colorful-title>free 360° photo</span> for your Google Business Profile
             </h1>
             <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-              Call or book a time, we come to your business, and shoot one immersive 360° photo — then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
+              Call or book a time — we come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button href="#claim" text="Claim my free 360° photo" variant="cta" arrow={true} />
@@ -241,7 +241,7 @@ const jsonLd = {
         <div class="text-center max-w-2xl mx-auto mb-14">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Plans &amp; pricing</span>
           <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Start free, <span class="apple-gradient-text" data-colorful-title>grow when ready</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Begin with your free 360° photo. When you are ready for more, every package is tailored to your business.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Begin with your free 360° photo. When you're ready for more, every package is tailored to your business.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {PACKAGES.map((p) => (
@@ -282,7 +282,7 @@ const jsonLd = {
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The complete package</span>
           <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">A one-page site with an <span class="apple-gradient-text" data-colorful-title>AI sales agent</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Pair your 360° photos with a fast, single-page website that sells for you. It includes an AI sales agent trained on your style — answering questions and booking customers day and night.
+            Pair your 360° photos with a fast, single-page website that sells for you. It includes an AI sales agent trained on your voice — answering questions and booking appointments day and night.
           </p>
         </div>
 
@@ -320,7 +320,7 @@ const jsonLd = {
           <div class="text-center mb-8">
             <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">Claim your <span class="apple-gradient-text" data-colorful-title>free 360° photo</span></h2>
             <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below — we will reach out to set up your free shoot.
+              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below — we'll reach out to set up your free shoot.
             </p>
           </div>
 
