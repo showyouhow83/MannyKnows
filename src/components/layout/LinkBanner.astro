@@ -20,9 +20,11 @@ const bandBg =
   <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
     <a
       href={href}
-      class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 md:p-10 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300"
+      class="group relative block overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-white to-gray-50 dark:from-dark-secondary dark:to-dark-primary p-8 md:p-10 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10 transition-all duration-300"
     >
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <!-- Decorative gradient glow so the banner reads as a designed panel, not a flat bar -->
+      <span aria-hidden="true" class="pointer-events-none absolute -top-16 -right-12 h-48 w-48 rounded-full bg-gradient-to-br from-primary-blue/20 to-primary-pink/20 blur-3xl opacity-70 group-hover:opacity-100 transition-opacity duration-300"></span>
+      <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div class="max-w-2xl">
           {badge && (
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-blue-300 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider mb-3">

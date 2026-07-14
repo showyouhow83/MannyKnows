@@ -1,52 +1,61 @@
 ---
-// Idea Launchpad — the "bring an idea, I'll build & market it" partnership offer.
-// Sits inside a homepage PageSection (which supplies the badge/title/subtitle).
+// Idea Launchpad — "bring an idea, we design, build, and launch the app for you."
+// Sits inside a homepage PageSection (badge/title/subtitle come from index.astro).
 import Button from '../ui/Button.astro';
 
+// Each step carries an inline Heroicon path so the flow reads visually, not as
+// a wall of numbered text.
 const steps = [
   {
     n: '01',
-    title: 'Get in contact',
-    body: "Tell us your idea — a few sentences is plenty. Send us a message or text (917) 475-6634.",
+    title: 'Tell us your idea',
+    body: "A sentence or two is plenty — send a message or text (917) 475-6634. No pitch deck, no tech jargon needed.",
+    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
   },
   {
     n: '02',
-    title: 'We pressure-test it',
-    body: "Together we look at whether there's a real audience, whether it's buildable, and what it would take.",
+    title: 'We map it out',
+    body: "We turn it into a clear plan — what it does, who it's for, how it works — and show you before we build a thing.",
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
   },
   {
     n: '03',
     title: 'We build it',
-    body: "If we both see potential, we design and develop it — fast prototype ready in hours, with AI-assisted development.",
+    body: "We design and develop the real thing — a working prototype in hours, the full app close behind.",
+    icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
   },
   {
     n: '04',
-    title: 'We launch & see it grow',
-    body: "We'll handle the launch and marketing, and grow it together from there.",
+    title: 'We launch & grow it',
+    body: "We put it live, get it in front of real people, and keep improving it as it grows.",
+    icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
   },
 ];
 ---
 
 <div class="max-w-6xl mx-auto">
   <!-- Steps -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
     {steps.map((s) => (
-      <div class="relative flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:border-primary-blue/30">
-        <span class="text-3xl font-black apple-gradient-text mb-3">{s.n}</span>
-        <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
-        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+      <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+        <span aria-hidden="true" class="pointer-events-none absolute -top-3 right-3 text-6xl font-black leading-none text-primary-blue/10 select-none">{s.n}</span>
+        <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d={s.icon} />
+          </svg>
+        </div>
+        <h3 class="relative mt-4 text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
+        <p class="relative mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
       </div>
     ))}
   </div>
 
-  <!-- Honest terms + CTA -->
-  <div class="mt-10 max-w-3xl mx-auto text-center">
+  <!-- Offer + CTA -->
+  <div class="mt-10 max-w-2xl mx-auto text-center">
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      <strong class="text-text-light-primary dark:text-text-dark-primary">No upfront cost — we build it as your technical co-founder.</strong>
-      You bring the idea and the vision; we bring the design, development, and marketing. We co-own
-      what we launch and agree on a fair equity split up front. We only take on a few at a time, so
-      we're picky about the ones we can genuinely help get off the ground.
+      <strong class="text-text-light-primary dark:text-text-dark-primary">No upfront cost to get started.</strong>
+      You bring the idea; we design, build, launch, and market it — and turn it into a real, working app. We only take on a handful at a time, so tell us about yours.
     </p>
-    <Button href="#contact" text="Pitch your idea" variant="cta" arrow={true} />
+    <Button href="#contact" text="Tell us your idea" variant="cta" arrow={true} />
   </div>
 </div>
