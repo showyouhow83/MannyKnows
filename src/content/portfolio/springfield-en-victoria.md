@@ -45,15 +45,15 @@ A large share of Springfield lives in Spanish — and most local information onl
 
 A Spanish-first local site, designed and built from scratch:
 
-- **Spanish-first, not translated** — navigation, structure, and content written in Spanish for Spanish speakers; because we build multilingual sites in the language itself, nothing reads like an afterthought.
+- **Spanish-first, not translated** — navigation, structure, and content written in Spanish for Spanish speakers — never drafted in English and translated after, so nothing reads like an afterthought.
 - **Sections that serve the community** — local stories, events, and resources organized so people find what they need in a couple of taps.
 - **A simple publishing workflow** — new stories and updates go live without a developer in the loop.
-- **Mobile-first and fast** — built for the phones most readers actually use, on connections that aren’t always great.
+- **Mobile-first and fast** — built for the phones most readers use, on connections that aren’t always great.
 - **SEO for Spanish-language searches** — so the community finds the site when they search the way they speak.
 
 ## How it works
 
-A reader searches in Spanish — or follows a shared link — and lands on pages written in their language, not run through a translator. Stories, events, and resources are organized around what the community actually needs, and the publishing workflow keeps content moving: write, publish, done. Because it’s built on Astro and served from Cloudflare’s edge, pages load instantly even on older phones.
+A reader searches in Spanish — or follows a shared link — and lands on pages written in their language, not run through a translator. Stories, events, and resources are organized around what the community needs, and the publishing workflow keeps content moving: write, publish, done. And because the build is lean, pages load fast even on older phones.
 
 ## The outcome
 

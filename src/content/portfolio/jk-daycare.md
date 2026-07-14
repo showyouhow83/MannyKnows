@@ -4,7 +4,7 @@ draft: false
 title: "JK Daycare"
 client: "JK Daycare"
 tagline: "A website that answers parents’ questions and a Twilio IVR phone system that answers every call — even after closing."
-summary: "Parents heard about JK Daycare and then hit a dead end — no website to vet them, and a phone nobody could pick up mid-day. We built their website and their Twilio IVR phone system, so parents can find them, get answers, and book a tour by phone or form — with nothing slipping through."
+summary: "Parents heard about JK Daycare and then hit a dead end — no website to vet them, and a phone nobody could pick up midday. We built their website and their Twilio IVR phone system, so parents can find them, get answers, and book a tour by phone or form — with nothing slipping through."
 industry: "Licensed childcare"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ techStack:
 goals:
   - "Be easy to find and easy to vet — parents get their questions answered before they ever call"
   - "Never miss a tour request — every call answered and routed, even during the busiest hours"
-  - "One professional business number for everything, off anyone’s personal phone"
+  - "One professional business number for everything the business does"
 
 # Outcome metrics — keep them true & specific.
 results:
@@ -39,21 +39,21 @@ liveUrl: "https://jkdaycare.com"
 
 ## The challenge
 
-Parents heard about JK Daycare through word of mouth — and then hit a dead end. There was no website to answer the questions every parent asks before trusting someone with their child: programs, hours, licensing, openings. And the phone couldn’t be answered during the busiest parts of the day, so tour requests sat in voicemail and got returned after closing, if at all.
+Parents heard about JK Daycare through word of mouth — and then the trail went cold. There was no website to answer the questions every parent asks before trusting someone with their child: programs, hours, licensing, openings. And the phone couldn’t be answered during the busiest parts of the day, so tour requests sat in voicemail and got returned after closing, if at all.
 
 ## What we built
 
 A website that does the reassuring, and a phone system that does the catching:
 
-- **A website built for parents** — programs, hours, and licensing details organized around the questions parents actually ask before they’ll book a tour.
-- **A tour request form** — parents can ask about openings or request a visit at 10 p.m., when they’re actually researching daycares.
+- **A website built for parents** — programs, hours, and licensing details organized around the questions parents ask before they’ll book a tour.
+- **A tour request form** — parents can ask about openings or request a visit at 10 p.m., when they’re researching daycares.
 - **A Twilio IVR phone system** — one professional number that answers every call with a proper greeting and a menu, gives parents the basics (hours, programs, directions), routes the call to the right person, and takes a message when nobody can pick up.
-- **After-hours coverage** — the line still answers at 10 p.m. with the essentials, and tour requests land through the form, so researching parents never hit a dead end.
-- **Local SEO** — on-page work for the searches parents make, like “licensed daycare near me,” so the site actually gets found.
+- **After-hours coverage** — the line still answers at 10 p.m. with the essentials, and tour requests land through the form, so researching parents always get somewhere.
+- **Local SEO** — on-page work for the searches parents make, like “licensed daycare near me,” so the site gets found.
 
 ## How it works
 
-A parent searches, lands on the site, and gets every trust-building answer — licensing, programs, hours — without making a call. When they’re ready, they book a tour through the form or text the business number. During class hours, the Twilio IVR answers with a proper greeting, handles the routine questions itself, and routes the calls that need a person to the right room — taking a message when nobody’s free. After hours, it still answers with the essentials, and nothing is lost: every message and tour request is waiting the next morning.
+A parent searches, lands on the site, and gets every trust-building answer — licensing, programs, hours — without making a call. When they’re ready, they book a tour through the form or call. During class hours, the Twilio IVR answers with a proper greeting, handles the routine questions itself, and routes the rest to a person — taking a message when nobody’s free. After hours, it still answers with the essentials, and nothing is lost: every message and tour request is waiting the next morning.
 
 ## The outcome
 

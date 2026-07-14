@@ -19,7 +19,7 @@ We've run head-to-head evaluations of the major models (Claude, GPT, Gemini) —
 
 ## Assistants that know your business
 
-AI agents and chat assistants grounded in your own content and data (RAG), so answers are accurate instead of made up. We built one that held a brand's voice across an entire product catalog, with memory.
+AI agents and chat assistants grounded in your own content and data (RAG), so answers are accurate instead of made up. We built one that held a brand's voice across an entire product catalog — and remembered the conversation.
 
 ## A human stays in the loop
 

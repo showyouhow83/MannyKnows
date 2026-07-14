@@ -20,7 +20,7 @@ We sit with you and trace the day-to-day: where leads come in, how they're handl
 
 ## We find the highest-leverage fixes
 
-You get a short, prioritized plan — quick wins first, bigger builds flagged for later. Where AI genuinely helps, we'll say so; where it's just hype, we'll say that too. Wherever a decision was missing the data to make it, we fill that gap.
+You get a short, prioritized plan — quick wins first, bigger builds flagged for later. Where AI genuinely helps, we'll say so; where it's just hype, we'll say that too. Wherever you've been making decisions without the data, we fill that gap.
 
 ## Then we help you do it
 

@@ -6,7 +6,7 @@ author: "Manny"
 tags: ["ai", "websites", "conversion"]
 ---
 
-Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait—and waiting is where deals die.
+Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait — and waiting is where deals die.
 
 ## From brochure to assistant
 
@@ -18,7 +18,7 @@ A modern site doesn't just display information; it has a conversation. An AI ass
 
 ## It's not about replacing you
 
-The point isn't to remove the human touch—it's to protect your time for the conversations that matter. Let the site handle "do you service my area?" so you can focus on closing the job.
+The point isn't to remove the human touch — it's to protect your time for the conversations that matter. Let the site handle "do you service my area?" so you can focus on closing the job.
 
 ## Start small, measure, expand
 

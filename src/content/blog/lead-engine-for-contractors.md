@@ -12,20 +12,20 @@ A website should do better than wait. It should **work**.
 
 ## What a lead engine actually does
 
-When we built a lead-to-job platform for a local painting contractor, the goal was simple: every visitor who's ready to buy should be able to start a job in under a minute, and every lead should land somewhere it won't get lost.
+When we built a lead-to-job platform for a local painting contractor, the goal was simple: every visitor who's ready to buy should be able to request a job in under a minute, and every lead should land somewhere it won't get lost.
 
 - **Capture** — quote forms, click-to-chat, and callback requests on every page, not just a buried contact form.
 - **Qualify** — a few smart questions up front (project type, timeline, location) so you know which leads are worth a same-day call.
-- **Route** — new leads drop straight into an admin pipeline, not an inbox that gets buried by 4pm.
+- **Route** — new leads drop straight into an admin pipeline, not an inbox that gets buried by 4 p.m..
 
 ## Speed is the whole game
 
 The data is brutal and consistent: the first contractor to respond usually wins the job. If a lead sits for a day, it's often already gone.
 
-That's why the website hands off instantly—no copy-pasting from email into a spreadsheet, no "I'll get to it tonight."
+That's why the website hands off instantly — no copy-pasting from email into a spreadsheet, no "I'll get to it tonight."
 
 ## Where it goes from here
 
-Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform—and it's a topic for another post.
+Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform — and it's a topic for another post.
 
 Want to see how this would work for your business? [Get in touch](#contact) and tell us what you do.
