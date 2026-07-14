@@ -14,31 +14,31 @@ export interface Props {
 }
 
 // Default slides — one per monthly plan (see src/data/plans.ts). Each links to
-// the full /plans page. Images reuse the existing hosted stock backgrounds.
+// its /plans/<slug> detail page. Images reuse the existing hosted stock backgrounds.
 const defaultSlides: Slide[] = [
   {
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
     title: 'Smart Website — from $200/mo',
     description: 'A multilingual site with an AI agent that answers customers and books jobs 24/7.',
-    href: '/plans'
+    href: '/plans/smart-website'
   },
   {
     image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80',
     title: 'Online Store — from $350/mo',
     description: 'A full online store, set up by someone who ran eCommerce for a national retailer.',
-    href: '/plans'
+    href: '/plans/online-store'
   },
   {
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-    title: 'Business Ads — from $800/mo',
+    title: 'Business Ads — from $550/mo',
     description: 'Social, Google & social ads, SEO and your Google Business Profile — get seen everywhere.',
-    href: '/plans'
+    href: '/plans/business-ads'
   },
   {
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
-    title: 'Multimedia Agency — from $2,000/mo',
+    title: 'Multimedia Agency — from $1,000/mo',
     description: 'We design, build, promote, and optimize everything — your full media and tech team.',
-    href: '/plans'
+    href: '/plans/multimedia-agency'
   },
 ];
 

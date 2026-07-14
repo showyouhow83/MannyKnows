@@ -25,4 +25,4 @@ Make.com and Zapier for connecting apps, Google Apps Script for the custom stuff
 
 We map your process, build the flows, document them, and adjust as your business changes — so it keeps working without you babysitting it.
 
-When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans) (from $2,000/mo) puts a full media and tech team on it.
+When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) puts a full media and tech team on it.

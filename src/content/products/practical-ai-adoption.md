@@ -25,4 +25,4 @@ AI agents and chat assistants grounded in your own content and data (RAG), so an
 
 Everything ships with clear review checkpoints. AI does the heavy lifting; you keep control of what actually goes out the door.
 
-If what you want is an AI agent answering customers and booking appointments on your site 24/7, that's already built into the [Smart Website (AI) plan](/plans) (from $200/mo) — and the [Online Store (AI) plan](/plans) (from $350/mo) adds an AI shopping assistant to your storefront.
+If what you want is an AI agent answering customers and booking appointments on your site 24/7, that's already built into the [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) — and the [Online Store (AI) plan](/plans/online-store) (from $350/mo) adds an AI shopping assistant to your storefront.

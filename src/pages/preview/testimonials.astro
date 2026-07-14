@@ -1,0 +1,42 @@
+---
+// PREVIEW ONLY (noindex) — shows the testimonials section with demo quotes so
+// Manny can see the format before collecting real ones. The homepage renders
+// the real list from src/data/testimonials.ts, which stays hidden while empty.
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import { demoTestimonials } from '../../data/testimonials';
+---
+
+<BaseLayout title="Testimonials Preview (Sample) | MannyKnows" description="Internal preview of the testimonials section format." noindex={true}>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+    <div class="relative">
+      <NavBar />
+    </div>
+
+    <div class="bg-amber-100 dark:bg-amber-900/40 border-y border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-sm text-center px-4 py-2.5 mt-4">
+      <strong>Sample quotes — preview only.</strong> This shows the format. Send us each client's real words (1–3 sentences), their name, and business — we publish, and this section appears on the homepage.
+    </div>
+
+    <div class="pt-8">
+      <Testimonials items={demoTestimonials} />
+    </div>
+
+    <div class="max-w-2xl mx-auto px-6 pb-16 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+      <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">What we need per quote</h2>
+      <ul class="list-disc pl-5 space-y-1.5">
+        <li><strong>The quote</strong> — the client's own words, 1–3 sentences. Best ones name a concrete outcome ("we wake up to booked appointments"), not adjectives ("great service").</li>
+        <li><strong>Name</strong> — first name + last initial is enough ("Maria G.").</li>
+        <li><strong>Business</strong> — and their role if they want it shown ("Owner, JK Daycare").</li>
+        <li><strong>Permission</strong> — confirm they're OK being quoted on the site.</li>
+      </ul>
+    </div>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

@@ -27,4 +27,4 @@ Clear dashboards and reporting, so you can see what's working instead of guessin
 
 ## Then keep it winning
 
-SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans) (from $200/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans) (from $800/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
+SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $550/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.

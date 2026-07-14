@@ -1,0 +1,180 @@
+---
+// Per-plan detail pages (/plans/<slug>) — driven by src/data/plans.ts so the
+// cards and detail pages never drift apart. Prerendered, one page per plan.
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarqueeSimple from '../../components/MarqueeSimple.astro';
+import NavBar from '../../components/navigation/NavBar.astro';
+import DockMenu from '../../components/navigation/DockMenu.astro';
+import Section from '../../components/layout/Section.astro';
+import Container from '../../components/layout/Container.astro';
+import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
+
+export function getStaticPaths() {
+  return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
+}
+
+const { plan } = Astro.props as { plan: Plan };
+const others = plans.filter((p) => p.slug !== plan.slug);
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: plan.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title={`${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
+  description={`${plan.tagline} What's included, how it works, and pricing — month-to-month from $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr on a 12-month agreement (2 months free).`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/plans" class="hover:text-primary-blue transition-colors">Plans</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">{plan.name}</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto text-center">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <span aria-hidden="true">{plan.icon}</span> {plan.name}
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>{plan.headline}</span>
+            </h1>
+            <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{plan.blurb}</p>
+
+            <!-- Price block -->
+            <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-left">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
+                <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
+              </div>
+              <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
+                <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">${yearlyTotal(plan).toLocaleString('en-US')}/yr · 12-month agreement, billed monthly</span>
+              </div>
+            </div>
+
+            <p class="mt-6 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+              <strong class="text-text-light-primary dark:text-text-dark-primary">Built for:</strong> {plan.whoFor}
+            </p>
+
+            <div class="mt-8">
+              <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+                Get started with {plan.name}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- What's included -->
+    <Section id="plan-included" variant="default">
+      <Container>
+        <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>Everything included</span>
+        </h2>
+        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+          {plan.deliverables.map((d) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">{d.title}</h3>
+              <ul class="space-y-2.5">
+                {d.items.map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
+          Plus what every plan includes: fast, secure hosting on a global CDN, a domain if you need one, SSL, all graphic design and stock photos &amp; video, and unlimited traffic.
+        </p>
+      </Container>
+    </Section>
+
+    <!-- How it works -->
+    <Section id="plan-steps" variant="alternate">
+      <Container>
+        <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>How it works</span>
+        </h2>
+        <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          {plan.steps.map((s, i) => (
+            <li class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold mb-3">{i + 1}</span>
+              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+
+    <!-- FAQ -->
+    <Section id="plan-faq" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
+          </h2>
+          <div class="space-y-4">
+            {plan.faq.map((f) => (
+              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Talk to us about {plan.name}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Other plans -->
+    <Section id="plan-others" variant="alternate">
+      <Container>
+        <h2 class="text-xl font-bold text-center mb-8 text-text-light-primary dark:text-text-dark-primary">Not the right fit? The other plans:</h2>
+        <div class="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
+          {others.map((p) => (
+            <a href={`/plans/${p.slug}`} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <span class="text-xl" aria-hidden="true">{p.icon}</span>
+              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
+              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}/mo</p>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-2 leading-snug">{p.tagline}</p>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>
