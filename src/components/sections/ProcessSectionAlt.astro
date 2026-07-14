@@ -3,13 +3,24 @@
 // SLPainting layout with MannyKnows styling
 import Section from '../layout/Section.astro';
 import Container from '../layout/Container.astro';
-import SectionHeader from '../ui/SectionHeader.astro';
 
 export interface Props {
   className?: string;
 }
 
 const { className = '' } = Astro.props;
+
+// The rotating end of "From process to …" — everything we turn processes into.
+const rotatingWords = [
+  'Mobile apps',
+  'Personal websites',
+  'Selling online',
+  'Web applications',
+  'AI Website Designer',
+  'AI Medical Website',
+  'AI Website for Lawyers',
+  'Interactive Widgets',
+];
 
 const processSteps = [
   {
@@ -32,11 +43,43 @@ const processSteps = [
 
 <Section id="process" variant="default" hasOverflow={true} className={className}>
   <Container className="relative z-10">
-    <SectionHeader
-      badge="How It Works"
-      title="From process to app"
-      subtitle="From the first call to working software, we turn the process that's slowing you down into an app that runs it — built around how your business actually works."
-    />
+    <!-- Header with rotating word (same look as SectionHeader, custom h2) -->
+    <div class="text-center mb-20">
+      <div class="mb-4">
+        <span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+          How It Works
+        </span>
+      </div>
+      <h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
+        <span class="apple-gradient-text" data-colorful-title>From process to</span>
+        <span id="processRotator" class="block apple-gradient-text min-h-[1.25em] transition-all duration-300" aria-live="off">{rotatingWords[0]}</span>
+      </h2>
+      <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+        The quote that eats your evenings becomes a form that prices itself. The schedule you juggle over text becomes an app your crew opens every morning. The store you keep meaning to open starts taking orders while you sleep. Bring us the process that's slowing you down — we map it on the first call, then build the software that runs it for you.
+      </p>
+    </div>
+
+    <script is:inline define:vars={{ rotatingWords }}>
+      // Rotate the headline's last word. Skips the motion (but still swaps
+      // words) when the visitor prefers reduced motion.
+      (function () {
+        const el = document.getElementById('processRotator');
+        if (!el) return;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let i = 0;
+        setInterval(function () {
+          i = (i + 1) % rotatingWords.length;
+          if (reduced) { el.textContent = rotatingWords[i]; return; }
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(0.35em)';
+          setTimeout(function () {
+            el.textContent = rotatingWords[i];
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 280);
+        }, 2400);
+      })();
+    </script>
 
     <!-- Horizontal 3-Step Process (SLPainting Layout) -->
     <div class="steps-grid grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24 max-w-6xl mx-auto">

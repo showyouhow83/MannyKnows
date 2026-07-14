@@ -6,6 +6,7 @@ import FooterBottom from './FooterBottom.astro';
 
 // Footer configuration can be passed as props for full customization
 interface Props {
+  showServices?: boolean; // services directory renders on the homepage only
   brandTitle?: string;
   brandDescription?: string;
   socialLinks?: {
@@ -34,7 +35,7 @@ const props = Astro.props;
   <FooterHeader {...props} />
 
   <!-- Services Section -->
-  <FooterServices />
+  {props.showServices && <FooterServices />}
 </footer>
 
 <!-- Footer Bottom -->

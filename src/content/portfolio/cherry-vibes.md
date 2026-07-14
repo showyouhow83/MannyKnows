@@ -1,7 +1,6 @@
 ---
-# DEMO CONTENT — example details for format preview (page shows a sample banner, noindex). Replace with real facts, then set demo: false.
+# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
-demo: true
 title: "Cherry Vibes"
 client: "Cherry Vibes"
 tagline: "From social-only to an online home of their own — a fast, brand-first website that shows the products and tells the story."
@@ -27,7 +26,7 @@ goals:
   - "Show the products and the story without the overhead of a full online store"
   - "Own the audience relationship instead of renting it from social platforms"
 
-# Outcome metrics — DEMO numbers; replace with real, verifiable stats.
+# Outcome metrics — keep them true & specific.
 results:
   - { value: "0→1", label: "From social-only to a website the brand fully owns" }
   - { value: "6", label: "Collection pages that show the range without a full online store" }

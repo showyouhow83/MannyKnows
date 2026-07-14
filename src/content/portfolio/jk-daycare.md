@@ -1,11 +1,10 @@
 ---
-# DEMO CONTENT — example details for format preview (page shows a sample banner, noindex). Replace with real facts, then set demo: false.
+# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
-demo: true
 title: "JK Daycare"
 client: "JK Daycare"
-tagline: "A website that answers parents’ questions and a Twilio phone & text line that catches every tour request — even after closing."
-summary: "Parents heard about JK Daycare and then hit a dead end — no website to vet them, and a phone nobody could pick up mid-day. We built their website and set up their Twilio phone & text system, so parents can find them, get answers, and book a tour by call, text, or form — with nothing slipping through."
+tagline: "A website that answers parents’ questions and a Twilio IVR phone system that answers every call — even after closing."
+summary: "Parents heard about JK Daycare and then hit a dead end — no website to vet them, and a phone nobody could pick up mid-day. We built their website and their Twilio IVR phone system, so parents can find them, get answers, and book a tour by phone or form — with nothing slipping through."
 industry: "Licensed childcare"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -14,7 +13,7 @@ timeline: "4 weeks"
 year: 2025
 services:
   - "Website design & build"
-  - "Twilio phone & text setup"
+  - "Twilio IVR phone system"
   - "Tour request form"
   - "Local SEO"
 techStack:
@@ -24,14 +23,14 @@ techStack:
   - "Tailwind CSS"
 goals:
   - "Be easy to find and easy to vet — parents get their questions answered before they ever call"
-  - "Never miss a tour request — calls and texts captured even during the busiest hours"
+  - "Never miss a tour request — every call answered and routed, even during the busiest hours"
   - "One professional business number for everything, off anyone’s personal phone"
 
-# Outcome metrics — DEMO numbers; replace with real, verifiable stats.
+# Outcome metrics — keep them true & specific.
 results:
   - { value: "0→1", label: "From word of mouth only to a website parents can find and trust" }
-  - { value: "24/7", label: "Calls and texts captured by the Twilio line — even after closing" }
-  - { value: "1", label: "Business number for calls and texts, off anyone’s personal phone" }
+  - { value: "24/7", label: "The IVR answers every call — even after closing" }
+  - { value: "1", label: "Business number with a menu that routes every call, off anyone’s personal phone" }
   - { value: "100", label: "Lighthouse score — fast on any parent’s phone" }
 
 liveUrl: "https://jkdaycare.com"
@@ -48,14 +47,14 @@ A website that does the reassuring, and a phone system that does the catching:
 
 - **A website built for parents** — programs, hours, and licensing details organized around the questions parents actually ask before they’ll book a tour.
 - **A tour request form** — parents can ask about openings or request a visit at 10 p.m., when they’re actually researching daycares.
-- **A Twilio business phone line** — one professional number with a proper greeting, call routing, and voicemail that arrives as text, so no message sits unheard.
-- **Texting on the same number** — because a parent on a lunch break will send a text long before they’ll leave a voicemail.
+- **A Twilio IVR phone system** — one professional number that answers every call with a proper greeting and a menu, gives parents the basics (hours, programs, directions), routes the call to the right person, and takes a message when nobody can pick up.
+- **After-hours coverage** — the line still answers at 10 p.m. with the essentials, and tour requests land through the form, so researching parents never hit a dead end.
 - **Local SEO** — on-page work for the searches parents make, like “licensed daycare near me,” so the site actually gets found.
 
 ## How it works
 
-A parent searches, lands on the site, and gets every trust-building answer — licensing, programs, hours — without making a call. When they’re ready, they book a tour through the form or text the business number. During class hours, the Twilio line answers with a proper greeting and turns every message into a text the team can act on between rooms; after hours, nothing is lost — every call and text is waiting, in writing, the next morning.
+A parent searches, lands on the site, and gets every trust-building answer — licensing, programs, hours — without making a call. When they’re ready, they book a tour through the form or text the business number. During class hours, the Twilio IVR answers with a proper greeting, handles the routine questions itself, and routes the calls that need a person to the right room — taking a message when nobody’s free. After hours, it still answers with the essentials, and nothing is lost: every message and tour request is waiting the next morning.
 
 ## The outcome
 
-JK Daycare went from word-of-mouth only to a business parents can find, vet, and contact on their own schedule. The website answers the questions that build trust, the Twilio line makes sure no call or text goes missing — mid-morning or midnight — and tour requests now arrive in writing instead of evaporating in voicemail.
+JK Daycare went from word-of-mouth only to a business parents can find, vet, and contact on their own schedule. The website answers the questions that build trust, the Twilio IVR makes sure no call goes unanswered — mid-morning or midnight — and tour requests now arrive in writing instead of evaporating in voicemail.

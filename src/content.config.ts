@@ -69,10 +69,6 @@ const portfolio = defineCollection({
     featured: z.boolean().default(false),   // pin to the top of the index
     order: z.number().default(99),          // ascending sort within (featured, order)
     draft: z.boolean().default(false),
-    // demo: the page builds (for preview by direct URL, noindex + sample banner)
-    // but is EXCLUDED from the /work index. For showing Manny the expected
-    // shape before real client details exist. Flip off once content is real.
-    demo: z.boolean().default(false),
   }),
 });
 
