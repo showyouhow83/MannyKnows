@@ -1,7 +1,7 @@
 ---
 title: "Technical SEO & Conversion"
 tagline: "Get found, then turn traffic into customers — technical SEO, structured data, and Lighthouse-plus-analytics to cut friction."
-description: "I make your site legible to search engines and to buyers: technical SEO, structured data, and a steady loop of measuring real traffic and removing whatever stands between a visit and a conversion."
+description: "We make your site legible to search engines and to buyers: technical SEO, structured data, and a steady loop of measuring real traffic and removing whatever stands between a visit and a conversion."
 type: "Service"
 services:
   - "Technical SEO"
@@ -11,7 +11,7 @@ services:
 order: 3
 ---
 
-Traffic you can't measure and a site people bounce off are both fixable. I work both ends — getting found, and converting the visits you already get.
+Traffic you can't measure and a site people bounce off are both fixable. We work both ends — getting found, and converting the visits you already get.
 
 ## Get found
 
@@ -19,8 +19,12 @@ Technical SEO, clean structured data (JSON-LD), fast pages, and the on-page fund
 
 ## Read the traffic, cut the friction
 
-I run Lighthouse and analytics to see where visitors really drop off, then remove the friction step by step. It's the same loop I ran on enterprise eCommerce — A/B tests and behavior data that, on one store, lifted traffic 145% and sales 65%.
+We run Lighthouse and analytics to see where visitors really drop off, then remove the friction step by step. It's the same loop we ran on enterprise eCommerce — A/B tests and behavior data that, on one store, lifted traffic 145% and sales 65%.
 
 ## Measure what matters
 
 Clear dashboards and reporting, so you can see what's working instead of guessing.
+
+## Then keep it winning
+
+SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans) (from $200/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans) (from $800/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.

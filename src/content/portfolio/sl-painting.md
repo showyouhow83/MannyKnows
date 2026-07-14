@@ -3,7 +3,7 @@ draft: false
 title: "SL Painting"
 client: "SL Painting"
 tagline: "From invisible on Google to ranking for “exterior painting” across Western Mass — with a website, CRM, a 24/7 AI agent, and AI Painter Lab."
-summary: "SL Painting had a strong offline reputation and nothing online — they didn't even show up on Google. I built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in any color. Today they rank for “exterior painting” across Western Massachusetts."
+summary: "SL Painting had a strong offline reputation and nothing online — they didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in any color. Today they rank for “exterior painting” across Western Massachusetts."
 industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ heroImage: "slpainting-desktop"
 
 SL Painting had the reputation and the crews — and nothing online. No website, nothing on Google, no way for new customers to find them or picture the work, and every lead handled by phone and memory. They needed to get found, and they needed a system to catch and manage the work once it started coming in.
 
-## What I built
+## What we built
 
 A complete digital operation, from scratch:
 
