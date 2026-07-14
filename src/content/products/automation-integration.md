@@ -11,7 +11,7 @@ services:
 order: 4
 ---
 
-The fastest way to get hours back is to stop doing the work a machine can do. I connect your tools and automate the routine so it just happens.
+The fastest way to get hours back is to stop doing the work a machine can do. We connect your tools and automate the routine so it just happens.
 
 ## Stop re-typing everything
 
@@ -19,8 +19,10 @@ Data moves between your website, inbox, CRM, calendar, and accounting automatica
 
 ## The right tool for the job
 
-Make.com and Zapier for connecting apps, Google Apps Script for the custom stuff, Twilio for phone and SMS — I've set up call routing, business-hours logic, and A2P registration so a business never misses an inquiry.
+Make.com and Zapier for connecting apps, Google Apps Script for the custom stuff, Twilio for phone and SMS — we've set up call routing, business-hours logic, and A2P registration so a business never misses an inquiry.
 
 ## Built to keep running
 
-I map your process, build the flows, document them, and adjust as your business changes — so it keeps working without you babysitting it.
+We map your process, build the flows, document them, and adjust as your business changes — so it keeps working without you babysitting it.
+
+When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans) (from $2,000/mo) puts a full media and tech team on it.

@@ -1,0 +1,144 @@
+---
+// Contact page — a linkable destination for Google, ads, and email signatures.
+// Same fields and /api/contact flow as the global ContactModal, rendered inline.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+
+const inputClass =
+  'w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm';
+---
+
+<BaseLayout
+  title="Contact — Talk to Us | MannyKnows, Springfield MA"
+  description="Get in touch with MannyKnows — web, SEO, and software for Western Massachusetts businesses. Send a message, email mk@mannyknows.com, or call (413) 361-8451."
+>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Contact</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Contact</span>
+          <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+            <span class="apple-gradient-text" data-colorful-title>Let's talk</span>
+          </h1>
+          <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Tell us what you're trying to fix — a slow site, no leads, too much busywork, or an idea you want built. We read every message ourselves and reply personally, usually within a day.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <Section id="contact-main" variant="default">
+      <Container>
+        <div class="grid gap-10 lg:grid-cols-5 max-w-5xl mx-auto items-start">
+          <!-- Form -->
+          <div class="lg:col-span-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 md:p-8">
+            <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Send a message</h2>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">A few sentences is plenty — we'll take it from there.</p>
+            <form id="contactPageForm" class="space-y-4">
+              <input type="text" name="name" required autocomplete="name" placeholder="Your name" maxlength="100" class={inputClass} />
+              <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class={inputClass} />
+              <input type="text" name="business" placeholder="Business or website (optional)" maxlength="200" class={inputClass} />
+              <textarea name="message" required rows="5" placeholder="What do you need help with?" maxlength="2000" class={`${inputClass} resize-none`}></textarea>
+              <button type="submit" id="contactPageSubmit" class="w-full bg-gradient-to-r from-primary-blue to-primary-pink text-white py-3.5 rounded-xl text-sm font-semibold hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all duration-300 disabled:opacity-60">
+                Send
+              </button>
+              <p id="contactPageStatus" class="text-sm text-center hidden" role="status"></p>
+            </form>
+          </div>
+
+          <!-- Direct channels -->
+          <div class="lg:col-span-2 space-y-4">
+            <a href="mailto:mk@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Email</span>
+              <span class="text-primary-blue dark:text-blue-300 font-semibold">mk@mannyknows.com</span>
+            </a>
+            <a href="tel:+14133618451" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Call or text</span>
+              <span class="text-primary-blue dark:text-blue-300 font-semibold">(413) 361-8451</span>
+            </a>
+            <a href="sms:+19174756634" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Got an app idea? Text it</span>
+              <span class="text-primary-blue dark:text-blue-300 font-semibold">(917) 475-6634</span>
+            </a>
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Service area</span>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+                Based in Springfield, Massachusetts — working with businesses across Western Mass, and remotely anywhere.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>
+
+<script>
+  // Same CSRF + submit flow as the global ContactModal, scoped to this page's form.
+  (function () {
+    const form = document.getElementById('contactPageForm') as HTMLFormElement | null;
+    if (!form) return;
+    const statusEl = document.getElementById('contactPageStatus');
+    const submitBtn = document.getElementById('contactPageSubmit') as HTMLButtonElement | null;
+    let csrfToken: string | null = null;
+    let sessionId: string | null = null;
+
+    async function getToken() {
+      try {
+        const r = await fetch('/api/contact');
+        if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
+      } catch { /* offline — the mailto fallback still works */ }
+    }
+    getToken();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!csrfToken) await getToken();
+      const fd = new FormData(form);
+      const business = (fd.get('business') || '').toString().trim();
+      const userMsg = (fd.get('message') || '').toString().trim();
+      const message = (business ? `Business / site: ${business}.\n\n` : '') + userMsg;
+
+      const orig = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+      statusEl?.classList.add('hidden');
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken || '' },
+          body: JSON.stringify({ name: fd.get('name'), email: fd.get('email'), subject: 'New inquiry via mannyknows.com/contact', message, csrf_token: csrfToken, session_id: sessionId }),
+        });
+        const result = await res.json().catch(() => ({}));
+        if (res.ok) {
+          form.reset();
+          if (statusEl) { statusEl.textContent = "Thanks — we'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          getToken();
+        } else {
+          throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
+        }
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mk@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
+        statusEl?.classList.remove('hidden');
+      }
+    });
+  })();
+</script>

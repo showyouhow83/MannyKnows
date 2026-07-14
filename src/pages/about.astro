@@ -1,0 +1,123 @@
+---
+// About page — who's behind MannyKnows and how we work. Trust page for a
+// consulting brand: experience, standards, and how engagements actually run.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+
+const principles = [
+  {
+    icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    title: 'We only publish what we can stand behind',
+    body: "No invented numbers, no borrowed screenshots, no vague 'results'. If a case study is on our site, every detail in it is real. The same standard applies to the work we do for you.",
+  },
+  {
+    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+    title: 'Plain English, always',
+    body: "You get a monthly report you can actually read — what we did, what it changed, what's next. No jargon walls, no invoices that need a translator.",
+  },
+  {
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    title: 'Built fast, kept fast',
+    body: 'Every site we ship is tuned for near-perfect speed scores and stays that way — because we keep maintaining it after launch, not just the week it goes live.',
+  },
+  {
+    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
+    title: 'Long-term, month to month',
+    body: "We maintain what we build. Plans are month-to-month with no lock-in — clients stay because the work keeps earning it, not because a contract says so.",
+  },
+];
+---
+
+<BaseLayout
+  title="About — Who's Behind MannyKnows | Web, SEO & Software, Springfield MA"
+  description="MannyKnows is an independent web, SEO, and software practice in Springfield, Massachusetts — twenty years of enterprise and startup engineering, including eCommerce for a national retailer, now working for Western Mass businesses."
+>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">About</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Springfield · Western Massachusetts</span>
+          <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+            <span class="apple-gradient-text" data-colorful-title>Who you're working with</span>
+          </h1>
+          <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            MannyKnows is an independent web, SEO, and software practice led by Manny — twenty years of engineering for enterprise and startups, now working for the businesses of Western Massachusetts.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <Section id="about-story" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto space-y-6 text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+          <p>
+            <strong class="text-text-light-primary dark:text-text-dark-primary">For twenty years, we built software where the stakes were high.</strong>
+            Enterprise systems, startup products, and eCommerce for a national retailer — environments where a slow page costs real money and "it works on my machine" doesn't cut it. That's the standard we grew up on, and it's the standard we bring to every project now.
+          </p>
+          <p>
+            Today that experience works for small businesses across Western Massachusetts — from Springfield out to every town around it. The painter, the daycare, the shop that wants to sell online: they get the same engineering, the same technical SEO, and the same attention a national brand would pay six figures for — scoped and priced for a local business.
+          </p>
+          <p>
+            We design and build websites, tune them until they're fast and found, automate the busywork behind the counter, and put practical AI to work where it actually helps — answering customers, booking jobs, handling the repetitive stuff. And because Western Mass speaks more than one language, multilingual sites are standard, not an add-on.
+          </p>
+          <p>
+            Most of all: <strong class="text-text-light-primary dark:text-text-dark-primary">we maintain what we build.</strong> A website isn't a thing you buy once — it's a thing that has to keep working, keep ranking, and keep converting. That's why our plans are monthly, and why our clients' sites don't quietly rot after launch.
+          </p>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="about-principles" variant="alternate">
+      <Container>
+        <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>How we work</span>
+        </h2>
+        <div class="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
+          {principles.map((p) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={p.icon} />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{p.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="text-center mt-14 space-y-4">
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-xl mx-auto">
+            The proof is in the work — real sites for real businesses around here.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+              See our work
+            </a>
+            <a href="#contact" data-contact-context="About page" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Talk to us
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>
