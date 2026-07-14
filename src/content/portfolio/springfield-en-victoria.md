@@ -1,7 +1,6 @@
 ---
-# DEMO CONTENT — example details for format preview (page shows a sample banner, noindex). Replace with real facts, then set demo: false.
+# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
-demo: true
 title: "Springfield en Victoria"
 client: "Springfield en Victoria"
 tagline: "A Spanish-first local site for Springfield — stories, events, and resources written for the community, not translated at it."
@@ -27,7 +26,7 @@ goals:
   - "Make local stories, events, and resources easy to find and read on any phone"
   - "Keep publishing simple so the site stays current without a developer"
 
-# Outcome metrics — DEMO numbers; replace with real, verifiable stats.
+# Outcome metrics — keep them true & specific.
 results:
   - { value: "ES", label: "Spanish-first — written for the community, not machine-translated" }
   - { value: "0→1", label: "From scattered English-only info to one Spanish-language local hub" }

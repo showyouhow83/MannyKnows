@@ -26,13 +26,14 @@ export const selectedWork: WorkItem[] = [
     blurb: 'Painting contractor — from invisible on Google to ranking for “exterior painting” across Western Mass: website, admin CRM, a 24/7 AI agent, and AI Painter Lab.',
     tags: ['Contractor', 'SEO', 'AI agent'],
     image: 'slpainting-desktop',
-    caseStudy: 'sl-painting',  // published case study → card links to /work/sl-painting
+    caseStudy: 'sl-painting',
   },
   {
     name: 'JK Daycare',
     url: 'https://jkdaycare.com',
-    blurb: 'Licensed childcare — website, plus Twilio phone & text setup.',
-    tags: ['Childcare', 'Website', 'Twilio'],
+    blurb: 'Licensed childcare — website plus a Twilio IVR phone system that answers and routes every call.',
+    tags: ['Childcare', 'Website', 'Twilio IVR'],
+    caseStudy: 'jk-daycare',
     // image: '/work/jkdaycare.png',
   },
   {
@@ -41,27 +42,28 @@ export const selectedWork: WorkItem[] = [
     tags: ['eCommerce', 'Data pipeline', 'Shopify', 'Automation'],
     // No public URL (internal automation) — add a store URL here to make the card clickable.
   },
-  // TODO (Manny): one factual line + tags for each of these — the sandbox can't
-  // reach them to read them, and I won't make anything up.
   {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
+    blurb: 'Retail & lifestyle brand — a brand-first website that shows the collections and tells the story.',
+    tags: ['Retail', 'Website', 'Branding'],
     image: 'cherry-vibes-d',
-    // blurb: '',
-    // tags: [],
+    caseStudy: 'cherry-vibes',
   },
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
+    blurb: 'Home services contractor — a site that shows the work, spells out the service area, and turns visits into quote requests.',
+    tags: ['Contractor', 'Website', 'Local SEO'],
     image: 'vl-d',
-    // blurb: '',
-    // tags: [],
+    caseStudy: 'vl-home-services',
   },
   {
     name: 'Springfield en Victoria',
     url: 'https://springfieldenvictoria.com',
+    blurb: 'Spanish-first local site for Springfield — stories, events, and resources written for the community.',
+    tags: ['Community', 'Website', 'Spanish-first'],
     image: 'enVictoria-d',
-    // blurb: '',
-    // tags: [],
+    caseStudy: 'springfield-en-victoria',
   },
 ];

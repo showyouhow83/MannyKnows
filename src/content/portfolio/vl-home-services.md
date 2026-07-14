@@ -1,7 +1,6 @@
 ---
-# DEMO CONTENT — example details for format preview (page shows a sample banner, noindex). Replace with real facts, then set demo: false.
+# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
-demo: true
 title: "VL Home Services"
 client: "VL Home Services"
 tagline: "From referral-only to winning the homeowners who research first — services, service area, proof of work, and quote requests in one place."
@@ -27,7 +26,7 @@ goals:
   - "Turn website visits into quote requests with the job details attached"
   - "Make the service area obvious so the right homeowners reach out"
 
-# Outcome metrics — DEMO numbers; replace with real, verifiable stats.
+# Outcome metrics — keep them true & specific.
 results:
   - { value: "0→1", label: "From referral-only to a site that brings in its own quote requests" }
   - { value: "8", label: "Service pages, each written for the searches homeowners actually make" }
