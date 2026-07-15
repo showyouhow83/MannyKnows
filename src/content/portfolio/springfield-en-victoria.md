@@ -14,6 +14,7 @@ services:
   - "Multimedia — sermons, audio & podcasts"
   - "Live streaming"
   - "AI-powered translations"
+  - "Camera & live-event training"
 techStack:
   - "Astro"
   - "Cloudflare Workers"
@@ -23,6 +24,8 @@ goals:
   - "Make the church easy to find — location, service times, and programs in one place"
   - "Bring the message to people who can't be in the room — audio, podcasts, and live streaming"
   - "Reach the whole community in its languages, using AI translation"
+  - "Announce community events — free food and clothing — from one place"
+  - "Give the church's youth a way to find shareable resources and create content themselves"
 
 # Outcome metrics — keep them true & specific.
 results:
@@ -45,6 +48,8 @@ An online home for the congregation:
 - **The essentials, easy to find** — where the church is, when services happen, and what programs are available.
 - **A multimedia ministry** — sermons, audio, and podcasts, organized so anyone can catch up or revisit a message.
 - **Live streaming** — services reach members who can't be in the room, in real time.
+- **Community events, announced** — the church's free food and clothing events reach the whole neighborhood from one place.
+- **Content by the congregation's youth** — young people find resources worth sharing and help create the site's content. We trained the team on their new cameras, for live events and for producing young content, made for young people.
 - **AI-powered translations** — the site reaches the community in several languages, not just Spanish and English, with AI handling the translation work.
 - **Fast on any phone** — most of the congregation visits from a phone, so every page is built to load quickly.
 
@@ -54,4 +59,4 @@ Someone hears about the church — or searches for it — and finds everything i
 
 ## The outcome
 
-Springfield en Victoria has an online home that matches its mission: a place built to bring peace. The church is easy to find, its programs are easy to follow, and its message travels — live, recorded, and translated — to the whole community, wherever they are and whatever language they speak.
+Springfield en Victoria has an online home that matches its mission: a place built to bring peace. The church is easy to find, its free food and clothing events reach the neighborhood, its youth help create the content — and its message travels, live, recorded, and translated, to the whole community, wherever they are and whatever language they speak.

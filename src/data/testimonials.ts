@@ -35,6 +35,13 @@ export const testimonials: Testimonial[] = [
     business: 'VL Home Services',
     href: '/work/vl-home-services',
   },
+  {
+    quote:
+      "We had always wanted a portal for our community — a place to announce our free food and clothing events, and where our young people can find resources worth sharing and help add content themselves. Manny even trained us on our new cameras, for live events and for creating content with the church's youth — young content, made for young people.",
+    name: 'Springfield en Victoria',
+    business: 'Church community',
+    href: '/work/springfield-en-victoria',
+  },
 ];
 
 // DEMO quotes — shown ONLY on /preview/testimonials so Manny can see the
