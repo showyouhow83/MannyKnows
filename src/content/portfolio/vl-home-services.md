@@ -28,7 +28,7 @@ goals:
 # Outcome metrics — keep them true & specific.
 results:
   - { value: "0→1", label: "From referrals-only and manual everything to a complete digital operation" }
-  - { value: "24/7", label: "AI agent answering customer questions around the clock" }
+  - { value: "24/7", label: "AI agent answering customers in any language — and the team's own project questions from the admin" }
   - { value: "1", label: "Admin dashboard — every inquiry captured and tracked in one place" }
   - { value: "100", label: "Lighthouse score — fast for homeowners on any device" }
 
@@ -46,7 +46,7 @@ A complete digital operation for a home improvement company:
 
 - **A website that brings in work** — services, proof of work, and a clear way for homeowners to reach out, built fast and mobile-first.
 - **An admin dashboard** — every inquiry captured and tracked in one place, instead of living in someone's memory and pockets of paper.
-- **An AI agent** — answers customer questions around the clock, even when everyone is on a job site.
+- **An AI agent** — answers customer questions around the clock, in any language. And because it's connected to the admin, the team can ask it about their own projects too: where each one stands, what's included, whatever they need to know.
 - **Technical & local SEO** — the foundations to rank for the searches homeowners in the area make.
 - **Content development, ongoing** — service content is being built out month by month so the site keeps getting found for more of the work they do.
 
