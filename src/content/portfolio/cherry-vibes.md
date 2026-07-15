@@ -1,37 +1,36 @@
 ---
-# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
 title: "Cherry Vibes"
 client: "Cherry Vibes"
-tagline: "From social-only to an online home of their own — a fast, brand-first website that shows the products and tells the story."
-summary: "Cherry Vibes had a brand people loved — and no website to call home — everything lived on social platforms. We designed and built a brand-first site that shows the collections, tells the story, and turns online interest into in-person visits."
-industry: "Retail & lifestyle brand"
+tagline: "An online store obsessed with all things cherry — migrated from Costa Rica to the U.S. market and rebuilt on a custom Shopify Hydrogen storefront."
+summary: "Cherry Vibes sells all things cherry, and the store began its life in Costa Rica. We brought it to the U.S. market and rebuilt it end to end: Shopify set up for U.S. selling, a custom Shopify Hydrogen storefront, the full catalog, email automations, and custom apps."
+industry: "eCommerce — specialty retail"
 
 # At a glance ──────────────────────────────────────────────────────────────────
-role: "Design, build & deploy"
-timeline: "3 weeks"
-year: 2024
+role: "Migration, design, build & deploy"
+year: 2026
 services:
-  - "Website design & build"
-  - "Brand look & feel"
-  - "Product & collection pages"
-  - "Technical SEO"
+  - "U.S. market migration"
+  - "Shopify setup"
+  - "Custom Shopify Hydrogen storefront"
+  - "Catalog build"
+  - "Email automations"
+  - "Custom apps"
 techStack:
-  - "Astro"
-  - "Cloudflare Workers"
-  - "Tailwind CSS"
+  - "Shopify"
+  - "Hydrogen"
+  - "React"
   - "JavaScript"
 goals:
-  - "Give the brand an online home that matches the in-person experience"
-  - "Show the products and the story without the overhead of a full online store"
-  - "Own the audience relationship instead of renting it from social platforms"
+  - "Move the business from the Costa Rican store to the U.S. market"
+  - "A storefront with its own look — not a stock theme"
+  - "Email automations and custom apps that keep the store selling on its own"
 
 # Outcome metrics — keep them true & specific.
 results:
-  - { value: "0→1", label: "From social-only to a website the brand fully owns" }
-  - { value: "6", label: "Collection pages that show the range without a full online store" }
-  - { value: "100", label: "Lighthouse score — instant loads on mobile" }
-  - { value: "3", label: "Weeks from kickoff to a live site" }
+  - { value: "CR → US", label: "Migrated from the Costa Rican store to the U.S. market" }
+  - { value: "Hydrogen", label: "Custom Shopify Hydrogen storefront, built for speed" }
+  - { value: "May 2026", label: "Relaunched for U.S. customers" }
 
 liveUrl: "https://cherryvibes.com"
 heroImage: "cherry-vibes-d"
@@ -39,22 +38,22 @@ heroImage: "cherry-vibes-d"
 
 ## The challenge
 
-Cherry Vibes had a brand people loved in person and on social — and no website of its own. Discovery depended on an algorithm, and there was no single place that showed the products, told the story, and answered the practical questions the way the brand deserved. They needed an online home that felt like the shop.
+Cherry Vibes had a store people loved — in Costa Rica. Moving an online store to the U.S. market is more than changing the currency: payments, shipping, taxes, catalog, and storefront all have to be rebuilt for how American customers shop. And a brand this distinctive deserved better than a stock theme.
 
 ## What we built
 
-A brand-first website designed around look and feel:
+A complete migration and rebuild:
 
-- **A design that matches the brand** — color, type, and photography-forward layouts that feel like Cherry Vibes, not a template.
-- **Product & collection pages** — the range on display without the overhead of running a storefront, so browsing online feels like browsing in person.
-- **The story, front and center** — an about page that tells people what Cherry Vibes is and why it exists.
-- **The practical layer** — hours, location, and contact, impossible to miss.
-- **A fast, mobile-first build** — most visitors arrive from a phone, so every page is tuned to load instantly.
+- **Shopify, set up for the U.S. market** — payments, shipping, and taxes configured for selling to American customers.
+- **A custom Shopify Hydrogen storefront** — designed for the brand and built on Shopify's Hydrogen framework, so the store is fast and looks like nobody else's.
+- **The full catalog** — every cherry-themed product set up with images, variants, and pricing.
+- **Email automations** — welcome, abandoned cart, and receipts, so the store keeps selling between visits.
+- **Custom apps** — the store-specific tools the business needed beyond what Shopify offers out of the box.
 
 ## How it works
 
-Someone taps through from social — or searches the name — and lands on a site that carries the brand instead of a feed. The collections show what’s in store, the story page builds the connection, and clear hours and location turn interest into a visit. And it stays fast on any connection, so nobody bounces waiting for images to load.
+A shopper lands on a storefront that carries the brand — fast, custom-built on Hydrogen, and organized the way people browse. Checkout, payments, and shipping run on Shopify's rails, configured for the U.S.; the email automations bring shoppers back; and the custom apps handle what's unique to this store.
 
 ## The outcome
 
-Cherry Vibes owns its online presence now — no algorithm in the middle. The link in bio now leads somewhere that does the brand justice — products, story, and practical details in one fast place — and online interest has a clear path to the shop door.
+Cherry Vibes is now a U.S. store, relaunched in May 2026 — same beloved brand, new market, and a storefront built to sell in it. The migration covered everything: platform, catalog, payments, automations, and a custom Hydrogen storefront that does the brand justice.

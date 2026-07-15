@@ -8,6 +8,7 @@ industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
 role: "Design, build & deploy"
+year: 2025
 services:
   - "Website design & build"
   - "Technical & local SEO"
