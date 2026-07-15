@@ -23,7 +23,7 @@ export interface Testimonial {
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Thank you, Manny, for putting SL Painting on the map. A year ago we didn't exist online at all — no website, no admin to manage our projects and clients, no AI chat to answer questions, schedule calls, or show homeowners a preview of their house in new colors. Today we're #1 for “Pintura Exterior” in Springfield, MA — organically, at the top of the first page — and the photography and video gave us a real presence on social media too.",
+      "Thank you, Manny, for putting SL Painting on the map. A year ago we didn't exist online at all — no website, no admin to manage our projects and clients, no AI chat to answer questions, schedule calls, or show homeowners a preview of their house in new colors. Today we're #1 for “Exterior Painting” in Springfield, MA — organically, at the top of the first page — and the photography and video gave us a real presence on social media too.",
     name: 'Owner',
     business: 'SL Painting',
     href: '/work/sl-painting',
