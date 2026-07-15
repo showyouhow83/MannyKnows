@@ -2,7 +2,7 @@
 // Plan cards — driven by src/data/plans.ts (shared with the /plans/<slug>
 // detail pages). Prices are "Starting at"; every plan is tailored per client.
 // The Monthly/Yearly toggle swaps between the month-to-month rate and the
-// annual-agreement rate (12-month contract, billed monthly, 2 months free).
+// prepaid annual rate (pay the year upfront — 10x monthly — and get 2 months free).
 import { plans, yearlyTotal, yearlyMonthly } from '../../data/plans';
 
 const cardBase =
@@ -51,14 +51,14 @@ const cardBase =
             <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span>
             <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
             <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-              or ${yearlyTotal(p).toLocaleString('en-US')}/yr on a 12-month agreement — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+              or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
             </p>
           </span>
           <span data-billing-view="yearly" hidden>
-            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span>
-            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyTotal(p).toLocaleString('en-US')}</span>
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/yr</span>
             <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-              ${yearlyTotal(p).toLocaleString('en-US')}/yr total · 12-month agreement · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+              one upfront payment · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span> · like ${yearlyMonthly(p).toLocaleString('en-US')}/mo
             </p>
           </span>
         </div>
@@ -107,7 +107,7 @@ const cardBase =
       <span class="font-semibold text-text-light-primary dark:text-text-dark-primary">Every plan includes:</span> fast, secure hosting on a global CDN, a domain if you need one, SSL, all graphic design and stock photos &amp; video, and unlimited traffic — no surprise bills.
     </p>
     <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-      Yearly pricing is a 12-month agreement billed monthly — you get 2 months free without paying anything up front. Details in our <a href="/terms" class="underline hover:text-primary-blue">terms</a>.
+      Yearly pricing is one upfront payment for 12 months of service — pay for 10 months, get 12 (2 months free). Details in our <a href="/terms" class="underline hover:text-primary-blue">terms</a>.
     </p>
   </div>
 
@@ -118,8 +118,8 @@ const cardBase =
 </div>
 
 <script>
-  // Monthly ⇄ Yearly toggle: swaps card prices between the month-to-month rate
-  // and the annual-agreement monthly rate (values pre-rendered in data attrs).
+  // Monthly ⇄ Yearly toggle: swaps cards between the month-to-month rate and
+  // the prepaid annual total (both views pre-rendered; JS toggles visibility).
   (function () {
     const root = document.getElementById('pricingPlans');
     if (!root) return;
@@ -135,7 +135,7 @@ const cardBase =
       if (caption) {
         caption.textContent = mode === 'monthly'
           ? 'Month-to-month · cancel anytime'
-          : 'Billed monthly on a 12-month agreement — nothing to prepay';
+          : 'One upfront payment for the year — 2 months free';
       }
       buttons.forEach((b) => {
         const active = b.dataset.billingBtn === mode;

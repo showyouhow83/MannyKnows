@@ -31,7 +31,7 @@ const faqSchema = {
 
 <BaseLayout
   title={`${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
-  description={`${plan.tagline} What's included, how it works, and pricing — month-to-month from $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr on a 12-month agreement (2 months free).`}
+  description={`${plan.tagline} What's included, how it works, and pricing — month-to-month from $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr paid upfront (2 months free).`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -66,8 +66,8 @@ const faqSchema = {
               </div>
               <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
                 <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
-                <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">${yearlyTotal(plan).toLocaleString('en-US')}/yr · 12-month agreement, billed monthly</span>
+                <span class="text-3xl font-black">${yearlyTotal(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/yr</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">one upfront payment · like ${yearlyMonthly(plan).toLocaleString('en-US')}/mo</span>
               </div>
             </div>
 
