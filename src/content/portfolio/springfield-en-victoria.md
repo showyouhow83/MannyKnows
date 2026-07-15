@@ -1,37 +1,34 @@
 ---
-# Working copy — keep shaping the details with the client as the story firms up.
 draft: false
 title: "Springfield en Victoria"
 client: "Springfield en Victoria"
-tagline: "A Spanish-first local site for Springfield — stories, events, and resources written for the community, not translated at it."
-summary: "Most local information online never reaches Springfield’s Spanish-speaking community — or arrives badly machine-translated. We designed and built Springfield en Victoria as a Spanish-first local site: stories, events, and resources, fast on any phone and easy to keep current."
-industry: "Community media"
+tagline: "A church community's online home — programs, sermons, podcasts, and live streaming, with AI translation reaching the congregation in several languages."
+summary: "Springfield en Victoria is a Spanish-speaking church community in Springfield. We built their online home: where to find the church, its programs, and a full multimedia ministry — sermons, audio, podcasts, and live streaming — with AI-powered translation, so the message reaches people in several languages, not just Spanish and English."
+industry: "Church & community"
 
 # At a glance ──────────────────────────────────────────────────────────────────
 role: "Design, build & deploy"
-timeline: "5 weeks"
 year: 2025
 services:
   - "Website design & build"
-  - "Spanish-first content structure"
-  - "Publishing workflow"
-  - "Technical SEO"
+  - "Multimedia — sermons, audio & podcasts"
+  - "Live streaming"
+  - "AI-powered translations"
 techStack:
   - "Astro"
   - "Cloudflare Workers"
-  - "Tailwind CSS"
+  - "AI / LLM"
   - "JavaScript"
 goals:
-  - "Serve Springfield’s Spanish-speaking community in its own language — Spanish-first, not translated"
-  - "Make local stories, events, and resources easy to find and read on any phone"
-  - "Keep publishing simple so the site stays current without a developer"
+  - "Make the church easy to find — location, service times, and programs in one place"
+  - "Bring the message to people who can't be in the room — audio, podcasts, and live streaming"
+  - "Reach the whole community in its languages, using AI translation"
 
 # Outcome metrics — keep them true & specific.
 results:
-  - { value: "ES", label: "Spanish-first — written for the community, not machine-translated" }
-  - { value: "0→1", label: "From scattered English-only info to one Spanish-language local hub" }
-  - { value: "3", label: "Content sections — stories, events, and community resources" }
-  - { value: "100", label: "Lighthouse score — fast on the phones most readers use" }
+  - { value: "AI", label: "Translation into several languages — not just Spanish and English" }
+  - { value: "Live", label: "Streaming — services reach people who can't attend in person" }
+  - { value: "24/7", label: "Sermons, audio & podcasts available any time" }
 
 liveUrl: "https://springfieldenvictoria.com"
 heroImage: "enVictoria-d"
@@ -39,22 +36,22 @@ heroImage: "enVictoria-d"
 
 ## The challenge
 
-A large share of Springfield lives in Spanish — and most local information online doesn’t. What existed was scattered, English-only, or machine-translated badly enough to signal it wasn’t made for this audience. Springfield en Victoria set out to be a local site written in Spanish from the first word, with a build that keeps publishing easy and reading fast.
+A church is more than a building, but without an online home, everything depends on word of mouth: where to find it, when services happen, what programs exist, and what was said on the Sunday you missed. Springfield en Victoria wanted a place built to bring peace — where the community could find the church, follow its programs, and hear its message from anywhere, in their own language.
 
 ## What we built
 
-A Spanish-first local site, designed and built from scratch:
+An online home for the congregation:
 
-- **Spanish-first, not translated** — navigation, structure, and content written in Spanish for Spanish speakers — never drafted in English and translated after, so nothing reads like an afterthought.
-- **Sections that serve the community** — local stories, events, and resources organized so people find what they need in a couple of taps.
-- **A simple publishing workflow** — new stories and updates go live without a developer in the loop.
-- **Mobile-first and fast** — built for the phones most readers use, on connections that aren’t always great.
-- **SEO for Spanish-language searches** — so the community finds the site when they search the way they speak.
+- **The essentials, easy to find** — where the church is, when services happen, and what programs are available.
+- **A multimedia ministry** — sermons, audio, and podcasts, organized so anyone can catch up or revisit a message.
+- **Live streaming** — services reach members who can't be in the room, in real time.
+- **AI-powered translations** — the site reaches the community in several languages, not just Spanish and English, with AI handling the translation work.
+- **Fast on any phone** — most of the congregation visits from a phone, so every page is built to load quickly.
 
 ## How it works
 
-A reader searches in Spanish — or follows a shared link — and lands on pages written in their language, not run through a translator. Stories, events, and resources are organized around what the community needs, and the publishing workflow keeps content moving: write, publish, done. And because the build is lean, pages load fast even on older phones.
+Someone hears about the church — or searches for it — and finds everything in one place: directions, service times, and programs. If they can't attend, the live stream brings the service to them; if they missed one, the sermons, audio, and podcasts are there any time. And because AI handles translation, the same message is readable across several languages without a translation team.
 
 ## The outcome
 
-Springfield’s Spanish-speaking community has a local site of its own — written in Spanish, easy to read on any phone, and simple enough to update that it stays current. It’s the difference between being an afterthought translation and being the intended audience.
+Springfield en Victoria has an online home that matches its mission: a place built to bring peace. The church is easy to find, its programs are easy to follow, and its message travels — live, recorded, and translated — to the whole community, wherever they are and whatever language they speak.
