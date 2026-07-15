@@ -5,9 +5,9 @@
 //
 // Pricing model:
 //   • Month-to-month: `price`/mo, cancel anytime.
-//   • Annual agreement: sign for 12 months and get 2 months free — you pay the
-//     yearly total (price × 10) billed monthly over 12 months. No prepay needed.
-//     yearlyTotal(p) = price × 10;  yearlyMonthly(p) = round(price × 10 / 12).
+//   • Yearly (prepaid): pay the year upfront — yearlyTotal = price × 10, the
+//     equivalent of 2 months free. yearlyMonthly = the per-month equivalent,
+//     shown for comparison only.
 
 export interface PlanFaq {
   q: string;
@@ -105,7 +105,7 @@ export const plans: Plan[] = [
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does the AI agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers keep asking you. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "multilingual" include?', a: 'The site and the AI agent both work in the languages your customers speak — for most of Western Mass that means English and Spanish, but it’s not limited to that.' },
-      { q: 'What happens if I cancel?', a: 'Month-to-month, you can cancel anytime and keep your domain and content. On an annual agreement, the discounted rate is tied to the 12-month term — the details are in our terms of service.' },
+      { q: 'What happens if I cancel?', a: 'Month-to-month, you can cancel anytime and keep your domain and content. Prepaid annual terms aren\u2019t refundable once the year starts — the details are in our terms of service.' },
     ],
   },
   {
@@ -304,7 +304,7 @@ export const plans: Plan[] = [
       { q: 'How do we decide what gets done each month?', a: 'A shared roadmap we review together monthly. You bring what’s changed in the business; we bring the numbers; the roadmap gets reprioritized accordingly.' },
       { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This gives you engineering, design, marketing, and AI expertise on the same retainer.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Smart Website (AI) or Online Store (AI) and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
-      { q: 'Is there a minimum commitment?', a: 'Month-to-month at the standard rate, cancel anytime. The discounted annual rate comes with a 12-month agreement — details in our terms of service.' },
+      { q: 'Is there a minimum commitment?', a: 'Month-to-month at the standard rate, cancel anytime. The discounted yearly rate is one upfront payment for 12 months — details in our terms of service.' },
     ],
   },
 ];
