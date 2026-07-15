@@ -82,7 +82,9 @@ export const plans: Plan[] = [
         items: [
           'Google Business Profile — created or cleaned up, and verified',
           'Technical SEO built in: structure, speed, metadata, local signals',
-          'Connected to Search Console so we can see what Google sees',
+          '360° image galleries — customers can step inside your business before they visit',
+          '360° videos — immersive walkthroughs for your site and your Google listing',
+          'Google Search Console integration — we monitor indexing, crawl coverage, and search-query performance against Google\u2019s own data',
         ],
       },
       {
