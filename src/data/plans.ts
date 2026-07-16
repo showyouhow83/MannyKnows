@@ -185,7 +185,7 @@ export const plans: Plan[] = [
     price: 550,
     tagline: 'The social, ads, and SEO that get you seen — and traffic built to convert.',
     highlights: [
-      'Social media growth — content, posting, branding',
+      'Social media growth across the platforms that fit — content, posting, branding',
       'Google Ads & social ads, managed (you fund the ad spend)',
       'Promotional banners, videos & interactive widgets that turn the traffic we drive into engagement',
       'SEO content campaigns + landing pages',
@@ -201,7 +201,7 @@ export const plans: Plan[] = [
         title: 'Social media growth',
         items: [
           'Content created, branded, and posted for you',
-          'A consistent presence on the platforms where your customers spend their time',
+          'A consistent presence on the platforms that fit your business — Facebook, Instagram, LinkedIn, TikTok, WhatsApp, YouTube, X, and more',
           'Comments and messages answered — engagement watched, not ignored',
         ],
       },
@@ -239,7 +239,7 @@ export const plans: Plan[] = [
       { q: 'Is ad spend included in the plan price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The plan covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
       { q: 'How fast will I see results?', a: 'Ads produce data within days and leads within weeks; SEO content compounds over months. We report both honestly — no invented numbers, ever.' },
-      { q: 'Which platforms do you manage?', a: 'Google, Facebook/Instagram, and the platforms your customers actually use — chosen per business, not a fixed menu.' },
+      { q: 'Which platforms do you manage?', a: 'The ones your customers actually use — and we figure out the formula for each. Google, Facebook, Instagram, LinkedIn, TikTok, WhatsApp, YouTube, X, and others as they fit your business. It\u2019s chosen and tuned per business, not a fixed menu.' },
       { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with the Smart Website (AI) or Online Store (AI) plan (or pair them), then pour traffic on.' },
     ],
   },
