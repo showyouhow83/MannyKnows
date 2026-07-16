@@ -30,7 +30,6 @@ for small businesses in Western Massachusetts).
 - KV: `MK_KV_CHATBOT`, `MK_KV_PROFILES`, `MK_KV_SESSIONS` (Astro Sessions —
   set via `sessionKVBindingName`), `MK_KV_SERVICES`, `MK_KV_PRODUCTS`,
   `MK_KV_SCHEDULER`.
-- R2: `MK_R2` (bucket `mannyknows-website-analysis`).
 - Static assets served via `ASSETS` binding from `./dist`.
 - On Astro 7, access bindings/env through **`cloudflare:workers` `env`**, not
   `Astro.locals.runtime.env` at module scope (see commit 93 hotfix — that caused
