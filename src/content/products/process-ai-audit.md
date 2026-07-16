@@ -26,4 +26,28 @@ You get a short, prioritized plan — quick wins first, bigger builds flagged fo
 
 This isn't a report that sits in a drawer. We stay on to build the automations, wire up the tools, and ship the fixes — with you in the loop the whole way.
 
+## We've mapped operations like yours
+
+For [VL Home Services](/work/vl-home-services), we mapped their entire operation — referrals-and-paper, everything by hand — and turned it into one connected system: a website, an admin dashboard, and a 24/7 AI Sales & Booking Agent. This audit is that same first step.
+
+## How it works
+
+1. **A short kickoff call.** We learn how your business actually runs, agree on scope, and send you a fixed quote before anything starts.
+2. **We map and assess.** We trace your workflows end to end, flag where time leaks and data's missing, and pinpoint where automation and AI genuinely pay off.
+3. **You get the plan — and the fixes.** A prioritized, quick-wins-first action plan, and we stay on to build the highest-leverage pieces with you.
+
+Most projects go from kickoff to done in 2–4 weeks, depending on scope.
+
+## FAQ
+
+**How much does this cost?** It's scoped to your business, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional.
+
+**How long does it take?** Most audits run 2–4 weeks from kickoff to a plan you can act on, depending on how much ground we cover. You get a firm timeline with the quote.
+
+**Do I own what you build?** Yes — completely. The action plan, the automations, and the tooling are yours, accounts and all. We build with you, never to lock you in.
+
+**What do I actually walk away with?** A prioritized, plain-English plan — not a 40-page PDF that gathers dust — plus the quick-win fixes we build alongside it. You'll know exactly what to do next and what it's worth.
+
 This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) makes us your full media and tech team.
+
+**Ready to find the leaks?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
