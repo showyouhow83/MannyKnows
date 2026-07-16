@@ -31,10 +31,6 @@
     { "binding": "MK_KV_SCHEDULER", "id": "22c4ca99de924d07996d6b44d538602a", "preview_id": "22c4ca99de924d07996d6b44d538602a" }
   ],
 
-  "r2_buckets": [
-    { "binding": "MK_R2", "bucket_name": "mannyknows-website-analysis" }
-  ],
-
   "routes": [
     { "pattern": "mannyknows.com/*", "zone_name": "mannyknows.com" },
     { "pattern": "www.mannyknows.com/*", "zone_name": "mannyknows.com" }
