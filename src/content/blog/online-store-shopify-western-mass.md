@@ -1,7 +1,7 @@
 ---
 title: "Turn Your Shop Into an Online Store: What Selling on Shopify Really Takes"
 description: "Setting up a Shopify store is easy; building one that actually sells — products, payments, emails, an AI shopping assistant — is the real work."
-pubDate: "2026-07-17"
+pubDate: "2026-07-16"
 author: "Manny"
 tags: ["eCommerce", "Shopify", "Online Store", "Western Massachusetts"]
 draft: false

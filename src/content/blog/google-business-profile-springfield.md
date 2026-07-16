@@ -1,7 +1,7 @@
 ---
 title: "How to Show Up on Google Maps for Your Springfield Business"
 description: "A plain-English, step-by-step guide to your Google Business Profile — so your Western Mass business shows up on Google Maps when locals search near me."
-pubDate: "2026-07-16"
+pubDate: "2026-07-15"
 author: "Manny"
 tags: ["Local SEO", "Google Business Profile", "Western Massachusetts"]
 draft: false
@@ -45,7 +45,7 @@ Google lets you post updates, offers, and photos right on your profile, like a m
 
 People searching "near me" or "in Springfield" are ready to act — they want someone close, now. A complete, active profile is how you win that moment.
 
-Here's the proof it works: **SL Painting** came to us invisible on Google, and today they rank **#1 organically for "exterior painting" in Springfield** — the result of a fast website and a local presence built to be found, profile included. [Read the SL Painting case study.](/work/sl-painting)
+Here's what a complete local presence can do: **SL Painting** came to us invisible on Google, and today they rank **#1 organically for "exterior painting" in Springfield** — the result of a fast website, technical SEO, and a Google Business Profile, all pulling together. The Profile is one piece of that engine, and it's the piece you can start on today. [Read the SL Painting case study.](/work/sl-painting)
 
 ## Where we come in
 
