@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Internal preview pages (also noindex via meta)
+Disallow: /preview/
+
+Sitemap: https://mannyknows.com/sitemap-index.xml
