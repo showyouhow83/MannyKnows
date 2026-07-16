@@ -30,6 +30,42 @@ import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
     <h1 class="sr-only">How it works — from process to app</h1>
     <ProcessSectionAlt />
 
+    <!-- A real example + a next step (so the page doesn't dead-end) -->
+    <section class="relative py-16 bg-light-primary dark:bg-dark-primary transition-colors duration-300">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 md:p-10">
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-4">A real example</span>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">
+            SL Painting: from invisible to booking jobs while they work
+          </h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">
+            The bottleneck: a painting contractor with a great reputation and no way for new customers to find them, and every lead handled by phone and memory. We mapped how the work actually came in, then built the fix — a fast website, an admin CRM to catch every lead, a 24/7 AI Sales &amp; Booking Agent, and AI Painter Lab so homeowners preview their house in 98 colors before they commit.
+          </p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
+            The result: SL Painting now ranks <strong class="text-text-light-primary dark:text-text-dark-primary">#1 on Google — organically — for “Exterior Painting” in Springfield</strong>, and leads arrive already qualified. That's the whole arc: find the bottleneck, build the fix, run and refine it.
+          </p>
+          <a href="/work/sl-painting" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+            Read the full SL Painting story
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+
+        <div class="text-center mt-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What's slowing your business down?</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-xl mx-auto mb-6">Tell us the process that eats your time — the quoting, the scheduling, the follow-ups. We'll map it on a short call and show you what we'd build.</p>
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="#contact" data-contact-context="How it works" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Book a free call
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <a href="/plans" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-7 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+              See the plans
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <DockMenu />
   </main>
 </BaseLayout>

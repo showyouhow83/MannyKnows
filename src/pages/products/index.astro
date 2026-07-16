@@ -32,7 +32,7 @@ const products = (await getCollection('products'))
       <div class="pb-12 px-4">
         <Container>
           <div class="text-center max-w-3xl mx-auto">
-            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Apps &amp; services</span>
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Products</span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>Software and services you can put to work</span>
             </h1>
@@ -43,6 +43,24 @@ const products = (await getCollection('products'))
         </Container>
       </div>
     </header>
+
+    <!-- One-time vs monthly — which is right for you -->
+    <Section id="products-vs-plans" variant="default">
+      <Container>
+        <div class="max-w-4xl mx-auto grid gap-5 sm:grid-cols-2">
+          <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6">
+            <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">One-time project <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— these products</span></h2>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-3">A fixed-scope job with a clear finish line: an audit, a build, an SEO push, an automation. You own the result. Best when you want a specific thing done, once.</p>
+            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Scoped and quoted up front, no big surprises.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Monthly plan <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— <a href="/plans" class="text-primary-blue dark:text-blue-300 hover:underline">the plans</a></span></h2>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-3">We build it and keep it working — fast, found, and up to date every month, with the AI Sales &amp; Booking Agent included. Best when you want it handled, not just delivered. From $200/mo.</p>
+            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Many clients do a one-time project, then roll onto a plan.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
 
     <Section id="products-list" variant="default">
       <Container>
