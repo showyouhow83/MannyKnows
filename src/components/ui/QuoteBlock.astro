@@ -1,0 +1,34 @@
+---
+// Compact single-testimonial block for embedding proof on high-intent pages
+// (plan detail, /plans, /services, local landing, case studies). Pass a
+// Testimonial from src/data/testimonials.ts. Renders nothing if none is given,
+// so callers can pass an optional lookup without guarding.
+import type { Testimonial } from '../../data/testimonials';
+
+interface Props {
+  quote?: Testimonial;
+  align?: 'left' | 'center';
+  class?: string;
+}
+const { quote, align = 'left', class: className = '' } = Astro.props;
+---
+
+{quote && (
+  <figure class={`relative rounded-2xl border border-primary-blue/25 bg-primary-blue/[0.04] dark:bg-primary-blue/[0.07] p-6 md:p-7 ${align === 'center' ? 'text-center' : ''} ${className}`}>
+    <svg class={`w-8 h-8 text-primary-blue/35 dark:text-blue-300/35 mb-3 ${align === 'center' ? 'mx-auto' : ''}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7.17 6.17A5.5 5.5 0 002 11.5V18h6.5v-6.5H4.83a3.5 3.5 0 013.5-3.5l-1.16-1.83zM17.17 6.17a5.5 5.5 0 00-5.17 5.33V18h6.5v-6.5h-3.67a3.5 3.5 0 013.5-3.5l-1.16-1.83z" />
+    </svg>
+    <blockquote class="text-[15px] md:text-base text-text-light-primary dark:text-text-dark-primary leading-relaxed">
+      “{quote.quote}”
+    </blockquote>
+    <figcaption class={`mt-4 flex items-center gap-2 text-sm ${align === 'center' ? 'justify-center' : ''}`}>
+      <span class="font-bold text-text-light-primary dark:text-text-dark-primary">{quote.name}</span>
+      <span class="text-text-light-tertiary dark:text-text-dark-tertiary">·</span>
+      {quote.href ? (
+        <a href={quote.href} class="text-primary-blue dark:text-blue-300 font-medium hover:underline">{quote.business} →</a>
+      ) : (
+        <span class="text-text-light-secondary dark:text-text-dark-secondary">{quote.business}</span>
+      )}
+    </figcaption>
+  </figure>
+)}

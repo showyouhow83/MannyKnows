@@ -9,6 +9,8 @@ import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
 import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import { getTestimonial } from '../data/testimonials';
 ---
 
 <BaseLayout
@@ -43,6 +45,9 @@ import ProductsHighlight from '../components/sections/ProductsHighlight.astro';
       <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
         <AiWebsiteShowcase />
         <ProductsHighlight />
+        <div class="max-w-2xl mx-auto mt-16">
+          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
+        </div>
       </div>
     </section>
 

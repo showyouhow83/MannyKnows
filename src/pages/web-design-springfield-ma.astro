@@ -10,6 +10,8 @@ import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import { getTestimonial } from '../data/testimonials';
 
 const towns = [
   'Springfield', 'Chicopee', 'Holyoke', 'West Springfield', 'Westfield',
@@ -138,7 +140,16 @@ const localBusinessSchema = {
       </Container>
     </Section>
 
-    <Section id="local-area" variant="alternate">
+    <Section id="local-proof" variant="alternate">
+      <Container>
+        <div class="max-w-2xl mx-auto text-center">
+          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">Proof, right here in Springfield</p>
+          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="local-area" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto text-center">
           <h2 class="sf-bold text-3xl md:text-4xl font-bold mb-4">

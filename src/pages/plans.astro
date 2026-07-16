@@ -12,6 +12,8 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import { getTestimonial } from '../data/testimonials';
 
 const faqs = [
   {
@@ -77,6 +79,9 @@ const faqSchema = {
     <Section id="plans-list" variant="default">
       <Container>
         <PricingPlans />
+        <div class="max-w-2xl mx-auto mt-14">
+          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
+        </div>
       </Container>
     </Section>
 
