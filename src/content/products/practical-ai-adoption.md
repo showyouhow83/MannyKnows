@@ -25,4 +25,28 @@ AI agents and chat assistants grounded in your own content and data (RAG), so an
 
 Everything ships with clear review checkpoints. AI does the heavy lifting; you keep control of what actually goes out the door.
 
-If what you want is an AI agent answering customers and booking appointments on your site 24/7, that's already built into the [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) — and the [Online Store (AI) plan](/plans/online-store) (from $350/mo) adds an AI shopping assistant to your storefront.
+## AI that actually shipped
+
+For [SL Painting](/work/sl-painting), we built a 24/7 AI Sales & Booking Agent that answers homeowners and qualifies leads around the clock — grounded in their business, not a generic bot. Real AI, doing a real job.
+
+## How it works
+
+1. **Find where AI actually helps.** A short working session on your goals, where we scope what AI's worth doing (and what it isn't) and quote it.
+2. **Build it on your data.** The right model for the job, plus an AI Sales & Booking Agent or RAG assistant grounded in your real content — with review checkpoints built in.
+3. **Ship with a human in the loop.** You keep control of what goes out the door; we hand it off documented.
+
+Most projects go from kickoff to done in 2–4 weeks, depending on scope.
+
+## FAQ
+
+**How much does this cost?** It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the AI maintained and improving, but that's optional.
+
+**How long does it take?** Most builds run 2–4 weeks from kickoff to live, depending on scope. You get a firm timeline with the quote.
+
+**Do I own what you build?** Yes — completely. The prompts, the assistant, and the accounts are yours; we build with you, never to lock you in.
+
+**Will the AI make things up?** We ground it in your own content (RAG) and ship clear review checkpoints, so answers stay accurate and you approve what matters. AI does the heavy lifting; a human keeps control.
+
+If what you want is an AI Sales & Booking Agent answering customers and booking appointments on your site 24/7, that's already built into the [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) — and the [Online Store (AI) plan](/plans/online-store) (from $350/mo) adds an AI shopping assistant to your storefront.
+
+**Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
