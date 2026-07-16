@@ -1,5 +1,5 @@
 ---
-// Products index — lists the apps & services we offer
+// Products index — one-time, fixed-scope projects (distinct from the monthly plans)
 export const prerender = true;
 
 import { getCollection } from 'astro:content';
@@ -17,7 +17,7 @@ const products = (await getCollection('products'))
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
-<BaseLayout title="Products — Apps & Services for Western Mass Businesses | MannyKnows">
+<BaseLayout title="Products — One-Time Projects for Western Mass Businesses | MannyKnows">
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
     <MarqueeSimple />
 
