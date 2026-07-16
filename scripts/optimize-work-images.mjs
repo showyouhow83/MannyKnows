@@ -14,7 +14,7 @@ import { statSync } from 'node:fs';
 
 const srcDir = './src/assets/works/';
 const outDir = './public/works/';
-const bases = ['slpainting-desktop', 'cherry-vibes-d', 'vl-d', 'enVictoria-d'];
+const bases = ['slpainting-desktop', 'jkdaycare-desktop', 'cherry-vibes-d', 'vl-d', 'enVictoria-d'];
 const widths = [400, 640, 960, 1280];
 const kb = (b) => (b / 1024).toFixed(0) + ' KB';
 

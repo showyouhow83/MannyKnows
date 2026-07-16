@@ -34,7 +34,7 @@ export const selectedWork: WorkItem[] = [
     blurb: "Licensed childcare — a website with an AI agent for parents' questions, plus a Twilio IVR that answers and routes every call. Built in two weeks.",
     tags: ['Childcare', 'AI agent', 'Twilio IVR'],
     caseStudy: 'jk-daycare',
-    // image: '/work/jkdaycare.png',
+    image: 'jkdaycare-desktop',
   },
   {
     name: 'eCommerce Product Importer',
