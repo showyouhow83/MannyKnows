@@ -88,10 +88,10 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
                       <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1">{d.industry}</span>
                     )}
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-3 leading-relaxed flex-1">{d.tagline}</p>
-                    {d.techStack.length > 0 && (
+                    {d.services.length > 0 && (
                       <div class="flex flex-wrap gap-1.5 mt-4">
-                        {d.techStack.slice(0, 4).map((t) => (
-                          <span class="text-[11px] font-medium text-text-light-secondary dark:text-text-dark-secondary bg-black/5 dark:bg-white/10 rounded-full px-2 py-0.5">{t}</span>
+                        {d.services.slice(0, 3).map((t) => (
+                          <span class="text-[11px] font-medium text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2 py-0.5">{t}</span>
                         ))}
                       </div>
                     )}

@@ -45,17 +45,17 @@ export const plans: Plan[] = [
     name: 'Smart Website (AI)',
     icon: '🌐',
     price: 200,
-    tagline: 'A multilingual site with an AI agent that books jobs 24/7 — no big upfront bill.',
+    tagline: 'A multilingual site with an AI agent that sells and books jobs 24/7 — no big upfront bill.',
     highlights: [
       'Multilingual website, designed & built',
-      'AI agent answers customers & books appointments 24/7',
+      'AI Sales & Booking Agent — answers, qualifies, sells, and books appointments 24/7',
       'Google Business Profile — setup & verification',
       'Technical SEO + speed tuning (near-100 Lighthouse)',
       'Monthly fixes, monitoring & a plain-English report',
     ],
     headline: 'Your website, working around the clock',
     blurb:
-      "Most local businesses lose the customers they never hear from — the ones who searched at 9 p.m., found nothing (or a dead site), and called someone else. The Smart Website (AI) plan fixes that: a fast, multilingual website with an AI agent that answers questions and books appointments 24/7, kept ranking and up to date by us — for a monthly price instead of a big upfront bill.",
+      "Most local businesses lose the customers they never hear from — the ones who searched at 9 p.m., found nothing (or a dead site), and called someone else. The Smart Website (AI) plan fixes that: a fast, multilingual website with an AI Sales & Booking Agent that answers questions, qualifies leads, and books appointments 24/7, kept ranking and up to date by us — for a monthly price instead of a big upfront bill.",
     whoFor:
       'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
     deliverables: [
@@ -69,12 +69,12 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: 'The AI agent',
+        title: 'The AI Sales & Booking Agent',
         items: [
-          'Answers customer questions on your site 24/7 — in their language',
-          'Books appointments and captures leads while you work or sleep',
+          'Not a chatbot — it answers, qualifies, and sells, then books the appointment right there',
+          'Works your site 24/7 in your customer\u2019s language, even after closing',
           'Trained on your business: your services, prices, hours, and how you talk',
-          'Hands the conversation to you the moment a human should take over',
+          'Every conversation becomes a lead in your admin; hands off to you when a human should take over',
         ],
       },
       {
@@ -105,7 +105,7 @@ export const plans: Plan[] = [
     faq: [
       { q: 'I already have a website — do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'How does the AI agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers keep asking you. You review how it answers before it goes live, and we keep refining it.' },
+      { q: 'How does the AI Sales & Booking Agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers keep asking you. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "multilingual" include?', a: 'The site and the AI agent both work in the languages your customers speak — for most of Western Mass that means English and Spanish, but it’s not limited to that.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, you can cancel anytime and keep your domain and content. Prepaid annual terms aren\u2019t refundable once the year starts — the details are in our terms of service.' },
     ],
