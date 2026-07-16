@@ -2,8 +2,8 @@
 draft: false
 title: "SL Painting"
 client: "SL Painting"
-tagline: "From invisible on Google to ranking for “exterior painting” across Western Mass — with a website, a CRM, a 24/7 AI agent, and AI Painter Lab."
-summary: "SL Painting had a strong offline reputation and nothing online — they didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 98 colors. Today they rank for “exterior painting” across Western Massachusetts."
+tagline: "From invisible on Google to #1 organically for “exterior painting” in Springfield — with a website, a CRM, a 24/7 AI agent, and AI Painter Lab."
+summary: "SL Painting had a strong offline reputation and nothing online — they didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 98 colors. Today they rank #1 on Google — organically — for “exterior painting” in Springfield."
 industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -28,7 +28,7 @@ goals:
 
 # Outcome metrics — real, verifiable results (not invented ROI figures).
 results:
-  - { value: "0→1", label: "From invisible on Google to ranking across Western Mass" }
+  - { value: "#1", label: "Ranked #1 on Google for “Exterior Painting” in Springfield — organically" }
   - { value: "100", label: "Lighthouse score — and kept that way" }
   - { value: "98", label: "Paint colors homeowners can preview in AI Painter Lab" }
   - { value: "24/7", label: "AI agent answering & qualifying leads" }
@@ -57,4 +57,4 @@ The website brings people in and hands every lead straight to the CRM — no cop
 
 ## The outcome
 
-SL Painting went from invisible online — not even showing up on Google — to ranking for "exterior painting" across Western Massachusetts: a fast site that brings in work, one place to manage it, an AI agent that never sleeps, and AI Painter Lab getting homeowners excited before the first conversation. And it's still being optimized.
+SL Painting went from invisible online — not even showing up on Google — to #1 on Google — organically — for "exterior painting" in Springfield: a fast site that brings in work, one place to manage it, an AI agent that never sleeps, and AI Painter Lab getting homeowners excited before the first conversation. And it's still being optimized.

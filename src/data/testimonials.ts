@@ -69,3 +69,9 @@ export const demoTestimonials: Testimonial[] = [
     role: 'Owner',
   },
 ];
+
+// Look up a published testimonial by business name (exact match). Returns
+// undefined if that client hasn't given a quote yet — callers should handle it.
+export function getTestimonial(business: string): Testimonial | undefined {
+  return testimonials.find((t) => t.business === business || t.name === business);
+}

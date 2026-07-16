@@ -12,6 +12,8 @@ import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
 import Button from '../../components/ui/Button.astro';
+import QuoteBlock from '../../components/ui/QuoteBlock.astro';
+import { getTestimonial } from '../../data/testimonials';
 
 export async function getStaticPaths() {
   const projects = await getCollection('portfolio');
@@ -23,6 +25,9 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const d = project.data;
+
+// This client's own testimonial, if they've given one (undefined otherwise).
+const clientQuote = getTestimonial(d.client ?? d.title);
 
 // Responsive screenshots share the homepage pipeline: variants live at
 // public/works/<base>-<width>.<ext>. A value containing "/" or "." is treated
@@ -132,6 +137,8 @@ const facts = [
               <article class="blog-prose">
                 <Content />
               </article>
+
+              {clientQuote && <div class="mt-8"><QuoteBlock quote={clientQuote} /></div>}
             </div>
 
             <!-- "At a glance" sticky sidebar -->

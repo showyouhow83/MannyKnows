@@ -10,6 +10,8 @@ import DockMenu from '../../components/navigation/DockMenu.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
+import { getTestimonial } from '../../data/testimonials';
+import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 
 export function getStaticPaths() {
   return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
@@ -17,6 +19,17 @@ export function getStaticPaths() {
 
 const { plan } = Astro.props as { plan: Plan };
 const others = plans.filter((p) => p.slug !== plan.slug);
+
+// Proof map — the testimonial (if one exists) and the case studies that prove
+// this plan. Honest: only clients who actually gave a quote get one shown.
+const proofMap: Record<string, { quote?: string; cases: { slug: string; name: string }[] }> = {
+  'smart-website': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
+  'online-store': { cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
+  'business-ads': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
+  'multimedia-agency': { quote: 'VL Home Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
+};
+const proof = proofMap[plan.slug];
+const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -114,6 +127,26 @@ const faqSchema = {
         </p>
       </Container>
     </Section>
+
+    <!-- Proof — testimonial (if any) + the case studies that show this plan working -->
+    {proof && (
+      <Section id="plan-proof" variant="default">
+        <Container>
+          <div class="max-w-3xl mx-auto">
+            {proofQuote && <QuoteBlock quote={proofQuote} />}
+            <div class={`flex flex-wrap items-center justify-center gap-3 ${proofQuote ? 'mt-6' : ''}`}>
+              <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
+              {proof.cases.map((c) => (
+                <a href={`/work/${c.slug}`} class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
+                  {c.name}
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </Section>
+    )}
 
     <!-- How it works -->
     <Section id="plan-steps" variant="alternate">
