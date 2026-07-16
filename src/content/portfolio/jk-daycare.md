@@ -34,7 +34,7 @@ results:
   - { value: "100", label: "Lighthouse score — fast on any parent's phone" }
 
 liveUrl: "https://jkdaycare.com"
-# heroImage: "TODO — drop a screenshot into src/assets/works and run scripts/optimize-work-images.mjs"
+heroImage: "jkdaycare-desktop"
 ---
 
 ## The challenge
