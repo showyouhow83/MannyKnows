@@ -258,7 +258,7 @@ export const plans: Plan[] = [
     ],
     headline: 'Your full media & tech team — without hiring one',
     blurb:
-      "One plan, everything handled: your website or store built and run, your advertising and promotion managed, and a senior engineering team on call for custom software, AI automation, and data work. It’s the closest thing to having your own media and technology department — for less than a single hire.",
+      "One plan, everything handled: your website or store built and run, your advertising and promotion managed, and senior engineering on call for custom software, AI automation, and data work. It’s the closest thing to having your own media and technology department — for less than a single hire.",
     whoFor:
       'Businesses ready to grow on every front at once — or owners who simply want one accountable team for all of it instead of juggling vendors.',
     deliverables: [
@@ -304,7 +304,7 @@ export const plans: Plan[] = [
     faq: [
       { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
       { q: 'How do we decide what gets done each month?', a: 'A shared roadmap we review together monthly. You bring what’s changed in the business; we bring the numbers; the roadmap gets reprioritized accordingly.' },
-      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This gives you engineering, design, marketing, and AI expertise on the same retainer.' },
+      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This puts engineering, design, marketing, and AI expertise on one retainer.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Smart Website (AI) or Online Store (AI) and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
       { q: 'Is there a minimum commitment?', a: 'Month-to-month at the standard rate, cancel anytime. The discounted yearly rate is one upfront payment for 12 months — details in our terms of service.' },
     ],
