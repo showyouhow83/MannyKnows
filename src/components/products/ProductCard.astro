@@ -8,9 +8,10 @@ interface Props {
   type?: 'App' | 'Service' | 'Platform';
   image?: string;
   services?: string[];
+  startingAt?: number;
 }
 
-const { href, title, tagline, type = 'Service', image, services = [] } = Astro.props;
+const { href, title, tagline, type = 'Service', image, services = [], startingAt } = Astro.props;
 
 const typeStyles = {
   App:      { gradient: 'from-blue-500/20 to-cyan-500/20',     badge: 'bg-blue-500/15 text-blue-600 dark:text-blue-300',     hover: 'hover:border-blue-400/40' },
@@ -38,6 +39,9 @@ const initials = title.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperC
   <div class="flex flex-col flex-1 p-5">
     <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-1.5 leading-snug group-hover:text-primary-blue transition-colors">{title}</h3>
     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4 flex-1">{tagline}</p>
+    {startingAt && (
+      <p class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-3">From ${startingAt.toLocaleString('en-US')} <span class="font-normal text-text-light-tertiary dark:text-text-dark-tertiary">· quoted up front</span></p>
+    )}
     {services.length > 0 && (
       <div class="flex flex-wrap gap-1.5 mb-4">
         {services.slice(0, 3).map((s) => (

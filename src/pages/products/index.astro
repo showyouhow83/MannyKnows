@@ -51,7 +51,7 @@ const products = (await getCollection('products'))
           <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6">
             <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">One-time project <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— these products</span></h2>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-3">A fixed-scope job with a clear finish line: an audit, a build, an SEO push, an automation. You own the result. Best when you want a specific thing done, once.</p>
-            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Scoped and quoted up front, no big surprises.</p>
+            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Each starts from a set price, billed at a flat $75/hr — quoted up front, no big surprises.</p>
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
             <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Monthly plan <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— <a href="/plans" class="text-primary-blue dark:text-blue-300 hover:underline">the plans</a></span></h2>
@@ -76,6 +76,7 @@ const products = (await getCollection('products'))
                 type={p.data.type}
                 image={p.data.image}
                 services={p.data.services}
+                startingAt={p.data.startingAt}
               />
             ))}
           </div>

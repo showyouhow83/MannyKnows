@@ -9,9 +9,10 @@ services:
   - "Accessibility"
   - "Astro + Cloudflare builds"
 order: 2
+startingAt: 1000
 faq:
   - q: "How much does this cost?"
-    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the site fast and maintained, but that's optional."
+    a: "It starts at $1,000 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the site fast and maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most builds run 2–4 weeks from kickoff to launch, depending on scope and how many pages. You get a firm timeline with the quote."
   - q: "Do I own what you build?"

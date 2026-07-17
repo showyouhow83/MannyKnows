@@ -9,6 +9,7 @@ import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
+import { BOOKING_URL } from '../data/booking';
 
 const inputClass =
   'w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm';
@@ -63,6 +64,10 @@ const inputClass =
 
           <!-- Direct channels -->
           <div class="lg:col-span-2 space-y-4">
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="block rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/60 hover:shadow-lg transition-all duration-300">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-1">Book a call</span>
+              <span class="text-text-light-primary dark:text-text-dark-primary font-semibold">Pick a time that works for you →</span>
+            </a>
             <a href="mailto:mk@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Email</span>
               <span class="text-primary-blue dark:text-blue-300 font-semibold">mk@mannyknows.com</span>

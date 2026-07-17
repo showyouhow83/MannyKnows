@@ -31,6 +31,7 @@ const products = defineCollection({
     services: z.array(z.string()).default([]),  // what's included / key capabilities
     liveUrl: z.string().optional(),             // live site or demo link
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]), // shared FAQ block
+    startingAt: z.number().optional(),          // one-time "starting at" price anchor (USD)
     flagship: z.boolean().default(false),       // shown via the custom showcase on the homepage
     order: z.number().default(99),              // ascending sort order
     draft: z.boolean().default(false),
