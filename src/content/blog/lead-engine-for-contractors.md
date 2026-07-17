@@ -28,4 +28,4 @@ That's why the website hands off instantly — no copy-pasting from email into a
 
 Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform — and it's exactly what we built for [SL Painting](/work/sl-painting), the painting contractor now ranked #1 on Google for "Exterior Painting" in Springfield.
 
-This is the [Smart Website (AI) plan](/plans/smart-website) in action — a site with a 24/7 AI Sales & Booking Agent, from $200/mo. Want to see how it would work for your business? [Get in touch](#contact) and tell us what you do.
+This is the [Smart Website (AI) plan](/plans/smart-website) in action — a site with a 24/7 AI Sales & Booking Agent, from $350/mo. Want to see how it would work for your business? [Get in touch](#contact) and tell us what you do.

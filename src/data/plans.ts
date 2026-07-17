@@ -44,7 +44,7 @@ export const plans: Plan[] = [
     slug: 'smart-website',
     name: 'Smart Website (AI)',
     icon: '🌐',
-    price: 200,
+    price: 350,
     tagline: 'A multilingual site with an AI agent that sells and books jobs 24/7 — no big upfront bill.',
     highlights: [
       'Multilingual website, designed & built',
@@ -114,7 +114,7 @@ export const plans: Plan[] = [
     slug: 'online-store',
     name: 'Online Store (AI)',
     icon: '🛒',
-    price: 350,
+    price: 650,
     tagline: 'A full online store that sells — designed, themed, and optimized.',
     highlights: [
       'Multilingual storefront with an AI shopping assistant',
@@ -182,7 +182,7 @@ export const plans: Plan[] = [
     slug: 'business-ads',
     name: 'Business Ads',
     icon: '📣',
-    price: 550,
+    price: 950,
     tagline: 'The social, ads, and SEO that get you seen — and traffic built to convert.',
     highlights: [
       'Social media growth across the platforms that fit — content, posting, branding',
@@ -247,7 +247,7 @@ export const plans: Plan[] = [
     slug: 'multimedia-agency',
     name: 'Multimedia Agency',
     icon: '🧩',
-    price: 1000,
+    price: 1800,
     tagline: 'Everything, handled — we design, build, promote, and optimize whatever your business needs.',
     highlights: [
       'We build your site — or optimize the one you already have',

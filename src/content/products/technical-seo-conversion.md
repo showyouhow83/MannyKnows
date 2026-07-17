@@ -12,7 +12,7 @@ order: 3
 startingAt: 500
 faq:
   - q: "How much does this cost?"
-    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep SEO and speed maintained, but that's optional."
+    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep SEO and speed maintained, but that's optional."
   - q: "How long does it take?"
     a: "The technical work is usually 2–4 weeks from kickoff; rankings then build over the following weeks and months. You get a firm timeline with the quote."
   - q: "Do I own what you build?"
@@ -49,7 +49,7 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it ranking
 
-SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $550/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
+SEO isn't a one-and-done. The [Smart Website (AI) plan](/plans/smart-website) (from $350/mo) keeps technical SEO and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $950/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
 
 **Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
 

@@ -12,7 +12,7 @@ order: 4
 startingAt: 600
 faq:
   - q: "How much does this cost?"
-    a: "It starts at $600 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the automations monitored and maintained, but that's optional."
+    a: "It starts at $600 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the automations monitored and maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most automation projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote."
   - q: "Do I own what you build?"
@@ -47,7 +47,7 @@ For [VL Home Services](/work/vl-home-services), we connected their admin dashboa
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) puts a full media and tech team on it.
+When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,800/mo) puts a full media and tech team on it.
 
 **Ready?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
 
