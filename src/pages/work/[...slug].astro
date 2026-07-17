@@ -111,7 +111,7 @@ const facts = [
                 <div class={`grid gap-4 mb-12 ${d.results.length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
                   {d.results.map((r) => (
                     <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-5 text-center">
-                      <div class="text-3xl md:text-4xl font-bold apple-gradient-text leading-none mb-2">{r.value}</div>
+                      <div class="text-2xl md:text-3xl font-bold apple-gradient-text leading-none mb-2">{r.value}</div>
                       <div class="text-xs text-text-light-secondary dark:text-text-dark-secondary uppercase tracking-wide">{r.label}</div>
                     </div>
                   ))}
