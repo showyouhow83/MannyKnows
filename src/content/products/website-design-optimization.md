@@ -12,7 +12,7 @@ order: 2
 startingAt: 1000
 faq:
   - q: "How much does this cost?"
-    a: "It starts at $1,000 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the site fast and maintained, but that's optional."
+    a: "It starts at $1,000 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the site fast and maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most builds run 2–4 weeks from kickoff to launch, depending on scope and how many pages. You get a firm timeline with the quote."
   - q: "Do I own what you build?"
@@ -49,7 +49,7 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it winning
 
-The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI Sales & Booking Agent answering customers and booking appointments around the clock — roll onto the [Smart Website (AI) plan](/plans/smart-website), from $200/mo.
+The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI Sales & Booking Agent answering customers and booking appointments around the clock — roll onto the [Smart Website (AI) plan](/plans/smart-website), from $350/mo.
 
 **Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
 

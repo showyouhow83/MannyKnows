@@ -13,7 +13,7 @@ order: 1
 startingAt: 300
 faq:
   - q: "How much does this cost?"
-    a: "It starts at $300 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional."
+    a: "It starts at $300 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the fixes maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most audits run 2–4 weeks from kickoff to a plan you can act on, depending on how much ground we cover. You get a firm timeline with the quote."
   - q: "Do I own what you build?"
@@ -48,7 +48,7 @@ For [VL Home Services](/work/vl-home-services), we mapped their entire operation
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) makes us your full media and tech team.
+This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,800/mo) makes us your full media and tech team.
 
 **Ready to find the leaks?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
 
