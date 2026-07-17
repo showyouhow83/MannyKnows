@@ -9,6 +9,15 @@ services:
   - "Twilio (phone / SMS)"
   - "API & webhook integration"
 order: 4
+faq:
+  - q: "How much does this cost?"
+    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the automations monitored and maintained, but that's optional."
+  - q: "How long does it take?"
+    a: "Most automation projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote."
+  - q: "Do I own what you build?"
+    a: "Yes — completely. The flows, the accounts, and the documentation are yours; we build with you, never to lock you in."
+  - q: "Will it work with the tools I already use?"
+    a: "Almost always — we connect what you've got (website, inbox, CRM, calendar, accounting) rather than making you switch. If something can't connect cleanly, we'll tell you up front."
 ---
 
 The fastest way to get hours back is to stop doing the work a machine can do. We connect your tools and automate the routine so it just happens.
@@ -37,16 +46,7 @@ For [VL Home Services](/work/vl-home-services), we connected their admin dashboa
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-## FAQ
-
-**How much does this cost?** It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the automations monitored and maintained, but that's optional.
-
-**How long does it take?** Most automation projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote.
-
-**Do I own what you build?** Yes — completely. The flows, the accounts, and the documentation are yours; we build with you, never to lock you in.
-
-**Will it work with the tools I already use?** Almost always — we connect what you've got (website, inbox, CRM, calendar, accounting) rather than making you switch. If something can't connect cleanly, we'll tell you up front.
-
 When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) puts a full media and tech team on it.
 
 **Ready?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
+

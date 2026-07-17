@@ -11,6 +11,7 @@ import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
 import Button from '../../components/ui/Button.astro';
+import Faq from '../../components/ui/Faq.astro';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -91,6 +92,12 @@ const typeBadge = {
           <article class="blog-prose">
             <Content />
           </article>
+
+          {product.data.faq.length > 0 && (
+            <div class="mt-14 pt-10 border-t border-light-tertiary dark:border-dark-accent">
+              <Faq faqs={product.data.faq} />
+            </div>
+          )}
 
           <div class="mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent flex items-center justify-between flex-wrap gap-4">
             <a href="/products" class="inline-flex items-center gap-2 text-primary-blue font-medium group">

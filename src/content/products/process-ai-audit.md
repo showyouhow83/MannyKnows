@@ -10,6 +10,15 @@ services:
   - "Hands-on execution"
   - "Data & tooling gap fixes"
 order: 1
+faq:
+  - q: "How much does this cost?"
+    a: "It's scoped to your business, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional."
+  - q: "How long does it take?"
+    a: "Most audits run 2–4 weeks from kickoff to a plan you can act on, depending on how much ground we cover. You get a firm timeline with the quote."
+  - q: "Do I own what you build?"
+    a: "Yes — completely. The action plan, the automations, and the tooling are yours, accounts and all. We build with you, never to lock you in."
+  - q: "What do I actually walk away with?"
+    a: "A prioritized, plain-English plan — not a 40-page PDF that gathers dust — plus the quick-win fixes we build alongside it. You'll know exactly what to do next and what it's worth."
 ---
 
 Most small businesses don't need more software — they need someone to look at how the work actually flows and fix the parts that leak time. That's what this is.
@@ -38,16 +47,7 @@ For [VL Home Services](/work/vl-home-services), we mapped their entire operation
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-## FAQ
-
-**How much does this cost?** It's scoped to your business, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional.
-
-**How long does it take?** Most audits run 2–4 weeks from kickoff to a plan you can act on, depending on how much ground we cover. You get a firm timeline with the quote.
-
-**Do I own what you build?** Yes — completely. The action plan, the automations, and the tooling are yours, accounts and all. We build with you, never to lock you in.
-
-**What do I actually walk away with?** A prioritized, plain-English plan — not a 40-page PDF that gathers dust — plus the quick-win fixes we build alongside it. You'll know exactly what to do next and what it's worth.
-
 This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,000/mo) makes us your full media and tech team.
 
 **Ready to find the leaks?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
+

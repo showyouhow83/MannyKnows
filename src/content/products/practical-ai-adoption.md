@@ -9,6 +9,15 @@ services:
   - "Prompt & context design"
   - "MCP integrations"
 order: 5
+faq:
+  - q: "How much does this cost?"
+    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the AI maintained and improving, but that's optional."
+  - q: "How long does it take?"
+    a: "Most builds run 2–4 weeks from kickoff to live, depending on scope. You get a firm timeline with the quote."
+  - q: "Do I own what you build?"
+    a: "Yes — completely. The prompts, the assistant, and the accounts are yours; we build with you, never to lock you in."
+  - q: "Will the AI make things up?"
+    a: "We ground it in your own content (RAG) and ship clear review checkpoints, so answers stay accurate and you approve what matters. AI does the heavy lifting; a human keeps control."
 ---
 
 AI is worth it in specific places and a distraction in others. We help you tell the difference, then build the parts that earn their keep.
@@ -37,16 +46,7 @@ For [SL Painting](/work/sl-painting), we built a 24/7 AI Sales & Booking Agent t
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-## FAQ
-
-**How much does this cost?** It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the AI maintained and improving, but that's optional.
-
-**How long does it take?** Most builds run 2–4 weeks from kickoff to live, depending on scope. You get a firm timeline with the quote.
-
-**Do I own what you build?** Yes — completely. The prompts, the assistant, and the accounts are yours; we build with you, never to lock you in.
-
-**Will the AI make things up?** We ground it in your own content (RAG) and ship clear review checkpoints, so answers stay accurate and you approve what matters. AI does the heavy lifting; a human keeps control.
-
 If what you want is an AI Sales & Booking Agent answering customers and booking appointments on your site 24/7, that's already built into the [Smart Website (AI) plan](/plans/smart-website) (from $200/mo) — and the [Online Store (AI) plan](/plans/online-store) (from $350/mo) adds an AI shopping assistant to your storefront.
 
 **Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
+
