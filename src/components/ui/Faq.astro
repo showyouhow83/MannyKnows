@@ -1,0 +1,43 @@
+---
+// Shared FAQ block — one consistent card style for every FAQ on the site
+// (/plans, /plans/<slug>, and the product detail pages). Pass an array of
+// {q, a}. Emits FAQPage structured data unless schema={false}.
+interface FaqItem { q: string; a: string; }
+interface Props {
+  faqs: FaqItem[];
+  heading?: string;
+  schema?: boolean;
+}
+const { faqs, heading = 'Common questions', schema = true } = Astro.props;
+
+const faqSchema = schema && faqs.length > 0
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+{faqs.length > 0 && (
+  <div class="max-w-3xl mx-auto">
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+    {heading && (
+      <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
+        <span class="apple-gradient-text" data-colorful-title>{heading}</span>
+      </h2>
+    )}
+    <div class="space-y-4">
+      {faqs.map((f) => (
+        <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+          <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
+          <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}

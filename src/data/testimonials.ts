@@ -42,6 +42,13 @@ export const testimonials: Testimonial[] = [
     business: 'Church community',
     href: '/work/springfield-en-victoria',
   },
+  {
+    quote:
+      "We're fascinated with our new website and admin. We can manage our children and communicate with their parents effectively, and the system is so easy to use — and fast. We've only been live a week, and we can already see our traffic growing day by day.",
+    name: 'Owner',
+    business: 'JK Daycare',
+    href: '/work/jk-daycare',
+  },
 ];
 
 // DEMO quotes — shown ONLY on /preview/testimonials so Manny can see the

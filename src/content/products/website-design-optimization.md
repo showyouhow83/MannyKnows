@@ -9,6 +9,15 @@ services:
   - "Accessibility"
   - "Astro + Cloudflare builds"
 order: 2
+faq:
+  - q: "How much does this cost?"
+    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the site fast and maintained, but that's optional."
+  - q: "How long does it take?"
+    a: "Most builds run 2–4 weeks from kickoff to launch, depending on scope and how many pages. You get a firm timeline with the quote."
+  - q: "Do I own what you build?"
+    a: "Yes — completely. The code, content, and accounts are yours; we build with you, never to lock you in."
+  - q: "Can you work with my existing site?"
+    a: "Yes. We'll audit what you have and optimize it, or build new from scratch — whichever gets you a faster, better-converting site."
 ---
 
 A slow, clunky site loses customers before they ever reach you. We build sites that load instantly and feel effortless — and we can do the same for the site you already have.
@@ -37,18 +46,9 @@ We built [SL Painting](/work/sl-painting) a site from scratch — today they ran
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-## FAQ
-
-**How much does this cost?** It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the site fast and maintained, but that's optional.
-
-**How long does it take?** Most builds run 2–4 weeks from kickoff to launch, depending on scope and how many pages. You get a firm timeline with the quote.
-
-**Do I own what you build?** Yes — completely. The code, content, and accounts are yours; we build with you, never to lock you in.
-
-**Can you work with my existing site?** Yes. We'll audit what you have and optimize it, or build new from scratch — whichever gets you a faster, better-converting site.
-
 ## Then keep it winning
 
 The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI Sales & Booking Agent answering customers and booking appointments around the clock — roll onto the [Smart Website (AI) plan](/plans/smart-website), from $200/mo.
 
 **Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
+
