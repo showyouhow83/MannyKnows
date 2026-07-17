@@ -4,7 +4,6 @@
 // and distinct while sharing one layout. Thin page wrappers live at
 // src/pages/web-design-<slug>-ma.astro.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import MarqueeSimple from '../MarqueeSimple.astro';
 import NavBar from '../navigation/NavBar.astro';
 import DockMenu from '../navigation/DockMenu.astro';
 import Section from '../layout/Section.astro';
@@ -59,7 +58,6 @@ const contactContext = `Web design ${area.name}`;
 <BaseLayout title={area.metaTitle} description={area.metaDescription}>
   <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
-    <MarqueeSimple />
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
       <NavBar />

@@ -1,7 +1,6 @@
 ---
 // Import the Layout component
 import BaseLayout from '../layouts/BaseLayout.astro';
-import MarqueeSimple from '../components/MarqueeSimple.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import HeroSection from '../components/sections/HeroSection.astro';
 import HeroSwiper from '../components/sections/HeroSwiper.astro';
@@ -113,15 +112,14 @@ const NAVBAR_CONFIG = {
 ---
 
 <BaseLayout
-	title="Websites, SEO & Software for Western Mass Businesses | MannyKnows"
-	description="MannyKnows (MK) builds blazing-fast websites that get found on every search engine — then adds the AI agents, online stores, and interactive tools that turn visitors into customers. Springfield & Western Mass."
+	title="Web Design, SEO & AI for Western Massachusetts | MannyKnows"
+	description="One-on-one web design, local SEO, and AI booking agents for small businesses across Western Massachusetts — fast sites that get found on Google and book jobs 24/7. Springfield, MA."
 	footerServices={true}
 	preconnect={['https://images.unsplash.com']}
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 		<!-- Marquee Announcement Section -->
-		<MarqueeSimple />
 
 		<!-- Header Container with Subtle Background -->
 		<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
@@ -142,36 +140,34 @@ const NAVBAR_CONFIG = {
                 title=""
                 highlightedText="Websites, SEO and Mobile Apps"
                 titleAfter=", done right."
-                subtitle="Twenty years building for enterprise and startups — including eCommerce for a national retailer. Now we bring that same standard to businesses across Western Massachusetts."
+                subtitle="Custom websites, local SEO, and AI booking agents for contractors, clinics, and small businesses across Western Massachusetts — built one-on-one with a senior engineer, not an agency."
             />
 
             <!-- Hero CTAs + credibility stat band -->
-            <div class="max-w-[1440px] mx-auto px-4 mt-8">
-              <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/plans" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+            <div class="max-w-[1440px] mx-auto px-4 mt-8 pb-10 md:pb-0">
+              <div class="flex flex-row items-stretch justify-center gap-3 sm:gap-4">
+                <a href="/plans" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-3 sm:px-7 py-3.5 text-[13px] sm:text-sm font-semibold whitespace-nowrap hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
                   See our plans
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </a>
-                <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-7 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                <a href="/work" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-3 sm:px-7 py-3.5 text-[13px] sm:text-sm font-semibold whitespace-nowrap hover:bg-primary-blue/5 transition-all duration-300">
                   See our work
                 </a>
               </div>
               <ul class="mt-8 grid grid-cols-2 gap-x-4 gap-y-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-7 sm:gap-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">Page 1</span> <span class="text-xs sm:text-sm">on Google — a client ranks #1 for “Exterior Painting” in Springfield</span></li>
-                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">5</span> <span class="text-xs sm:text-sm">client sites live across Western Mass</span></li>
-                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">~100</span> <span class="text-xs sm:text-sm">Lighthouse, every build</span></li>
-                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">20 yrs</span> <span class="text-xs sm:text-sm">enterprise &amp; eCommerce engineering</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">Page 1</span> <span class="text-xs sm:text-sm">clients ranked on Google’s first page locally</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">24/7</span> <span class="text-xs sm:text-sm">an AI agent that answers &amp; books jobs</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">~100</span> <span class="text-xs sm:text-sm">Lighthouse speed on every build</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">1-on-1</span> <span class="text-xs sm:text-sm">a senior engineer, not an agency</span></li>
               </ul>
             </div>
 
-            <!-- Hero Swiper Slider — first on mobile, last on desktop -->
-            <div class="order-first md:order-none">
+            <!-- Hero Swiper Slider — first on mobile, last on desktop; mascot rides its lower-left corner -->
+            <div class="relative order-first md:order-none">
               <HeroSwiper />
+              <div class="astronaut-mascot" aria-hidden="true"></div>
             </div>
             </div>
-
-            <!-- Brand mascot — floats at the lower-left of the header, below the slider -->
-            <div class="astronaut-mascot" aria-hidden="true"></div>
         </header>
 
 		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
@@ -300,9 +296,9 @@ const NAVBAR_CONFIG = {
      lands at public/art/astronaut-rocket.png. */
   .astronaut-mascot {
     position: absolute;
-    bottom: 10vh;
-    left: max(0.75rem, 1.5vw);
-    width: clamp(160px, 25vw, 530px);
+    bottom: 3rem;
+    left: max(0.5rem, 1vw);
+    width: clamp(110px, 30vw, 220px);
     aspect-ratio: 1 / 1;
     background: url('/art/astronaut-rocket.png') center / contain no-repeat;
     pointer-events: none;
@@ -318,8 +314,8 @@ const NAVBAR_CONFIG = {
   @media (prefers-reduced-motion: reduce) {
     .astronaut-mascot { animation: none; }
   }
-  /* On mobile the slider leads the hero, so the mascot rides up beside it. */
-  @media (max-width: 767px) {
-    .astronaut-mascot { top: 5.25rem; bottom: auto; width: clamp(120px, 34vw, 200px); }
+  /* Bigger on wide screens, still anchored to the slider's lower-left corner. */
+  @media (min-width: 1024px) {
+    .astronaut-mascot { width: clamp(150px, 18vw, 320px); bottom: 3.5rem; }
   }
 </style>

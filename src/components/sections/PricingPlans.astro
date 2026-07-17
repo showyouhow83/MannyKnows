@@ -40,26 +40,28 @@ const cardBase =
           </span>
         )}
 
-        <div class="flex items-center gap-2">
-          <span class="text-2xl" aria-hidden="true">{p.icon}</span>
-          <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-xl flex-shrink-0" aria-hidden="true">{p.icon}</span>
+            <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{p.name}</h3>
+          </div>
+          <div class="flex-shrink-0 text-right leading-none">
+            <span data-billing-view="monthly" class="whitespace-nowrap">
+              <span class="text-2xl sm:text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            </span>
+            <span data-billing-view="yearly" hidden class="whitespace-nowrap">
+              <span class="text-2xl sm:text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            </span>
+          </div>
         </div>
 
-        <div class="mt-4">
-          <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-          <span data-billing-view="monthly">
-            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span>
-            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-            <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-              or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-            </p>
+        <div class="mt-2">
+          <span class="text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+          <span data-billing-view="monthly" class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">
+            or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
           </span>
-          <span data-billing-view="yearly" hidden>
-            <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span>
-            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-            <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-              billed as one payment of ${yearlyTotal(p).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-            </p>
+          <span data-billing-view="yearly" hidden class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">
+            billed as one payment of ${yearlyTotal(p).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
           </span>
         </div>
 
