@@ -134,6 +134,8 @@ const NAVBAR_CONFIG = {
 				}}
 			/>
 
+            <!-- Hero stack: slider leads on mobile; follows the headline on desktop -->
+            <div class="flex flex-col">
             <!-- Hero Section -->
             <HeroSection
                 badge="Springfield · Western Massachusetts"
@@ -154,16 +156,19 @@ const NAVBAR_CONFIG = {
                   See our work
                 </a>
               </div>
-              <ul class="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-                <li class="flex items-center gap-2"><span class="text-lg font-black apple-gradient-text">Page 1</span> on Google — a client ranks #1 for “Exterior Painting” in Springfield</li>
-                <li class="flex items-center gap-2"><span class="text-lg font-black apple-gradient-text">5</span> client sites live across Western Mass</li>
-                <li class="flex items-center gap-2"><span class="text-lg font-black apple-gradient-text">~100</span> Lighthouse, every build</li>
-                <li class="flex items-center gap-2"><span class="text-lg font-black apple-gradient-text">20 yrs</span> enterprise &amp; eCommerce engineering</li>
+              <ul class="mt-8 grid grid-cols-2 gap-x-4 gap-y-5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-7 sm:gap-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">Page 1</span> <span class="text-xs sm:text-sm">on Google — a client ranks #1 for “Exterior Painting” in Springfield</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">5</span> <span class="text-xs sm:text-sm">client sites live across Western Mass</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text">~100</span> <span class="text-xs sm:text-sm">Lighthouse, every build</span></li>
+                <li class="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-center sm:gap-2 sm:text-left"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">20 yrs</span> <span class="text-xs sm:text-sm">enterprise &amp; eCommerce engineering</span></li>
               </ul>
             </div>
 
-            <!-- Hero Swiper Slider -->
-            <HeroSwiper />
+            <!-- Hero Swiper Slider — first on mobile, last on desktop -->
+            <div class="order-first md:order-none">
+              <HeroSwiper />
+            </div>
+            </div>
 
             <!-- Brand mascot — floats at the lower-left of the header, below the slider -->
             <div class="astronaut-mascot" aria-hidden="true"></div>
@@ -312,5 +317,9 @@ const NAVBAR_CONFIG = {
   }
   @media (prefers-reduced-motion: reduce) {
     .astronaut-mascot { animation: none; }
+  }
+  /* On mobile the slider leads the hero, so the mascot rides up beside it. */
+  @media (max-width: 767px) {
+    .astronaut-mascot { top: 5.25rem; bottom: auto; width: clamp(120px, 34vw, 200px); }
   }
 </style>

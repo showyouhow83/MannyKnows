@@ -21,10 +21,10 @@ const { title, highlightedText, titleAfter = "", subtitle, badge, className = ""
           {badge}
         </span>
       )}
-      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-6 apple-headline" style="font-size: clamp(2.5rem, 5vw, 4.5rem);">
+      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 apple-headline" style="font-size: clamp(2rem, 6vw, 4.5rem);">
         {title && <>{title} </>}<span class="apple-gradient-text" data-colorful-title>{highlightedText}</span>{titleAfter}
       </h1>
-      <p class="sf-regular text-xl mb-0 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
+      <p class="sf-regular text-base sm:text-xl mb-0 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
         {subtitle}
       </p>
     </div>
