@@ -12,6 +12,7 @@ import DockMenu from '../../components/navigation/DockMenu.astro';
 import ChatBox from '../../components/ui/ChatBox.astro';
 import Button from '../../components/ui/Button.astro';
 import Faq from '../../components/ui/Faq.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -23,6 +24,16 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { Content } = await render(product);
 const d = product.data;
+
+// Each product maps to a brand spot illustration (shown where a banner would go).
+const illMap: Record<string, 'audit' | 'website' | 'seo' | 'automation' | 'agent'> = {
+  'process-ai-audit': 'audit',
+  'website-design-optimization': 'website',
+  'technical-seo-conversion': 'seo',
+  'automation-integration': 'automation',
+  'practical-ai-adoption': 'agent',
+};
+const illKind = illMap[product.id];
 
 const typeBadge = {
   App: 'bg-blue-500/15 text-blue-600 dark:text-blue-300',
@@ -75,11 +86,15 @@ const typeBadge = {
     <Section id="product" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto">
-          {d.image && (
+          {d.image ? (
             <div class="rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent mb-10 aspect-[16/9]">
               <img src={d.image} alt={d.title} class="w-full h-full object-cover" />
             </div>
-          )}
+          ) : illKind ? (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.05] via-transparent to-primary-pink/[0.05] mb-10 px-6 py-10 flex items-center justify-center">
+              <Illustration kind={illKind} class="w-full max-w-sm" />
+            </div>
+          ) : null}
 
           {d.services.length > 0 && (
             <div class="mb-10 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6 md:p-8">
