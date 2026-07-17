@@ -1,0 +1,124 @@
+---
+// Brand spot illustrations — one visual system: thin currentColor outlines that
+// adapt to light/dark, a blue→pink gradient accent, and a "spark" motif for AI.
+// Usage: <Illustration kind="website" class="w-full max-w-md" />
+// Vector + inline, so they add near-zero page weight and stay razor-sharp.
+interface Props {
+  kind: 'website' | 'seo' | 'agent' | 'audit' | 'automation' | 'store' | 'ads' | 'multimedia';
+  class?: string;
+}
+const { kind, class: className = '' } = Astro.props;
+
+const S = 'style="width:100%;height:auto;display:block"';
+
+const svgs: Record<string, string> = {
+  website: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A website with an AI assistant">
+    <defs><linearGradient id="g-website" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <rect x="34" y="40" width="234" height="162" rx="15" stroke="currentColor" stroke-width="3"/>
+    <path d="M34 66 H268" stroke="currentColor" stroke-width="3"/>
+    <circle cx="52" cy="53" r="3.4" fill="currentColor"/><circle cx="66" cy="53" r="3.4" fill="currentColor"/><circle cx="80" cy="53" r="3.4" fill="currentColor"/>
+    <rect x="54" y="84" width="92" height="13" rx="6.5" fill="url(#g-website)"/>
+    <rect x="54" y="107" width="150" height="7" rx="3.5" fill="currentColor" opacity="0.34"/>
+    <rect x="54" y="121" width="120" height="7" rx="3.5" fill="currentColor" opacity="0.34"/>
+    <rect x="54" y="140" width="96" height="48" rx="8" stroke="currentColor" stroke-width="2.5" opacity="0.55"/>
+    <path d="M56 182 l24 -20 16 12 20 -16 32 24" stroke="currentColor" stroke-width="2.5" opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="72" cy="156" r="7" fill="currentColor" opacity="0.4"/>
+    <rect x="166" y="140" width="86" height="9" rx="4.5" fill="currentColor" opacity="0.22"/>
+    <rect x="166" y="156" width="66" height="9" rx="4.5" fill="currentColor" opacity="0.22"/>
+    <rect x="166" y="172" width="76" height="9" rx="4.5" fill="currentColor" opacity="0.22"/>
+    <rect x="196" y="150" width="90" height="60" rx="16" fill="url(#g-website)"/>
+    <path d="M214 208 v22 l20 -16" fill="url(#g-website)"/>
+    <path d="M241 166 l4.2 10.4 10.4 4.2 -10.4 4.2 -4.2 10.4 -4.2 -10.4 -10.4 -4.2 10.4 -4.2z" fill="#fff"/>
+    <circle cx="222" cy="182" r="3.2" fill="#fff" opacity="0.92"/><circle cx="262" cy="196" r="2.6" fill="#fff" opacity="0.85"/>
+  </svg>`,
+
+  seo: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A magnifying glass over a rising bar chart">
+    <defs><linearGradient id="g-seo" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <rect x="58" y="150" width="28" height="40" rx="6" fill="currentColor" opacity="0.28"/>
+    <rect x="94" y="120" width="28" height="70" rx="6" fill="currentColor" opacity="0.44"/>
+    <rect x="130" y="84" width="28" height="106" rx="6" fill="url(#g-seo)"/>
+    <path d="M44 192 H186" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <path d="M150 66 l14 -10 M176 74 l16 -4" stroke="url(#g-seo)" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="206" cy="112" r="42" stroke="currentColor" stroke-width="4"/>
+    <path d="M236 142 l30 30" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+    <path d="M188 112 l12 12 22 -26" stroke="url(#g-seo)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  agent: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A chat bubble with an AI spark and a booking check">
+    <defs><linearGradient id="g-agent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <path d="M58 52 H236 a20 20 0 0 1 20 20 V150 a20 20 0 0 1 -20 20 H150 l-34 30 v-30 H58 a20 20 0 0 1 -20 -20 V72 a20 20 0 0 1 20 -20 Z" stroke="currentColor" stroke-width="3"/>
+    <path d="M96 96 l5.4 13.6 13.6 5.4 -13.6 5.4 -5.4 13.6 -5.4 -13.6 -13.6 -5.4 13.6 -5.4z" fill="url(#g-agent)"/>
+    <rect x="150" y="90" width="74" height="56" rx="12" fill="url(#g-agent)" opacity="0.14" stroke="url(#g-agent)" stroke-width="2.5"/>
+    <path d="M150 106 H224 M166 90 V82 M208 90 V82" stroke="url(#g-agent)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M166 122 l9 9 19 -21" stroke="url(#g-agent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  audit: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A checklist with findings and an AI spark">
+    <defs><linearGradient id="g-audit" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <rect x="70" y="46" width="164" height="168" rx="14" stroke="currentColor" stroke-width="3"/>
+    <rect x="122" y="36" width="60" height="24" rx="8" stroke="currentColor" stroke-width="3"/>
+    <rect x="92" y="82" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/>
+    <rect x="92" y="118" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/>
+    <path d="M95 91 l4 4 8 -9 M95 127 l4 4 8 -9" stroke="url(#g-audit)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="101" cy="163" r="11" fill="url(#g-audit)"/>
+    <path d="M101 158 v6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="101" cy="169" r="1.5" fill="#fff"/>
+    <rect x="124" y="86" width="88" height="9" rx="4.5" fill="currentColor" opacity="0.3"/>
+    <rect x="124" y="122" width="74" height="9" rx="4.5" fill="currentColor" opacity="0.3"/>
+    <rect x="124" y="158" width="84" height="9" rx="4.5" fill="currentColor" opacity="0.3"/>
+    <path d="M232 40 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z" fill="url(#g-audit)"/>
+  </svg>`,
+
+  automation: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Connected apps automated through a central hub">
+    <defs><linearGradient id="g-automation" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <rect x="30" y="72" width="54" height="46" rx="11" stroke="currentColor" stroke-width="3"/>
+    <rect x="30" y="150" width="54" height="46" rx="11" stroke="currentColor" stroke-width="3"/>
+    <rect x="236" y="111" width="54" height="46" rx="11" stroke="currentColor" stroke-width="3"/>
+    <circle cx="57" cy="95" r="8" fill="currentColor" opacity="0.4"/>
+    <path d="M46 167 h22 M46 175 h22 M46 183 h13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+    <path d="M251 128 h24 M251 136 h24 M251 144 h15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+    <rect x="128" y="94" width="64" height="52" rx="14" fill="url(#g-automation)"/>
+    <path d="M160 108 l3.6 9 9 3.6 -9 3.6 -3.6 9 -3.6 -9 -9 -3.6 9 -3.6z" fill="#fff"/>
+    <path d="M84 95 C108 95 112 120 126 120" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M84 173 C108 173 112 120 126 120" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M194 130 C214 130 216 134 236 134" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M228 127 l9 7 -9 7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  store: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A shopping bag with a price tag and an AI spark">
+    <defs><linearGradient id="g-store" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <path d="M92 92 h136 l12 108 a8 8 0 0 1 -8 9 H88 a8 8 0 0 1 -8 -9 Z" stroke="currentColor" stroke-width="3"/>
+    <path d="M124 92 v-8 a36 36 0 0 1 72 0 v8" stroke="currentColor" stroke-width="3" fill="none"/>
+    <g transform="translate(139 150) rotate(18)">
+      <rect x="0" y="0" width="64" height="36" rx="9" fill="url(#g-store)"/>
+      <circle cx="15" cy="13" r="5" fill="#fff"/>
+      <path d="M28 24 l14 -14" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <path d="M214 112 l4.4 11 11 4.4 -11 4.4 -4.4 11 -4.4 -11 -11 -4.4 11 -4.4z" fill="url(#g-store)"/>
+  </svg>`,
+
+  ads: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A megaphone broadcasting with a rising growth arrow">
+    <defs><linearGradient id="g-ads" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <path d="M66 132 L150 104 v72 L66 148 Z" fill="url(#g-ads)"/>
+    <rect x="150" y="98" width="26" height="84" rx="9" fill="url(#g-ads)" opacity="0.85"/>
+    <path d="M84 152 v24 a11 11 0 0 0 22 0 v-13" stroke="currentColor" stroke-width="3" fill="none"/>
+    <path d="M192 120 a30 30 0 0 1 0 40 M206 106 a48 48 0 0 1 0 68" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <path d="M210 204 l22 -24 13 11 22 -30" stroke="url(#g-ads)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M255 158 h13 v13" stroke="url(#g-ads)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  multimedia: `<svg viewBox="0 0 320 240" fill="none" ${S} xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stacked layers of web, media, and code under one roof">
+    <defs><linearGradient id="g-multimedia" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/></linearGradient></defs>
+    <rect x="96" y="152" width="128" height="42" rx="11" stroke="currentColor" stroke-width="3" opacity="0.4"/>
+    <rect x="84" y="120" width="152" height="42" rx="11" stroke="currentColor" stroke-width="3" opacity="0.7"/>
+    <rect x="72" y="84" width="176" height="48" rx="13" fill="url(#g-multimedia)"/>
+    <path d="M150 98 l18 10 -18 10 z" fill="#fff"/>
+    <circle cx="102" cy="108" r="8" fill="#fff" opacity="0.9"/>
+    <path d="M196 100 l9 8 -9 8 M214 100 l9 8 -9 8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M238 68 l4.4 11 11 4.4 -11 4.4 -4.4 11 -4.4 -11 -11 -4.4 11 -4.4z" fill="url(#g-multimedia)"/>
+  </svg>`,
+};
+
+const svg = svgs[kind] ?? '';
+---
+
+{svg && <div class={`text-slate-500 dark:text-slate-300 ${className}`} set:html={svg} />}
