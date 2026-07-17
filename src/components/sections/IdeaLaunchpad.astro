@@ -38,7 +38,7 @@ const steps = [
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
     {steps.map((s) => (
       <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-        <span aria-hidden="true" class="pointer-events-none absolute -top-3 right-3 text-6xl font-black leading-none text-primary-blue/10 select-none">{s.n}</span>
+        <span aria-hidden="true" class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none">{s.n}</span>
         <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d={s.icon} />

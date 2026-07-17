@@ -1,0 +1,170 @@
+---
+// Landing page behind the "Free AI Website Analysis" nav CTA. Sells the offer
+// honestly and routes to the contact modal — no fake tooling. A human reviews
+// each site with the same tooling we build with.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarqueeSimple from '../components/MarqueeSimple.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import Faq from '../components/ui/Faq.astro';
+import { getTestimonial } from '../data/testimonials';
+
+const checks = [
+  { title: 'Speed & Core Web Vitals', body: "How fast your site loads on a real phone — the single biggest thing that costs you visitors and Google ranking.", icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { title: 'Google & technical SEO', body: "Whether Google can find, read, and rank your pages — titles, structure, sitemaps, schema, and the technical basics most sites get wrong.", icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+  { title: 'Mobile experience', body: "How the site actually feels on the phones most of your customers use — layout, tap targets, and readability.", icon: 'M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z' },
+  { title: 'Conversion & trust', body: "Whether a visitor can quickly see what you do, trust you, and take the next step — call, book, or buy.", icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { title: 'Accessibility', body: "Whether everyone can use your site — which is both the right thing to do and a real ranking and legal factor.", icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
+  { title: 'AI-readiness', body: "Where an AI agent could answer customers and book jobs for you 24/7 — and whether your content is ready to power one.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+];
+
+const steps = [
+  { n: '01', title: 'Send us your website', body: "Just the URL. If you don't have a site yet, tell us your business and where customers find you now." },
+  { n: '02', title: 'We analyze it by hand', body: 'A real person reviews it with the same tools we build with — not a generic automated score. We look at what actually affects your customers and your ranking.' },
+  { n: '03', title: 'You get a plain-English report', body: "A short, prioritized list of what's working, what's costing you, and what to fix first — plus a quick call to walk through it if you want. No obligation." },
+];
+
+const walkaway = [
+  'A prioritized list of the fixes that matter most — highest impact first.',
+  'A clear read on how you compare to competitors showing up ahead of you.',
+  'An honest answer on whether a refresh, a rebuild, or just maintenance makes sense.',
+  'No pressure. If the smartest move is to change nothing, we will tell you.',
+];
+
+const faqs = [
+  { q: 'Is it really free?', a: 'Yes. The analysis and the walkthrough call cost nothing, and there is no obligation to buy anything. It is how we introduce ourselves and show the kind of work we do.' },
+  { q: 'What do you need from me?', a: 'Your website URL is enough to start. If you want the analysis tied to specific goals — more calls, more bookings, more online sales — tell us and we will focus there.' },
+  { q: 'Will you just try to sell me a plan?', a: 'No. You get the findings whether or not you ever work with us. If a fix is simple enough to do yourself, we will say so. If the best move is to change nothing right now, we will tell you that too.' },
+  { q: 'How is this different from a free automated score?', a: 'Automated tools give you a number and a wall of jargon. A real person reviews your site here and tells you, in plain English, what actually matters for your business and what to do about it — with twenty years of engineering behind the read.' },
+  { q: 'How long does it take?', a: 'Most analyses come back within a couple of business days. If you need it faster for a decision you are making, just say so.' },
+];
+
+const quote = getTestimonial('SL Painting');
+---
+
+<BaseLayout
+  title="Free AI Website Analysis — Speed, SEO & Conversions | MannyKnows"
+  description="Send us your website and get a free, plain-English analysis — speed, Google visibility, mobile, conversions, and AI-readiness — with a prioritized list of fixes. No cost, no obligation. Western Massachusetts."
+>
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+    <MarqueeSimple />
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Free AI Website Analysis</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Free · No obligation</span>
+          <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+            <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
+          </h1>
+          <p class="text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Send us your website and we'll tell you exactly what's holding it back — speed, Google visibility, mobile, and conversions — in plain English, with a prioritized list of fixes. No cost, no obligation.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
+            <a href="#contact" data-contact-context="Free AI Website Analysis" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Get my free analysis
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+              See our work
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <Section id="analysis-checks" variant="default">
+      <Container>
+        <div class="max-w-4xl mx-auto">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>What we check</span>
+          </h2>
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {checks.map((c) => (
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
+                  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
+                </div>
+                <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="analysis-how" variant="alternate">
+      <Container>
+        <div class="max-w-5xl mx-auto">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>How it works</span>
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {steps.map((s) => (
+              <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                <span aria-hidden="true" class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none">{s.n}</span>
+                <h3 class="relative text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
+                <p class="relative text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="analysis-walkaway" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-3xl md:text-4xl font-bold text-center mb-8">
+            <span class="apple-gradient-text" data-colorful-title>What you'll walk away with</span>
+          </h2>
+          <ul class="grid sm:grid-cols-2 gap-4">
+            {walkaway.map((w) => (
+              <li class="flex items-start gap-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{w}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Container>
+    </Section>
+
+    {quote && (
+      <Section id="analysis-proof" variant="alternate">
+        <Container>
+          <div class="max-w-2xl mx-auto text-center">
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">The kind of result this leads to</p>
+            <QuoteBlock quote={quote} align="center" />
+          </div>
+        </Container>
+      </Section>
+    )}
+
+    <Section id="analysis-faq" variant="default">
+      <Container>
+        <Faq faqs={faqs} />
+        <div class="text-center mt-12">
+          <a href="#contact" data-contact-context="Free AI Website Analysis" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+            Get my free analysis
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

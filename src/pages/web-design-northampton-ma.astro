@@ -1,0 +1,8 @@
+---
+// Local SEO landing page — /web-design-northampton-ma. Content in localAreas.ts.
+export const prerender = true;
+import LocalAreaPage from '../components/sections/LocalAreaPage.astro';
+import { getLocalArea } from '../data/localAreas';
+const area = getLocalArea('northampton')!;
+---
+<LocalAreaPage area={area} />
