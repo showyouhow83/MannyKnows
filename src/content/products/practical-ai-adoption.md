@@ -9,9 +9,10 @@ services:
   - "Prompt & context design"
   - "MCP integrations"
 order: 5
+startingAt: 500
 faq:
   - q: "How much does this cost?"
-    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the AI maintained and improving, but that's optional."
+    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the AI maintained and improving, but that's optional."
   - q: "How long does it take?"
     a: "Most builds run 2–4 weeks from kickoff to live, depending on scope. You get a firm timeline with the quote."
   - q: "Do I own what you build?"

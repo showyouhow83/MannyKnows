@@ -9,9 +9,10 @@ services:
   - "Conversion optimization (CRO)"
   - "Analytics & A/B testing"
 order: 3
+startingAt: 500
 faq:
   - q: "How much does this cost?"
-    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep SEO and speed maintained, but that's optional."
+    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep SEO and speed maintained, but that's optional."
   - q: "How long does it take?"
     a: "The technical work is usually 2–4 weeks from kickoff; rankings then build over the following weeks and months. You get a firm timeline with the quote."
   - q: "Do I own what you build?"

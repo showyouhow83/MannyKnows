@@ -10,6 +10,7 @@ import DockMenu from '../../components/navigation/DockMenu.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
+import { BOOKING_URL } from '../../data/booking';
 import { getTestimonial } from '../../data/testimonials';
 import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 
@@ -95,6 +96,9 @@ const faqSchema = {
               </a>
               <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
                 See it in our work
+              </a>
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                Book a call
               </a>
             </div>
             <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month · cancel anytime · no lock-in</p>

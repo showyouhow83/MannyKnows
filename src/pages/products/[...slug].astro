@@ -52,6 +52,12 @@ const typeBadge = {
               <span class="apple-gradient-text" data-colorful-title>{d.title}</span>
             </h1>
             <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{d.description}</p>
+            {d.startingAt && (
+              <div class="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">From ${d.startingAt.toLocaleString('en-US')}</span>
+                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">billed at a flat <strong class="text-text-light-primary dark:text-text-dark-primary">$75/hr</strong> · quoted up front</span>
+              </div>
+            )}
             <div class="flex flex-col sm:flex-row gap-4">
               <Button href="#contact" text="Talk to us about this" variant="cta" arrow={true} />
               {d.liveUrl && (

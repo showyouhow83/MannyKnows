@@ -9,9 +9,10 @@ services:
   - "Twilio (phone / SMS)"
   - "API & webhook integration"
 order: 4
+startingAt: 600
 faq:
   - q: "How much does this cost?"
-    a: "It's scoped to the project, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the automations monitored and maintained, but that's optional."
+    a: "It starts at $600 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the automations monitored and maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most automation projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote."
   - q: "Do I own what you build?"

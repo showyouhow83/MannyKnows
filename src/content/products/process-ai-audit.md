@@ -10,9 +10,10 @@ services:
   - "Hands-on execution"
   - "Data & tooling gap fixes"
 order: 1
+startingAt: 300
 faq:
   - q: "How much does this cost?"
-    a: "It's scoped to your business, not a fixed sticker price — we quote it up front after a short call, so there are no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional."
+    a: "It starts at $300 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $200/mo) to keep the fixes maintained, but that's optional."
   - q: "How long does it take?"
     a: "Most audits run 2–4 weeks from kickoff to a plan you can act on, depending on how much ground we cover. You get a firm timeline with the quote."
   - q: "Do I own what you build?"
