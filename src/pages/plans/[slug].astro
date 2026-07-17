@@ -13,6 +13,7 @@ import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
 import { BOOKING_URL } from '../../data/booking';
 import { getTestimonial } from '../../data/testimonials';
 import QuoteBlock from '../../components/ui/QuoteBlock.astro';
+import Illustration from '../../components/illustrations/Illustration.astro';
 
 export function getStaticPaths() {
   return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
@@ -20,6 +21,13 @@ export function getStaticPaths() {
 
 const { plan } = Astro.props as { plan: Plan };
 const others = plans.filter((p) => p.slug !== plan.slug);
+
+const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
+  'smart-website': 'website',
+  'online-store': 'store',
+  'business-ads': 'ads',
+  'multimedia-agency': 'multimedia',
+};
 
 // Proof map — the testimonial (if one exists) and the case studies that prove
 // this plan. Honest: only clients who actually gave a quote get one shown.
@@ -63,6 +71,11 @@ const faqSchema = {
       <div class="pb-12 px-4">
         <Container>
           <div class="max-w-3xl mx-auto text-center">
+            {planIll[plan.slug] && (
+              <div class="flex justify-center mb-6">
+                <Illustration kind={planIll[plan.slug]} class="w-full max-w-[210px]" />
+              </div>
+            )}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
               <span aria-hidden="true">{plan.icon}</span> {plan.name}
             </span>
