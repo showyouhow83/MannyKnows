@@ -94,8 +94,82 @@ const inputClass =
       </Container>
     </Section>
 
+    <!-- Service-area map (self-hosted Leaflet + Carto tiles, no API key). Centered
+         on Springfield; a service-area view, not a street address. -->
+    <Section id="contact-map" variant="alternate">
+      <Container>
+        <div class="max-w-4xl mx-auto text-center mb-8">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Where we work</span>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
+            Serving Springfield &amp; Western Massachusetts
+          </h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Based in Springfield, we work in person across the Pioneer Valley — and remotely with businesses anywhere.
+          </p>
+        </div>
+
+        <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+        <div
+          id="mk-map"
+          class="max-w-4xl mx-auto rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent shadow-lg"
+          style="height: 380px;"
+          data-lat="42.1015"
+          data-lon="-72.5898"
+          data-city="Springfield, MA"
+          data-tagline="Websites · SEO · AI — Western Mass"
+          role="img"
+          aria-label="Map of Springfield, Massachusetts — MannyKnows service area across Western Mass"
+        ></div>
+
+        <ul class="max-w-4xl mx-auto mt-6 flex flex-wrap items-center justify-center gap-2">
+          {['Springfield','Chicopee','Holyoke','West Springfield','Westfield','Agawam','Ludlow','Northampton','Amherst','Easthampton'].map((t) => (
+            <li class="rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-3.5 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">{t}</li>
+          ))}
+        </ul>
+      </Container>
+    </Section>
+
+    <script is:inline defer src="/vendor/leaflet/leaflet.js"></script>
+    <script is:inline>
+      // Init the service-area map once Leaflet is loaded (self-hosted, deferred).
+      (function () {
+        function init() {
+          var el = document.getElementById('mk-map');
+          if (!el || typeof L === 'undefined') return;
+          var lat = parseFloat(el.dataset.lat), lon = parseFloat(el.dataset.lon);
+          var city = el.dataset.city || '', tagline = el.dataset.tagline || '';
+          var map = L.map(el, { scrollWheelZoom: false, zoomControl: true }).setView([lat, lon], 11);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20, subdomains: 'abcd',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+          }).addTo(map);
+          var pin = '<div style="position:relative;width:28px;height:36px;">'
+            + '<div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:#fff;color:#0f172a;padding:6px 12px;border-radius:8px;text-align:center;line-height:1.25;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,0.22);border:1px solid rgba(0,0,0,0.06);">'
+            +   '<span style="display:block;font-weight:700;font-size:14px;color:#0f172a;">' + city + '</span>'
+            +   (tagline ? '<span style="display:block;font-weight:600;font-size:11px;color:#0071e3;margin-top:1px;letter-spacing:0.2px;">' + tagline + '</span>' : '')
+            + '</div>'
+            + '<svg viewBox="0 0 24 32" width="28" height="36" aria-hidden="true" style="display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35));">'
+            +   '<path fill="#0071e3" stroke="#fff" stroke-width="1.5" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z"/>'
+            +   '<circle cx="12" cy="12" r="4.5" fill="#fff"/>'
+            + '</svg></div>';
+          L.marker([lat, lon], { icon: L.divIcon({ className: '', html: pin, iconSize: [28,36], iconAnchor: [14,36] }) }).addTo(map);
+        }
+        if (typeof L !== 'undefined') init();
+        else window.addEventListener('load', init);
+      })();
+    </script>
+
     <DockMenu />
   </main>
+
+  <style is:global>
+    /* Dark-mode map: invert the light Carto basemap into a dark one, keeping
+       labels legible. Only the tiles are filtered, not the pin/label. */
+    .dark #mk-map .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9); }
+    .dark #mk-map .leaflet-control-attribution { background: rgba(20,26,36,0.8); color: #9aa6ba; }
+    .dark #mk-map .leaflet-control-attribution a { color: #82b4ff; }
+    #mk-map .leaflet-control-zoom a { color: #16202e; }
+  </style>
 </BaseLayout>
 
 <script>
