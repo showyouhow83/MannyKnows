@@ -161,8 +161,6 @@ export const professions: Profession[] = [
       },
     ],
   },
-<<<<<<< Updated upstream
-=======
   {
     slug: 'law-firms',
     name: 'Law Firms',
@@ -289,7 +287,6 @@ export const professions: Profession[] = [
       },
     ],
   },
->>>>>>> Stashed changes
 ];
 
 export function getProfession(slug: string): Profession | undefined {
