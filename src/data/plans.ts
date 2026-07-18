@@ -45,17 +45,18 @@ export const plans: Plan[] = [
     name: 'Smart Website (AI)',
     icon: '🌐',
     price: 350,
-    tagline: 'A multilingual site with an AI agent that sells and books jobs 24/7 — no big upfront bill.',
+    tagline: 'A website that comes with its own team of AI agents to run it — answering customers, booking jobs, and keeping it fresh 24/7.',
     highlights: [
-      'Multilingual website, designed & built',
-      'AI Sales & Booking Agent — answers, qualifies, sells, and books appointments 24/7',
-      'Google Business Profile — setup & verification',
-      'Technical SEO + speed tuning (near-100 Lighthouse)',
-      'Monthly fixes, monitoring & a plain-English report',
+      'A team of AI agents that run your site — not just a chatbot',
+      'Answers customers, qualifies leads & books jobs 24/7, in any language',
+      'Keeps your pages and content up to date for you',
+      'Multilingual website designed & built — or your current one, optimized',
+      'Google Business Profile + technical SEO (near-100 Lighthouse)',
+      'Monthly monitoring, fixes & a plain-English report',
     ],
-    headline: 'Your website, working around the clock',
+    headline: 'A website that runs itself — agents included',
     blurb:
-      "Most local businesses lose the customers they never hear from — the ones who searched at 9 p.m., found nothing (or a dead site), and called someone else. The Smart Website (AI) plan fixes that: a fast, multilingual website with an AI Sales & Booking Agent that answers questions, qualifies leads, and books appointments 24/7, kept ranking and up to date by us — for a monthly price instead of a big upfront bill.",
+      "Most websites just sit there. This one comes with a team of AI agents that run it for you: answering customers in their language, qualifying leads and booking jobs around the clock, and keeping your pages current — all trained on your business, with you approving anything that matters. You get a website and a team that works it, for a monthly price instead of a big upfront bill.",
     whoFor:
       'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
     deliverables: [
