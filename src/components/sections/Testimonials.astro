@@ -1,7 +1,8 @@
 ---
-// Testimonials — renders the given quotes (defaults to the real list from
-// src/data/testimonials.ts). Renders NOTHING while the list is empty, so it
-// can sit mounted on the homepage until real quotes exist.
+// Testimonials — a sliding carousel of the real client quotes (from
+// src/data/testimonials.ts). Renders NOTHING while the list is empty, so it can
+// sit mounted on the homepage until real quotes exist. Uses the site's global
+// Swiper (loaded in BaseLayout) with the redesigned QuoteBlock card.
 import { testimonials as realTestimonials, type Testimonial } from '../../data/testimonials';
 import QuoteBlock from '../ui/QuoteBlock.astro';
 
@@ -16,14 +17,83 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
 {items.length > 0 && (
   <section aria-label="Client testimonials" class="py-16">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
-      <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
+      <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
         <span class="apple-gradient-text" data-colorful-title>{heading}</span>
       </h2>
-      <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto items-stretch">
-        {items.map((t) => (
-          <QuoteBlock quote={t} class="h-full" />
-        ))}
+
+      <div class="relative max-w-6xl mx-auto px-0 sm:px-12">
+        <div class="swiper testimonials-swiper">
+          <div class="swiper-wrapper">
+            {items.map((t) => (
+              <div class="swiper-slide"><QuoteBlock quote={t} class="h-full" /></div>
+            ))}
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+        <button type="button" class="t-nav t-prev" aria-label="Previous testimonial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button type="button" class="t-nav t-next" aria-label="Next testimonial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
       </div>
     </div>
+
+    <script is:inline>
+      (function () {
+        function initTestimonials() {
+          if (typeof Swiper === 'undefined') { setTimeout(initTestimonials, 100); return; }
+          var el = document.querySelector('.testimonials-swiper');
+          if (!el || el.swiper) return;
+          new Swiper('.testimonials-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 24,
+            rewind: true,
+            grabCursor: true,
+            autoplay: { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
+            pagination: { el: '.testimonials-swiper .swiper-pagination', clickable: true },
+            navigation: { nextEl: '.t-next', prevEl: '.t-prev' },
+            breakpoints: {
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            },
+          });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initTestimonials);
+        else initTestimonials();
+      })();
+    </script>
+
+    <style is:global>
+      .testimonials-swiper { padding-bottom: 3rem; }
+      .testimonials-swiper .swiper-wrapper { align-items: stretch; }
+      .testimonials-swiper .swiper-slide { height: auto; display: flex; }
+      .testimonials-swiper .swiper-pagination { bottom: 0 !important; }
+      .testimonials-swiper .swiper-pagination-bullet {
+        width: 9px; height: 9px; background: rgba(120, 130, 145, 0.45);
+        opacity: 1; transition: width .3s ease, background .3s ease;
+      }
+      .testimonials-swiper .swiper-pagination-bullet-active {
+        width: 26px; border-radius: 5px;
+        background: linear-gradient(135deg, #0071e3, #ff4faa);
+      }
+      .t-nav {
+        position: absolute; top: calc(50% - 1.5rem); transform: translateY(-50%);
+        z-index: 10; width: 42px; height: 42px; border-radius: 9999px;
+        display: flex; align-items: center; justify-content: center;
+        background: #ffffff; color: #334155; border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.1); cursor: pointer;
+        transition: color .2s ease, border-color .2s ease, transform .2s ease;
+      }
+      .t-nav svg { width: 20px; height: 20px; }
+      .t-nav:hover { color: #0071e3; border-color: rgba(0, 113, 227, 0.4); }
+      .t-prev { left: 0; }
+      .t-next { right: 0; }
+      :root.dark .t-nav { background: #141b23; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.1); }
+      :root.dark .t-nav:hover { color: #4aa8ff; border-color: rgba(74, 168, 255, 0.4); }
+      .t-nav.swiper-button-disabled { opacity: 0.35; pointer-events: none; }
+      @media (max-width: 639px) { .t-nav { display: none; } }
+    </style>
   </section>
 )}
