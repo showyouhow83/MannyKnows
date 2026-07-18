@@ -101,8 +101,8 @@ export const aiTeamFaq = [
     a: "You choose. Most owners start with everything queued for a quick approval, then hand off the routine stuff once they trust the output. Anything customer-facing — a review reply, a public post — can always require your sign-off.",
   },
   {
-    q: "How is this different from the Business Ads or Multimedia Agency plan?",
-    a: "Those plans are us doing the work as your agency. The AI Team is a team of agents we build for your business and run for you — research, copy, design, video, voice, publishing, and reviews, all coordinated. Many clients pair it with a plan; it also stands on its own.",
+    q: "Isn't this just ChatGPT I could use myself?",
+    a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time. The AI Team is agents we build around your business — trained on your brand, connected to your tools, and coordinated so the research feeds the writing, the writing feeds the design, and it all gets published on schedule, with a person reviewing what goes out. You get the results without doing the work.",
   },
   {
     q: 'Is there a human involved at all?',
