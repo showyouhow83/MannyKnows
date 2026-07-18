@@ -161,6 +161,135 @@ export const professions: Profession[] = [
       },
     ],
   },
+<<<<<<< Updated upstream
+=======
+  {
+    slug: 'law-firms',
+    name: 'Law Firms',
+    metaTitle: 'Websites for Law Firms & Attorneys in Western Mass | MannyKnows',
+    metaDescription:
+      'Authoritative, fast websites for law firms and solo attorneys across Western Massachusetts — practice-area SEO, an AI intake agent that qualifies and books consultations 24/7, and multilingual by default. From $350/mo.',
+    badge: 'For law firms & attorneys',
+    h1: 'Websites for law firms that win the intake',
+    heroIntro:
+      "A potential client judges your firm in seconds and calls two others. An authoritative site that ranks for your practice areas — with an AI intake agent that qualifies and books consultations day or night — makes sure the one they retain is you.",
+    illustration: 'audit',
+    painPoints: [
+      {
+        title: 'Credibility is decided in seconds',
+        body: "Someone facing a legal problem is anxious and comparing firms fast. A dated or slow site reads as a dated practice — and they call the firm whose site looks like it can handle their case.",
+      },
+      {
+        title: 'The first firm to answer usually wins',
+        body: "Legal clients call down the list until someone picks up. Miss the call — evenings, weekends, mid-hearing — and the retainer goes to whoever answered. An AI intake agent answers every time.",
+      },
+      {
+        title: 'You’re bidding against everyone for the same ad clicks',
+        body: "Legal keywords are some of the most expensive on Google. Ranking organically for your practice areas in your county brings clients you don’t pay per click to reach.",
+      },
+    ],
+    offer: [
+      {
+        title: 'An authoritative, fast site',
+        body: 'Clean, credible, and quick — your practice areas, your results, your bar credentials and reviews, structured so both clients and Google take you seriously.',
+      },
+      {
+        title: 'Practice-area & local SEO',
+        body: 'Built to rank for the areas you practice, in the towns you serve — the organic results, not just the paid ones.',
+      },
+      {
+        title: 'An AI intake agent, 24/7',
+        body: 'Answers common questions, screens the matter, and books the consultation around the clock — in English or Spanish — then hands you a qualified lead, not a voicemail.',
+      },
+      {
+        title: 'Privacy-conscious contact',
+        body: 'Intake forms and contact flows set up thoughtfully, so a first message reaches you cleanly without being scattered across the web.',
+      },
+    ],
+    // No published law-firm case study yet — no borrowed proof.
+    faqs: [
+      {
+        q: 'How much does a law firm website cost?',
+        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the AI intake agent, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+      },
+      {
+        q: 'Can the AI agent handle client intake?',
+        a: 'It handles the first step: answering common questions, screening the matter against the criteria you set, and booking a consultation — then handing you the details. It’s not legal advice and never pretends to be; it gets the right prospects onto your calendar.',
+      },
+      {
+        q: 'Will it work for Spanish-speaking clients?',
+        a: 'Yes — multilingual is standard. The site and the intake agent both work in Spanish and English, which matters for much of Western Massachusetts.',
+      },
+      {
+        q: 'Can you rank us for our practice areas?',
+        a: 'We build the technical SEO and content structure to compete for your practice areas in your county. Rankings build over time; we report honestly on progress against Google’s own data — no invented numbers.',
+      },
+    ],
+  },
+  {
+    slug: 'clinics',
+    name: 'Clinics',
+    metaTitle: 'Websites for Clinics, Dentists & Medical Practices in Western Mass | MannyKnows',
+    metaDescription:
+      'Clean, trustworthy websites for clinics, dental and medical practices across Western Massachusetts — “near me” local SEO, an AI agent that answers and books appointments 24/7, and multilingual by default. From $350/mo.',
+    badge: 'For clinics & practices',
+    h1: 'Websites for clinics that keep the schedule full',
+    heroIntro:
+      "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free.",
+    illustration: 'agent',
+    painPoints: [
+      {
+        title: 'Patients want to book without calling',
+        body: "More and more patients choose the practice they can research and book online at 9 p.m. If your site can’t answer and schedule, they pick the one down the street that can.",
+      },
+      {
+        title: 'Your front desk is buried in the phone',
+        body: "Hours, insurance, new-patient questions, rescheduling — the same calls all day, pulling staff away from patients in the room. An AI agent handles the repeat questions and books appointments so your team can breathe.",
+      },
+      {
+        title: 'Many patients are more comfortable in Spanish',
+        body: "In Western Mass, language is often the deciding factor in where a family seeks care. A site and an agent that speak Spanish natively earn the trust a translated page never will.",
+      },
+    ],
+    offer: [
+      {
+        title: 'A clean, trustworthy site',
+        body: 'Calm, fast, and reassuring — your services, your providers, your hours and locations, and real reviews, laid out the way a patient actually reads them.',
+      },
+      {
+        title: '“Near me” local SEO',
+        body: 'Technical SEO and a verified Google Business Profile so patients searching “dentist near me” or “clinic in [your town]” find you at the top of the map.',
+      },
+      {
+        title: 'An AI agent that books appointments 24/7',
+        body: 'Answers the common questions and books appointments around the clock, in English or Spanish, turning a late-night search into a filled slot.',
+      },
+      {
+        title: 'Privacy-conscious by design',
+        body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place — thoughtful defaults, not an afterthought.',
+      },
+    ],
+    // No published clinic case study yet — no borrowed proof.
+    faqs: [
+      {
+        q: 'How much does a clinic or practice website cost?',
+        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the AI scheduling agent, “near me” local SEO, Google Business Profile, and upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+      },
+      {
+        q: 'Can patients book appointments through the site?',
+        a: 'Yes — the AI agent answers common questions and books appointments 24/7, then hands the details to your front desk. We scope it to how your practice schedules so it fits your workflow, not the other way around.',
+      },
+      {
+        q: 'Is this HIPAA-safe?',
+        a: 'We build privacy-conscious contact and booking flows and avoid collecting sensitive medical detail where it doesn’t belong. For anything that touches protected health information, we scope the tools and agreements with you up front so the setup fits your obligations — we’ll never hand-wave a compliance question.',
+      },
+      {
+        q: 'Will it work in Spanish?',
+        a: 'Yes, multilingual is standard. The site and the agent both work in Spanish and English, written for Spanish-speaking patients rather than run through a translator.',
+      },
+    ],
+  },
+>>>>>>> Stashed changes
 ];
 
 export function getProfession(slug: string): Profession | undefined {
