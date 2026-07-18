@@ -40,27 +40,23 @@ const cardBase =
           </span>
         )}
 
-        <div class="flex items-start justify-between gap-2">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="text-xl flex-shrink-0" aria-hidden="true">{p.icon}</span>
-            <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{p.name}</h3>
-          </div>
-          <div class="flex-shrink-0 text-right leading-none">
-            <span data-billing-view="monthly" class="whitespace-nowrap">
-              <span class="text-2xl sm:text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-            </span>
-            <span data-billing-view="yearly" hidden class="whitespace-nowrap">
-              <span class="text-2xl sm:text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-            </span>
-          </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xl flex-shrink-0" aria-hidden="true">{p.icon}</span>
+          <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{p.name}</h3>
         </div>
 
-        <div class="mt-2">
-          <span class="text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-          <span data-billing-view="monthly" class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">
+        <div class="mt-4">
+          <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+          <span data-billing-view="monthly" class="block whitespace-nowrap leading-none mt-0.5">
+            <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+          </span>
+          <span data-billing-view="yearly" hidden class="block whitespace-nowrap leading-none mt-0.5">
+            <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+          </span>
+          <span data-billing-view="monthly" class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
             or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
           </span>
-          <span data-billing-view="yearly" hidden class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">
+          <span data-billing-view="yearly" hidden class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
             billed as one payment of ${yearlyTotal(p).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
           </span>
         </div>
@@ -155,7 +151,7 @@ const cardBase =
   <!-- What the monthly price covers — shown once for all plans -->
   <div class="mt-10 max-w-3xl mx-auto pt-6 border-t border-gray-500/[0.27]">
     <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-      <span class="font-semibold text-text-light-primary dark:text-text-dark-primary">Every plan includes:</span> fast, secure hosting on a global CDN, a domain if you need one, SSL, all graphic design and stock photos &amp; video, and unlimited traffic — no surprise bills.
+      <span class="font-semibold text-text-light-primary dark:text-text-dark-primary">Every plan runs on Cloudflare's global edge network:</span> your site is served from 330+ cities worldwide, with automatic SSL, DDoS protection, and image &amp; asset caching built in. You also get a domain if you need one, all graphic design and stock photos &amp; video, and unlimited traffic — no metered overages, no surprise bills.
     </p>
     <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
       Yearly pricing is one upfront payment for 12 months of service — pay for 10 months, get 12 (2 months free). Details in our <a href="/terms" class="underline hover:text-primary-blue">terms</a>.

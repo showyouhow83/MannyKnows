@@ -13,7 +13,6 @@ import BlogHighlights from '../components/sections/BlogHighlights.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
-import LinkBanner from '../components/layout/LinkBanner.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
@@ -182,17 +181,6 @@ const NAVBAR_CONFIG = {
 		     (Replaces the retired ReviewsSection carousel.) -->
 		<Testimonials />
 
-		<!-- Services — the full section now lives at /services (kept, not deleted);
-		     the homepage shows a banner that links to it. -->
-		<LinkBanner
-			badge="Consulting · Web · SEO · AI · Automation"
-			title="What we do for your business"
-			text="We map how your business runs and fix what slows it down — websites, technical SEO, automation, and AI. Twenty years of operations and implementation experience."
-			href="/services"
-			cta="Explore services"
-			variant="alternate"
-		/>
-
 		<!-- Plans — monthly retainers, "starting at" pricing, tailored per client -->
 		<PageSection
 			id="plans"
@@ -212,15 +200,6 @@ const NAVBAR_CONFIG = {
 		>
 			<IdeaLaunchpad />
 		</PageSection>
-
-		<!-- How it works — the full section now lives at /how-it-works; banner links to it. -->
-		<LinkBanner
-			badge="How it works"
-			title="From process to app"
-			text="The quote that eats your evenings becomes a form that prices itself. Tell us the process that's slowing you down — we build the software that runs it."
-			href="/how-it-works"
-			cta="See how it works"
-		/>
 
 		<!-- "New Playbooks" (blog highlights) — moved here so it sits last, right above the footer. -->
 		<BlogHighlights />
