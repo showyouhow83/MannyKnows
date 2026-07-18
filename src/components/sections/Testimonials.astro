@@ -21,11 +21,11 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
         <span class="apple-gradient-text" data-colorful-title>{heading}</span>
       </h2>
 
-      <div class="relative max-w-6xl mx-auto px-0 sm:px-12">
+      <div class="relative max-w-3xl mx-auto px-0 sm:px-12">
         <div class="swiper testimonials-swiper">
           <div class="swiper-wrapper">
             {items.map((t) => (
-              <div class="swiper-slide"><QuoteBlock quote={t} class="h-full" /></div>
+              <div class="swiper-slide"><QuoteBlock quote={t} /></div>
             ))}
           </div>
           <div class="swiper-pagination"></div>
@@ -51,13 +51,10 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
             spaceBetween: 24,
             rewind: true,
             grabCursor: true,
+            autoHeight: true,
             autoplay: { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
             pagination: { el: '.testimonials-swiper .swiper-pagination', clickable: true },
             navigation: { nextEl: '.t-next', prevEl: '.t-prev' },
-            breakpoints: {
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            },
           });
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initTestimonials);
@@ -67,8 +64,8 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
 
     <style is:global>
       .testimonials-swiper { padding-bottom: 3rem; }
-      .testimonials-swiper .swiper-wrapper { align-items: stretch; }
-      .testimonials-swiper .swiper-slide { height: auto; display: flex; }
+      .testimonials-swiper .swiper-wrapper { align-items: flex-start; }
+      .testimonials-swiper .swiper-slide { height: auto; }
       .testimonials-swiper .swiper-pagination { bottom: 0 !important; }
       .testimonials-swiper .swiper-pagination-bullet {
         width: 9px; height: 9px; background: rgba(120, 130, 145, 0.45);
