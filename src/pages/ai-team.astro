@@ -1,0 +1,200 @@
+---
+// The AI Team — our flagship, productized service. A named team of AI agents we
+// build and run for your business, billed as a monthly retainer. Content is
+// driven by src/data/aiTeam.ts.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
+import AgentAvatar from '../components/team/AgentAvatar.astro';
+import { team, aiTeamPricing, aiTeamFaq } from '../data/aiTeam';
+import { BOOKING_URL } from '../data/booking';
+
+const roster = [...team].sort((a, b) => a.order - b.order);
+const mo = aiTeamPricing.monthly.toLocaleString('en-US');
+const yrMo = aiTeamPricing.yearlyMonthly.toLocaleString('en-US');
+const yrTotal = aiTeamPricing.yearlyTotal.toLocaleString('en-US');
+
+const steps = [
+  { title: 'A short kickoff call', body: "We learn your business — what you sell, who buys, and how you sound. That's all we need to start building the team." },
+  { title: 'We build & train the team', body: 'We set up each agent, train them on your brand, and connect the tools they need. You see the output before anything goes public.' },
+  { title: 'They work, you approve', body: 'The team researches, writes, designs, voices, publishes, and watches your reviews. You approve what matters and hand off the routine.' },
+  { title: 'We tune it every month', body: 'We watch what lands, adjust what does not, and send you a plain-English report. The team gets sharper the longer it runs.' },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: aiTeamFaq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="The AI Team — your own team of AI agents, built & run for you | MannyKnows"
+  description="A named team of AI agents we build around your business and run for you: research, copywriting, design, video, voice, publishing, and reviews — with a human in the loop. A monthly retainer, starting around $900/mo."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-24 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">AI Team</span></li>
+        </ol>
+      </nav>
+
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto text-center">
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              The AI Team · live now
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>Your AI team, built and run for you</span>
+            </h1>
+            <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              A team of AI specialists that keeps your marketing and your reputation running. We build it around your business, train it on your brand, and run it for you every month — with a real person watching the output. You keep doing what you do best.
+            </p>
+
+            <!-- Mini roster preview -->
+            <div class="mt-8 flex items-center justify-center -space-x-2">
+              {roster.map((a) => (
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full ring-2 ring-white dark:ring-dark-primary" title={`${a.name} — ${a.role}`}>
+                  <AgentAvatar agent={a.id} class="w-full h-full" />
+                </div>
+              ))}
+            </div>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Six agents, one coordinated team — meet them below.</p>
+
+            <!-- Price block (monthly retainer) -->
+            <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-left">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
+                <span class="text-3xl font-black">${mo}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
+              </div>
+              <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
+                <span class="text-3xl font-black">${yrMo}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yrTotal}/yr</span>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+                Build my AI team
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                Book a call
+              </a>
+            </div>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month · cancel anytime · scoped to your business</p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Meet the team -->
+    <Section id="ai-team-roster" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-4">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>Meet your team</span>
+          </h2>
+          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Each agent owns one job and does it well. Together they run a full content and reputation operation for your business.
+          </p>
+        </div>
+
+        <!-- Pipeline one-liner -->
+        <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mb-10">
+          Eve researches → Elly writes → Eny designs → Mimi voices → Bap publishes → Upie manages the reviews that come back.
+        </p>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          {roster.map((a) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col items-center text-center hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <div class="w-20 h-20 mb-4">
+                <AgentAvatar agent={a.id} class="w-full h-full" />
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{a.name}</h3>
+              <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">{a.role}</span>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Human in the loop -->
+    <Section id="ai-team-human" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 text-center">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
+            <span class="apple-gradient-text" data-colorful-title>Not fully autonomous — on purpose</span>
+          </h2>
+          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            The agents do the volume: drafting, designing, scheduling, monitoring. A person reviews the output and steps in where judgment matters — the phone calls, the verifications, the review appeals, the decisions AI should not make alone. You get the speed of automation without handing your brand to a robot.
+          </p>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- How it works -->
+    <Section id="ai-team-steps" variant="default">
+      <Container>
+        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>How we build it for you</span>
+        </h2>
+        <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          {steps.map((s, i) => (
+            <li class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold mb-3">{i + 1}</span>
+              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+
+    <!-- FAQ -->
+    <Section id="ai-team-faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
+          </h2>
+          <div class="space-y-4">
+            {aiTeamFaq.map((f) => (
+              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
+              Build my AI team
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <ChatBox />
+    <DockMenu />
+  </main>
+</BaseLayout>
