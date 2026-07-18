@@ -101,6 +101,10 @@ export const aiTeamFaq = [
     a: "You choose. Most owners start with everything queued for a quick approval, then hand off the routine stuff once they trust the output. Anything customer-facing — a review reply, a public post — can always require your sign-off.",
   },
   {
+    q: 'Can I hire just one agent?',
+    a: "Yes — every agent works on its own. Rent only Eve and she delivers her research straight to you, the way you like to read it: an email summary, a PDF, a shared doc. Rent more agents and they hand work off to each other automatically — Eve's research feeds Elly's writing, Elly's copy feeds Eny's design — so the team compounds without you playing middleman.",
+  },
+  {
     q: "Isn't this just ChatGPT I could use myself?",
     a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time. The AI Team is agents we build around your business — trained on your brand, connected to your tools, and coordinated so the research feeds the writing, the writing feeds the design, and it all gets published on schedule, with a person reviewing what goes out. You get the results without doing the work.",
   },
