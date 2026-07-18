@@ -23,13 +23,6 @@ export interface Testimonial {
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Thank you, Manny, for putting SL Painting on the map. A year ago we didn't exist online at all — no website, no admin to manage our projects and clients, no AI chat to answer questions, schedule calls, or show homeowners a preview of their house in new colors. Today we're #1 for “Exterior Painting” in Springfield, MA — organically, at the top of the first page — and the photography and video gave us a real presence on social media too.",
-    name: 'Owner',
-    business: 'SL Painting',
-    href: '/work/sl-painting',
-  },
-  {
-    quote:
       "We don't even show up on Google yet — and we're already seeing the benefits of working with Manny. Our website looks incredible, and the AI agent is incredible too: it speaks every language, and it's connected to our admin, so we can ask it about our own projects — where each one stands, what's included, whatever we need to know.",
     name: 'Owner',
     business: 'VL Home Services',
@@ -55,6 +48,13 @@ export const testimonials: Testimonial[] = [
     name: 'Owner',
     business: 'Cherry Vibes',
     href: '/work/cherry-vibes',
+  },
+  {
+    quote:
+      "Today we're #1 for “Exterior Painting” in Springfield, MA — organically, at the top of the first page — and the photography and video gave us a real presence on social media too.",
+    name: 'Owner',
+    business: 'SL Painting',
+    href: '/work/sl-painting',
   },
 ];
 
