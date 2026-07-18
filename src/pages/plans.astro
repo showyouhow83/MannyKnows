@@ -14,7 +14,7 @@ import PricingPlans from '../components/sections/PricingPlans.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../data/testimonials';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
-import { team, aiTeamPricing } from '../data/aiTeam';
+import { team, aiTeamStartingPrice } from '../data/aiTeam';
 
 const aiTeamRoster = [...team].sort((a, b) => a.order - b.order);
 
@@ -99,7 +99,7 @@ const faqSchema = {
             </div>
             <div class="flex-shrink-0 text-center">
               <div class="text-xs uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</div>
-              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">${aiTeamPricing.monthly.toLocaleString('en-US')}<span class="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
+              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">${aiTeamStartingPrice.toLocaleString('en-US')}<span class="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
               <span class="mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold group-hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all">
                 Meet the team
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>

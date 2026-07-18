@@ -62,18 +62,67 @@ export const team: Agent[] = [
   },
 ];
 
-// Pricing — a monthly retainer, scoped per business. These are starting
-// anchors; the owner sets the final numbers. Same "pay 10, get 12" annual model
-// as the other plans (see src/data/plans.ts).
-export const aiTeamPricing = {
-  monthly: 900,
-  get yearlyTotal() {
-    return this.monthly * 10;
+// Pricing — a monthly retainer, offered in three tiers (scoped per business).
+// AI does the labor, so these undercut a human agency while still reflecting a
+// full content + reputation operation. Annual billing follows the same
+// "pay 10, get 12" model as the other plans (see src/data/plans.ts).
+export interface AiTeamTier {
+  name: string;
+  price: number; // monthly, month-to-month
+  blurb: string;
+  agents: AgentId[]; // agents active in this tier (drives the avatar row)
+  features: string[]; // "what's included" bullets
+  featured?: boolean; // most popular
+}
+
+export const aiTeamTiers: AiTeamTier[] = [
+  {
+    name: 'Starter',
+    price: 900,
+    blurb: 'Get found and stay consistent — research, writing, and publishing, handled.',
+    agents: ['eve', 'elly', 'bap'],
+    features: [
+      'Eve, Elly & Bap on your account',
+      'Market & keyword research',
+      'Copywriting: posts, captions, and emails',
+      'Scheduled publishing on 1–2 channels',
+      'A plain-English monthly report',
+    ],
   },
-  get yearlyMonthly() {
-    return Math.round((this.monthly * 10) / 12);
+  {
+    name: 'Growth',
+    price: 1500,
+    featured: true,
+    blurb: 'Add design, video, and reputation — a full content engine across your channels.',
+    agents: ['eve', 'elly', 'eny', 'bap', 'upie'],
+    features: [
+      'Everything in Starter, plus:',
+      'Eny (design & video) & Upie (reviews)',
+      'Branded graphics + short-form video',
+      'Review monitoring & reply drafting',
+      'Publishing across 3–4 channels',
+    ],
   },
-};
+  {
+    name: 'Full Team',
+    price: 2500,
+    blurb: 'The whole roster, every channel, with a human on priority call.',
+    agents: ['eve', 'elly', 'eny', 'mimi', 'bap', 'upie'],
+    features: [
+      'Everything in Growth, plus:',
+      'Mimi (voice) — voiceovers & audio',
+      'All the channels you use',
+      'Priority turnaround',
+      'A quarterly strategy session',
+    ],
+  },
+];
+
+// One-time onboarding: brand training, connecting your tools, building each agent.
+export const aiTeamSetupFee = { min: 500, max: 1500 };
+
+// "From" anchor used on the hero + the /plans flagship card.
+export const aiTeamStartingPrice = aiTeamTiers[0].price;
 
 export const aiTeamFaq = [
   {
