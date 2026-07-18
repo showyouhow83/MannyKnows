@@ -22,10 +22,10 @@ const alaCarte = aiTeamBundle.alaCarteTotal.toLocaleString('en-US');
 const bundleSave = aiTeamBundle.savings.toLocaleString('en-US');
 
 const steps = [
-  { title: 'A short kickoff call', body: "We learn your business — what you sell, who buys, and how you sound. That's all we need to start building the team." },
-  { title: 'We build & train the team', body: 'We set up each agent, train them on your brand, and connect the tools they need. You see the output before anything goes public.' },
-  { title: 'They work, you approve', body: 'The team researches, writes, designs, voices, publishes, and watches your reviews. You approve what matters and hand off the routine.' },
-  { title: 'We tune it every month', body: 'We watch what lands, adjust what does not, and send you a plain-English report. The team gets sharper the longer it runs.' },
+  { n: '01', title: 'A short kickoff call', body: "We learn your business — what you sell, who buys, and how you sound. That's all we need to start building the team.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+  { n: '02', title: 'We build & train the team', body: 'We set up each agent, train them on your brand, and connect the tools they need. You see the output before anything goes public.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '03', title: 'They work, you approve', body: 'The team researches, writes, designs, voices, publishes, and watches your reviews. You approve what matters and hand off the routine.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { n: '04', title: 'We tune it every month', body: 'We watch what lands, adjust what does not, and send you a plain-English report. The team gets sharper the longer it runs.', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
 ];
 
 const faqSchema = {
@@ -191,15 +191,20 @@ const faqSchema = {
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How we build it for you</span>
         </h2>
-        <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
-          {steps.map((s, i) => (
-            <li class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-              <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold mb-3">{i + 1}</span>
-              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-            </li>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+          {steps.map((s) => (
+            <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <span aria-hidden="true" data-n={s.n} class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none after:content-[attr(data-n)]"></span>
+              <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={s.icon} />
+                </svg>
+              </div>
+              <h3 class="relative mt-4 text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
+              <p class="relative mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </div>
           ))}
-        </ol>
+        </div>
       </Container>
     </Section>
 
