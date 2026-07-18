@@ -74,9 +74,8 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 
 		<!-- Analytics, loaded directly from code (Zaraz is off; no tag manager).
-		     Ahrefs: lightweight, async. GA4: deferred until first interaction
-		     (3s fallback) so it never touches the Lighthouse-critical window. -->
-		<script src="https://analytics.ahrefs.com/analytics.js" data-key="HUoLzHY1xsG9qKo3jCxgRw" async></script>
+		     BOTH GA4 and Ahrefs are deferred until the first interaction (3.5s
+		     fallback) so neither competes with the hero for LCP/CPU on mobile. -->
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
@@ -84,17 +83,22 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 			gtag('config', 'G-J0V35RZNZB', { anonymize_ip: true });
 			(function () {
 				var loaded = false;
-				function loadGA() {
+				function loadAnalytics() {
 					if (loaded) return; loaded = true;
-					var s = document.createElement('script');
-					s.async = true;
-					s.src = 'https://www.googletagmanager.com/gtag/js?id=G-J0V35RZNZB';
-					document.head.appendChild(s);
+					var ga = document.createElement('script');
+					ga.async = true;
+					ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-J0V35RZNZB';
+					document.head.appendChild(ga);
+					var ah = document.createElement('script');
+					ah.async = true;
+					ah.src = 'https://analytics.ahrefs.com/analytics.js';
+					ah.setAttribute('data-key', 'HUoLzHY1xsG9qKo3jCxgRw');
+					document.head.appendChild(ah);
 				}
 				['mousedown','touchstart','scroll','keydown'].forEach(function (ev) {
-					addEventListener(ev, loadGA, { passive: true, once: true });
+					addEventListener(ev, loadAnalytics, { passive: true, once: true });
 				});
-				setTimeout(loadGA, 3000);
+				setTimeout(loadAnalytics, 3500);
 			})();
 		</script>
 		
