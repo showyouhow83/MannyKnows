@@ -32,7 +32,7 @@ const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
 // this plan. Honest: only clients who actually gave a quote get one shown.
 const proofMap: Record<string, { quote?: string; cases: { slug: string; name: string }[] }> = {
   'smart-website': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
-  'online-store': { cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
+  'online-store': { quote: 'Cherry Vibes', cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
   'business-ads': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
   'multimedia-agency': { quote: 'VL Home Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
 };
