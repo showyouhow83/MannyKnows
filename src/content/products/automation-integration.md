@@ -10,6 +10,7 @@ services:
   - "API & webhook integration"
 order: 4
 startingAt: 600
+illustration: automation
 faq:
   - q: "How much does this cost?"
     a: "It starts at $600 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the automations monitored and maintained, but that's optional."

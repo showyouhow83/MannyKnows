@@ -11,6 +11,7 @@ services:
   - "Data & tooling gap fixes"
 order: 1
 startingAt: 300
+illustration: audit
 faq:
   - q: "How much does this cost?"
     a: "It starts at $300 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the fixes maintained, but that's optional."

@@ -1,6 +1,8 @@
 ---
 // Product Card — reusable card for the products grid (homepage highlight + /products listing).
 // Shows a banner image when provided, otherwise a type-colored gradient with the product's initials.
+import Illustration from '../illustrations/Illustration.astro';
+
 interface Props {
   href: string;
   title: string;
@@ -9,9 +11,10 @@ interface Props {
   image?: string;
   services?: string[];
   startingAt?: number;
+  illustration?: 'website' | 'seo' | 'agent' | 'audit' | 'automation' | 'store' | 'ads' | 'multimedia';
 }
 
-const { href, title, tagline, type = 'Service', image, services = [], startingAt } = Astro.props;
+const { href, title, tagline, type = 'Service', image, services = [], startingAt, illustration } = Astro.props;
 
 const typeStyles = {
   App:      { gradient: 'from-blue-500/20 to-cyan-500/20',     badge: 'bg-blue-500/15 text-blue-600 dark:text-blue-300',     hover: 'hover:border-blue-400/40' },
@@ -27,6 +30,10 @@ const initials = title.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperC
   <div class="relative aspect-[16/9] overflow-hidden">
     {image ? (
       <img src={image} alt={title} loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    ) : illustration ? (
+      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6">
+        <Illustration kind={illustration} class="w-full max-w-[60%]" />
+      </div>
     ) : (
       <div class={`w-full h-full flex items-center justify-center bg-gradient-to-br ${t.gradient}`}>
         <span class="text-4xl font-black text-text-light-primary/25 dark:text-text-dark-primary/25 tracking-tight">{initials}</span>

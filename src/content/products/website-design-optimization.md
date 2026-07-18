@@ -10,6 +10,7 @@ services:
   - "Astro + Cloudflare builds"
 order: 2
 startingAt: 1000
+illustration: website
 faq:
   - q: "How much does this cost?"
     a: "It starts at $1,000 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep the site fast and maintained, but that's optional."
