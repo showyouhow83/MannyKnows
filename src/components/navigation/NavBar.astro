@@ -23,11 +23,15 @@ const {
   }
 } = Astro.props;
 
-const navLinks = [
-  { href: "/services", label: "Services" },
-  { href: "/plans", label: "Plans" },
-  { href: "/ai-team", label: "AI Team" },
-  { href: "/products", label: "Products" },
+// The four "offering" pages are grouped under one "Services" dropdown to keep
+// the top bar uncluttered; everything else stays flat.
+const offerings = [
+  { href: "/services", label: "All Services", desc: "Web, SEO, AI & apps" },
+  { href: "/plans", label: "Monthly Plans", desc: "Retainers from $350/mo" },
+  { href: "/ai-team", label: "AI Team", desc: "Your own team of AI agents" },
+  { href: "/products", label: "One-Time Projects", desc: "Audits & fixed-scope builds" },
+];
+const primaryLinks = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
@@ -70,8 +74,29 @@ const searchIndex = [
       </h1>
 
       <!-- Navigation Menu -->
-      <ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8">
-        {navLinks.map((link) => (
+      <ul class="flex list-none gap-8 m-0 p-0 flex-1 justify-center ml-8 items-center">
+        <!-- Services dropdown: groups the four offering pages under one item -->
+        <li class="relative" data-nav-dropdown>
+          <button
+            type="button"
+            data-nav-dropdown-toggle
+            aria-haspopup="true"
+            aria-expanded="false"
+            class="group inline-flex items-center gap-1 bg-transparent border-none p-0 cursor-pointer font-medium"
+          >
+            <span class="nav-gradient text-text-light-primary dark:text-text-dark-primary transition-all duration-500">Services</span>
+            <svg class="nav-caret w-3 h-3 text-text-light-secondary dark:text-text-dark-secondary transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" /></svg>
+          </button>
+          <div class="nav-dropdown-menu" data-nav-dropdown-menu hidden role="menu">
+            {offerings.map((o) => (
+              <a href={o.href} role="menuitem">
+                <span class="nav-dropdown-item-title">{o.label}</span>
+                <span class="nav-dropdown-item-desc">{o.desc}</span>
+              </a>
+            ))}
+          </div>
+        </li>
+        {primaryLinks.map((link) => (
           <li>
             <a
               href={link.href}
@@ -196,8 +221,18 @@ const searchIndex = [
       </div>
       
       <!-- Navigation Links -->
-      <div class="px-4 py-4 space-y-2">
-        {navLinks.map((link) => (
+      <div class="px-4 py-4 space-y-1">
+        <p class="px-1 pb-1 text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">What we offer</p>
+        {offerings.map((o) => (
+          <a
+            href={o.href}
+            class="mobile-nav-link block text-base font-medium text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-colors duration-200"
+          >
+            {o.label}
+          </a>
+        ))}
+        <div class="h-px bg-gray-200 dark:bg-gray-700 my-3"></div>
+        {primaryLinks.map((link) => (
           <a
             href={link.href}
             class="mobile-nav-link block text-base font-medium text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-colors duration-200"
@@ -922,11 +957,35 @@ const searchIndex = [
     }
   }
 
+  // Desktop "Services" dropdown — opens on hover (mouse) and on click/keyboard.
+  function initNavDropdown() {
+    document.querySelectorAll('[data-nav-dropdown]').forEach((wrap) => {
+      const toggle = wrap.querySelector('[data-nav-dropdown-toggle]');
+      const menu = wrap.querySelector('[data-nav-dropdown-menu]');
+      if (!toggle || !menu) return;
+      let open = false;
+      const setOpen = (v) => {
+        open = v;
+        menu.hidden = !v;
+        toggle.setAttribute('aria-expanded', String(v));
+      };
+      wrap.addEventListener('mouseenter', () => setOpen(true));
+      wrap.addEventListener('mouseleave', () => setOpen(false));
+      toggle.addEventListener('click', (e) => { e.preventDefault(); setOpen(!open); });
+      wrap.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { setOpen(false); toggle.focus(); }
+      });
+      document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) setOpen(false); });
+      menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    });
+  }
+
   // Initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     initSearchAnimation();
     initMobileMenu();
     initMobileSettings(); // Add separate initialization
+    initNavDropdown();
   }, { passive: true });
 </script>
 
@@ -1006,4 +1065,23 @@ const searchIndex = [
   .search-result .sr-desc { grid-column: 1 / -1; font-size: 0.78rem; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   :root.dark .search-result .sr-desc { color: #9ca3af; }
   .search-result:hover, .search-result.active { background: rgba(0,113,227,0.10); }
+
+  /* Desktop "Services" nav dropdown */
+  .nav-dropdown-menu {
+    position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+    min-width: 250px; z-index: 60; padding: 8px;
+    background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+  }
+  /* invisible bridge so hover doesn't drop while crossing the gap to the menu */
+  .nav-dropdown-menu::before { content: ''; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+  :root.dark .nav-dropdown-menu { background: #18212b; border-color: rgba(255,255,255,0.12); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .nav-dropdown-menu[hidden] { display: none; }
+  .nav-dropdown-menu a { display: block; padding: 9px 12px; border-radius: 8px; text-decoration: none; }
+  .nav-dropdown-menu a:hover { background: rgba(0,113,227,0.10); }
+  .nav-dropdown-item-title { display: block; font-weight: 600; font-size: 0.9rem; color: #111827; }
+  :root.dark .nav-dropdown-item-title { color: #f3f4f6; }
+  .nav-dropdown-item-desc { display: block; font-size: 0.76rem; color: #6b7280; margin-top: 1px; }
+  :root.dark .nav-dropdown-item-desc { color: #9ca3af; }
+  [data-nav-dropdown-toggle][aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
 </style>
