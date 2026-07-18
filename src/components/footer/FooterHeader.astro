@@ -368,36 +368,51 @@ document.addEventListener('DOMContentLoaded', async () => {
   let newsletterCsrfToken: string | null = null;
   let newsletterSessionId: string | null = null;
   
-  // Get CSRF tokens for both forms
-  try {
-    const tokenResponse = await fetch('/api/contact');
-    if (tokenResponse.ok) {
-      const tokenData = await tokenResponse.json();
-      csrfToken = tokenData.csrf_token; // Fixed: API returns csrf_token, not token
-      sessionId = tokenData.session_id; // Store session ID
-      
-      // Enable submit button once token is loaded
-      const submitButton = document.querySelector('#contactForm button[type="submit"]') as HTMLButtonElement;
-      if (submitButton) {
-        submitButton.disabled = false;
+  // CSRF tokens are fetched LAZILY — the moment a visitor engages a form, or on
+  // idle — so these requests never sit on the initial-load critical path. (They
+  // used to run on DOMContentLoaded and parked ~1.8s of the mobile LCP window.)
+  let tokensLoaded = false;
+  let tokensLoading = false;
+  async function loadTokens() {
+    if (tokensLoaded || tokensLoading) return;
+    tokensLoading = true;
+    try {
+      const tokenResponse = await fetch('/api/contact');
+      if (tokenResponse.ok) {
+        const tokenData = await tokenResponse.json();
+        csrfToken = tokenData.csrf_token; // API returns csrf_token, not token
+        sessionId = tokenData.session_id;
+        const submitButton = document.querySelector('#contactForm button[type="submit"]') as HTMLButtonElement;
+        if (submitButton) submitButton.disabled = false;
       }
-    }
 
-    const newsletterTokenResponse = await fetch('/api/newsletter');
-    if (newsletterTokenResponse.ok) {
-      const newsletterTokenData = await newsletterTokenResponse.json();
-      newsletterCsrfToken = newsletterTokenData.csrf_token;
-      newsletterSessionId = newsletterTokenData.session_id;
-      
-      // Enable newsletter submit button once token is loaded
-      const newsletterSubmitButton = document.querySelector('#newsletterSubmit') as HTMLButtonElement;
-      if (newsletterSubmitButton) {
-        newsletterSubmitButton.disabled = false;
+      const newsletterTokenResponse = await fetch('/api/newsletter');
+      if (newsletterTokenResponse.ok) {
+        const newsletterTokenData = await newsletterTokenResponse.json();
+        newsletterCsrfToken = newsletterTokenData.csrf_token;
+        newsletterSessionId = newsletterTokenData.session_id;
+        const newsletterSubmitButton = document.querySelector('#newsletterSubmit') as HTMLButtonElement;
+        if (newsletterSubmitButton) newsletterSubmitButton.disabled = false;
       }
+      tokensLoaded = true;
+    } catch (error) {
+      // Silent on the lazy path — the submit handlers re-fetch a token on demand.
+      console.error('Failed to get CSRF token:', error);
+    } finally {
+      tokensLoading = false;
     }
-  } catch (error) {
-    console.error('Failed to get CSRF token:', error);
-    showError('Security validation failed. Please refresh the page.');
+  }
+
+  // Trigger on first engagement with either form (you must focus a field to
+  // type), with an idle fallback so the submit buttons still enable on their own.
+  ['#contactForm', '#newsletterForm'].forEach((sel) => {
+    const form = document.querySelector(sel);
+    if (form) form.addEventListener('focusin', loadTokens, { once: true });
+  });
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => loadTokens(), { timeout: 5000 });
+  } else {
+    setTimeout(loadTokens, 4000);
   }
   
   // Real-time validation setup

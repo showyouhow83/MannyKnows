@@ -68,7 +68,10 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 
 		<!-- Swiper + Carousel Effect Slider -->
 		<link rel="stylesheet" href="/swiper-bundle.min.css" />
-		<link rel="stylesheet" href="/effect-carousel.min.css" />
+		<!-- effect-carousel styles the slider's peek/scale effect (applied by JS after
+		     load) — load it non-blocking so it stays off the critical render path. -->
+		<link rel="stylesheet" href="/effect-carousel.min.css" media="print" onload="this.media='all'" />
+		<noscript><link rel="stylesheet" href="/effect-carousel.min.css" /></noscript>
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
