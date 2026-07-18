@@ -1,6 +1,6 @@
 ---
 title: "Website Design, Build & Optimization"
-tagline: "We design and build fast, modern sites — and tune the one you already have toward a near-perfect Lighthouse score."
+tagline: "We design and build fast, modern sites — and tune the one you already have to 90+ Lighthouse scores."
 description: "New site or existing, we make it fast, accessible, and ready to convert: hand-coded performance, Core Web Vitals, and the kind of polish that earns trust."
 type: "Service"
 services:
@@ -26,7 +26,7 @@ A slow, clunky site loses customers before they ever reach you. We build sites t
 
 ## Built fast, by hand
 
-We hand-code the front end on a modern stack — Astro on Cloudflare's edge — so pages load in a blink, everywhere. (This very site is tuned for a near-100 Lighthouse score.)
+We hand-code the front end on a modern stack — Astro on Cloudflare's edge — so pages load in a blink, everywhere. (This very site is tuned to 90+ Lighthouse scores.)
 
 ## Optimized, not just pretty
 
@@ -38,7 +38,7 @@ We'll audit it, show you exactly what's dragging it down, and fix it: performanc
 
 ## From invisible to #1 on Google
 
-We built [SL Painting](/work/sl-painting) a site from scratch — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, on a page tuned to a near-perfect Lighthouse score. Fast, modern, and built to be found.
+We built [SL Painting](/work/sl-painting) a site from scratch — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, on a page tuned to 90+ Lighthouse scores. Fast, modern, and built to be found.
 
 ## How it works
 

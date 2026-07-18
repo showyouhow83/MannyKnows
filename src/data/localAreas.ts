@@ -29,7 +29,7 @@ export interface LocalArea {
 export const offers = [
   {
     title: 'Websites that get found',
-    body: 'Designed and built from scratch — fast (near-perfect Lighthouse scores), mobile-first, and with technical SEO baked in from day one, not bolted on later.',
+    body: 'Designed and built from scratch — fast (90+ Lighthouse scores), mobile-first, and with technical SEO baked in from day one, not bolted on later.',
   },
   {
     title: 'Multilingual by default',

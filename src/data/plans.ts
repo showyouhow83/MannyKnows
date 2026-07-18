@@ -51,7 +51,7 @@ export const plans: Plan[] = [
       'Answers customers, qualifies leads & books jobs 24/7, in any language',
       'Keeps your pages and content up to date for you',
       'Multilingual website designed & built — or your current one, optimized',
-      'Google Business Profile + technical SEO (near-100 Lighthouse)',
+      'Google Business Profile + technical SEO (90+ Lighthouse)',
       'Monthly monitoring, fixes & a plain-English report',
     ],
     headline: 'A website that runs itself — agents included',
