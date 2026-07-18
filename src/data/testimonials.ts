@@ -51,7 +51,7 @@ export const testimonials: Testimonial[] = [
   },
   {
     quote:
-      "We started Cherry Vibes in Costa Rica as a drop-shipping store. We used to scrape products by hand — pulling each one down, translating the description, changing the price — a whole process just to list a single product. Manny built us a Python scraper that didn't just do the basics: it cleaned up and enriched each product's info, generated pricing tables, and set dynamic prices. Before, we could only curate 100 to 300 products a week; we jumped to more than 20,000 a month. He put us in the top spots in Costa Rica for “lencería de mujer” and “ropa de mujer,” ranking above stores like Llobet and Leonisa that have been in the market for years — he had us competing with the big leagues. Recently we decided to launch Cherry Vibes for the U.S. market with products dedicated entirely to cherries. We're just getting started, and Manny redesigned our template after researching which one is the most effective for marketplaces.",
+      "Manny built us a Python scraper that took us from curating 100–300 products a week to more than 20,000 a month — cleaning and enriching each one, with pricing tables and dynamic prices. He put us at the top in Costa Rica for “lencería de mujer” and “ropa de mujer,” above stores like Llobet and Leonisa that have been in the market for years. In short, he had us competing with the big leagues.",
     name: 'Owner',
     business: 'Cherry Vibes',
     href: '/work/cherry-vibes',
