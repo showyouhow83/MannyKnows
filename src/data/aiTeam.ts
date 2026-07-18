@@ -48,7 +48,7 @@ export const team: Agent[] = [
     id: 'mimi',
     name: 'Mimi',
     role: 'Voice & audio',
-    does: 'The spoken layer — voiceovers for your videos and reels, and audio that sounds human, not robotic.',
+    does: 'Learns your voice from a short sample, then says whatever you write — voiceovers, reels, phone greetings — in your own voice, so you never have to hit record.',
     order: 4,
     price: 149,
   },
