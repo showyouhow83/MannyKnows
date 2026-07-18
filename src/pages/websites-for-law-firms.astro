@@ -1,0 +1,7 @@
+---
+export const prerender = true;
+import ProfessionPage from '../components/sections/ProfessionPage.astro';
+import { getProfession } from '../data/professions';
+const profession = getProfession('law-firms')!;
+---
+<ProfessionPage profession={profession} />
