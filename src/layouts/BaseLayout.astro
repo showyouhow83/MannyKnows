@@ -73,9 +73,30 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 
-		<!-- Analytics: Ahrefs Web Analytics loaded directly (lightweight, async).
-		     Google Analytics currently runs at the edge via Cloudflare Zaraz. -->
+		<!-- Analytics, loaded directly from code (Zaraz is off; no tag manager).
+		     Ahrefs: lightweight, async. GA4: deferred until first interaction
+		     (3s fallback) so it never touches the Lighthouse-critical window. -->
 		<script src="https://analytics.ahrefs.com/analytics.js" data-key="HUoLzHY1xsG9qKo3jCxgRw" async></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-J0V35RZNZB', { anonymize_ip: true });
+			(function () {
+				var loaded = false;
+				function loadGA() {
+					if (loaded) return; loaded = true;
+					var s = document.createElement('script');
+					s.async = true;
+					s.src = 'https://www.googletagmanager.com/gtag/js?id=G-J0V35RZNZB';
+					document.head.appendChild(s);
+				}
+				['mousedown','touchstart','scroll','keydown'].forEach(function (ev) {
+					addEventListener(ev, loadGA, { passive: true, once: true });
+				});
+				setTimeout(loadGA, 3000);
+			})();
+		</script>
 		
 		<!-- OPTIMIZED: Load pixel canvas only when needed -->
 		<script>

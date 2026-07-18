@@ -14,9 +14,11 @@ export interface Agent {
   role: string;      // short specialty label
   does: string;      // one plain-spoken line: what this agent does for you
   order: number;     // pipeline order (research → publish)
+  price: number;     // flat monthly rate to "hire" this agent (USD)
 }
 
-// The team, in the order work actually flows through them.
+// The team, in the order work actually flows through them. Each agent is hired
+// like staff: a flat monthly rate, fair-use AI usage included.
 export const team: Agent[] = [
   {
     id: 'eve',
@@ -24,6 +26,7 @@ export const team: Agent[] = [
     role: 'Research & strategy',
     does: 'Studies your market, your competitors, and what people are searching for, then tells the team what to make and why.',
     order: 1,
+    price: 99,
   },
   {
     id: 'elly',
@@ -31,6 +34,7 @@ export const team: Agent[] = [
     role: 'Copywriting',
     does: 'Writes it the way you would say it — pages, posts, emails, product descriptions, captions.',
     order: 2,
+    price: 149,
   },
   {
     id: 'eny',
@@ -38,6 +42,7 @@ export const team: Agent[] = [
     role: 'Design & video',
     does: 'Makes the visuals: graphics, banners, thumbnails, and short-form video, always on brand.',
     order: 3,
+    price: 249,
   },
   {
     id: 'mimi',
@@ -45,6 +50,7 @@ export const team: Agent[] = [
     role: 'Voice & audio',
     does: 'The spoken layer — voiceovers for your videos and reels, and audio that sounds human, not robotic.',
     order: 4,
+    price: 149,
   },
   {
     id: 'bap',
@@ -52,6 +58,7 @@ export const team: Agent[] = [
     role: 'Publisher & social',
     does: 'Puts everything live at the right time, on every channel you use, so you post consistently without lifting a finger.',
     order: 5,
+    price: 149,
   },
   {
     id: 'upie',
@@ -59,70 +66,30 @@ export const team: Agent[] = [
     role: 'Reviews & reputation',
     does: 'Watches your reviews, drafts a reply to each one for you to approve, and nudges happy customers to leave more.',
     order: 6,
+    price: 199,
   },
 ];
 
-// Pricing — a monthly retainer, offered in three tiers (scoped per business).
-// AI does the labor, so these undercut a human agency while still reflecting a
-// full content + reputation operation. Annual billing follows the same
-// "pay 10, get 12" model as the other plans (see src/data/plans.ts).
-export interface AiTeamTier {
-  name: string;
-  price: number; // monthly, month-to-month
-  blurb: string;
-  agents: AgentId[]; // agents active in this tier (drives the avatar row)
-  features: string[]; // "what's included" bullets
-  featured?: boolean; // most popular
-}
+// Pricing — "hire AI agents like staff." One flat one-time setup builds and
+// trains your team; then each agent is a flat monthly rate (fair-use AI usage
+// included — unusually heavy usage is metered at cost, quoted first). Hiring
+// the whole roster gets the bundle rate. Nobody sells agents this way yet;
+// that's the point.
+export const aiTeamSetupFee = 199; // one-time, flat — however many agents you hire
 
-export const aiTeamTiers: AiTeamTier[] = [
-  {
-    name: 'Starter',
-    price: 900,
-    blurb: 'Get found and stay consistent — research, writing, and publishing, handled.',
-    agents: ['eve', 'elly', 'bap'],
-    features: [
-      'Eve, Elly & Bap on your account',
-      'Market & keyword research',
-      'Copywriting: posts, captions, and emails',
-      'Scheduled publishing on 1–2 channels',
-      'A plain-English monthly report',
-    ],
+// Whole-roster bundle (vs ~$994/mo à la carte).
+export const aiTeamBundle = {
+  monthly: 799,
+  get alaCarteTotal() {
+    return team.reduce((sum, a) => sum + a.price, 0);
   },
-  {
-    name: 'Growth',
-    price: 1500,
-    featured: true,
-    blurb: 'Add design, video, and reputation — a full content engine across your channels.',
-    agents: ['eve', 'elly', 'eny', 'bap', 'upie'],
-    features: [
-      'Everything in Starter, plus:',
-      'Eny (design & video) & Upie (reviews)',
-      'Branded graphics + short-form video',
-      'Review monitoring & reply drafting',
-      'Publishing across 3–4 channels',
-    ],
+  get savings() {
+    return this.alaCarteTotal - this.monthly;
   },
-  {
-    name: 'Full Team',
-    price: 2500,
-    blurb: 'The whole roster, every channel, with a human on priority call.',
-    agents: ['eve', 'elly', 'eny', 'mimi', 'bap', 'upie'],
-    features: [
-      'Everything in Growth, plus:',
-      'Mimi (voice) — voiceovers & audio',
-      'All the channels you use',
-      'Priority turnaround',
-      'A quarterly strategy session',
-    ],
-  },
-];
+};
 
-// One-time onboarding: brand training, connecting your tools, building each agent.
-export const aiTeamSetupFee = { min: 500, max: 1500 };
-
-// "From" anchor used on the hero + the /plans flagship card.
-export const aiTeamStartingPrice = aiTeamTiers[0].price;
+// "From" anchor used on the hero + the /plans flagship card (cheapest agent).
+export const aiTeamStartingPrice = Math.min(...team.map((a) => a.price));
 
 export const aiTeamFaq = [
   {
@@ -143,6 +110,6 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: "It's a monthly retainer, scoped to how much you want the team to handle. It starts around $900/mo and we quote the real number up front after a short call — no surprises.",
+    a: "You hire agents like staff: a one-time $199 setup to build and train your team, then a flat monthly rate per agent — from $99/mo — with normal AI usage included. Hire the whole roster and the bundle rate saves you about $195/mo. Add or drop agents anytime; if your usage is unusually heavy we'll meter it at cost and tell you before it ever hits a bill.",
   },
 ];
