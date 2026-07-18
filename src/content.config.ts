@@ -32,6 +32,7 @@ const products = defineCollection({
     liveUrl: z.string().optional(),             // live site or demo link
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]), // shared FAQ block
     startingAt: z.number().optional(),          // one-time "starting at" price anchor (USD)
+    illustration: z.enum(['website', 'seo', 'agent', 'audit', 'automation', 'store', 'ads', 'multimedia']).optional(), // brand spot illustration for cards + hero
     flagship: z.boolean().default(false),       // shown via the custom showcase on the homepage
     order: z.number().default(99),              // ascending sort order
     draft: z.boolean().default(false),
