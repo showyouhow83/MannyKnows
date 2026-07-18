@@ -1,8 +1,7 @@
 ---
 // Service Category Component - Reusable service category with services list.
-// NOTE: service items render as plain text (not links) for now — the /services/*
-// pages don't exist yet, so linking them would 404. The `href` is kept in the data
-// so these can be flipped back to <a> links once the pages are built.
+// Each item links to the most relevant existing page (the `href` on each item
+// in FooterServices.astro) — keyword-rich internal links that feed our key pages.
 interface Service {
   href?: string;
   label: string;
@@ -86,9 +85,11 @@ const hoverColorRGB = getHoverColor(textColor);
   </div>
   <ul class={`space-y-2 ${hasSecondarySection ? 'mb-6' : ''}`}>
     {services.map((service) => (
-      <li class={`${textColor} text-sm flex items-center gap-2`}>
-        <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
-        {service.label}
+      <li>
+        <a href={service.href} class={`${textColor} text-sm flex items-center gap-2 hover:underline underline-offset-2 opacity-90 hover:opacity-100 transition-opacity`}>
+          <span class={`w-1.5 h-1.5 ${textColor.replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+          {service.label}
+        </a>
       </li>
     ))}
   </ul>
@@ -107,9 +108,11 @@ const hoverColorRGB = getHoverColor(textColor);
       </div>
       <ul class={`space-y-2 ${hasThirdSection ? 'mb-6' : ''}`}>
         {secondaryServices.map((service) => (
-          <li class={`${secondaryTextColor || textColor} text-sm flex items-center gap-2`}>
-            <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
-            {service.label}
+          <li>
+            <a href={service.href} class={`${secondaryTextColor || textColor} text-sm flex items-center gap-2 hover:underline underline-offset-2 opacity-90 hover:opacity-100 transition-opacity`}>
+              <span class={`w-1.5 h-1.5 ${(secondaryTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+              {service.label}
+            </a>
           </li>
         ))}
       </ul>
@@ -130,9 +133,11 @@ const hoverColorRGB = getHoverColor(textColor);
       </div>
       <ul class="space-y-2">
         {thirdServices.map((service) => (
-          <li class={`${thirdTextColor || textColor} text-sm flex items-center gap-2`}>
-            <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
-            {service.label}
+          <li>
+            <a href={service.href} class={`${thirdTextColor || textColor} text-sm flex items-center gap-2 hover:underline underline-offset-2 opacity-90 hover:opacity-100 transition-opacity`}>
+              <span class={`w-1.5 h-1.5 ${(thirdTextColor || textColor).replace('text-', 'bg-')}/60 rounded-full flex-shrink-0`}></span>
+              {service.label}
+            </a>
           </li>
         ))}
       </ul>
