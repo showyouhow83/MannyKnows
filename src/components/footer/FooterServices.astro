@@ -4,8 +4,9 @@ import ServiceCategory from './ServiceCategory.astro';
 
 // Service categories data — curated to the services that actually win business
 // for local + eCommerce clients, and linked to the most relevant real page (no
-// more thin, unlinked keyword lists). Column layout: 1) Web & Apps → SEO &
-// Marketing → AI Content, 2) eCommerce, 3) Automation, 4) Photo & Video → 360°.
+// more thin, unlinked keyword lists). Column layout (balanced, 2 groups max per
+// column): 1) Web & Apps → SEO & Marketing, 2) eCommerce, 3) Automation →
+// AI Content, 4) Photo & Video → 360°.
 const serviceCategories = [
   // Column 1: Web & Apps (+ SEO & Marketing + AI Content)
   {
@@ -38,21 +39,6 @@ const serviceCategories = [
       { href: "/services", label: "Local SEO" },
       { href: "/services", label: "Google Business Profile" },
       { href: "/services", label: "Competitor Analysis" }
-    ],
-    hasThirdSection: true,
-    thirdTitle: "AI Content",
-    thirdIcon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14,2 14,8 20,8"></polyline>
-      <line x1="16" y1="13" x2="8" y2="13"></line>
-      <line x1="16" y1="17" x2="8" y2="17"></line>
-    </svg>`,
-    thirdIconGradient: "from-purple-500 to-pink-500",
-    thirdTextColor: "text-purple-400",
-    thirdServices: [
-      { href: "/ai-team", label: "AI Product Descriptions" },
-      { href: "/ai-team", label: "AI Product Photography" },
-      { href: "/ai-team", label: "AI Product Videos" }
     ]
   },
 
@@ -98,6 +84,21 @@ const serviceCategories = [
       { href: "/products/automation-integration", label: "Smart Scheduling" },
       { href: "/products/automation-integration", label: "Inventory Sync" },
       { href: "/products/automation-integration", label: "Email Automation" }
+    ],
+    hasSecondarySection: true,
+    secondaryTitle: "AI Content",
+    secondaryIcon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14,2 14,8 20,8"></polyline>
+      <line x1="16" y1="13" x2="8" y2="13"></line>
+      <line x1="16" y1="17" x2="8" y2="17"></line>
+    </svg>`,
+    secondaryIconGradient: "from-purple-500 to-pink-500",
+    secondaryTextColor: "text-purple-400",
+    secondaryServices: [
+      { href: "/ai-team", label: "AI Product Descriptions" },
+      { href: "/ai-team", label: "AI Product Photography" },
+      { href: "/ai-team", label: "AI Product Videos" }
     ]
   },
 
