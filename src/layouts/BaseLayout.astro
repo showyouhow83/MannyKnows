@@ -73,7 +73,9 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 
-		<!-- Analytics: Google Analytics runs at the edge via Cloudflare Zaraz -->
+		<!-- Analytics: Ahrefs Web Analytics loaded directly (lightweight, async).
+		     Google Analytics currently runs at the edge via Cloudflare Zaraz. -->
+		<script src="https://analytics.ahrefs.com/analytics.js" data-key="HUoLzHY1xsG9qKo3jCxgRw" async></script>
 		
 		<!-- OPTIMIZED: Load pixel canvas only when needed -->
 		<script>
