@@ -137,7 +137,6 @@ const NAVBAR_CONFIG = {
             <!-- Hero Swiper Slider — leads on both mobile & desktop; mascot rides its lower-left corner -->
             <div class="relative order-first">
               <HeroSwiper />
-              <div class="astronaut-mascot" aria-hidden="true"></div>
             </div>
             </div>
         </header>
@@ -242,32 +241,3 @@ const NAVBAR_CONFIG = {
   });
 </script>
 
-<style>
-  /* Brand astronaut mascot — anchored to the lower-left of the header (below the
-     slider). CSS background-image so a missing file shows nothing until the PNG
-     lands at public/art/astronaut-rocket.png. */
-  .astronaut-mascot {
-    position: absolute;
-    bottom: 3rem;
-    left: max(0.5rem, 1vw);
-    width: clamp(110px, 30vw, 220px);
-    aspect-ratio: 1 / 1;
-    background: url('/art/astronaut-rocket.webp') center / contain no-repeat;
-    pointer-events: none;
-    z-index: 20;
-    filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.16));
-    animation: astronautFloat 5.4s ease-in-out infinite;
-    will-change: transform;
-  }
-  @keyframes astronautFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-14px) rotate(3.3deg); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .astronaut-mascot { animation: none; }
-  }
-  /* Bigger on wide screens, still anchored to the slider's lower-left corner. */
-  @media (min-width: 1024px) {
-    .astronaut-mascot { width: clamp(150px, 18vw, 320px); bottom: 3.5rem; }
-  }
-</style>

@@ -70,8 +70,9 @@ const searchIndex = [
     <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <h1 class="text-5xl font-black m-0" style="font-size: 3rem;">
-        <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
-          MK
+        <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden inline-flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+          <span>MK</span>
+          <img src="/art/astronaut-rocket.webp" width="600" height="600" alt="" aria-hidden="true" decoding="async" class="h-11 w-11 object-contain shrink-0 -ml-2.5" />
         </a>
       </h1>
 
@@ -208,7 +209,10 @@ const searchIndex = [
     <div class="relative h-full w-[95%] ml-auto flex flex-col bg-white/90 dark:bg-gray-900/85 backdrop-blur-xl border-l border-gray-300/30 dark:border-white/20 shadow-xl">
       <!-- Header with Close Button -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl font-semibold text-text-light-primary dark:text-text-dark-primary">Menu</h2>
+        <a href="/" aria-label="MannyKnows — home" class="logo-gradient inline-flex items-center gap-2 text-2xl font-black text-text-light-primary dark:text-text-dark-primary no-underline">
+          MK
+          <img src="/art/astronaut-rocket.webp" width="600" height="600" alt="" aria-hidden="true" decoding="async" class="h-9 w-9 object-contain shrink-0 -ml-2" />
+        </a>
         <button
           type="button"
           id="mobile-menu-close"
