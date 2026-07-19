@@ -63,9 +63,9 @@ const PACKAGES = [
 ];
 
 const STEPS = [
-  { n: '1', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule — it only takes a minute.' },
-  { n: '2', title: 'We come to you', body: 'We show up at your business and capture a crisp, professional 360° photo. Most shoots take under 30 minutes.' },
-  { n: '3', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit — free.' },
+  { n: '01', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule — it only takes a minute.', icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z' },
+  { n: '02', title: 'We come to you', body: 'We show up at your business and capture a crisp, professional 360° photo. Most shoots take under 30 minutes.', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '03', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit — free.', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
 ];
 
 const WHY = [
@@ -202,12 +202,17 @@ const jsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">How the <span class="apple-gradient-text" data-colorful-title>free shoot</span> works</h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three simple steps from a phone call to a live, immersive photo on your Google listing.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {STEPS.map((s) => (
-            <div class="relative bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-7">
-              <div class="w-11 h-11 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black flex items-center justify-center mb-5">{s.n}</div>
-              <h3 class="text-lg font-bold mb-2">{s.title}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <span aria-hidden="true" data-n={s.n} class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none after:content-[attr(data-n)]"></span>
+              <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={s.icon} />
+                </svg>
+              </div>
+              <h3 class="relative mt-4 text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
+              <p class="relative mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
