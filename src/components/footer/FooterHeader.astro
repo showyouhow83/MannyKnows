@@ -58,9 +58,7 @@ const blogArticles = (await getCollection('blog'))
           <span class="apple-gradient-text bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink bg-clip-text text-transparent animate-button-gradient">
             {brandTitle}
           </span>
-          {brandEmoji && (
-            <span class="rocket-emoji" aria-hidden="true" style="-webkit-text-fill-color: initial; background: none;">{brandEmoji}</span>
-          )}
+          <img src="/art/astronaut-rocket.webp" width="600" height="600" alt="" aria-hidden="true" loading="lazy" decoding="async" class="rocket-emoji h-16 w-16 sm:h-[4.75rem] sm:w-[4.75rem] object-contain flex-shrink-0" />
         </h3>
         <p class="text-gray-700 dark:text-white/80 leading-relaxed text-sm mb-8 transition-colors duration-300">
           {brandDescription}
@@ -851,7 +849,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     transform: translateY(0);
   }
 
-  /* Floating rocket in the MK 🚀 brand mark — three independent transforms on
+  /* Floating astronaut in the MK brand mark — three independent transforms on
      coprime durations, so drift/tilt/pulse desync and the motion never quite
      repeats (organic, not mechanical). */
   .rocket-emoji {
