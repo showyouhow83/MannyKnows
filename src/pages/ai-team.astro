@@ -11,6 +11,7 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
+import StepCards from '../components/ui/StepCards.astro';
 import { team, aiTeamBundle, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
@@ -191,20 +192,7 @@ const faqSchema = {
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How we build it for you</span>
         </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
-          {steps.map((s) => (
-            <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-              <span aria-hidden="true" data-n={s.n} class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none after:content-[attr(data-n)]"></span>
-              <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d={s.icon} />
-                </svg>
-              </div>
-              <h3 class="relative mt-4 text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
-              <p class="relative mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-            </div>
-          ))}
-        </div>
+        <StepCards steps={steps} class="max-w-5xl mx-auto" />
       </Container>
     </Section>
 
