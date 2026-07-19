@@ -13,6 +13,7 @@ import { BOOKING_URL } from '../../data/booking';
 import { getTestimonial } from '../../data/testimonials';
 import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
+import StepCards from '../../components/ui/StepCards.astro';
 
 export function getStaticPaths() {
   return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
@@ -173,15 +174,7 @@ const faqSchema = {
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How it works</span>
         </h2>
-        <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
-          {plan.steps.map((s, i) => (
-            <li class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-              <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold mb-3">{i + 1}</span>
-              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-            </li>
-          ))}
-        </ol>
+        <StepCards steps={plan.steps} class="max-w-5xl mx-auto" />
       </Container>
     </Section>
 

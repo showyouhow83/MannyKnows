@@ -11,6 +11,7 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
+import StepCards from '../components/ui/StepCards.astro';
 import { getTestimonial } from '../data/testimonials';
 
 const checks = [
@@ -23,9 +24,9 @@ const checks = [
 ];
 
 const steps = [
-  { n: '01', title: 'Send us your website', body: "Just the URL. If you don't have a site yet, tell us your business and where customers find you now." },
-  { n: '02', title: 'We analyze it by hand', body: 'A real person reviews it with the same tools we build with — not a generic automated score. We look at what actually affects your customers and your ranking.' },
-  { n: '03', title: 'You get a plain-English report', body: "A short, prioritized list of what's working, what's costing you, and what to fix first — plus a quick call to walk through it if you want. No obligation." },
+  { n: '01', title: 'Send us your website', body: "Just the URL. If you don't have a site yet, tell us your business and where customers find you now.", icon: 'M12 19l9 2-9-18-9 18 9-2zm0 0v-8' },
+  { n: '02', title: 'We analyze it by hand', body: 'A real person reviews it with the same tools we build with — not a generic automated score. We look at what actually affects your customers and your ranking.', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+  { n: '03', title: 'You get a plain-English report', body: "A short, prioritized list of what's working, what's costing you, and what to fix first — plus a quick call to walk through it if you want. No obligation.", icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
 ];
 
 const walkaway = [
@@ -109,15 +110,7 @@ const quote = getTestimonial('SL Painting');
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
             <span class="apple-gradient-text" data-colorful-title>How it works</span>
           </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {steps.map((s) => (
-              <div class="group relative overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-                <span aria-hidden="true" data-n={s.n} class="pointer-events-none absolute top-3 right-4 text-6xl font-black leading-none text-primary-blue/10 dark:text-blue-300/10 select-none after:content-[attr(data-n)]"></span>
-                <h3 class="relative text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.title}</h3>
-                <p class="relative text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-              </div>
-            ))}
-          </div>
+          <StepCards steps={steps} cols={3} class="" />
         </div>
       </Container>
     </Section>
