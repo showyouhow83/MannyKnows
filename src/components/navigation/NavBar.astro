@@ -26,10 +26,10 @@ const {
 // The four "offering" pages are grouped under one "Services" dropdown to keep
 // the top bar uncluttered; everything else stays flat.
 const offerings = [
-  { href: "/services", label: "All Services", desc: "Web, SEO, AI & apps" },
-  { href: "/plans", label: "Monthly Plans", desc: "Retainers from $350/mo" },
-  { href: "/ai-team", label: "AI Team", desc: "Your own team of AI agents" },
-  { href: "/products", label: "One-Time Projects", desc: "Audits & fixed-scope builds" },
+  { href: "/services", label: "Overview", desc: "How it all fits together" },
+  { href: "/plans", label: "Monthly Plans", desc: "We run it — from $350/mo" },
+  { href: "/ai-team", label: "AI Team", desc: "Hire AI agents like staff" },
+  { href: "/products", label: "Projects", desc: "One-time & fixed-scope — you own it" },
 ];
 const primaryLinks = [
   { href: "/work", label: "Portfolio" },
@@ -42,7 +42,7 @@ const primaryLinks = [
 const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft);
 const searchIndex = [
   { title: "Home", description: "Websites, SEO, and software for Western Massachusetts businesses.", url: "/", type: "Page" },
-  { title: "Services", description: "Website design & optimization, technical SEO, automation & AI consulting.", url: "/services", type: "Page" },
+  { title: "Services", description: "Everything we do, in one place — the two ways to work with us: monthly (we run it) or one-time projects (you own it).", url: "/services", type: "Page" },
   { title: "How it works", description: "From the first call to working software — our process, from friction to a finished app.", url: "/how-it-works", type: "Page" },
   { title: "Plans & pricing", description: "Monthly plans from $350/mo — Smart Website, Online Store, Business Ads & Multimedia Agency (multilingual).", url: "/plans", type: "Page" },
   { title: "Smart Website (AI) plan", description: "Multilingual site + AI agent that answers customers & books jobs 24/7 — from $350/mo.", url: "/plans/smart-website", type: "Page" },
@@ -53,7 +53,7 @@ const searchIndex = [
   { title: "Portfolio", description: "Real sites we've designed and built for Western Mass businesses — case studies included.", url: "/work", type: "Page" },
   { title: "About", description: "Who's behind MannyKnows — twenty years of enterprise engineering, based in Springfield.", url: "/about", type: "Page" },
   { title: "Contact", description: "Send a message, email mk@mannyknows.com, or call (413) 361-8451.", url: "/contact", type: "Page" },
-  { title: "Products", description: "One-time projects: audits, website builds, technical SEO, automation & AI adoption.", url: "/products", type: "Page" },
+  { title: "Projects", description: "One-time, fixed-scope work you own: audits, website builds, technical SEO, automation & AI adoption.", url: "/products", type: "Page" },
   { title: "Free AI Website Analysis", description: "Send your site, get a plain-English report — speed, SEO, mobile, conversions & AI-readiness. Free, no obligation.", url: "/free-ai-website-analysis", type: "Page" },
   { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors — with an AI agent that books estimates 24/7.", url: "/websites-for-contractors", type: "Page" },
   { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare — parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares", type: "Page" },

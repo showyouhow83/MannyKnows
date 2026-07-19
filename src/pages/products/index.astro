@@ -16,7 +16,7 @@ const products = (await getCollection('products'))
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
-<BaseLayout title="Products — One-Time Projects for Western Mass Businesses | MannyKnows">
+<BaseLayout title="Projects — One-Time, Fixed-Scope Work for Western Mass Businesses | MannyKnows">
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
@@ -24,13 +24,13 @@ const products = (await getCollection('products'))
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
           <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Products</span></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Projects</span></li>
         </ol>
       </nav>
       <div class="pb-12 px-4">
         <Container>
           <div class="text-center max-w-3xl mx-auto">
-            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Products</span>
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">One-time projects</span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>Software and services you can put to work</span>
             </h1>
@@ -47,7 +47,7 @@ const products = (await getCollection('products'))
       <Container>
         <div class="max-w-4xl mx-auto grid gap-5 sm:grid-cols-2">
           <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6">
-            <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">One-time project <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— these products</span></h2>
+            <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">One-time project <span class="text-sm font-normal text-text-light-tertiary dark:text-text-dark-tertiary">— these projects</span></h2>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-3">A fixed-scope job with a clear finish line: an audit, a build, an SEO push, an automation. You own the result. Best when you want a specific thing done, once.</p>
             <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Each starts from a set price, billed at a flat $75/hr — quoted up front, no big surprises.</p>
           </div>
@@ -63,7 +63,7 @@ const products = (await getCollection('products'))
     <Section id="products-list" variant="default">
       <Container>
         {products.length === 0 ? (
-          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">New products are on the way — check back soon.</p>
+          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">New projects are on the way — check back soon.</p>
         ) : (
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2">
             {products.map((p) => (
