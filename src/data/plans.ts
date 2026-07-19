@@ -45,18 +45,18 @@ export const plans: Plan[] = [
     name: 'Smart Website (AI)',
     icon: '🌐',
     price: 350,
-    tagline: 'A website that comes with its own team of AI agents to run it — answering customers, booking jobs, and keeping it fresh 24/7.',
+    tagline: 'A website that keeps itself fresh and up to date — with Manny, your AI agent, answering customers, booking jobs, and selling 24/7.',
     highlights: [
-      'A team of AI agents that run your site — not just a chatbot',
-      'Answers customers, qualifies leads & books jobs 24/7, in any language',
-      'Keeps your pages and content up to date for you',
+      'Manny built in — your AI sales, booking & support agent, not just a chatbot',
+      'Answers customers, books jobs & points shoppers to products 24/7, any language',
+      'Updates itself — fresh, relevant content and SEO kept current for you',
       'Multilingual website designed & built — or your current one, optimized',
       'Google Business Profile + technical SEO (90+ Lighthouse)',
       'Monthly monitoring, fixes & a plain-English report',
     ],
-    headline: 'A website that runs itself — agents included',
+    headline: 'A website that updates, optimizes, and sells for you',
     blurb:
-      "Most websites just sit there. This one comes with a team of AI agents that run it for you: answering customers in their language, qualifying leads and booking jobs around the clock, and keeping your pages current — all trained on your business, with you approving anything that matters. You get a website and a team that works it, for a monthly price instead of a big upfront bill.",
+      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and it comes with Manny, your AI sales, booking, and support agent. Manny answers customers in their language around the clock, books appointments, and points shoppers to the right product in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
     whoFor:
       'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
     deliverables: [
@@ -70,9 +70,9 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: 'The AI Sales & Booking Agent',
+        title: 'Manny — your AI Sales & Booking agent',
         items: [
-          'Not a chatbot — it answers, qualifies, and sells, then books the appointment right there',
+          'Not a chatbot — Manny answers, qualifies, and sells, then books the appointment right there',
           'Works your site 24/7 in your customer\u2019s language, even after closing',
           'Trained on your business: your services, prices, hours, and how you talk',
           'Every conversation becomes a lead in your admin; hands off to you when a human should take over',
