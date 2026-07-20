@@ -378,6 +378,13 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		font-style: normal;
 	}
 
+	/* Tighter title line-heights site-wide. The [class] selector (specificity
+	   0,1,1) beats Tailwind's text-* line-heights (0,1,0) without !important.
+	   h1 is left alone — the hero headline sets its own tight leading. */
+	h2[class], h3[class], h4[class], h5[class], h6[class] {
+		line-height: 1.2;
+	}
+
 	/* Utility classes */
 	.container {
 		max-width: 1440px;

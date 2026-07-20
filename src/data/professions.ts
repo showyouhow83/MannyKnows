@@ -137,7 +137,7 @@ export const professions: Profession[] = [
       },
       {
         title: 'Found on Google & the map',
-        body: 'Technical SEO and a verified Google Business Profile so local parents searching “daycare near me” find you first.',
+        body: 'Technical SEO and a verified Google Business Profile so local parents find you first — on Google and when they ask an AI assistant for a “daycare near me.”',
       },
     ],
     proofBusiness: 'JK Daycare',
@@ -220,7 +220,7 @@ export const professions: Profession[] = [
       },
       {
         q: 'Can you rank us for our practice areas?',
-        a: 'We build the technical SEO and content structure to compete for your practice areas in your county. Rankings build over time; we report honestly on progress against Google’s own data — no invented numbers.',
+        a: 'We build the technical SEO, structured content, and schema to compete for your practice areas in your county — on Google and in AI answers (ChatGPT, Perplexity, Google’s AI Overviews). Rankings build over time; we report honestly on progress against Google’s own data — no invented numbers.',
       },
     ],
   },
@@ -256,7 +256,7 @@ export const professions: Profession[] = [
       },
       {
         title: '“Near me” local SEO',
-        body: 'Technical SEO and a verified Google Business Profile so patients searching “dentist near me” or “clinic in [your town]” find you at the top of the map.',
+        body: 'Technical SEO and a verified Google Business Profile so patients find you at the top of the map — on Google and when they ask an AI like ChatGPT for a “dentist near me.”',
       },
       {
         title: 'An AI agent that books appointments 24/7',
