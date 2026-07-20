@@ -68,6 +68,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
           data-index={i}
           href={slide.href ?? '#'}
           aria-label={slide.title}
+          draggable="false"
         >
           <picture>
             <source media="(min-width: 768px)" srcset={desktopSrc(slide.image)} />
@@ -76,6 +77,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
               alt={slide.title}
               width="1200"
               height="675"
+              draggable="false"
               loading={i === 0 ? 'eager' : 'lazy'}
               fetchpriority={i === 0 ? 'high' : undefined}
               decoding="async"
@@ -96,6 +98,10 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     var carousel = document.getElementById('heroCarousel');
     var track = document.getElementById('heroTrack');
     if (!carousel || !track) return;
+
+    // Anchors + images are natively draggable; that hijacks the pointer and kills
+    // both custom swipe and click-through. Suppress the browser's own drag.
+    track.addEventListener('dragstart', function (e) { e.preventDefault(); });
     var slides = Array.prototype.slice.call(track.querySelectorAll('.hero-slide'));
     var n = slides.length;
     if (!n) return;
@@ -216,7 +222,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
 <style>
   .hero-carousel-section {
     width: 100%;
-    padding: 0.5rem 0 0;
+    padding: 0.5rem 0 2rem;
   }
 
   .hero-carousel {
@@ -253,6 +259,10 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
                 opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
                 box-shadow 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
     will-change: transform, opacity;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    touch-action: pan-y;
   }
 
   /* Pre-JS fallback: show the first slide centered (it's the LCP element). */
@@ -269,6 +279,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     display: block;
     border-radius: 16px;
     pointer-events: none;
+    -webkit-user-drag: none;
   }
 
   .hero-slide-content {
