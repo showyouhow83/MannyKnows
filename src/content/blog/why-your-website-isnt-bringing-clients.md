@@ -3,7 +3,7 @@ title: "5 Reasons Your Website Isn't Bringing In Clients (and How to Fix Each)"
 description: "A website that doesn't generate calls isn't decoration — it's a cost. Here are the five most common reasons a service-business site fails to bring in clients, and the fix for each."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["Web Design", "Conversion", "Technical SEO"]
+tags: ["Web Design", "AI Search", "Conversion", "Technical SEO"]
 draft: false
 ---
 
@@ -16,6 +16,8 @@ Most people find you on their phone, and they will not wait. A few extra seconds
 ## 2. Google can't tell what you do or where you do it
 
 If your site is one vague "Services" page with no clear location, Google has nothing specific to rank. Someone searching "estate lawyer Springfield" or "roof repair in Chicopee" never sees you, because nothing on your site matches. **The fix:** a real page for each service, written around what people actually search, with your service area made obvious — plus the technical SEO (structure, metadata, local signals) that tells Google exactly who to show you to.
+
+This now decides more than your Google rank. When someone asks ChatGPT, Perplexity, or Google's AI Overview for "an estate lawyer in Springfield," the assistant can only put forward a business whose site plainly says what it does and where. That's answer-engine optimization, and it runs on the very same clear structure and schema — a vague site is invisible to the AI for the same reason it's invisible to Google. Fix it once and you become findable in both.
 
 ## 3. A visitor can't quickly tell they should trust you
 

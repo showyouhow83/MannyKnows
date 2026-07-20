@@ -3,7 +3,7 @@ title: "How to Get More Google Reviews (Without Being Pushy)"
 description: "Reviews decide who ranks in Google's Map Pack and who the customer calls first. Here's a simple, repeatable system to get more of them — and what to do when one goes bad."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["Reviews", "Reputation", "Local SEO"]
+tags: ["Reviews", "AI Search", "Reputation", "Local SEO"]
 draft: false
 ---
 
@@ -36,6 +36,10 @@ Replying matters more than owners think. For good reviews, a quick, specific tha
 ## A note for medical and legal
 
 You've got extra rules — HIPAA for healthcare, bar advertising rules for attorneys. You can still absolutely ask for reviews; just keep your **replies** generic and never confirm someone was a patient or client or discuss any detail of their care or case. "Thank you for the kind words" is always safe. When in doubt, say less.
+
+## Your reviews feed the AI answers now, too
+
+Here's a newer reason the same boring system pays off. A growing share of people don't scroll Google at all anymore — they ask ChatGPT, Perplexity, or Google's AI Overview "who's the best [what you do] near me?" and get back a short, recommended shortlist. When those assistants decide whose name to give, they lean on the same review signals a human does: how many you have, how recent they are, and what they actually say. The steady, honest trickle of reviews you're building to win the Map Pack is the very thing that makes an AI comfortable putting you on that list. One system, working in two places at once.
 
 ## Where we come in
 

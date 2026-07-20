@@ -3,7 +3,7 @@ title: "Your Website Should Work While You Sleep"
 description: "An AI-assisted site can answer questions, qualify buyers, and book work at 2am. Here's what that looks like in practice."
 pubDate: 2026-04-18
 author: "Manny"
-tags: ["ai", "websites", "conversion"]
+tags: ["ai", "AI Search", "websites", "conversion"]
 ---
 
 Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait — and waiting is where deals die.
@@ -23,5 +23,9 @@ The point isn't to remove the human touch — it's to protect your time for the 
 ## Start small, measure, expand
 
 You don't rebuild everything overnight. Add an assistant, watch what people ask, and let those questions tell you what to automate next. The site gets smarter because your customers are teaching it.
+
+## The other thing happening at 2am
+
+While your site is busy answering questions, something else is going on at that hour: people are asking ChatGPT, Perplexity, or Google's AI Overview to just tell them who to call. More and more, the search itself happens inside an AI. The same qualities that make your site a good assistant — clear, well-structured content a machine can actually read — are what make an AI comfortable naming you in its answer. So a site built right works while you sleep twice over: it answers the visitors who show up, and it helps you be the business the AI sends them to in the first place.
 
 Want a site that earns its keep around the clock? That's exactly what our [Smart Website plan](/plans/smart-website) is built for. [Start a conversation.](#contact)
