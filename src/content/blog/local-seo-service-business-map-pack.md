@@ -3,7 +3,7 @@ title: "Local SEO for Service Businesses: How to Win Google's Map Pack"
 description: "Contractors, clinics, law firms, daycares — the businesses that win locally are the ones in Google's three-result Map Pack. Here's what actually gets you there."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["Local SEO", "Technical SEO", "Western Massachusetts"]
+tags: ["Local SEO", "AI Search", "Technical SEO", "Western Massachusetts"]
 draft: false
 ---
 
@@ -38,8 +38,12 @@ Your Google profile gets you into the pack; your website closes the deal when th
 
 Google holds "your money or your life" businesses — healthcare, legal, financial — to a higher bar. Real practitioner bios with credentials, clear contact and location info, and genuine reviews all signal the trustworthiness Google looks for before it puts you in front of someone making a health or legal decision. Skip them and you'll struggle to rank no matter how good the rest is.
 
+## 7. The new front door: showing up when people ask an AI
+
+A growing share of "near me" searches now start inside **ChatGPT, Perplexity, Gemini, and Google's own AI Overviews**. Someone asks an assistant for "the best daycare in Chicopee" or "a personal injury lawyer in Springfield" and gets a short, cited shortlist — no ten blue links to scroll. This is **answer-engine optimization (AEO)**, and the good news is it rewards the same fundamentals as the Map Pack: a complete Google Business Profile, consistent name/address/phone, real recent reviews, and clear, well-structured pages — plus clean content and schema an AI can actually read and quote. Nail the six things above and you're not just ranking on Google; you're eligible to be the business an AI recommends. It isn't a separate game — it's the same foundation answering a new kind of search.
+
 ## The honest part
 
-Local SEO isn't a one-time switch — it's a profile kept active, reviews that keep coming, and a site kept fast and current. That's exactly why we run it as an ongoing service instead of a one-and-done project. Our **[Smart Website (AI) plan](/plans/smart-website)** (from $350/mo) builds the fast site and the Google Business Profile and keeps both tuned every month; if you mainly need the SEO muscle on a site you already have, our **[Technical SEO & Conversion](/products/technical-seo-conversion)** project does exactly that.
+Local SEO — and now AI search — isn't a one-time switch — it's a profile kept active, reviews that keep coming, and a site kept fast and current. That's exactly why we run it as an ongoing service instead of a one-and-done project. Our **[Smart Website (AI) plan](/plans/smart-website)** (from $350/mo) builds the fast site and the Google Business Profile and keeps both tuned every month; if you mainly need the SEO muscle on a site you already have, our **[Technical SEO & Conversion](/products/technical-seo-conversion)** project does exactly that.
 
 Want to know why you're not in the Map Pack yet? **[Get a free look at your local presence](/free-ai-website-analysis)** — we'll show you what's holding you back and what it takes to get into those three results.
