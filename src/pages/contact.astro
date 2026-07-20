@@ -46,6 +46,7 @@ const inputClass =
         <div class="grid gap-10 lg:grid-cols-5 max-w-5xl mx-auto items-start">
           <!-- Form -->
           <div class="lg:col-span-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 md:p-8">
+            <div id="contactPageFormWrap">
             <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Send a message</h2>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">A sentence or two is plenty — we'll take it from there.</p>
             <form id="contactPageForm" class="space-y-4">
@@ -58,6 +59,31 @@ const inputClass =
               </button>
               <p id="contactPageStatus" class="text-sm text-center hidden" role="status"></p>
             </form>
+            </div>
+            <!-- Success confirmation — replaces the form on submit and shows what happens next -->
+            <div id="contactPageSuccess" class="hidden">
+              <div class="flex items-center gap-3 mb-1">
+                <span class="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/15 text-green-600 dark:text-green-400">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5" /></svg>
+                </span>
+                <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Thanks — your message is in.</h2>
+              </div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-6">Here's exactly what happens next.</p>
+              <div class="grid gap-4 sm:grid-cols-3">
+                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black mb-3">1</span>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We read your message ourselves and reply personally — usually within a day.</p>
+                </div>
+                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black mb-3">2</span>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A short call to understand your business. Nothing's locked in.</p>
+                </div>
+                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black mb-3">3</span>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We scope the right plan or project together, and you decide.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Direct channels -->
@@ -79,14 +105,6 @@ const inputClass =
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
                 Based in Springfield, Massachusetts — working with businesses across Western Mass, and remotely anywhere.
               </p>
-            </div>
-            <div class="rounded-2xl border border-primary-blue/25 bg-primary-blue/[0.04] dark:bg-primary-blue/[0.07] p-5">
-              <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-2">What happens next</span>
-              <ol class="space-y-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-                <li><strong class="text-text-light-primary dark:text-text-dark-primary">1.</strong> We read your message ourselves and reply personally — usually within a day.</li>
-                <li><strong class="text-text-light-primary dark:text-text-dark-primary">2.</strong> A short call to understand your business. Nothing's locked in.</li>
-                <li><strong class="text-text-light-primary dark:text-text-dark-primary">3.</strong> We scope the right plan or project together, and you decide.</li>
-              </ol>
             </div>
           </div>
         </div>
@@ -209,7 +227,10 @@ const inputClass =
         const result = await res.json().catch(() => ({}));
         if (res.ok) {
           form.reset();
-          if (statusEl) { statusEl.textContent = "Thanks — we'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          document.getElementById('contactPageFormWrap')?.classList.add('hidden');
+          const successEl = document.getElementById('contactPageSuccess');
+          successEl?.classList.remove('hidden');
+          successEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           getToken();
         } else {
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
