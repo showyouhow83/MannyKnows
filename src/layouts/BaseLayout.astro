@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
 import ContactModal from '../components/ui/ContactModal.astro';
+import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 
 export interface Props {
 	title: string;
@@ -187,6 +188,10 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 
 		<!-- Global contact modal (opened by [data-contact] / a[href="#contact"] / ?contact=open) -->
 		<ContactModal />
+
+		<!-- Global "Got an idea?" launcher — floating button + modal, body-level so
+		     the modal clears every page-section stacking context. -->
+		<IdeaLaunchpad />
 
 		<!-- Swiper + Carousel Effect Scripts — deferred so they don't block render
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
