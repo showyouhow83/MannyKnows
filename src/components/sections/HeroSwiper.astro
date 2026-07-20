@@ -169,32 +169,35 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
       });
     });
 
-    // drag / swipe (pointer events cover mouse + touch)
+    // drag / swipe — pointer events cover mouse + touch. We deliberately do NOT
+    // use setPointerCapture: capturing the pointer to the track steals the click
+    // from the slide <a>, so taps would neither navigate nor re-center. Track the
+    // move on window instead (mouse has no implicit capture; touch bubbles up).
     var startX = 0, dx = 0, dragging = false, moved = false;
     track.addEventListener('pointerdown', function (e) {
+      if (e.button != null && e.button !== 0) return; // primary button only
       dragging = true; moved = false; startX = e.clientX; dx = 0;
       pause();
-      try { track.setPointerCapture(e.pointerId); } catch (err) {}
     });
-    track.addEventListener('pointermove', function (e) {
+    window.addEventListener('pointermove', function (e) {
       if (!dragging) return;
       dx = e.clientX - startX;
       if (Math.abs(dx) > DRAG_DETECT) moved = true;
     });
-    function endDrag() {
+    window.addEventListener('pointerup', function () {
       if (!dragging) return;
       dragging = false;
       if (Math.abs(dx) > SWIPE_THRESHOLD) { dx < 0 ? next() : prev(); }
       else { play(); }
-      // if it was a drag, swallow the click that fires next so we don't follow a link
+      // a real drag (not a tap) — swallow the click that immediately follows so
+      // it doesn't navigate; a plain tap leaves the click alone.
       if (moved) {
-        var blocker = function (ev) { ev.preventDefault(); ev.stopPropagation(); track.removeEventListener('click', blocker, true); };
+        var blocker = function (ev) { ev.preventDefault(); ev.stopPropagation(); };
         track.addEventListener('click', blocker, true);
-        setTimeout(function () { track.removeEventListener('click', blocker, true); }, 350);
+        setTimeout(function () { track.removeEventListener('click', blocker, true); }, 60);
       }
-    }
-    track.addEventListener('pointerup', endDrag);
-    track.addEventListener('pointercancel', function () { dragging = false; play(); });
+    });
+    window.addEventListener('pointercancel', function () { if (dragging) { dragging = false; play(); } });
 
     // pause on hover and when the tab is hidden
     carousel.addEventListener('mouseenter', pause);

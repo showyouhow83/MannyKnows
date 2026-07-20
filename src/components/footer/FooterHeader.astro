@@ -37,7 +37,7 @@ const cardStyles = [
 const blogArticles = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 6)
+  .slice(0, 5)
   .map((post, i) => ({
     ...cardStyles[i % cardStyles.length],
     category: post.data.tags?.[0] ?? "Insights",
@@ -180,7 +180,7 @@ const blogArticles = (await getCollection('blog'))
       <div>
         <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">AI News for Western Mass Businesses</h4>
         
-        <!-- 3 posts on mobile/tablet; the extra 3 fill the taller column on desktop. -->
+        <!-- 3 posts on mobile/tablet; the extra 2 fill the taller column on desktop (5 total). -->
         <div class="space-y-6">
           {blogArticles.map((article, i) => (
             i < 3
