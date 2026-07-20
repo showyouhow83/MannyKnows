@@ -15,6 +15,7 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
+import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
@@ -165,6 +166,17 @@ const NAVBAR_CONFIG = {
 			subtitle="Monthly plans, scoped to your business. Start with what you need — a website, an online store, marketing, or a full tech team — and adjust anytime."
 		>
 			<PricingPlans />
+		</PageSection>
+
+		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
+		<PageSection
+			id="ai-team"
+			badge="AI Team"
+			title="Your AI team, ready to hire"
+			subtitle="Hire AI agents the way you'd hire staff — each trained on your business and run for you, with a real person reviewing what goes out."
+			variant="alternate"
+		>
+			<HomeAiTeam />
 		</PageSection>
 
 		<!-- Idea Launchpad — bring an idea, we design, build & launch the app for you -->
