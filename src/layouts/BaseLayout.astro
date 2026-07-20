@@ -196,6 +196,23 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 </html>
 
 <style is:global>
+	/* Mobile: keep breadcrumbs on one line — shrink the font and clip the
+	   current-page crumb with an ellipsis instead of wrapping to a second row. */
+	@media (max-width: 640px) {
+		nav[aria-label="breadcrumb"] > ol {
+			flex-wrap: nowrap;
+			font-size: 0.72rem;
+			line-height: 1.15;
+			overflow: hidden;
+		}
+		nav[aria-label="breadcrumb"] > ol > li:last-child { min-width: 0; overflow: hidden; }
+		nav[aria-label="breadcrumb"] > ol > li:last-child > span:last-child {
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
 	:root {
 		/* Native System Font Stack */
 		--bs-body-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
