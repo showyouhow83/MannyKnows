@@ -1,5 +1,6 @@
 ---
 title: "Practical AI Adoption"
+draft: true
 tagline: "Cut through the hype — the right model for the job, assistants that use your own data, and a human always in the loop."
 description: "Straight advice and working builds: which AI model actually fits, where it pays off, and AI agents or assistants grounded in your real content — not a science project."
 type: "Service"
