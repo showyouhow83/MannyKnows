@@ -56,7 +56,7 @@ export const plans: Plan[] = [
     ],
     headline: 'A website that updates, optimizes, and sells for you',
     blurb:
-      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and it comes with Manny™, your AI sales, booking, and support agent. Manny answers customers in their language around the clock, books appointments, and points shoppers to the right product in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
+      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and it comes with Manny™, your AI sales, booking, and support agent. Manny™ answers customers in their language around the clock, books appointments, and points shoppers to the right product in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
     whoFor:
       'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
     deliverables: [

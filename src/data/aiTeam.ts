@@ -24,7 +24,7 @@ export interface Agent {
 export const team: Agent[] = [
   {
     id: 'manny',
-    name: 'Manny',
+    name: 'Manny™',
     role: 'Sales, booking & support',
     does: "Lives on your site and answers customers 24/7 — replies to questions, books appointments, and points shoppers to the right product in your catalog, in their language. Included with every Smart Website (rename it to fit your brand).",
     order: 0,
