@@ -59,6 +59,14 @@ const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000
   <circle cx="74" cy="80" r="17" fill="#ffffff" stroke="url(#${gid})" stroke-width="2.4"/>
   <g transform="translate(74 80)" style="color:#0071e3">${emblem}</g>
 </svg>`;
+
+// Agents with a real character illustration in public/team/<id>.webp.
+// Mimi's image is still pending, so she keeps the gradient-bot placeholder.
+const HAS_IMAGE = ['manny', 'eve', 'elly', 'eny', 'bap', 'upie'];
 ---
 
-<div class={className} set:html={svg} />
+{HAS_IMAGE.includes(agent) ? (
+  <img src={`/team/${agent}.webp`} width="480" height="480" alt={`${label}, an AI Team agent`} loading="lazy" decoding="async" class={`object-contain ${className}`} />
+) : (
+  <div class={className} set:html={svg} />
+)}
