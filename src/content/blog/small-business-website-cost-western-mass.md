@@ -3,7 +3,7 @@ title: "How Much Does a Small Business Website Cost in Western Massachusetts?"
 description: "Straight answers on what a website really costs for a Springfield or Western Mass small business — one-time build vs. monthly plan, what drives the price, and what to watch out for."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["Pricing", "Web Design", "Western Massachusetts"]
+tags: ["Pricing", "AI Search", "Web Design", "Western Massachusetts"]
 draft: false
 ---
 
@@ -37,6 +37,8 @@ Our **[Smart Website (AI) plan](/plans/smart-website)** is **$350/mo**: a fast, 
 ## What actually makes a website "expensive"
 
 Not the sticker price — the **wrong** site. A $500 DIY site that never shows up on Google, loads slowly, and turns visitors away costs you every customer it fails to catch. That's the expensive one. A site that gets found and books jobs pays for itself.
+
+And "getting found" isn't only Google anymore. A growing share of customers now ask ChatGPT, Perplexity, or Google's AI Overview for a business like yours and act on the short answer it reads back. You don't pay a cent extra to show up there: a fast, well-structured site — the very one that ranks on Google — is exactly what an AI can read and quote back. A bargain site that's invisible to both is the truly expensive one.
 
 A few things to watch for when you're comparing quotes:
 

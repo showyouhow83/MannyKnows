@@ -3,7 +3,7 @@ title: "5 Tasks Every Small Business Should Automate First"
 description: "You don't need to automate everything. Start with the five repetitive jobs that quietly eat your week."
 pubDate: 2026-05-06
 author: "Manny"
-tags: ["automation", "small business", "productivity"]
+tags: ["automation", "AI Search", "small business", "productivity"]
 ---
 
 Automation gets oversold. You don't need an AI for everything — you need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.
@@ -31,5 +31,7 @@ Instead of building the same report by hand each month, have it assembled and wa
 ## The rule of thumb
 
 If you do it the same way more than a few times a week, it's a candidate. Start with one, get it boringly reliable, then move to the next.
+
+One candidate that's easy to overlook: keeping your business details — hours, services, address, phone — consistent everywhere they live online. It's boring and repetitive, which is exactly why it's worth automating, and it quietly decides whether Google and AI assistants like ChatGPT quote you right when a customer asks them for someone who does what you do.
 
 Automating the busywork is exactly what our [Multimedia Agency plan](/plans/multimedia-agency) handles end to end — custom software, AI, and data pipelines alongside your site. Curious which task would save you the most? [Let's talk it through.](#contact)

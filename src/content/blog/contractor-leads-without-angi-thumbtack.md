@@ -3,7 +3,7 @@ title: "How Contractors Get Leads Without Paying Angi or Thumbtack"
 description: "Shared-lead sites charge you for every name — and sell it to three competitors too. Here's how Western Mass contractors build their own steady flow of leads instead of renting them."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["Lead Generation", "Contractors", "Local SEO"]
+tags: ["Lead Generation", "AI Search", "Contractors", "Local SEO"]
 draft: false
 ---
 
@@ -30,6 +30,10 @@ Those pages also need to load fast on a phone — because that's where "near me"
 ## Reviews are the tiebreaker
 
 Between two roofers in the map pack, the homeowner picks the one with more (and better) reviews — every time. The system is boring and it works: ask **every** happy customer, hand them the direct link so it takes ten seconds, and reply to every review, good or bad. That reply is public, and the next customer reads how you handle things.
+
+## Homeowners are starting to ask AI, too
+
+More and more, a homeowner's first move isn't a Google search — it's asking ChatGPT, Perplexity, or Google's AI Overview "who's a good roofer in Chicopee?" and acting on the short list it reads back. That's **answer-engine optimization (AEO)**, and here's the honest part: it runs on the exact same assets you just built. The AI leans on your Google Business Profile, your service-and-town pages, and your reviews to decide whose name to give. A shared lead from Angi is gone the second you stop paying; earn your spot in the AI's answer and it keeps sending you jobs, same as the map and the organic results. It isn't one more thing to buy — it's the pipeline you already own, now working in one more place people search.
 
 ## Turn the traffic into booked jobs — even after hours
 

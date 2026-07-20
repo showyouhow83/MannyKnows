@@ -3,7 +3,7 @@ title: "Stop Losing Customers to Missed Calls"
 description: "Most local businesses lose more jobs to unanswered calls and after-hours messages than to any competitor. Here's how an AI agent answers, qualifies, and books — 24/7 — so you stop leaking leads."
 pubDate: "2026-07-17"
 author: "Manny"
-tags: ["AI Agent", "Lead Generation", "Customer Service"]
+tags: ["AI Agent", "AI Search", "Lead Generation", "Customer Service"]
 draft: false
 ---
 
@@ -13,7 +13,7 @@ That's not a marketing problem. It's a **response** problem — and for most loc
 
 ## Why the leak is so expensive
 
-Every missed call is a lead you already paid to earn — with your time, your ad spend, your reputation. Losing it at the finish line is the most expensive kind of loss there is. And it happens constantly: after hours, over lunch, during the exact busy stretch when you can't stop what you're doing to pick up. The customers most ready to buy are often the ones you're least able to answer.
+Every missed call is a lead you already paid to earn — with your time, your ad spend, your reputation. Losing it at the finish line is the most expensive kind of loss there is. And it happens constantly: after hours, over lunch, during the exact busy stretch when you can't stop what you're doing to pick up. The customers most ready to buy are often the ones you're least able to answer. However they found you — the Map Pack, a neighbor's referral, or an AI assistant naming you when someone asked ChatGPT for a business nearby — that hard-won recommendation is wasted the instant the call rings out.
 
 ## Voicemail and answering services don't really fix it
 
