@@ -1203,7 +1203,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
   await profileManager.trackServiceUsage(profile, 'schedule_discovery_call', 'free', true);
 
   try {
-  const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'mk@mannyknows.com';
+  const ownerEmail = getEnvVal('OWNER_EMAIL', environment) || 'mm@mannyknows.com';
   const ownerTimezone = getEnvVal('OWNER_TIMEZONE', environment) || 'America/New_York';
     const trackingId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 
@@ -1589,7 +1589,7 @@ async function executeScheduleCall(functionArgs: any, profile: any, profileManag
     errorLog('Meeting request error:', error);
     return {
       status: 'error',
-      fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'mk@mannyknows.com'
+      fallback_email: getEnvVal('OWNER_EMAIL', environment) || 'mm@mannyknows.com'
     };
   }
 }
@@ -1932,7 +1932,7 @@ function generateVerificationEmail(meeting: any, action: string, verificationUrl
                 <li>Our team will be notified of the change</li>
               </ul>
               
-              <p>If you didn't request this ${actionText}, please ignore this email or contact us at mk@mannyknows.com</p>
+              <p>If you didn't request this ${actionText}, please ignore this email or contact us at mm@mannyknows.com</p>
             </div>
             <div class="footer">
               This verification email was sent by <strong>MannyKnows</strong><br>

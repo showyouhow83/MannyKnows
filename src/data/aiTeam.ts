@@ -4,7 +4,7 @@
 // the flagship card on /plans.
 //
 // Roster: Manny=Sales/Booking/Support (the front-desk agent, included with every
-// Smart Website), Eve=Research, Elly=Copy, Eny=Graphics & Video, Mimi=Voice,
+// Smart Website), Eve=Research, Elly=Copy, Terr=Graphics & Video, Mimi=Voice,
 // Bap=Publisher & Social, Upie=Reviews. New agents are added over time as AI
 // learns to do more — the roster is meant to grow.
 
@@ -24,11 +24,11 @@ export interface Agent {
 export const team: Agent[] = [
   {
     id: 'manny',
-    name: 'Manny™',
+    name: 'Manny',
     role: 'Sales, booking & support',
     does: "Lives on your site and answers customers 24/7 — replies to questions, books appointments, and points shoppers to the right product in your catalog, in their language. Included with every Smart Website.",
     order: 0,
-    price: 199,
+    price: 99,
   },
   {
     id: 'eve',
@@ -48,7 +48,7 @@ export const team: Agent[] = [
   },
   {
     id: 'eny',
-    name: 'Eny',
+    name: 'Terr',
     role: 'Graphics & video',
     does: 'Turns your content into platform-ready graphics and short-form video — sized, tagged, and captioned for each network, so a post is built for Instagram, TikTok, or Facebook, not copy-pasted across all three. Always in your brand voice.',
     order: 3,
@@ -87,7 +87,7 @@ export const team: Agent[] = [
 // that's the point.
 export const aiTeamSetupFee = 199; // one-time, flat — however many agents you hire
 
-// Whole-roster bundle (vs ~$994/mo à la carte).
+// Whole-roster bundle (vs ~$1,093/mo à la carte).
 export const aiTeamBundle = {
   monthly: 799,
   get alaCarteTotal() {
@@ -124,7 +124,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can I hire just one agent?',
-    a: "Yes — every agent works on its own. Rent only Eve and she delivers her research straight to you, the way you like to read it: an email summary, a PDF, a shared doc. Rent more agents and they hand work off to each other automatically — Eve's research feeds Elly's writing, Elly's copy feeds Eny's design — so the team compounds without you playing middleman.",
+    a: "Yes — every agent works on its own. Rent only Eve and she delivers her research straight to you, the way you like to read it: an email summary, a PDF, a shared doc. Rent more agents and they hand work off to each other automatically — Eve's research feeds Elly's writing, Elly's copy feeds Terr's design — so the team compounds without you playing middleman.",
   },
   {
     q: 'Do the agents post without me seeing it first?',

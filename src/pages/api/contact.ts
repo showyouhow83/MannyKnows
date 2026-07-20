@@ -138,7 +138,7 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
     await kv.put(`contact:${submissionId}`, JSON.stringify(contactRecord));
 
     // Send notification email using Resend
-    const ownerEmail = env?.OWNER_EMAIL || 'mk@mannyknows.com';
+    const ownerEmail = env?.OWNER_EMAIL || 'mm@mannyknows.com';
     const resendKey = env?.RESEND_API_KEY;
     const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
 
