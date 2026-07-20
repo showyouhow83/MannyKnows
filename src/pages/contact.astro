@@ -16,7 +16,7 @@ const inputClass =
 
 <BaseLayout
   title="Contact — Talk to Us | MannyKnows, Springfield, MA"
-  description="Get in touch with MannyKnows — web, SEO, and software for Western Massachusetts businesses. Send a message, email mk@mannyknows.com, or call (413) 361-8451."
+  description="Get in touch with MannyKnows — web, SEO, and software for Western Massachusetts businesses. Send a message, email mm@mannyknows.com, or call (413) 361-8451."
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -66,16 +66,12 @@ const inputClass =
               <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-1">Book a call</span>
               <span class="text-text-light-primary dark:text-text-dark-primary font-semibold">Pick a time that works for you →</span>
             </a>
-            <a href="mailto:mk@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+            <a href="mailto:mm@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Email</span>
-              <span class="text-primary-blue dark:text-blue-300 font-semibold">mk@mannyknows.com</span>
+              <span class="text-primary-blue dark:text-blue-300 font-semibold">mm@mannyknows.com</span>
             </a>
             <a href="tel:+14133618451" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Call or text</span>
-              <span class="text-primary-blue dark:text-blue-300 font-semibold">(413) 361-8451</span>
-            </a>
-            <a href="sms:+14133618451" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Got an app idea? Text it</span>
               <span class="text-primary-blue dark:text-blue-300 font-semibold">(413) 361-8451</span>
             </a>
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
@@ -219,7 +215,7 @@ const inputClass =
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
         }
       } catch (err) {
-        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mk@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
         statusEl?.classList.remove('hidden');

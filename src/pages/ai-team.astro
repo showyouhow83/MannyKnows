@@ -72,7 +72,7 @@ const faqSchema = {
             <!-- Mini roster preview -->
             <div class="mt-8 flex items-center justify-center -space-x-2">
               {roster.map((a) => (
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full ring-2 ring-white dark:ring-dark-primary bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
               ))}
@@ -114,13 +114,13 @@ const faqSchema = {
 
         <!-- Pipeline one-liner -->
         <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mb-10">
-          Manny™ works your front desk — answering, booking, and selling 24/7. The rest are your content team, on call: Eve researches → Elly writes → Eny makes the graphics &amp; video → Mimi voices → Bap publishes → Upie manages the reviews that come back.
+          Manny works your front desk — answering, booking, and selling 24/7. The rest are your content team, on call: Eve researches → Elly writes → Terr makes the graphics &amp; video → Mimi voices → Bap publishes → Upie manages the reviews that come back.
         </p>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
           {roster.map((a) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col items-center text-center hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <div class="w-28 h-28 mb-4 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+              <div class="w-36 h-36 mb-4 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
                 <AgentAvatar agent={a.id} class="w-full h-full" />
               </div>
               <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{a.name}</h3>
@@ -145,7 +145,7 @@ const faqSchema = {
           <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
             <div class="flex -space-x-2 flex-shrink-0">
               {roster.map((a) => (
-                <div class="w-11 h-11 rounded-full ring-2 ring-white dark:ring-dark-primary bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
+                <div class="w-12 h-12 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
               ))}
@@ -167,7 +167,7 @@ const faqSchema = {
         </div>
 
         <p class="mt-6 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto leading-relaxed">
-          One-time ${setup} setup builds and trains your team — however many agents you hire — and includes cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime. The Smart Website plan includes Manny™, your sales &amp; booking agent — and the roster keeps growing as AI learns to do more. Every agent can take a name that fits your brand.
+          One-time ${setup} setup builds and trains your team — however many agents you hire — and includes cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime. The Smart Website plan includes Manny, your sales &amp; booking agent — and the roster keeps growing as AI learns to do more. Every agent can take a name that fits your brand.
         </p>
       </Container>
     </Section>

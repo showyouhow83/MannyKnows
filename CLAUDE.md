@@ -39,7 +39,7 @@ for small businesses in Western Massachusetts).
 
 ## Conventions
 
-- **Business email is `mk@mannyknows.com`** — use it in anything public-facing.
+- **Business email is `mm@mannyknows.com`** — use it in anything public-facing.
   Do NOT put the owner's personal Gmail (showyouhow83@gmail.com) in committed code.
 - `src/layouts/BaseLayout.astro` wraps every page (SEO/OG meta, CSP, view-source
   comment live here).

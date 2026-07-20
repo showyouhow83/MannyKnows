@@ -87,7 +87,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Verify admin credentials
     const storedAdminKey = env?.ADMIN_KEY;
-    const allowedAdminEmail = env?.ADMIN_EMAIL || 'mk@mannyknows.com';
+    const allowedAdminEmail = env?.ADMIN_EMAIL || 'mm@mannyknows.com';
     
     const keyValid = storedAdminKey && adminKey === storedAdminKey;
     const emailValid = validationResult.sanitizedData.email === allowedAdminEmail;

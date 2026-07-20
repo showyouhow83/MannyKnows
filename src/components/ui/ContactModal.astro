@@ -30,7 +30,7 @@
         Send
       </button>
       <p id="contactModalStatus" class="text-sm text-center hidden" role="status"></p>
-      <p class="text-[11px] text-center text-text-light-tertiary dark:text-text-dark-tertiary">Or email <a href="mailto:mk@mannyknows.com" class="text-primary-blue dark:text-blue-300">mk@mannyknows.com</a></p>
+      <p class="text-[11px] text-center text-text-light-tertiary dark:text-text-dark-tertiary">Or email <a href="mailto:mm@mannyknows.com" class="text-primary-blue dark:text-blue-300">mm@mannyknows.com</a></p>
     </form>
   </div>
 </div>
@@ -122,7 +122,7 @@
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
         }
       } catch (err) {
-        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mk@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
         statusEl?.classList.remove('hidden');

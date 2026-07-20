@@ -149,7 +149,7 @@ export const POST: APIRoute = async ({ request }) => {
   // --- Email the owner (only when authenticated or the payload looks real) ---
   const resendKey = env?.RESEND_API_KEY;
   if (resendKey && (authState !== 'unauthenticated' || looksLikeTwilio)) {
-    const ownerEmail = env?.OWNER_EMAIL || 'mk@mannyknows.com';
+    const ownerEmail = env?.OWNER_EMAIL || 'mm@mannyknows.com';
     const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
     const rows = Object.entries(params)
       .map(

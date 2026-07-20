@@ -303,7 +303,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
     switch (newStatus) {
       case 'confirmed':
         subject = `Discovery Call Confirmed — ${userName}`;
-        textBody = `Hi ${userName},\n\nGreat news! Your discovery call has been confirmed.\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}${meeting.phone ? `Phone: ${meeting.phone}\n` : ''}\nReference: ${meeting.id}\n\n**What's Next:**\n• Save the meeting details in your calendar\n• Join the meeting at the scheduled time\n• Come prepared to discuss your project needs\n\nLooking forward to speaking with you!\n\nBest regards,\nManny\nMannyKnows.com\n\n---\nNeed to reschedule? Chat with our AI assistant Manny™: https://mannyknows.com?chat=open&ref=${meeting.id}`;
+        textBody = `Hi ${userName},\n\nGreat news! Your discovery call has been confirmed.\n\n**Meeting Details:**\nDate & Time: ${meetingTime}\n${meetingLink ? `Meeting Link: ${meetingLink}\n` : ''}${meeting.phone ? `Phone: ${meeting.phone}\n` : ''}\nReference: ${meeting.id}\n\n**What's Next:**\n• Save the meeting details in your calendar\n• Join the meeting at the scheduled time\n• Come prepared to discuss your project needs\n\nLooking forward to speaking with you!\n\nBest regards,\nManny\nMannyKnows.com\n\n---\nNeed to reschedule? Chat with our AI assistant Manny: https://mannyknows.com?chat=open&ref=${meeting.id}`;
         
         htmlBody = `<!doctype html>
 <html>
@@ -370,7 +370,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
                        vertical-align: middle;
                        box-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);">M</span>
-          Chat with our AI assistant Manny&trade; &rarr;
+          Chat with our AI assistant Manny &rarr;
         </a>
       </p>
     </div>
@@ -385,7 +385,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
 
       case 'cancelled':
         subject = `Discovery Call Cancelled — ${userName}`;
-        textBody = `Hi ${userName},\n\nI need to let you know that your scheduled discovery call has been cancelled.\n\n**Original Meeting Details:**\nDate & Time: ${meetingTime}\nReference: ${meeting.id}\n\n**What's Next:**\nIf you'd like to reschedule, you can get instant help from our AI assistant Manny™:\n\n🤖 Chat to Reschedule: https://mannyknows.com?chat=open&ref=${meeting.id}\n\nour AI assistant Manny™ will help you find a new time that works for both of us.\n\nI apologize for any inconvenience this may cause.\n\nBest regards,\nManny\nMannyKnows.com`;
+        textBody = `Hi ${userName},\n\nI need to let you know that your scheduled discovery call has been cancelled.\n\n**Original Meeting Details:**\nDate & Time: ${meetingTime}\nReference: ${meeting.id}\n\n**What's Next:**\nIf you'd like to reschedule, you can get instant help from our AI assistant Manny:\n\n🤖 Chat to Reschedule: https://mannyknows.com?chat=open&ref=${meeting.id}\n\nour AI assistant Manny will help you find a new time that works for both of us.\n\nI apologize for any inconvenience this may cause.\n\nBest regards,\nManny\nMannyKnows.com`;
         
         htmlBody = `<!doctype html>
 <html>
@@ -423,7 +423,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
       </div>
       
       <p><strong>What's Next:</strong></p>
-      <p>If you'd like to reschedule, you can easily get help through our AI assistant Manny&trade;:</p>
+      <p>If you'd like to reschedule, you can easily get help through our AI assistant Manny:</p>
       
       <div style="text-align: center; margin: 24px 0;">
         <a href="https://mannyknows.com?chat=open&ref=${meeting.id}" 
@@ -456,7 +456,7 @@ async function sendMeetingStatusEmail(meeting: any, newStatus: string, environme
       </div>
       
       <p style="font-size: 14px; color: #64748b; text-align: center; margin-top: 12px;">
-        our AI assistant Manny&trade; will help you find a new time that works for both of us
+        our AI assistant Manny will help you find a new time that works for both of us
       </p>
       
       <p>I apologize for any inconvenience this may cause.</p>
