@@ -61,7 +61,7 @@ export const professions: Profession[] = [
     offer: [
       {
         title: 'Rank in your town, organically',
-        body: 'We build the site and the technical SEO so you show up for “<your trade> near me” — the free, top-of-page result, not an ad you keep paying for.',
+        body: 'We build the site and the technical SEO so you show up for “<your trade> near me” — on Google and when homeowners ask an AI like ChatGPT or Google’s AI Overview. The free, top-of-page result, not an ad you keep paying for.',
       },
       {
         title: 'Show the work',
