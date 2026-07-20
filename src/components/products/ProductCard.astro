@@ -29,7 +29,7 @@ const initials = title.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperC
   <!-- Banner -->
   <div class="relative aspect-[16/9] overflow-hidden">
     {image ? (
-      <img src={image} alt={title} loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      <img src={image} alt={title} loading="lazy" class="w-full h-full object-cover transition-transform duration-500" />
     ) : illustration ? (
       <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6">
         <Illustration kind={illustration} class="w-full max-w-[60%]" />
@@ -58,7 +58,7 @@ const initials = title.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperC
     )}
     <span class="mt-auto text-sm text-primary-blue font-medium inline-flex items-center gap-1">
       Explore
-      <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </span>
   </div>
 </a>

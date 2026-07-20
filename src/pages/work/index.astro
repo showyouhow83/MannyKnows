@@ -63,12 +63,12 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
                   <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
                     {d.heroImage ? (
                       isLiteral(d.heroImage) ? (
-                        <img src={d.heroImage} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <img src={d.heroImage} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500" />
                       ) : (
                         <picture>
                           <source type="image/avif" srcset={srcset(d.heroImage, 'avif')} sizes={CARD_SIZES} />
                           <source type="image/webp" srcset={srcset(d.heroImage, 'webp')} sizes={CARD_SIZES} />
-                          <img src={`/works/${d.heroImage}-960.webp`} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          <img src={`/works/${d.heroImage}-960.webp`} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500" />
                         </picture>
                       )
                     ) : (
