@@ -5,7 +5,9 @@ import Button from '../components/ui/Button.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import HeroSection from '../components/sections/HeroSection.astro';
 import HeroSwiper from '../components/sections/HeroSwiper.astro';
-import BlogHighlights from '../components/sections/BlogHighlights.astro';
+// BlogHighlights ("New playbooks") is hidden from the homepage for now — re-enable
+// the import and the <BlogHighlights /> tag below to bring it back.
+// import BlogHighlights from '../components/sections/BlogHighlights.astro';
 // Reviews section is temporarily hidden from the homepage until we have a real
 // client testimonial to display. The fabricated testimonials were removed from
 // Testimonials render from src/data/testimonials.ts — hidden while the real
@@ -14,7 +16,6 @@ import Testimonials from '../components/sections/Testimonials.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
-import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
@@ -179,18 +180,10 @@ const NAVBAR_CONFIG = {
 			<HomeAiTeam />
 		</PageSection>
 
-		<!-- Idea Launchpad — bring an idea, we design, build & launch the app for you -->
-		<PageSection
-			id="launchpad"
-			badge="Got an idea?"
-			title="You bring the idea. We build the app."
-			subtitle="Not a developer? Doesn't matter. Bring the idea — we become your technical partner and handle everything technical."
-		>
-			<IdeaLaunchpad />
-		</PageSection>
-
-		<!-- "New Playbooks" (blog highlights) — moved here so it sits last, right above the footer. -->
-		<BlogHighlights />
+		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
+		     (kept, not deleted, in case we want it back). The posts still live in the
+		     footer's "AI News" column and at /blog. -->
+		{/* <BlogHighlights /> */}
 
 		<!-- Customer Reviews Section — hidden until a real client testimonial (e.g. SL Painting) is ready.
 		     Fabricated testimonials were removed; see ReviewsSection.astro. -->

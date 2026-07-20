@@ -7,3 +7,23 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Permissions-Policy: geolocation=(), midi=(), camera=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=(), microphone=(), storage-access=()
+
+# Long-lived caching for content-stable assets (filenames encode the content, so
+# they're safe to cache hard). /_astro/* immutable is injected by the adapter.
+/team/*
+  Cache-Control: public, max-age=31536000, immutable
+/art/*
+  Cache-Control: public, max-age=31536000, immutable
+/works/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Vendored libraries — rarely change; cache a month without immutable so a swap
+# still refreshes within a reasonable window.
+/swiper-bundle.min.js
+  Cache-Control: public, max-age=2592000
+/swiper-bundle.min.css
+  Cache-Control: public, max-age=2592000
+/effect-carousel.min.js
+  Cache-Control: public, max-age=2592000
+/effect-carousel.min.css
+  Cache-Control: public, max-age=2592000
