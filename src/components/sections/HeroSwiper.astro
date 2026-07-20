@@ -303,18 +303,24 @@ const { slides = defaultSlides } = Astro.props;
   }
 
   /* Responsive */
+  /* Tablet/phone: a big, tall, near-full-width slide with a thin side-peek —
+     matching the taller mobile hero on slpainting.co. */
   @media (max-width: 768px) {
     .hero-carousel .swiper-slide {
-      width: 320px;
-      height: 280px;
+      width: min(84vw, 560px);
+      height: 420px;
+    }
+
+    .hero-carousel .slide-content {
+      padding: 90px 20px 22px;
     }
 
     .hero-carousel .slide-content h2 {
-      font-size: 22px;
+      font-size: 24px;
     }
 
     .hero-carousel .slide-content p {
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .carousel-container {
@@ -332,21 +338,21 @@ const { slides = defaultSlides } = Astro.props;
 
   @media (max-width: 480px) {
     .hero-carousel .swiper-slide {
-      width: 280px;
-      height: 240px;
+      width: 87vw;
+      height: 420px;
     }
 
     .hero-carousel .slide-content {
-      padding: 60px 16px 20px;
+      padding: 76px 18px 22px;
     }
 
     .hero-carousel .slide-content h2 {
-      font-size: 18px;
+      font-size: 20px;
     }
 
     .hero-carousel .slide-content p {
-      font-size: 12px;
-      -webkit-line-clamp: 2;
+      font-size: 13px;
+      -webkit-line-clamp: 3;
     }
   }
 </style>
