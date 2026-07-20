@@ -115,7 +115,7 @@ export const plans: Plan[] = [
     slug: 'online-store',
     name: 'Online Store (AI)',
     icon: '🛒',
-    price: 650,
+    price: 550,
     tagline: 'A full online store that sells — designed, themed, and optimized.',
     highlights: [
       'Multilingual storefront with an AI shopping assistant',

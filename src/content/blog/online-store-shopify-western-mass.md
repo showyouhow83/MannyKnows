@@ -57,6 +57,6 @@ We did exactly this for **Cherry Vibes** — an online store obsessed with all t
 
 ## What this looks like with us
 
-You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store (AI) plan](/plans/online-store)** (from $650/mo): we build the multilingual Shopify storefront with a custom theme, get your products photographed-right, written-right, and organized, wire up payments, shipping, taxes, and email automations, add the AI shopping assistant — then keep it selling and optimized every month.
+You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store (AI) plan](/plans/online-store)** (from $550/mo): we build the multilingual Shopify storefront with a custom theme, get your products photographed-right, written-right, and organized, wire up payments, shipping, taxes, and email automations, add the AI shopping assistant — then keep it selling and optimized every month.
 
 If you can sell it in your shop, we can help you sell it online. [Tell us what you make.](#contact)
