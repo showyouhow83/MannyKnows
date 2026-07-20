@@ -1,49 +1,156 @@
 ---
-// Idea Launchpad — "bring an idea, we design, build, and launch the app for you."
-// Sits inside a homepage PageSection (badge/title/subtitle come from index.astro).
-import Button from '../ui/Button.astro';
-import StepCards from '../ui/StepCards.astro';
+// Idea Launchpad — a compact lightbulb trigger on the homepage that opens a
+// modal with the full "you bring the idea, we build it" pitch. Sits inside a
+// homepage PageSection (badge "Got an idea?" + title come from index.astro).
+// Direct line for ideas is (917); the main business line is (413).
+const PHONE_DISPLAY = '(917) 475-6634';
+const PHONE_TEL = '+19174756634';
+const WHATSAPP = 'https://wa.me/19174756634';
+const EMAIL = 'mk@mannyknows.com';
 
-// Each step carries an inline Heroicon path so the flow reads visually, not as
-// a wall of numbered text.
+// Steps written from the client's side — what YOU get at each stage.
 const steps = [
   {
-    n: '01',
-    title: 'Tell us your idea',
-    body: "A sentence or two is plenty — send a message or text (917) 475-6634. No pitch deck, no tech jargon needed.",
+    title: 'Share your idea',
+    body: 'A sentence or two is plenty. Text, call, or WhatsApp us — no pitch deck, no tech jargon, no wrong way to say it.',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
   },
   {
-    n: '02',
-    title: 'We map it out',
-    body: "We turn it into a clear plan — what it does, who it's for, how it works — and show you before we build a thing.",
+    title: 'See the plan first',
+    body: "We shape it into a clear plan — what it does, who it's for, how it works — and you sign off before anything gets built.",
     icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
   },
   {
-    n: '03',
-    title: 'We build it',
-    body: "We design and develop the real thing — a working prototype in hours, the full app close behind.",
-    icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    title: 'Watch it come alive',
+    body: 'A working prototype in hours, the full app close behind — real progress you can click and try, not slideware.',
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
   },
   {
-    n: '04',
-    title: 'We launch & grow it',
-    body: "We put it live, get it in front of real people, and keep improving it as it grows.",
+    title: 'Launch & keep growing',
+    body: "It goes live for real people, then keeps getting better as it grows — never a thing that just sits there.",
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
   },
 ];
 ---
 
-<div class="max-w-6xl mx-auto">
-  <!-- Steps -->
-  <StepCards steps={steps} class="" />
+<!-- Trigger: the lightbulb card -->
+<div class="max-w-2xl mx-auto">
+  <button
+    type="button"
+    data-idea-open
+    class="group w-full flex flex-col sm:flex-row items-center gap-5 text-left rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10 cursor-pointer"
+    aria-haspopup="dialog"
+  >
+    <span class="flex-shrink-0 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/25 group-hover:scale-105 transition-transform">
+      <svg class="h-9 w-9" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+    </span>
+    <span class="flex-1 text-center sm:text-left">
+      <span class="block text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Got a winning idea but no idea how to build it?</span>
+      <span class="block mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><strong class="text-text-light-primary dark:text-text-dark-primary">No upfront cost to get started.</strong> We become your technical partner and turn it into a real, working app.</span>
+      <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
+        See how it works
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </span>
+    </span>
+  </button>
+</div>
 
-  <!-- Offer + CTA -->
-  <div class="mt-10 max-w-2xl mx-auto text-center">
-    <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      <strong class="text-text-light-primary dark:text-text-dark-primary">No upfront cost to get started.</strong>
-      You bring the idea; we design, build, launch, and market it — and turn it into a real, working app. We only take on a handful at a time, so tell us about yours.
+<!-- Modal -->
+<div id="ideaModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
+  <div id="ideaModalBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+  <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-2xl">
+    <button type="button" id="ideaModalClose" aria-label="Close" class="absolute top-4 right-4 p-1 text-text-light-tertiary dark:text-text-dark-tertiary hover:text-text-light-primary dark:hover:text-text-dark-primary transition-colors">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="flex items-center gap-3 mb-4 pr-6">
+      <span class="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+      </span>
+      <h2 id="ideaModalTitle" class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">You bring the idea. We build it.</h2>
+    </div>
+
+    <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">
+      Sometimes you've got a winning idea but no clue how to turn it into an app or website. That's exactly the gap we fill: you bring the vision, and we become your <strong class="text-text-light-primary dark:text-text-dark-primary">technical partner</strong> — designing, building, and running it on <strong class="text-text-light-primary dark:text-text-dark-primary">Cloudflare</strong>, the global network behind a huge slice of the internet, so it's fast and secure from day one.
     </p>
-    <Button href="#contact" text="Tell us your idea" variant="cta" arrow={true} />
+
+    <!-- Emphasized offer -->
+    <div class="rounded-2xl border border-primary-blue/30 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-5 mb-6">
+      <p class="text-[15px] text-text-light-primary dark:text-text-dark-primary leading-relaxed">
+        <strong>No upfront cost to get started.</strong> You bring the idea; we design, build, launch, and market it — and turn it into a real, working app. We only take on a handful at a time, so tell us about yours.
+      </p>
+    </div>
+
+    <!-- Steps -->
+    <div class="space-y-3 mb-6">
+      {steps.map((s, i) => (
+        <div class="flex items-start gap-3">
+          <span class="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={s.icon} /></svg>
+          </span>
+          <div class="min-w-0">
+            <h3 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary">{i + 1}. {s.title}</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Contact options -->
+    <p class="text-xs font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-2">Get in touch, however's easiest</p>
+    <div class="grid grid-cols-2 gap-2.5">
+      <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] text-white px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.821 9.821 0 001.523 5.263l-.999 3.648 3.735-.98zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        WhatsApp
+      </a>
+      <a href={`sms:${PHONE_TEL}`} class="inline-flex items-center justify-center gap-2 rounded-xl border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary px-4 py-2.5 text-sm font-semibold hover:border-primary-blue/40 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        Text or call
+      </a>
+      <a href={`mailto:${EMAIL}`} class="inline-flex items-center justify-center gap-2 rounded-xl border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary px-4 py-2.5 text-sm font-semibold hover:border-primary-blue/40 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        Email
+      </a>
+      <button type="button" data-contact data-contact-context="Idea Launchpad" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-4 py-2.5 text-sm font-semibold hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        Contact form
+      </button>
+    </div>
+    <p class="text-[11px] text-center text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Text or call {PHONE_DISPLAY} · {EMAIL}</p>
   </div>
 </div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('ideaModal');
+    if (!modal) return;
+    const backdrop = document.getElementById('ideaModalBackdrop');
+    const closeBtn = document.getElementById('ideaModalClose');
+
+    function open() {
+      modal!.classList.remove('hidden');
+      modal!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => (closeBtn as HTMLButtonElement | null)?.focus(), 60);
+    }
+    function close() {
+      modal!.classList.add('hidden');
+      modal!.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-idea-open]').forEach((el) =>
+      el.addEventListener('click', (e) => { e.preventDefault(); open(); })
+    );
+    closeBtn?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal!.classList.contains('hidden')) close();
+    });
+    // The in-modal "Contact form" button opens the global contact modal; close this one first.
+    modal.querySelectorAll('[data-contact]').forEach((el) =>
+      el.addEventListener('click', () => close())
+    );
+  })();
+</script>
