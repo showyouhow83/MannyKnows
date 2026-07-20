@@ -1,10 +1,10 @@
 // The AI Team — our flagship offering. It's a *productized service*: a named
-// team of AI agents we build and run for your business (the "product"), billed
+// team of AI agents we build and fine-tune around your business (the "product"), billed
 // as a monthly retainer (the "plan"). Single source of truth for /ai-team and
 // the flagship card on /plans.
 //
 // Roster: Manny=Sales/Booking/Support (the front-desk agent, included with every
-// Smart Website), Eve=Research, Elly=Copy, Eny=Design & Video, Mimi=Voice,
+// Smart Website), Eve=Research, Elly=Copy, Eny=Graphics & Video, Mimi=Voice,
 // Bap=Publisher & Social, Upie=Reviews. New agents are added over time as AI
 // learns to do more — the roster is meant to grow.
 
@@ -26,7 +26,7 @@ export const team: Agent[] = [
     id: 'manny',
     name: 'Manny™',
     role: 'Sales, booking & support',
-    does: "Lives on your site and answers customers 24/7 — replies to questions, books appointments, and points shoppers to the right product in your catalog, in their language. Included with every Smart Website (rename it to fit your brand).",
+    does: "Lives on your site and answers customers 24/7 — replies to questions, books appointments, and points shoppers to the right product in your catalog, in their language. Included with every Smart Website.",
     order: 0,
     price: 199,
   },
@@ -49,8 +49,8 @@ export const team: Agent[] = [
   {
     id: 'eny',
     name: 'Eny',
-    role: 'Design & video',
-    does: 'Makes the visuals: graphics, banners, thumbnails, and short-form video, always on brand.',
+    role: 'Graphics & video',
+    does: 'Turns your content into platform-ready graphics and short-form video — sized, tagged, and captioned for each network, so a post is built for Instagram, TikTok, or Facebook, not copy-pasted across all three. Always in your brand voice.',
     order: 3,
     price: 249,
   },
@@ -116,7 +116,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does "hiring" an agent actually mean?',
-    a: "It isn't software you have to run. We set up and customize the agent for you — trained on your business's rules, your voice, and your data — so it does that one job the way you would. You approve what matters; we keep it running every month.",
+    a: "We build and customize the agent around your business — trained on your rules, your voice, and your data — and fine-tune it with you until it's ready. From there it lives in a simple admin: you run it on demand to generate what you need, you approve what goes out, and we handle the updates and support.",
   },
   {
     q: 'How do the agents learn my business?',
