@@ -1,6 +1,6 @@
 ---
 // The AI Team — our flagship, productized service. A named team of AI agents we
-// build and run for your business, billed as a monthly retainer. Content is
+// build and fine-tune around your business; you run them on demand. Content is
 // driven by src/data/aiTeam.ts.
 export const prerender = true;
 
@@ -23,10 +23,10 @@ const alaCarte = aiTeamBundle.alaCarteTotal.toLocaleString('en-US');
 const bundleSave = aiTeamBundle.savings.toLocaleString('en-US');
 
 const steps = [
-  { n: '01', title: 'A short kickoff call', body: "We learn your business — what you sell, who buys, and how you sound. That's all we need to start building the team.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
-  { n: '02', title: 'We build & train the team', body: 'We set up each agent, train them on your brand, and connect the tools they need. You see the output before anything goes public.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
-  { n: '03', title: 'They work, you approve', body: 'The team researches, writes, designs, voices, publishes, and watches your reviews. You approve what matters and hand off the routine.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { n: '04', title: 'We tune it every month', body: 'We watch what lands, adjust what does not, and send you a plain-English report. The team gets sharper the longer it runs.', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
+  { n: '01', title: 'A short kickoff call', body: "We learn your business — what you sell, who buys, and how you sound. That's all we need to start building your team.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+  { n: '02', title: 'We build & train your agents', body: 'We set up each agent around your business, train it on your brand, and connect the tools it needs to do its one job well.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '03', title: 'We fine-tune it with you', body: 'We run it alongside you and adjust until the output is quality and earns your approval — before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { n: '04', title: 'You run it; we support it', body: 'You get a simple admin to generate content on demand, whenever you need it. We handle the updates and ongoing support, so it only gets sharper.', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
 ];
 
 const faqSchema = {
@@ -41,8 +41,8 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="The AI Team — hire AI agents like staff, built & run for you | MannyKnows"
-  description="Hire AI agents the way you'd hire staff: a $199 one-time setup, then a flat monthly rate per agent (from $99/mo) — sales & booking, research, copywriting, design, video, voice, publishing, and reviews, with a human in the loop."
+  title="The AI Team — AI agents built for your business, run on demand | MannyKnows"
+  description="Hire AI agents the way you'd hire staff: a $199 one-time setup, then a flat monthly rate per agent (from $99/mo) — sales & booking, research, copywriting, graphics & video, voice, publishing, and reviews. Built and trained around your business, run on demand from a simple admin, with you approving what goes out."
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -63,10 +63,10 @@ const faqSchema = {
               The AI Team · live now
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>Your AI team, built and run for you</span>
+              <span class="apple-gradient-text" data-colorful-title>Your AI team — built for you, run by you</span>
             </h1>
             <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              A team of AI specialists that keeps your marketing and your reputation running. We build it around your business, train it on your brand, and run it for you every month — with a real person watching the output. You keep doing what you do best.
+              AI specialists, each built around your business and trained on your brand. We fine-tune every one with you until its output earns your approval — then hand you a simple admin to put them to work on demand: research, copy, platform-ready graphics and video, voice, and more. You generate what you need, when you need it; we handle the setup, the training, and the ongoing support.
             </p>
 
             <!-- Mini roster preview -->
@@ -108,13 +108,13 @@ const faqSchema = {
             <span class="apple-gradient-text" data-colorful-title>Meet — and hire — your team</span>
           </h2>
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each agent owns one job and does it well. "Hiring" one doesn't hand you software to run — we build, train, and run it for you, on your rules and in your voice. Hire one and it reports straight to you; hire more and they hand work off to each other automatically. A flat monthly rate per agent, like staff, with normal AI usage included.
+            Each agent owns one job and does it well. "Hiring" one means we build it around your business, train it on your brand, and fine-tune it with you until it's ready — then it lives in a simple admin you run on demand. Use one on its own, or hire more and they hand work off to each other automatically. A flat monthly rate per agent, like staff, with normal AI usage included.
           </p>
         </div>
 
         <!-- Pipeline one-liner -->
         <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mb-10">
-          Manny™ works your front desk — answering, booking, and selling 24/7. Behind it, the content team runs: Eve researches → Elly writes → Eny designs → Mimi voices → Bap publishes → Upie manages the reviews that come back.
+          Manny™ works your front desk — answering, booking, and selling 24/7. The rest are your content team, on call: Eve researches → Elly writes → Eny makes the graphics &amp; video → Mimi voices → Bap publishes → Upie manages the reviews that come back.
         </p>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
@@ -167,7 +167,7 @@ const faqSchema = {
         </div>
 
         <p class="mt-6 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto leading-relaxed">
-          One-time ${setup} setup builds and trains your team — however many agents you hire — and includes cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime. The Smart Website plan includes Manny™, your sales &amp; booking agent — and the roster keeps growing as AI learns to do more.
+          One-time ${setup} setup builds and trains your team — however many agents you hire — and includes cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime. The Smart Website plan includes Manny™, your sales &amp; booking agent — and the roster keeps growing as AI learns to do more. Every agent can take a name that fits your brand — Manny™ included.
         </p>
       </Container>
     </Section>
@@ -180,7 +180,7 @@ const faqSchema = {
             <span class="apple-gradient-text" data-colorful-title>Not fully autonomous — on purpose</span>
           </h2>
           <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            The agents do the volume: drafting, designing, scheduling, monitoring. A person reviews the output and steps in where judgment matters — the phone calls, the verifications, the review appeals, the decisions AI should not make alone. You get the speed of automation without handing your brand to a robot.
+            The agents do the heavy lifting — researching, drafting, designing, scheduling. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters — the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
           </p>
         </div>
       </Container>
@@ -190,7 +190,7 @@ const faqSchema = {
     <Section id="ai-team-steps" variant="alternate">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>How we build it for you</span>
+          <span class="apple-gradient-text" data-colorful-title>How it works</span>
         </h2>
         <StepCards steps={steps} class="max-w-5xl mx-auto" />
       </Container>
