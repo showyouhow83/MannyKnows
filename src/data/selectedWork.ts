@@ -37,12 +37,6 @@ export const selectedWork: WorkItem[] = [
     image: 'jkdaycare-desktop',
   },
   {
-    name: 'eCommerce Product Importer',
-    blurb: 'A pipeline that pulls product catalogs from major eCommerce sites and turns them into Shopify-ready listings — images, variants, and pricing imported automatically. Adapts to any source store.',
-    tags: ['Automation', 'Custom Software', 'Online Store (AI)'],
-    // No public URL (internal automation) — add a store URL here to make the card clickable.
-  },
-  {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
     blurb: 'An online store obsessed with all things cherry — migrated from Costa Rica to the U.S. market on a custom Shopify Hydrogen storefront.',

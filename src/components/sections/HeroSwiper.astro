@@ -1,358 +1,330 @@
 ---
-// HeroSwiper.astro - Carousel Slider
-// Uses UIInitiative Carousel Effect for Swiper
+// HeroSwiper.astro — homepage hero carousel.
+// A custom "vanilla" coverflow carousel (NO Swiper / no third-party slider),
+// modeled on the slpainting.co hero: a large centered slide with two scaled,
+// faded slides peeking on each side; 8s autoplay, hover/tab pause, drag + swipe,
+// infinite wrap-around. Behavior constants live in the inline <script> below.
 
 export interface Slide {
-  image: string;
-  title: string;
-  description?: string;
-  href?: string;
+  image: string;        // Unsplash photo base URL (no query params)
+  title: string;        // <= 34 chars
+  description?: string; // <= 120 chars
+  href?: string;        // click target for the centered slide
 }
 
 export interface Props {
   slides?: Slide[];
 }
 
-// Default slides — one per monthly plan (see src/data/plans.ts). Each links to
-// its /plans/<slug> detail page. Images reuse the existing hosted stock backgrounds.
+// Default slides — the four monthly plans plus the AI Team. Five slides is the
+// clean minimum for a 2-per-side coverflow (every slide holds a unique position,
+// so the wrap-around never has to show one slide in two places).
 const defaultSlides: Slide[] = [
   {
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=640&q=60&auto=format',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f',
     title: 'Smart Website (AI) — from $350/mo',
     description: 'A multilingual site with an AI Sales & Booking Agent that answers, sells, and books jobs 24/7.',
-    href: '/plans/smart-website'
+    href: '/plans/smart-website',
   },
   {
-    image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=640&q=60&auto=format',
+    image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828',
     title: 'Online Store (AI) — from $650/mo',
     description: "A full online store, set up with years of eCommerce experience from Bob's Discount Furniture.",
-    href: '/plans/online-store'
+    href: '/plans/online-store',
   },
   {
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=640&q=60&auto=format',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71',
     title: 'Business Ads — from $950/mo',
     description: 'Social media, Google & social ads, SEO, and your Google Business Profile — get seen everywhere.',
-    href: '/plans/business-ads'
+    href: '/plans/business-ads',
   },
   {
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=640&q=60&auto=format',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475',
     title: 'Multimedia Agency — from $1,800/mo',
     description: 'We design, build, promote, and optimize everything — your full media & tech team.',
-    href: '/plans/multimedia-agency'
+    href: '/plans/multimedia-agency',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
+    title: 'Your AI team, ready to hire',
+    description: 'Sales, research, copy, graphics, voice — AI agents built around your business, run on demand.',
+    href: '/ai-team',
   },
 ];
 
 const { slides = defaultSlides } = Astro.props;
-// Looping is handled by Swiper's `loop: true` below — Swiper clones slides as
-// needed. Previously the slides were ALSO duplicated here, so two looping
-// mechanisms ran at once and the same slide showed up twice on screen.
+
+// Cloudflare/Unsplash-style responsive crops: 16:9, desktop 1200×675, mobile 640×360.
+const desktopSrc = (base: string) => `${base}?w=1200&h=675&fit=crop&crop=entropy&q=62&auto=format`;
+const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q=60&auto=format`;
 ---
 
-<section id="hero-swiper" class="hero-carousel-section">
-  <div class="carousel-container">
-    <div class="swiper hero-carousel">
-      <div class="swiper-wrapper">
-        {slides.map((slide, i) => (
-          <div class="swiper-slide">
-            <div class="swiper-carousel-animate-opacity">
-              <img
-                src={slide.image}
-                alt={slide.title}
-                width="640"
-                height="360"
-                decoding="async"
-                fetchpriority={i === 0 ? 'high' : undefined}
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-              {slide.href ? (
-                <a href={slide.href} class="slide-content">
-                  <h2>{slide.title}</h2>
-                  {slide.description && <p>{slide.description}</p>}
-                </a>
-              ) : (
-                <div class="slide-content">
-                  <h2>{slide.title}</h2>
-                  {slide.description && <p>{slide.description}</p>}
-                </div>
-              )}
-            </div>
+<section class="hero-carousel-section">
+  <div class="hero-carousel" id="heroCarousel" aria-roledescription="carousel" aria-label="Featured plans and services">
+    <div class="hero-track" id="heroTrack">
+      {slides.map((slide, i) => (
+        <a
+          class="hero-slide"
+          data-index={i}
+          href={slide.href ?? '#'}
+          aria-label={slide.title}
+        >
+          <picture>
+            <source media="(min-width: 768px)" srcset={desktopSrc(slide.image)} />
+            <img
+              src={mobileSrc(slide.image)}
+              alt={slide.title}
+              width="1200"
+              height="675"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : undefined}
+              decoding="async"
+            />
+          </picture>
+          <div class="hero-slide-content">
+            <h2>{slide.title}</h2>
+            {slide.description && <p>{slide.description}</p>}
           </div>
-        ))}
-      </div>
+        </a>
+      ))}
     </div>
-    <button class="nav-arrow nav-prev" aria-label="Previous slide">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
-    <button class="nav-arrow nav-next" aria-label="Next slide">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
-    <div class="swiper-pagination"></div>
   </div>
 </section>
 
 <script is:inline>
-  (function() {
-    function initCarouselSlider() {
-      if (typeof Swiper === 'undefined' || typeof EffectCarousel === 'undefined') {
-        setTimeout(initCarouselSlider, 100);
-        return;
-      }
+  (function () {
+    var carousel = document.getElementById('heroCarousel');
+    var track = document.getElementById('heroTrack');
+    if (!carousel || !track) return;
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.hero-slide'));
+    var n = slides.length;
+    if (!n) return;
 
-      if (document.querySelector('.hero-carousel.swiper-initialized')) {
-        return;
-      }
+    // --- behavior constants (match slpainting.co) ---
+    var AUTOPLAY_DELAY = 8000;
+    var SIDE_SLIDES = 2;
+    var SCALE_STEP = 0.3;    // center 1.0 → ±1 0.7 → ±2 0.4
+    var OPACITY_STEP = 0.35; // center 1.0 → ±1 0.65 → ±2 0.30
+    var TRANSLATE_FACTOR = 0.55;
+    var SWIPE_THRESHOLD = 50;
+    var DRAG_DETECT = 10;
 
-      new Swiper('.hero-carousel', {
-        modules: [EffectCarousel],
-        effect: 'carousel',
-        carouselEffect: {
-          opacityStep: 0.33,
-          scaleStep: 0.2,
-          sideSlides: 2,
-        },
-        grabCursor: true,
-        // `rewind` (not `loop`) advances through the slides and snaps back to the
-        // start at the end. The carousel effect's loop needs ~10-12 slides to
-        // clone; with our handful, loop silently freezes — rewind needs no clones.
-        rewind: true,
-        slidesPerView: 'auto',
-        centeredSlides: true,
-        navigation: {
-          nextEl: '.nav-next',
-          prevEl: '.nav-prev',
-        },
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true,
-        },
-        autoplay: {
-          delay: 4000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        },
+    var current = 0;
+    var timer = null;
+
+    // shortest signed distance from `current` to slide `i`, wrapping around
+    function offsetOf(i) {
+      var o = i - current;
+      if (o > n / 2) o -= n;
+      if (o < -n / 2) o += n;
+      return o;
+    }
+
+    function render() {
+      var w = slides[0].offsetWidth || track.offsetWidth || 1;
+      for (var i = 0; i < n; i++) {
+        var el = slides[i];
+        var o = offsetOf(i);
+        var a = Math.abs(o);
+        if (a > SIDE_SLIDES) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(-50%) scale(0)';
+          el.style.zIndex = '0';
+          el.style.pointerEvents = 'none';
+          el.setAttribute('aria-hidden', 'true');
+          el.tabIndex = -1;
+          el.classList.remove('is-center');
+          continue;
+        }
+        var translate = o * w * TRANSLATE_FACTOR;
+        el.style.transform = 'translateX(calc(-50% + ' + translate + 'px)) scale(' + (1 - a * SCALE_STEP) + ')';
+        el.style.opacity = a === 0 ? '1' : String(1 - a * OPACITY_STEP);
+        el.style.zIndex = a === 0 ? '10' : a === 1 ? '5' : '2';
+        el.style.pointerEvents = a <= 1 ? 'auto' : 'none';
+        el.setAttribute('aria-hidden', a === 0 ? 'false' : 'true');
+        el.tabIndex = a === 0 ? 0 : -1;
+        if (o === 0) el.classList.add('is-center');
+        else el.classList.remove('is-center');
+      }
+    }
+
+    function goTo(i) { current = ((i % n) + n) % n; render(); restart(); }
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function play() { if (!timer) timer = setInterval(next, AUTOPLAY_DELAY); }
+    function pause() { if (timer) { clearInterval(timer); timer = null; } }
+    function restart() { pause(); play(); }
+
+    // click: the centered slide follows its link; a side slide navigates to it
+    slides.forEach(function (el, i) {
+      el.addEventListener('click', function (e) {
+        if (offsetOf(i) !== 0) { e.preventDefault(); goTo(i); }
       });
-    }
+    });
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCarouselSlider);
-    } else {
-      initCarouselSlider();
+    // drag / swipe (pointer events cover mouse + touch)
+    var startX = 0, dx = 0, dragging = false, moved = false;
+    track.addEventListener('pointerdown', function (e) {
+      dragging = true; moved = false; startX = e.clientX; dx = 0;
+      pause();
+      try { track.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    track.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      dx = e.clientX - startX;
+      if (Math.abs(dx) > DRAG_DETECT) moved = true;
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      if (Math.abs(dx) > SWIPE_THRESHOLD) { dx < 0 ? next() : prev(); }
+      else { play(); }
+      // if it was a drag, swallow the click that fires next so we don't follow a link
+      if (moved) {
+        var blocker = function (ev) { ev.preventDefault(); ev.stopPropagation(); track.removeEventListener('click', blocker, true); };
+        track.addEventListener('click', blocker, true);
+        setTimeout(function () { track.removeEventListener('click', blocker, true); }, 350);
+      }
     }
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', function () { dragging = false; play(); });
+
+    // pause on hover and when the tab is hidden
+    carousel.addEventListener('mouseenter', pause);
+    carousel.addEventListener('mouseleave', play);
+    document.addEventListener('visibilitychange', function () { document.hidden ? pause() : play(); });
+
+    // keyboard: left/right when the carousel has focus within
+    carousel.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+    });
+
+    window.addEventListener('resize', render);
+
+    // first paint without the 0.6s transition so slides don't fly out from center
+    track.classList.add('no-anim');
+    render();
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { track.classList.remove('no-anim'); });
+    });
+    play();
   })();
 </script>
 
-<style is:global>
-  :root {
-    --swiper-navigation-color: #fff;
-    --swiper-pagination-color: #fff;
-    --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Section and container are both transparent, so the slider sits directly on
-     the hero's backdrop (no separate dark stage). */
+<style>
   .hero-carousel-section {
     width: 100%;
-    background: transparent;
     padding: 0.5rem 0 0;
   }
 
-  .carousel-container {
-    position: relative;
-    max-width: 1360px;
-    margin: 0 auto;
-    padding: 1rem 60px 0;
-  }
-
   .hero-carousel {
-    padding-bottom: 48px;
-  }
-
-  .hero-carousel .swiper-slide {
-    width: 680px;
-    height: 440px;
-    border-radius: 16px;
-    background: #18212b;
-    max-width: calc(100% - 48px);
-    overflow: hidden;
-  }
-
-  .hero-carousel .swiper-carousel-animate-opacity {
-    height: 100%;
     position: relative;
+    max-width: 1920px;
+    margin: 0 auto;
+    overflow: hidden;
+    height: clamp(220px, 31vw, 565px);
   }
 
-  .hero-carousel img {
+  .hero-track {
+    position: relative;
     width: 100%;
     height: 100%;
-    display: block;
-    object-fit: cover;
-    border-radius: 16px;
   }
 
-  .hero-carousel .slide-content {
+  .hero-slide {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: clamp(300px, 55vw, 1000px);
+    max-width: calc(100% - 48px);
+    height: 100%;
+    transform: translateX(-50%);
+    transform-origin: center center;
+    border-radius: 16px;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    background: #18212b;
+    opacity: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+                opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+                box-shadow 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform, opacity;
+  }
+
+  /* Pre-JS fallback: show the first slide centered (it's the LCP element). */
+  .hero-slide:first-child { opacity: 1; z-index: 10; }
+
+  .hero-track.no-anim .hero-slide { transition: none !important; }
+
+  .hero-slide.is-center { box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); cursor: pointer; }
+
+  .hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+    pointer-events: none;
+  }
+
+  .hero-slide-content {
     position: absolute;
     left: 0;
-    width: 100%;
+    right: 0;
     bottom: 0;
-    padding: 80px 20px 24px;
-    box-sizing: border-box;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    padding: 48px 24px 20px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5) 50%, transparent);
     border-radius: 0 0 16px 16px;
-    text-decoration: none;
     color: #fff;
-    display: block;
+    pointer-events: none;
   }
 
-  .hero-carousel a.slide-content:hover h2 {
-    color: #0071e3;
-  }
-
-  .hero-carousel .slide-content h2 {
+  .hero-slide-content h2 {
     margin: 0;
+    font-size: 22px;
     font-weight: 700;
-    font-size: 28px;
     line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     transition: color 0.3s ease;
   }
 
-  .hero-carousel .slide-content p {
-    margin: 10px 0 0;
-    opacity: 0.8;
-    font-size: 15px;
+  .hero-slide.is-center:hover .hero-slide-content h2 { color: #10d1ff; }
+
+  .hero-slide-content p {
+    margin: 8px 0 0;
+    font-size: 14px;
     font-weight: 400;
     line-height: 1.4;
+    color: rgba(255, 255, 255, 0.85);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
   }
 
-  .hero-carousel .swiper-pagination {
-    bottom: 0 !important;
-  }
+  .hero-slide:focus-visible { outline: 3px solid #10d1ff; outline-offset: 3px; }
 
-  .hero-carousel .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    margin: 0 7px !important;
-    position: relative;
-    transition: all 0.3s ease;
-  }
-
-  /* Enlarge the tap target to 24×24 (WCAG 2.5.8) without changing the visible
-     dot — a transparent pseudo-element centered over each bullet. The 7px
-     horizontal margins keep neighboring tap areas from overlapping. */
-  .hero-carousel .swiper-pagination-bullet::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 24px;
-    height: 24px;
-    transform: translate(-50%, -50%);
-  }
-
-  .hero-carousel .swiper-pagination-bullet-active {
-    width: 24px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #0071e3, #ff4faa);
-  }
-
-  .nav-arrow {
-    position: absolute;
-    top: calc(50% - 24px);
-    transform: translateY(-50%);
-    z-index: 10;
-    width: 48px;
-    height: 48px;
-    background: transparent;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.3s ease, transform 0.3s ease;
-  }
-
-  .nav-arrow:hover {
-    color: #0071e3;
-    transform: translateY(-50%) scale(1.2);
-  }
-
-  .nav-arrow svg {
-    width: 32px;
-    height: 32px;
-  }
-
-  .nav-prev {
-    left: 10px;
-  }
-
-  .nav-next {
-    right: 10px;
-  }
-
-  .nav-arrow.swiper-button-disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  /* Responsive */
-  /* Tablet/phone: a big, tall, near-full-width slide with a thin side-peek —
-     matching the taller mobile hero on slpainting.co. */
+  /* Tablet */
   @media (max-width: 768px) {
-    .hero-carousel .swiper-slide {
-      width: min(84vw, 560px);
-      height: 420px;
-    }
-
-    .hero-carousel .slide-content {
-      padding: 90px 20px 22px;
-    }
-
-    .hero-carousel .slide-content h2 {
-      font-size: 24px;
-    }
-
-    .hero-carousel .slide-content p {
-      font-size: 14px;
-    }
-
-    .carousel-container {
-      padding: 1rem 16px 0;
-    }
-
-    .nav-arrow {
-      display: none !important;
-    }
-
-    .hero-carousel-section {
-      padding: 1rem 0 0;
-    }
+    .hero-carousel { height: 50vw; }
+    .hero-slide { width: 85vw; }
+    .hero-slide-content { padding: 30px 18px 18px; }
   }
 
+  /* Small mobile */
   @media (max-width: 480px) {
-    .hero-carousel .swiper-slide {
-      width: 87vw;
-      height: 420px;
-    }
+    .hero-carousel { height: 400px; }
+    .hero-slide { width: calc(100% - 16px); }
+    .hero-slide-content { padding: 24px 14px 14px; }
+    .hero-slide-content h2 { font-size: 1rem; }
+    .hero-slide-content p { font-size: 13px; }
+  }
 
-    .hero-carousel .slide-content {
-      padding: 76px 18px 22px;
-    }
-
-    .hero-carousel .slide-content h2 {
-      font-size: 20px;
-    }
-
-    .hero-carousel .slide-content p {
-      font-size: 13px;
-      -webkit-line-clamp: 3;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide { transition: opacity 0.3s ease; }
   }
 </style>
