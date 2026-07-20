@@ -1,5 +1,6 @@
 ---
 title: "Workflow Automation & Integration"
+draft: true
 tagline: "Connect the tools you already use and hand the repetitive busywork to automations that run themselves."
 description: "Invoicing, data entry, follow-ups, scheduling — the routine work that eats your week, moved onto reliable automations that connect your website, inbox, CRM, and calendar."
 type: "Service"

@@ -1,5 +1,6 @@
 ---
 title: "Technical SEO, AI Search & Conversion"
+draft: true
 tagline: "Get found on Google and inside AI answers — then turn traffic into customers. Technical SEO, structured data, AI-search readiness, and Lighthouse + analytics to cut friction."
 description: "We make your site legible to search engines, to AI answer engines, and to buyers: technical SEO, structured data, AI-search (AEO/GEO) readiness, and a steady loop of measuring real traffic and removing whatever stands between a visit and a conversion."
 type: "Service"

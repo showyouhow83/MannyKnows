@@ -1,5 +1,6 @@
 ---
 title: "Process & AI Opportunity Audit"
+draft: true
 tagline: "We come into your business, find what's quietly costing you time, and hand you a prioritized plan — then help you act on it."
 description: "A hands-on audit of how your business actually runs. We map your workflows, spot the friction and the data gaps, and show you where automation and AI would pay off — starting with the quickest wins."
 type: "Service"
