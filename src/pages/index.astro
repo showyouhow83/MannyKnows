@@ -142,22 +142,6 @@ const NAVBAR_CONFIG = {
             </div>
         </header>
 
-		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
-		<PageSection
-			id="work"
-			badge="Portfolio"
-			title="Latest projects"
-			subtitle="Sites we've designed and built for real businesses. Click any for the full story."
-			variant="alternate"
-		>
-			<SelectedWork />
-		</PageSection>
-
-		<!-- Testimonials — driven by src/data/testimonials.ts; renders NOTHING
-		     while the real list is empty. Preview format: /preview/testimonials.
-		     (Replaces the retired ReviewsSection carousel.) -->
-		<Testimonials />
-
 		<!-- Plans — monthly retainers, "starting at" pricing, tailored per client -->
 		<PageSection
 			id="plans"
@@ -179,6 +163,22 @@ const NAVBAR_CONFIG = {
 		>
 			<HomeAiTeam />
 		</PageSection>
+
+		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
+		<PageSection
+			id="work"
+			badge="Portfolio"
+			title="Latest projects"
+			subtitle="Sites we've designed and built for real businesses. Click any for the full story."
+			variant="alternate"
+		>
+			<SelectedWork />
+		</PageSection>
+
+		<!-- Testimonials — driven by src/data/testimonials.ts; renders NOTHING
+		     while the real list is empty. Preview format: /preview/testimonials.
+		     (Replaces the retired ReviewsSection carousel.) -->
+		<Testimonials />
 
 		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
 		     (kept, not deleted, in case we want it back). The posts still live in the
