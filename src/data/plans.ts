@@ -98,7 +98,7 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Kickoff', body: 'A short call: what you do, who your customers are, what a good month looks like. That’s all we need to start.' },
+      { title: 'Kickoff', body: 'We take the time to really understand your business — what you do, who your customers are, how you sound, and what a good month looks like. The better we know you, the better everything we build works.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
       { title: 'The AI learns your business', body: 'We train the agent on your business — then test it hard before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning — plus a report you can read in two minutes.' },
