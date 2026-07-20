@@ -85,7 +85,7 @@ const faqSchema = {
           <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
             <div class="flex -space-x-2 flex-shrink-0">
               {aiTeamRoster.map((a) => (
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ring-2 ring-white dark:ring-dark-primary" title={`${a.name} — ${a.role}`}>
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ring-2 ring-white dark:ring-dark-primary bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
               ))}
