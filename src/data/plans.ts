@@ -51,7 +51,7 @@ export const plans: Plan[] = [
       'Answers customers, books jobs & points shoppers to products 24/7, any language',
       'Updates itself — fresh, relevant content and SEO kept current for you',
       'Multilingual website designed & built — or your current one, optimized',
-      'Google Business Profile + technical SEO (90+ Lighthouse)',
+      'Found on Google & AI answer engines — technical SEO + Google Business Profile',
       'Monthly monitoring, fixes & a plain-English report',
     ],
     headline: 'A website that updates, optimizes, and sells for you',
@@ -82,7 +82,7 @@ export const plans: Plan[] = [
         title: 'Getting found',
         items: [
           'Google Business Profile — created or cleaned up, and verified',
-          'Technical SEO built in: structure, speed, metadata, local signals',
+          'Technical SEO + AI-search (AEO) readiness: structure, speed, schema, local signals',
           '360° image galleries — customers can step inside your business before they visit',
           '360° videos — immersive walkthroughs for your site and your Google listing',
           'Google Search Console integration — we monitor indexing, crawl coverage, and search-query performance against Google\u2019s own data',
