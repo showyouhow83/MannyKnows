@@ -98,8 +98,14 @@ const { className = '' } = Astro.props;
       }
     } catch {}
     
-    // Initialize CSRF token when component loads
-    initializeSession();
+    // Defer the session/CSRF fetch off the initial critical path — the chat is
+    // hidden until opened, so fetch on first interaction (or idle), not on load.
+    let sessionInit = false;
+    const ensureSession = () => { if (sessionInit) return; sessionInit = true; initializeSession(); };
+    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) =>
+      addEventListener(ev, ensureSession, { passive: true, once: true } as any));
+    if ('requestIdleCallback' in window) (window as any).requestIdleCallback(ensureSession, { timeout: 6000 });
+    else setTimeout(ensureSession, 5000);
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
 
