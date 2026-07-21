@@ -1,7 +1,8 @@
 ---
-// The AI Team — our flagship, productized service. A named team of AI agents we
-// build and fine-tune around your business; you run them on demand. Content is
-// driven by src/data/aiTeam.ts.
+// The AI Team — our flagship, productized service. Ten AI specialists + one
+// manager (Manny), all reading from one shared "Brand Brain," coordinated so a
+// single request becomes a finished, measured deliverable. Content is driven by
+// src/data/aiTeam.ts.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -12,21 +13,54 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
 import StepCards from '../components/ui/StepCards.astro';
-import { team, aiTeamBundle, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
+import { team, aiTeamBundles, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq, wholeTeamBundle } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
 const roster = [...team].sort((a, b) => a.order - b.order);
+const manager = roster.find((a) => a.included)!;
+const agents = roster.filter((a) => !a.included);
+const nameFor = (id: string) => team.find((a) => a.id === id)?.name ?? id;
+
 const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
 const setup = aiTeamSetupFee.toLocaleString('en-US');
-const bundleMo = aiTeamBundle.monthly.toLocaleString('en-US');
-const alaCarte = aiTeamBundle.alaCarteTotal.toLocaleString('en-US');
-const bundleSave = aiTeamBundle.savings.toLocaleString('en-US');
+const topSave = wholeTeamBundle.savings.toLocaleString('en-US');
+
+// "One brain, one boss" pillars.
+const pillars = [
+  {
+    title: 'Every agent shares one Brand Brain.',
+    body: "During setup we build a single knowledge base of your business — what you sell, what it costs, who buys, how you talk, what's worked before. Every agent reads from it and writes back to it. Train the team once and every agent gets smarter; nothing gets re-explained, and nothing goes out sounding like a different company wrote it.",
+  },
+  {
+    title: 'Every job routes through Manny.',
+    body: "Agents don't work in silos and you don't play middleman. Manny takes your request, turns it into a brief, assigns it down the line, passes each agent's output to the next one, and queues the finished work for your approval. You have one conversation; the team has a coordinated workflow.",
+  },
+  {
+    title: 'Every result feeds the next job.',
+    body: "Eve's research is saved to the Brand Brain, so Elly writes from it. Elly's copy is saved, so Terr designs from it. Ana's performance numbers are saved, so next month's strategy is built on what actually worked — not on guesses.",
+  },
+];
+
+// "Run a Mother's Day promotion" — one request in, a finished campaign out.
+const walkthrough = [
+  'Manny pulls your offer history and margins from the Brand Brain and briefs Eve.',
+  "Eve researches what's trending, what competitors are running, and what your best sellers were last spring — and files a one-page campaign plan.",
+  'Manny routes the plan to Elly, who writes the landing page, the emails, and the captions in your voice.',
+  'Terr turns the copy into sized, platform-ready graphics and a short video; Mimi records the voiceover in your own voice.',
+  'Essie tunes the landing page and captions so they get found in search — including locally.',
+  'Manny puts the whole package in your approval queue. You review it on your phone, tweak one line, approve.',
+  'Bap schedules and publishes everything at the right times, on every channel. Addy puts paid spend behind the strongest pieces, within the budget you set.',
+  'Upie answers the comments, DMs, and reviews that come back — every reply queued for your approval.',
+  'Ana tracks what every piece produced — clicks, bookings, sales — and files the results.',
+  'Manny hands you a plain-English report: what ran, what it cost, what it made, and what the team recommends doing next time.',
+];
 
 const steps = [
-  { n: '01', title: 'We sit down and find your voice', body: 'Not a quick call — a series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we\'ve dialed in exactly what you sell, who buys, and how you sound.', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
-  { n: '02', title: 'We build & train your agents', body: 'We set up each agent around your business, train it on your brand, and connect the tools it needs to do its one job well.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
-  { n: '03', title: 'We fine-tune it with you', body: 'We run it alongside you and adjust until the output is quality and earns your approval — before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { n: '04', title: 'You run it; we support it', body: 'You get a simple admin to generate content on demand, whenever you need it. We handle the updates and ongoing support, so it only gets sharper.', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
+  { n: '01', title: 'We sit down and find your voice', body: "Not a quick call — a series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we've dialed in exactly what you sell, who buys, and how you sound.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+  { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions — plus your services, prices, past work, and best content — gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from. This is the step that makes ten agents act like one team.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
+  { n: '03', title: 'We build & train your agents', body: "We set up each agent you've hired around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '04', title: 'We fine-tune it with you', body: 'We run the team alongside you and adjust until the output is quality and earns your approval — before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { n: '05', title: 'You run it; we support it', body: 'You tell Manny what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
 
 const faqSchema = {
@@ -41,8 +75,8 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="The AI Team — AI agents built for your business, run on demand | MannyKnows"
-  description="Hire AI agents the way you'd hire staff: a $199 one-time setup, then a flat monthly rate per agent (from $99/mo) — sales & booking, research, copywriting, graphics & video, voice, publishing, and reviews. Built and trained around your business, run on demand from a simple admin, with you approving what goes out."
+  title="The AI Team — ten AI agents, one brain, managed by Manny | MannyKnows"
+  description="Hire AI agents the way you'd hire staff: a $199 one-time setup, then a flat monthly rate per agent (from $99/mo). Ten specialists — front desk, research, copy, graphics & video, voice, SEO, publishing, paid ads, engagement, reporting — trained on one shared Brand Brain and coordinated by Manny, with you approving what goes out."
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -63,32 +97,32 @@ const faqSchema = {
               The AI Team · live now
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>Your AI team — built for you, run by you</span>
+              <span class="apple-gradient-text" data-colorful-title>Your AI team — built for you, run by you, managed by Manny</span>
             </h1>
             <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              AI specialists, each built around your business and trained on your brand. We fine-tune every one with you until its output earns your approval — then hand you a simple admin to put them to work on demand: research, copy, platform-ready graphics and video, voice, and more. You generate what you need, when you need it; we handle the setup, the training, and the ongoing support.
+              Ten AI specialists, one shared brain, one manager. We build every agent around your business, train them all on the same knowledge — your voice, your services, your customers — and fine-tune the team with you until its output earns your approval. Then you get one simple admin, and one point of contact: Manny. Tell him what you need; he puts the right agents on it, in the right order, and brings the finished work back for your sign-off.
             </p>
 
             <!-- Mini roster preview -->
             <div class="mt-8 flex items-center justify-center -space-x-2">
               {roster.map((a) => (
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
               ))}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Seven agents, one coordinated team — and the roster keeps growing.</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Ten specialists and a manager, working as one team — and the roster keeps growing.</p>
 
             <!-- Price anchor: hire agents like staff -->
             <div class="mt-8">
               <span class="text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Hire agents from </span>
               <span class="text-4xl font-black align-middle">${startFrom}</span><span class="text-lg text-text-light-secondary dark:text-text-dark-secondary">/mo each</span>
-              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">one-time ${setup} setup · normal AI usage included · add or drop agents anytime</span>
+              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">one-time ${setup} setup · Manny included with any hire · normal AI usage included · add or drop agents anytime</span>
             </div>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-all duration-300">
-                Meet & hire the team
+                Meet &amp; hire the team
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
@@ -100,87 +134,176 @@ const faqSchema = {
       </div>
     </header>
 
-    <!-- Meet the team -->
+    <!-- One brain, one boss -->
+    <Section id="ai-team-brain" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>One team. One brain. One boss — you.</span>
+          </h2>
+          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Most "AI tools" are blank chat boxes you have to prompt from scratch, every time, with no memory of the last thing you made. Your AI Team works the opposite way:
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+          {pillars.map((p) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{p.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- What that looks like in practice -->
+    <Section id="ai-team-example" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-8">
+            <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+              <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
+            </h2>
+            <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              You tell Manny: <em>"Run a Mother's Day promotion."</em> Here's what happens without another word from you:
+            </p>
+          </div>
+          <ol class="space-y-4">
+            {walkthrough.map((step, i) => (
+              <li class="flex items-start gap-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold flex items-center justify-center">{i + 1}</span>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed pt-1">{step}</p>
+              </li>
+            ))}
+          </ol>
+          <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
+            One request in. A finished, measured campaign out. That's the difference between ten chatbots and a team.
+          </p>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Meet & hire the team -->
     <Section id="ai-team-roster" variant="default">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-4">
+        <div class="text-center max-w-2xl mx-auto mb-8">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
             <span class="apple-gradient-text" data-colorful-title>Meet — and hire — your team</span>
           </h2>
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each agent owns one job and does it well. "Hiring" one means we build it around your business, train it on your brand, and fine-tune it with you until it's ready — then it lives in a simple admin you run on demand. Use one on its own, or hire more and they hand work off to each other automatically. A flat monthly rate per agent, like staff, with normal AI usage included.
+            Each agent owns one job and does it well. "Hiring" one means we build it around your business, connect it to your Brand Brain, and fine-tune it with you until it's ready. Hire one and it delivers straight to you through Manny. Hire more and Manny coordinates the handoffs automatically. A flat monthly rate per agent, like staff, with normal AI usage included — and every agent can take a name that fits your brand.
           </p>
         </div>
 
-        <!-- Pipeline one-liner -->
-        <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mb-10">
-          Manny works your front desk — answering, booking, and selling 24/7. The rest are your content team, on call: Eve researches → Elly writes → Terr makes the graphics &amp; video → Mimi voices → Bap publishes → Upie manages the reviews that come back.
-        </p>
+        <!-- Manager -->
+        <div class="mb-8 max-w-5xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+          <div class="w-28 h-28 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+            <AgentAvatar agent={manager.id} class="w-full h-full" />
+          </div>
+          <div class="flex-1 text-center sm:text-left">
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{manager.name}</h3>
+              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.note}</span>
+            </div>
+            <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{manager.role}</span>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
+          </div>
+        </div>
 
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-          {roster.map((a) => (
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col items-center text-center hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <div class="w-36 h-36 mb-4 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
-                <AgentAvatar agent={a.id} class="w-full h-full" />
+        <!-- Agents -->
+        <div class="grid gap-6 sm:grid-cols-2 max-w-5xl mx-auto">
+          {agents.map((a) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-16 h-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+                  <AgentAvatar agent={a.id} class="w-full h-full" />
+                </div>
+                <div class="min-w-0">
+                  <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</h3>
+                  <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">{a.role}</span>
+                </div>
               </div>
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{a.name}</h3>
-              <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">{a.role}</span>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{a.does}</p>
-              <div class="mt-4 leading-none">
-                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${a.price}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
+              {a.handoff && (
+                <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed border-t border-light-tertiary dark:border-dark-accent pt-3">{a.handoff}</p>
+              )}
+              <div class="mt-4 pt-1 flex items-end justify-between gap-3">
+                <div class="leading-none">
+                  <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${a.price}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                  {a.note && <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{a.note}</span>}
+                </div>
+                <a
+                  href="#contact"
+                  data-contact-context={`AI Team — hire ${a.name} (${a.role})`}
+                  class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
+                >
+                  Hire {a.name}
+                </a>
               </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Bundles -->
+    <Section id="ai-team-bundles" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>Hire one, a squad, or the whole operation</span>
+          </h2>
+          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Any single agent — from ${startFrom}/mo. Every agent works on its own, with Manny included as your manager and delivery channel. Hire only Eve and her research lands in your inbox the way you like to read it.
+          </p>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-3 max-w-5xl mx-auto items-stretch">
+          {aiTeamBundles.map((b) => (
+            <div class={`relative rounded-3xl border p-6 sm:p-7 flex flex-col ${b.best ? 'border-primary-blue/50 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06]' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
+              {b.best && (
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full">Best value</span>
+              )}
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{b.name}</h3>
+              <div class="mt-2 leading-none">
+                {b.addOn && <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">add </span>}
+                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${b.monthly.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+              </div>
+              <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+                ${b.alaCarte.toLocaleString('en-US')} à la carte · save ${b.savings.toLocaleString('en-US')}/mo
+              </p>
+              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{b.tagline}</p>
+              <ul class="mt-4 flex flex-wrap gap-1.5">
+                {b.agentIds.map((id) => (
+                  <li class="text-[11px] font-medium text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2 py-0.5">{nameFor(id)}</li>
+                ))}
+              </ul>
               <a
                 href="#contact"
-                data-contact-context={`AI Team — hire ${a.name} (${a.role})`}
-                class="mt-3 w-full inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
+                data-contact-context={`AI Team — ${b.name}`}
+                class={`mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-300 ${b.best ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)]' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
               >
-                Hire {a.name}
+                Hire {b.name.replace('The ', '')}
               </a>
             </div>
           ))}
         </div>
 
-        <!-- Whole-roster bundle -->
-        <div class="mt-10 max-w-5xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8">
-          <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-            <div class="flex -space-x-2 flex-shrink-0">
-              {roster.map((a) => (
-                <div class="w-12 h-12 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
-                  <AgentAvatar agent={a.id} class="w-full h-full" />
-                </div>
-              ))}
-            </div>
-            <div class="flex-1 text-center lg:text-left">
-              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">Best value</span>
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Hire the whole team</h3>
-              <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-                All seven agents, coordinated as one operation — ${bundleMo}/mo instead of ${alaCarte}/mo à la carte. You save ${bundleSave} every month.
-              </p>
-            </div>
-            <div class="flex-shrink-0 text-center">
-              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">${bundleMo}<span class="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
-              <a href="#contact" data-contact-context="AI Team — full roster bundle" class="mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold hover:shadow-[0_10px_30px_rgba(16,209,255,0.3)] transition-all">
-                Hire all seven
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <p class="mt-6 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto leading-relaxed">
-          One-time ${setup} setup builds and trains your team — however many agents you hire — and includes cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime. The Smart Website plan includes Manny, your sales &amp; booking agent — and the roster keeps growing as AI learns to do more. Every agent can take a name that fits your brand.
+        <p class="mt-8 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto leading-relaxed">
+          One-time ${setup} setup builds your Brand Brain and trains your team — however many agents you hire — including cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime.
         </p>
       </Container>
     </Section>
 
     <!-- Human in the loop -->
-    <Section id="ai-team-human" variant="alternate">
+    <Section id="ai-team-human" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 text-center">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
             <span class="apple-gradient-text" data-colorful-title>Not fully autonomous — on purpose</span>
           </h2>
           <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            The agents do the heavy lifting — researching, drafting, designing, scheduling. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters — the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
+            The agents do the heavy lifting — researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, Addy never moves a dollar of budget without your sign-off, and a real person steps in where judgment matters — the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
           </p>
         </div>
       </Container>

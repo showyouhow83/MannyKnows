@@ -83,9 +83,9 @@ const faqSchema = {
         <!-- Flagship: the AI Team (its own page, sold as a monthly retainer) -->
         <a href="/ai-team" class="group block max-w-6xl mx-auto mb-12 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-[0_16px_50px_rgba(16,209,255,0.18)] transition-all duration-300">
           <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-            <div class="flex -space-x-2 flex-shrink-0">
+            <div class="flex flex-wrap justify-center -space-x-1.5 flex-shrink-0 max-w-[280px] lg:max-w-none">
               {aiTeamRoster.map((a) => (
-                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name} — ${a.role}`}>
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
               ))}
@@ -94,7 +94,7 @@ const faqSchema = {
               <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">Flagship</span>
               <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">The AI Team — built for you, run on demand</h2>
               <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-2xl">
-                Six AI agents for research, copy, design, video, voice, publishing, and reviews — hire them like staff, one at a time or as a team, with a person watching the output. One-time $199 setup.
+                Ten AI specialists — front desk, research, copy, graphics &amp; video, voice, SEO, publishing, paid ads, engagement, and reporting — plus Manny, your manager, coordinating them all. Hire them like staff, one at a time or as a team, with a person watching the output. One-time $199 setup.
               </p>
             </div>
             <div class="flex-shrink-0 text-center">
