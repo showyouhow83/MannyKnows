@@ -142,17 +142,6 @@ const NAVBAR_CONFIG = {
             </div>
         </header>
 
-		<!-- Plans — monthly retainers, "starting at" pricing, tailored per client -->
-		<PageSection
-			id="plans"
-			badge="Monthly plans"
-			title="Plans that grow with you"
-			subtitle="Monthly plans, scoped to your business. Start with what you need — a website, an online store, marketing, or a full tech team — and adjust anytime."
-			variant="alternate"
-		>
-			<PricingPlans />
-		</PageSection>
-
 		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
 		<PageSection
 			id="ai-team"
@@ -163,6 +152,21 @@ const NAVBAR_CONFIG = {
 		>
 			<HomeAiTeam />
 		</PageSection>
+
+		<!-- Plans ("Plans that grow with you") — hidden from the homepage per request
+		     (kept, not deleted, in case we want it back). The plans still live on the
+		     dedicated /plans page. -->
+		{/*
+		<PageSection
+			id="plans"
+			badge="Monthly plans"
+			title="Plans that grow with you"
+			subtitle="Monthly plans, scoped to your business. Start with what you need — a website, an online store, marketing, or a full tech team — and adjust anytime."
+			variant="alternate"
+		>
+			<PricingPlans />
+		</PageSection>
+		*/}
 
 		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
 		<PageSection
