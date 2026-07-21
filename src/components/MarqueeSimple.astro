@@ -1,55 +1,66 @@
 ---
-// Simple CSS marquee that works reliably
+// Always-scrolling CSS marquee (first item in the footer). A benefit ticker for
+// what MannyKnows actually sells. Icons are inline SVG (no emoji) that inherit
+// the white text color; the strip never pauses (no hover / reactive behavior).
+const items = [
+  {
+    label: 'Websites',
+    text: 'Custom, fast, and built to convert',
+    // browser window
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20"/><path d="M6 6.5h.01"/></svg>`,
+  },
+  {
+    label: 'Get found',
+    text: 'SEO for Google & AI answer engines',
+    // magnifying glass
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
+  },
+  {
+    label: 'AI Team',
+    text: 'Agents that sell, book & support 24/7',
+    // friendly bot
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><path d="M9 13h.01"/><path d="M15 13h.01"/></svg>`,
+  },
+  {
+    label: 'Online stores',
+    text: 'Ecommerce designed to sell',
+    // shopping bag
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  },
+  {
+    label: 'Bilingual',
+    text: 'Built in English & Spanish',
+    // translate / languages
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>`,
+  },
+  {
+    label: 'Local',
+    text: 'Springfield & Western Massachusetts',
+    // map pin
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.4-8 12-8 12s-8-7.6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  },
+];
 ---
 
 <div
   class="h-[50px] bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink overflow-hidden relative flex items-center z-10 animate-button-gradient"
   data-marquee
   role="region"
-  aria-label="Announcements and promotions"
+  aria-label="What we build for Western Massachusetts businesses"
 >
   <div class="flex whitespace-nowrap animate-scroll">
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold"><span aria-hidden="true">🛠️</span> New</strong>
-      <span>Independent web, SEO &amp; software — Springfield, MA</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold"><span aria-hidden="true">📍</span> Local</strong>
-      <span>Websites, apps &amp; AI across Western Massachusetts</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold"><span aria-hidden="true">✅</span> Proven</strong>
-      <span>Real software running real Western Mass businesses</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold"><span aria-hidden="true">💎</span> Fast</strong>
-      <span>Most projects live in 2–4 weeks</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8">
-      <strong class="font-bold"><span aria-hidden="true">🤝</span> Experienced</strong>
-      <span>Twenty years in eCommerce operations &amp; implementation</span>
-    </div>
-    <!-- Duplicate for seamless loop -->
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
-      <strong class="font-bold"><span>🛠️</span> New</strong>
-      <span>Independent web, SEO &amp; software — Springfield, MA</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
-      <strong class="font-bold"><span>📍</span> Local</strong>
-      <span>Websites, apps &amp; AI across Western Massachusetts</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
-      <strong class="font-bold"><span>✅</span> Proven</strong>
-      <span>Real software running real Western Mass businesses</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
-      <strong class="font-bold"><span>💎</span> Fast</strong>
-      <span>Most projects live in 2–4 weeks</span>
-    </div>
-    <div class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8" aria-hidden="true">
-      <strong class="font-bold"><span>🤝</span> Experienced</strong>
-      <span>Twenty years in eCommerce operations &amp; implementation</span>
-    </div>
+    {[0, 1].map((copy) =>
+      items.map((it) => (
+        <div
+          class="flex items-center gap-2 text-white text-sm font-medium whitespace-nowrap px-8"
+          aria-hidden={copy === 1 ? 'true' : undefined}
+        >
+          <span class="flex items-center shrink-0" aria-hidden="true" set:html={it.icon} />
+          <strong class="font-bold">{it.label}</strong>
+          <span>{it.text}</span>
+        </div>
+      ))
+    )}
   </div>
 </div>
 
@@ -66,9 +77,5 @@
   .animate-scroll {
     animation: scroll 60s linear infinite;
     will-change: transform;
-  }
-
-  .animate-scroll:hover {
-    animation-play-state: paused;
   }
 </style>
