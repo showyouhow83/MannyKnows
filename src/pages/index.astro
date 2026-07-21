@@ -17,6 +17,7 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
+import HomeAbout from '../components/sections/HomeAbout.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
@@ -177,6 +178,16 @@ const NAVBAR_CONFIG = {
 			variant="alternate"
 		>
 			<SelectedWork />
+		</PageSection>
+
+		<!-- Who you're working with — condensed founder intro, routes to /about -->
+		<PageSection
+			id="about"
+			badge="Meet the founder"
+			title="Who you're working with"
+			variant="default"
+		>
+			<HomeAbout />
 		</PageSection>
 
 		<!-- Testimonials — driven by src/data/testimonials.ts; renders NOTHING
