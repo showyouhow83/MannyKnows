@@ -1,7 +1,10 @@
 ---
 // Blog Article Card Component - Reusable card for blog articles.
-// Shows a real banner image when the post provides one; otherwise falls back to a
-// colored gradient with the category icon centered.
+// Thumbnail preference: a real banner image → the post's own brand illustration
+// (the same SVG shown on the post page) → a colored gradient with the category icon.
+import Illustration from '../illustrations/Illustration.astro';
+import type { IllKind } from '../../utils/postIllustration';
+
 interface Props {
   icon: 'chat' | 'document' | 'analytics';
   category: string;
@@ -9,9 +12,10 @@ interface Props {
   categoryColor: 'blue' | 'purple' | 'orange';
   href: string;
   image?: string;
+  illustration?: IllKind;
 }
 
-const { icon, category, title, categoryColor, href, image } = Astro.props;
+const { icon, category, title, categoryColor, href, image, illustration } = Astro.props;
 
 // Icon mapping (used for the fallback banner)
 const iconSvgs = {
@@ -71,6 +75,10 @@ const colors = colorMap[categoryColor];
         height="64"
         class="w-full h-full object-cover transition-transform duration-500"
       />
+    ) : illustration ? (
+      <div class={`w-full h-full flex items-center justify-center bg-gradient-to-br ${colors.gradient} p-1.5`}>
+        <Illustration kind={illustration} class="w-full" />
+      </div>
     ) : (
       <div class={`relative w-full h-full flex items-center justify-center bg-gradient-to-br ${colors.gradient}`}>
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full transition-transform duration-1000"></div>
