@@ -3,6 +3,7 @@
 // head (brand blue→pink) with a dark visor + eyes — so the roster reads as one
 // team. Each agent is told apart by a specialty emblem in the corner badge.
 // Inline SVG: near-zero page weight, razor-sharp, adapts to light/dark.
+import { team } from '../../data/aiTeam';
 import type { AgentId } from '../../data/aiTeam';
 
 interface Props {
@@ -34,7 +35,9 @@ const emblem = emblems[agent] ?? '';
 // Unique gradient id per instance — the same agent can appear more than once on
 // a page (hero + roster), and duplicate element IDs are invalid HTML.
 const gid = `ag-${agent}-${Math.random().toString(36).slice(2, 9)}`;
-const label = agent.charAt(0).toUpperCase() + agent.slice(1);
+// Use the agent's display name (e.g. "Terr"), not the internal id ("eny"),
+// so alt/aria labels never leak an old or internal handle.
+const label = team.find((m) => m.id === agent)?.name ?? (agent.charAt(0).toUpperCase() + agent.slice(1));
 
 const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block" role="img" aria-label="${label}, an AI Team agent">
   <defs>
