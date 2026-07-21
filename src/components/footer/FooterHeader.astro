@@ -3,6 +3,7 @@
 import BlogArticleCard from './BlogArticleCard.astro';
 import { getCollection } from 'astro:content';
 import { getPostImage } from '../../utils/postImage';
+import { getPostIllustration } from '../../utils/postIllustration';
 
 interface Props {
   brandTitle?: string;
@@ -44,6 +45,7 @@ const blogArticles = (await getCollection('blog'))
     title: post.data.title,
     href: `/blog/${post.id}`,
     image: getPostImage(post),
+    illustration: getPostIllustration(post),
   }));
 ---
 
