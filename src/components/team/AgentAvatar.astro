@@ -15,8 +15,10 @@ const { agent, class: className = '' } = Astro.props;
 // Specialty emblems, drawn centered on the origin (fits within ~r9), placed
 // inside a white badge at the bottom-right of the head.
 const emblems: Record<AgentId, string> = {
-  // chat bubble — sales, booking & support
-  manny: '<rect x="-7" y="-6" width="14" height="10" rx="3" fill="currentColor"/><path d="M-2.6 3.4 L-2.6 7.6 L2.2 3.4 Z" fill="currentColor"/>',
+  // hub with spokes — the manager who routes work to the team
+  manny: '<circle cx="0" cy="-6.6" r="2.1" fill="currentColor"/><circle cx="5.7" cy="3.8" r="2.1" fill="currentColor"/><circle cx="-5.7" cy="3.8" r="2.1" fill="currentColor"/><path d="M0 0 L0 -6.6 M0 0 L5.7 3.8 M0 0 L-5.7 3.8" stroke="currentColor" stroke-width="1.6"/><circle cx="0" cy="0" r="2.6" fill="currentColor"/>',
+  // chat bubble — front desk: sales, booking & support
+  desi: '<rect x="-7" y="-6" width="14" height="10" rx="3" fill="currentColor"/><path d="M-2.6 3.4 L-2.6 7.6 L2.2 3.4 Z" fill="currentColor"/>',
   // magnifying glass — research
   eve: '<circle cx="-1.6" cy="-1.6" r="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M2.2 2.2 L6.6 6.6" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
   // pencil — copy
@@ -25,10 +27,16 @@ const emblems: Record<AgentId, string> = {
   eny: '<path d="M-4 -6 L6.2 0 L-4 6 Z" fill="currentColor"/>',
   // soundwave — voice
   mimi: '<g stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M-6 0 v0"/><path d="M-3 -4 v8"/><path d="M0 -7 v14"/><path d="M3 -4.5 v9"/><path d="M6 -2 v4"/></g>',
-  // star — reviews
-  upie: '<path d="M0 -6.4 L1.9 -2 L6.6 -1.6 L3 1.4 L4.1 6 L0 3.4 L-4.1 6 L-3 1.4 L-6.6 -1.6 L-1.9 -2 Z" fill="currentColor"/>',
-  // paper plane — publishing & social
+  // map pin — SEO & local search
+  essie: '<path d="M0 -8 C4.2 -8 7 -5 7 -1.4 C7 3 0 8 0 8 C0 8 -7 3 -7 -1.4 C-7 -5 -4.2 -8 0 -8 Z" fill="currentColor"/><circle cx="0" cy="-1.4" r="2.3" fill="#fff"/>',
+  // paper plane — publishing & scheduling
   bap: '<path d="M7 -6.4 L-6.6 -0.6 L-1.2 1.4 L1 6.6 L2.8 1.6 Z" fill="currentColor"/>',
+  // target — paid ads
+  addy: '<circle cx="0" cy="0" r="7.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="0" cy="0" r="2.6" fill="currentColor"/>',
+  // star — engagement & reputation
+  upie: '<path d="M0 -6.4 L1.9 -2 L6.6 -1.6 L3 1.4 L4.1 6 L0 3.4 L-4.1 6 L-3 1.4 L-6.6 -1.6 L-1.9 -2 Z" fill="currentColor"/>',
+  // rising bars — analytics & reporting
+  ana: '<rect x="-6.6" y="0" width="3.2" height="6.4" rx="1" fill="currentColor"/><rect x="-1.6" y="-3.4" width="3.2" height="9.8" rx="1" fill="currentColor"/><rect x="3.4" y="-6.6" width="3.2" height="13" rx="1" fill="currentColor"/>',
 };
 
 const emblem = emblems[agent] ?? '';
