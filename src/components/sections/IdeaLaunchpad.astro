@@ -137,5 +137,18 @@ const steps = [
     modal.querySelectorAll('[data-contact]').forEach((el) =>
       el.addEventListener('click', () => close())
     );
+
+    // Nav idea bulb: hover or click turns its light on, and it stays lit for the
+    // rest of the session (persisted across page navigations in this tab).
+    const LIT_KEY = 'mk_idea_lit';
+    const lightBulb = (el: HTMLElement) => { el.style.color = '#fbbf24'; el.style.filter = 'drop-shadow(0 0 5px rgba(251,191,36,0.6))'; };
+    let wasLit = false;
+    try { wasLit = sessionStorage.getItem(LIT_KEY) === '1'; } catch {}
+    document.querySelectorAll<HTMLElement>('.idea-bulb').forEach((el) => {
+      if (wasLit) lightBulb(el);
+      const turnOn = () => { lightBulb(el); try { sessionStorage.setItem(LIT_KEY, '1'); } catch {} };
+      el.addEventListener('mouseenter', turnOn);
+      el.addEventListener('click', turnOn);
+    });
   })();
 </script>
