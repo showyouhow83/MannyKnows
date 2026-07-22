@@ -71,9 +71,9 @@ const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000
   <g transform="translate(74 80)" style="color:#0071e3">${emblem}</g>
 </svg>`;
 
-// Agents with a real character illustration in public/team/<id>.webp.
-// Mimi's image is still pending, so she keeps the gradient-bot placeholder.
-const HAS_IMAGE = ['manny', 'eve', 'elly', 'eny', 'mimi', 'bap', 'upie'];
+// Agents with a real character illustration in public/team/<id>.webp. All 11
+// have one; any agent NOT listed here falls back to the gradient-bot + emblem.
+const HAS_IMAGE = ['manny', 'desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap', 'addy', 'upie', 'ana'];
 ---
 
 {HAS_IMAGE.includes(agent) ? (
