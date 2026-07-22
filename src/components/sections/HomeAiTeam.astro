@@ -8,17 +8,33 @@ import Button from '../ui/Button.astro';
 const roster = [...team].sort((a, b) => a.order - b.order);
 const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
 const setup = aiTeamSetupFee.toLocaleString('en-US');
+
+// Compact specialty labels for the teaser grid (the full role is on /ai-team).
+const specialty: Record<string, string> = {
+  manny: 'Manager',
+  desi: 'Front desk',
+  eve: 'Research',
+  elly: 'Copywriting',
+  eny: 'Graphics & video',
+  mimi: 'Voice',
+  essie: 'SEO',
+  bap: 'Publishing',
+  addy: 'Paid ads',
+  upie: 'Engagement',
+  ana: 'Analytics',
+};
 ---
 
 <div class="max-w-5xl mx-auto">
   <a href="/ai-team" class="block group" aria-label="Meet the AI Team">
     <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 max-w-3xl lg:max-w-4xl mx-auto">
       {roster.map((a) => (
-        <div class="flex flex-col items-center gap-1.5">
+        <div class="flex flex-col items-center gap-1">
           <div class="w-full aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
             <AgentAvatar agent={a.id} class="w-full h-full" />
           </div>
-          <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary">{a.name}</span>
+          <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</span>
+          <span class="text-[9px] sm:text-[10px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>
         </div>
       ))}
     </div>
