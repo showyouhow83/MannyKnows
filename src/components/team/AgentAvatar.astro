@@ -77,7 +77,7 @@ const HAS_IMAGE = ['manny', 'desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap'
 ---
 
 {HAS_IMAGE.includes(agent) ? (
-  <img src={`/team/${agent}.webp`} width="480" height="480" alt={`${label}, an AI Team agent`} loading="lazy" decoding="async" class={`object-contain ${className}`} />
+  <img src={`/team/${agent}.webp`} width="256" height="256" alt={`${label}, an AI Team agent`} loading="lazy" decoding="async" class={`object-contain ${className}`} />
 ) : (
   <div class={className} set:html={svg} />
 )}
