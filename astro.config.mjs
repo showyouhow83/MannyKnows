@@ -7,6 +7,20 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://mannyknows.com',
   output: 'server', // Server mode for API routes
+  // 301s for retired /services/* URLs (old taxonomy) that now 404. Agent/bot/
+  // analytics topics point at /ai-team; web-design/optimization at /services.
+  redirects: {
+    '/services/ai-agents': '/ai-team',
+    '/services/customer-service-bots': '/ai-team',
+    '/services/appointment-booking-bots': '/ai-team',
+    '/services/lead-generation-bots': '/ai-team',
+    '/services/competitor-analysis': '/ai-team',
+    '/services/analytics': '/ai-team',
+    '/services/behavioral-analytics': '/ai-team',
+    '/services/adaptive-layouts': '/services',
+    '/services/conversion-optimization': '/services',
+    '/services/crm-automation': '/services',
+  },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which
   // POST application/x-www-form-urlencoded from Twilio's servers. Our own routes
