@@ -127,7 +127,7 @@ export const plans: Plan[] = [
     featured: true,
     headline: 'A store that sells while the shop is closed',
     blurb:
-      "Setting up a store is easy. Setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and an AI shopping assistant, run like the eCommerce operations we spent years building at Bob's Discount Furniture.",
+      "Setting up a store is easy. Setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and an AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       'Shops, makers, restaurants, and brands that want to sell online — whether you’re starting from zero or your current store isn’t selling.',
     deliverables: [
