@@ -41,16 +41,44 @@ const pillars = [
   },
 ];
 
-// "Run a Mother's Day promotion" — you start with Manny, then each specialist's
-// output comes back to you to approve or edit directly, in a loop, with no
-// middleman between rounds.
-const walkthrough = [
-  "You ask, Manny assigns. You tell Manny “Run a Mother’s Day promotion,” and he turns it into briefs for the right specialists — you never have to know who does what.",
-  "Eve plans it: what’s trending, what competitors are running, and last spring’s best sellers, distilled into one focused campaign plan.",
-  "The team builds it: Elly writes the pages, emails, and captions in your voice; Terr designs the graphics and a short video; Mimi records the voiceover in yours; Essie tunes it all to get found in search.",
-  "You approve — or edit. Each piece comes straight to you: approve it, or change the ask (“warmer,” “drop the discount”) and that agent redoes it — you steer it directly, in a loop, until it’s right.",
-  "It runs, and you get the numbers: Bap publishes on schedule, Addy backs the winners within your budget, and Upie handles the replies for your ok — then Ana measures clicks, bookings, and sales, and Manny hands you a plain-English report on what to do next.",
+// "Run a Mother's Day promotion," shown as the actual group chat: you message
+// Manny, Manny puts the specialists on it, and every piece comes back to you to
+// approve or tweak — right in the thread. `from` is an agent id or 'you'.
+const conversation: { from: string; text: string }[] = [
+  { from: 'you', text: "Hey Manny — can we run a Mother’s Day promotion?" },
+  { from: 'manny', text: "On it. I’ll get the team started and bring it all back for your ok." },
+  { from: 'manny', text: "Eve — need a Mother’s Day angle. What’s working this year, and what were our top sellers last spring?" },
+  { from: 'eve', text: "Gift bundles + a limited-time offer for last-minute shoppers. One-page plan’s ready." },
+  { from: 'manny', text: "Perfect. Elly, Terr, Mimi — build it out. Essie, tune it for search." },
+  { from: 'elly', text: "Landing page, emails, and captions — all in your voice. Done." },
+  { from: 'eny', text: "Graphics sized for each platform, plus a short video to match." },
+  { from: 'mimi', text: "Voiceover recorded in your own voice — you didn’t have to touch a mic." },
+  { from: 'essie', text: "Tuned so all of it gets found on Google — locally too." },
+  { from: 'manny', text: "It’s all in your queue. Approve it, or tell me what to change." },
+  { from: 'you', text: "Love it — can we make the first email a little warmer?" },
+  { from: 'elly', text: "Warmed it up and put it back in your queue. Take a look." },
+  { from: 'you', text: "Perfect. Ship it." },
+  { from: 'manny', text: "Publishing now." },
+  { from: 'bap', text: "Scheduled and live across every channel." },
+  { from: 'addy', text: "Paid spend behind the strongest pieces, capped at your budget." },
+  { from: 'upie', text: "On every comment and DM — each reply queued for your ok." },
+  { from: 'ana', text: "Tracking clicks, bookings, and sales as they land." },
+  { from: 'manny', text: "Here’s your report — what ran, what it cost, what it made, and what I’d do next time." },
 ];
+
+// Compact role labels shown next to each name in the chat (e.g. "Essie (SEO)").
+const chatRole: Record<string, string> = {
+  manny: 'Manager',
+  eve: 'Research',
+  elly: 'Copy',
+  eny: 'Graphics & video',
+  mimi: 'Voice',
+  essie: 'SEO',
+  bap: 'Publishing',
+  addy: 'Ads',
+  upie: 'Engagement',
+  ana: 'Analytics',
+};
 
 const steps = [
   { n: '01', title: 'We sit down and find your voice', body: "Not a quick call — a series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we've dialed in exactly what you sell, who buys, and how you sound.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
@@ -162,17 +190,54 @@ const faqSchema = {
               <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
             </h2>
             <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              You only ever start with Manny — so you never have to learn who does what. He opens the cycle, a specialist does the work, and it comes back to <em>you</em>: approve it, or edit the ask and send it right back to that agent to redo. No middleman between rounds — just a quick loop until each piece is right. Here's a Mother's Day promotion, end to end:
+              You talk to one place — Manny — and the team works in the thread. Here's what it looks like when you ask for a Mother's Day promotion, from the first message to the final report:
             </p>
           </div>
-          <ol class="space-y-4">
-            {walkthrough.map((step, i) => (
-              <li class="flex items-start gap-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-bold flex items-center justify-center">{i + 1}</span>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed pt-1">{step}</p>
-              </li>
-            ))}
-          </ol>
+
+          <!-- The example, shown as the actual group chat between you, Manny, and the agents. -->
+          <div class="max-w-2xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent bg-light-secondary/40 dark:bg-dark-primary/40 overflow-hidden shadow-sm">
+            <div class="flex items-center gap-3 px-4 py-3 border-b border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70">
+              <div class="flex -space-x-2">
+                {['manny', 'eve', 'elly', 'eny', 'essie'].map((id) => (
+                  <div class="w-7 h-7 rounded-full ring-2 ring-white dark:ring-dark-secondary overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
+                    <AgentAvatar agent={id} class="w-full h-full" />
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Your AI Team</div>
+                <div class="text-[11px] text-green-600 dark:text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span> online · managed by Manny</div>
+              </div>
+            </div>
+            <div class="px-4 py-5 space-y-2.5">
+              {conversation.map((m, i) => (
+                m.from === 'you' ? (
+                  <div class="flex justify-end">
+                    <div class="max-w-[82%] rounded-2xl rounded-br-sm bg-gradient-to-r from-primary-blue to-primary-pink text-white px-4 py-2.5 text-sm leading-snug shadow-sm">{m.text}</div>
+                  </div>
+                ) : (
+                  <div class="flex items-end gap-2">
+                    {conversation[i - 1] && conversation[i - 1].from === m.from ? (
+                      <div class="w-8 flex-shrink-0" aria-hidden="true"></div>
+                    ) : (
+                      <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
+                        <AgentAvatar agent={m.from} class="w-full h-full" />
+                      </div>
+                    )}
+                    <div class="max-w-[82%]">
+                      {!(conversation[i - 1] && conversation[i - 1].from === m.from) && (
+                        <span class="block text-[11px] mb-0.5 ml-1">
+                          <span class="font-semibold text-primary-blue dark:text-blue-300">{nameFor(m.from)}</span>
+                          <span class="text-text-light-tertiary dark:text-text-dark-tertiary"> ({chatRole[m.from]})</span>
+                        </span>
+                      )}
+                      <div class="rounded-2xl rounded-bl-sm bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent px-4 py-2.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug shadow-sm">{m.text}</div>
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
           <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
             One request in, a finished and measured campaign out — with you approving or reshaping every piece along the way. That's the difference between ten chatbots and a team.
           </p>
