@@ -58,6 +58,9 @@ const structuredData = {
         { '@type': 'City', name: 'Agawam, Massachusetts' },
         { '@type': 'City', name: 'Northampton, Massachusetts' },
         { '@type': 'City', name: 'Amherst, Massachusetts' },
+        { '@type': 'City', name: 'Longmeadow, Massachusetts' },
+        { '@type': 'City', name: 'East Longmeadow, Massachusetts' },
+        { '@type': 'City', name: 'Wilbraham, Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Pioneer Valley' },
         { '@type': 'AdministrativeArea', name: 'Hampden County, Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
@@ -67,6 +70,28 @@ const structuredData = {
         'https://www.youtube.com/@MannyKnows-com/posts',
         'https://www.tiktok.com/@mannyknowsai',
       ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Services',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            priceCurrency: 'USD',
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: '350', priceCurrency: 'USD', unitText: 'MONTH' },
+            itemOffered: { '@type': 'Service', name: 'AI Smart Website (bilingual web design)', description: 'A multilingual website with a built-in AI sales & booking agent, on Cloudflare’s edge network.' },
+          },
+          {
+            '@type': 'Offer',
+            priceCurrency: 'USD',
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: '99', priceCurrency: 'USD', unitText: 'MONTH' },
+            itemOffered: { '@type': 'Service', name: 'AI Team (AI agents)', description: 'AI agents hired per role — sales & booking, research, copy, graphics, voice, SEO, publishing, ads, engagement, and reporting.' },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: { '@type': 'Service', name: 'Local SEO', description: 'Local map-pack visibility, Google Business Profile, and technical SEO for Western Massachusetts businesses.' },
+          },
+        ],
+      },
     },
     {
       '@type': 'WebSite',
@@ -92,8 +117,8 @@ const NAVBAR_CONFIG = {
 ---
 
 <BaseLayout
-	title="Web Design, SEO & AI for Western Massachusetts | MannyKnows"
-	description="One-on-one web design, local SEO, and AI booking agents for small businesses across Western Massachusetts — fast sites that get found on Google and in AI answers, and book jobs 24/7. Springfield, MA."
+	title="Web Design, SEO & AI in Springfield & Western Mass | MannyKnows"
+	description="Bilingual websites, AI agents from $99/mo, and local SEO — built in Springfield, MA. Cancel anytime. Serving all of Western Mass. Call or text (413) 361-8451."
 	footerServices={true}
 	preconnect={['https://images.unsplash.com']}
 >
@@ -119,6 +144,7 @@ const NAVBAR_CONFIG = {
                 badge="Springfield · Western Massachusetts"
                 title=""
                 highlightedText="AI Agents, Websites, SEO & Apps"
+                titleAfter=" for Western Mass — Built in Springfield"
                 subtitle="Custom websites, SEO for Google and AI answer engines, and AI agents for Western Mass businesses — agents that create your content, support customers, answer calls, and sell your products, with you reviewing and approving what goes out."
             />
 
@@ -187,6 +213,32 @@ const NAVBAR_CONFIG = {
 			variant="default"
 		>
 			<HomeAbout />
+		</PageSection>
+
+		<!-- Serving Western Mass — local intent + service-area anchors (LocalBusiness areaServed) -->
+		<PageSection
+			id="service-area"
+			badge="Serving Western Mass"
+			title="Springfield-based. Pioneer Valley-wide."
+			subtitle="We're based right here in Springfield, MA — not a call center three states away. Wherever you do business in the Pioneer Valley, that's where we build your visibility."
+			variant="alternate"
+		>
+			<div class="max-w-3xl mx-auto text-center">
+				<ul class="flex flex-wrap justify-center gap-x-3 gap-y-2 text-sm sm:text-base font-medium text-text-light-secondary dark:text-text-dark-secondary">
+					{['Springfield','Chicopee','Holyoke','Westfield','Agawam','West Springfield','Northampton','Longmeadow','East Longmeadow','Wilbraham'].map((town) => (
+						<li class="after:content-['·'] after:ml-3 after:text-text-light-tertiary dark:after:text-text-dark-tertiary last:after:content-['']">{town}</li>
+					))}
+				</ul>
+				<div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+					<a href="tel:+14133618451" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold shadow-lg shadow-primary-blue/20 hover:shadow-[0_12px_36px_rgba(16,209,255,0.3)] transition-shadow duration-300">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+						Call or text (413) 361-8451
+					</a>
+					<a href="#contact" data-contact-context="Service area — Western Mass" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+						Talk to Manny about your town
+					</a>
+				</div>
+			</div>
 		</PageSection>
 
 		<!-- Testimonials — driven by src/data/testimonials.ts; renders NOTHING
