@@ -48,12 +48,12 @@ const blogArticles = (await getCollection('blog'))
     illustration: getPostIllustration(post),
   }));
 
-// Site-wide service-area towns shown in the footer (mirrors the homepage
-// LocalBusiness `areaServed` schema).
+// Site-wide service areas shown in the footer, grouped by region for scanning.
 const serviceAreas = [
-  'Springfield', 'Chicopee', 'Holyoke', 'Westfield', 'Agawam', 'West Springfield',
-  'Northampton', 'Amherst', 'Longmeadow', 'East Longmeadow', 'Wilbraham', 'Monson',
-  'Greenfield', 'Deerfield',
+  { region: 'Eastern Hampden County', towns: ['Longmeadow', 'East Longmeadow', 'Wilbraham', 'Hampden'] },
+  { region: 'Springfield Metro', towns: ['Springfield', 'West Springfield', 'Agawam', 'Feeding Hills', 'Indian Orchard', 'Ludlow', 'Chicopee', 'Holyoke'] },
+  { region: 'Northern Connecticut', towns: ['Enfield', 'Suffield', 'Windsor Locks', 'Granby', 'Somers'] },
+  { region: 'Military Community', towns: ['Westover ARB'] },
 ];
 ---
 
@@ -141,13 +141,20 @@ const serviceAreas = [
             Service Areas
           </h4>
           <p class="text-gray-700 dark:text-white/80 text-xs mb-4 leading-relaxed transition-colors duration-300">
-            Serving business owners across Springfield, the Pioneer Valley, and all of Western Massachusetts.
+            Serving business owners across the Springfield metro, Western Mass, and northern Connecticut.
           </p>
-          <ul class="flex flex-wrap gap-x-2.5 gap-y-1.5 text-xs text-gray-700 dark:text-white/70">
-            {serviceAreas.map((town) => (
-              <li class="after:content-['·'] after:ml-2.5 after:text-gray-400/70 dark:after:text-white/30 last:after:content-['']">{town}</li>
+          <div class="space-y-3">
+            {serviceAreas.map((group) => (
+              <div>
+                <h5 class="text-[11px] font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-1">{group.region}</h5>
+                <ul class="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-gray-700 dark:text-white/70">
+                  {group.towns.map((town) => (
+                    <li class="after:content-['·'] after:ml-2 after:text-gray-400/60 dark:after:text-white/25 last:after:content-['']">{town}</li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>
