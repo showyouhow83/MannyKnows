@@ -15,7 +15,7 @@ interface Step {
 }
 interface Props {
   steps: Step[];
-  cols?: 3 | 4;
+  cols?: 3 | 4 | 5;
   class?: string;
 }
 const { steps, cols = 4, class: className = 'max-w-6xl mx-auto' } = Astro.props;
@@ -26,7 +26,7 @@ const FALLBACK_ICONS = [
   'M13 10V3L4 14h7v7l9-11h-7z',
   'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
 ];
-const colsCls = cols === 3 ? 'md:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4';
+const colsCls = cols === 3 ? 'md:grid-cols-3' : cols === 5 ? 'sm:grid-cols-2 lg:grid-cols-5' : 'sm:grid-cols-2 lg:grid-cols-4';
 ---
 
 <div class={`grid grid-cols-1 ${colsCls} gap-5 ${className}`}>
