@@ -20,7 +20,7 @@ interface Props {
 const { 
   brandTitle = "MK",
   brandEmoji = "🚀",
-  brandDescription = "MannyKnows (MK) builds blazing-fast websites that get found on every search engine — and keeps them ranking. Then we make them work: an AI agent that answers customers and books jobs 24/7, interactive tools and 360° galleries that keep visitors engaged, online stores that sell, and the advertising that brings the right people in. All built, run, and maintained for you, month after month — backed by twenty years of eCommerce and engineering.",
+  brandDescription = "Fast, search-ready websites and AI tools that book jobs while you sleep. Serving Western Massachusetts, backed by 20 years of enterprise experience.",
   socialLinks = {
     linkedin: "https://www.linkedin.com/in/mr83/",
     youtube: "https://www.youtube.com/@MannyKnows-com/posts",
@@ -50,8 +50,9 @@ const blogArticles = (await getCollection('blog'))
 
 // Site-wide service areas shown in the footer, grouped by region for scanning.
 const serviceAreas = [
-  { region: 'Eastern Hampden County', towns: ['Longmeadow', 'East Longmeadow', 'Wilbraham', 'Hampden'] },
+  { region: 'Eastern Hampden County', towns: ['Longmeadow', 'East Longmeadow', 'Wilbraham', 'Hampden', 'Monson'] },
   { region: 'Springfield Metro', towns: ['Springfield', 'West Springfield', 'Agawam', 'Feeding Hills', 'Indian Orchard', 'Ludlow', 'Chicopee', 'Holyoke'] },
+  { region: 'Hampshire & Franklin County', towns: ['Northampton', 'Amherst', 'Greenfield', 'Deerfield'] },
   { region: 'Northern Connecticut', towns: ['Enfield', 'Suffield', 'Windsor Locks', 'Granby', 'Somers'] },
   { region: 'Military Community', towns: ['Westover ARB'] },
 ];

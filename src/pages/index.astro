@@ -127,7 +127,7 @@ const NAVBAR_CONFIG = {
 ---
 
 <BaseLayout
-	title="Web Design, SEO & AI in Springfield & Western Mass | MannyKnows"
+	title="Web Design, SEO & AI Agency in Springfield & Western Mass | MannyKnows"
 	description="Bilingual websites, AI agents from $99/mo, and local SEO — built in Springfield, MA. Cancel anytime. Serving all of Western Mass. Call or text (413) 361-8451."
 	footerServices={true}
 	preconnect={['https://images.unsplash.com']}
@@ -154,20 +154,25 @@ const NAVBAR_CONFIG = {
                 badge="Springfield · Western Massachusetts"
                 title=""
                 highlightedText="AI Agents, Websites, SEO & Apps"
-                titleAfter=" for Western Mass — Built in Springfield"
-                subtitle="Custom websites, SEO for Google and AI answer engines, and AI agents for Western Mass businesses — agents that create your content, support customers, answer calls, and sell your products, with you reviewing and approving what goes out."
+                titleAfter=" for Western Mass"
+                subtitle="MannyKnows is a web design, SEO, and AI agency based in Springfield, Massachusetts, built for small and local businesses across Western Mass. We build your custom website, get you ranking on Google and the AI answer engines your customers are asking instead, then hand you AI agents that write, answer calls, support customers, and close sales — 24/7, under your name, with your final say."
             />
+
+            <!-- Trust/positioning line under the subhead -->
+            <p class="sf-regular text-sm sm:text-base text-text-light-tertiary dark:text-text-dark-tertiary max-w-3xl mx-auto mt-4 px-4 text-center apple-body-text">
+              Twenty years of enterprise experience, scaled down to Western Mass budgets. No agency bloat, no corporate jargon — just results.
+            </p>
 
             <!-- Hero CTAs + credibility stat band -->
             <div class="max-w-[1440px] mx-auto px-4 mt-8 pb-10 md:pb-16">
-              <div class="flex flex-col sm:flex-row items-stretch justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
+              <div class="flex flex-row items-stretch justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
                 <Button href="/free-360-photo" text="FREE 360° PHOTO" subtext="CLAIM NOW" variant="theme-aware" sparkles={true} sparkleTheme="purple" className="flex-1 sm:flex-none sm:px-8" />
                 <Button href="/free-ai-website-analysis" text="FREE AI WEBSITE" subtext="ANALYSIS" variant="emoji" emoji="🚀" emojiAnimation="subtle" sparkles={false} className="flex-1 sm:flex-none sm:px-8" />
               </div>
-              <ul class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-6 md:gap-x-5 max-w-3xl mx-auto text-text-light-secondary dark:text-text-dark-secondary">
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">Rank #1</span> <span class="text-xs leading-snug">on Google’s 1st page organically</span></li>
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text">24/7 AI-driven</span> <span class="text-xs leading-snug">smart website, engages and supports visitors</span></li>
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text whitespace-nowrap">1-on-1</span> <span class="text-xs leading-snug">a dedicated senior pro in every project</span></li>
+              <ul class="mt-8 grid grid-cols-3 gap-x-2 gap-y-6 sm:gap-x-4 md:gap-x-5 max-w-3xl mx-auto text-text-light-secondary dark:text-text-dark-secondary">
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text whitespace-nowrap">Rank #1</span> <span class="text-xs leading-snug">on Google’s 1st page organically</span></li>
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text">24/7 AI-driven</span> <span class="text-xs leading-snug">smart website, engages and supports visitors</span></li>
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text whitespace-nowrap">1-on-1</span> <span class="text-xs leading-snug">a dedicated senior pro in every project</span></li>
               </ul>
             </div>
 
@@ -177,6 +182,31 @@ const NAVBAR_CONFIG = {
             </div>
             </div>
         </header>
+
+		<!-- Below-hero service scan: a plain H2 + internal links to the three core
+		     service pages — a clean keyword match for Google and AI answer engines,
+		     without stuffing the H1. -->
+		<section aria-labelledby="home-services-h2" class="bg-light-primary dark:bg-dark-primary">
+			<div class="max-w-4xl mx-auto px-4 pt-2 pb-14 md:pb-20 text-center">
+				<h2 id="home-services-h2" class="sf-bold text-xl md:text-2xl font-bold mb-6">
+					<span class="apple-gradient-text" data-colorful-title>Web design, SEO &amp; AI — from Springfield, MA for every Western Mass town</span>
+				</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-left">
+					<a href="/plans" class="group flex flex-col gap-1 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 px-4 py-4 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+						<span class="font-bold text-text-light-primary dark:text-text-dark-primary">Custom Websites</span>
+						<span class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-snug">Fast, bilingual sites that convert — from $99/mo.</span>
+					</a>
+					<a href="/services" class="group flex flex-col gap-1 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 px-4 py-4 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+						<span class="font-bold text-text-light-primary dark:text-text-dark-primary">SEO for Google &amp; AI Search</span>
+						<span class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-snug">Get found where your customers actually look.</span>
+					</a>
+					<a href="/ai-team" class="group flex flex-col gap-1 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 px-4 py-4 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+						<span class="font-bold text-text-light-primary dark:text-text-dark-primary">AI Agents</span>
+						<span class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-snug">Content, calls, support &amp; sales — 24/7, with your final say.</span>
+					</a>
+				</div>
+			</div>
+		</section>
 
 		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
 		<PageSection
