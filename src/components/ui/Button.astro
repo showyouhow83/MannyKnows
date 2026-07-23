@@ -57,7 +57,7 @@ const variantClasses = {
   green: 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/20',
   urgent: 'bg-red-500 text-white animate-pulse shadow-xl shadow-red-500/30 border-4 border-yellow-400',
   emoji: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white shadow-lg shadow-primary-blue/20',
-  cta: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl text-lg hover:shadow-[0_20px_40px_rgba(0,113,227,0.15)] animate-button-gradient',
+  cta: 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-4 px-8 rounded-xl text-lg hover:shadow-[0_20px_40px_rgba(0,113,227,0.15)]',
   'theme-aware': '' // Special handling below
 };
 
@@ -73,8 +73,8 @@ const sparkleThemes = {
   none: ""
 };
 
-// Determine final sparkle colors (disable sparkles for CTA variant)
-const finalSparkleColors = !sparkles || variant === 'cta' ? "" : (pixelColors !== undefined ? pixelColors : sparkleThemes[sparkleTheme]);
+// Sparkle/pixel effects removed from buttons for a flat, static look.
+const finalSparkleColors = "";
 
 // Special theme-aware styling
 const isThemeAware = variant === 'theme-aware';
@@ -101,17 +101,8 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
     <a
       href={href}
       id={id ? `${id}-light` : undefined}
-      class={`light-mode-only ${themeAwareClasses.light} ${baseClasses} overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+      class={`light-mode-only ${themeAwareClasses.light} ${baseClasses} overflow-hidden ${className}`}
     >
-      {sparkles && (
-        <pixel-canvas
-          data-colors={finalSparkleColors || themeAwareSparkles.light}
-          data-gap="35"
-          data-speed="60"
-          data-no-focus
-          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.9 !important;"
-        ></pixel-canvas>
-      )}
       <div class="relative z-10 flex flex-col items-center text-center">
         <span class="font-semibold leading-tight relative z-10 whitespace-nowrap">{text}</span>
         {subtext && <span class="text-[10px] opacity-80 leading-tight relative z-10">{subtext}</span>}
@@ -122,17 +113,8 @@ const baseClasses = `${sizeClass} ${borderRadius} no-underline font-semibold ${f
     <a
       href={href}
       id={id ? `${id}-dark` : undefined}
-      class={`dark-mode-only ${themeAwareClasses.dark} ${baseClasses} overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/8 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer ${className}`}
+      class={`dark-mode-only ${themeAwareClasses.dark} ${baseClasses} overflow-hidden ${className}`}
     >
-      {sparkles && (
-        <pixel-canvas
-          data-colors={finalSparkleColors || themeAwareSparkles.dark}
-          data-gap="20"
-          data-speed="40"
-          data-no-focus
-          style="position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.9 !important;"
-        ></pixel-canvas>
-      )}
       <div class="relative z-10 flex flex-col items-center text-center">
         <span class="font-semibold leading-tight relative z-10 whitespace-nowrap">{text}</span>
         {subtext && <span class="text-[10px] opacity-80 leading-tight relative z-10">{subtext}</span>}
