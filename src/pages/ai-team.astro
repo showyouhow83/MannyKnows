@@ -52,7 +52,7 @@ const conversation: { from: string; text: string }[] = [
   { from: 'manny', text: "Perfect. Elly, Terr, Mimi — build it out. Essie, tune it for search." },
   { from: 'elly', text: "Landing page, emails, and captions — all in your voice. Done." },
   { from: 'eny', text: "Graphics sized for each platform, plus a short video to match." },
-  { from: 'mimi', text: "Voiceover recorded in your own voice — you didn’t have to touch a mic." },
+  { from: 'mimi', text: "Voiceover recorded in your own voice." },
   { from: 'essie', text: "Tuned so all of it gets found on Google — locally too." },
   { from: 'manny', text: "It’s all in your queue. Approve it, or tell me what to change." },
   { from: 'you', text: "Love it — can we make the first email a little warmer?" },
@@ -374,7 +374,7 @@ const faqSchema = {
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How it works</span>
         </h2>
-        <StepCards steps={steps} class="max-w-5xl mx-auto" />
+        <StepCards steps={steps} cols={5} class="max-w-7xl mx-auto" />
       </Container>
     </Section>
 
