@@ -125,7 +125,7 @@ export const team: Agent[] = [
     id: 'upie',
     name: 'Upie',
     role: 'Engagement & reputation',
-    does: "Watches everything that comes back — reviews, comments, DMs — and drafts a reply to each one for you to approve, in your voice, so you're responsive everywhere without living in five inboxes. Upie also nudges happy customers to leave more reviews, and flags recurring complaints to Manny so the team can fix the cause, not just the comment.",
+    does: "Answers the reviews, comments, and DMs that come in — in your voice, cloned during setup from how you've replied before — so you're responsive everywhere without living in five inboxes. Upie handles the everyday ones itself and routes anything sensitive — an angry review, a complaint, anything that could affect your reputation — to a dashboard for a human to check before it's answered. It also nudges happy customers to leave reviews and flags recurring issues to Manny, so the team fixes the cause, not just the comment.",
     handoff: 'Hands off to: Eve (what customers are saying), Manny (issues that need a human).',
     order: 9,
     price: 199,
