@@ -52,19 +52,26 @@ export const plans: Plan[] = [
     name: 'AI Smart Website I',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 99,
-    tagline: 'A sharp 1–3 page website with Desi, your AI agent, answering customers 24/7.',
+    tagline: 'An AI-driven site on your own Brand Brain — with Desi answering customers 24/7.',
     highlights: [
-      'A 1–3 page website, designed & built for you — not a template',
-      'Desi, your AI agent, answers customer questions 24/7, in any language',
-      'Found on Google — technical SEO + Google Business Profile',
-      'Fast, mobile-first, hosted & secured — with monthly updates',
+      'Built on your Brand Brain — a private AI trained on your business',
+      'Desi, your AI agent, answers customers 24/7 in their language',
+      'A sharp 1–3 page site that optimizes itself — kept fast, current, and ahead of any basic website',
+      'Found when locals search you on Google + Maps (profile set up for you)',
     ],
-    headline: 'A website that answers your customers, 24/7',
+    headline: 'An AI-driven website — not a page that just sits there',
     blurb:
-      "The simplest way to get online with an AI agent working for you. We design and build a sharp 1–3 page website, then put Desi on it — your AI agent that answers customer questions around the clock, in any language, trained on your business. It's found on Google, fast, secure, and maintained every month. Ready for it to book jobs or sell too? Move up to AI Smart Website II or III anytime — the work carries forward.",
+      "An AI-driven website that works, instead of a page that sits there. We build a sharp 1–3 page site on your own Brand Brain — a private AI trained on your business — and put Desi on it, your AI agent that answers customers 24/7 in any language. It's fast, secure, found on Google, and maintained every month. Ready for it to book jobs or sell too? Move up to AI Smart Website II or III anytime — the work carries forward.",
     whoFor:
       'New or smaller businesses that need a clean, credible website and an agent to field the questions that come in — without a big upfront bill.',
     deliverables: [
+      {
+        title: 'Your Brand Brain',
+        items: [
+          'A private AI knowledge base of your business — services, prices, and voice',
+          'The site and Desi both read from it, so nothing goes stale or off-brand',
+        ],
+      },
       {
         title: 'The website',
         items: [
@@ -107,16 +114,16 @@ export const plans: Plan[] = [
     name: 'AI Smart Website II',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 199,
-    tagline: 'A full website where Desi answers and books the job — 24/7, in any language.',
+    tagline: 'Your AI site now books the job — Desi answers, captures leads, and fills your calendar.',
     builtOn: 'Everything in AI Smart Website I, plus',
     highlights: [
-      'A full multi-page website — not just 1–3 pages',
-      'Desi now books jobs & captures leads, not just answers',
-      'Multilingual, with deeper local SEO to get you found',
+      'A full multi-page site with deeper self-optimization — more content & SEO kept fresh',
+      'Desi now books the job & captures the lead — not just answers',
+      'Ranks for more of what customers search — locally and in AI answers',
     ],
     headline: 'A website that answers and books — for you',
     blurb:
-      "Everything in AI Smart Website I, on a full multi-page site — and now Desi books the job. It answers questions, captures the lead, and puts appointments straight on your calendar 24/7, in any language, trained on your business. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
+      "Everything in AI Smart Website I, on a full multi-page site — and now Desi books the job. Powered by your Brand Brain, Desi answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
       'Service businesses — contractors, salons, clinics, daycares — that need more than answers: they need the appointment captured while the customer is ready.',
     deliverables: [
@@ -162,17 +169,17 @@ export const plans: Plan[] = [
     name: 'AI Smart Website III',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 349,
-    tagline: 'A website that keeps itself fresh and sells — Desi answers, books, and points shoppers to the right product.',
+    tagline: 'A website that runs itself — writes its own content, tunes its own SEO & speed, and sells with Desi.',
     builtOn: 'Everything in AI Smart Website II, plus',
     highlights: [
-      'Desi sells — points shoppers to the right product or service, and upsells',
-      'Your site updates itself — fresh content & SEO kept current for you',
-      '360° galleries & richer media, tuned for AI answer engines too',
+      'Full self-optimization — like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
+      'Desi sells — steers shoppers to the right product or service, and upsells',
+      'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
-    headline: 'A website that updates, optimizes, and sells for you',
+    headline: 'A website that writes, optimizes, and sells — on its own',
     blurb:
-      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and Desi goes from booking to selling: answering, booking, and pointing shoppers to the right product or service in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
+      "This is where the website comes alive. On top of everything in AI Smart Website II, your site runs itself off the Brand Brain — writing its own fresh content and tuning its own SEO and speed, so it never goes stale — the closest thing to a full-time web developer on your site. Desi goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it — for a monthly price, not a big upfront bill.",
     whoFor:
       'Established service businesses and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics — that want the site and the agent doing the selling.',
     deliverables: [
@@ -237,7 +244,7 @@ export const plans: Plan[] = [
     ],
     headline: 'A store that sells while the shop is closed',
     blurb:
-      "Everything in AI Smart Website III, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
+      "Everything in AI Smart Website III, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi — powered by your Brand Brain — as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       'Shops, makers, restaurants, and brands that want to sell online — whether you’re starting from zero or your current store isn’t selling.',
     deliverables: [
