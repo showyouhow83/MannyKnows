@@ -27,10 +27,10 @@ const specialty: Record<string, string> = {
 
 <div class="max-w-7xl mx-auto">
   <a href="/ai-team" class="block group" aria-label="Meet the AI Team">
-    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4 lg:gap-8 max-w-3xl lg:max-w-7xl mx-auto">
+    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4 lg:gap-4 max-w-3xl lg:max-w-7xl mx-auto">
       {roster.map((a) => (
         <div class="flex flex-col items-center gap-1">
-          <div class="w-full max-w-[132px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+          <div class="w-full max-w-[90px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
             <AgentAvatar agent={a.id} class="w-full h-full" />
           </div>
           <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</span>
