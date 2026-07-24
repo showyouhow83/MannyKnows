@@ -44,6 +44,6 @@ A growing share of "near me" searches now start inside **ChatGPT, Perplexity, Ge
 
 ## The honest part
 
-Local SEO — and now AI search — isn't a one-time switch — it's a profile kept active, reviews that keep coming, and a site kept fast and current. That's exactly why we run it as an ongoing service instead of a one-and-done project. Our **[Smart Website (AI) plan](/plans/smart-website)** (from $350/mo) builds the fast site and the Google Business Profile and keeps both tuned every month; if you mainly need the SEO muscle on a site you already have, we do exactly that too — see **[how we work](/services)**.
+Local SEO — and now AI search — isn't a one-time switch — it's a profile kept active, reviews that keep coming, and a site kept fast and current. That's exactly why we run it as an ongoing service instead of a one-and-done project. Our **[AI Smart Website plan](/plans/smart-website)** (from $349/mo) builds the fast site and the Google Business Profile and keeps both tuned every month; if you mainly need the SEO muscle on a site you already have, we do exactly that too — see **[how we work](/services)**.
 
 Want to know why you're not in the Map Pack yet? **[Get a free look at your local presence](/free-ai-website-analysis)** — we'll show you what's holding you back and what it takes to get into those three results.

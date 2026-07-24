@@ -56,7 +56,7 @@ export const team: Agent[] = [
     handoff: 'Feeds the team: every question customers ask becomes intel — Desi logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
     price: 99,
-    note: 'included with every Smart Website',
+    note: 'included with every AI Smart Website',
   },
   {
     id: 'eve',
