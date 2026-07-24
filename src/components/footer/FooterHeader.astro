@@ -19,7 +19,7 @@ interface Props {
 
 const { 
   brandTitle = "MK",
-  brandEmoji = "🚀",
+  brandEmoji = "",
   brandDescription = "Fast, search-ready websites and AI tools that book jobs while you sleep. Serving Western Massachusetts, backed by 20 years of enterprise experience.",
   socialLinks = {
     linkedin: "https://www.linkedin.com/in/mr83/",
@@ -741,17 +741,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           field.input.classList.add('field-valid');
           validationDiv.classList.add('validation-valid');
           if (field.type === 'email') {
-            validationText.textContent = '✓ Valid email address';
+            validationText.textContent = 'Valid email address';
           } else {
-            validationText.textContent = `✓ ${field.minLength}+ characters required`;
+            validationText.textContent = `${field.minLength}+ characters required`;
           }
         } else {
           field.input.classList.add('field-invalid');
           validationDiv.classList.add('validation-invalid');
           if (field.type === 'email') {
-            validationText.textContent = '✗ Please enter a valid email address';
+            validationText.textContent = 'Please enter a valid email address';
           } else {
-            validationText.textContent = `✗ Minimum ${field.minLength} characters required`;
+            validationText.textContent = `Minimum ${field.minLength} characters required`;
           }
         }
       } else {
