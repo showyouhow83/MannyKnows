@@ -254,7 +254,7 @@ const jsonLd = {
                   </li>
                 ))}
               </ul>
-              <a href={p.cta.href} class={`mt-auto inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${p.highlight ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white hover:shadow-lg hover:shadow-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue/40'}`}>
+              <a href={p.cta.href} class={`mt-auto inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${p.highlight ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white' : 'border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue/40'}`}>
                 {p.cta.label}
               </a>
             </div>
@@ -341,7 +341,7 @@ const jsonLd = {
               <label for="cf-notes" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">What do you need? <span class="text-text-light-tertiary dark:text-text-dark-tertiary font-normal">(optional)</span></label>
               <textarea id="cf-notes" name="notes" rows="3" placeholder="e.g. I'd like the free 360° photo, and I'm curious about a photo pack for my shop." class="w-full px-3.5 py-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition resize-y"></textarea>
             </div>
-            <button id="claimSubmit" type="submit" class="w-full h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+            <button id="claimSubmit" type="submit" class="w-full h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed">
               Claim my free 360° photo
             </button>
             <p id="claimStatus" role="status" aria-live="polite" class="text-sm text-center hidden"></p>
