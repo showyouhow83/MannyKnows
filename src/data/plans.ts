@@ -3,7 +3,7 @@
 // scope is tailored to each client. Multilingual sites are standard.
 //
 // The four website tiers are an incremental ladder — each one is "everything in
-// the tier below, plus…", and the built-in AI agent (Desi) gains capability as
+// the tier below, plus…", and the built-in AI agent (Remi) gains capability as
 // you climb: answers → books → sells → shopping assistant. Business Ads and
 // Multimedia Agency are broader services shown as their own sections on /plans
 // (hidden from the pricing grid), not website tiers.
@@ -52,16 +52,16 @@ export const plans: Plan[] = [
     name: 'AI Smart Website I',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 99,
-    tagline: 'An AI-driven site on your own Brand Brain — with Desi answering customers 24/7.',
+    tagline: 'An AI-driven site on your own Brand Brain — with Remi answering customers 24/7.',
     highlights: [
       'Built on your Brand Brain — a private AI trained on your business',
-      'Desi, your AI agent, answers customers 24/7 in their language',
+      'Remi, your AI agent, answers customers 24/7 in their language',
       'A sharp 1–3 page site that optimizes itself — kept fast, current, and ahead of any basic website',
       'Found when locals search you on Google + Maps (profile set up for you)',
     ],
     headline: 'An AI-driven website — not a page that just sits there',
     blurb:
-      "An AI-driven website that works, instead of a page that sits there. We build a sharp 1–3 page site on your own Brand Brain — a private AI trained on your business — and put Desi on it, your AI agent that answers customers 24/7 in any language. It's fast, secure, found on Google, and maintained every month. Ready for it to book jobs or sell too? Move up to AI Smart Website II or III anytime — the work carries forward.",
+      "An AI-driven website that works, instead of a page that sits there. We build a sharp 1–3 page site on your own Brand Brain — a private AI trained on your business — and put Remi on it, your AI agent that answers customers 24/7 in any language. It's fast, secure, found on Google, and maintained every month. Ready for it to book jobs or sell too? Move up to AI Smart Website II or III anytime — the work carries forward.",
     whoFor:
       'New or smaller businesses that need a clean, credible website and an agent to field the questions that come in — without a big upfront bill.',
     deliverables: [
@@ -69,7 +69,7 @@ export const plans: Plan[] = [
         title: 'Your Brand Brain',
         items: [
           'A private AI knowledge base of your business — services, prices, and voice',
-          'The site and Desi both read from it, so nothing goes stale or off-brand',
+          'The site and Remi both read from it, so nothing goes stale or off-brand',
         ],
       },
       {
@@ -81,7 +81,7 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: 'Desi — your AI agent',
+        title: 'Remi — your AI agent',
         items: [
           'Answers customer questions 24/7, in your customer’s language',
           'Trained on your business: services, prices, hours, and how you talk',
@@ -100,12 +100,12 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We learn your business — what you do, who your customers are, and the questions they keep asking.' },
       { title: 'We design & build', body: 'You approve the design before it goes live. Usually a couple of weeks from kickoff.' },
-      { title: 'Desi learns your business', body: 'We train the agent on your services and voice, then test it before it ever talks to a customer.' },
+      { title: 'Remi learns your business', body: 'We train the agent on your services and voice, then test it before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Updates, monitoring, and tuning — you send changes, we handle them.' },
     ],
     faq: [
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'Can Desi book appointments on this plan?', a: 'On AI Smart Website I, Desi answers questions. To have it book jobs and capture leads, move up to AI Smart Website II; to have it sell and point shoppers to products, AI Smart Website III. You can upgrade anytime and the work carries forward.' },
+      { q: 'Can Remi book appointments on this plan?', a: 'On AI Smart Website I, Remi answers questions. To have it book jobs and capture leads, move up to AI Smart Website II; to have it sell and point shoppers to products, AI Smart Website III. You can upgrade anytime and the work carries forward.' },
       { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },
@@ -114,16 +114,16 @@ export const plans: Plan[] = [
     name: 'AI Smart Website II',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 199,
-    tagline: 'Your AI site now books the job — Desi answers, captures leads, and fills your calendar.',
+    tagline: 'Your AI site now books the job — Remi answers, captures leads, and fills your calendar.',
     builtOn: 'Everything in AI Smart Website I, plus',
     highlights: [
       'A full multi-page site with deeper self-optimization — more content & SEO kept fresh',
-      'Desi now books the job & captures the lead — not just answers',
+      'Remi now books the job & captures the lead — not just answers',
       'Ranks for more of what customers search — locally and in AI answers',
     ],
     headline: 'A website that answers and books — for you',
     blurb:
-      "Everything in AI Smart Website I, on a full multi-page site — and now Desi books the job. Powered by your Brand Brain, Desi answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
+      "Everything in AI Smart Website I, on a full multi-page site — and now Remi books the job. Powered by your Brand Brain, Remi answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
       'Service businesses — contractors, salons, clinics, daycares — that need more than answers: they need the appointment captured while the customer is ready.',
     deliverables: [
@@ -136,7 +136,7 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: 'Desi — answers & books',
+        title: 'Remi — answers & books',
         items: [
           'Answers customers and books appointments straight onto your calendar',
           'Captures every lead into your admin so nothing slips through',
@@ -155,13 +155,13 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We learn your business, your services, and what a booked job is worth to you.' },
       { title: 'We design & build', body: 'The full site, approved by you before launch — typically a few weeks.' },
-      { title: 'Desi learns to book', body: 'We connect Desi to your calendar and train it on your booking rules, then test it hard.' },
+      { title: 'Remi learns to book', body: 'We connect Remi to your calendar and train it on your booking rules, then test it hard.' },
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
-      { q: 'How does Desi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
-      { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Desi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
-      { q: 'Can I upgrade later?', a: 'Yes — move up to AI Smart Website III to have Desi sell and the site keep itself fresh, or add a store with AI Smart eCommerce. The work carries forward.' },
+      { q: 'How does Remi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
+      { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Remi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
+      { q: 'Can I upgrade later?', a: 'Yes — move up to AI Smart Website III to have Remi sell and the site keep itself fresh, or add a store with AI Smart eCommerce. The work carries forward.' },
     ],
   },
   {
@@ -169,17 +169,17 @@ export const plans: Plan[] = [
     name: 'AI Smart Website III',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 349,
-    tagline: 'A website that runs itself — writes its own content, tunes its own SEO & speed, and sells with Desi.',
+    tagline: 'A website that runs itself — writes its own content, tunes its own SEO & speed, and sells with Remi.',
     builtOn: 'Everything in AI Smart Website II, plus',
     highlights: [
       'Full self-optimization — like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
-      'Desi sells — steers shoppers to the right product or service, and upsells',
+      'Remi sells — steers shoppers to the right product or service, and upsells',
       'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
     headline: 'A website that writes, optimizes, and sells — on its own',
     blurb:
-      "This is where the website comes alive. On top of everything in AI Smart Website II, your site runs itself off the Brand Brain — writing its own fresh content and tuning its own SEO and speed, so it never goes stale — the closest thing to a full-time web developer on your site. Desi goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it — for a monthly price, not a big upfront bill.",
+      "This is where the website comes alive. On top of everything in AI Smart Website II, your site runs itself off the Brand Brain — writing its own fresh content and tuning its own SEO and speed, so it never goes stale — the closest thing to a full-time web developer on your site. Remi goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it — for a monthly price, not a big upfront bill.",
     whoFor:
       'Established service businesses and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics — that want the site and the agent doing the selling.',
     deliverables: [
@@ -192,7 +192,7 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: 'Desi — answers, books & sells',
+        title: 'Remi — answers, books & sells',
         items: [
           'Points shoppers to the right product or service in your catalog, and upsells',
           'Answers and books 24/7 in your customer’s language, trained on your business',
@@ -219,13 +219,13 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We take the time to really understand your business — what you sell, who buys, how you sound, and what a good month looks like.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
-      { title: 'Desi learns to sell', body: 'We train the agent on your catalog, prices, and rules — then test it hard before it ever talks to a customer.' },
+      { title: 'Remi learns to sell', body: 'We train the agent on your catalog, prices, and rules — then test it hard before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning — plus the site keeping itself fresh.' },
     ],
     faq: [
       { q: 'I already have a website — do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'How does Desi know what to say?', a: 'We train it on your business — services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
+      { q: 'How does Remi know what to say?', a: 'We train it on your business — services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "updates itself" mean?', a: 'We keep your content and SEO current for you — refreshing pages, adding relevant content, and tightening search signals each month — so the site doesn’t go stale.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
@@ -239,12 +239,12 @@ export const plans: Plan[] = [
     builtOn: 'Everything in AI Smart Website III, plus',
     highlights: [
       'A full online store (Shopify) with a custom theme, set up for you',
-      'Desi becomes your AI shopping assistant, helping customers buy',
+      'Remi becomes your AI shopping assistant, helping customers buy',
       'Product pages, checkout & email automations that sell 24/7',
     ],
     headline: 'A store that sells while the shop is closed',
     blurb:
-      "Everything in AI Smart Website III, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi — powered by your Brand Brain — as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
+      "Everything in AI Smart Website III, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Remi — powered by your Brand Brain — as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       'Shops, makers, restaurants, and brands that want to sell online — whether you’re starting from zero or your current store isn’t selling.',
     deliverables: [
@@ -268,7 +268,7 @@ export const plans: Plan[] = [
       {
         title: 'The selling machine',
         items: [
-          'Desi as an AI shopping assistant that helps customers find and choose products 24/7',
+          'Remi as an AI shopping assistant that helps customers find and choose products 24/7',
           'Email automations: welcome series, abandoned cart, receipts, win-backs',
           'Analytics wired up so we know what sells and what stalls',
         ],
@@ -285,7 +285,7 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We look at what you sell, how you fulfill, and what’s worked so far — in your shop or on a call.' },
       { title: 'Store build', body: 'Theme design, product setup, payments, shipping, emails — we build the whole machine and you approve it before launch.' },
-      { title: 'Launch & learn', body: 'The store goes live with Desi trained on your catalog. Early traffic tells us what to tune first.' },
+      { title: 'Launch & learn', body: 'The store goes live with Remi trained on your catalog. Early traffic tells us what to tune first.' },
       { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus everything AI Smart Website III keeps running.' },
     ],
     faq: [

@@ -43,7 +43,7 @@ const emblem = emblems[agent] ?? '';
 // Unique gradient id per instance — the same agent can appear more than once on
 // a page (hero + roster), and duplicate element IDs are invalid HTML.
 const gid = `ag-${agent}-${Math.random().toString(36).slice(2, 9)}`;
-// Use the agent's display name (e.g. "Terr"), not the internal id ("eny"),
+// Use the agent's display name (e.g. "Leo"), not the internal id ("eny"),
 // so alt/aria labels never leak an old or internal handle.
 const label = team.find((m) => m.id === agent)?.name ?? (agent.charAt(0).toUpperCase() + agent.slice(1));
 
