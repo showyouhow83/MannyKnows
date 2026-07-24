@@ -118,20 +118,22 @@ const cardBase =
         </thead>
         <tbody class="text-text-light-secondary dark:text-text-dark-secondary">
           {[
-            ['Website designed & built for you', true, true, true, true],
+            ['Runs on your Brand Brain (private AI)', true, true, true, true],
             ['Desi answers customers 24/7, any language', true, true, true, true],
-            ['Technical SEO + Google Business Profile', true, true, true, true],
-            ['Full multi-page website + multilingual', false, true, true, true],
-            ['Desi books appointments & captures leads', false, true, true, true],
-            ['Desi sells — points shoppers to products', false, false, true, true],
-            ['Site keeps itself fresh (content + SEO)', false, false, true, true],
+            ['Found on Google & Maps for local searches', true, true, true, true],
+            ['Self-optimizing website (speed, SEO, content)', 'Basic', 'More', 'Full', 'Full'],
+            ['Full multi-page, multilingual site', false, true, true, true],
+            ['Desi books jobs & captures leads', false, true, true, true],
+            ['Desi sells & steers shoppers to products', false, false, true, true],
             ['Full online store (Shopify)', false, false, false, true],
           ].map((row) => (
             <tr class="border-t border-light-tertiary dark:border-dark-accent">
               <td class="sticky left-0 z-10 text-left px-4 py-2.5 bg-white dark:bg-dark-secondary border-r border-light-tertiary dark:border-dark-accent">{row[0]}</td>
-              {row.slice(1).map((on) => (
+              {row.slice(1).map((cell) => (
                 <td class="text-center px-3 py-2.5">
-                  {on ? (
+                  {typeof cell === 'string' ? (
+                    <span class="text-xs font-semibold text-primary-blue dark:text-blue-300">{cell}</span>
+                  ) : cell ? (
                     <svg class="w-4 h-4 inline text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-label="included"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   ) : (
                     <span class="text-text-light-tertiary/50 dark:text-text-dark-tertiary/50" aria-label="not included">—</span>
