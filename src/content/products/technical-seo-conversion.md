@@ -15,7 +15,7 @@ startingAt: 500
 illustration: seo
 faq:
   - q: "How much does this cost?"
-    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $350/mo) to keep SEO, AI-search readiness, and speed maintained, but that's optional."
+    a: "It starts at $500 and is billed at a flat $75/hr — quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $349/mo) to keep SEO, AI-search readiness, and speed maintained, but that's optional."
   - q: "What is AI search — and can you get me into ChatGPT's answers?"
     a: "More people now ask ChatGPT, Perplexity, Gemini, and Google's AI Overviews instead of scrolling ten blue links — and those tools answer by reading and citing websites they trust. We can't guarantee any single AI cites you (nobody honestly can), but we structure your site the way those engines prefer — clean content, schema, and clear answers — so you're eligible to be the source they quote. It's the same discipline as SEO, aimed at a new front door."
   - q: "How long does it take?"
@@ -58,6 +58,6 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it ranking
 
-SEO — and now AI-search — isn't a one-and-done. The [Smart Website (AI) plan](/plans/smart-website) (from $350/mo) keeps technical SEO, AI-search readiness, and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $950/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
+SEO — and now AI-search — isn't a one-and-done. The [AI Smart Website plan](/plans/smart-website) (from $349/mo) keeps technical SEO, AI-search readiness, and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $950/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
 
 **Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).

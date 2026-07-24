@@ -1,7 +1,12 @@
 // Single source of truth for the monthly plans (homepage cards, /plans cards,
 // and the /plans/<slug> detail pages). Prices are "Starting at" — they climb as
-// scope is tailored to each client. Plans are standalone (not incremental).
-// Multilingual sites are standard.
+// scope is tailored to each client. Multilingual sites are standard.
+//
+// The four website tiers are an incremental ladder — each one is "everything in
+// the tier below, plus…", and the built-in AI agent (Desi) gains capability as
+// you climb: answers → books → sells → shopping assistant. Business Ads and
+// Multimedia Agency are broader services shown as their own sections on /plans
+// (hidden from the pricing grid), not website tiers.
 //
 // Pricing model:
 //   • Month-to-month: `price`/mo, cancel anytime.
@@ -25,8 +30,10 @@ export interface Plan {
   icon: string;
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
   tagline: string;      // one-line promise on the card
-  highlights: string[]; // 4–6 punchy bullets for the card
+  builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
+  highlights: string[]; // punchy bullets for the card (the additions, for tiers that build on another)
   featured?: boolean;   // "most popular"
+  hidden?: boolean;     // kept for its detail page + /plans section, but not shown in the pricing grid
   // Detail page (/plans/<slug>) content:
   headline: string;     // hero headline on the detail page
   blurb: string;        // hero paragraph on the detail page
@@ -41,51 +48,156 @@ export const yearlyMonthly = (p: Plan) => Math.round((p.price * 10) / 12);
 
 export const plans: Plan[] = [
   {
-    slug: 'smart-website',
-    name: 'Smart Website (AI)',
-    icon: '🌐',
-    price: 350,
-    tagline: 'A website that keeps itself fresh and up to date — with Desi, your AI agent, answering customers, booking jobs, and selling 24/7.',
+    slug: 'basic-website',
+    name: 'Website (Basic)',
+    icon: '💬',
+    price: 99,
+    tagline: 'A sharp 1–3 page website with Desi, your AI agent, answering customers 24/7.',
     highlights: [
-      'Desi built in — your AI sales, booking & support agent, not just a chatbot',
-      'Answers customers, books jobs & points shoppers to products 24/7, any language',
-      'Updates itself — fresh, relevant content and SEO kept current for you',
-      'Multilingual website designed & built — or your current one, optimized',
-      'Found on Google & AI answer engines — technical SEO + Google Business Profile',
-      'Monthly monitoring, fixes & a plain-English report',
+      'A 1–3 page website, designed & built for you — not a template',
+      'Desi, your AI agent, answers customer questions 24/7, in any language',
+      'Found on Google — technical SEO + Google Business Profile',
+      'Fast, mobile-first, hosted & secured — with monthly updates',
     ],
-    headline: 'A website that updates, optimizes, and sells for you',
+    headline: 'A website that answers your customers, 24/7',
     blurb:
-      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and it comes with Desi, your AI sales, booking, and support agent. Desi answers customers in their language around the clock, books appointments, and points shoppers to the right product in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
+      "The simplest way to get online with an AI agent working for you. We design and build a sharp 1–3 page website, then put Desi on it — your AI agent that answers customer questions around the clock, in any language, trained on your business. It's found on Google, fast, secure, and maintained every month. Ready for it to book jobs or sell too? Move up to Plus or AI Smart Website anytime — the work carries forward.",
     whoFor:
-      'Service businesses, restaurants, offices, and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics.',
+      'New or smaller businesses that need a clean, credible website and an agent to field the questions that come in — without a big upfront bill.',
     deliverables: [
       {
         title: 'The website',
         items: [
-          'Designed and built for your business — not a template with your logo on it',
-          'Multilingual as standard (English + Spanish, or the languages your customers speak)',
-          'Mobile-first and fast: tuned for near-perfect speed scores',
-          'Your services, photos, service area, and reviews — structured so Google understands them',
+          'Designed and built for your business — 1–3 focused pages, not a template',
+          'Mobile-first and fast, tuned for near-perfect speed scores',
+          'Your services, photos, and service area — structured so Google understands them',
         ],
       },
       {
-        title: 'Desi — your AI Sales & Booking agent',
+        title: 'Desi — your AI agent',
         items: [
-          'Not a chatbot — Desi answers, qualifies, and sells, then books the appointment right there',
-          'Works your site 24/7 in your customer\u2019s language, even after closing',
-          'Trained on your business: your services, prices, hours, and how you talk',
-          'Every conversation becomes a lead in your admin; hands off to you when a human should take over',
+          'Answers customer questions 24/7, in your customer’s language',
+          'Trained on your business: services, prices, hours, and how you talk',
+          'Hands off to you the moment a human should take over',
+        ],
+      },
+      {
+        title: 'Getting found & kept running',
+        items: [
+          'Google Business Profile created or cleaned up and verified',
+          'Technical SEO so your site is indexable and fast',
+          'Monthly updates, monitoring, security, and backups',
+        ],
+      },
+    ],
+    steps: [
+      { title: 'Kickoff', body: 'We learn your business — what you do, who your customers are, and the questions they keep asking.' },
+      { title: 'We design & build', body: 'You approve the design before it goes live. Usually a couple of weeks from kickoff.' },
+      { title: 'Desi learns your business', body: 'We train the agent on your services and voice, then test it before it ever talks to a customer.' },
+      { title: 'Every month after', body: 'Updates, monitoring, and tuning — you send changes, we handle them.' },
+    ],
+    faq: [
+      { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
+      { q: 'Can Desi book appointments on this plan?', a: 'On Basic, Desi answers questions. To have it book jobs and capture leads, move up to Plus; to have it sell and point shoppers to products, AI Smart Website. You can upgrade anytime and the work carries forward.' },
+      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
+    ],
+  },
+  {
+    slug: 'plus-website',
+    name: 'Website (Plus)',
+    icon: '📅',
+    price: 199,
+    tagline: 'A full website where Desi answers and books the job — 24/7, in any language.',
+    builtOn: 'Everything in Basic, plus',
+    highlights: [
+      'A full multi-page website — not just 1–3 pages',
+      'Desi now books jobs & captures leads, not just answers',
+      'Multilingual, with deeper local SEO to get you found',
+    ],
+    headline: 'A website that answers and books — for you',
+    blurb:
+      "Everything in Basic, on a full multi-page site — and now Desi books the job. It answers questions, captures the lead, and puts appointments straight on your calendar 24/7, in any language, trained on your business. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
+    whoFor:
+      'Service businesses — contractors, salons, clinics, daycares — that need more than answers: they need the appointment captured while the customer is ready.',
+    deliverables: [
+      {
+        title: 'The website',
+        items: [
+          'A full multi-page website, designed and built for your business',
+          'Multilingual as standard (English + Spanish, or your customers’ languages)',
+          'Mobile-first and fast, structured so Google understands your services',
+        ],
+      },
+      {
+        title: 'Desi — answers & books',
+        items: [
+          'Answers customers and books appointments straight onto your calendar',
+          'Captures every lead into your admin so nothing slips through',
+          'Works 24/7 in your customer’s language, trained on your business',
+        ],
+      },
+      {
+        title: 'Getting found & kept running',
+        items: [
+          'Deeper local SEO + Google Business Profile, tuned for your area',
+          'Readiness for AI answer engines, not just classic search',
+          'Monthly content updates, monitoring, security, and backups',
+        ],
+      },
+    ],
+    steps: [
+      { title: 'Kickoff', body: 'We learn your business, your services, and what a booked job is worth to you.' },
+      { title: 'We design & build', body: 'The full site, approved by you before launch — typically a few weeks.' },
+      { title: 'Desi learns to book', body: 'We connect Desi to your calendar and train it on your booking rules, then test it hard.' },
+      { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
+    ],
+    faq: [
+      { q: 'How does Desi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
+      { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Desi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
+      { q: 'Can I upgrade later?', a: 'Yes — move up to AI Smart Website to have Desi sell and the site keep itself fresh, or add a store with Online Store. The work carries forward.' },
+    ],
+  },
+  {
+    slug: 'smart-website',
+    name: 'AI Smart Website',
+    icon: '🌐',
+    price: 349,
+    tagline: 'A website that keeps itself fresh and sells — Desi answers, books, and points shoppers to the right product.',
+    builtOn: 'Everything in Plus, plus',
+    highlights: [
+      'Desi sells — points shoppers to the right product or service, and upsells',
+      'Your site updates itself — fresh content & SEO kept current for you',
+      '360° galleries & richer media, tuned for AI answer engines too',
+    ],
+    featured: true,
+    headline: 'A website that updates, optimizes, and sells for you',
+    blurb:
+      "Most websites just sit there. This one keeps itself fresh — updating pages, tightening SEO, and adding relevant content on its own — and Desi goes from booking to selling: answering, booking, and pointing shoppers to the right product or service in your catalog, all trained on your business, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. You get a website that works and an agent that works it — for a monthly price instead of a big upfront bill.",
+    whoFor:
+      'Established service businesses and shops whose customers search Google and call — painters, contractors, daycares, salons, clinics — that want the site and the agent doing the selling.',
+    deliverables: [
+      {
+        title: 'The website',
+        items: [
+          'Designed and built for your business — or your current one, rebuilt right',
+          'Multilingual as standard, mobile-first, and tuned for near-perfect speed',
+          'Updates itself: fresh, relevant content and SEO kept current for you',
+        ],
+      },
+      {
+        title: 'Desi — answers, books & sells',
+        items: [
+          'Points shoppers to the right product or service in your catalog, and upsells',
+          'Answers and books 24/7 in your customer’s language, trained on your business',
+          'Every conversation becomes a lead in your admin, with human handoff built in',
         ],
       },
       {
         title: 'Getting found',
         items: [
-          'Google Business Profile — created or cleaned up, and verified',
           'Technical SEO + AI-search (AEO) readiness: structure, speed, schema, local signals',
-          '360° image galleries — customers can step inside your business before they visit',
-          '360° videos — immersive walkthroughs for your site and your Google listing',
-          'Google Search Console integration — we monitor indexing, crawl coverage, and search-query performance against Google\u2019s own data',
+          '360° image galleries and walkthroughs — customers step inside before they visit',
+          'Google Search Console integration — indexing and search performance watched against Google’s own data',
         ],
       },
       {
@@ -93,41 +205,39 @@ export const plans: Plan[] = [
         items: [
           'Content updates and fixes — send us changes, we handle them',
           'Monitoring, security, and backups',
-          'A plain-English monthly report: what we did, what changed, what’s next',
+          'Ongoing SEO and conversion tuning as the numbers come in',
         ],
       },
     ],
     steps: [
-      { title: 'Kickoff', body: 'We take the time to really understand your business — what you do, who your customers are, how you sound, and what a good month looks like. The better we know you, the better everything we build works.' },
+      { title: 'Kickoff', body: 'We take the time to really understand your business — what you sell, who buys, how you sound, and what a good month looks like.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
-      { title: 'The AI learns your business', body: 'We train the agent on your business — then test it hard before it ever talks to a customer.' },
-      { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning — plus a report you can read in two minutes.' },
+      { title: 'Desi learns to sell', body: 'We train the agent on your catalog, prices, and rules — then test it hard before it ever talks to a customer.' },
+      { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning — plus the site keeping itself fresh.' },
     ],
     faq: [
       { q: 'I already have a website — do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'How does the AI Sales & Booking Agent know what to say?', a: 'We train it on your business — services, prices, hours, service area, and the questions customers keep asking you. You review how it answers before it goes live, and we keep refining it.' },
-      { q: 'What does "multilingual" include?', a: 'The site and the AI agent both work in the languages your customers speak — for most of Western Mass that means English and Spanish, but it’s not limited to that.' },
-      { q: 'What happens if I cancel?', a: 'Month-to-month, you can cancel anytime and keep your domain and content. Prepaid annual terms aren\u2019t refundable once the year starts — the details are in our terms of service.' },
+      { q: 'How does Desi know what to say?', a: 'We train it on your business — services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
+      { q: 'What does "updates itself" mean?', a: 'We keep your content and SEO current for you — refreshing pages, adding relevant content, and tightening search signals each month — so the site doesn’t go stale.' },
+      { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },
   {
     slug: 'online-store',
     name: 'Online Store (AI)',
     icon: '🛒',
-    price: 550,
-    tagline: 'A full online store that sells — designed, themed, and optimized.',
+    price: 399,
+    tagline: 'Everything in AI Smart Website, plus a full online store and an AI shopping assistant.',
+    builtOn: 'Everything in AI Smart Website, plus',
     highlights: [
-      'Multilingual storefront with an AI shopping assistant',
       'A full online store (Shopify) with a custom theme, set up for you',
-      'eCommerce SEO + product enhancement (images, copy, sizing)',
-      'Email automations — welcome, abandoned cart, receipts',
-      'Promo codes, discounts, payments & checkout',
+      'Desi becomes your AI shopping assistant, helping customers buy',
+      'Product pages, checkout & email automations that sell 24/7',
     ],
-    featured: true,
     headline: 'A store that sells while the shop is closed',
     blurb:
-      "Setting up a store is easy. Setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and an AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
+      "Everything in AI Smart Website, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       'Shops, makers, restaurants, and brands that want to sell online — whether you’re starting from zero or your current store isn’t selling.',
     deliverables: [
@@ -151,7 +261,7 @@ export const plans: Plan[] = [
       {
         title: 'The selling machine',
         items: [
-          'AI shopping assistant that helps customers find and choose products 24/7',
+          'Desi as an AI shopping assistant that helps customers find and choose products 24/7',
           'Email automations: welcome series, abandoned cart, receipts, win-backs',
           'Analytics wired up so we know what sells and what stalls',
         ],
@@ -161,21 +271,20 @@ export const plans: Plan[] = [
         items: [
           'New products, promos, and seasonal updates handled for you',
           'Ongoing optimization of pages that underperform',
-          'A plain-English monthly report on traffic, sales, and what’s next',
+          'Everything in AI Smart Website, kept running alongside the store',
         ],
       },
     ],
     steps: [
       { title: 'Kickoff', body: 'We look at what you sell, how you fulfill, and what’s worked so far — in your shop or on a call.' },
       { title: 'Store build', body: 'Theme design, product setup, payments, shipping, emails — we build the whole machine and you approve it before launch.' },
-      { title: 'Launch & learn', body: 'The store goes live with the AI shopping assistant trained on your catalog. Early traffic tells us what to tune first.' },
-      { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus the monthly report.' },
+      { title: 'Launch & learn', body: 'The store goes live with Desi trained on your catalog. Early traffic tells us what to tune first.' },
+      { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus everything the AI AI Smart Website plan keeps running.' },
     ],
     faq: [
       { q: 'Why Shopify?', a: 'It’s the most reliable platform for small-business eCommerce — payments, shipping, and inventory just work, and you never need us just to operate your own store. We customize the theme so it doesn’t look like everyone else’s.' },
-      { q: 'Are Shopify’s own fees included?', a: 'No — Shopify charges its own subscription and payment processing fees directly to you (that’s standard for any store). Our plan covers the design, build, optimization, and monthly operation.' },
+      { q: 'Are Shopify’s own fees included?', a: 'No — Shopify charges its own subscription and payment processing fees directly to you (standard for any store). Our plan covers the design, build, optimization, and monthly operation.' },
       { q: 'I already have a store that isn’t selling. Can you fix it?', a: 'Yes — that’s half the work we do. We audit it, fix the theme, products, SEO, and emails, and run it forward under the same plan.' },
-      { q: 'Who handles the orders?', a: 'You do — it’s your business. We build and run the machine that brings the orders in and makes them easy to manage.' },
       { q: 'How many products can I have?', a: 'The starting price assumes a focused catalog (roughly dozens, not thousands). Bigger catalogs are fine — we scope the price to the real work.' },
     ],
   },
@@ -184,17 +293,18 @@ export const plans: Plan[] = [
     name: 'Business Ads',
     icon: '📣',
     price: 950,
+    hidden: true,
     tagline: 'The social, ads, and SEO that get you seen — and traffic built to convert.',
     highlights: [
       'Social media growth across the platforms that fit — content, posting, branding',
       'Google Ads & social ads, managed (you fund the ad spend)',
-      'Promotional banners, videos & interactive widgets that turn the traffic we drive into engagement',
+      'Promotional banners, videos & interactive widgets that turn traffic into engagement',
       'SEO content campaigns + landing pages',
       'We watch how your traffic responds and keep correcting & improving',
     ],
     headline: 'Get seen — by the right people, ready to buy',
     blurb:
-      "Traffic isn’t the goal; customers are. The Business Ads plan runs your visibility end to end — social content, managed Google and social ads, SEO campaigns — and then makes the traffic count with landing pages, banners, videos, and widgets built to convert. We watch what the numbers do and keep correcting.",
+      "Traffic isn’t the goal; customers are. The Business Ads service runs your visibility end to end — social content, managed Google and social ads, SEO campaigns — and then makes the traffic count with landing pages, banners, videos, and widgets built to convert. We watch what the numbers do and keep correcting.",
     whoFor:
       'Businesses whose website or store already works — and who now need more of the right people finding it, steadily, not in one lucky spike.',
     deliverables: [
@@ -202,7 +312,7 @@ export const plans: Plan[] = [
         title: 'Social media growth',
         items: [
           'Content created, branded, and posted for you',
-          'A consistent presence on the platforms that fit your business — Facebook, Instagram, LinkedIn, TikTok, WhatsApp, YouTube, X, and more',
+          'A consistent presence on the platforms that fit your business',
           'Comments and messages answered — engagement watched, not ignored',
         ],
       },
@@ -237,11 +347,9 @@ export const plans: Plan[] = [
       { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, and report it in plain English.' },
     ],
     faq: [
-      { q: 'Is ad spend included in the plan price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The plan covers strategy, creative, management, and optimization. We never mark up your spend.' },
+      { q: 'Is ad spend included in the price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The service covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
-      { q: 'How fast will I see results?', a: 'Ads produce data within days and leads within weeks; SEO content compounds over months. We report both honestly — no invented numbers, ever.' },
-      { q: 'Which platforms do you manage?', a: 'The ones your customers actually use — and we figure out the formula for each. Google, Facebook, Instagram, LinkedIn, TikTok, WhatsApp, YouTube, X, and others as they fit your business. It\u2019s chosen and tuned per business, not a fixed menu.' },
-      { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with the Smart Website (AI) or Online Store (AI) plan (or pair them), then pour traffic on.' },
+      { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with a website tier (or pair them), then pour traffic on.' },
     ],
   },
   {
@@ -249,6 +357,7 @@ export const plans: Plan[] = [
     name: 'Multimedia Agency',
     icon: '🧩',
     price: 1800,
+    hidden: true,
     tagline: 'Everything, handled — we design, build, promote, and optimize whatever your business needs.',
     highlights: [
       'We build your site — or optimize the one you already have',
@@ -259,7 +368,7 @@ export const plans: Plan[] = [
     ],
     headline: 'Your full media & tech team — without hiring one',
     blurb:
-      "One plan, everything handled: your website or store built and run, your advertising and promotion managed, and senior engineering on call for custom software, AI automation, and data work. It’s the closest thing to having your own media and technology department — for less than a single hire.",
+      "One engagement, everything handled: your website or store built and run, your advertising and promotion managed, and senior engineering on call for custom software, AI automation, and data work. It’s the closest thing to having your own media and technology department — for less than a single hire.",
     whoFor:
       'Businesses ready to grow on every front at once — or owners who simply want one accountable team for all of it instead of juggling vendors.',
     deliverables: [
@@ -268,7 +377,7 @@ export const plans: Plan[] = [
         items: [
           'Your website designed, built, and kept fast — or your existing one rebuilt right',
           'A full online store added whenever you’re ready, done for you',
-          'Everything in the Smart Website (AI) and Online Store (AI) plans, under one roof',
+          'Everything in the AI Smart Website and Online Store plans, under one roof',
         ],
       },
       {
@@ -304,10 +413,14 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
-      { q: 'How do we decide what gets done each month?', a: 'A shared roadmap we review together monthly. You bring what’s changed in the business; we bring the numbers; the roadmap gets reprioritized accordingly.' },
-      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this plan — and gives you one skill set. This puts engineering, design, marketing, and AI expertise on one retainer.' },
-      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Smart Website (AI) or Online Store (AI) and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
-      { q: 'Is there a minimum commitment?', a: 'Month-to-month at the standard rate, cancel anytime. The discounted yearly rate is one upfront payment for 12 months — details in our terms of service.' },
+      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this — and gives you one skill set. This puts engineering, design, marketing, and AI expertise on one retainer.' },
+      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with AI Smart Website or Online Store and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },
 ];
+
+// Website tiers shown in the pricing grid (Business Ads / Multimedia are their
+// own sections on /plans).
+export const websitePlans = plans.filter((p) => !p.hidden);
+// Broader services shown as their own sections below the grid.
+export const servicePlans = plans.filter((p) => p.hidden);

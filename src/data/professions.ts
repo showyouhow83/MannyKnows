@@ -38,7 +38,7 @@ export const professions: Profession[] = [
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
     metaDescription:
-      'Websites that rank #1 on Google and book jobs for painters, remodelers, roofers, and home-service contractors across Western Massachusetts — with an AI agent that answers and books estimates 24/7. From $350/mo.',
+      'Websites that rank #1 on Google and book jobs for painters, remodelers, roofers, and home-service contractors across Western Massachusetts — with an AI agent that answers and books estimates 24/7. From $349/mo.',
     badge: 'For contractors & home services',
     h1: 'Websites for contractors that actually book jobs',
     heroIntro:
@@ -81,7 +81,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a contractor website cost?',
-        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the AI booking agent, Google Business Profile, technical SEO, and ongoing upkeep included. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our AI Smart Website plan starts at $349/mo with no big upfront bill — the site, the AI booking agent, Google Business Profile, technical SEO, and ongoing upkeep included. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'How long until I rank on Google?',
@@ -102,7 +102,7 @@ export const professions: Profession[] = [
     name: 'Daycares',
     metaTitle: 'Websites for Daycares & Childcare in Western Mass | MannyKnows',
     metaDescription:
-      'Warm, trustworthy websites for daycares and childcare centers across Western Massachusetts — parent communication, enrollment questions answered 24/7 by an AI agent, and multilingual by default. From $350/mo.',
+      'Warm, trustworthy websites for daycares and childcare centers across Western Massachusetts — parent communication, enrollment questions answered 24/7 by an AI agent, and multilingual by default. From $349/mo.',
     badge: 'For daycares & childcare',
     h1: 'Websites for daycares that fill your waitlist',
     heroIntro:
@@ -145,7 +145,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the admin, the AI agent, Google Business Profile, technical SEO, and upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our AI Smart Website plan starts at $349/mo with no big upfront bill — the site, the admin, the AI agent, Google Business Profile, technical SEO, and upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can you help us manage enrollment and parents?',
@@ -166,7 +166,7 @@ export const professions: Profession[] = [
     name: 'Law Firms',
     metaTitle: 'Websites for Law Firms & Attorneys in Western Mass | MannyKnows',
     metaDescription:
-      'Authoritative, fast websites for law firms and solo attorneys across Western Massachusetts — practice-area SEO, an AI intake agent that qualifies and books consultations 24/7, and multilingual by default. From $350/mo.',
+      'Authoritative, fast websites for law firms and solo attorneys across Western Massachusetts — practice-area SEO, an AI intake agent that qualifies and books consultations 24/7, and multilingual by default. From $349/mo.',
     badge: 'For law firms & attorneys',
     h1: 'Websites for law firms that win the intake',
     heroIntro:
@@ -208,7 +208,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a law firm website cost?',
-        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the AI intake agent, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our AI Smart Website plan starts at $349/mo with no big upfront bill — the site, the AI intake agent, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can the AI agent handle client intake?',
@@ -229,7 +229,7 @@ export const professions: Profession[] = [
     name: 'Clinics',
     metaTitle: 'Websites for Clinics, Dentists & Medical Practices in Western Mass | MannyKnows',
     metaDescription:
-      'Clean, trustworthy websites for clinics, dental and medical practices across Western Massachusetts — “near me” local SEO, an AI agent that answers and books appointments 24/7, and multilingual by default. From $350/mo.',
+      'Clean, trustworthy websites for clinics, dental and medical practices across Western Massachusetts — “near me” local SEO, an AI agent that answers and books appointments 24/7, and multilingual by default. From $349/mo.',
     badge: 'For clinics & practices',
     h1: 'Websites for clinics that keep the schedule full',
     heroIntro:
@@ -271,7 +271,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a clinic or practice website cost?',
-        a: 'Our Smart Website (AI) plan starts at $350/mo with no big upfront bill — the site, the AI scheduling agent, “near me” local SEO, Google Business Profile, and upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our AI Smart Website plan starts at $349/mo with no big upfront bill — the site, the AI scheduling agent, “near me” local SEO, Google Business Profile, and upkeep included. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can patients book appointments through the site?',

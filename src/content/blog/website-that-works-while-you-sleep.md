@@ -28,4 +28,4 @@ You don't rebuild everything overnight. Add an assistant, watch what people ask,
 
 While your site is busy answering questions, something else is going on at that hour: people are asking ChatGPT, Perplexity, or Google's AI Overview to just tell them who to call. More and more, the search itself happens inside an AI. The same qualities that make your site a good assistant — clear, well-structured content a machine can actually read — are what make an AI comfortable naming you in its answer. So a site built right works while you sleep twice over: it answers the visitors who show up, and it helps you be the business the AI sends them to in the first place.
 
-Want a site that earns its keep around the clock? That's exactly what our [Smart Website plan](/plans/smart-website) is built for. [Start a conversation.](#contact)
+Want a site that earns its keep around the clock? That's exactly what our [AI Smart Website plan](/plans/smart-website) is built for. [Start a conversation.](#contact)

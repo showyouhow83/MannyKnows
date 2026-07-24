@@ -40,6 +40,6 @@ In Western Mass, plenty of your customers are more comfortable in Spanish. The a
 
 ## Where we come in
 
-The AI Sales & Booking Agent is built into our **[Smart Website (AI) plan](/plans/smart-website)** (from $350/mo) — a fast, multilingual website with the agent answering and booking around the clock, kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job.
+The AI Sales & Booking Agent is built into our **[AI Smart Website plan](/plans/smart-website)** (from $349/mo) — a fast, multilingual website with the agent answering and booking around the clock, kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job.
 
 Wondering how many calls you're quietly losing? **[Get a free look at your site](/free-ai-website-analysis)** — we'll show you where leads slip away and what it takes to catch every one.
