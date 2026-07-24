@@ -7,7 +7,7 @@
 // "Brand Brain," coordinated by Manny:
 //   Manny=Manager (free), Remi=Front desk, Eve=Research, Elly=Copy,
 //   Leo=Graphics & Video, Aria=Voice, Nova=SEO, Piper=Publishing,
-//   Max=Paid ads, Ivy=Engagement, Vera=Analytics.
+//   Max=Paid ads, Finn=Engagement, Vera=Analytics.
 // The roster is meant to grow as AI learns to do more.
 
 export type AgentId =
@@ -108,7 +108,7 @@ export const team: Agent[] = [
     name: 'Piper',
     role: 'Publisher & scheduling',
     does: "Puts everything live at the right time, on every channel you use, so you post consistently without lifting a finger — and confirms every publish back to Manny, so your status board is always true.",
-    handoff: 'Hands off to: Ivy (live posts to watch), Vera (live posts to measure).',
+    handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
     price: 149,
   },
@@ -123,9 +123,9 @@ export const team: Agent[] = [
   },
   {
     id: 'upie',
-    name: 'Ivy',
+    name: 'Finn',
     role: 'Engagement & reputation',
-    does: "Answers the reviews, comments, and DMs that come in — in your voice, cloned during setup from how you've replied before — so you're responsive everywhere without living in five inboxes. Ivy handles the everyday ones itself and routes anything sensitive — an angry review, a complaint, anything that could affect your reputation — to a dashboard for a human to check before it's answered. It also nudges happy customers to leave reviews and flags recurring issues to Manny, so the team fixes the cause, not just the comment.",
+    does: "Answers the reviews, comments, and DMs that come in — in your voice, cloned during setup from how you've replied before — so you're responsive everywhere without living in five inboxes. Finn handles the everyday ones itself and routes anything sensitive — an angry review, a complaint, anything that could affect your reputation — to a dashboard for a human to check before it's answered. It also nudges happy customers to leave reviews and flags recurring issues to Manny, so the team fixes the cause, not just the comment.",
     handoff: 'Hands off to: Eve (what customers are saying), Manny (issues that need a human).',
     order: 9,
     price: 199,
