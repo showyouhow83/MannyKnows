@@ -41,7 +41,7 @@ const cardBase =
         )}
 
         <div class="flex items-center justify-center gap-2">
-          <span class="text-xl flex-shrink-0" aria-hidden="true">{p.icon}</span>
+          <svg class="w-5 h-5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
           <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{p.name}</h3>
         </div>
 
@@ -106,14 +106,14 @@ const cardBase =
   <div class="mt-14 max-w-6xl mx-auto">
     <h3 class="text-center text-sm font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-5">Compare at a glance</h3>
     <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary">
-      <table class="w-full text-sm min-w-[760px]">
+      <table class="w-full text-sm min-w-[760px] table-fixed">
         <thead>
           <tr class="text-text-light-primary dark:text-text-dark-primary">
-            <th class="sticky left-0 z-20 text-left font-semibold px-4 py-3 bg-light-secondary dark:bg-dark-primary border-r border-light-tertiary dark:border-dark-accent">What you get</th>
-            <th class="px-4 py-3 font-semibold whitespace-nowrap bg-light-secondary dark:bg-dark-primary">💬 Basic</th>
-            <th class="px-4 py-3 font-semibold whitespace-nowrap bg-light-secondary dark:bg-dark-primary">📅 Plus</th>
-            <th class="px-4 py-3 font-semibold whitespace-nowrap bg-light-secondary dark:bg-dark-primary">🌐 AI Smart Website</th>
-            <th class="px-4 py-3 font-semibold whitespace-nowrap bg-light-secondary dark:bg-dark-primary">🛒 Online Store</th>
+            <th class="w-2/5 sticky left-0 z-20 text-left font-semibold px-4 py-3 bg-light-secondary dark:bg-dark-primary border-r border-light-tertiary dark:border-dark-accent">What you get</th>
+            <th class="px-3 py-3 font-semibold text-center bg-light-secondary dark:bg-dark-primary">Website I</th>
+            <th class="px-3 py-3 font-semibold text-center bg-light-secondary dark:bg-dark-primary">Website II</th>
+            <th class="px-3 py-3 font-semibold text-center bg-light-secondary dark:bg-dark-primary">Website III</th>
+            <th class="px-3 py-3 font-semibold text-center bg-light-secondary dark:bg-dark-primary">eCommerce</th>
           </tr>
         </thead>
         <tbody class="text-text-light-secondary dark:text-text-dark-secondary">

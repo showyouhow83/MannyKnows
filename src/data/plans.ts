@@ -27,7 +27,7 @@ export interface PlanSection {
 export interface Plan {
   slug: string;
   name: string;
-  icon: string;
+  icon: string;         // SVG path (the `d` attribute of a 24×24 stroke icon)
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
   tagline: string;      // one-line promise on the card
   builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
@@ -49,8 +49,8 @@ export const yearlyMonthly = (p: Plan) => Math.round((p.price * 10) / 12);
 export const plans: Plan[] = [
   {
     slug: 'basic-website',
-    name: 'Website (Basic)',
-    icon: '💬',
+    name: 'AI Smart Website I',
+    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 99,
     tagline: 'A sharp 1–3 page website with Desi, your AI agent, answering customers 24/7.',
     highlights: [
@@ -61,7 +61,7 @@ export const plans: Plan[] = [
     ],
     headline: 'A website that answers your customers, 24/7',
     blurb:
-      "The simplest way to get online with an AI agent working for you. We design and build a sharp 1–3 page website, then put Desi on it — your AI agent that answers customer questions around the clock, in any language, trained on your business. It's found on Google, fast, secure, and maintained every month. Ready for it to book jobs or sell too? Move up to Plus or AI Smart Website anytime — the work carries forward.",
+      "The simplest way to get online with an AI agent working for you. We design and build a sharp 1–3 page website, then put Desi on it — your AI agent that answers customer questions around the clock, in any language, trained on your business. It's found on Google, fast, secure, and maintained every month. Ready for it to book jobs or sell too? Move up to AI Smart Website II or III anytime — the work carries forward.",
     whoFor:
       'New or smaller businesses that need a clean, credible website and an agent to field the questions that come in — without a big upfront bill.',
     deliverables: [
@@ -98,17 +98,17 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'Can Desi book appointments on this plan?', a: 'On Basic, Desi answers questions. To have it book jobs and capture leads, move up to Plus; to have it sell and point shoppers to products, AI Smart Website. You can upgrade anytime and the work carries forward.' },
+      { q: 'Can Desi book appointments on this plan?', a: 'On AI Smart Website I, Desi answers questions. To have it book jobs and capture leads, move up to AI Smart Website II; to have it sell and point shoppers to products, AI Smart Website III. You can upgrade anytime and the work carries forward.' },
       { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },
   {
     slug: 'plus-website',
-    name: 'Website (Plus)',
-    icon: '📅',
+    name: 'AI Smart Website II',
+    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 199,
     tagline: 'A full website where Desi answers and books the job — 24/7, in any language.',
-    builtOn: 'Everything in Basic, plus',
+    builtOn: 'Everything in AI Smart Website I, plus',
     highlights: [
       'A full multi-page website — not just 1–3 pages',
       'Desi now books jobs & captures leads, not just answers',
@@ -116,7 +116,7 @@ export const plans: Plan[] = [
     ],
     headline: 'A website that answers and books — for you',
     blurb:
-      "Everything in Basic, on a full multi-page site — and now Desi books the job. It answers questions, captures the lead, and puts appointments straight on your calendar 24/7, in any language, trained on your business. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
+      "Everything in AI Smart Website I, on a full multi-page site — and now Desi books the job. It answers questions, captures the lead, and puts appointments straight on your calendar 24/7, in any language, trained on your business. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
       'Service businesses — contractors, salons, clinics, daycares — that need more than answers: they need the appointment captured while the customer is ready.',
     deliverables: [
@@ -154,16 +154,16 @@ export const plans: Plan[] = [
     faq: [
       { q: 'How does Desi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
       { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Desi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
-      { q: 'Can I upgrade later?', a: 'Yes — move up to AI Smart Website to have Desi sell and the site keep itself fresh, or add a store with Online Store. The work carries forward.' },
+      { q: 'Can I upgrade later?', a: 'Yes — move up to AI Smart Website III to have Desi sell and the site keep itself fresh, or add a store with AI Smart eCommerce. The work carries forward.' },
     ],
   },
   {
     slug: 'smart-website',
-    name: 'AI Smart Website',
-    icon: '🌐',
+    name: 'AI Smart Website III',
+    icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 349,
     tagline: 'A website that keeps itself fresh and sells — Desi answers, books, and points shoppers to the right product.',
-    builtOn: 'Everything in Plus, plus',
+    builtOn: 'Everything in AI Smart Website II, plus',
     highlights: [
       'Desi sells — points shoppers to the right product or service, and upsells',
       'Your site updates itself — fresh content & SEO kept current for you',
@@ -225,11 +225,11 @@ export const plans: Plan[] = [
   },
   {
     slug: 'online-store',
-    name: 'Online Store (AI)',
-    icon: '🛒',
+    name: 'AI Smart eCommerce',
+    icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
     price: 399,
-    tagline: 'Everything in AI Smart Website, plus a full online store and an AI shopping assistant.',
-    builtOn: 'Everything in AI Smart Website, plus',
+    tagline: 'Everything in AI Smart Website III, plus a full online store and an AI shopping assistant.',
+    builtOn: 'Everything in AI Smart Website III, plus',
     highlights: [
       'A full online store (Shopify) with a custom theme, set up for you',
       'Desi becomes your AI shopping assistant, helping customers buy',
@@ -237,7 +237,7 @@ export const plans: Plan[] = [
     ],
     headline: 'A store that sells while the shop is closed',
     blurb:
-      "Everything in AI Smart Website, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
+      "Everything in AI Smart Website III, plus a real store. Setting up a store is easy; setting up a store that sells — right products, right photos, right copy, emails that bring people back, and a checkout nobody abandons — is a job. We do that job: a multilingual Shopify storefront with a custom theme and Desi as your AI shopping assistant, run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       'Shops, makers, restaurants, and brands that want to sell online — whether you’re starting from zero or your current store isn’t selling.',
     deliverables: [
@@ -271,7 +271,7 @@ export const plans: Plan[] = [
         items: [
           'New products, promos, and seasonal updates handled for you',
           'Ongoing optimization of pages that underperform',
-          'Everything in AI Smart Website, kept running alongside the store',
+          'Everything in AI Smart Website III, kept running alongside the store',
         ],
       },
     ],
@@ -279,7 +279,7 @@ export const plans: Plan[] = [
       { title: 'Kickoff', body: 'We look at what you sell, how you fulfill, and what’s worked so far — in your shop or on a call.' },
       { title: 'Store build', body: 'Theme design, product setup, payments, shipping, emails — we build the whole machine and you approve it before launch.' },
       { title: 'Launch & learn', body: 'The store goes live with Desi trained on your catalog. Early traffic tells us what to tune first.' },
-      { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus everything the AI AI Smart Website plan keeps running.' },
+      { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus everything AI Smart Website III keeps running.' },
     ],
     faq: [
       { q: 'Why Shopify?', a: 'It’s the most reliable platform for small-business eCommerce — payments, shipping, and inventory just work, and you never need us just to operate your own store. We customize the theme so it doesn’t look like everyone else’s.' },
@@ -291,7 +291,7 @@ export const plans: Plan[] = [
   {
     slug: 'business-ads',
     name: 'Business Ads',
-    icon: '📣',
+    icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
     price: 950,
     hidden: true,
     tagline: 'The social, ads, and SEO that get you seen — and traffic built to convert.',
@@ -355,7 +355,7 @@ export const plans: Plan[] = [
   {
     slug: 'multimedia-agency',
     name: 'Multimedia Agency',
-    icon: '🧩',
+    icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
     price: 1800,
     hidden: true,
     tagline: 'Everything, handled — we design, build, promote, and optimize whatever your business needs.',
@@ -377,7 +377,7 @@ export const plans: Plan[] = [
         items: [
           'Your website designed, built, and kept fast — or your existing one rebuilt right',
           'A full online store added whenever you’re ready, done for you',
-          'Everything in the AI Smart Website and Online Store plans, under one roof',
+          'Everything in the AI Smart Website III and AI Smart eCommerce plans, under one roof',
         ],
       },
       {
@@ -414,7 +414,7 @@ export const plans: Plan[] = [
     faq: [
       { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
       { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this — and gives you one skill set. This puts engineering, design, marketing, and AI expertise on one retainer.' },
-      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with AI Smart Website or Online Store and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
+      { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with AI Smart Website III or AI Smart eCommerce and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },
 ];
