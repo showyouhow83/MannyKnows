@@ -20,6 +20,7 @@ import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
+import OpsCloudWidget from '../components/ui/OpsCloudWidget.astro';
 
 // ========================================
 // LOCAL SEO — structured data (LocalBusiness / Person / WebSite)
@@ -246,6 +247,10 @@ const NAVBAR_CONFIG = {
 
 		<!-- Chat Box -->
 		<ChatBox />
+
+		<!-- opscloud.us AI agent (Manny) — facade widget, trial on homepage only.
+		     Loads only on first click; CSP for opscloud.us lives in BaseLayout. -->
+		<OpsCloudWidget />
 
 		<!-- Floating Dock Menu -->
 		<DockMenu />
