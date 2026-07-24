@@ -493,6 +493,13 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		color: var(--sk-headline-text-color);
 	}
 
+	/* Tighter headline leading on desktop */
+	@media (min-width: 1024px) {
+		.apple-headline {
+			line-height: 1.0666666667;
+		}
+	}
+
 	.apple-body-text {
 		line-height: 1.2666666667;
 		letter-spacing: -.009em;
