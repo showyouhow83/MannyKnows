@@ -1,7 +1,8 @@
 ---
-// Services — the "start here" map. Everything MannyKnows does is a service;
-// visitors only choose HOW they work with us: monthly (we run it) or one-time
-// (a project they own). Routes to Plans, AI Team, and Projects.
+// Services — the "start here" map for Western Mass businesses. Names what we
+// build (concrete, owner-facing, SEO), then the two ways to work with us
+// (monthly / one-time) and the custom-apps distinction. Routes to Plans, the
+// AI Team, the Online Store, Business Ads, and the Idea Launchpad.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -11,34 +12,53 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 import Button from '../components/ui/Button.astro';
-import AiWebsiteShowcase from '../components/sections/AiWebsiteShowcase.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../data/testimonials';
 
-// The three ways to start — two monthly, one one-time.
-const offerings = [
+// What we build — named the way a business owner (and Google) looks for it.
+const services = [
   {
     href: '/plans',
-    tag: 'Monthly',
-    title: 'Monthly Plans',
-    desc: 'We build it and run it — a website, an online store, ads, or the whole package — kept fast, found, and up to date every month.',
-    price: 'From $349/mo',
-    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+    title: 'AI Smart Website',
+    desc: 'A living website on your Brand Brain — it answers customers, writes its own content, and tunes its own SEO and speed. From $99/mo.',
+    icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
+  },
+  {
+    href: '/plans/online-store',
+    title: 'Online Store',
+    desc: 'A full Shopify store with a custom theme and an AI shopping assistant that helps people buy — set up and run for you. From $399/mo.',
+    icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
+  },
+  {
+    href: '/plans',
+    title: 'SEO for Google & AI search',
+    desc: 'Get found when locals search — and get quoted by AI answers (ChatGPT, Google AI). Built into every website; Nova on the AI Team goes deeper.',
+    icon: 'M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z',
   },
   {
     href: '/ai-team',
-    tag: 'Monthly',
-    title: 'AI Team',
-    desc: 'Hire AI agents like staff — sales & booking, research, copy, graphics & video, voice, publishing, and reviews — built around your business and run on demand from your admin.',
-    price: '$199 setup · agents from $99/mo',
+    title: 'The AI Team',
+    desc: 'Hire AI agents like staff — content, graphics & video, voice, ads, engagement, and reporting — built on your brand and managed by Manny. $199 setup, from $99/mo each.',
     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
+  },
+  {
+    href: '/plans/business-ads',
+    title: 'Business Ads',
+    desc: 'Social, Google, and Meta ads plus SEO campaigns that get you seen — traffic built to convert, watched and corrected monthly. From $950/mo.',
+    icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
+  },
+  {
+    href: '#custom-apps',
+    title: 'Custom apps & automation',
+    desc: 'Software built for how your business runs — booking, quoting, dashboards, integrations. Own it outright, or co-own it with nothing upfront.',
+    icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
   },
 ];
 ---
 
 <BaseLayout
-  title="Services — how we work with Western Mass businesses | MannyKnows"
-  description="Everything MannyKnows does, in one place. Work with us two ways: monthly plans we run and AI agents you run on demand, or one-time projects you own. Websites, SEO for Google and AI search, AI agents, online stores, and ads for Western Massachusetts."
+  title="Web Design, SEO, Online Stores & AI Agents for Western Mass | MannyKnows"
+  description="Everything MannyKnows builds for Western Massachusetts businesses: self-optimizing AI websites from $99/mo, online stores, SEO for Google & AI search, a hireable AI team, managed ads, and custom apps. Work with us monthly or one-time."
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -52,58 +72,36 @@ const offerings = [
       </nav>
       <div class="pb-12 px-4">
         <div class="max-w-3xl mx-auto text-center">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Websites · SEO · AI · Stores · Ads</span>
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Web design · SEO · AI agents · Online stores · Ads</span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-            <span class="apple-gradient-text" data-colorful-title>Everything we do — and how to start</span>
+            <span class="apple-gradient-text" data-colorful-title>Websites, SEO & AI that grow your Western Mass business</span>
           </h1>
           <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            It's all one thing: we make your business work online. You only choose <strong class="text-text-light-primary dark:text-text-dark-primary">how</strong> you want to work with us — a <strong class="text-text-light-primary dark:text-text-dark-primary">monthly</strong> arrangement we stay hands-on with, or a <strong class="text-text-light-primary dark:text-text-dark-primary">one-time project</strong> you own.
+            We make small businesses win online — found on Google and AI search, answering customers around the clock, and turning visits into booked jobs and sales. Work with us <strong class="text-text-light-primary dark:text-text-dark-primary">monthly</strong> (we run it) or as a <strong class="text-text-light-primary dark:text-text-dark-primary">one-time project</strong> (you own it).
           </p>
         </div>
       </div>
     </header>
 
-    <!-- Two ways to work -->
-    <Section id="two-ways" variant="default">
-      <Container>
-        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
-          <div class="rounded-2xl border border-primary-blue/30 bg-primary-blue/[0.04] p-7">
-            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-primary-blue/15 text-primary-blue dark:text-blue-300">Monthly</span>
-            <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">We stay in it with you</h2>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Ongoing, month to month. With <a href="/plans" class="text-primary-blue dark:text-blue-300 hover:underline">Plans</a> we run your site and marketing end to end; with the <a href="/ai-team" class="text-primary-blue dark:text-blue-300 hover:underline">AI Team</a> we build and support the agents while <strong class="text-text-light-primary dark:text-text-dark-primary">you</strong> run them on demand. Best when you want it handled long-term, not just delivered once.</p>
-          </div>
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-7">
-            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gray-500/10 text-text-light-secondary dark:text-text-dark-secondary">One-time</span>
-            <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">You own the result</h2>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A single job with a clear finish line — an audit, a build, an SEO push, an automation. Best when you want a <strong class="text-text-light-primary dark:text-text-dark-primary">specific thing done, once</strong>. <a href="/contact" class="text-primary-blue dark:text-blue-300 hover:underline">Tell us what you need</a> and we'll scope it. Many clients do a one-time job first, then roll onto a plan.</p>
-          </div>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- Pick your starting point -->
-    <Section id="offerings" variant="alternate">
+    <!-- What we build -->
+    <Section id="what-we-build" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-            <span class="apple-gradient-text" data-colorful-title>Pick your starting point</span>
+            <span class="apple-gradient-text" data-colorful-title>What we build</span>
           </h2>
         </div>
-        <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
-          {offerings.map((o) => (
-            <a href={o.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
-                  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={o.icon} /></svg>
-                </div>
-                <span class={`text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${o.tag === 'Monthly' ? 'bg-primary-blue/15 text-primary-blue dark:text-blue-300' : 'bg-gray-500/10 text-text-light-secondary dark:text-text-dark-secondary'}`}>{o.tag}</span>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          {services.map((s) => (
+            <a href={s.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={s.icon} /></svg>
               </div>
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{o.title}</h3>
-              <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{o.desc}</p>
-              <div class="mt-4 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">{o.price}</div>
-              <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
-                Explore
-                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
+              <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{s.desc}</p>
+              <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
+                Learn more
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </span>
             </a>
           ))}
@@ -111,18 +109,66 @@ const offerings = [
       </Container>
     </Section>
 
-    <!-- Flagship demo: the AI website in action -->
-    <section class="relative py-16 bg-light-primary dark:bg-dark-primary transition-colors duration-300 overflow-hidden">
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-8">
-        <AiWebsiteShowcase />
-        <div class="max-w-2xl mx-auto mt-16">
+    <!-- Two ways to work -->
+    <Section id="two-ways" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>Two ways to work with us</span>
+          </h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+          <div class="rounded-2xl border border-primary-blue/30 bg-primary-blue/[0.04] p-7">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-primary-blue/15 text-primary-blue dark:text-blue-300">Monthly · we run it</span>
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Handled long-term</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A flat monthly rate, cancel anytime. With <a href="/plans" class="text-primary-blue dark:text-blue-300 hover:underline">Plans</a> we build and run your site, store, and marketing; with the <a href="/ai-team" class="text-primary-blue dark:text-blue-300 hover:underline">AI Team</a> we build the agents and you run them on demand. Best when you want it kept working, not just delivered once.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-7">
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gray-500/10 text-text-light-secondary dark:text-text-dark-secondary">One-time · you own it</span>
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">A specific thing, done once</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A single job with a clear finish line — a website build, an SEO push, an automation, a custom app. Yours when it's done. <a href="/contact" class="text-primary-blue dark:text-blue-300 hover:underline">Tell us what you need</a> and we'll scope it. Many owners do a one-time build first, then roll onto a plan to keep it growing.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Custom apps -->
+    <Section id="custom-apps" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>Software built for your business</span>
+          </h2>
+          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            When an off-the-shelf tool won't do it, we build one — a booking flow, a quoting calculator, a customer dashboard, an integration between the tools you already use. Two ways to do it:
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto items-stretch">
+          <div class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Own it outright</h3>
+            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A custom app built to your spec and handed over — the code and the tool are yours. Billed as a one-time project, typically from around $2,000 depending on scope.</p>
+            <a href="/contact" data-contact-context="Custom app — own it outright" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">Scope a build</a>
+          </div>
+          <div class="flex flex-col rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-7">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Co-own it — nothing upfront</h3>
+            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Got an idea for an app or online product? Bring it to the Idea Launchpad. We design, build, launch, and market it with <strong class="text-text-light-primary dark:text-text-dark-primary">no upfront cost</strong> — we build it together and share what it earns.</p>
+            <a href="/#launchpad" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold transition-all duration-300">Start at the Idea Launchpad</a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Proof + CTA -->
+    <Section id="services-cta" variant="alternate">
+      <Container>
+        <div class="max-w-2xl mx-auto">
           <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
         </div>
         <div class="text-center mt-12">
           <Button href="#contact" text="Not sure which fits? Let's talk" variant="cta" arrow={true} />
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
 
     <ChatBox />
     <DockMenu />
