@@ -76,7 +76,7 @@ const faqSchema = {
               </div>
             )}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-              <span aria-hidden="true">{plan.icon}</span> {plan.name}
+              <svg class="inline-block w-4 h-4 align-[-0.2em] mr-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={plan.icon} /></svg>{plan.name}
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>{plan.headline}</span>
@@ -210,7 +210,7 @@ const faqSchema = {
         <div class="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
           {others.map((p) => (
             <a href={`/plans/${p.slug}`} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <span class="text-xl" aria-hidden="true">{p.icon}</span>
+              <svg class="w-6 h-6 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
               <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
               <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}/mo</p>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-2 leading-snug">{p.tagline}</p>
