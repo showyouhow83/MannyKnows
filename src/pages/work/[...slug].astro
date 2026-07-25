@@ -50,7 +50,7 @@ const facts = [
 
 <BaseLayout
   title={`${d.title} — Case Study | MannyKnows`}
-  description={d.summary}
+  description={d.seoDescription ?? d.summary}
   image={d.heroImage && isLiteral(d.heroImage) ? d.heroImage : undefined}
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">

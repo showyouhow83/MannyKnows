@@ -5,6 +5,8 @@ pubDate: "2026-07-17"
 author: "Manny"
 tags: ["Web Design", "AI Search", "Conversion", "Technical SEO"]
 draft: false
+seoTitle: "5 Reasons Your Website Isn't Getting Clients | MannyKnows"
+seoDescription: "Five reasons a good-looking website still brings in no work — slow load, no local SEO, weak calls to action — and how to fix each one."
 ---
 
 If your website isn't bringing you clients, it isn't a brochure — it's a bill you pay for nothing. For contractors, clinics, law firms, and daycares, the reasons a site underperforms are almost always the same five. Here they are, worst first, with the fix for each.

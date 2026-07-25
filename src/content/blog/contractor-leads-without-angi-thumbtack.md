@@ -5,6 +5,8 @@ pubDate: "2026-07-17"
 author: "Manny"
 tags: ["Lead Generation", "AI Search", "Contractors", "Local SEO"]
 draft: false
+seoTitle: "Contractor Leads Without Angi or Thumbtack | MannyKnows"
+seoDescription: "How Western Mass contractors get their own leads instead of buying shared ones — local SEO, reviews, and a site that books estimates 24/7."
 ---
 
 If you're a contractor, you know the pitch: pay Angi, Thumbtack, or HomeAdvisor and the leads roll in. What they don't say out loud is that you're paying $15–$100 for a name they **also** sold to three of your competitors — so now you're racing to call first and underbid the other two. You're not buying a customer. You're renting a coin flip.

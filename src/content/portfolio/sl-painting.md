@@ -35,6 +35,7 @@ results:
 
 liveUrl: "https://slpainting.co"
 heroImage: "slpainting-desktop"
+seoDescription: "How SL Painting went from invisible online to ranking #1 on Google for exterior painting in Springfield — with an AI agent qualifying every lead."
 ---
 
 ## The challenge

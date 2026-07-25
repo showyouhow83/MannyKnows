@@ -4,6 +4,8 @@ description: "You don't need to automate everything. Start with the five repetit
 pubDate: 2026-05-06
 author: "Manny"
 tags: ["automation", "AI Search", "small business", "productivity"]
+seoTitle: "5 Tasks Every Business Should Automate First | MannyKnows"
+seoDescription: "You don't need to automate everything. Start with the five repetitive jobs that quietly eat your week — follow-ups, scheduling, quoting, and more."
 ---
 
 Automation gets oversold. You don't need an AI for everything — you need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.

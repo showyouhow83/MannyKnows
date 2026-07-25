@@ -35,6 +35,7 @@ results:
 
 liveUrl: "https://jkdaycare.com"
 heroImage: "jkdaycare-desktop"
+seoDescription: "How JK Daycare got a website, an AI agent that answers parents day or night, and a phone system that never drops a call. Built in two weeks."
 ---
 
 ## The challenge

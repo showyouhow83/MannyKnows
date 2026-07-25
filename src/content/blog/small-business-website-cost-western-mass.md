@@ -5,6 +5,8 @@ pubDate: "2026-07-17"
 author: "Manny"
 tags: ["Pricing", "AI Search", "Web Design", "Western Massachusetts"]
 draft: false
+seoTitle: "Small Business Website Cost in Western Mass | MannyKnows"
+seoDescription: "What a small business website really costs in Western Massachusetts — one-time builds vs monthly plans, and what changes the price."
 ---
 
 Ask five web people what a website costs and you'll get five wildly different numbers — $500, $5,000, "let's hop on a call." No wonder owners around here don't know what's fair. So here's the honest version, in plain English, with real numbers.

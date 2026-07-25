@@ -35,6 +35,7 @@ results:
 
 liveUrl: "https://springfieldenvictoria.com"
 heroImage: "enVictoria-d"
+seoDescription: "How a Spanish-speaking Springfield church built its online home — programs, sermons, podcasts, and live streaming with AI translation."
 ---
 
 ## The challenge

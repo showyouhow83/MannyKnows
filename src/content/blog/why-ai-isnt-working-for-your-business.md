@@ -5,6 +5,8 @@ pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Strategy", "Small Business", "AI Agent"]
 draft: false
+seoTitle: "Why AI Isn't Working for Your Business | MannyKnows"
+seoDescription: "AI is everywhere but nothing changed in your business. Four reasons adoption stalls — and the shortcut small businesses can actually take."
 ---
 
 You can't scroll for ten seconds without someone telling you AI is about to change everything — the headlines, the datacenters, the "every business needs an AI strategy" panic. And yet, in your shop, your office, or your truck, nothing much has actually changed.

@@ -5,6 +5,8 @@ pubDate: "2026-07-16"
 author: "Manny"
 tags: ["eCommerce", "AI Search", "Shopify", "Online Store", "Western Massachusetts"]
 draft: false
+seoTitle: "What Selling on Shopify Really Takes | MannyKnows"
+seoDescription: "What it actually takes to move your shop online: catalog, payments, shipping, and the AI assistant that helps people buy while you sleep."
 ---
 
 "Just put it on Shopify." You've heard that. And it's true — you can spin up a Shopify store in an afternoon. What nobody tells you is that a store you set up in an afternoon usually sells about as much as it took to build: nothing. The gap between "I have an online store" and "my online store sells" is real work. Here's what it actually takes.

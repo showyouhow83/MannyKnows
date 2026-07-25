@@ -5,6 +5,7 @@ pubDate: "2026-07-17"
 author: "Manny"
 tags: ["AI Agent", "AI Search", "Lead Generation", "Customer Service"]
 draft: false
+seoDescription: "Most local businesses lose more jobs to unanswered calls than to competitors. How an AI agent answers, qualifies, and books 24/7."
 ---
 
 You spent money and effort getting found — the Google profile, the reviews, the website. Someone finds you, they're ready to hire, and they call. You're up a ladder, with a patient, in court, or asleep. It goes to voicemail. They hang up and call the next name on the list.
