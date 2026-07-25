@@ -41,29 +41,29 @@ const pillars = [
   },
 ];
 
-// "Run a Mother's Day promotion," shown as the actual group chat: you message
-// Manny, Manny puts the specialists on it, and every piece comes back to you to
-// approve or tweak — right in the thread. `from` is an agent id or 'you'.
+// A real run, condensed. Asked on 7/23/2026: "I need content ideas for a
+// painting company." Manny scoped the brief, Eve researched what's actually
+// working for painters on TikTok, Elly turned it into 10 shoot-ready scripts,
+// and both handoffs waited on approval before moving. Every finding, name, and
+// figure below is from that run — nothing invented. Only the agents that
+// actually worked it appear here. `from` is an agent id or 'you'.
 const conversation: { from: string; text: string }[] = [
-  { from: 'you', text: "Hey Manny — can we run a Mother’s Day promotion?" },
-  { from: 'manny', text: "On it. I’ll get the team started and bring it all back for your ok." },
-  { from: 'manny', text: "Eve — need a Mother’s Day angle. What’s working this year, and what were our top sellers last spring?" },
-  { from: 'eve', text: "Gift bundles + a limited-time offer for last-minute shoppers. One-page plan’s ready." },
-  { from: 'manny', text: "Perfect. Elly, Leo, Aria — build it out. Nova, tune it for search." },
-  { from: 'elly', text: "Landing page, emails, and captions — all in your voice. Done." },
-  { from: 'eny', text: "Graphics sized for each platform, plus a short video to match." },
-  { from: 'mimi', text: "Voiceover recorded in your own voice." },
-  { from: 'essie', text: "Tuned so all of it gets found on Google — locally too." },
-  { from: 'manny', text: "It’s all in your queue. Approve it, or tell me what to change." },
-  { from: 'you', text: "Love it — can we make the first email a little warmer?" },
-  { from: 'elly', text: "Warmed it up and put it back in your queue. Take a look." },
-  { from: 'you', text: "Perfect. Ship it." },
-  { from: 'manny', text: "Publishing now." },
-  { from: 'bap', text: "Scheduled and live across every channel." },
-  { from: 'addy', text: "Paid spend behind the strongest pieces, capped at your budget." },
-  { from: 'upie', text: "On the comments, DMs, and reviews — I reply in your voice, and route anything sensitive to a human to handle." },
-  { from: 'ana', text: "Tracking clicks, bookings, and sales as they land." },
-  { from: 'manny', text: "Here’s your report — what ran, what it cost, what it made, and what I’d do next time." },
+  { from: 'you', text: "I need content ideas for a painting company." },
+  { from: 'manny', text: "On it. Eve finds what’s actually working for painters right now, then Elly scripts it. Nothing moves without your ok." },
+  { from: 'manny', text: "Eve — TikTok, local homeowners plus small commercial. What’s pulling views and what’s pulling bookings?" },
+  { from: 'eve', text: "ASMR prep-and-roll is its own sub-niche. Accounts like Alec Paints and Made in Paint run on nothing but sprayer and roller sounds — hundreds of thousands of likes a clip." },
+  { from: 'eve', text: "Before/after transformations are still the highest-converting format in the trade." },
+  { from: 'eve', text: "And paint-mixing built a whole brand: Tony Piloseno’s “guess the color” videos, mixing Sherwin-Williams on the job, became Tonester Paints — 2.1M+ followers." },
+  { from: 'eve', text: "Live hook this week — Sherwin-Williams’ 2026 color of the year, Universal Khaki. There’s real search volume behind 2026 paint color trends already." },
+  { from: 'eve', text: "Your opening: Western Mass painters have almost no organic TikTok presence. Stack the broad tags with #springfieldma and #westernmass and you own a quiet lane. Plan’s ready." },
+  { from: 'you', text: "Approved — pass it to Elly." },
+  { from: 'manny', text: "Elly — ten shoot-ready videos. Hook, script, caption, hashtags, audio cue for each." },
+  { from: 'elly', text: "Done. #1 “Guess the Color” — film the tint drops, freeze right before it turns, “comment your guess,” pay it off in the last three seconds." },
+  { from: 'elly', text: "#4 “What this job actually costs” — square footage, gallons, labor days, final number. Homeowners are starved for real numbers and it’s the one thing competitors won’t post." },
+  { from: 'elly', text: "#6 “The unsexy part” — taping, drop cloths, sanding, sped up. Craftsmanship is what commercial and HOA clients are actually buying." },
+  { from: 'elly', text: "All ten close on the same line: “comment your town for a free quote.” Same funnel every time, so the leads stay countable." },
+  { from: 'you', text: "Love it. Approved." },
+  { from: 'manny', text: "Three to four posts a week — mix the reach videos with the cost and color ones. Watch comments and DMs, not views. Whichever style pulls, we build the next batch around it." },
 ];
 
 // Compact role labels shown next to each name in the chat (e.g. "Nova (SEO)").
@@ -190,7 +190,7 @@ const faqSchema = {
               <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
             </h2>
             <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              You talk to one place — Manny — and the team works in the thread. Here's what it looks like when you ask for a Mother's Day promotion, from the first message to the final report:
+              You talk to one place — Manny — and the team works in the thread. This is an actual run, condensed: one line in asking for TikTok content ideas for a painting company, ten shoot-ready scripts out — and a real approval gate at every handoff.
             </p>
           </div>
 
@@ -198,7 +198,7 @@ const faqSchema = {
           <div class="max-w-2xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent bg-light-secondary/40 dark:bg-dark-primary/40 overflow-hidden shadow-sm">
             <div class="flex items-center gap-3 px-4 py-3 border-b border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70">
               <div class="flex -space-x-2">
-                {['manny', 'eve', 'elly', 'eny', 'essie'].map((id) => (
+                {['manny', 'eve', 'elly'].map((id) => (
                   <div class="w-7 h-7 rounded-full ring-2 ring-white dark:ring-dark-secondary overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
                     <AgentAvatar agent={id} class="w-full h-full" />
                   </div>
@@ -239,7 +239,7 @@ const faqSchema = {
             </div>
           </div>
           <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
-            One request in, a finished and measured campaign out — with you approving or reshaping every piece along the way. That's the difference between ten chatbots and a team.
+            One line in, ten shoot-ready scripts out — grounded in real research, with nothing moving until you approved it. That's the difference between ten chatbots and a team.
           </p>
         </div>
       </Container>
