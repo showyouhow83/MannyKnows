@@ -54,6 +54,27 @@ const serviceAreas = [
   { region: 'Hampshire County', towns: ['Northampton', 'Amherst', 'Easthampton'] },
   { region: 'Franklin County', towns: ['Greenfield', 'Deerfield'] },
 ];
+
+// Towns with a dedicated landing page get a link; the rest stay plain text.
+const townLinks: Record<string, string> = {
+  Springfield: '/web-design-springfield-ma/',
+  Chicopee: '/web-design-chicopee-ma/',
+  Holyoke: '/web-design-holyoke-ma/',
+  Northampton: '/web-design-northampton-ma/',
+};
+
+// Sitewide links to the plan tiers. The homepage-only services directory can't
+// carry these for the whole site, and without them no tier page had a single
+// sitewide inlink — each one leaned entirely on /plans/ plus a handful of
+// in-content links.
+const planLinks = [
+  { href: '/plans/basic-website/', label: 'AI Smart Website I — from $99/mo' },
+  { href: '/plans/plus-website/', label: 'AI Smart Website II — books your jobs' },
+  { href: '/plans/smart-website/', label: 'AI Smart Website III — self-optimizing' },
+  { href: '/plans/online-store/', label: 'AI Smart eCommerce — Shopify store' },
+  { href: '/ai-team/', label: 'The AI Team — hire AI agents' },
+  { href: '/plans/', label: 'Compare all plans →' },
+];
 ---
 
 <div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0 lg:pb-14">
@@ -145,12 +166,34 @@ const serviceAreas = [
                 <h5 class="text-xs font-bold text-primary-blue dark:text-blue-300 mb-1">{group.region}</h5>
                 <ul class="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-gray-700 dark:text-white/70">
                   {group.towns.map((town) => (
-                    <li class="after:content-['·'] after:ml-2 after:text-gray-400/60 dark:after:text-white/25 last:after:content-['']">{town}</li>
+                    <li class="after:content-['·'] after:ml-2 after:text-gray-400/60 dark:after:text-white/25 last:after:content-['']">
+                      {townLinks[town] ? (
+                        <a href={townLinks[town]} class="hover:text-primary-blue dark:hover:text-blue-300 hover:underline underline-offset-2">{town}</a>
+                      ) : (
+                        town
+                      )}
+                    </li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <!-- Plans & Pricing — sitewide links to the plan tiers -->
+      <div>
+        <div class="rounded-xl p-4 transition-colors duration-300">
+          <h4 class="apple-gradient-text text-lg font-bold text-gray-800 dark:text-white mb-3 transition-colors duration-300">
+            Plans &amp; Pricing
+          </h4>
+          <ul class="space-y-1.5 text-xs text-gray-700 dark:text-white/70">
+            {planLinks.map((p) => (
+              <li>
+                <a href={p.href} class="hover:text-primary-blue dark:hover:text-blue-300 hover:underline underline-offset-2">{p.label}</a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
