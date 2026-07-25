@@ -5,6 +5,7 @@ pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
 draft: false
+seoDescription: "Missed calls and after-hours silence cost real money. Your AI Team answers, books, and follows up 24/7 — from $99/mo per agent."
 ---
 
 You didn't start your business to babysit a phone.

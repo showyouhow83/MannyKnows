@@ -53,7 +53,7 @@ const faqSchema = {
 
 <BaseLayout
   title={`${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
-  description={`${plan.tagline} What's included, how it works, and pricing — month-to-month from $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr paid upfront (2 months free).`}
+  description={`${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr — 2 months free. Cancel anytime.`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">

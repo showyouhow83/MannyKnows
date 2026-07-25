@@ -34,6 +34,7 @@ results:
 
 liveUrl: "https://vlhomeservices.com"
 heroImage: "vl-d"
+seoDescription: "How VL Home Services went from referrals and manual tracking to a website that brings in work, an admin dashboard, and a 24/7 AI agent."
 ---
 
 ## The challenge

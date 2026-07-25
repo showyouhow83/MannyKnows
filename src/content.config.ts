@@ -11,6 +11,13 @@ const blog = defineCollection({
     author: z.string().default('Manny'),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    // SEO overrides. Headlines and intros are written for readers, which often
+    // pushes them past what Google shows (~60 chars for a title, ~160 for a
+    // description). Set these to keep the on-page copy while shipping a tighter
+    // <title>/meta description. `seoTitle` is the complete title tag — no brand
+    // suffix is appended to it.
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
     // Optional 16:9 banner image, e.g. "/blog/my-post.jpg" (file lives in public/blog/).
     // When omitted, cards fall back to a colored gradient placeholder.
     image: z.string().optional(),
@@ -53,7 +60,10 @@ const portfolio = defineCollection({
     title: z.string(),
     client: z.string().optional(),          // client/business name if different from title
     tagline: z.string(),                    // one-line hook shown under the title
-    summary: z.string(),                    // 1–2 sentence intro + listing/SEO description
+    summary: z.string(),                    // 1–2 sentence intro shown on the page + in listings
+    // Short meta description (~160 chars). `summary` is rendered on the page, so
+    // it's written to read well there rather than to fit a search snippet.
+    seoDescription: z.string().optional(),
     industry: z.string().optional(),        // e.g. "Painting contractor"
     // "At a glance" panel:
     role: z.string().optional(),            // what MannyKnows did, e.g. "Design, build & deploy"

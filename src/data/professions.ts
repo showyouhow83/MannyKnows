@@ -38,7 +38,7 @@ export const professions: Profession[] = [
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
     metaDescription:
-      'Websites that rank #1 on Google and book jobs for painters, remodelers, roofers, and home-service contractors across Western Massachusetts — with an AI agent that answers and books estimates 24/7. From $349/mo.',
+      'Websites that rank on Google and book jobs for Western Mass contractors — with an AI agent that answers and books estimates 24/7. From $99/mo.',
     badge: 'For contractors & home services',
     h1: 'Websites for contractors that actually book jobs',
     heroIntro:
@@ -100,9 +100,9 @@ export const professions: Profession[] = [
   {
     slug: 'daycares',
     name: 'Daycares',
-    metaTitle: 'Websites for Daycares & Childcare in Western Mass | MannyKnows',
+    metaTitle: 'Websites for Daycares in Western Mass | MannyKnows',
     metaDescription:
-      'Warm, trustworthy websites for daycares and childcare centers across Western Massachusetts — parent communication, enrollment questions answered 24/7 by an AI agent, and multilingual by default. From $349/mo.',
+      'Warm, fast websites for Western Mass daycares — parent and enrollment questions answered 24/7 by an AI agent, in English and Spanish. From $99/mo.',
     badge: 'For daycares & childcare',
     h1: 'Websites for daycares that fill your waitlist',
     heroIntro:
@@ -164,9 +164,9 @@ export const professions: Profession[] = [
   {
     slug: 'law-firms',
     name: 'Law Firms',
-    metaTitle: 'Websites for Law Firms & Attorneys in Western Mass | MannyKnows',
+    metaTitle: 'Websites for Law Firms in Western Mass | MannyKnows',
     metaDescription:
-      'Authoritative, fast websites for law firms and solo attorneys across Western Massachusetts — practice-area SEO, an AI intake agent that qualifies and books consultations 24/7, and multilingual by default. From $349/mo.',
+      'Authoritative websites for Western Mass law firms — practice-area SEO and an AI intake agent that qualifies and books consultations 24/7. From $99/mo.',
     badge: 'For law firms & attorneys',
     h1: 'Websites for law firms that win the intake',
     heroIntro:
@@ -227,9 +227,9 @@ export const professions: Profession[] = [
   {
     slug: 'clinics',
     name: 'Clinics',
-    metaTitle: 'Websites for Clinics, Dentists & Medical Practices in Western Mass | MannyKnows',
+    metaTitle: 'Websites for Clinics & Dentists in Western Mass | MannyKnows',
     metaDescription:
-      'Clean, trustworthy websites for clinics, dental and medical practices across Western Massachusetts — “near me” local SEO, an AI agent that answers and books appointments 24/7, and multilingual by default. From $349/mo.',
+      'Fast, trustworthy websites for clinics and dental practices in Western Mass — local SEO and an AI agent that books appointments 24/7. From $99/mo.',
     badge: 'For clinics & practices',
     h1: 'Websites for clinics that keep the schedule full',
     heroIntro:

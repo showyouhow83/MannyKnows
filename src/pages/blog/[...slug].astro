@@ -26,7 +26,11 @@ const heroImage = getPostImage(post);
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<BaseLayout title={`${post.data.title} | MannyKnows Blog`} image={heroImage}>
+<BaseLayout
+  title={post.data.seoTitle ?? `${post.data.title} | MannyKnows`}
+  description={post.data.seoDescription ?? post.data.description}
+  image={heroImage}
+>
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

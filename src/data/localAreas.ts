@@ -64,9 +64,9 @@ export const localAreas: LocalArea[] = [
     slug: 'springfield',
     name: 'Springfield',
     badge: 'Springfield · Western Massachusetts',
-    metaTitle: 'Web Design in Springfield, MA — Websites, SEO & AI | MannyKnows',
+    metaTitle: 'Web Design in Springfield, MA — SEO & AI | MannyKnows',
     metaDescription:
-      'Web design for Springfield and Western Massachusetts businesses — multilingual websites with AI booking agents, technical SEO, and monthly maintenance. Twenty years of enterprise engineering, priced for local business. From $349/mo.',
+      'Web design for Springfield, MA businesses — fast multilingual websites with AI booking agents and technical SEO. Enterprise experience, local pricing.',
     heroIntro:
       "Websites that get found on Google, book jobs while you work, and speak your customers' language — built and maintained right here in Springfield, with twenty years of enterprise engineering behind them.",
     angleHeading: 'Built for how Springfield does business',
@@ -83,9 +83,9 @@ export const localAreas: LocalArea[] = [
     slug: 'holyoke',
     name: 'Holyoke',
     badge: 'Holyoke · Western Massachusetts',
-    metaTitle: 'Web Design in Holyoke, MA — Bilingual Websites, SEO & AI | MannyKnows',
+    metaTitle: 'Web Design in Holyoke, MA — Bilingual & SEO | MannyKnows',
     metaDescription:
-      'Web design for Holyoke businesses — fast, bilingual (English & Spanish) websites with AI booking agents, technical SEO, and monthly maintenance. Get found in the Paper City. From $349/mo.',
+      'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $99/mo.',
     heroIntro:
       'In the Paper City, your next customer is searching on their phone before they ever call. We build fast, bilingual websites with an AI agent that answers and books around the clock — so Holyoke businesses get found and get the job.',
     angleHeading: 'Holyoke runs in two languages — so should your site',
@@ -102,9 +102,9 @@ export const localAreas: LocalArea[] = [
     slug: 'chicopee',
     name: 'Chicopee',
     badge: 'Chicopee · Western Massachusetts',
-    metaTitle: 'Web Design in Chicopee, MA — Websites, SEO & AI | MannyKnows',
+    metaTitle: 'Web Design in Chicopee, MA — SEO & AI | MannyKnows',
     metaDescription:
-      'Web design for Chicopee businesses — fast websites with AI booking agents, technical SEO, and monthly maintenance. Turn your reputation into online leads. From $349/mo.',
+      'Web design for Chicopee, MA businesses — fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $99/mo.',
     heroIntro:
       'Chicopee is built on family businesses — and family businesses win on reputation and word of mouth. We put that reputation online: a fast website, technical SEO that ranks you locally, and an AI agent that answers customers day and night.',
     angleHeading: 'Where Willimansett, Aldenville, and the Falls find you',
@@ -121,9 +121,9 @@ export const localAreas: LocalArea[] = [
     slug: 'northampton',
     name: 'Northampton',
     badge: 'Northampton · Western Massachusetts',
-    metaTitle: 'Web Design in Northampton, MA — Websites, SEO & AI | MannyKnows',
+    metaTitle: 'Web Design in Northampton, MA — SEO & AI | MannyKnows',
     metaDescription:
-      "Web design for Northampton (NoHo) businesses — beautiful, blazing-fast websites with technical SEO and AI booking agents. As considered as Main Street. From $349/mo.",
+      "Web design for Northampton, MA businesses — beautiful, fast websites with technical SEO and AI booking agents. From $99/mo.",
     heroIntro:
       "Northampton sets a high bar for design — your website should meet it. We build beautiful, blazing-fast sites for NoHo's restaurants, shops, and studios, with technical SEO and an AI agent that turns browsers into booked customers.",
     angleHeading: 'A site as considered as Main Street',

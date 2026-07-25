@@ -34,6 +34,7 @@ results:
 
 liveUrl: "https://cherryvibes.com"
 heroImage: "cherry-vibes-d"
+seoDescription: "How Cherry Vibes moved from Costa Rica to the U.S. market on a custom Shopify Hydrogen storefront, with the full catalog and email automations."
 ---
 
 ## The challenge
