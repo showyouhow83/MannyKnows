@@ -24,6 +24,29 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const heroImage = getPostImage(post);
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// "Keep reading" — the three most closely related posts, ranked by how many tags
+// they share with this one and then by recency. Without this, only the four posts
+// the footer surfaces get linked from anywhere but /blog, which leaves the older
+// ones on a single internal link each.
+const allPosts = (await getCollection('blog')).filter((p) => !p.data.draft && p.id !== post.id);
+const tags = new Set(post.data.tags);
+const related = allPosts
+  .map((p) => ({ post: p, shared: p.data.tags.filter((t) => tags.has(t)).length }))
+  .sort((a, b) =>
+    b.shared - a.shared ||
+    b.post.data.pubDate.getTime() - a.post.data.pubDate.getTime()
+  )
+  .slice(0, 3)
+  .map((r) => r.post);
+
+// Tag scoring clusters around the popular tags, so a post with uncommon tags can
+// end up in nobody's "Keep reading". Chronological neighbours cover that gap:
+// every post is linked by the one before and after it, whatever its tags.
+const byDate = [...allPosts, post].sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const here = byDate.findIndex((p) => p.id === post.id);
+const newer = here > 0 ? byDate[here - 1] : undefined;
+const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
 ---
 
 <BaseLayout
@@ -82,7 +105,43 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
         <article class="blog-prose max-w-3xl mx-auto">
           <Content />
         </article>
-        <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent">
+        {related.length > 0 && (
+          <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent">
+            <h2 class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-5">Keep reading</h2>
+            <ul class="grid gap-4 sm:grid-cols-3 list-none p-0 m-0">
+              {related.map((r) => (
+                <li>
+                  <a
+                    href={`/blog/${r.id}/`}
+                    class="group flex h-full flex-col rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4 no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-lg hover:shadow-primary-blue/10"
+                  >
+                    <span class="text-sm font-semibold leading-snug text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{r.data.title}</span>
+                    <span class="mt-2 text-xs text-text-light-secondary dark:text-text-dark-secondary line-clamp-3">{r.data.description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {(newer || older) && (
+          <nav aria-label="More posts" class="max-w-3xl mx-auto mt-8 grid gap-3 sm:grid-cols-2">
+            {older && (
+              <a href={`/blog/${older.id}/`} class="group flex flex-col rounded-xl border border-light-tertiary dark:border-dark-accent p-4 no-underline transition-colors hover:border-primary-blue/40">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Previous post</span>
+                <span class="mt-1 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{older.data.title}</span>
+              </a>
+            )}
+            {newer && (
+              <a href={`/blog/${newer.id}/`} class="group flex flex-col rounded-xl border border-light-tertiary dark:border-dark-accent p-4 no-underline transition-colors hover:border-primary-blue/40 sm:text-right sm:items-end">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Next post</span>
+                <span class="mt-1 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{newer.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )}
+
+        <div class="max-w-3xl mx-auto mt-10 pt-6 border-t border-light-tertiary dark:border-dark-accent">
           <a href="/blog/" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
             <svg class="w-4 h-4 rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             All posts
