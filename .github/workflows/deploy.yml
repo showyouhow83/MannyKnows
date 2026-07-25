@@ -44,3 +44,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # Optional — only needed if your API token can see more than one account
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Ping IndexNow
+        # Tells Bing, Yandex, Seznam, Naver and Yep to re-crawl. Google does not
+        # participate in IndexNow — it still goes by the sitemap + Search Console.
+        # Runs after a successful deploy so the pages being announced are live.
+        # The script never fails the job; a missed ping is not a broken deploy.
+        run: node scripts/indexnow.mjs
