@@ -39,7 +39,7 @@ We'll audit it, show you exactly what's dragging it down, and fix it: performanc
 
 ## From invisible to #1 on Google
 
-We built [SL Painting](/work/sl-painting) a site from scratch — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, on a page tuned to 90+ Lighthouse scores. Fast, modern, and built to be found.
+We built [SL Painting](/work/sl-painting/) a site from scratch — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, on a page tuned to 90+ Lighthouse scores. Fast, modern, and built to be found.
 
 ## How it works
 
@@ -51,7 +51,7 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it winning
 
-The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI Sales & Booking Agent answering customers and booking appointments around the clock — roll onto the [AI Smart Website plan](/plans/smart-website), from $349/mo.
+The build is a one-time project. To keep it fast, monitored, and improving every month — with an AI Sales & Booking Agent answering customers and booking appointments around the clock — roll onto the [AI Smart Website plan](/plans/smart-website/), from $349/mo.
 
-**Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
+**Ready?** [Get a scoped quote](/contact/) or [see the SL Painting case study](/work/sl-painting/).
 

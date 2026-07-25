@@ -3,19 +3,27 @@ export interface Props {
   tooltip: string;
   icon: string;
   onClick?: string;
+  /** Navigation target. Renders a real <a href> so crawlers can follow it —
+   *  `onClick="window.location.href=..."` is invisible to search engines and
+   *  left the pages it pointed at (e.g. /how-it-works/) with zero inlinks. */
+  href?: string;
   variant?: 'default' | 'brand' | 'chat' | 'settings';
   id?: string;
   className?: string;
 }
 
-const { 
-  tooltip, 
-  icon, 
-  onClick, 
-  variant = 'default', 
+const {
+  tooltip,
+  icon,
+  onClick,
+  href,
+  variant = 'default',
   id,
-  className = "" 
+  className = ""
 } = Astro.props;
+
+// Same chrome either way — only the outer element changes.
+const Tag = href ? 'a' : 'button';
 
 const variantClasses = {
   default: 'backdrop-blur-lg border rounded-lg transition-all duration-300',
@@ -36,9 +44,10 @@ const iconClasses = {
 };
 ---
 
-<button 
-  type="button" 
-  class={`dock-item group relative flex-1 sm:flex-none ${className}`} 
+<Tag
+  type={href ? undefined : 'button'}
+  href={href}
+  class={`dock-item group relative flex-1 sm:flex-none ${className}`}
   data-tooltip={tooltip}
   aria-label={tooltip}
   title={tooltip}
@@ -68,7 +77,7 @@ const iconClasses = {
   <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 sm:px-3 sm:py-2 bg-black dark:bg-white text-white dark:text-black text-xs sm:text-sm whitespace-nowrap rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg pointer-events-none" role="tooltip">
     {tooltip}
   </div>
-</button>
+</Tag>
 
 <style>
   /* Animated gradient for brand variant */

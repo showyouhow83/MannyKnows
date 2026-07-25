@@ -26,35 +26,35 @@ export const testimonials: Testimonial[] = [
       "We don't even show up on Google yet — and we're already seeing the benefits of working with Manny. Our website looks incredible, and the AI agent is incredible too: it speaks every language, and it's connected to our admin, so we can ask it about our own projects — where each one stands, what's included, whatever we need to know.",
     name: 'Owner',
     business: 'VL Home Services',
-    href: '/work/vl-home-services',
+    href: '/work/vl-home-services/',
   },
   {
     quote:
       "We had always wanted a portal for our community — a place to announce our free food and clothing events, and where our young people can find resources worth sharing and help add content themselves. Manny even trained us on our new cameras, for live events and for creating content with the church's youth — young content, made for young people.",
     name: 'Springfield en Victoria',
     business: 'Church community',
-    href: '/work/springfield-en-victoria',
+    href: '/work/springfield-en-victoria/',
   },
   {
     quote:
       "We're fascinated with our new website and admin. We can manage our children and communicate with their parents effectively, and the system is so easy to use — and fast. We've only been live a week, and we can already see our traffic growing day by day.",
     name: 'Owner',
     business: 'JK Daycare',
-    href: '/work/jk-daycare',
+    href: '/work/jk-daycare/',
   },
   {
     quote:
       "Manny built us a Python scraper that took us from curating 100–300 products a week to more than 20,000 a month — cleaning and enriching each one, with pricing tables and dynamic prices. He put us at the top in Costa Rica for “lencería de mujer” and “ropa de mujer,” above stores like Llobet and Leonisa that have been in the market for years. In short, he had us competing with the big leagues.",
     name: 'Owner',
     business: 'Cherry Vibes',
-    href: '/work/cherry-vibes',
+    href: '/work/cherry-vibes/',
   },
   {
     quote:
       "Today we're #1 for “Exterior Painting” in Springfield, MA — organically, at the top of the first page — and the photography and video gave us a real presence on social media too.",
     name: 'Owner',
     business: 'SL Painting',
-    href: '/work/sl-painting',
+    href: '/work/sl-painting/',
   },
 ];
 

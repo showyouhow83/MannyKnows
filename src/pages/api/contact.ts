@@ -395,7 +395,7 @@ function generateAutoReplyEmail(contact: any): string {
             
             <p>In the meantime, take a look at some of the work we've done for other businesses.</p>
 
-            <a href="https://mannyknows.com/work" class="btn">See our recent work →</a>
+            <a href="https://mannyknows.com/work/" class="btn">See our recent work →</a>
           </div>
           <div class="footer">
             This confirmation was sent by MannyKnows<br>

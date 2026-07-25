@@ -45,10 +45,10 @@ Google lets you post updates, offers, and photos right on your profile, like a m
 
 People searching "near me" or "in Springfield" are ready to act — they want someone close, now. A complete, active profile is how you win that moment. And increasingly that moment happens inside an AI assistant: when someone asks ChatGPT or Google's AI Overview for a business near them, it leans on the same Google Business Profile data. Keep yours complete and active and you show up in both places — the map *and* the AI answer.
 
-Here's what a complete local presence can do: **SL Painting** came to us invisible on Google, and today they rank **#1 organically for "exterior painting" in Springfield** — the result of a fast website, technical SEO, and a Google Business Profile, all pulling together. The Profile is one piece of that engine, and it's the piece you can start on today. [Read the SL Painting case study.](/work/sl-painting)
+Here's what a complete local presence can do: **SL Painting** came to us invisible on Google, and today they rank **#1 organically for "exterior painting" in Springfield** — the result of a fast website, technical SEO, and a Google Business Profile, all pulling together. The Profile is one piece of that engine, and it's the piece you can start on today. [Read the SL Painting case study.](/work/sl-painting/)
 
 ## Where we come in
 
-Setting all this up — and keeping it current — takes time most owners don't have. That's baked into our **[AI Smart Website plan](/plans/smart-website)** (from $349/mo): we create or clean up and verify your Google Business Profile, build a fast multilingual site Google understands, and add an AI Sales & Booking Agent that answers, qualifies, sells, and books jobs 24/7 — then keep all of it tuned every month.
+Setting all this up — and keeping it current — takes time most owners don't have. That's baked into our **[AI Smart Website plan](/plans/smart-website/)** (from $349/mo): we create or clean up and verify your Google Business Profile, build a fast multilingual site Google understands, and add an AI Sales & Booking Agent that answers, qualifies, sells, and books jobs 24/7 — then keep all of it tuned every month.
 
 Want to show up when your neighbors search? [Tell us what you do.](#contact)

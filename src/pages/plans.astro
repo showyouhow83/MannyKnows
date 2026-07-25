@@ -82,7 +82,7 @@ const faqSchema = {
     <Section id="plans-list" variant="default">
       <Container>
         <!-- Flagship: the AI Team (its own page, sold as a monthly retainer) -->
-        <a href="/ai-team" class="group block max-w-6xl mx-auto mb-12 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-[0_16px_50px_rgba(16,209,255,0.18)] transition-all duration-300">
+        <a href="/ai-team/" class="group block max-w-6xl mx-auto mb-12 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-[0_16px_50px_rgba(16,209,255,0.18)] transition-all duration-300">
           <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
             <div class="flex flex-wrap justify-center gap-y-1.5 -space-x-1.5 flex-shrink-0 max-w-[280px] lg:max-w-[264px]">
               {aiTeamRoster.map((a) => (
@@ -151,7 +151,7 @@ const faqSchema = {
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
                   <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                 </div>
-                <a href={`/plans/${p.slug}`} class="flex-shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                <a href={`/plans/${p.slug}/`} class="flex-shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
                   What's included
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </a>

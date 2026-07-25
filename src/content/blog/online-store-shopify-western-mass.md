@@ -53,10 +53,10 @@ In a real shop, someone helps: "What goes with this?" "Do you have it in blue?" 
 
 ## Proof: a store rebuilt to actually sell
 
-We did exactly this for **Cherry Vibes** — an online store obsessed with all things cherry that started its life in Costa Rica. We migrated it to the U.S. market and rebuilt it end to end: Shopify set up for U.S. selling (payments, shipping, taxes), the full catalog, email automations, and a **custom Shopify Hydrogen storefront** that loads fast and looks like nobody else's. Same beloved brand, new market, built to sell in it. [Read the Cherry Vibes case study.](/work/cherry-vibes)
+We did exactly this for **Cherry Vibes** — an online store obsessed with all things cherry that started its life in Costa Rica. We migrated it to the U.S. market and rebuilt it end to end: Shopify set up for U.S. selling (payments, shipping, taxes), the full catalog, email automations, and a **custom Shopify Hydrogen storefront** that loads fast and looks like nobody else's. Same beloved brand, new market, built to sell in it. [Read the Cherry Vibes case study.](/work/cherry-vibes/)
 
 ## What this looks like with us
 
-You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store (AI) plan](/plans/online-store)** (from $399/mo): we build the multilingual Shopify storefront with a custom theme, get your products photographed-right, written-right, and organized, wire up payments, shipping, taxes, and email automations, add the AI shopping assistant — then keep it selling and optimized every month.
+You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store (AI) plan](/plans/online-store/)** (from $399/mo): we build the multilingual Shopify storefront with a custom theme, get your products photographed-right, written-right, and organized, wire up payments, shipping, taxes, and email automations, add the AI shopping assistant — then keep it selling and optimized every month.
 
 If you can sell it in your shop, we can help you sell it online. [Tell us what you make.](#contact)

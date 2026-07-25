@@ -40,7 +40,7 @@ This isn't a report that sits in a drawer. We stay on to build the automations, 
 
 ## We've mapped operations like yours
 
-For [VL Home Services](/work/vl-home-services), we mapped their entire operation — referrals-and-paper, everything by hand — and turned it into one connected system: a website, an admin dashboard, and a 24/7 AI Sales & Booking Agent. This audit is that same first step.
+For [VL Home Services](/work/vl-home-services/), we mapped their entire operation — referrals-and-paper, everything by hand — and turned it into one connected system: a website, an admin dashboard, and a 24/7 AI Sales & Booking Agent. This audit is that same first step.
 
 ## How it works
 
@@ -50,7 +50,7 @@ For [VL Home Services](/work/vl-home-services), we mapped their entire operation
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,800/mo) makes us your full media and tech team.
+This is a one-time project. If you'd rather have everything handled going forward — site, store, software, and promotion — the [Multimedia Agency plan](/plans/multimedia-agency/) (from $1,800/mo) makes us your full media and tech team.
 
-**Ready to find the leaks?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
+**Ready to find the leaks?** [Get a scoped quote](/contact/) or [see how we did it for VL Home Services](/work/vl-home-services/).
 

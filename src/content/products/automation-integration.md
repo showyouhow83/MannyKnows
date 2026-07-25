@@ -39,7 +39,7 @@ We map your process, build the flows, document them, and adjust as your business
 
 ## We've wired this up before
 
-For [VL Home Services](/work/vl-home-services), we connected their admin dashboard and a 24/7 AI Sales & Booking Agent into one system — every inquiry captured and tracked, and customers answered around the clock in any language. That's the kind of connected setup we build.
+For [VL Home Services](/work/vl-home-services/), we connected their admin dashboard and a 24/7 AI Sales & Booking Agent into one system — every inquiry captured and tracked, and customers answered around the clock in any language. That's the kind of connected setup we build.
 
 ## How it works
 
@@ -49,7 +49,7 @@ For [VL Home Services](/work/vl-home-services), we connected their admin dashboa
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency) (from $1,800/mo) puts a full media and tech team on it.
+When automation becomes part of a bigger picture — custom software, AI, and data pipelines alongside your site and promotion — the [Multimedia Agency plan](/plans/multimedia-agency/) (from $1,800/mo) puts a full media and tech team on it.
 
-**Ready?** [Get a scoped quote](/contact) or [see how we did it for VL Home Services](/work/vl-home-services).
+**Ready?** [Get a scoped quote](/contact/) or [see how we did it for VL Home Services](/work/vl-home-services/).
 

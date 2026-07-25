@@ -41,10 +41,10 @@ Here's the leak most contractors never plug: a homeowner finds you at 8 p.m., yo
 
 ## This isn't theory
 
-**SL Painting** came to us invisible online — no site, buying no leads because they had nothing to buy them with. Today they rank **#1 organically for "exterior painting" in Springfield**: a fast website, technical SEO, and a dialed-in Google Business Profile, all feeding each other. That's a lead engine they own, not a subscription they rent. [Read the SL Painting case study.](/work/sl-painting)
+**SL Painting** came to us invisible online — no site, buying no leads because they had nothing to buy them with. Today they rank **#1 organically for "exterior painting" in Springfield**: a fast website, technical SEO, and a dialed-in Google Business Profile, all feeding each other. That's a lead engine they own, not a subscription they rent. [Read the SL Painting case study.](/work/sl-painting/)
 
 ## Where we come in
 
-Building all of this — the profile, the service pages, the reviews system, the AI agent — and keeping it ranking is exactly what our **[AI Smart Website plan](/plans/smart-website)** does, from $349/mo. It's built to replace the lead-rental treadmill with a presence that brings you jobs on its own.
+Building all of this — the profile, the service pages, the reviews system, the AI agent — and keeping it ranking is exactly what our **[AI Smart Website plan](/plans/smart-website/)** does, from $349/mo. It's built to replace the lead-rental treadmill with a presence that brings you jobs on its own.
 
-Tired of paying for the same lead as your competitors? **[Get a free look at your current setup](/free-ai-website-analysis)** — we'll tell you honestly where your leads are leaking and what it'd take to own the flow instead.
+Tired of paying for the same lead as your competitors? **[Get a free look at your current setup](/free-ai-website-analysis/)** — we'll tell you honestly where your leads are leaking and what it'd take to own the flow instead.

@@ -54,7 +54,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => { const img = getPostImage(post); return (
               <article class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-6 hover:shadow-lg hover:border-primary-blue/30 transition-all duration-300 flex flex-col">
-                <a href={`/blog/${post.id}`} class="block aspect-[16/9] rounded-lg overflow-hidden mb-4 border border-light-tertiary dark:border-dark-accent">
+                <a href={`/blog/${post.id}/`} class="block aspect-[16/9] rounded-lg overflow-hidden mb-4 border border-light-tertiary dark:border-dark-accent">
                   {img ? (
                     <img src={img} alt={post.data.title} loading="lazy" class="w-full h-full object-cover" />
                   ) : (
@@ -69,12 +69,12 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month:
                   ))}
                 </div>
                 <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2 leading-snug">
-                  <a href={`/blog/${post.id}`} class="hover:text-primary-blue transition-colors">{post.data.title}</a>
+                  <a href={`/blog/${post.id}/`} class="hover:text-primary-blue transition-colors">{post.data.title}</a>
                 </h2>
                 <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4 flex-1">{post.data.description}</p>
                 <div class="flex items-center justify-between mt-auto pt-4 border-t border-light-tertiary dark:border-dark-accent">
                   <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{fmt(post.data.pubDate)}</span>
-                  <a href={`/blog/${post.id}`} class="text-sm text-primary-blue font-medium flex items-center gap-1 group">
+                  <a href={`/blog/${post.id}/`} class="text-sm text-primary-blue font-medium flex items-center gap-1 group">
                     Read
                     <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </a>

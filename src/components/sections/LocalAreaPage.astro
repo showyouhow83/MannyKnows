@@ -42,7 +42,7 @@ const localBusinessSchema = {
   '@type': 'ProfessionalService',
   name: 'MannyKnows',
   description: `Web design, technical SEO, and custom software for businesses in ${area.name} and Western Massachusetts.`,
-  url: `https://mannyknows.com/web-design-${area.slug}-ma`,
+  url: `https://mannyknows.com/web-design-${area.slug}-ma/`,
   email: 'mm@mannyknows.com',
   telephone: '+1-413-361-8451',
   address: { '@type': 'PostalAddress', addressLocality: area.name, addressRegion: 'MA', addressCountry: 'US' },
@@ -79,7 +79,7 @@ const contactContext = `Web design ${area.name}`;
               Get a free look at your site
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
-            <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+            <a href="/work/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
               See local projects
             </a>
           </div>
@@ -101,7 +101,7 @@ const contactContext = `Web design ${area.name}`;
         <div class="max-w-3xl mx-auto text-center mt-14">
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Monthly plans start at <strong class="text-text-light-primary dark:text-text-dark-primary">$349/mo</strong> — website, AI agent, SEO, and maintenance included.
-            <a href="/plans" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See all plans →</a>
+            <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See all plans →</a>
           </p>
         </div>
       </Container>
@@ -150,7 +150,7 @@ const contactContext = `Web design ${area.name}`;
               t.slug === area.slug ? (
                 <li class="rounded-full border border-primary-blue/40 bg-primary-blue/5 px-4 py-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">{t.name}</li>
               ) : t.slug ? (
-                <li><a href={`/web-design-${t.slug}-ma`} class="inline-block rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary hover:border-primary-blue/40 hover:text-primary-blue dark:hover:text-blue-300 transition-colors">{t.name}</a></li>
+                <li><a href={`/web-design-${t.slug}-ma/`} class="inline-block rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary hover:border-primary-blue/40 hover:text-primary-blue dark:hover:text-blue-300 transition-colors">{t.name}</a></li>
               ) : (
                 <li class="rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.name}</li>
               )
