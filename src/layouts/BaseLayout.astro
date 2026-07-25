@@ -25,7 +25,14 @@ const {
 
 // Canonical / Open Graph URL — normalized to the production origin + path.
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://mannyknows.com');
-const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').href : undefined;
+// Social card. Pages can pass their own `image` (blog posts use their hero);
+// everything else falls back to the brand card so no page shares without a
+// preview. Only the default has known dimensions, so width/height are emitted
+// for it alone — declaring them is what lets Facebook/LinkedIn render a card on
+// the very first share instead of showing nothing until they've fetched it.
+const DEFAULT_OG_IMAGE = '/og-image.png';
+const usingDefaultOgImage = !image;
+const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyknows.com').href;
 ---
 
 <!DOCTYPE html>
@@ -58,8 +65,16 @@ const ogImage = image ? new URL(image, Astro.site ?? 'https://mannyknows.com').h
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		{ogImage && <meta property="og:image" content={ogImage} />}
-		{ogImage && <meta name="twitter:image" content={ogImage} />}
+		<meta property="og:image" content={ogImage} />
+		<meta name="twitter:image" content={ogImage} />
+		{usingDefaultOgImage && (
+			<>
+				<meta property="og:image:width" content="1200" />
+				<meta property="og:image:height" content="630" />
+				<meta property="og:image:type" content="image/png" />
+				<meta property="og:image:alt" content="MannyKnows — web design, SEO, and AI agents in Springfield, Massachusetts." />
+			</>
+		)}
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
