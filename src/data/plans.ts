@@ -160,6 +160,7 @@ export const plans: Plan[] = [
           'Answers customers and books appointments straight onto your calendar',
           'Captures every lead into your admin so nothing slips through',
           'Works 24/7 in your customer’s language, trained on your business',
+          'Your admin grows with it — calendar and availability you control, and a lead pipeline you can actually work',
         ],
       },
       {
@@ -207,6 +208,7 @@ export const plans: Plan[] = [
         items: [
           'Designed and built for your business — or your current one, rebuilt right',
           'Updates itself: fresh, relevant content and SEO kept current for you',
+          'Your admin gets the controls for that — review, edit, or roll back anything the site writes, and steer what Remi pushes',
         ],
       },
       {
@@ -281,6 +283,7 @@ export const plans: Plan[] = [
           'Product pages enhanced: images, copy, sizing, variants',
           'eCommerce SEO so your products show up in search',
           'Collections and navigation organized the way customers shop',
+          'Your admin covers the store too — products, inventory, orders, and promos where you already manage the site',
         ],
       },
       {
