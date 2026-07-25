@@ -56,7 +56,7 @@ export const plans: Plan[] = [
     highlights: [
       'Built on your Brand Brain — a private AI trained on your business',
       'Remi, your AI agent, answers customers 24/7 in their language',
-      'A sharp 1–3 page site that optimizes itself — kept fast, current, and ahead of any basic website',
+      'A sharp 1–3 page multilingual site that optimizes itself — kept fast, current, and ahead of any basic website',
       'Found when locals search you on Google + Maps (profile set up for you)',
     ],
     headline: 'An AI-driven website — not a page that just sits there',
@@ -76,6 +76,7 @@ export const plans: Plan[] = [
         title: 'The website',
         items: [
           'Designed and built for your business — 1–3 focused pages, not a template',
+          'Multilingual as standard, never an add-on (English + Spanish, or your customers’ languages)',
           'Mobile-first and fast, tuned for near-perfect speed scores',
           'Your services, photos, and service area — structured so Google understands them',
         ],
@@ -140,7 +141,6 @@ export const plans: Plan[] = [
         title: 'The website',
         items: [
           'A full multi-page website, designed and built for your business',
-          'Multilingual as standard (English + Spanish, or your customers’ languages)',
           'Mobile-first and fast, structured so Google understands your services',
         ],
       },
@@ -196,7 +196,6 @@ export const plans: Plan[] = [
         title: 'The website',
         items: [
           'Designed and built for your business — or your current one, rebuilt right',
-          'Multilingual as standard, mobile-first, and tuned for near-perfect speed',
           'Updates itself: fresh, relevant content and SEO kept current for you',
         ],
       },
