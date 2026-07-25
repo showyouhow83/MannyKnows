@@ -233,7 +233,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     max-width: 1920px;
     margin: 0 auto;
     overflow: hidden;
-    height: clamp(220px, 31vw, 565px);
+    height: clamp(110px, 15.5vw, 283px);
   }
 
   .hero-track {
@@ -324,14 +324,14 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
 
   /* Tablet */
   @media (max-width: 768px) {
-    .hero-carousel { height: 50vw; }
+    .hero-carousel { height: 25vw; }
     .hero-slide { width: 85vw; }
     .hero-slide-content { padding: 30px 18px 18px; }
   }
 
   /* Small mobile */
   @media (max-width: 480px) {
-    .hero-carousel { height: 400px; }
+    .hero-carousel { height: 200px; }
     .hero-slide { width: calc(100% - 16px); }
     .hero-slide-content { padding: 24px 14px 14px; }
     .hero-slide-content h2 { font-size: 1rem; }
