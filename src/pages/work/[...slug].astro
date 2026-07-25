@@ -25,6 +25,20 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const d = project.data;
 
+// Cross-link the other case studies. Without this, a study nothing else happens
+// to mention (Springfield en Victoria, say) sits on a single internal link from
+// /work — and a visitor who reads one has no path to the next.
+// Rotate through the list rather than always showing the newest three, or the
+// oldest study would never appear in anyone's module and would keep sitting on a
+// single inlink. Walking the ring gives every study the same number of inlinks.
+const published = (await getCollection('portfolio'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0) || a.id.localeCompare(b.id));
+const at = published.findIndex((p) => p.id === project.id);
+const moreWork = [1, 2, 3]
+  .map((k) => published[(at + k) % published.length])
+  .filter((p) => p && p.id !== project.id);
+
 // This client's own testimonial, if they've given one (undefined otherwise).
 const clientQuote = getTestimonial(d.client ?? d.title);
 
@@ -206,6 +220,25 @@ const facts = [
                   )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {moreWork.length > 0 && (
+            <div class="mt-14 pt-8 border-t border-light-tertiary dark:border-dark-accent">
+              <h2 class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-5">More work</h2>
+              <ul class="grid gap-4 sm:grid-cols-3 list-none p-0 m-0">
+                {moreWork.map((w) => (
+                  <li>
+                    <a
+                      href={`/work/${w.id}/`}
+                      class="group flex h-full flex-col rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4 no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-lg hover:shadow-primary-blue/10"
+                    >
+                      <span class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{w.data.title}</span>
+                      <span class="mt-1.5 text-xs text-text-light-secondary dark:text-text-dark-secondary line-clamp-2">{w.data.tagline}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 

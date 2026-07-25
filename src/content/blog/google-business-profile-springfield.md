@@ -35,6 +35,8 @@ Your **primary category** is the single biggest lever here. "Painter" ranks you 
 
 Profiles with real photos get more clicks and calls — it's one of the clearest patterns there is. Add real ones: your crew, your work, before-and-afters, your truck, your storefront. Skip the stock images. Google and customers both reward a business that looks active, so add a few new photos every month.
 
+A 360° photo goes further: it lets someone step inside before they ever call, and it's the kind of thing most local profiles still don't have. We'll shoot one for you at no cost — [claim a free 360° photo](/free-360-photo/) and we'll publish it straight to your profile.
+
 ## Reviews are the engine
 
 Reviews are one of the strongest signals for where you land in the map pack — and the first thing a customer reads. The move is simple and boring: ask every happy customer, every time, and hand them the direct review link. Then **reply to every review**, good or bad — calm, specific, professional. That reply is public, and future customers read how you handle things.
