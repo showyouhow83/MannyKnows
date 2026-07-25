@@ -339,7 +339,7 @@ function generateNewsletterConfirmationEmail(email: string, subscriptionId: stri
         </div>
         
         <div class="unsubscribe">
-          <p>Don't want to receive these emails? <a href="https://mannyknows.com/unsubscribe?id=${subscriptionId}">Unsubscribe here</a></p>
+          <p>Don't want to receive these emails? <a href="https://mannyknows.com/unsubscribe/?id=${subscriptionId}">Unsubscribe here</a></p>
           <p>Subscription ID: ${subscriptionId}</p>
         </div>
       </div>
@@ -443,7 +443,7 @@ function generateNewsletterResubscriptionEmail(email: string, subscriptionId: st
         </div>
         
         <div class="unsubscribe">
-          <p>Don't want to receive these emails? <a href="https://mannyknows.com/unsubscribe?id=${subscriptionId}">Unsubscribe here</a></p>
+          <p>Don't want to receive these emails? <a href="https://mannyknows.com/unsubscribe/?id=${subscriptionId}">Unsubscribe here</a></p>
           <p>Subscription ID: ${subscriptionId}</p>
         </div>
       </div>

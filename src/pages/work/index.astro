@@ -59,7 +59,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
             {projects.map((p) => {
               const d = p.data;
               return (
-                <a href={`/work/${p.id}`} class="group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary-blue/30">
+                <a href={`/work/${p.id}/`} class="group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary-blue/30">
                   <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
                     {d.heroImage ? (
                       isLiteral(d.heroImage) ? (

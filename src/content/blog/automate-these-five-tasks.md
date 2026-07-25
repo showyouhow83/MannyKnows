@@ -34,4 +34,4 @@ If you do it the same way more than a few times a week, it's a candidate. Start 
 
 One candidate that's easy to overlook: keeping your business details — hours, services, address, phone — consistent everywhere they live online. It's boring and repetitive, which is exactly why it's worth automating, and it quietly decides whether Google and AI assistants like ChatGPT quote you right when a customer asks them for someone who does what you do.
 
-Automating the busywork is exactly what our [Multimedia Agency plan](/plans/multimedia-agency) handles end to end — custom software, AI, and data pipelines alongside your site. Curious which task would save you the most? [Let's talk it through.](#contact)
+Automating the busywork is exactly what our [Multimedia Agency plan](/plans/multimedia-agency/) handles end to end — custom software, AI, and data pipelines alongside your site. Curious which task would save you the most? [Let's talk it through.](#contact)

@@ -11,7 +11,7 @@ You didn't start your business to babysit a phone.
 
 But every unanswered call, every DM left on read, every "sorry, we're closed" is a customer who just found your competitor instead.
 
-That's where [your AI Team](/ai-team) comes in.
+That's where [your AI Team](/ai-team/) comes in.
 
 Built by MannyKnows — led by Manny, twenty years solving business problems, including seven years in enterprise eCommerce — your AI agents answer questions, book appointments, and follow up with leads while you're busy running the actual business. No new hires. No training. No "let me check and get back to you."
 
@@ -24,7 +24,7 @@ Built by MannyKnows — led by Manny, twenty years solving business problems, in
 
 Hire one agent to start, or build a full team as you grow. Every agent starts at **$99/mo**, plus a one-time **$199 setup fee**. Month-to-month. Cancel anytime — no contracts, no catches.
 
-Want the whole package? Our [AI Smart Website](/plans) plans bundle a multilingual, self-optimizing website with your AI sales & booking agent built right in — from **$99/mo** (up to $349 for the fully self-running version). One system, one bill, real results.
+Want the whole package? Our [AI Smart Website](/plans/) plans bundle a multilingual, self-optimizing website with your AI sales & booking agent built right in — from **$99/mo** (up to $349 for the fully self-running version). One system, one bill, real results.
 
 ## Proof it works
 

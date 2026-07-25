@@ -9,17 +9,24 @@ export default defineConfig({
   output: 'server', // Server mode for API routes
   // 301s for retired /services/* URLs (old taxonomy) that now 404. Agent/bot/
   // analytics topics point at /ai-team; web-design/optimization at /services.
+  // Redirect targets keep their trailing slash: Cloudflare serves the canonical
+  // `/path/` form and 307s the bare `/path`, so a slashless target would turn
+  // every one of these into a redirect *chain*.
   redirects: {
-    '/services/ai-agents': '/ai-team',
-    '/services/customer-service-bots': '/ai-team',
-    '/services/appointment-booking-bots': '/ai-team',
-    '/services/lead-generation-bots': '/ai-team',
-    '/services/competitor-analysis': '/ai-team',
-    '/services/analytics': '/ai-team',
-    '/services/behavioral-analytics': '/ai-team',
-    '/services/adaptive-layouts': '/services',
-    '/services/conversion-optimization': '/services',
-    '/services/crm-automation': '/services',
+    '/services/ai-agents': '/ai-team/',
+    '/services/customer-service-bots': '/ai-team/',
+    '/services/appointment-booking-bots': '/ai-team/',
+    '/services/lead-generation-bots': '/ai-team/',
+    '/services/competitor-analysis': '/ai-team/',
+    '/services/analytics': '/ai-team/',
+    '/services/behavioral-analytics': '/ai-team/',
+    '/services/adaptive-layouts': '/services/',
+    '/services/conversion-optimization': '/services/',
+    '/services/crm-automation': '/services/',
+    // Retired /products ("Projects") — every entry was a draft, so the index
+    // rendered an empty catalogue with no inbound links. Folded into /services,
+    // which already covers one-time vs monthly work.
+    '/products': '/services/',
   },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which

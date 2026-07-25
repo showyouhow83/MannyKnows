@@ -63,7 +63,7 @@ const faqSchema = {
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
           <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/plans" class="hover:text-primary-blue transition-colors">Plans</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/plans/" class="hover:text-primary-blue transition-colors">Plans</a></li>
           <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">{plan.name}</span></li>
         </ol>
       </nav>
@@ -106,7 +106,7 @@ const faqSchema = {
                 Get started with {plan.name}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
-              <a href="/work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+              <a href="/work/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
                 See it in our portfolio
               </a>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
@@ -157,7 +157,7 @@ const faqSchema = {
             <div class={`flex flex-wrap items-center justify-center gap-3 ${proofQuote ? 'mt-6' : ''}`}>
               <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
               {proof.cases.map((c) => (
-                <a href={`/work/${c.slug}`} class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
+                <a href={`/work/${c.slug}/`} class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
                   {c.name}
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </a>
@@ -209,7 +209,7 @@ const faqSchema = {
         <h2 class="text-lg font-bold text-center mb-8 text-text-light-primary dark:text-text-dark-primary">Not the right fit? The other plans:</h2>
         <div class="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
           {others.map((p) => (
-            <a href={`/plans/${p.slug}`} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+            <a href={`/plans/${p.slug}/`} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <svg class="w-6 h-6 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
               <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
               <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}/mo</p>

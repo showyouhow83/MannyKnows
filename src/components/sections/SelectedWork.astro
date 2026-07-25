@@ -27,7 +27,7 @@ const baseCard =
     const linked = item.caseStudy || item.url;
     const Wrapper = linked ? 'a' : 'div';
     const wrapperAttrs = item.caseStudy
-      ? { href: `/work/${item.caseStudy}` }
+      ? { href: `/work/${item.caseStudy}/` }
       : item.url
       ? { href: item.url, target: '_blank' as const, rel: 'noopener noreferrer' }
       : {};

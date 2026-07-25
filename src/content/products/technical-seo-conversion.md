@@ -46,7 +46,7 @@ Clear dashboards and reporting — including how you're showing up in search and
 
 ## Ranked #1, organically
 
-We built [SL Painting](/work/sl-painting) technical and local SEO from day one — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, with no ad spend propping it up.
+We built [SL Painting](/work/sl-painting/) technical and local SEO from day one — today they rank **#1 on Google, organically, for "Exterior Painting" in Springfield**, with no ad spend propping it up.
 
 ## How it works
 
@@ -58,6 +58,6 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it ranking
 
-SEO — and now AI-search — isn't a one-and-done. The [AI Smart Website plan](/plans/smart-website) (from $349/mo) keeps technical SEO, AI-search readiness, and speed maintained month after month; the [Business Ads plan](/plans/business-ads) (from $950/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
+SEO — and now AI-search — isn't a one-and-done. The [AI Smart Website plan](/plans/smart-website/) (from $349/mo) keeps technical SEO, AI-search readiness, and speed maintained month after month; the [Business Ads plan](/plans/business-ads/) (from $950/mo) adds managed ads, SEO content campaigns, and continuous analysis and correction.
 
-**Ready?** [Get a scoped quote](/contact) or [see the SL Painting case study](/work/sl-painting).
+**Ready?** [Get a scoped quote](/contact/) or [see the SL Painting case study](/work/sl-painting/).
