@@ -122,6 +122,17 @@ const jsonLd = {
         email: EMAIL,
         telephone: PHONE_TEL,
         url: siteUrl,
+        // address is a REQUIRED property for LocalBusiness under Google's
+        // structured-data spec — omitting it fails rich-results validation.
+        // Kept identical to the LocalBusiness on the homepage.
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Springfield',
+          addressRegion: 'MA',
+          addressCountry: 'US',
+        },
+        image: `${siteUrl}/favicon.svg`,
+        priceRange: '$$',
         areaServed: 'Springfield, MA & the Pioneer Valley',
       },
       offers: PACKAGES.map((p) => ({
@@ -130,6 +141,8 @@ const jsonLd = {
         description: p.blurb,
         price: p.price === 'Free' ? '0' : p.price.replace(/[^0-9]/g, ''),
         priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: `${siteUrl}/free-360-photo/`,
       })),
     },
     {
