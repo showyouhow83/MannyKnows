@@ -49,20 +49,20 @@ const pillars = [
 // actually worked it appear here. `from` is an agent id or 'you'.
 const conversation: { from: string; text: string }[] = [
   { from: 'you', text: "I need content ideas for a painting company." },
-  { from: 'manny', text: "Writing the brief before anyone starts: TikTok, local homeowners plus small commercial. Success isn’t a list of ideas — it’s a batch you can shoot this week that earns reach and books quotes." },
+  { from: 'manny', text: "Writing the brief before anyone starts: TikTok first, local homeowners plus small commercial. Success isn’t a list of ideas — it’s a batch you can shoot this week that earns reach and books quotes. I’ll bring it back finished." },
   { from: 'manny', text: "Eve — what’s actually pulling for painters right now, and which of it converts. Keep those two separate." },
   { from: 'eve', text: "ASMR prep-and-roll is its own sub-niche. Alec Paints and Made in Paint run on nothing but sprayer and roller sound — hundreds of thousands of likes a clip. Before/afters do the same. Cheap to shoot, but that’s reach, not phone calls." },
   { from: 'eve', text: "What proves it converts is paint-mixing. Tony Piloseno’s “guess the color” videos, mixed on the job, turned into Tonester Paints — 2.1M+ followers." },
   { from: 'eve', text: "There’s a window open right now: Sherwin-Williams named Universal Khaki its 2026 color of the year, and search behind 2026 paint color trends is already climbing. That fades by spring." },
-  { from: 'eve', text: "Your edge is local. Western Mass painters have almost no organic TikTok presence — stack #springfieldma and #westernmass on the broad tags and you’re competing with nobody. Plan’s ready." },
-  { from: 'you', text: "Approved — pass it to Elly." },
-  { from: 'manny', text: "Elly — ten shoot-ready videos. Hook, script, caption, hashtags, audio cue each. Half for reach, half to make the phone ring." },
+  { from: 'eve', text: "And the edge is local — Western Mass painters have almost no organic TikTok presence. Stack #springfieldma and #westernmass on the broad tags and there’s nobody to outrank." },
+  { from: 'manny', text: "Good — the color-of-the-year window decides the order. Elly, ten shoot-ready videos off Eve’s plan. Hook, script, caption, hashtags, audio cue each. Half reach, half to make the phone ring — color trends first while the search is climbing." },
   { from: 'elly', text: "#1 “Guess the Color” — film the tint drops, freeze one frame before it turns, “comment your guess,” pay it off in the last three seconds." },
   { from: 'elly', text: "#4 “What this job actually costs” — square footage, gallons, labor days, final number. Homeowners are starved for real numbers, and it’s the one thing your competitors won’t post." },
   { from: 'elly', text: "#6 “The unsexy part” — taping, drop cloths, sanding, sped up. Looks like reach content, but craftsmanship is what commercial and HOA buyers are actually shopping for." },
-  { from: 'elly', text: "All ten close on the same line: “comment your town for a free quote.” One funnel, so every lead traces back to the video that made it." },
-  { from: 'you', text: "Love it. Approved." },
-  { from: 'manny', text: "Three to four a week, alternating reach and conversion. Judge them on comments and DMs, not views — views don’t book jobs. Whichever side pulls, the next batch weights that way." },
+  { from: 'elly', text: "Closes are per channel, not copy-pasted. TikTok asks for a comment, because comments are what push the video further. Instagram sends them to the link. The Google Business version just says call for a free estimate — that audience is already looking to hire." },
+  { from: 'manny', text: "That’s the batch: ten scripts, a shot list you can film in two afternoons, and a calendar at three to four a week alternating reach and conversion. Nothing goes out until you say so — that’s the only decision I need from you." },
+  { from: 'you', text: "Ship it." },
+  { from: 'manny', text: "Live. I’m tracking comments, DMs, and quote requests rather than views, and Elly reweights the next batch toward whichever side is actually booking work. You’ll get the numbers and the next ten — not another to-do list." },
 ];
 
 // Compact role labels shown next to each name in the chat (e.g. "Nova (SEO)").
@@ -189,7 +189,7 @@ const faqSchema = {
               <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
             </h2>
             <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              You talk to one place — Manny — and the team works in the thread. This is an actual run, condensed: one line in asking for TikTok content ideas for a painting company, ten shoot-ready scripts out — and a real approval gate at every handoff.
+              You talk to one place — Manny — and the team works in the thread. This is an actual run, condensed: one line in asking for TikTok content ideas for a painting company. The team researches, plans, and writes on its own; you come back to one finished batch and one decision.
             </p>
           </div>
 
@@ -238,7 +238,7 @@ const faqSchema = {
             </div>
           </div>
           <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
-            One line in, ten shoot-ready scripts out — grounded in real research, with nothing moving until you approved it. That's the difference between ten chatbots and a team.
+            One line in, ten shoot-ready scripts out — grounded in real research, and the only thing on your plate was "ship it." That's the difference between ten chatbots and a team.
           </p>
         </div>
       </Container>
