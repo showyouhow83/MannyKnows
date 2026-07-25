@@ -96,6 +96,15 @@ export const plans: Plan[] = [
           'Monthly updates, monitoring, security, and backups',
         ],
       },
+      {
+        title: 'Hosting, security & content',
+        items: [
+          'SSL certificate, DDoS protection, and content caching across 330+ cities',
+          'Unlimited storage and bandwidth — no metered overages or surprise bills',
+          'Unlimited stock photography, video, and logos (via our Envato Elements license)',
+          'Unlimited content updates — send us changes and we handle them',
+        ],
+      },
     ],
     steps: [
       { title: 'Kickoff', body: 'We learn your business — what you do, who your customers are, and the questions they keep asking.' },
