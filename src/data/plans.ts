@@ -58,6 +58,7 @@ export const plans: Plan[] = [
       'Remi, your AI agent, answers customers 24/7 in their language',
       'A sharp 1–3 page multilingual site that optimizes itself — kept fast, current, and ahead of any basic website',
       'Found when locals search you on Google + Maps (profile set up for you)',
+      'Your own admin — update the site and manage leads yourself, no waiting on us',
     ],
     headline: 'An AI-driven website — not a page that just sits there',
     blurb:
@@ -87,6 +88,15 @@ export const plans: Plan[] = [
           'Answers customer questions 24/7, in your customer’s language',
           'Trained on your business: services, prices, hours, and how you talk',
           'Hands off to you the moment a human should take over',
+        ],
+      },
+      {
+        title: 'Your own admin',
+        items: [
+          'Run the site yourself — update pages, posts, photos, and prices without waiting on us',
+          'Every lead, contact, and inquiry Remi captures, tracked in one place',
+          'Control Remi from it too — what it knows, what it says, what it hands to you',
+          'Built around your business: we add the sections you actually need — estimates, projects, contracts, portfolio — and leave out the ones you don’t',
         ],
       },
       {

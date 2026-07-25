@@ -145,7 +145,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our website plans start at $99/mo with no big upfront bill — a multilingual site, Remi answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. A full multi-page site with Remi booking tours starts at $199/mo. Need a parent or enrollment dashboard on top of that? We build those too — quoted for your center. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $99/mo with no big upfront bill — a multilingual site, Remi answering parents 24/7, your own admin to track enrollment inquiries and update the site yourself, Google Business Profile, technical SEO, and upkeep included. A full multi-page site with Remi booking tours starts at $199/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can you help us manage enrollment and parents?',
