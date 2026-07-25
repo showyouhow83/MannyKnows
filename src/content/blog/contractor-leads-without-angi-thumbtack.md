@@ -47,6 +47,6 @@ Here's the leak most contractors never plug: a homeowner finds you at 8 p.m., yo
 
 ## Where we come in
 
-Building all of this — the profile, the service pages, the reviews system, the AI agent — and keeping it ranking is exactly what our **[AI Smart Website plans](/plans/)** do, from $99/mo, or $199/mo once you want a page for every service and Remi booking the estimates. It's built to replace the lead-rental treadmill with a presence that brings you jobs on its own.
+Building all of this — the profile, the service pages, the reviews system, the AI agent — and keeping it ranking is exactly what our **[AI Smart Website plans](/plans/)** do, from $99/mo, or [$199/mo once you want a page for every service and Remi booking the estimates](/plans/plus-website/). It's built to replace the lead-rental treadmill with a presence that brings you jobs on its own.
 
 Tired of paying for the same lead as your competitors? **[Get a free look at your current setup](/free-ai-website-analysis/)** — we'll tell you honestly where your leads are leaking and what it'd take to own the flow instead.

@@ -34,7 +34,7 @@ For a straightforward, well-built small-business site, the going rate around her
 
 Instead of a big upfront bill, you pay monthly and the site is built **and** kept working — fast, found, and up to date every month. Good when you'd rather have it handled than babysit it yourself.
 
-Our **[AI Smart Website plans](/plans/)** start at **$99/mo**: a fast, multilingual site, Remi answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance — all included. Want a full multi-page site with Remi booking jobs? That's **$199/mo**, and the fully self-optimizing tier is **$349/mo**. For comparison, professional SEO *on its own* runs $500–2,000/mo at most agencies, so bundling the site, the AI, and the upkeep from $99 is built to be the affordable option, not the cheap one.
+Our **[AI Smart Website plans](/plans/)** start at [**$99/mo**](/plans/basic-website/): a fast, multilingual site, Remi answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance — all included. Want a full multi-page site with Remi booking jobs? That's [**$199/mo**](/plans/plus-website/), and the [fully self-optimizing tier is **$349/mo**](/plans/smart-website/). For comparison, professional SEO *on its own* runs $500–2,000/mo at most agencies, so bundling the site, the AI, and the upkeep from $99 is built to be the affordable option, not the cheap one.
 
 ## What actually makes a website "expensive"
 
