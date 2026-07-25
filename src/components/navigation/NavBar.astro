@@ -27,7 +27,7 @@ const {
 // the top bar uncluttered; everything else stays flat.
 const offerings = [
   { href: "/services/", label: "Overview", desc: "How it all fits together" },
-  { href: "/plans/", label: "Monthly Plans", desc: "We run it — from $349/mo" },
+  { href: "/plans/", label: "Monthly Plans", desc: "We run it — from $99/mo" },
   { href: "/ai-team/", label: "AI Team", desc: "Hire AI agents like staff" },
 ];
 const primaryLinks = [
@@ -45,7 +45,7 @@ const searchIndex = [
   { title: "How it works", description: "From the first call to working software — our process, from friction to a finished app.", url: "/how-it-works/", type: "Page" },
   { title: "Plans & pricing", description: "Website plans from $99/mo — AI Smart Website I, II, III & AI Smart eCommerce (multilingual), plus ads & full-agency services.", url: "/plans/", type: "Page" },
   { title: "AI Smart Website plan", description: "Multilingual site + AI agent that answers customers & books jobs 24/7 — from $349/mo.", url: "/plans/smart-website/", type: "Page" },
-  { title: "Online Store (AI) plan", description: "A full Shopify store with a custom theme and AI shopping assistant — from $399/mo.", url: "/plans/online-store/", type: "Page" },
+  { title: "AI Smart eCommerce plan", description: "A full Shopify store with a custom theme and AI shopping assistant — from $399/mo.", url: "/plans/online-store/", type: "Page" },
   { title: "Business Ads plan", description: "Social growth, managed Google & social ads, SEO campaigns — from $950/mo.", url: "/plans/business-ads/", type: "Page" },
   { title: "Multimedia Agency plan", description: "Everything handled — web, store, ads, software & AI. Your full media & tech team from $1,800/mo.", url: "/plans/multimedia-agency/", type: "Page" },
   { title: "The AI Team", description: "Hire AI agents like staff — Remi, Eve, Elly, Leo, Aria, Nova, Piper, Max, Finn & Vera, managed by Manny — front desk, research, copy, graphics & video, voice, SEO, publishing, ads, engagement & reporting. $199 setup, agents from $99/mo.", url: "/ai-team/", type: "Page" },
@@ -55,7 +55,7 @@ const searchIndex = [
   { title: "Free AI Website Analysis", description: "Send your site, get a plain-English report — speed, SEO, mobile, conversions & AI-readiness. Free, no obligation.", url: "/free-ai-website-analysis/", type: "Page" },
   { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors — with an AI agent that books estimates 24/7.", url: "/websites-for-contractors/", type: "Page" },
   { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare — parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares/", type: "Page" },
-  ...localAreas.map((a) => ({ title: `Web design ${a.name} MA`, description: `Multilingual websites with AI booking agents for ${a.name} & Western Mass businesses.`, url: `/web-design-${a.slug}-ma`, type: "Page" })),
+  ...localAreas.map((a) => ({ title: `Web design ${a.name} MA`, description: `Multilingual websites with AI booking agents for ${a.name} & Western Mass businesses.`, url: `/web-design-${a.slug}-ma/`, type: "Page" })),
   { title: "Launch your app", description: "You bring the idea — we design, build, launch, and market it for you.", url: "/#launchpad", type: "Page" },
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog/", type: "Page" },
   ...blogPosts.map((p) => ({ title: p.data.title, description: p.data.description, url: `/blog/${p.id}/`, type: "Blog", tags: p.data.tags.join(" ") })),
@@ -68,9 +68,9 @@ const searchIndex = [
     <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <div class="text-5xl font-black m-0" style="font-size: 3rem;">
-        <a href="/" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden inline-flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+        <a href="/" aria-label="MannyKnows — home" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden inline-flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
           <span>MK</span>
-          <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="" aria-hidden="true" decoding="async" class="h-11 w-11 object-contain shrink-0 -ml-5 nav-astro" />
+          <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="MannyKnows astronaut mascot" decoding="async" class="h-11 w-11 object-contain shrink-0 -ml-5 nav-astro" />
         </a>
       </div>
 
@@ -214,7 +214,7 @@ const searchIndex = [
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <a href="/" aria-label="MannyKnows — home" class="logo-gradient inline-flex items-center gap-2 text-2xl font-black text-text-light-primary dark:text-text-dark-primary no-underline">
           MK
-          <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="" aria-hidden="true" decoding="async" class="h-9 w-9 object-contain shrink-0 -ml-4 nav-astro" />
+          <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="MannyKnows astronaut mascot" decoding="async" class="h-9 w-9 object-contain shrink-0 -ml-4 nav-astro" />
         </a>
         <button
           type="button"
