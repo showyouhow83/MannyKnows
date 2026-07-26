@@ -41,29 +41,22 @@ const pillars = [
   },
 ];
 
-// A real run, condensed. Asked on 7/23/2026: "I need content ideas for a
+// A real run, condensed hard. Asked on 7/23/2026: "I need content ideas for a
 // painting company." Manny scoped the brief, Eve researched what's actually
 // working for painters on TikTok, Elly turned it into 10 shoot-ready scripts,
-// and both handoffs waited on approval before moving. Every finding, name, and
-// figure below is from that run — nothing invented. Only the agents that
-// actually worked it appear here. `from` is an agent id or 'you'.
+// and one approval shipped it. Every finding, name, and figure below is from
+// that run — nothing invented. Only the agents that actually worked it appear,
+// one bubble each: fragmenting a specialist's answer across four bubbles read
+// as chatter, not expertise. `from` is an agent id or 'you'.
 // `tag` mirrors the real compose box's Outputs selector — the owner picks
 // where the work should land (or leaves it blank and Manny decides), so the
 // channel never has to be typed into the request itself.
 const conversation: { from: string; text: string; tag?: string }[] = [
   { from: 'you', text: "I need content ideas for a painting company.", tag: 'Output: TikTok' },
-  { from: 'manny', text: "Writing the brief before anyone starts: TikTok first, local homeowners plus small commercial. Success isn’t a list of ideas — it’s a batch you can shoot this week that earns reach and books quotes. I’ll bring it back finished." },
-  { from: 'manny', text: "Eve — what’s actually pulling for painters right now, and which of it converts. Keep those two separate." },
-  { from: 'eve', text: "ASMR prep-and-roll is its own sub-niche. Alec Paints and Made in Paint run on nothing but sprayer and roller sound — hundreds of thousands of likes a clip. Before/afters do the same. Cheap to shoot, but that’s reach, not phone calls." },
-  { from: 'eve', text: "What proves it converts is paint-mixing. Tony Piloseno’s “guess the color” videos, mixed on the job, turned into Tonester Paints — 2.1M+ followers." },
-  { from: 'eve', text: "There’s a window open right now: Sherwin-Williams named Universal Khaki its 2026 color of the year, and search behind 2026 paint color trends is already climbing. That fades by spring." },
-  { from: 'eve', text: "And the edge is local — Western Mass painters have almost no organic TikTok presence. Stack #springfieldma and #westernmass on the broad tags and there’s nobody to outrank." },
-  { from: 'manny', text: "Good — the color-of-the-year window decides the order. Elly, ten shoot-ready videos off Eve’s plan. Hook, script, caption, hashtags, audio cue each. Half reach, half to make the phone ring — color trends first while the search is climbing." },
-  { from: 'elly', text: "#1 “Guess the Color” — film the tint drops, freeze one frame before it turns, “comment your guess,” pay it off in the last three seconds." },
-  { from: 'elly', text: "#4 “What this job actually costs” — square footage, gallons, labor days, final number. Homeowners are starved for real numbers, and it’s the one thing your competitors won’t post." },
-  { from: 'elly', text: "#6 “The unsexy part” — taping, drop cloths, sanding, sped up. Looks like reach content, but craftsmanship is what commercial and HOA buyers are actually shopping for." },
-  { from: 'elly', text: "Closes are per channel, not copy-pasted. TikTok asks for a comment, because comments are what push the video further. Instagram sends them to the link. The Google Business version just says call for a free estimate — that audience is already looking to hire." },
-  { from: 'manny', text: "That’s the batch: ten scripts, a shot list you can film in two afternoons, and a calendar at three to four a week alternating reach and conversion. Nothing goes out until you say so — that’s the only decision I need from you." },
+  { from: 'manny', text: "Writing the brief before anyone starts: TikTok, local homeowners plus small commercial. Success isn’t a list of ideas — it’s a batch you can shoot this week, half built to earn reach, half to book quotes. Eve researches, Elly scripts, and I’ll bring it back finished." },
+  { from: 'eve', text: "Reach and bookings come from different videos. Sprayer-and-roller ASMR and before/afters rack up likes — Alec Paints runs a whole account on the sound alone — but that’s reach, not phone calls. What converts is paint-mixing: “guess the color” videos turned Tonester Paints into a 2.1M-follower brand. And Western Mass painters have almost no TikTok presence — stack #springfieldma on the broad tags and there’s nobody to outrank." },
+  { from: 'elly', text: "Ten shoot-ready videos — hook, script, caption, hashtags, audio cue each. #1 “Guess the Color”: film the tint drops, freeze a frame before it turns, “comment your guess.” #4 “What this job actually costs”: the real numbers competitors won’t post. And the closes are per channel — TikTok asks for a comment, Instagram sends them to the link, Google Business says call." },
+  { from: 'manny', text: "That’s the batch — ten scripts, a shot list you can film in two afternoons, a three-to-four-a-week calendar. Nothing goes out until you say so; that’s the only decision I need." },
   { from: 'you', text: "Ship it." },
   { from: 'manny', text: "Live — posting three to four a week. I’m watching what each video brings in: comments, DMs, quote requests. Views don’t book jobs. When this batch runs out, you’ll get the numbers and the next ten videos, built around whatever brought in work." },
 ];
