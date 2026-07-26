@@ -239,4 +239,8 @@ export const aiTeamFaq = [
     q: 'Do the agents post without me seeing it first?',
     a: "You choose. Most owners start with everything queued for a quick approval, then hand off the routine stuff once they trust the output. Anything customer-facing — a post, a review reply, an ad — can always require your sign-off, and budget changes always do.",
   },
+  {
+    q: 'Can the agents change my website itself?',
+    a: "Yes — this is where the team stops being a content tool. Give an agent access to your site and it works on it directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps the content over for a holiday — with the same approval flow as everything else. It's already making live updates to a client's site (VL Home Services), not a roadmap item.",
+  },
 ];
