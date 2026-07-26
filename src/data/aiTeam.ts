@@ -107,7 +107,7 @@ export const team: Agent[] = [
     id: 'bap',
     name: 'Piper',
     role: 'Publisher & scheduling',
-    does: "Puts everything live at the right time, on every channel you use, so you post consistently without lifting a finger — and confirms every publish back to Manny, so your status board is always true.",
+    does: "Puts everything live at the right time, on every channel you use — including your website itself. Site changes arrive as a private preview copy; your live site doesn't change until you press Publish. Every publish is confirmed back to Manny, so your status board is always true.",
     handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
     price: 149,
@@ -241,6 +241,6 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes — this is where the team stops being a content tool. Give an agent access to your site and it works on it directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps the content over for a holiday — with the same approval flow as everything else. This is on-request work, the counterpart to an AI Smart Website plan where the site tunes itself in the background — and it's already making live updates to a client's site (VL Home Services), not a roadmap item.",
+    a: "Yes — this is where the team stops being a content tool. Piper works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an AI Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services), not a roadmap item.",
   },
 ];
