@@ -241,6 +241,6 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes — this is where the team stops being a content tool. Give an agent access to your site and it works on it directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps the content over for a holiday — with the same approval flow as everything else. It's already making live updates to a client's site (VL Home Services), not a roadmap item.",
+    a: "Yes — this is where the team stops being a content tool. Give an agent access to your site and it works on it directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps the content over for a holiday — with the same approval flow as everything else. This is on-request work, the counterpart to an AI Smart Website plan where the site tunes itself in the background — and it's already making live updates to a client's site (VL Home Services), not a roadmap item.",
   },
 ];
