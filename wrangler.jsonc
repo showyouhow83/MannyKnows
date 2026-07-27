@@ -42,13 +42,10 @@
   // The admin code ships dark: with these bindings absent it answers 503 with
   // setup instructions instead of erroring. Full walkthrough: SETUP-ADMIN.md.
   //
-  // 1) D1 (required for everything admin):
-  //      npx wrangler d1 create mannyknows-db             → paste database_id
-  //    then uncomment "d1_databases", deploy, log in at /admin and run the
-  //    migrations at /admin/migrate/.
-  // "d1_databases": [
-  //   { "binding": "MK_APP_DB", "database_name": "mannyknows-db", "database_id": "PASTE_ID_HERE" }
-  // ],
+  // 1) D1 — LIVE (created 2026-07-27). Schema applied via /admin/migrate/.
+  "d1_databases": [
+    { "binding": "MK_APP_DB", "database_name": "mannyknows-db", "database_id": "aaf1025c-832c-4a5f-8c94-d20deca7d496" }
+  ],
   //
   // 2) R2 (optional — media pool, uploads, contract PDFs):
   //      npx wrangler r2 bucket create mannyknows-media
