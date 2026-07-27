@@ -4,7 +4,7 @@ export interface Props {
   badge?: string;
   title?: string;
   subtitle?: string;
-  variant?: 'default' | 'alternate' | 'dark';
+  variant?: 'default' | 'alternate' | 'dark' | 'hero';
   className?: string;
   headerAlignment?: 'left' | 'center' | 'right';
 }
@@ -23,7 +23,10 @@ const {
 const variantStyles = {
   default: 'bg-light-primary dark:bg-dark-primary',
   alternate: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10',
-  dark: 'bg-gradient-to-br from-slate-900/95 via-gray-900/90 to-slate-800/95 border-t border-white/10'
+  dark: 'bg-gradient-to-br from-slate-900/95 via-gray-900/90 to-slate-800/95 border-t border-white/10',
+  // Same wash the hero header wears — for sections that should sit at the
+  // hero's dark, not the raw near-black page base.
+  hero: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 border-t border-gray-300/30 dark:border-white/10'
 };
 
 // Define header alignment styles
