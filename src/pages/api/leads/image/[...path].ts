@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 /**
@@ -20,7 +21,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
     const r2Key = `leads/${path}`;
 
     // Access R2 bucket
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
 
     if (!bucket) {
       console.error('[Image Proxy] R2 bucket not configured');

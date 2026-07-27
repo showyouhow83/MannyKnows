@@ -1,6 +1,7 @@
 // Project Updates API
 // POST: Add progress update (image or note) - crew access via token
 // GET: List updates - crew or admin access
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { isVideoUrl, ingestToStream, streamThumb } from '../../../../lib/stream';
@@ -17,7 +18,7 @@ interface UpdateRequest {
 // POST: Add a progress update (crew via token OR admin via session)
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const projectId = params.id;
 
@@ -220,7 +221,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
 // GET: List project updates
 export const GET: APIRoute = async ({ request, locals, params, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const projectId = params.id;
@@ -305,7 +306,7 @@ export const GET: APIRoute = async ({ request, locals, params, url }) => {
 // DELETE: Remove a project update (admin only)
 export const DELETE: APIRoute = async ({ request, locals, params, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const projectId = params.id;
@@ -390,7 +391,7 @@ export const DELETE: APIRoute = async ({ request, locals, params, url }) => {
 // crew-only (shown on the crew page, hidden from the client portal).
 export const PATCH: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const projectId = params.id;

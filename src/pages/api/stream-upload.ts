@@ -1,6 +1,7 @@
 // Cloudflare Stream Video Upload API
 // POST: Import video from R2 URL to Stream for transcoding
 // This uploads to R2 first (which works), then tells Stream to fetch from R2
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../lib/adminAuth';
 import { streamHls, streamThumb, streamIframe } from '../../lib/stream';
@@ -14,7 +15,7 @@ interface StreamUploadResponse {
 // POST: Import video from URL (R2) to Stream
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
     // Verify admin authentication
@@ -163,7 +164,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // GET: Check video status by stream UID
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
     // Verify admin authentication

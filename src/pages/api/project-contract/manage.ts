@@ -1,4 +1,5 @@
 // Admin contract management — upload URL, send to customer, mark signed
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { sendContractToCustomer, type QuoteEmailEnv } from '../../../lib/quote-emails';
@@ -9,7 +10,7 @@ export const prerender = false;
 // PATCH: Update contract fields (upload URL, mark signed, send to customer)
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);

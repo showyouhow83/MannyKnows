@@ -4,6 +4,7 @@
 //
 // Admin only. Body for POST is the raw PDF bytes. Header X-Attachment-Label
 // carries the customer-facing label (defaults to "Estimate").
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
@@ -13,7 +14,7 @@ const MAX_PER_QUOTE = 10;               // sanity cap; bump if it ever bites
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) {
@@ -41,7 +42,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!db || !bucket) return j({ success: false, error: 'Storage not configured' }, 503);

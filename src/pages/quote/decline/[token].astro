@@ -1,12 +1,13 @@
 ---
 // Quote Decline Feedback Page
 // Customer provides reason for declining
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIContext } from 'astro';
 
 export const prerender = false;
 
 const { token } = Astro.params;
-const env = Astro.locals.runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 
 let quote: any = null;

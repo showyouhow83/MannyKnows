@@ -3,11 +3,12 @@
 // schedule row: amount received, method, check #, date, and BOTH signatures
 // (client + contractor). Mirrors the in-person contract signing flow but
 // scoped to a single payment. Opened from the Contract tab's payment table.
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../../../../lib/adminAuth';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 if (!session.isAuthenticated) {

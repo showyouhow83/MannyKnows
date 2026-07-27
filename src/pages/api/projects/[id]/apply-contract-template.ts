@@ -19,6 +19,7 @@
 //   replace     (boolean, optional — when true, overwrites the existing
 //                contract instead of refusing. Default false.)
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { parseScopes, type QuoteScope, sumSubtotals } from '../../../../lib/quoteTemplateConstants';
@@ -157,7 +158,7 @@ function generatePaymentSchedule(opts: {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);

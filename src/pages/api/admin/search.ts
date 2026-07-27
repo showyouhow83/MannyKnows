@@ -9,6 +9,7 @@
 // Raw leads that have no contact yet still show as standalone Lead rows so
 // nothing gets hidden.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -25,7 +26,7 @@ function json(body: unknown, status = 200) {
 const STAGE_RANK: Record<string, number> = { lead: 1, quote: 2, project: 3, portfolio: 4 };
 
 export const GET: APIRoute = async ({ request, locals, url }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
   if (!db) return json({ error: 'DB not configured' }, 503);
 

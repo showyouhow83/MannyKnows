@@ -1,11 +1,12 @@
 // Dashboard Stats API
 // GET: Returns pipeline counts for leads, quotes, projects, crew
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

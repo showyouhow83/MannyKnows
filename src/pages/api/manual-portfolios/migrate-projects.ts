@@ -2,6 +2,7 @@
 // POST /api/manual-portfolios/migrate-projects
 // This is a one-time migration endpoint for projects that were promoted
 // before the unified portfolio system was implemented
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -13,7 +14,7 @@ interface MigratedProject {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -217,7 +218,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // GET: Check migration status
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

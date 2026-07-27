@@ -1,5 +1,6 @@
 // Media management for manual portfolios
 // GET: List media, POST: Add media, DELETE: Remove media
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../../lib/adminAuth';
 import { isVideoUrl, ingestToStream, streamThumb } from '../../../../lib/stream';
@@ -7,7 +8,7 @@ import { isVideoUrl, ingestToStream, streamThumb } from '../../../../lib/stream'
 // GET: List all media for a portfolio
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -95,7 +96,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
 // POST: Add media to portfolio
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -272,7 +273,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
 // PATCH: Update media (reorder or update caption)
 export const PATCH: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -379,7 +380,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
 // DELETE: Remove media from portfolio
 export const DELETE: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

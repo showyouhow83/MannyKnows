@@ -1,6 +1,7 @@
 ---
 // Customer Project Portal - View project status and progress
 // Privacy-focused: No address, no pricing, no personal details shown
+import { env as cfEnv } from 'cloudflare:workers';
 import { normalizeAddress } from '../../lib/address';
 import { SERVICE_LABELS } from '../../data/serviceTypes';
 import { streamSubdomain } from '../../lib/stream';
@@ -13,7 +14,7 @@ import { getBrand, SL_BRAND, type Brand } from '../../lib/brand';
 const { token } = Astro.params;
 const currentYear = new Date().getFullYear();
 
-const env = Astro.locals.runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 // Stream customer subdomain ('' when Stream isn't configured — the video
 // lightbox then falls back to playing the raw file URL).

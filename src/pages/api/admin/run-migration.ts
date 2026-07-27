@@ -7,6 +7,7 @@
 //
 // Files are bundled at build time via Vite ?raw imports — add new migrations
 // to the MIGRATIONS map below when they land in database/migrations/.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
 // @ts-ignore - Vite raw import
@@ -66,7 +67,7 @@ async function requireAdmin(request: Request, env: any): Promise<Response | null
 }
 
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const denied = await requireAdmin(request, env);
   if (denied) return denied;
 
@@ -79,7 +80,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const denied = await requireAdmin(request, env);
   if (denied) return denied;
 

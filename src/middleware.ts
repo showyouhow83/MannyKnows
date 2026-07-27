@@ -21,6 +21,7 @@
 //      (falls back to the original image when the binding is missing/fails).
 //   7. Security headers + noindex on admin and private token pages only.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import { defineMiddleware } from 'astro:middleware';
 import { AdminAuth } from './lib/adminAuth';
 
@@ -33,7 +34,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
 
   // ── 0. Media host: serve the R2 bucket directly ──────────────────────────
   const mediaHost = env?.MEDIA_PUBLIC_HOST || 'images.mannyknows.com';

@@ -3,6 +3,7 @@
 // POST: Create contact manually
 // PATCH: Update contact
 // DELETE: Delete contact
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -25,7 +26,7 @@ function normalizePhone(phone: string | null | undefined): string {
 }
 
 async function authAndDb(request: Request, locals: any) {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
   if (!session.isAuthenticated) {

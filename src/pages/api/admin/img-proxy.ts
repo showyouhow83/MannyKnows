@@ -11,6 +11,7 @@
 // are downscaled, then streams the bytes back. SSRF-guarded to our own
 // image host. Admin only (cookie sent automatically on the same-origin <img>).
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
@@ -35,7 +36,7 @@ export const GET: APIRoute = async ({ request, url, locals }) => {
     let target: URL;
     try { target = new URL(raw); } catch { return new Response('bad url', { status: 400 }); }
     // SSRF guard — only our own image host, only http(s).
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     if (!allowedHosts(env).has(target.hostname) || !/^https?:$/.test(target.protocol)) {
       return new Response('forbidden host', { status: 403 });
     }

@@ -19,6 +19,7 @@
 // Returns the updated full template_sections array (QuoteScope[]) so the
 // client can render directly without a refetch.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { parseScopes, type QuoteScope, type QuoteSection } from '../../../../lib/quoteTemplateConstants';
@@ -53,7 +54,7 @@ function cloneSections(rawSections: unknown): QuoteSection[] {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

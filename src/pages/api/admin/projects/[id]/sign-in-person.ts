@@ -20,6 +20,7 @@
 // Returns { success, project_id } so the page can kick off the signed-PDF
 // generation iframe.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../../lib/adminAuth';
 import { sendContractSignedNotification } from '../../../../../lib/contract-emails';
@@ -35,7 +36,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

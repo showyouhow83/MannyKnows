@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { resolveAllowedOrigin } from '../../lib/cors';
 import { publicUrlForR2Path } from '../../lib/publicUrl';
@@ -95,8 +96,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Access R2 bucket through env
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
-    const kv = locals.runtime?.env?.MK_ADMIN_KV;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
+    const kv = cfEnv?.MK_ADMIN_KV;
 
     if (!bucket) {
       return new Response(
@@ -178,7 +179,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Check rate limit (skip for authenticated admin OR crew sessions)
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const db = env?.MK_APP_DB;
     let isAdmin = false;
@@ -234,8 +235,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const path = validFolders.includes(folder) ? folder : 'progress';
 
     // Access R2 bucket through env
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
-    const kv = locals.runtime?.env?.MK_ADMIN_KV;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
+    const kv = cfEnv?.MK_ADMIN_KV;
 
     if (!bucket) {
       return new Response(

@@ -1,9 +1,10 @@
 ---
 // Crew Lead Project Portal - View project details and upload progress
+import { env as cfEnv } from 'cloudflare:workers';
 import { normalizeAddress } from '../../../lib/address';
 const { token } = Astro.params;
 
-const env = Astro.locals.runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 
 let job: any = null;

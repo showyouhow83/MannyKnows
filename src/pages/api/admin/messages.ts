@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { Resend } from 'resend';
@@ -6,7 +7,7 @@ import { getBrand, emailFrom, type Brand } from '../../../lib/brand';
 
 // GET: Fetch messages for a quote or lead
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -52,7 +53,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 // POST: Send a message to a customer
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
 

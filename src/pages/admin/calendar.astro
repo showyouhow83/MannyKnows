@@ -3,6 +3,7 @@
 // SSR-rendered with ?month=YYYY-MM (defaults to today in ET).
 // Click any project bar → opens that project's detail in /admin/projects/.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../lib/adminAuth';
 import AdminNav from '../../components/AdminNav.astro';
 import AdminPresence from '../../components/AdminPresence.astro';
@@ -13,7 +14,7 @@ import { todayDateEt } from '../../lib/dateEt';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 if (!session.isAuthenticated) {

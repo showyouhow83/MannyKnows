@@ -6,6 +6,7 @@
 // (.mov/.mp4 etc.), so admin/client/crew renderers detect video vs. image at
 // render time without needing a separate column.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { streamThumb } from '../../../../lib/stream';
@@ -50,7 +51,7 @@ function baseName(u: string): string {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

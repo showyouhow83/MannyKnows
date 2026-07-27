@@ -5,12 +5,13 @@
 //
 // Both accept paths write a quote_signatures row (see /api/quotes/respond.ts),
 // so this is the single source of truth for "how was this quote accepted".
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) return j({ success: false, error: 'Unauthorized' }, 401);

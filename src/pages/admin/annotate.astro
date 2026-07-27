@@ -6,11 +6,12 @@
 // flattened onto a NEW image (original untouched) and stored under R2
 // 'annotations/' — excluded from portfolio + the customer gallery.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../lib/adminAuth';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 if (!session.isAuthenticated) {

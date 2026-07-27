@@ -4,4 +4,12 @@ Allow: /
 # Internal preview pages (also noindex via meta)
 Disallow: /preview/
 
+# Admin + private customer/crew portal pages (also noindex via X-Robots-Tag)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /quote/
+Disallow: /project/
+Disallow: /confirm/
+Disallow: /partners/crew/
+
 Sitemap: https://mannyknows.com/sitemap-index.xml

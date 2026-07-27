@@ -1,6 +1,7 @@
 ---
 // /admin/web/hero-slider — manage the homepage hero carousel slides. One of the
 // sections under the /admin/web hub (blog + more to follow).
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../../lib/adminAuth';
 import AdminNav from '../../../components/AdminNav.astro';
 import AdminPresence from '../../../components/AdminPresence.astro';
@@ -11,7 +12,7 @@ import '../../../styles/admin.css';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 if (!session.isAuthenticated) {

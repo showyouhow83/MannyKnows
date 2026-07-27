@@ -1,5 +1,6 @@
 // Admin Leads API - Create direct leads from admin panel
 // POST: Create new lead (admin only)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { normName, normEmail, normAddr, normCity, normState, sentenceCase } from '../../../lib/textNorm';
@@ -54,7 +55,7 @@ function generateUUID(): string {
 // POST: Create direct lead from admin
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 

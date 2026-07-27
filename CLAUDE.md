@@ -63,6 +63,45 @@ for small businesses in Western Massachusetts).
 - Images reuse the responsive pipeline: `public/works/<base>-<width>.<ext>`
   (AVIF/WebP). `heroImage`/`gallery` accept a base name OR a literal path/URL.
 
+## Admin / CRM (ported from VLHomes, July 2026)
+
+- Full CRM at **`/admin`**: Dashboard, Leads, Quotes (+templates), Projects
+  (+contracts/e-signature), Portfolios, Contacts, Partners (white-label), Crew
+  (+`/admin/timeclock` kiosk — deliberately NOT auth-gated), Calendar,
+  Media Pool, Web (hero slides + wiki). Customer-facing machinery pages:
+  `/quote/[token]`, `/project/[token]`, `/confirm/[token]`, `/my-project`,
+  partner/crew portals. Setup + resource creation: **`SETUP-ADMIN.md`**.
+- **Ships dark**: with `MK_APP_DB` unbound, deploys are unaffected and
+  `/admin` answers a 503 explainer. Bindings live commented-out in
+  `wrangler.jsonc` (`MK_APP_DB` D1, `MK_ADMIN_KV` KV, `MK_MEDIA_BUCKET` R2,
+  `IMAGES`) until Manny creates the resources. Login rate-limit reuses
+  `MK_KV_SESSIONS`.
+- **Adapter-v14 rule (the port's one real breakage):** `locals.runtime.env`
+  THROWS on any access — every ported file uses
+  `import { env as cfEnv } from 'cloudflare:workers'`. Never reintroduce
+  `locals.runtime.env` in admin code.
+- Auth: HMAC-signed `mk_admin_session` cookie (PBKDF2 users in D1
+  `admin_users`, env-var bootstrap creds), enforced by `src/middleware.ts`,
+  which is **scoped to admin/portal namespaces only** — public pages pass
+  through untouched (their CSP/caching stay in BaseLayout). Viewer-role
+  sessions are write-blocked centrally there.
+- D1 schema: `database/migrations/002-full-admin.sql` (39 tables), applied via
+  the one-click runner at `/admin/migrate/`. Register new migration files in
+  `src/pages/api/admin/run-migration.ts` (bundled with `?raw`).
+- Styling is self-contained (`src/styles/admin.css`; customer pages use
+  `src/styles/portal.css` + `src/components/portal/*`) — NOT Tailwind, NOT
+  BaseLayout. The admin wordmark is drawn by `.logo-gradient-wrapper::after`.
+- Admin emails send from `…@send.mannyknows.com` via the existing
+  `RESEND_API_KEY` — that domain must be verified in Resend before sends work.
+- Daily cron (follow-ups/reminders) is NOT wired yet: adapter v14's worker
+  entry differs from VLH's injection target. `POST /api/cron/run`
+  (admin session or `CRON_SECRET` header) runs the same job; handlers kept in
+  `scripts/scheduled-handler.js` / `scripts/email-handler.js`.
+- Contractor-shaped content (service types, quote/contract templates, crew
+  pay constants) was inherited on purpose — "we'll readapt this admin to our
+  agency" is the next phase. Crew pay/bonus values need Manny's sign-off
+  before real use.
+
 ## Key commands
 
 - `npm run dev` — local dev server

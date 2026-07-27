@@ -1,5 +1,6 @@
 // Crew Login API
 // POST: Authenticate crew member by name + phone, return session cookie (expires end of day)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 function normalizePhone(phone: string): string {
@@ -15,7 +16,7 @@ function normalizeName(name: string): string {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
@@ -83,7 +84,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // GET: Validate current session, return crew member info
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return new Response(JSON.stringify({ authenticated: false }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
@@ -113,7 +114,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 // DELETE: Logout
 export const DELETE: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
   const cookie = request.headers.get('cookie') || '';
   const match = cookie.match(/crew_session=([^;]+)/);

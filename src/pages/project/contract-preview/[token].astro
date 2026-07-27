@@ -3,6 +3,7 @@
 // Token-gated public mirror of /admin/projects/[id]/contract/preview, so
 // the customer can hit "Download PDF" on the signing page and get a clean
 // printable document with no admin chrome. Cmd/Ctrl+P → Save as PDF.
+import { env as cfEnv } from 'cloudflare:workers';
 import {
   COMPANY_HEADER,
   parseScopes,
@@ -13,7 +14,7 @@ import { streamThumb } from '../../../lib/stream';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 const token = (Astro.params.token || '').trim();
 

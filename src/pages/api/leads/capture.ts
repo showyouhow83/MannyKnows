@@ -2,6 +2,7 @@
 // Captures leads from Quote Modal, Remi chat, and other sources
 // POST: Public (form submissions)
 // GET/PATCH/DELETE: Admin auth required
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { Resend } from 'resend';
@@ -59,7 +60,7 @@ interface LeadCaptureRequest {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
 
     if (!db) {
@@ -521,7 +522,7 @@ MannyKnows | Springfield, MA
 // GET endpoint to retrieve leads (admin only)
 export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) {
@@ -595,7 +596,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
 // PATCH endpoint to update lead (admin only)
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) {
@@ -701,7 +702,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE endpoint to remove a lead (admin only)
 export const DELETE: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) {

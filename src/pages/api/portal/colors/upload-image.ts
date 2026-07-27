@@ -1,6 +1,7 @@
 // POST /api/portal/colors/upload-image
 // Accepts multipart form: { token, item_id, file }
 // Validates client_token, uploads paint card photo to R2, returns { success, url }.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
 
@@ -14,7 +15,7 @@ const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/h
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!db || !bucket) return json({ error: 'Unavailable' }, 503);

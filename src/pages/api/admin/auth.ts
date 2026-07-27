@@ -1,4 +1,5 @@
 // Secure server-side admin authentication API
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -24,8 +25,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Get credentials from environment variables - NO DEFAULTS for security
     // Support both development (process.env) and production (Cloudflare Workers env)
-    const adminUsername = locals.runtime?.env?.ADMIN_USERNAME || process.env.ADMIN_USERNAME;
-    const adminPassword = locals.runtime?.env?.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+    const adminUsername = cfEnv?.ADMIN_USERNAME || process.env.ADMIN_USERNAME;
+    const adminPassword = cfEnv?.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 
     // Security check: Ensure credentials are set
     if (!adminUsername || !adminPassword) {
@@ -41,7 +42,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Validate credentials
     if (username === adminUsername && password === adminPassword) {
       // Get session secret (use ADMIN_PASSWORD as fallback for signing)
-      const sessionSecret = locals.runtime?.env?.SESSION_SECRET ||
+      const sessionSecret = cfEnv?.SESSION_SECRET ||
                            process.env.SESSION_SECRET ||
                            adminPassword;
 

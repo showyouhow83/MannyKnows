@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { resolveAllowedOrigin } from '../../../lib/cors';
 
@@ -51,8 +52,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Access R2 bucket and D1 database
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
-    const db = locals.runtime?.env?.MK_APP_DB;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
+    const db = cfEnv?.MK_APP_DB;
 
     if (!bucket || !db) {
       return new Response(

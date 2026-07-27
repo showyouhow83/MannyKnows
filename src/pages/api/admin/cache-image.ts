@@ -13,6 +13,7 @@
 // Admin-only on purpose: uploading arbitrary remote URLs into our CF Images
 // account is abuse-sensitive, so it must not live on the public upload route.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -46,7 +47,7 @@ function ourCdnImageId(url: string, deliveryHash: string): string | null {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     if (!env) return json({ success: false, error: 'Runtime unavailable' }, 503);
 
     const sessionSecret = env.SESSION_SECRET || env.ADMIN_PASSWORD;

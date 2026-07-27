@@ -1,6 +1,7 @@
 ---
 // /admin/quote-templates/[id] — section + item editor for one quote template.
 // Renders the editor shell; JS owns the state + save flow.
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../../lib/adminAuth';
 import AdminNav from '../../../components/AdminNav.astro';
 import AdminMobileDrawer from '../../../components/AdminMobileDrawer.astro';
@@ -9,7 +10,7 @@ import '../../../styles/admin.css';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 if (!session.isAuthenticated) {

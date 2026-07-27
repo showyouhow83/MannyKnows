@@ -1,11 +1,12 @@
 // Proxy project contract PDF through main domain (avoid cross-origin iframe block)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
 export const GET: APIRoute = async ({ params, locals }) => {
   const { token } = params;
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
 
   if (!token || !db) {

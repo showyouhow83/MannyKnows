@@ -7,6 +7,7 @@
 // Admin only. Mirrors the quote-attachments endpoint. Documents are owned by
 // the project: 'admin' docs are uploaded here; 'quote_promotion' docs are
 // copied from the quote at promotion time (and can be re-synced).
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
@@ -20,7 +21,7 @@ function j(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) return j({ success: false, error: 'Unauthorized' }, 401);
@@ -78,7 +79,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!db) return j({ success: false, error: 'DB not configured' }, 503);

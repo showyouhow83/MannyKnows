@@ -1,10 +1,11 @@
 // Admin Users API - Create and manage admin users
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, generateSalt, hashPassword, type AdminUser } from '../../../lib/adminAuth';
 
 // GET - List all admin users (requires admin session)
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -47,7 +48,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 // POST - Create new admin user (requires admin session)
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -144,7 +145,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 // DELETE - Disable/delete admin user (requires admin session)
 export const DELETE: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const db = env?.MK_APP_DB;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

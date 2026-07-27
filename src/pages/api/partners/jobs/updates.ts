@@ -3,6 +3,7 @@
 // Crew progress photos/notes for a PARTNER job. Token-auth via the job's
 // crew_token (mirrors /api/projects/[id]/updates for our own projects).
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
@@ -13,7 +14,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB not configured' }, 503);
 

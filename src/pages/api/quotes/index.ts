@@ -3,6 +3,7 @@
 // POST: Create quote from lead (promote) (admin only)
 // PATCH: Update quote (admin only)
 // DELETE: Delete quote (admin only)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { sendQuoteToCustomer, sendRenegotiatedQuoteToCustomer, type Quote as QuoteEmail, type RenegotiationData } from '../../../lib/quote-emails';
@@ -62,7 +63,7 @@ interface QuoteUpdateRequest {
 // GET: List all quotes
 export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -143,7 +144,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
 // POST: Create quote from lead (promotion)
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -302,7 +303,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // PATCH: Update quote
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -762,7 +763,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE: Delete quote
 export const DELETE: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 

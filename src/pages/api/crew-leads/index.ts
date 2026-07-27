@@ -3,6 +3,7 @@
 // POST: Create new crew lead (admin only)
 // PATCH: Update crew lead (admin only)
 // DELETE: Soft delete crew lead (admin only)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -48,7 +49,7 @@ function normalizeBonusDate(v: unknown): string | null {
 // GET: List all active crew leads
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -110,7 +111,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // POST: Create new crew lead
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -196,7 +197,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // PATCH: Update crew lead
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -356,7 +357,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE: Soft delete crew lead
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

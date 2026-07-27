@@ -7,6 +7,7 @@
 // No admin session required — the token IS the capability. Crew may also read
 // via X-Crew-Token (the crew page shows the colors the customer picked).
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { emailHeader, emailFooter, emailButton } from '../../../lib/quote-emails';
@@ -51,7 +52,7 @@ async function isLocked(db: any, projectId: number): Promise<boolean> {
 
 export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 
@@ -78,7 +79,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

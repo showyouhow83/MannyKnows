@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from "astro";
 import { parseRawInbound, threadCustomerReply, type ParsedInbound } from "../../lib/inboundReply";
 
@@ -159,7 +160,7 @@ function bufToBase64(buf: ArrayBuffer): string {
 
 
 export const POST: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+	const env = cfEnv;
 	const body = await request.text();
 
 	const valid = await verifySvixSignature(

@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -12,7 +13,7 @@ function lastSeenKey(username: string): string {
 
 // GET: Fetch all pending notifications (replies, new leads, quote responses)
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -95,7 +96,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 // POST: Mark notifications as read
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
 

@@ -4,6 +4,7 @@
 //   to_pool → move them back into media_pool (source 'admin-reassign'),
 //             then remove them from the project. Used to undo a wrong
 //             pool→project assignment in bulk.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -18,7 +19,7 @@ const isVideoUrl = (u: string) => !!u && /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(u)
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const projectId = params.id;

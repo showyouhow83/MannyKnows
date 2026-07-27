@@ -11,6 +11,7 @@
 //
 // Returns 404 if the portfolio has no source_project_id (manual portfolios).
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../../lib/adminAuth';
 
@@ -23,7 +24,7 @@ function json(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB not configured' }, 503);
 

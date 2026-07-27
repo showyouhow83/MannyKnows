@@ -176,20 +176,24 @@ body {
 }
 
 .logo-gradient-wrapper {
-  width: 140px;
+  /* MannyKnows wordmark — text drawn here so all 21 admin pages pick it up
+     from the empty <div class="logo-gradient-wrapper"> without markup edits. */
+  display: flex;
+  align-items: center;
   height: 40px;
-  /* Brand accent gradient: orange → light orange → amber */
-  background: linear-gradient(135deg, #ff781d 0%, #ff9a4d 50%, #fbbf24 100%);
-  background-size: 300% 300%;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 240'%3E%3Cpath d='M0 0H85V226L211 0H290L160 240H0Z'/%3E%3Cpath d='M290 0L370 0L456.67 160L619 160L619 240L420 240Z'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 240'%3E%3Cpath d='M0 0H85V226L211 0H290L160 240H0Z'/%3E%3Cpath d='M290 0L370 0L456.67 160L619 160L619 240L420 240Z'/%3E%3C/svg%3E");
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: left center;
-  mask-position: left center;
-  transition: transform 0.3s ease;
+}
+
+.logo-gradient-wrapper::after {
+  content: "MannyKnows";
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #0071e3, #ff4faa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .admin-logo-link:hover .logo-gradient-wrapper {
@@ -2209,4 +2213,9 @@ input[type="datetime-local"] {
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* Mobile drawer passes a smaller inline box for the wordmark */
+.logo-gradient-wrapper[style]::after {
+  font-size: 15px;
 }

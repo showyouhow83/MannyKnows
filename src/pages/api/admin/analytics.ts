@@ -1,6 +1,7 @@
 // Admin Analytics API - Fetches Cloudflare Analytics via GraphQL
 // Requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID secrets
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIContext } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -34,7 +35,7 @@ interface CloudflareAnalyticsResponse {
 }
 
 export async function GET({ request, locals }: APIContext) {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
 

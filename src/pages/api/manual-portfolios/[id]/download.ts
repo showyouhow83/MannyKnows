@@ -1,12 +1,13 @@
 // Download endpoint for manual portfolio media
 // GET: Returns JSON with file list, or ?zip=true to download as zip
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { zipSync } from 'fflate';
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

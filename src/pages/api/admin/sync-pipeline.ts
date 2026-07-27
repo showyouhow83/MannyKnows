@@ -1,5 +1,6 @@
 // Admin Pipeline Sync API
 // Repairs data integrity issues where statuses are out of sync across leads/quotes/projects
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -12,7 +13,7 @@ interface SyncResult {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -129,7 +130,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // GET: Preview what would be fixed (dry run)
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

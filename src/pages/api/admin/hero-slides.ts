@@ -10,6 +10,7 @@
 // site does not render the slider yet, so an empty table just shows the
 // manager's empty state.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { DEFAULT_HERO_SLIDES, HERO_TITLE_MAX, HERO_DESC_MAX } from '../../../lib/heroSlides';
@@ -73,7 +74,7 @@ async function seedDefaults(db: any) {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB unavailable' }, 503);
     if (!(await requireAdmin(request, env))) return json({ success: false, error: 'Unauthorized' }, 401);
@@ -93,7 +94,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB unavailable' }, 503);
     if (!(await requireAdmin(request, env))) return json({ success: false, error: 'Unauthorized' }, 401);
@@ -123,7 +124,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB unavailable' }, 503);
     if (!(await requireAdmin(request, env))) return json({ success: false, error: 'Unauthorized' }, 401);
@@ -169,7 +170,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 
 export const DELETE: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB unavailable' }, 503);
     if (!(await requireAdmin(request, env))) return json({ success: false, error: 'Unauthorized' }, 401);

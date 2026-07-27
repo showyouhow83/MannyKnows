@@ -5,6 +5,7 @@
 // Auth = the project's client_token. Stores a soft "when can you pay this"
 // preference per payment row; it never changes the contractual due date.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
@@ -15,7 +16,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

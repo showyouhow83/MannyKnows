@@ -8,6 +8,7 @@
 //
 // Auth: the client_token (the /project/<token> URL token). All writes are
 // scoped to that one project.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -32,7 +33,7 @@ function fmtDate(s: unknown): string {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'Unavailable' }, 503);
     const apiKey = env?.GEMINI_API_KEY;

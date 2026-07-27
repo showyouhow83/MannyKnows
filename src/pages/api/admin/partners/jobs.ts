@@ -4,6 +4,7 @@
 //   PATCH  /api/admin/partners/jobs                → update job { id, ... }
 //   DELETE /api/admin/partners/jobs?id=N           → delete job
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -23,7 +24,7 @@ const STATUSES = ['pending', 'in_progress', 'completed'];
 
 export const GET: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -42,7 +43,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -80,7 +81,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -109,7 +110,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 
 export const DELETE: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);

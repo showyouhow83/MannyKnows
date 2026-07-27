@@ -3,13 +3,14 @@
 // POST /api/manual-portfolios/[id]/gallery - Add image to gallery
 // PATCH /api/manual-portfolios/[id]/gallery - Update gallery item
 // DELETE /api/manual-portfolios/[id]/gallery - Remove from gallery
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../../lib/adminAuth';
 
 // GET: List all gallery items for a portfolio
 export const GET: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -77,7 +78,7 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
 // POST: Add image to gallery
 export const POST: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -172,7 +173,7 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
 // PATCH: Update gallery item
 export const PATCH: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -279,7 +280,7 @@ export const PATCH: APIRoute = async ({ params, request, locals }) => {
 // DELETE: Remove from gallery (doesn't delete media)
 export const DELETE: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

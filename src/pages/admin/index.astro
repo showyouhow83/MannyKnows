@@ -1,8 +1,9 @@
 ---
 export const prerender = false;
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../lib/adminAuth';
 
-const env = Astro.locals.runtime?.env;
+const env = cfEnv;
 const session = await AdminAuth.validateSession(Astro.request, env?.SESSION_SECRET || env?.ADMIN_PASSWORD);
 if (session.isAuthenticated) return Astro.redirect('/admin/dashboard');
 ---

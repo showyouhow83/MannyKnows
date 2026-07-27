@@ -1,6 +1,7 @@
 // POST /api/projects/[id]/send-invoice  { row_id }
 // Emails the customer an invoice for a single payment-schedule row (amount +
 // mail-a-check instructions). Triggered from the Contract tab "Send Invoice".
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { getBrand } from '../../../../lib/brand';
@@ -14,7 +15,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;

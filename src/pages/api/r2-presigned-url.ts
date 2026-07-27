@@ -1,5 +1,6 @@
 // Presigned URL endpoint for large file uploads (videos up to 5GB)
 // Generates a URL that allows direct upload to R2, bypassing Workers body limits
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AwsClient } from 'aws4fetch';
 import { AdminAuth } from '../../lib/adminAuth';
@@ -46,7 +47,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Require an authenticated admin session. This mints signed PUT URLs to the
     // production bucket, so an Origin header (spoofable) must NOT be enough.
     {
-      const _env = locals.runtime?.env;
+      const _env = cfEnv;
       const session = await AdminAuth.validateSession(request, _env?.SESSION_SECRET || _env?.ADMIN_PASSWORD);
       if (!session.isAuthenticated) {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
@@ -57,7 +58,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     //   R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY — R2 S3 API token pair
     //   CF_ACCOUNT_ID (or CLOUDFLARE_ACCOUNT_ID) — Cloudflare account id
     //   R2_BUCKET_NAME — the bucket behind the MK_MEDIA_BUCKET binding
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const accessKeyId = env?.R2_ACCESS_KEY_ID;
     const secretAccessKey = env?.R2_SECRET_ACCESS_KEY;
     const accountId = env?.CF_ACCOUNT_ID || env?.CLOUDFLARE_ACCOUNT_ID;

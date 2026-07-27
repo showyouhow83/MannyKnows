@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -5,7 +6,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   try {
     // Use the real signing secret (not the hardcoded default) so this path
     // validates genuine cookies and can't accept a default-signed forgery.
-    const env = (locals as any)?.runtime?.env;
+    const env = cfEnv;
     const session = await AdminAuth.validateSession(request, env?.SESSION_SECRET || env?.ADMIN_PASSWORD);
 
     if (!session.isAuthenticated) {

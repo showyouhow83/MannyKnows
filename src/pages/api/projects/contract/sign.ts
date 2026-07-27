@@ -15,6 +15,7 @@
 // Returns: { success, status }
 // Refuses to sign if the contract is in draft / signed / countersigned / void.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { sendContractSignedNotification, sendContractSignedToCustomer } from '../../../../lib/contract-emails';
 import { notifyAdmin } from '../../../../lib/notify-admin';
@@ -31,7 +32,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

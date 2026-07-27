@@ -5,6 +5,7 @@
 //
 // Auth: X-Inbound-Secret must match env.INBOUND_EMAIL_SECRET.
 // Headers: X-Mail-From / X-Mail-To carry the SMTP envelope addresses.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from "astro";
 import { parseRawInbound, threadCustomerReply } from "../../lib/inboundReply";
 import { timingSafeEqual } from "../../lib/adminAuth";
@@ -12,7 +13,7 @@ import { timingSafeEqual } from "../../lib/adminAuth";
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+	const env = cfEnv;
 
 	const expected = env.INBOUND_EMAIL_SECRET;
 	const provided = request.headers.get("x-inbound-secret") || "";

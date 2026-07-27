@@ -1,4 +1,5 @@
 // Quote Templates — get/patch/delete a single template (admin session)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -36,7 +37,7 @@ function validateSections(input: unknown): string | null {
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -61,7 +62,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
 
 export const PATCH: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -139,7 +140,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
 
 export const DELETE: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);

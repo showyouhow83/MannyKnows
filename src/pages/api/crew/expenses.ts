@@ -1,6 +1,7 @@
 // Crew Expense Submission API (crew session auth, not admin)
 // POST: Submit expense with optional receipt
 // GET: Get own expenses for current week
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 async function getCrewFromSession(request: Request, db: any): Promise<{ id: number; name: string } | null> {
@@ -18,7 +19,7 @@ async function getCrewFromSession(request: Request, db: any): Promise<{ id: numb
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return new Response(JSON.stringify({ error: 'DB not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 
@@ -47,7 +48,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return new Response(JSON.stringify({ error: 'DB not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 

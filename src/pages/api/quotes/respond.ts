@@ -1,6 +1,7 @@
 // Quote Response API Endpoint
 // Handles customer accept/decline actions from email links
 // POST: Accept or decline a quote (public, token-based auth)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import {
   sendQuoteAcceptedNotification,
@@ -29,7 +30,7 @@ interface RespondRequest {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
 
     if (!db) {

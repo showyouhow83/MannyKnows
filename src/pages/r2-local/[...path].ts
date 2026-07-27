@@ -6,10 +6,11 @@
 // here when the upload originated from localhost so dev testing actually
 // shows the file. In prod the route still works (just slower than the
 // custom-domain CDN), but no upload code points URLs at it in production.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ params, locals, request }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const bucket = env?.MK_MEDIA_BUCKET;
   if (!bucket) {
     return new Response('R2 binding not configured', { status: 503 });

@@ -5,6 +5,7 @@
 // project_contracts row by its contract_token (not the project's
 // client_token), renders scope + payment schedule + terms inline, and
 // embeds a signature pad that POSTs to /api/projects/contract/sign.
+import { env as cfEnv } from 'cloudflare:workers';
 import {
   COMPANY_HEADER,
   parseScopes,
@@ -15,7 +16,7 @@ import { streamThumb } from '../../../lib/stream';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 const token = (Astro.params.token || '').trim();
 let brand: Brand = SL_BRAND;

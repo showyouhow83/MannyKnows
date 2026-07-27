@@ -2,6 +2,7 @@
 // live and reports every step. Open in a browser while logged into the admin:
 //   https://mannyknows.com/api/admin/debug-inbound/
 // Optional: ?email_id=<id> to inspect a specific received email.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from "astro";
 import { AdminAuth } from "../../../lib/adminAuth";
 import { parseRawInbound } from "../../../lib/inboundReply";
@@ -11,7 +12,7 @@ export const prerender = false;
 const RESEND_API = "https://api.resend.com";
 
 export const GET: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+	const env = cfEnv;
 	const session = await AdminAuth.validateSession(request, env.SESSION_SECRET || env.ADMIN_PASSWORD);
 	if (!session.isAuthenticated) {
 		return Response.json({ error: "Unauthorized" }, { status: 401 });

@@ -3,6 +3,7 @@
 // POST: Create standalone portfolio with images
 // GET: List standalone portfolios
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
 
@@ -22,7 +23,7 @@ interface StandalonePortfolioRequest {
 // POST: Create standalone portfolio
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -157,7 +158,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // GET: List all standalone portfolios
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

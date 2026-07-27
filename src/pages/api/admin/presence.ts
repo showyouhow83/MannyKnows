@@ -10,6 +10,7 @@
 //     { me }              the caller's client_id (for "(you)" tagging)
 // GET  /api/admin/presence   just the online list.
 // DELETE /api/admin/presence { client_id }  clears the caller's presence.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -49,7 +50,7 @@ function safeClientId(raw: any): string {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return j({ success: false, error: 'DB not configured' }, 503);
     const session = await auth(request, env);
@@ -107,7 +108,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return j({ success: false, error: 'DB not configured' }, 503);
     const session = await auth(request, env);
@@ -127,7 +128,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return j({ success: false, error: 'DB not configured' }, 503);
     const session = await auth(request, env);

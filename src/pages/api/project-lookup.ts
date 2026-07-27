@@ -1,5 +1,6 @@
 // Project Lookup API
 // Sends customer their project portal link(s) via email
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { getBrand, emailFrom, type Brand } from '../../lib/brand';
 import { kvRateLimit, clientIp } from '../../lib/rateLimit';
@@ -7,7 +8,7 @@ import { SERVICE_LABELS } from '../../data/serviceTypes';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const resendApiKey = env?.RESEND_API_KEY;
 

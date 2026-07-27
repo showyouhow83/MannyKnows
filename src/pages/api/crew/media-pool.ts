@@ -2,6 +2,7 @@
 // POST: Save a pool item after the file is already in R2
 // GET: Last 20 uploads by the current crew member (timeclock confirmation strip)
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { isVideoUrl, ingestToStream } from '../../../lib/stream';
 
@@ -27,7 +28,7 @@ function jsonResponse(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return jsonResponse({ error: 'DB not configured' }, 503);
 
@@ -81,7 +82,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const db = (locals as any).runtime?.env?.MK_APP_DB;
+    const db = cfEnv?.MK_APP_DB;
     if (!db) return jsonResponse({ error: 'DB not configured' }, 503);
 
     const crew = await getCrewFromSession(request, db);

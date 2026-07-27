@@ -6,6 +6,7 @@
 // cookie. The response is ALWAYS generic ("if that email is on file…") so the
 // endpoint can't be used to enumerate which emails belong to which project.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { makeMagicToken } from '../../../../lib/portalAuth';
@@ -22,7 +23,7 @@ const GENERIC = { success: true, message: "If that email is on your project, we 
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'Unavailable' }, 503);
 

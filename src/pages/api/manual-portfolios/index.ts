@@ -1,5 +1,6 @@
 // Manual Portfolios API - CRUD operations for manually created portfolio items
 // These bypass the lead→quote→project pipeline
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
 import { sendPortfolioReviewToClient } from '../../../lib/quote-emails';
@@ -37,7 +38,7 @@ async function ensureUniqueSlug(db: any, baseSlug: string, excludeId?: number): 
 // GET: List all manual portfolios with media count
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -101,7 +102,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // POST: Create new manual portfolio
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -212,7 +213,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // PATCH: Update portfolio details
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -389,7 +390,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE: Delete portfolio and all media (cascade)
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

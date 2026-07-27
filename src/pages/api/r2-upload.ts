@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { publicUrlForR2Path } from '../../lib/publicUrl';
 import { resolveAllowedOrigin } from '../../lib/cors';
@@ -58,7 +59,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Check rate limit (skip for authenticated admin sessions)
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     let isAdminPost = false;
     if (sessionSecret) {
@@ -139,8 +140,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Access R2 bucket
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
-    const kv = locals.runtime?.env?.MK_ADMIN_KV;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
+    const kv = cfEnv?.MK_ADMIN_KV;
 
     if (!bucket) {
       return new Response(
@@ -274,7 +275,7 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
     }
 
     // Check rate limit (skip for authenticated admin sessions)
-    const envPut = locals.runtime?.env;
+    const envPut = cfEnv;
     const secretPut = envPut?.SESSION_SECRET || envPut?.ADMIN_PASSWORD;
     let isAdminPut = false;
     if (secretPut) {
@@ -327,7 +328,7 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
     }
 
     // Access R2 bucket
-    const bucket = locals.runtime?.env?.MK_MEDIA_BUCKET;
+    const bucket = cfEnv?.MK_MEDIA_BUCKET;
     if (!bucket) {
       return new Response(
         JSON.stringify({ error: 'R2 bucket not configured' }),

@@ -3,6 +3,7 @@
 // POST: Create new crew lead (with optional SMS invite)
 // PATCH: Update crew lead
 // DELETE: Soft delete (deactivate) crew lead
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { secureToken } from '../../../utils/token';
@@ -15,7 +16,7 @@ function generateToken(): string {
 // GET: List all active crew leads
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -77,7 +78,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // POST: Create new crew lead
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -283,7 +284,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // PATCH: Update crew lead
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -435,7 +436,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE: Soft delete (deactivate) crew lead
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 

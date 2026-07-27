@@ -1,6 +1,7 @@
 // Quote Contract Upload API
 // POST: Upload contract PDF to a quote (admin only)
 // DELETE: Remove contract from a quote (admin only)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -10,7 +11,7 @@ const ALLOWED_CONTENT_TYPES = ['application/pdf'];
 // POST: Upload contract
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 
@@ -153,7 +154,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // DELETE: Remove contract from quote
 export const DELETE: APIRoute = async ({ request, locals, url }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
 

@@ -14,6 +14,7 @@
 //   signed_date    'YYYY-MM-DD' (optional; defaults to now)
 //   note           string (optional; appended to the offline consent text)
 //   scan_url       string (optional; URL of an uploaded scan of the paper copy)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -35,7 +36,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB not configured' }, 503);
 

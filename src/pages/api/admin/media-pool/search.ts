@@ -2,6 +2,7 @@
 // Returns up to 20 matching records of the requested type.
 // Each item: { id, label } where label is a human-friendly identifier.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -14,7 +15,7 @@ function json(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
 

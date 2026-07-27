@@ -2,6 +2,7 @@
 // return its public URL (admin saves it into partners.logo_url).
 // Admin-authed (no Origin allowlist, so it works on preview + prod). Raw image
 // bytes in the body; filename + partner id in headers.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
@@ -15,7 +16,7 @@ function j(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) return j({ success: false, error: 'Unauthorized' }, 401);

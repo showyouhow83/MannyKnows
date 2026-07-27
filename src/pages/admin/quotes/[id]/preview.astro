@@ -3,6 +3,7 @@
 // Admin clicks "Preview PDF" in the quote detail → opens this page in a new
 // tab → Cmd/Ctrl+P → Save as PDF. The page is styled to mirror the Word
 // template the admin team has been authoring quotes in.
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import {
   COMPANY_HEADER,
@@ -15,7 +16,7 @@ import { getBrand, SL_BRAND, type Brand } from '../../../../lib/brand';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 const quoteId = Number(Astro.params.id);
 if (!db || !quoteId || Number.isNaN(quoteId)) {

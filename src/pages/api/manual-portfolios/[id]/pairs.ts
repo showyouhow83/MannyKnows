@@ -3,6 +3,7 @@
 // POST: Create pair with AI-generated title/description
 // PATCH: Update pair (title, description, sort_order, is_cover)
 // DELETE: Delete pair (keeps media)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, viewerGuard } from '../../../../lib/adminAuth';
 
@@ -72,7 +73,7 @@ Return ONLY a JSON object with this exact format, no markdown or other text:
 // GET: List all pairs for a portfolio
 export const GET: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const portfolioId = params.id;
@@ -146,7 +147,7 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
 // POST: Create a new pair with AI-generated metadata
 export const POST: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const geminiApiKey = env?.GEMINI_API_KEY;
@@ -293,7 +294,7 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
 // PATCH: Update a pair
 export const PATCH: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const portfolioId = params.id;
@@ -419,7 +420,7 @@ export const PATCH: APIRoute = async ({ params, request, locals }) => {
 // DELETE: Delete a pair (media stays)
 export const DELETE: APIRoute = async ({ params, request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const portfolioId = params.id;

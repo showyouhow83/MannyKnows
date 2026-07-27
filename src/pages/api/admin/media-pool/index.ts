@@ -3,6 +3,7 @@
 // GET (default)  → returns pool items grouped by media_type with uploader name
 // DELETE ?id=N   → removes a pool row (R2 file stays for v1)
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -21,7 +22,7 @@ async function requireAdmin(request: Request, env: any) {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -69,7 +70,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!db) return json({ error: 'DB not configured' }, 503);

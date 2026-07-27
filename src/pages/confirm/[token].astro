@@ -1,4 +1,5 @@
 ---
+import { env as cfEnv } from 'cloudflare:workers';
 export const prerender = false;
 import { Resend } from 'resend';
 import { SERVICE_LABELS } from '../../data/serviceTypes';
@@ -7,10 +8,10 @@ import { SERVICE_LABELS } from '../../data/serviceTypes';
 const { token } = Astro.params;
 
 // Access runtime environment for D1
-const runtime = Astro.locals.runtime;
-const db = runtime?.env?.MK_APP_DB;
-const resendApiKey = runtime?.env?.RESEND_API_KEY;
-const notificationEmail = runtime?.env?.NOTIFICATION_EMAIL || 'mm@mannyknows.com';
+
+const db = cfEnv?.MK_APP_DB;
+const resendApiKey = cfEnv?.RESEND_API_KEY;
+const notificationEmail = cfEnv?.NOTIFICATION_EMAIL || 'mm@mannyknows.com';
 
 let status = 'loading';
 let lead: any = null;

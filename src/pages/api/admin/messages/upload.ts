@@ -2,6 +2,7 @@
 // Uploads an attachment (image, video, PDF) for admin→customer messages.
 // Returns { success, url, name, type, size }.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
@@ -30,7 +31,7 @@ const MAX_SIZE_OTHER = 25 * 1024 * 1024;  // 25 MB
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!bucket) return json({ error: 'Storage not configured' }, 503);
 

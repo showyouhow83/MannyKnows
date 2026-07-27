@@ -5,6 +5,7 @@
 // Admin only. DELETE removes the project_documents row. The R2 object is only
 // deleted for 'admin'-sourced docs — 'quote_promotion' docs share their file
 // with the originating quote's attachment, so we leave the R2 object alone.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
@@ -14,7 +15,7 @@ function j(body: unknown, status = 200) {
 
 export const PATCH: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) return j({ success: false, error: 'Unauthorized' }, 401);
@@ -40,7 +41,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
 
 export const DELETE: APIRoute = async ({ request, locals, params }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) return j({ success: false, error: 'Unauthorized' }, 401);

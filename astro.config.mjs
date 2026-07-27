@@ -45,6 +45,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes('/admin') &&
+        !page.includes('/my-project') &&
         !page.includes('/unsubscribe') &&
         !page.includes('/404'),
       changefreq: 'weekly',

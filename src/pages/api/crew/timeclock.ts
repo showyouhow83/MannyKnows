@@ -1,6 +1,7 @@
 // Crew Timeclock API
 // GET: Get today's logs + current state for authenticated crew member
 // POST: Clock in or clock out
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { computeBonus } from '../../../lib/crewBonus';
 import {
@@ -116,7 +117,7 @@ async function autoCloseStaleShift(db: any, openLog: any): Promise<any> {
 // GET: Today's logs + state
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return new Response(JSON.stringify({ error: 'DB not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 
@@ -322,7 +323,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // POST: Clock in or clock out
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return new Response(JSON.stringify({ error: 'DB not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
 

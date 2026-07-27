@@ -20,6 +20,7 @@
 //
 // Returns: { success, poster_url } | { success: true, already_set: true }
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../lib/publicUrl';
@@ -50,7 +51,7 @@ function decodeDataUrl(dataUrl: string): { bytes: Uint8Array; mime: string } | n
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const bucket = env?.MK_MEDIA_BUCKET;
     if (!db || !bucket) return json({ success: false, error: 'Storage not configured' }, 503);

@@ -1,5 +1,6 @@
 ---
 // Admin Portfolios Page - Showcase completed work + Manual portfolio management
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../lib/adminAuth';
 import AdminNav from '../../components/AdminNav.astro';
 import AdminPresence from '../../components/AdminPresence.astro';
@@ -11,7 +12,7 @@ import { imagesDeliveryBase } from '../../lib/heroSlides';
 import { streamSubdomain } from '../../lib/stream';
 import '../../styles/admin.css';
 
-const env = Astro.locals.runtime?.env;
+const env = cfEnv;
 const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
 

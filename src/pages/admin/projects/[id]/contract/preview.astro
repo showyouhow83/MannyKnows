@@ -4,6 +4,7 @@
 // payment-schedule table + signature lines for the printed copy. Admin
 // uses Cmd/Ctrl+P → Save as PDF, or "Save to Project PDFs" to attach to
 // the project_contracts row for the customer-facing signing page.
+import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../../../../lib/adminAuth';
 import {
   COMPANY_HEADER,
@@ -15,7 +16,7 @@ import { streamThumb } from '../../../../../lib/stream';
 
 export const prerender = false;
 
-const env = (Astro.locals as any).runtime?.env;
+const env = cfEnv;
 const db = env?.MK_APP_DB;
 const projectId = Number(Astro.params.id);
 if (!db || !projectId || Number.isNaN(projectId)) {

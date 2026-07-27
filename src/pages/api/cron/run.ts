@@ -1,5 +1,6 @@
 // Cron trigger endpoint — called by the injected scheduled handler
 // Secured by ADMIN_PASSWORD as a shared secret
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 // Import the scheduled task functions directly
@@ -7,7 +8,7 @@ import { Resend } from 'resend';
 import { sendQuoteFollowUp, type FollowUpData } from '../../../lib/quote-emails';
 
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = (locals as any).runtime?.env;
+  const env = cfEnv;
   const url = new URL(request.url);
   const cron = url.searchParams.get('cron');
 

@@ -1,6 +1,7 @@
 // Lightweight project-status feed for the admin Projects list. Lets the list
 // refresh each card's status badge (Needs Crew / Ready / Awaiting Signature /
 // Contract Not Sent) live, without a full page reload.
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -12,7 +13,7 @@ function json(body: unknown, status = 200) {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ success: false, error: 'DB unavailable' }, 503);
 

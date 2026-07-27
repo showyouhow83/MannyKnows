@@ -1,11 +1,12 @@
 // One-time HEIC to JPEG conversion for existing uploaded images
 // GET: List all HEIC images found in the database
 // POST: Convert all HEIC images to JPEG (re-upload to R2, update DB)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
 export const GET: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
   if (!session.isAuthenticated) {
@@ -64,7 +65,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime?.env;
+  const env = cfEnv;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const session = await AdminAuth.validateSession(request, sessionSecret);
   if (!session.isAuthenticated) {

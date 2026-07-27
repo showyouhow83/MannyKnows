@@ -6,6 +6,7 @@
 // preference, year built, and project duration all feed the prompt so each
 // portfolio gets distinctive copy rather than templated boilerplate.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { generatePortfolioCopy, PORTFOLIO_TYPE_LABELS } from '../../../lib/portfolio-copy';
@@ -103,7 +104,7 @@ function firstName(full: string | null | undefined): string {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (!session.isAuthenticated) {

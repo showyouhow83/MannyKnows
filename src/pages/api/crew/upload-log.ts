@@ -5,6 +5,7 @@
 // POST { logs: [{ filename, file_size, media_type, note, result, reason }] }
 // GET  ?limit=100  → recent log rows (admin/debugging)
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 async function getCrew(request: Request, db: any): Promise<{ id: number; name: string } | null> {
@@ -42,7 +43,7 @@ function json(body: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const db = (locals as any).runtime?.env?.MK_APP_DB;
+    const db = cfEnv?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     const crew = await getCrew(request, db);
     if (!crew) return json({ error: 'Not authenticated' }, 401);
@@ -75,7 +76,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const db = (locals as any).runtime?.env?.MK_APP_DB;
+    const db = cfEnv?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     const crew = await getCrew(request, db);
     if (!crew) return json({ error: 'Not authenticated' }, 401);

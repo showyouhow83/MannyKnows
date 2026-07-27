@@ -4,6 +4,7 @@
 // Singleton store for the contractor signature that's auto-applied to
 // every new project contract. v67 schema constrains this to id=1.
 
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 
@@ -24,7 +25,7 @@ async function requireAdmin(request: Request, env: any) {
 
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -39,7 +40,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 export const PUT: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);
@@ -77,7 +78,7 @@ export const PUT: APIRoute = async ({ request, locals }) => {
 
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     if (!db) return json({ error: 'DB not configured' }, 503);
     if (!(await requireAdmin(request, env))) return json({ error: 'Unauthorized' }, 401);

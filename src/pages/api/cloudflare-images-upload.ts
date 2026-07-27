@@ -1,3 +1,4 @@
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { getCfImageUrls } from '../../utils/cloudflareImages';
 import { heroImageUrlsFromId } from '../../lib/heroSlides';
@@ -64,7 +65,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Admin-only: this pushes images into the account's Cloudflare Images using
     // CLOUDFLARE_API_TOKEN, so it must not be reachable by an origin spoof.
     {
-      const _env = (locals as any).runtime?.env;
+      const _env = cfEnv;
       const session = await AdminAuth.validateSession(request, _env?.SESSION_SECRET || _env?.ADMIN_PASSWORD);
       if (!session.isAuthenticated) {
         return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
@@ -83,7 +84,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Get Cloudflare API credentials from environment
-    const env = (locals as any).runtime?.env;
+    const env = cfEnv;
     const cfApiToken = env?.CLOUDFLARE_API_TOKEN;
     const cfAccountId = env?.CF_ACCOUNT_ID || env?.CLOUDFLARE_ACCOUNT_ID;
 

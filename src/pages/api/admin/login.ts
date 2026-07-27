@@ -1,11 +1,12 @@
 // Admin Login API - Multi-user support with D1 database
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth, verifyPassword, timingSafeEqual, type AdminUser } from '../../../lib/adminAuth';
 import { kvRateLimit } from '../../../lib/rateLimit';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
 
     // Get session secret for signing

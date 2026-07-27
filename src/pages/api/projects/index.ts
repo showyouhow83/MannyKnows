@@ -2,6 +2,7 @@
 // GET: List all projects (admin only)
 // POST: Create project from accepted quote (admin only)
 // PATCH: Update project (admin only)
+import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { sendProjectUpdateNotification, sendProjectStartedToClient, sendProjectStartedToCrewLead, type Project as ProjectEmail, type ProjectStartData, type QuoteEmailEnv } from '../../../lib/quote-emails';
@@ -34,7 +35,7 @@ interface ProjectUpdateRequest {
 // GET: List all projects
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -106,7 +107,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 // POST: Create project from accepted quote
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -415,7 +416,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 // PATCH: Update project
 export const PATCH: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
@@ -955,7 +956,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 // DELETE: Demote project back to quote
 export const DELETE: APIRoute = async ({ request, locals }) => {
   try {
-    const env = locals.runtime?.env;
+    const env = cfEnv;
     const db = env?.MK_APP_DB;
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
