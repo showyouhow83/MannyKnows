@@ -216,8 +216,8 @@ if (db) {
 
     .contact-card.selected {
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(255, 120, 29, 0.3);
-      background: rgba(255, 120, 29, 0.1);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.1);
     }
 
     .contact-card-top {
@@ -262,7 +262,7 @@ if (db) {
     }
 
     .badge-lead { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-    .badge-quote { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .badge-quote { background: rgba(0, 113, 227, 0.15); color: #0071e3; }
     .badge-project { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
     .badge-source { background: rgba(255, 215, 0, 0.15); color: #d4a800; }
 
@@ -378,14 +378,14 @@ if (db) {
 
     .status-confirmed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
     .status-pending_confirmation { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .status-promoted { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .status-promoted { background: rgba(0, 113, 227, 0.15); color: #0071e3; }
     .status-draft { background: rgba(156, 163, 175, 0.2); color: #9ca3af; }
     .status-sent { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .status-accepted { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
     .status-declined { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
     .status-project { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
     .status-needs_crew { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .status-in_progress { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .status-in_progress { background: rgba(0, 113, 227, 0.15); color: #0071e3; }
     .status-completed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
     .status-portfolio { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
 
@@ -674,11 +674,11 @@ if (db) {
     .s-declined { background: rgba(239,68,68,.15); color: #ef4444; }
     .s-project { background: rgba(168,85,247,.15); color: #a855f7; }
     .s-needs_crew { background: rgba(245,158,11,.15); color: #f59e0b; }
-    .s-in_progress { background: rgba(255,120,29,.15); color: #ff781d; }
+    .s-in_progress { background: rgba(0, 113, 227,.15); color: #0071e3; }
     .s-completed { background: rgba(34,197,94,.15); color: #22c55e; }
     .s-portfolio { background: rgba(168,85,247,.15); color: #a855f7; }
     .s-confirmed { background: rgba(34,197,94,.15); color: #22c55e; }
-    .s-promoted { background: rgba(255,120,29,.15); color: #ff781d; }
+    .s-promoted { background: rgba(0, 113, 227,.15); color: #0071e3; }
   </style>
 </head>
 <body>
@@ -1526,10 +1526,10 @@ if (db) {
       (data.quoteResponses || []).forEach(q => {
         const timeAgo = q.responded_at ? bellGetTimeAgo(new Date(q.responded_at + 'Z')) : '';
         const accepted = q.status === 'accepted';
-        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${accepted ? '#ff781d' : '#f59e0b'};">
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${accepted ? '#0071e3' : '#f59e0b'};">
           <div class="bell-notification-top"><span class="bell-notification-name">${escapeHtml(q.customer_name || 'Customer')}</span><span class="bell-notification-time">${timeAgo}</span></div>
           <div class="bell-notification-body">Quote ${accepted ? 'accepted' : 'declined'}</div>
-          <div class="bell-notification-quote" style="color:${accepted ? '#ff781d' : '#f59e0b'};">#${escapeHtml(q.quote_number || '')}</div>
+          <div class="bell-notification-quote" style="color:${accepted ? '#0071e3' : '#f59e0b'};">#${escapeHtml(q.quote_number || '')}</div>
         </div>`;
       });
       (data.replies || []).forEach(r => {

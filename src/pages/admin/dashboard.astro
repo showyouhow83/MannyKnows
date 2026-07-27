@@ -182,7 +182,7 @@ function fmtRange(start: string | null, end: string | null): string {
       font-weight: 700;
       margin-bottom: 8px;
       /* Brand accent gradient: orange → light orange → amber */
-      background: linear-gradient(135deg, #ff781d 0%, #ff9a4d 50%, #fbbf24 100%);
+      background: linear-gradient(135deg, #0071e3 0%, #a855f7 50%, #fbbf24 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -663,11 +663,11 @@ function fmtRange(start: string | null, end: string | null): string {
       font-size: 14px;
       margin-top: 20px;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 120, 29, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
     }
 
     .view-link:hover {
-      box-shadow: 0 6px 20px rgba(255, 120, 29, 0.4);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
     }
 
     .view-link svg {
@@ -2175,13 +2175,13 @@ function fmtRange(start: string | null, end: string | null): string {
         const dateObj = q.responded_at ? new Date(q.responded_at + 'Z') : null;
         const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
         const isAccepted = q.status === 'accepted';
-        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#ff781d' : '#f59e0b'};">
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#0071e3' : '#f59e0b'};">
           <div class="bell-notification-top">
             <span class="bell-notification-name">${bellEscapeHtml(q.customer_name || 'Customer')}</span>
             <span class="bell-notification-time">${timeAgo}</span>
           </div>
           <div class="bell-notification-body">Quote ${isAccepted ? 'accepted' : 'declined'}</div>
-          <div class="bell-notification-quote" style="color: ${isAccepted ? '#ff781d' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
+          <div class="bell-notification-quote" style="color: ${isAccepted ? '#0071e3' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
         </div>`;
       });
 

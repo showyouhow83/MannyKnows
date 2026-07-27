@@ -60,10 +60,10 @@
   --radius-xl: 24px;
 
   /* Brand Colors (constant) */
-  --color-primary: #ff781d;
-  --color-primary-dark: #c75800;
-  --color-primary-light: #ff9a4d;
-  --color-secondary: #f263be; /* Pink secondary accent (gradient-text highlights) */
+  --color-primary: #0071e3;
+  --color-primary-dark: #005bb8;
+  --color-primary-light: #a855f7;
+  --color-secondary: #ff4faa; /* Pink secondary accent (gradient-text highlights) */
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
@@ -89,8 +89,8 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
   /* Background gradients */
-  --bg-gradient-1: rgba(255, 120, 29, 0.15);
-  --bg-gradient-2: rgba(242, 99, 190, 0.1); /* Pink accent */
+  --bg-gradient-1: rgba(0, 113, 227, 0.15);
+  --bg-gradient-2: rgba(255, 79, 170, 0.1); /* Pink accent */
 
   /* Card backgrounds */
   --card-bg: rgba(0, 0, 0, 0.2);
@@ -121,7 +121,7 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
   /* Background gradients */
-  --bg-gradient-1: rgba(255, 120, 29, 0.08);
+  --bg-gradient-1: rgba(0, 113, 227, 0.08);
   --bg-gradient-2: rgba(99, 102, 241, 0.06);
 
   /* Card backgrounds */
@@ -318,7 +318,7 @@ body {
 }
 
 .nav-dropdown-link.action:hover {
-  background: rgba(255, 120, 29, 0.1);
+  background: rgba(0, 113, 227, 0.1);
   color: var(--color-primary);
 }
 
@@ -675,7 +675,7 @@ body {
 }
 
 .list-card.selected {
-  background: rgba(255, 120, 29, 0.15);
+  background: rgba(0, 113, 227, 0.15);
   border-color: var(--color-primary);
 }
 
@@ -775,11 +775,11 @@ body {
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary, #ff781d), #f59e0b);
+  background: linear-gradient(135deg, #0071e3, #a855f7, #ff4faa);
   color: #fff;
-  border-color: var(--color-primary, #ff781d);
+  border-color: var(--color-primary, #0071e3);
 }
-.btn-primary:hover { filter: brightness(1.07); background: linear-gradient(135deg, var(--color-primary, #ff781d), #f59e0b); }
+.btn-primary:hover { filter: brightness(1.07); background: linear-gradient(135deg, #0071e3, #a855f7, #ff4faa); }
 
 .btn-secondary {
   background: var(--glass-bg);
@@ -795,10 +795,10 @@ body {
   width: 100%; margin-bottom: 12px; padding: 11px 14px;
   border: none; border-radius: var(--radius-lg); cursor: pointer;
   font-size: 14px; font-weight: 700; color: #fff;
-  background: linear-gradient(135deg, var(--color-primary, #ff781d) 0%, #f59e0b 100%);
-  box-shadow: 0 2px 8px rgba(255,120,29,0.25);
+  background: linear-gradient(135deg, #0071e3 0%, #a855f7 50%, #ff4faa 100%);
+  box-shadow: 0 2px 8px rgba(0, 113, 227,0.25);
 }
-.new-record-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(255,120,29,0.35); }
+.new-record-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(0, 113, 227,0.35); }
 
 .btn-success {
   background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -1037,7 +1037,7 @@ body {
 .form-textarea.form-textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
 }
 
 .form-input::placeholder,
@@ -1077,7 +1077,7 @@ select:focus,
 .form-select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
 }
 
 [data-theme="light"] select,
@@ -1106,7 +1106,7 @@ select:focus,
 
 .search-bar:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
 }
 
 .search-bar svg {
@@ -1321,7 +1321,7 @@ select:focus,
 }
 
 .confirm-modal-icon.primary {
-  background: rgba(255, 120, 29, 0.1);
+  background: rgba(0, 113, 227, 0.1);
 }
 
 /* ============================================

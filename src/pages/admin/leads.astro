@@ -175,7 +175,7 @@ const adminAddress = 'Springfield, MA';
 
     .status-card.selected {
       border-color: var(--color-primary);
-      background: rgba(255, 120, 29, 0.15);
+      background: rgba(0, 113, 227, 0.15);
     }
 
     .status-card.hidden {
@@ -367,7 +367,7 @@ const adminAddress = 'Springfield, MA';
     .form-group-modal textarea:focus {
       outline: none;
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.1);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
     }
 
     .form-group-modal input::placeholder,
@@ -410,7 +410,7 @@ const adminAddress = 'Springfield, MA';
     .btn-modal-submit {
       flex: 1;
       padding: 12px 20px;
-      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%);
       border: none;
       border-radius: 8px;
       color: white;
@@ -487,8 +487,8 @@ const adminAddress = 'Springfield, MA';
 
     .lead-card.selected {
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(255, 120, 29, 0.3);
-      background: rgba(255, 120, 29, 0.1);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+      background: rgba(0, 113, 227, 0.1);
     }
 
     .lead-card.hidden {
@@ -585,7 +585,7 @@ const adminAddress = 'Springfield, MA';
 
     .detail-code {
       display: inline-block;
-      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%);
       color: white;
       padding: 8px 16px;
       border-radius: 20px;
@@ -607,7 +607,7 @@ const adminAddress = 'Springfield, MA';
       align-items: center;
       gap: 6px;
       padding: 8px 16px;
-      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%);
       color: white;
       border: none;
       border-radius: 8px;
@@ -898,7 +898,7 @@ const adminAddress = 'Springfield, MA';
 
     .btn-card-promote {
       padding: 5px 11px;
-      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%);
       color: white;
       border: none;
       border-radius: 6px;
@@ -1802,11 +1802,11 @@ const adminAddress = 'Springfield, MA';
   <div class="confirm-modal" id="promoteModal">
     <div class="confirm-modal-backdrop" onclick="hidePromoteModal()"></div>
     <div class="confirm-modal-content">
-      <div class="confirm-modal-icon" style="background: linear-gradient(135deg, rgba(255, 120, 29, 0.1), rgba(99, 102, 241, 0.1));">
+      <div class="confirm-modal-icon" style="background: linear-gradient(135deg, rgba(0, 113, 227, 0.1), rgba(99, 102, 241, 0.1));">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#promoteGradient)" stroke-width="1.5">
           <defs>
             <linearGradient id="promoteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#ff781d"/>
+              <stop offset="0%" style="stop-color:#0071e3"/>
               <stop offset="100%" style="stop-color:#6366f1"/>
             </linearGradient>
           </defs>
@@ -1815,7 +1815,7 @@ const adminAddress = 'Springfield, MA';
       </div>
       <h3 class="confirm-modal-title">Promote to Quote?</h3>
       <p class="confirm-modal-text">
-        <strong id="promoteLeadCode" style="color: #ff781d;"></strong><br>
+        <strong id="promoteLeadCode" style="color: #0071e3;"></strong><br>
         <span id="promoteLeadName"></span>
       </p>
       <p style="font-size: 13px; color: #64748b; margin-bottom: 24px;">
@@ -1823,7 +1823,7 @@ const adminAddress = 'Springfield, MA';
       </p>
       <div class="confirm-modal-actions">
         <button class="confirm-btn confirm-btn-cancel" onclick="hidePromoteModal()">Cancel</button>
-        <button class="confirm-btn" id="confirmPromote" style="background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%); color: white; border: none;">Promote</button>
+        <button class="confirm-btn" id="confirmPromote" style="background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%); color: white; border: none;">Promote</button>
       </div>
     </div>
   </div>
@@ -2622,13 +2622,13 @@ const adminAddress = 'Springfield, MA';
         const dateObj = q.responded_at ? new Date(q.responded_at + 'Z') : null;
         const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
         const isAccepted = q.status === 'accepted';
-        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#ff781d' : '#f59e0b'};">
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#0071e3' : '#f59e0b'};">
           <div class="bell-notification-top">
             <span class="bell-notification-name">${bellEscapeHtml(q.customer_name || 'Customer')}</span>
             <span class="bell-notification-time">${timeAgo}</span>
           </div>
           <div class="bell-notification-body">Quote ${isAccepted ? 'accepted' : 'declined'}</div>
-          <div class="bell-notification-quote" style="color: ${isAccepted ? '#ff781d' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
+          <div class="bell-notification-quote" style="color: ${isAccepted ? '#0071e3' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
         </div>`;
       });
 

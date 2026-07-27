@@ -81,7 +81,7 @@ const badgeId = isMobile ? undefined : 'bellBadge';
         });
         (data.quoteResponses || []).forEach(function (q) {
           var d = q.responded_at ? new Date(q.responded_at + 'Z') : null; var t = d ? timeAgo(d) : ''; var acc = q.status === 'accepted';
-          html += '<div class="bell-notification" onclick="window.location.href=\'/admin/quotes?open=' + q.id + '\'" style="border-left:3px solid ' + (acc ? '#ff781d' : '#f59e0b') + ';"><div class="bell-notification-top"><span class="bell-notification-name">' + esc(q.customer_name || 'Customer') + '</span><span class="bell-notification-time">' + t + '</span></div><div class="bell-notification-body">Quote ' + (acc ? 'accepted' : 'declined') + '</div><div class="bell-notification-quote" style="color:' + (acc ? '#ff781d' : '#f59e0b') + ';">#' + esc(q.quote_number || '') + '</div></div>';
+          html += '<div class="bell-notification" onclick="window.location.href=\'/admin/quotes?open=' + q.id + '\'" style="border-left:3px solid ' + (acc ? '#0071e3' : '#f59e0b') + ';"><div class="bell-notification-top"><span class="bell-notification-name">' + esc(q.customer_name || 'Customer') + '</span><span class="bell-notification-time">' + t + '</span></div><div class="bell-notification-body">Quote ' + (acc ? 'accepted' : 'declined') + '</div><div class="bell-notification-quote" style="color:' + (acc ? '#0071e3' : '#f59e0b') + ';">#' + esc(q.quote_number || '') + '</div></div>';
         });
         (data.replies || []).forEach(function (r) {
           var d = r.created_at ? new Date(r.created_at + 'Z') : null; var t = d ? timeAgo(d) : ''; var p = (r.body || '').substring(0, 80) + ((r.body || '').length > 80 ? '...' : '');
