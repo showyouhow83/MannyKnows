@@ -1,0 +1,1813 @@
+---
+// /admin/projects/[id]/contract — full editor for a project's contract.
+// Parallels /admin/contract-templates/[id] but works on the live
+// project_contracts row (one per project). Loads via JS so the page
+// dehydrates faster and the Save flow can reuse the same render pipeline.
+import { AdminAuth } from '../../../../lib/adminAuth';
+import AdminNav from '../../../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../../../components/ConfirmModal.astro';
+import '../../../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const projectId = Number(Astro.params.id);
+if (!projectId || Number.isNaN(projectId)) {
+  return Astro.redirect('/admin/projects');
+}
+
+// Pre-fetch the project + its quote's customer so the editor header can
+// show context without an extra round-trip on the client side.
+const db = env?.MK_APP_DB;
+const projectRow = db ? await db.prepare(`
+  SELECT p.id, p.project_number, p.customer_name, p.scheduled_start, p.total
+  FROM projects p WHERE p.id = ?
+`).bind(projectId).first() as any : null;
+
+if (!projectRow) {
+  return Astro.redirect('/admin/projects');
+}
+
+// Saved contractor name — prefills the contractor signer in the collect modal.
+const savedContractor = db ? await db.prepare(
+  'SELECT signer_name FROM contractor_signature WHERE id = 1'
+).first() as { signer_name: string } | null : null;
+const contractorDefaultName = savedContractor?.signer_name || '';
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contract — {projectRow.project_number} — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <style is:global>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .pce-page { max-width: 1080px; margin: 0 auto; padding: 24px 16px 80px; }
+
+      .pce-toolbar {
+        position: sticky; top: 0; z-index: 5;
+        background: var(--color-background);
+        padding: 16px 0 12px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+        margin-bottom: 20px;
+      }
+      .pce-back {
+        text-decoration: none; color: var(--color-text-secondary);
+        font-size: 13px; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 4px;
+      }
+      .pce-back:hover { color: var(--color-text-primary); }
+      .pce-toolbar-spacer { flex: 1; }
+      .pce-status { font-size: 12px; color: var(--color-text-secondary); }
+      .pce-status.dirty { color: #fbbf24; }
+      .pce-status.saved { color: #86efac; }
+      .pce-toolbar button {
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+      }
+      .pce-toolbar button.primary {
+        background: linear-gradient(135deg, var(--color-primary), #e05f00);
+        color: #fff; border-color: var(--color-primary);
+      }
+      .pce-toolbar button.danger {
+        color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);
+      }
+      .pce-toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .pce-status-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; font-weight: 700;
+        padding: 4px 10px; border-radius: 999px;
+      }
+      .pce-status-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+      .pce-panel {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+      .pce-panel-title {
+        font-size: 14px; font-weight: 700;
+        margin: 0 0 4px;
+      }
+      .pce-panel-sub {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin: 0 0 14px;
+      }
+
+      .pce-head-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        align-items: end;
+      }
+      @media (max-width: 700px) {
+        .pce-head-grid { grid-template-columns: 1fr; }
+      }
+      .pce-pay-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      @media (max-width: 900px) { .pce-pay-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 480px) { .pce-pay-grid { grid-template-columns: 1fr; } }
+
+      .pce-field label {
+        display: block; font-size: 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary); margin-bottom: 4px;
+      }
+      .pce-field input, .pce-field select, .pce-field textarea {
+        width: 100%; box-sizing: border-box;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-family: inherit;
+        resize: vertical;
+      }
+      .pce-toggle {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 13px; font-weight: 600;
+        user-select: none; white-space: nowrap;
+      }
+      .pce-toggle input { accent-color: var(--color-primary); }
+
+      .pce-terms-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px; align-items: start;
+        padding: 10px 0;
+        border-top: 1px dashed var(--glass-border);
+      }
+      .pce-terms-row:first-of-type { border-top: 0; padding-top: 0; }
+
+      /* Payment schedule table */
+      .pce-sched-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 13px;
+      }
+      .pce-sched-table th {
+        text-align: left;
+        padding: 6px 8px;
+        font-size: 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .pce-sched-table td {
+        padding: 6px 4px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .pce-sched-table td input {
+        width: 100%;
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+      }
+      .pce-sched-table .pce-amt-col { width: 120px; text-align: right; }
+      .pce-sched-table .pce-amt-col input { text-align: right; }
+      .pce-sched-table .pce-date-col { width: 150px; }
+      .pce-sched-table .pce-kind-col { width: 120px; }
+      .pce-sched-table .pce-pct-col { width: 72px; text-align: right; }
+      .pce-sched-table .pce-pct-col input { text-align: right; padding: 6px 6px; }
+      .pce-sched-table .pce-collect-col { width: 120px; text-align: center; }
+      .pce-sched-table .pce-act-col { width: 36px; text-align: center; }
+      .pce-pct-auto {
+        display: inline-block; font-size: 12px; font-weight: 700;
+        color: #93c5fd; padding: 4px 6px;
+      }
+      .pce-row-paid td input:disabled,
+      .pce-sched-table td input:disabled { opacity: 0.55; cursor: not-allowed; }
+      .pce-row-paid { background: rgba(34,197,94,0.06); }
+      .pce-receipt-badge {
+        width: 100%; padding: 6px 8px; cursor: pointer;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.2px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--color-primary);
+        background: rgba(255,120,29,0.10); color: #93c5fd;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .pce-receipt-badge.paid {
+        border-color: rgba(34,197,94,0.5);
+        background: rgba(34,197,94,0.14); color: #86efac;
+      }
+      .pce-receipt-badge:hover { filter: brightness(1.15); }
+
+      /* Collect-payment modal */
+      .pce-collect-overlay {
+        position: fixed; inset: 0; z-index: 50;
+        background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+        display: none; align-items: center; justify-content: center; padding: 16px;
+      }
+      .pce-collect-overlay.show { display: flex; }
+      .pce-collect-modal {
+        background: var(--color-background); border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg, 14px); padding: 20px;
+        width: 100%; max-width: 760px; max-height: 92vh; overflow-y: auto;
+      }
+      .pce-collect-modal h3 { margin: 0 0 4px; font-size: 17px; }
+      .pce-collect-sub { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 16px; }
+      .pce-collect-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+      .pce-collect-fields .pce-field label { display:block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-text-secondary); margin-bottom: 4px; }
+      .pce-collect-fields input, .pce-collect-fields select {
+        width: 100%; padding: 8px 10px; background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border); color: var(--color-text-primary);
+        border-radius: var(--radius-sm); font-size: 14px;
+      }
+      .pce-sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 640px) { .pce-sig-grid, .pce-collect-fields { grid-template-columns: 1fr; } }
+      .pce-sig-card { border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px; }
+      .pce-sig-role { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-text-secondary); margin-bottom: 6px; }
+      .pce-sig-pad { width: 100%; height: 120px; background: #fff; border-radius: var(--radius-sm); touch-action: none; display: block; }
+      .pce-sig-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+      .pce-sig-actions input { flex: 1; margin-right: 8px; padding: 6px 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--color-text-primary); border-radius: var(--radius-sm); font-size: 13px; }
+      .pce-sig-clear { background: none; border: 1px solid var(--glass-border); color: var(--color-text-secondary); border-radius: var(--radius-sm); padding: 6px 10px; cursor: pointer; font-size: 12px; }
+      .pce-collect-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+      .pce-collect-foot button { padding: 9px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; cursor: pointer; }
+      .pce-collect-cancel { background: none; border: 1px solid var(--glass-border); color: var(--color-text-secondary); }
+      .pce-collect-save { background: var(--color-primary); border: 1px solid var(--color-primary); color: #fff; }
+      .pce-collect-save:disabled { opacity: 0.45; cursor: not-allowed; }
+      .pce-collect-undo { background: none; border: 1px solid rgba(239,68,68,0.5); color: #fca5a5; margin-right: auto; }
+
+      /* Payment plan tabs (segmented control) */
+      .pce-plan-toggle {
+        display: flex;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: 14px;
+        background: var(--glass-bg, rgba(255,255,255,0.04));
+      }
+      .pce-plan-btn {
+        flex: 1 1 0;
+        padding: 10px 14px;
+        border: none;
+        border-right: 1px solid var(--glass-border);
+        background: transparent;
+        color: var(--color-text-secondary);
+        font-size: 13px; font-weight: 600; cursor: pointer;
+        text-align: center;
+        transition: background 0.15s, color 0.15s;
+      }
+      .pce-plan-btn:last-child { border-right: none; }
+      .pce-plan-btn.active {
+        background: var(--color-primary);
+        color: #fff;
+      }
+      .pce-sync-badge {
+        display: inline-block; margin-top: 4px;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+        color: #60a5fa; background: rgba(59,130,246,0.12);
+        border: 1px solid rgba(59,130,246,0.3);
+        padding: 1px 6px; border-radius: 999px;
+      }
+
+      /* Scope cards — reuse the same look as the quote scope editor. */
+      .pce-scope {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+      .pce-scope-head {
+        display: flex; gap: 10px; align-items: center;
+        margin-bottom: 12px; flex-wrap: wrap;
+      }
+      .pce-scope-title {
+        flex: 1; min-width: 180px;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 15px; font-weight: 700; font-family: inherit;
+      }
+
+      .pce-section {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      .pce-section-head {
+        display: flex; gap: 8px; align-items: center;
+        margin-bottom: 8px;
+      }
+      .pce-section-title {
+        flex: 1;
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 13px; font-weight: 700;
+      }
+
+      .pce-item {
+        display: flex; gap: 6px; align-items: flex-start;
+        padding: 6px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.04);
+        border-radius: var(--radius-sm);
+        margin-bottom: 4px;
+      }
+      .pce-item-type {
+        flex-shrink: 0;
+        width: 64px;
+        font-size: 9px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary);
+        padding: 6px 0; text-align: center;
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-sm);
+      }
+      .pce-item-fields { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+      .pce-item-fields input, .pce-item-fields textarea {
+        width: 100%; box-sizing: border-box;
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-family: inherit;   /* textarea defaults to monospace otherwise */
+      }
+      .pce-item-fields textarea { min-height: 44px; line-height: 1.5; }
+      .pce-item-row { display: flex; gap: 6px; }
+      .pce-item-row > * { flex: 1; }
+      .pce-amount-field { max-width: 120px; }
+
+      .pce-icon-btn {
+        width: 26px; height: 26px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+      .pce-icon-btn:hover { color: var(--color-text-primary); background: rgba(255,255,255,0.07); }
+      .pce-icon-btn.danger:hover { color: #fca5a5; background: rgba(239, 68, 68, 0.1); }
+      .pce-icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+      .pce-add-row {
+        display: flex; flex-wrap: wrap; gap: 6px;
+        padding-top: 6px;
+        border-top: 1px dashed var(--glass-border);
+        margin-top: 6px;
+      }
+      .pce-add-row button {
+        padding: 4px 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 11px; font-weight: 600;
+        cursor: pointer;
+      }
+      .pce-add-row button:hover { background: rgba(255,255,255,0.08); }
+
+      .pce-add-section {
+        display: block; width: 100%;
+        padding: 10px;
+        background: rgba(255,255,255,0.02);
+        border: 1.5px dashed var(--glass-border);
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-md);
+        font-size: 12px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        text-align: center;
+      }
+      .pce-add-section:hover { background: rgba(255,255,255,0.04); color: var(--color-text-primary); }
+
+      .pce-add-scope-row {
+        display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .pce-tpl-select {
+        flex: 1; min-width: 180px; max-width: 320px;
+        padding: 9px 10px; border-radius: var(--radius-md);
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg, rgba(255,255,255,0.04)); color: var(--color-text-primary);
+        font-size: 13px;
+      }
+      .pce-tool {
+        padding: 9px 14px; border-radius: var(--radius-md);
+        border: 1px solid var(--color-primary); background: rgba(255,120,29,0.12);
+        color: var(--color-text-primary); font-size: 13px; font-weight: 600;
+        cursor: pointer; white-space: nowrap;
+      }
+      .pce-tool:hover { background: rgba(255,120,29,0.2); }
+      @media (max-width: 640px) {
+        .pce-add-scope-row { flex-direction: column; align-items: stretch; }
+        .pce-tpl-select { max-width: none; }
+      }
+
+      .pce-readonly {
+        padding: 10px 12px; border-radius: var(--radius-md);
+        background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border);
+        color: var(--color-text-primary); font-size: 14px;
+      }
+      .pce-pricing {
+        margin-top: 16px; padding: 14px 16px;
+        background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+      }
+      .pce-pricing-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 6px 0; font-size: 14px; color: var(--color-text-secondary);
+      }
+      .pce-pricing-row strong { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+      .pce-pricing-row input {
+        padding: 6px 8px; border: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.04); color: var(--color-text-primary);
+        border-radius: var(--radius-sm); font-size: 14px; font-family: inherit;
+      }
+      .pce-pricing-row.grand {
+        border-top: 1px solid var(--glass-border); margin-top: 6px; padding-top: 12px;
+        font-size: 16px; color: var(--color-text-primary); font-weight: 700;
+      }
+
+      .pce-empty { padding: 40px; text-align: center; color: var(--color-text-secondary); }
+
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--color-background-light, #1f2937);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        font-size: 14px; z-index: 2000;
+        opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      }
+      .toast.visible { opacity: 1; }
+      .toast.success { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+      .toast.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    
+    /* Date inputs overflow their container on iOS/tablet unless the native
+       min-width + appearance are stripped. */
+    input[type="date"], input[type="time"], input[type="datetime-local"] {
+      -webkit-appearance: none; appearance: none;
+      min-width: 0; max-width: 100%; box-sizing: border-box;
+    }
+</style>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="projects" />
+      <div class="mobile-header-right">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="projects" />
+
+    <main class="pce-page" data-project-id={String(projectId)} data-customer-name={projectRow.customer_name || ''} data-contractor-name={contractorDefaultName}>
+      <div class="pce-toolbar">
+        <a class="pce-back" href={`/admin/projects?open=${projectId}`}>← Back to project</a>
+        <span class="pce-toolbar-spacer"></span>
+        <span class="pce-status" id="saveStatus"></span>
+        <span id="contractStatusBadge"></span>
+        <button id="previewBtn" onclick={`window.open('/admin/projects/${projectId}/contract/preview/', '_blank', 'noopener')`}>Preview PDF</button>
+        <button id="regenBtn" onclick="regenerateSchedule()">Regenerate schedule</button>
+        <button id="amendBtn" onclick="amendAndResign()" style="display:none;">Amend &amp; re-sign</button>
+        <button id="voidBtn" class="danger" onclick="voidContract()">Void</button>
+        <button id="sendBtn" onclick="sendForSignature()" style="display:none;">Send for signature</button>
+        <button id="saveBtn" class="primary" onclick="saveContract()" disabled>Save</button>
+      </div>
+
+      <div style="margin-bottom: 14px; font-size: 13px; color: var(--color-text-secondary);">
+        Project <strong style="color: var(--color-text-primary);">{projectRow.project_number}</strong> · {projectRow.customer_name}
+      </div>
+
+      <div id="pceShell">
+        <div class="pce-empty">Loading contract…</div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <ConfirmModal />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      mobileNavToggle?.addEventListener('click', () => {
+        const isActive = mobileNavPanel?.classList.contains('active');
+        mobileNavToggle?.classList.toggle('active', !isActive);
+        mobileNavPanel?.classList.toggle('active', !isActive);
+        mobileNavOverlay?.classList.toggle('active', !isActive);
+        document.body.style.overflow = !isActive ? 'hidden' : '';
+      });
+      mobileNavClose?.addEventListener('click', () => {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      mobileNavOverlay?.addEventListener('click', () => mobileNavClose?.click());
+
+      function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast visible ' + (type || '');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => el.classList.remove('visible'), 2500);
+      }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function escapeAttr(s) {
+        return String(s == null ? '' : s).replace(/"/g, '&quot;');
+      }
+      function uid(prefix) {
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      }
+      function fmtMoney(n) {
+        var v = Number(n);
+        if (!isFinite(v)) v = 0;
+        return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      // ===== State =====
+      const projectId = Number(document.querySelector('.pce-page').dataset.projectId);
+      const projectCustomerName = document.querySelector('.pce-page').dataset.customerName || '';
+      const contractorDefaultName = document.querySelector('.pce-page').dataset.contractorName || '';
+      function todayISO() {
+        const d = new Date();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${d.getFullYear()}-${m}-${dd}`;
+      }
+      let contract = null;
+      let dirty = false;
+      // Resend gating: once a contract is 'sent', Resend stays disabled until
+      // the admin saves a change — avoids emailing the same version repeatedly.
+      let changedSinceSend = false;
+      let signatures = [];
+      let scopeTemplates = [];          // Quote Scope template library (for "add from template")
+      let projectTotalFallback = 0;     // project/quote total — used when scopes have no subtotal rows
+      let projectScheduledStart = null; // from project Schedule (Details tab) — drives contract start date
+      let projectScheduledEnd = null;   // from project Schedule — drives balance-on-completion due date
+      let receipts = [];                // collected per-payment receipts (one per schedule row)
+
+      function getReceipt(rowId) { return receipts.find(r => r.row_id === rowId) || null; }
+
+      function setDirty(d) {
+        dirty = d;
+        const status = document.getElementById('saveStatus');
+        const saveBtn = document.getElementById('saveBtn');
+        if (d) {
+          status.textContent = 'Unsaved changes';
+          status.className = 'pce-status dirty';
+          saveBtn.disabled = false;
+        } else {
+          status.textContent = 'All changes saved';
+          status.className = 'pce-status saved';
+          saveBtn.disabled = true;
+        }
+      }
+
+      function renderStatusBadge() {
+        const map = {
+          draft: { color: '#94a3b8', label: 'Draft' },
+          sent: { color: '#3b82f6', label: 'Sent' },
+          signed: { color: '#22c55e', label: 'Signed' },
+          countersigned: { color: '#22c55e', label: 'Executed' },
+          void: { color: '#ef4444', label: 'Void' },
+        };
+        const m = map[contract?.status] || map.draft;
+        const el = document.getElementById('contractStatusBadge');
+        el.innerHTML = '<span class="pce-status-badge" style="background: ' + m.color + '22; color: ' + m.color + ';"><span class="dot" style="background: ' + m.color + ';"></span>' + m.label + '</span>';
+        updateToolbarButtons();
+      }
+
+      // Show "Send for signature" on draft/sent (label flips to "Resend"
+      // when already sent). Hidden on signed/void — those go through amend
+      // (Save) or void first.
+      function updateToolbarButtons() {
+        const sendBtn = document.getElementById('sendBtn');
+        if (!sendBtn) return;
+        const st = contract?.status;
+        if (st === 'draft' || st === 'sent') {
+          sendBtn.style.display = '';
+          sendBtn.textContent = st === 'sent' ? 'Resend for signature' : 'Send for signature';
+          // On a sent contract, require a saved change before resending.
+          if (st === 'sent' && !changedSinceSend) {
+            sendBtn.disabled = true;
+            sendBtn.title = 'No changes since the last send — edit and save to resend a new version.';
+          } else {
+            sendBtn.disabled = false;
+            sendBtn.title = '';
+          }
+        } else {
+          sendBtn.style.display = 'none';
+        }
+        // "Amend & re-sign" only makes sense once a signature exists. Normal
+        // Save keeps the signature + notifies the customer; this button is the
+        // deliberate "clear signatures and start over" path.
+        const amendBtn = document.getElementById('amendBtn');
+        if (amendBtn) {
+          amendBtn.style.display = (st === 'signed' || st === 'countersigned') ? '' : 'none';
+        }
+      }
+
+      async function loadContract() {
+        try {
+          const res = await fetch(`/api/projects/${projectId}/contract/`, { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success) {
+            document.getElementById('pceShell').innerHTML = `<div class="pce-empty">${data.error || 'Failed to load contract'}</div>`;
+            return;
+          }
+          if (!data.contract) {
+            document.getElementById('pceShell').innerHTML = '<div class="pce-empty">No contract on this project yet.<br><br><a href="/admin/projects?open=' + projectId + '" style="color: var(--color-primary);">Go back and apply a template →</a></div>';
+            return;
+          }
+          contract = data.contract;
+          signatures = data.signatures || [];
+          receipts = data.receipts || [];
+          projectTotalFallback = Number(data.project_total) || 0;
+          projectScheduledStart = data.project_scheduled_start || null;
+          projectScheduledEnd = data.project_scheduled_end || null;
+          if (!Array.isArray(contract.scopes)) contract.scopes = [];
+          if (!Array.isArray(contract.payment_schedule)) contract.payment_schedule = [];
+          if (!contract.terms || typeof contract.terms !== 'object') contract.terms = {};
+          contract.terms.marketing_release ??= { enabled: false, text: '' };
+          contract.terms.reference_request ??= { enabled: false, text: 'Can we use you as a reference?' };
+          contract.terms.custom_terms ??= [];
+          // Inherit the start date from the project's Schedule (Details tab)
+          // when the contract doesn't have one yet.
+          if (!contract.start_date && data.project_scheduled_start) {
+            contract.start_date = data.project_scheduled_start;
+          }
+          // Total is derived from scope subtotals; fall back to the project /
+          // quote total when there are no subtotal rows.
+          recomputeContractTotal(false); // don't reflow on load — only on edits
+          renderStatusBadge();
+          render();
+          setDirty(false);
+          loadScopeTemplatesForContract();
+        } catch {
+          document.getElementById('pceShell').innerHTML = '<div class="pce-empty" style="color:#fca5a5;">Failed to load contract.</div>';
+        }
+      }
+
+      function render() {
+        const shell = document.getElementById('pceShell');
+        let html = '';
+
+        // ── Panel: Schedule (read-only, sourced from the project's
+        //    Details → Schedule). Total + discount live with the scopes. ──
+        const fmtD = (s) => {
+          if (!s) return '<span style="color:var(--color-text-secondary); font-style:italic;">— set in Details → Schedule</span>';
+          const d = new Date(String(s) + 'T00:00:00');
+          return isNaN(d.getTime()) ? s : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        };
+        html += `<div class="pce-panel">
+          <h3 class="pce-panel-title">Schedule</h3>
+          <p class="pce-panel-sub">Dates come from the project's <a href="/admin/projects?open=${projectId}" style="color:var(--color-primary);">Schedule (Details tab)</a>. The balance-on-completion payment follows the end date automatically.</p>
+          <div class="pce-head-grid">
+            <div class="pce-field"><label>Start date</label><div class="pce-readonly">${fmtD(projectScheduledStart || contract.start_date)}</div></div>
+            <div class="pce-field"><label>End date</label><div class="pce-readonly">${fmtD(projectScheduledEnd)}</div></div>
+          </div>
+        </div>`;
+
+        // ── Panel: Payment schedule defaults + rows ──
+        // Active plan is inferred from the rows: a balance row tagged
+        // due_source:'end_date' means the "Balance on completion" plan.
+        const planActive = contract.payment_schedule.some(r => r.due_source === 'end_date')
+          ? 'end_date'
+          : (contract.payment_schedule.some(r => r.kind === 'monthly') ? 'monthly' : 'end_date');
+        html += `<div class="pce-panel">
+          <h3 class="pce-panel-title">Payment schedule</h3>
+          <p class="pce-panel-sub">Pick a plan to generate rows, then edit any row directly. Set a <strong>%</strong> on each milestone (down, 1st, 2nd…) and the <strong>balance</strong> row auto-absorbs the remainder so it always totals 100%. The balance row stays synced to the project's end date. Use <strong>Collect</strong> to record a payment + capture both signatures when money changes hands.</p>
+          <div class="pce-plan-toggle" role="tablist">
+            <button type="button" class="pce-plan-btn${planActive === 'end_date' ? ' active' : ''}" onclick="setPaymentPlan('end_date')">Deposit + balance on completion</button>
+            <button type="button" class="pce-plan-btn${planActive === 'monthly' ? ' active' : ''}" onclick="setPaymentPlan('monthly')">Deposit + monthly installments</button>
+          </div>
+          <datalist id="payKinds">
+            <option value="Down payment"></option>
+            <option value="1st payment"></option>
+            <option value="2nd payment"></option>
+            <option value="Final payment"></option>
+            <option value="Balance on completion"></option>
+            <option value="Materials"></option>
+          </datalist>
+          <div class="pce-pay-grid" style="margin-bottom:14px;">
+            <div class="pce-field"><label>Down %</label><input id="dpPct" type="number" step="1" min="0" max="100" value="${contract.down_payment_percent}"></div>
+            <div class="pce-field"><label># down</label><input id="dpCount" type="number" step="1" min="0" max="12" value="${contract.down_payment_count}"></div>
+            <div class="pce-field"><label># monthly</label><input id="mpCount" type="number" step="1" min="0" max="60" value="${contract.monthly_payment_count}"></div>
+            <div class="pce-field"><label>Warranty (months)</label><input id="warranty" type="number" step="1" min="0" max="240" value="${contract.warranty_months}"></div>
+            <div class="pce-field"><label>Cancel window (days)</label><input id="cancelDays" type="number" step="1" min="0" max="30" value="${contract.cancellation_window_days}"></div>
+            <div class="pce-field"><label>Cancel fee ($)</label><input id="cancelFee" type="number" step="0.01" min="0" value="${contract.cancellation_fee_amount}"></div>
+            <div class="pce-field"><label>Late grace (days)</label><input id="lateGrace" type="number" step="1" min="0" max="30" value="${contract.late_fee_grace_days}"></div>
+            <div class="pce-field"><label>Late fee ($)</label><input id="lateFee" type="number" step="0.01" min="0" value="${contract.late_fee_amount}"></div>
+          </div>
+          <table class="pce-sched-table">
+            <thead><tr>
+              <th class="pce-kind-col">Kind</th>
+              <th>Label</th>
+              <th class="pce-date-col">Due date</th>
+              <th class="pce-pct-col">%</th>
+              <th class="pce-amt-col">Amount</th>
+              <th class="pce-collect-col">Receipt</th>
+              <th class="pce-act-col"></th>
+            </tr></thead>
+            <tbody id="schedBody">${
+              contract.payment_schedule.length === 0
+                ? '<tr><td colspan="7" style="padding:12px; color:var(--color-text-secondary); font-style:italic; text-align:center;">No payment rows yet — set total + counts above, then click Regenerate schedule.</td></tr>'
+                : contract.payment_schedule.map((r, i) => {
+                    const isBal = isBalanceRow(r);
+                    const pct = contract.total > 0 ? (Number(r.amount) || 0) / contract.total * 100 : 0;
+                    const pctStr = (Math.round(pct * 100) / 100).toString();
+                    const rec = getReceipt(r.id);
+                    const paid = !!rec;
+                    return `
+                  <tr data-pay-id="${escapeAttr(r.id)}"${paid ? ' class="pce-row-paid"' : ''}>
+                    <td class="pce-kind-col">
+                      <input type="text" list="payKinds" value="${escapeAttr(r.kind || '')}" placeholder="Kind" oninput="updatePayField('${r.id}', 'kind', this.value)"${paid ? ' disabled' : ''}>
+                    </td>
+                    <td><input type="text" value="${escapeAttr(r.label || '')}" oninput="updatePayField('${r.id}', 'label', this.value)"${paid ? ' disabled' : ''}></td>
+                    <td class="pce-date-col">
+                      <input type="date" value="${escapeAttr(r.due_date || '')}" oninput="updatePayField('${r.id}', 'due_date', this.value)" title="${r.due_source === 'end_date' ? 'Synced to the project end date — editing here unlinks it.' : ''}"${paid ? ' disabled' : ''}>
+                      ${r.due_source === 'end_date' ? '<span class="pce-sync-badge" title="Stays in sync with the project end date">⟳ end date</span>' : ''}
+                    </td>
+                    <td class="pce-pct-col">${
+                      isBal
+                        ? `<span class="pce-pct-auto" title="Balance row — absorbs whatever is left so the schedule always totals 100%">${pctStr}%</span>`
+                        : `<input type="number" step="any" min="0" max="100" value="${pctStr}" onchange="updatePayPct('${r.id}', this.value)" title="Editing % recalculates this row's amount; the balance row absorbs the rest."${paid ? ' disabled' : ''}>`
+                    }</td>
+                    <td class="pce-amt-col"><input type="number" step="any" min="0" value="${r.amount}" onchange="updatePayField('${r.id}', 'amount', this.value)"${paid ? ' disabled' : ''}></td>
+                    <td class="pce-collect-col">${
+                      paid
+                        ? `<span class="pce-receipt-badge paid" style="cursor:default;" title="Collected ${rec.collected_at ? fmtD(rec.collected_at) : ''}${rec.check_number ? ' · check #' + rec.check_number : ''}. Manage receipts from the Contract tab.">✓ ${escapeHtml(rec.payment_method || 'paid')}${rec.check_number ? ' #' + escapeHtml(rec.check_number) : ''}</span>`
+                        : `<span style="font-size:11px; color:var(--color-text-secondary);" title="Record payments from the project's Contract tab → Collect.">—</span>`
+                    }</td>
+                    <td class="pce-act-col"><button class="pce-icon-btn danger" onclick="deletePayRow('${r.id}')" title="${paid ? 'Collected rows are locked — undo the receipt first' : 'Remove row'}"${paid ? ' disabled' : ''}>×</button></td>
+                  </tr>
+                `;
+                  }).join('')
+            }</tbody>
+          </table>
+          <div style="margin-top:10px;"><button class="pce-icon-btn" style="width:auto; padding:6px 12px;" onclick="addPayRow()">+ Add row</button></div>
+        </div>`;
+
+        // ── Panel: Terms ──
+        const mr = contract.terms.marketing_release || { enabled: false, text: '' };
+        const rr = contract.terms.reference_request || { enabled: false, text: '' };
+        const cts = Array.isArray(contract.terms.custom_terms) ? contract.terms.custom_terms : [];
+        html += `<div class="pce-panel">
+          <h3 class="pce-panel-title">Terms &amp; clauses</h3>
+          <p class="pce-panel-sub">Standard clauses + any project-specific addenda.</p>
+          <div class="pce-terms-row">
+            <label class="pce-toggle"><input id="termMrEnabled" type="checkbox"${mr.enabled ? ' checked' : ''}> Marketing release</label>
+            <div class="pce-field"><label>Clause text</label><textarea id="termMrText" rows="2">${escapeHtml(mr.text || '')}</textarea></div>
+          </div>
+          <div class="pce-terms-row">
+            <label class="pce-toggle"><input id="termRrEnabled" type="checkbox"${rr.enabled ? ' checked' : ''}> Reference request (Y/N)</label>
+            <div class="pce-field"><label>Question text</label><input id="termRrText" type="text" value="${escapeAttr(rr.text || '')}"></div>
+          </div>
+          <div style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Custom terms</span>
+              <button class="pce-icon-btn" style="width:auto; padding:6px 10px;" onclick="addCustomTerm()">+ Add</button>
+            </div>
+            <div id="customTermsList">${
+              cts.length === 0
+                ? '<div style="font-size:12px; color:var(--color-text-secondary); font-style:italic; padding:6px 0;">No extra clauses.</div>'
+                : cts.map((ct, i) => `
+                  <div class="pce-terms-row">
+                    <button class="pce-icon-btn danger" onclick="removeCustomTerm(${i})">×</button>
+                    <div class="pce-field" style="display:flex; flex-direction:column; gap:6px;">
+                      <input type="text" oninput="updateCustomTerm(${i}, 'title', this.value)" value="${escapeAttr(ct.title || '')}" placeholder="Clause title">
+                      <textarea rows="2" oninput="updateCustomTerm(${i}, 'text', this.value)" placeholder="Clause text…">${escapeHtml(ct.text || '')}</textarea>
+                    </div>
+                  </div>
+                `).join('')
+            }</div>
+          </div>
+        </div>`;
+
+        // ── Panel: Scopes ──
+        html += `<div class="pce-panel">
+          <h3 class="pce-panel-title">Scopes</h3>
+          <p class="pce-panel-sub">Body of the contract — each scope holds sections of bullets / color lines / subtotals / notes.</p>`;
+        if (!contract.scopes.length) {
+          html += '<div class="pce-empty">No scopes yet — add the first one below.</div>';
+        }
+        contract.scopes.forEach((scope, sIdx) => {
+          html += renderScope(scope, sIdx);
+        });
+        // Add-scope row: pull from the shared Quote Scope template library
+        // (same templates used in the quote editor), or start one empty.
+        html += `
+          <div class="pce-add-scope-row">
+            <select id="scopeTemplatePicker" class="pce-tpl-select"></select>
+            <button class="pce-tool" onclick="addScopeFromTemplate()">+ Add scope from template</button>
+            <button class="pce-add-section" style="margin:0;" onclick="addScope()">+ Empty scope</button>
+          </div>`;
+
+        // Pricing summary — Total comes from the scopes' Subtotal rows;
+        // Discount lives here (like the quote). Grand total = subtotals −
+        // discount. When no Subtotal rows exist (legacy labor-priced quote),
+        // the quote's total carries over so you're not stuck at $0.
+        const _subs = sumContractSubtotals();
+        const _base = _subs > 0 ? _subs : (projectTotalFallback > 0 ? projectTotalFallback : 0);
+        const _disc = Number(contract.discount) || 0;
+        const _grand = Math.max(0, +(_base - _disc).toFixed(2));
+        html += `
+          <div class="pce-pricing">
+            <div class="pce-pricing-row">
+              <span>${_subs > 0 ? 'Subtotals (from scopes)' : 'Total (carried from quote)'}</span>
+              <strong id="pceSubtotal">$${fmtMoney(_base)}</strong>
+            </div>
+            <div class="pce-pricing-row">
+              <span>Discount ($)</span>
+              <input id="contractDiscount" type="number" step="0.01" min="0" value="${_disc}" style="width:120px; text-align:right;">
+            </div>
+            <div class="pce-pricing-row grand">
+              <span>Contract total</span>
+              <strong id="pceGrandTotal">$${fmtMoney(_grand)}</strong>
+            </div>
+            ${_subs === 0 ? '<p class="pce-panel-sub" style="margin:8px 0 0;">No Subtotal rows yet — add a scope and put the price in a <strong>Subtotal</strong> row to itemize, or leave the carried-over total as is.</p>' : ''}
+          </div>
+        </div>`;
+
+        shell.innerHTML = html;
+        renderScopeTemplatePicker();
+        wireListeners();
+      }
+
+      function renderScope(scope, sIdx) {
+        const lastIdx = contract.scopes.length - 1;
+        let html = `<div class="pce-scope" data-scope-id="${escapeAttr(scope.id)}">
+          <div class="pce-scope-head">
+            <input class="pce-scope-title" type="text" value="${escapeAttr(scope.title || '')}" oninput="updateScopeTitle('${scope.id}', this.value)" placeholder="Scope title">
+            <button class="pce-icon-btn" onclick="polishScopeTitle('${scope.id}', this)" title="Polish: fix typos + translate Spanish → English">✨</button>
+            <button class="pce-icon-btn" ${sIdx === 0 ? 'disabled' : ''} onclick="moveScope('${scope.id}', -1)">↑</button>
+            <button class="pce-icon-btn" ${sIdx === lastIdx ? 'disabled' : ''} onclick="moveScope('${scope.id}', 1)">↓</button>
+            <button class="pce-icon-btn danger" onclick="deleteScope('${scope.id}')">×</button>
+          </div>`;
+        (scope.sections || []).forEach((sec, secIdx) => {
+          html += renderSection(scope.id, sec, secIdx, scope.sections.length);
+        });
+        html += `<button class="pce-add-section" onclick="addSection('${scope.id}')">+ Add section</button>`;
+        html += `</div>`;
+        return html;
+      }
+
+      function renderSection(scopeId, section, sIdx, totalSecs) {
+        const lastIdx = totalSecs - 1;
+        let html = `<div class="pce-section" data-section-id="${escapeAttr(section.id)}">
+          <div class="pce-section-head">
+            <input class="pce-section-title" type="text" value="${escapeAttr(section.title || '')}" oninput="updateSectionTitle('${scopeId}', '${section.id}', this.value)" placeholder="Section title">
+            <button class="pce-icon-btn" onclick="polishSectionTitle('${scopeId}', '${section.id}', this)" title="Polish: fix typos + translate Spanish → English">✨</button>
+            <button class="pce-icon-btn" ${sIdx === 0 ? 'disabled' : ''} onclick="moveSection('${scopeId}', '${section.id}', -1)">↑</button>
+            <button class="pce-icon-btn" ${sIdx === lastIdx ? 'disabled' : ''} onclick="moveSection('${scopeId}', '${section.id}', 1)">↓</button>
+            <button class="pce-icon-btn danger" onclick="deleteSection('${scopeId}', '${section.id}')">×</button>
+          </div>`;
+        (section.items || []).forEach((it, iIdx) => {
+          html += renderItem(scopeId, section.id, it, iIdx, section.items.length);
+        });
+        html += `<div class="pce-add-row">
+          <button onclick="addItem('${scopeId}', '${section.id}', 'bullet')">+ Bullet</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'fillable')">+ Color line</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'choice')" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'subtotal')">+ Subtotal</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'note')">+ Note</button>
+        </div>`;
+        html += `</div>`;
+        return html;
+      }
+
+      function renderItem(scopeId, sectionId, item, iIdx, itemsLen) {
+        const lastIdx = itemsLen - 1;
+        const label = item.type === 'bullet' ? 'BULLET'
+          : item.type === 'fillable' ? 'COLOR'
+          : item.type === 'choice' ? 'CHOICE'
+          : item.type === 'paint_line' ? 'PAINT/STAIN'
+          : item.type === 'subtotal' ? 'SUBTOTAL'
+          : 'NOTE';
+        let fields = '';
+        if (item.type === 'bullet' || item.type === 'note') {
+          fields = `<textarea oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'text', this.value)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}">${escapeHtml(item.text || '')}</textarea>`;
+        } else if (item.type === 'fillable') {
+          // Color line — matches the rich card in the quote editor: code/name
+          // value + Paint/Stain type + Finish. All optional; flows to the
+          // signed contract + portal.
+          const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
+          const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
+          fields = `<div class="pce-item-row">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Color for living room)">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Color code or name (e.g. SW 7672)">
+          </div>
+          <div class="pce-item-row" style="margin-top:6px;">
+            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)">
+              <option value=""${!pt ? ' selected' : ''}>Paint or stain?</option>
+              <option value="paint"${pt === 'paint' ? ' selected' : ''}>Paint</option>
+              <option value="stain"${pt === 'stain' ? ' selected' : ''}>Stain</option>
+            </select>
+            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'finish', this.value)">
+              <option value=""${!item.finish ? ' selected' : ''}>Finish (optional)</option>
+              ${finishes.map(f => `<option value="${f}"${item.finish === f ? ' selected' : ''}>${f}</option>`).join('')}
+            </select>
+          </div>`;
+        } else if (item.type === 'choice') {
+          // Generic admin-defined dropdown. Options comma-separated; value
+          // becomes a <select> when options are defined, plain input when
+          // not (so brand-new rows can still be typed into).
+          const opts = Array.isArray(item.options) ? item.options : [];
+          const optionsStr = opts.join(', ');
+          const valueField = opts.length > 0
+            ? `<select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" style="flex:1;">
+                <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+                ${opts.map(o => `<option value="${escapeAttr(o)}"${item.value === o ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}
+              </select>`
+            : `<input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Value (add options below to make a dropdown)">`;
+          fields = `<div class="pce-item-row">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Sheen, Paint type)">
+            ${valueField}
+          </div>
+          <input type="text" oninput="updateChoiceOptions('${scopeId}', '${sectionId}', '${item.id}', this.value)" onchange="updateChoiceOptions('${scopeId}', '${sectionId}', '${item.id}', this.value, true)" value="${escapeAttr(optionsStr)}" placeholder="Options (comma-separated, e.g. Paint, Stain, Sealer)" style="margin-top:6px; font-size:12px;">`;
+        } else if (item.type === 'paint_line') {
+          // Legacy — kept editable for any already-saved rows.
+          const productType = item.product_type === 'stain' ? 'stain' : 'paint';
+          fields = `<div class="pce-item-row" style="flex-wrap:wrap;">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Body color)">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Color / product (e.g. SW 7029)">
+            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)" style="flex:0 0 100px;">
+              <option value="paint"${productType === 'paint' ? ' selected' : ''}>Paint</option>
+              <option value="stain"${productType === 'stain' ? ' selected' : ''}>Stain</option>
+            </select>
+          </div>`;
+        } else if (item.type === 'subtotal') {
+          fields = `<div class="pce-item-row">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label">
+            <input class="pce-amount-field" type="number" step="0.01" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00">
+          </div>`;
+        }
+        return `<div class="pce-item">
+          <div class="pce-item-type">${label}</div>
+          <div class="pce-item-fields">${fields}</div>
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <button class="pce-icon-btn" onclick="polishItem('${scopeId}', '${sectionId}', '${item.id}', this)" title="Polish: fix typos + translate Spanish → English">✨</button>
+            <button class="pce-icon-btn" ${iIdx === 0 ? 'disabled' : ''} onclick="moveItem('${scopeId}', '${sectionId}', '${item.id}', -1)">↑</button>
+            <button class="pce-icon-btn" ${iIdx === lastIdx ? 'disabled' : ''} onclick="moveItem('${scopeId}', '${sectionId}', '${item.id}', 1)">↓</button>
+            <button class="pce-icon-btn danger" onclick="deleteItem('${scopeId}', '${sectionId}', '${item.id}')">×</button>
+          </div>
+        </div>`;
+      }
+
+      // ===== Listeners (wired after each render) =====
+      function wireListeners() {
+        // Start date is read-only (sourced from the project schedule); total +
+        // discount are derived/handled in the pricing summary. The remaining
+        // payment-term fields bind here.
+        const discInput = document.getElementById('contractDiscount');
+        if (discInput) {
+          discInput.addEventListener('input', (e) => {
+            const n = Number(e.target.value);
+            contract.discount = Number.isFinite(n) && n >= 0 ? n : 0;
+            recomputeContractTotal();
+            setDirty(true);
+          });
+          // On blur, reflow the payment schedule so it equals the new (post-
+          // discount) total — the balance/final row absorbs the difference.
+          discInput.addEventListener('change', () => {
+            recomputeContractTotal();
+            recalcBalanceRow();
+            render();
+          });
+        }
+        // dpPct: update the contract field AND sync down payment row amounts.
+        document.getElementById('dpPct')?.addEventListener('input', (e) => {
+          const n = Number(e.target.value);
+          contract.down_payment_percent = Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 0;
+          const downRows = (contract.payment_schedule || []).filter(r => r.kind === 'down');
+          if (downRows.length > 0 && contract.total > 0) {
+            const downTotal = +(contract.total * (contract.down_payment_percent / 100)).toFixed(2);
+            let spent = 0;
+            downRows.forEach((r, i) => {
+              if (i === downRows.length - 1) {
+                r.amount = +(downTotal - spent).toFixed(2);
+              } else {
+                const amt = +(downTotal / downRows.length).toFixed(2);
+                r.amount = amt;
+                spent += amt;
+              }
+            });
+            recalcBalanceRow();
+            render();
+          }
+          setDirty(true);
+        });
+        const bindings = [
+          ['dpCount', 'down_payment_count'],
+          ['mpCount', 'monthly_payment_count'], ['warranty', 'warranty_months'],
+          ['cancelDays', 'cancellation_window_days'], ['cancelFee', 'cancellation_fee_amount'],
+          ['lateGrace', 'late_fee_grace_days'], ['lateFee', 'late_fee_amount'],
+        ];
+        for (const [elId, field] of bindings) {
+          document.getElementById(elId)?.addEventListener('input', (e) => {
+            const n = Number(e.target.value);
+            contract[field] = Number.isFinite(n) ? n : 0;
+            setDirty(true);
+          });
+        }
+        document.getElementById('termMrEnabled').addEventListener('change', (e) => { contract.terms.marketing_release.enabled = e.target.checked; setDirty(true); });
+        document.getElementById('termMrText').addEventListener('input', (e) => { contract.terms.marketing_release.text = e.target.value; setDirty(true); });
+        document.getElementById('termRrEnabled').addEventListener('change', (e) => { contract.terms.reference_request.enabled = e.target.checked; setDirty(true); });
+        document.getElementById('termRrText').addEventListener('input', (e) => { contract.terms.reference_request.text = e.target.value; setDirty(true); });
+      }
+
+      // ===== Mutators =====
+      function getScope(id) { return contract.scopes.find(s => s.id === id); }
+      function getSection(scopeId, sectionId) {
+        const sc = getScope(scopeId); if (!sc) return null;
+        return (sc.sections || []).find(s => s.id === sectionId);
+      }
+
+      window.updateScopeTitle = (id, v) => { const s = getScope(id); if (s) { s.title = v; setDirty(true); } };
+      window.moveScope = (id, dir) => {
+        const idx = contract.scopes.findIndex(s => s.id === id);
+        const target = idx + dir;
+        if (idx === -1 || target < 0 || target >= contract.scopes.length) return;
+        const [m] = contract.scopes.splice(idx, 1);
+        contract.scopes.splice(target, 0, m);
+        setDirty(true); render();
+      };
+      window.deleteScope = (id) => {
+        window.showConfirmModal({
+          title: 'Delete this entire scope?',
+          text: 'The scope and all its sections will be removed.',
+          confirmText: 'Delete scope',
+          type: 'danger',
+          onConfirm: () => {
+            contract.scopes = contract.scopes.filter(s => s.id !== id);
+            recomputeContractTotal();
+            setDirty(true); render();
+          },
+        });
+      };
+      window.addScope = () => {
+        contract.scopes.push({ id: uid('scope'), title: 'New scope', template_id: null, sections: [] });
+        setDirty(true); render();
+      };
+
+      // ===== Quote Scope template library (shared with the quote editor) =====
+      async function loadScopeTemplatesForContract() {
+        try {
+          const res = await fetch('/api/admin/quote-templates/', { credentials: 'include' });
+          const data = await res.json();
+          if (data.success && Array.isArray(data.templates)) {
+            scopeTemplates = data.templates;
+            renderScopeTemplatePicker();
+          }
+        } catch {}
+      }
+      function renderScopeTemplatePicker() {
+        const picker = document.getElementById('scopeTemplatePicker');
+        if (!picker) return;
+        const order = ['interior', 'exterior', 'cabinet', 'deck', 'trim', 'ceiling', 'powerwash', 'drywall', 'roof', 'other'];
+        const grouped = {};
+        scopeTemplates.filter(t => !t.archived).forEach(t => {
+          const k = t.project_type || 'other';
+          (grouped[k] = grouped[k] || []).push(t);
+        });
+        let opts = '<option value="">— Select scope template —</option>';
+        order.forEach(type => {
+          if (!grouped[type]) return;
+          const label = type.charAt(0).toUpperCase() + type.slice(1);
+          opts += `<optgroup label="${escapeAttr(label)}">`;
+          grouped[type].forEach(t => {
+            opts += `<option value="${t.id}">${escapeHtml(t.name)}${t.is_default ? ' · default' : ''}</option>`;
+          });
+          opts += '</optgroup>';
+        });
+        picker.innerHTML = opts;
+      }
+      // Re-ID a template's sections + items so they're unique in this contract.
+      function cloneSectionsFresh(sections) {
+        return (sections || []).map(sec => ({
+          id: uid('sec'),
+          title: sec.title || '',
+          items: (sec.items || []).map(it => Object.assign({}, it, { id: uid('item') })),
+        }));
+      }
+      window.addScopeFromTemplate = async () => {
+        const picker = document.getElementById('scopeTemplatePicker');
+        const tid = picker && picker.value ? Number(picker.value) : 0;
+        if (!tid) { showToast('Pick a scope template first', 'error'); return; }
+        try {
+          const res = await fetch(`/api/admin/quote-templates/${tid}/`, { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success || !data.template) { showToast('Failed to load template', 'error'); return; }
+          contract.scopes.push({
+            id: uid('scope'),
+            title: data.template.name || 'New scope',
+            template_id: tid,
+            sections: cloneSectionsFresh(data.template.sections),
+          });
+          recomputeContractTotal();
+          setDirty(true);
+          render();
+          showToast('Scope added from template');
+        } catch {
+          showToast('Failed to add scope', 'error');
+        }
+      };
+
+      // ===== Total derivation =====
+      // Sum every 'subtotal' item across all scopes. When > 0 it drives the
+      // contract total; otherwise the project/quote total stands (editable).
+      function sumContractSubtotals() {
+        let sum = 0;
+        (contract.scopes || []).forEach(sc => {
+          (sc.sections || []).forEach(sec => {
+            (sec.items || []).forEach(it => {
+              if (it && it.type === 'subtotal') sum += Number(it.amount) || 0;
+            });
+          });
+        });
+        return +sum.toFixed(2);
+      }
+      function recomputeContractTotal(reflow = true) {
+        const subs = sumContractSubtotals();
+        // Base = scope subtotals when present, else the carried quote total.
+        const base = subs > 0 ? subs : (projectTotalFallback > 0 ? projectTotalFallback : 0);
+        const disc = Number(contract.discount) || 0;
+        // contract.total is the NET amount (post-discount) — the contract PDF
+        // + payment schedule both treat `total` as what the customer pays.
+        contract.total = Math.max(0, +(base - disc).toFixed(2));
+        const subEl = document.getElementById('pceSubtotal');
+        if (subEl) subEl.textContent = '$' + fmtMoney(base);
+        const grandEl = document.getElementById('pceGrandTotal');
+        if (grandEl) grandEl.textContent = '$' + fmtMoney(contract.total);
+        // Keep the payment schedule in sync with the total. Adding a scope mid-
+        // project (after signing) must flow the extra onto the amount still owed
+        // — otherwise the schedule undercharges the customer vs. the PDF total.
+        if (reflow) reflowSchedule();
+      }
+      window.recomputeContractTotal = recomputeContractTotal;
+
+      window.updateSectionTitle = (scopeId, secId, v) => { const sec = getSection(scopeId, secId); if (sec) { sec.title = v; setDirty(true); } };
+      window.moveSection = (scopeId, secId, dir) => {
+        const sc = getScope(scopeId); if (!sc) return;
+        const idx = sc.sections.findIndex(s => s.id === secId);
+        const target = idx + dir;
+        if (idx === -1 || target < 0 || target >= sc.sections.length) return;
+        const [m] = sc.sections.splice(idx, 1);
+        sc.sections.splice(target, 0, m);
+        setDirty(true); render();
+      };
+      window.deleteSection = (scopeId, secId) => {
+        window.showConfirmModal({
+          title: 'Delete this section?',
+          text: 'The section and all its items will be removed.',
+          confirmText: 'Delete section',
+          type: 'danger',
+          onConfirm: () => {
+            const sc = getScope(scopeId); if (!sc) return;
+            sc.sections = sc.sections.filter(s => s.id !== secId);
+            setDirty(true); render();
+          },
+        });
+      };
+      window.addSection = (scopeId) => {
+        const sc = getScope(scopeId); if (!sc) return;
+        sc.sections = sc.sections || [];
+        sc.sections.push({ id: uid('s'), title: 'New section', items: [] });
+        setDirty(true); render();
+      };
+
+      window.updateItemField = (scopeId, secId, itemId, field, value) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        const it = (sec.items || []).find(i => i.id === itemId); if (!it) return;
+        if (field === 'amount') { it.amount = value === '' ? 0 : Number(value); recomputeContractTotal(); }
+        else it[field] = value;
+        setDirty(true);
+      };
+      window.addItem = (scopeId, secId, type) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        const base = { id: uid('i'), type };
+        if (type === 'bullet' || type === 'note') base.text = '';
+        else if (type === 'fillable') { base.label = ''; base.value = ''; }
+        else if (type === 'choice') { base.label = ''; base.value = ''; base.options = ['Paint', 'Stain']; }
+        else if (type === 'paint_line') { base.label = ''; base.value = ''; base.product_type = 'paint'; }
+        else if (type === 'subtotal') { base.label = ''; base.amount = 0; }
+        sec.items = sec.items || [];
+        sec.items.push(base);
+        if (type === 'subtotal') recomputeContractTotal();
+        setDirty(true); render();
+      };
+
+      // Parse the comma-separated options input for a choice item. Drops
+      // empties + trims whitespace; clears the stored value if it no
+      // longer matches one of the options (prevents a stale value showing
+      // in the rendered <select>).
+      // doRender is false on every keystroke (oninput) so the field the admin is
+      // typing in isn't destroyed mid-type; true on blur (onchange) so the value
+      // field can swap to a dropdown once options exist.
+      window.updateChoiceOptions = (scopeId, secId, itemId, raw, doRender) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        const it = (sec.items || []).find(i => i.id === itemId); if (!it) return;
+        const opts = String(raw || '').split(',').map(x => x.trim()).filter(Boolean);
+        it.options = opts;
+        if (it.value && !opts.includes(it.value)) it.value = '';
+        setDirty(true); if (doRender) render();
+      };
+      window.moveItem = (scopeId, secId, itemId, dir) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        const idx = sec.items.findIndex(i => i.id === itemId);
+        const target = idx + dir;
+        if (idx === -1 || target < 0 || target >= sec.items.length) return;
+        const [m] = sec.items.splice(idx, 1);
+        sec.items.splice(target, 0, m);
+        setDirty(true); render();
+      };
+      window.deleteItem = (scopeId, secId, itemId) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        sec.items = sec.items.filter(i => i.id !== itemId);
+        recomputeContractTotal();
+        setDirty(true); render();
+      };
+
+      // ===== AI polish (✨) — mirrors the quote editor's per-item flow.
+      // Calls /api/admin/polish-text with the chosen string + a "kind" hint
+      // so Gemini can polish appropriately for the field's role. Conservative
+      // by design: fixes typos + grammar, translates Spanish → English,
+      // preserves numbers / brand names / dates verbatim.
+      async function polishOneString(text, kind) {
+        if (!text || !text.trim()) return null;
+        try {
+          const res = await fetch('/api/admin/polish-text/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, kind }),
+          });
+          const data = await res.json();
+          if (!data.success || !data.polished) {
+            showToast(data.error || 'Polish failed', 'error');
+            return null;
+          }
+          return data.polished;
+        } catch {
+          showToast('Polish failed (network error)', 'error');
+          return null;
+        }
+      }
+      function withPolishLoading(btn, fn) {
+        const orig = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '⏳'; }
+        return fn().finally(() => {
+          if (btn) { btn.disabled = false; btn.innerHTML = orig || '✨'; }
+        });
+      }
+
+      window.polishScopeTitle = async (scopeId, btnEl) => {
+        const sc = getScope(scopeId); if (!sc) return;
+        await withPolishLoading(btnEl || null, async () => {
+          const polished = await polishOneString(sc.title || '', 'scope title');
+          if (polished == null) return;
+          sc.title = polished;
+          setDirty(true); render();
+          showToast('Scope title polished', 'success');
+        });
+      };
+      window.polishSectionTitle = async (scopeId, secId, btnEl) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        await withPolishLoading(btnEl || null, async () => {
+          const polished = await polishOneString(sec.title || '', 'section title');
+          if (polished == null) return;
+          sec.title = polished;
+          setDirty(true); render();
+          showToast('Section title polished', 'success');
+        });
+      };
+      window.polishItem = async (scopeId, secId, itemId, btnEl) => {
+        const sec = getSection(scopeId, secId); if (!sec) return;
+        const it = (sec.items || []).find(i => i.id === itemId); if (!it) return;
+        await withPolishLoading(btnEl || null, async () => {
+          let changed = false;
+          if (it.type === 'bullet' || it.type === 'note') {
+            const polished = await polishOneString(it.text || '', it.type === 'bullet' ? 'bullet point' : 'paragraph note');
+            if (polished != null) { it.text = polished; changed = true; }
+          } else if (it.type === 'fillable' || it.type === 'paint_line' || it.type === 'choice') {
+            if ((it.label || '').trim()) {
+              const kind = it.type === 'paint_line' ? 'paint/stain row label'
+                : it.type === 'choice' ? 'dropdown field label'
+                : 'fillable field label';
+              const p1 = await polishOneString(it.label, kind);
+              if (p1 != null) { it.label = p1; changed = true; }
+            }
+            if ((it.value || '').trim()) {
+              const kind = it.type === 'paint_line' ? 'paint/stain color or product name'
+                : it.type === 'choice' ? 'dropdown selected value'
+                : 'fillable field value';
+              const p2 = await polishOneString(it.value, kind);
+              if (p2 != null) { it.value = p2; changed = true; }
+            }
+          } else if (it.type === 'subtotal') {
+            if ((it.label || '').trim()) {
+              const polished = await polishOneString(it.label, 'subtotal row label');
+              if (polished != null) { it.label = polished; changed = true; }
+            }
+          }
+          if (changed) {
+            setDirty(true); render();
+            showToast('Polished', 'success');
+          } else {
+            showToast('Nothing to polish', 'info');
+          }
+        });
+      };
+
+      // ===== Payment-schedule row mutators =====
+      // A row is "the balance" if it's a final/balance-on-completion row — it
+      // absorbs whatever the milestone rows (down, 1st, 2nd…) don't cover so
+      // the schedule always totals 100% of the contract.
+      function isBalanceRow(r) {
+        return r && (r.kind === 'final' || r.due_source === 'end_date' || /balance/i.test(r.label || ''));
+      }
+      function getBalanceRow() {
+        const rows = contract.payment_schedule || [];
+        // Prefer the last explicit balance row.
+        for (let i = rows.length - 1; i >= 0; i--) if (isBalanceRow(rows[i])) return rows[i];
+        return null;
+      }
+      // Recompute the balance row's amount = total − sum(every other row).
+      function recalcBalanceRow() {
+        const bal = getBalanceRow();
+        if (!bal) return;
+        const total = Number(contract.total) || 0;
+        let others = 0;
+        (contract.payment_schedule || []).forEach(r => { if (r.id !== bal.id) others += Number(r.amount) || 0; });
+        bal.amount = Math.max(0, +(total - others).toFixed(2));
+      }
+      // Keep the schedule summing to the contract total when the TOTAL changes
+      // (scope added/removed, price/discount edited). Generalizes recalcBalanceRow
+      // to BOTH plans: the delta flows onto the absorbing row = the last
+      // UNCOLLECTED row, preferring an explicit balance/final row. Collected
+      // (paid) rows are never touched — so the down payment stays put and the
+      // remaining installment/balance grows by the added amount. If every row is
+      // already collected, a fresh balance row is appended for the new amount.
+      function reflowSchedule() {
+        const rows = contract.payment_schedule || [];
+        if (!rows.length) return;
+        const total = Number(contract.total) || 0;
+        const collected = (r) => !!getReceipt(r.id);
+        let absorb = null;
+        for (let i = rows.length - 1; i >= 0; i--) { if (isBalanceRow(rows[i]) && !collected(rows[i])) { absorb = rows[i]; break; } }
+        if (!absorb) { for (let i = rows.length - 1; i >= 0; i--) { if (!collected(rows[i])) { absorb = rows[i]; break; } } }
+        if (!absorb) {
+          let sum = 0; rows.forEach(r => sum += Number(r.amount) || 0);
+          const remainder = +(total - sum).toFixed(2);
+          if (remainder > 0.005) {
+            rows.push({
+              id: uid('pay'), kind: 'final', label: 'Balance on completion',
+              amount: remainder, due_date: projectScheduledEnd || '',
+              ...(projectScheduledEnd ? { due_source: 'end_date' } : {}),
+            });
+          }
+          return;
+        }
+        let others = 0;
+        rows.forEach(r => { if (r.id !== absorb.id) others += Number(r.amount) || 0; });
+        absorb.amount = Math.max(0, +(total - others).toFixed(2));
+      }
+
+      // Keep the top-of-panel "Down %" shortcut in sync with the down rows.
+      function syncDownPctField() {
+        if (!(contract.total > 0)) return;
+        const allDown = (contract.payment_schedule || []).filter(r => r.kind === 'down');
+        if (!allDown.length) return;
+        const totalDown = allDown.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+        const newPct = +(totalDown / contract.total * 100).toFixed(4);
+        contract.down_payment_percent = newPct;
+        const dpPctEl = document.getElementById('dpPct');
+        if (dpPctEl) dpPctEl.value = newPct.toFixed(2);
+      }
+
+      window.updatePayField = (rowId, field, value) => {
+        const row = contract.payment_schedule.find(r => r.id === rowId); if (!row) return;
+        if (field === 'amount') {
+          row.amount = value === '' ? 0 : Number(value);
+          // Editing a non-balance row reflows the balance row + the down%
+          // shortcut, then re-renders so the % column + amounts stay exact.
+          if (!isBalanceRow(row)) {
+            recalcBalanceRow();
+            syncDownPctField();
+            render();
+          }
+        } else {
+          row[field] = value;
+        }
+        // Manually editing the date of the synced balance row unlinks it
+        // from the project end date (it becomes a fixed date).
+        if (field === 'due_date' && row.due_source === 'end_date') {
+          delete row.due_source;
+          render();
+        }
+        setDirty(true);
+      };
+      // Editing a row's % sets its amount = total × pct, then the balance row
+      // absorbs the remainder. Balance rows have no % input (auto-computed).
+      window.updatePayPct = (rowId, value) => {
+        const row = contract.payment_schedule.find(r => r.id === rowId); if (!row) return;
+        if (isBalanceRow(row)) return;
+        const total = Number(contract.total) || 0;
+        const pct = value === '' ? 0 : Math.max(0, Math.min(100, Number(value)));
+        row.amount = +(total * pct / 100).toFixed(2);
+        recalcBalanceRow();
+        syncDownPctField();
+        setDirty(true); render();
+      };
+      window.deletePayRow = (rowId) => {
+        if (getReceipt(rowId)) { showToast('This payment is collected — undo the receipt first', 'error'); return; }
+        contract.payment_schedule = contract.payment_schedule.filter(r => r.id !== rowId);
+        recalcBalanceRow();
+        setDirty(true); render();
+      };
+      window.addPayRow = () => {
+        contract.payment_schedule.push({ id: uid('pay'), kind: 'Payment', label: 'New payment', amount: 0, due_date: '' });
+        setDirty(true); render();
+      };
+
+      // Switch the payment plan — regenerates the schedule server-side from
+      // the current total/counts/dates using the chosen plan, then reloads.
+      // Request body for the regenerate endpoint built from the CURRENT
+      // in-memory contract (total/counts/dates) so the schedule reflects
+      // unsaved edits — not the stale saved row. recomputeContractTotal()
+      // keeps contract.total current.
+      function buildScheduleReqBody(plan) {
+        recomputeContractTotal();
+        return {
+          plan: plan,
+          total: Number(contract.total) || 0,
+          down_payment_percent: Number(contract.down_payment_percent) || 0,
+          down_payment_count: Number(contract.down_payment_count) || 0,
+          monthly_payment_count: Number(contract.monthly_payment_count) || 0,
+          start_date: contract.start_date || projectScheduledStart || null,
+        };
+      }
+
+      window.setPaymentPlan = (plan) => {
+        const doSwitch = async () => {
+          // Seed sensible counts so the chosen plan actually generates rows.
+          // The 1-down/0-monthly default produces NO installment rows, which
+          // made "switch to monthly" look broken. End-date plan has no monthly.
+          if (plan === 'monthly' && (Number(contract.monthly_payment_count) || 0) < 1) {
+            contract.down_payment_count = 2;
+            contract.monthly_payment_count = 4;
+          } else if (plan === 'end_date') {
+            contract.monthly_payment_count = 0;
+            if ((Number(contract.down_payment_count) || 0) < 1) contract.down_payment_count = 1;
+          }
+          try {
+            const res = await fetch(`/api/projects/${projectId}/regenerate-payment-schedule/`, {
+              method: 'POST', credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(buildScheduleReqBody(plan)),
+            });
+            const data = await res.json();
+            if (!data.success) { showToast(data.error || 'Failed to switch plan', 'error'); return; }
+            if (data.empty_reason === 'no_total') {
+              showToast('Set a price first — add a scope with a Subtotal row (or it carries from the quote).', 'error');
+              return;
+            }
+            contract.payment_schedule = data.payment_schedule || [];
+            render();
+            setDirty(true); // schedule regenerated — Save to persist total + rows together
+            showToast(plan === 'end_date' ? 'Switched to balance-on-completion plan' : 'Switched to monthly installments', 'success');
+          } catch {
+            showToast('Failed to switch plan', 'error');
+          }
+        };
+        // Only confirm when there are hand-edited payment rows to discard.
+        if (dirty && (contract.payment_schedule || []).length > 0) {
+          window.showConfirmModal({
+            title: 'Switch payment plan?',
+            text: 'This regenerates the payment rows from the current total + dates. Any manual edits to existing rows (amounts/due dates) will be replaced. Your scopes, total and discount are kept.',
+            confirmText: 'Switch plan',
+            type: 'warning',
+            onConfirm: doSwitch,
+          });
+        } else {
+          doSwitch();
+        }
+      };
+
+      // ===== Custom-term mutators =====
+      window.addCustomTerm = () => {
+        contract.terms.custom_terms.push({ title: '', text: '' });
+        setDirty(true); render();
+      };
+      window.removeCustomTerm = (idx) => {
+        contract.terms.custom_terms.splice(idx, 1);
+        setDirty(true); render();
+      };
+      window.updateCustomTerm = (idx, field, value) => {
+        const ct = contract.terms.custom_terms[idx];
+        if (!ct) return;
+        ct[field] = value;
+        setDirty(true);
+      };
+
+      // ===== Save / regen / void =====
+      function buildContractPayload() {
+        return {
+          scopes: contract.scopes,
+          payment_schedule: contract.payment_schedule,
+          terms: contract.terms,
+          start_date: contract.start_date,
+          total: contract.total,
+          discount: contract.discount,
+          down_payment_percent: contract.down_payment_percent,
+          down_payment_count: contract.down_payment_count,
+          monthly_payment_count: contract.monthly_payment_count,
+          cancellation_window_days: contract.cancellation_window_days,
+          cancellation_fee_amount: contract.cancellation_fee_amount,
+          late_fee_amount: contract.late_fee_amount,
+          late_fee_grace_days: contract.late_fee_grace_days,
+          warranty_months: contract.warranty_months,
+        };
+      }
+
+      async function saveContract() {
+        // On a signed contract: cosmetic edits keep the signature + notify the
+        // customer; a material edit (price/scope/payment/terms) returns 409
+        // resign_required and we prompt the admin to choose.
+        doSaveContract({});
+      }
+      window.saveContract = saveContract;
+
+      // Explicit re-sign: clears the existing signatures + signed PDF and
+      // reverts to draft. Only when the admin deliberately wants the customer
+      // to sign again.
+      window.amendAndResign = function () {
+        window.showConfirmModal({
+          title: 'Clear signatures and re-send?',
+          text: 'This clears the existing signature(s) + signed PDF and reverts the contract to draft so the customer signs again. Only do this for a major change where you want a fresh signature — normal edits keep the signature and just notify the customer.',
+          confirmText: 'Clear signatures & re-send',
+          type: 'warning',
+          onConfirm: () => doSaveContract({ amend: true }),
+        });
+      };
+
+      // Prompt shown when a material change is detected on a signed contract.
+      function promptResign(material, cosmetic) {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = false; btn.textContent = 'Save';
+        const mat = (material || []).map(c => '• ' + c).join('\n');
+        const cos = (cosmetic || []).length ? '\n\nAlso updated: ' + cosmetic.join(', ') : '';
+        window.showConfirmModal({
+          title: 'This change updates the agreement',
+          text: 'You changed the price, scope, payment plan, or terms:\n\n' + mat + cos +
+            '\n\nThe customer should re-sign. They can re-use their saved signature, so it\'s a one-tap confirmation for them.\n\n' +
+            'Choose "Require re-signature" to clear the signature and send it back to sign. Or save the correction without re-signing (the customer is emailed exactly what changed).',
+          confirmText: 'Require re-signature',
+          cancelText: 'Save without re-signing',
+          type: 'warning',
+          onConfirm: () => doSaveContract({ confirmResign: true }),
+          onCancel: () => doSaveContract({ skipResign: true }),
+        });
+      }
+
+      async function doSaveContract(opts) {
+        opts = opts || {};
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true; btn.textContent = 'Saving…';
+        try {
+          const payload = buildContractPayload();
+          if (opts.amend) payload.amend = true;
+          if (opts.confirmResign) payload.confirmResign = true;
+          if (opts.skipResign) payload.skipResign = true;
+          const res = await fetch(`/api/projects/${projectId}/contract/`, {
+            method: 'PATCH', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+
+          // Material change on a signed contract — let the admin decide.
+          if (res.status === 409 && data.code === 'resign_required') {
+            promptResign(data.material, data.cosmetic);
+            return;
+          }
+
+          if (!data.success) {
+            showToast(data.error || 'Save failed', 'error');
+            btn.disabled = false; btn.textContent = 'Save';
+            return;
+          }
+          btn.textContent = 'Save';
+          if (data.amended) {
+            if (data.resent) {
+              showToast(data.emailSent
+                ? 'Changes saved — contract re-sent to the customer to sign again.'
+                : 'Changes saved — signature cleared. Email didn\'t send; share the signing link manually.', 'success');
+            } else {
+              showToast('Signatures cleared — contract is now draft. Use "Send for signature" to resend.', 'success');
+            }
+            await loadContract();
+            return;
+          }
+          const n = Array.isArray(data.notifiedChanges) ? data.notifiedChanges.length : 0;
+          if (n > 0) {
+            showToast('Saved — signature kept, customer emailed the ' + n + ' change' + (n === 1 ? '' : 's') + '.', 'success');
+          } else {
+            showToast('Saved', 'success');
+          }
+          setDirty(false);
+          // A saved edit means there's a new version worth resending.
+          changedSinceSend = true;
+          updateToolbarButtons();
+        } catch {
+          showToast('Save failed', 'error');
+          btn.disabled = false; btn.textContent = 'Save';
+        }
+      }
+
+      async function sendForSignature() {
+        if (dirty) {
+          showToast('Save your changes first, then send.', 'error');
+          return;
+        }
+        const isResend = contract.status === 'sent';
+        window.showConfirmModal({
+          title: isResend ? 'Resend for signature?' : 'Send for signature?',
+          text: isResend
+            ? 'This emails the customer a fresh link to review and sign the latest version of the contract.'
+            : 'This emails the customer a link to review and sign the contract.',
+          confirmText: isResend ? 'Resend' : 'Send',
+          type: 'info',
+          onConfirm: async () => {
+            try {
+              const res = await fetch(`/api/projects/${projectId}/contract/`, {
+                method: 'PATCH', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'sent', send_email: true }),
+              });
+              const data = await res.json();
+              if (!data.success) { showToast(data.error || 'Failed to send', 'error'); return; }
+              contract.status = 'sent';
+              changedSinceSend = false; // sent this version — disable Resend until next change
+              renderStatusBadge();
+              if (data.emailSent) {
+                showToast('Sent to customer for signature', 'success');
+              } else {
+                showToast('Marked sent, but email failed: ' + (data.emailError || 'unknown') + '. Share the signing link manually.', 'error');
+              }
+            } catch {
+              showToast('Failed to send', 'error');
+            }
+          },
+        });
+      }
+      window.sendForSignature = sendForSignature;
+
+      async function regenerateSchedule() {
+        // Preserve the active plan (inferred from the current rows) so
+        // regenerating doesn't silently flip end-date ↔ monthly.
+        const plan = contract.payment_schedule.some(r => r.due_source === 'end_date')
+          ? 'end_date'
+          : (contract.payment_schedule.some(r => r.kind === 'monthly') ? 'monthly' : 'end_date');
+        const doRegen = async () => {
+          try {
+            const res = await fetch(`/api/projects/${projectId}/regenerate-payment-schedule/`, {
+              method: 'POST', credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(buildScheduleReqBody(plan)),
+            });
+            const data = await res.json();
+            if (!data.success) { showToast(data.error || 'Failed', 'error'); return; }
+            if (data.empty_reason === 'no_total') {
+              showToast('Set a price first — add a scope with a Subtotal row (or it carries from the quote).', 'error');
+              return;
+            }
+            contract.payment_schedule = data.payment_schedule || [];
+            render();
+            setDirty(true);
+            showToast('Schedule regenerated', 'success');
+          } catch {
+            showToast('Regenerate failed', 'error');
+          }
+        };
+        if (dirty) {
+          window.showConfirmModal({
+            title: 'Regenerate with unsaved changes?',
+            text: 'Regenerate overwrites the schedule rows in memory. Save first to keep your edits, or continue to lose them.',
+            confirmText: 'Continue & regenerate',
+            type: 'warning',
+            onConfirm: doRegen,
+          });
+        } else {
+          doRegen();
+        }
+      }
+      window.regenerateSchedule = regenerateSchedule;
+
+      async function voidContract() {
+        window.showConfirmModal({
+          title: 'Void this contract?',
+          text: 'The customer can no longer sign at the existing link. You can apply a new template afterwards.',
+          confirmText: 'Void contract',
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const res = await fetch(`/api/projects/${projectId}/contract/`, {
+                method: 'PATCH', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'void' }),
+              });
+              const data = await res.json();
+              if (!data.success) { showToast(data.error || 'Failed', 'error'); return; }
+              contract.status = 'void';
+              renderStatusBadge();
+              showToast('Contract voided', 'success');
+            } catch {
+              showToast('Failed to void', 'error');
+            }
+          },
+        });
+      }
+      window.voidContract = voidContract;
+
+      // Cmd/Ctrl+S
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+          e.preventDefault();
+          if (dirty) saveContract();
+        }
+      });
+      window.addEventListener('beforeunload', (e) => {
+        if (dirty) { e.preventDefault(); e.returnValue = ''; }
+      });
+
+      loadContract();
+    </script>
+  </body>
+</html>

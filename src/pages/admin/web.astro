@@ -1,0 +1,163 @@
+---
+// /admin/web — hub for the website-content tools. Each card links to a section
+// (Hero Slider today; Blog and more to come). Sections live at /admin/web/<name>.
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../components/BellNotification.astro';
+import '../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('admin-theme') || 'dark'); } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .web-page { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+      .web-page h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
+      .web-page p.subtitle { color: var(--color-text-secondary); margin: 0 0 28px; }
+
+      /* Section grid — same glass card pattern used elsewhere in admin. */
+      .web-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .web-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        text-decoration: none;
+        color: inherit;
+        transition: filter 0.15s, transform 0.15s;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .web-card[data-disabled="1"] { opacity: 0.55; cursor: default; }
+      .web-card:not([data-disabled="1"]):hover { filter: brightness(1.08); }
+      .web-card-title { font-size: 15px; font-weight: 700; }
+      .web-card-desc { font-size: 13px; color: var(--color-text-secondary); }
+      .web-card-soon {
+        margin-top: 6px;
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: #fbbf24;
+      }
+    </style>
+  </head>
+  <body>
+  <AdminPresence />
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="web" />
+      <!-- Mobile: Bell + Hamburger (matches dashboard structure) -->
+      <div class="mobile-header-right">
+        <BellNotification place="mobile" />
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <BellNotification place="desktop" />
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="web" />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) closeMobileNav();
+      });
+    </script>
+
+    <main class="web-page">
+      <h1>Web</h1>
+      <p class="subtitle">Manage parts of the public website. Pick a section below — more are added here as they're built.</p>
+
+      <div class="web-grid">
+        <a class="web-card" href="/admin/web/hero-slider/">
+          <div class="web-card-title">Hero Slider</div>
+          <div class="web-card-desc">Add, reorder, and toggle the slides on the homepage hero carousel.</div>
+        </a>
+        <a class="web-card" href="/admin/web/wiki/">
+          <div class="web-card-title">Wiki</div>
+          <div class="web-card-desc">Searchable guide to the whole admin — how every page and section works (Leads, Quotes, Projects, Portfolios, Crew, and more).</div>
+        </a>
+        <div class="web-card" data-disabled="1">
+          <div class="web-card-title">Blog</div>
+          <div class="web-card-desc">Write posts with AI help (translate, polish, generate or paste images), tag them, and publish to the site.</div>
+          <div class="web-card-soon">Coming soon</div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

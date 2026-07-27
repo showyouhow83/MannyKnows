@@ -1,0 +1,386 @@
+---
+// /admin/contractor-signature — admin draws or uploads their reusable
+// signature once. Saved to the contractor_signature singleton row and
+// applied to every new contract going forward (snapshotted at the time
+// `apply-contract-template` runs).
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../components/ConfirmModal.astro';
+import '../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contractor Signature — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <style is:global>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .cs-page { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+      .cs-header { margin-bottom: 20px; }
+      .cs-header h1 { margin: 0 0 4px; font-size: 24px; font-weight: 700; }
+      .cs-header p { color: var(--color-text-secondary); margin: 0; font-size: 13px; }
+
+      .cs-panel {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      .cs-panel-title { font-size: 14px; font-weight: 700; margin: 0 0 4px; }
+      .cs-panel-sub { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 14px; }
+
+      .cs-field { margin-bottom: 14px; }
+      .cs-field label {
+        display: block; font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary); margin-bottom: 4px;
+      }
+      .cs-field input {
+        width: 100%; box-sizing: border-box;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-family: inherit;
+      }
+
+      .cs-pad-wrap {
+        position: relative; background: #fff;
+        border: 2px dashed #94a3b8;
+        border-radius: 8px;
+        overflow: hidden;
+        touch-action: none;
+      }
+      .cs-pad-wrap.is-empty::after {
+        content: 'Draw your signature with mouse or finger';
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        color: #94a3b8; font-size: 13px; font-style: italic;
+        pointer-events: none;
+      }
+      .cs-pad { display: block; width: 100%; height: 200px; touch-action: none; cursor: crosshair; }
+
+      .cs-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px; }
+      .cs-btn {
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+      }
+      .cs-btn.primary { background: linear-gradient(135deg, var(--color-primary), #e05f00); border-color: var(--color-primary); color: #fff; }
+      .cs-btn.danger { color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+      .cs-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .cs-saved-preview {
+        background: #fff;
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .cs-saved-preview img { max-width: 280px; max-height: 100px; }
+      .cs-saved-preview .cs-saved-meta { margin-top: 8px; font-size: 12px; color: #475569; }
+
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--color-background-light, #1f2937);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        font-size: 14px; z-index: 2000;
+        opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      }
+      .toast.visible { opacity: 1; }
+      .toast.success { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+      .toast.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    </style>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="projects" />
+      <div class="mobile-header-right">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="projects" />
+
+    <main class="cs-page">
+      <div class="cs-header">
+        <h1>Contractor Signature</h1>
+        <p>Set once. Automatically applied to every new contract so the customer sees a document that's already signed on our end before they sign theirs.</p>
+      </div>
+
+      <div id="csShell">
+        <div style="padding: 40px; text-align: center; color: var(--color-text-secondary);">Loading…</div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <ConfirmModal />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      mobileNavToggle?.addEventListener('click', () => {
+        const isActive = mobileNavPanel?.classList.contains('active');
+        mobileNavToggle?.classList.toggle('active', !isActive);
+        mobileNavPanel?.classList.toggle('active', !isActive);
+        mobileNavOverlay?.classList.toggle('active', !isActive);
+        document.body.style.overflow = !isActive ? 'hidden' : '';
+      });
+      mobileNavClose?.addEventListener('click', () => {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      mobileNavOverlay?.addEventListener('click', () => mobileNavClose?.click());
+
+      function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast visible ' + (type || '');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => el.classList.remove('visible'), 2500);
+      }
+      function escapeAttr(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+      function fmtDate(s) {
+        if (!s) return '—';
+        try {
+          var trimmed = String(s).split(/[\sT]/)[0];
+          var d = new Date(trimmed + 'T00:00:00');
+          if (isNaN(d.getTime())) return s;
+          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch { return s; }
+      }
+
+      let current = null;
+      let hasStrokes = false;
+
+      async function loadSignature() {
+        const shell = document.getElementById('csShell');
+        try {
+          const res = await fetch('/api/admin/contractor-signature/', { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success) {
+            shell.innerHTML = '<div style="padding: 18px; color: #fca5a5;">Failed to load.</div>';
+            return;
+          }
+          current = data.signature || null;
+          render();
+        } catch {
+          shell.innerHTML = '<div style="padding: 18px; color: #fca5a5;">Failed to load.</div>';
+        }
+      }
+
+      function render() {
+        const shell = document.getElementById('csShell');
+        const savedBlock = current ? '\
+          <div class="cs-panel">\
+            <h3 class="cs-panel-title">Current signature</h3>\
+            <p class="cs-panel-sub">Last updated ' + fmtDate(current.updated_at) + '. Used on every new contract until you change it.</p>\
+            <div class="cs-saved-preview">\
+              <img src="' + escapeAttr(current.signature_data_url) + '" alt="Current contractor signature" />\
+              <div class="cs-saved-meta">\
+                <strong style="color:#1e293b;">' + escapeAttr(current.signer_name) + '</strong>\
+                ' + (current.printed_title ? ' · <span>' + escapeAttr(current.printed_title) + '</span>' : '') + '\
+              </div>\
+            </div>\
+            <button type="button" class="cs-btn danger" onclick="deleteSignature()">Remove signature</button>\
+          </div>\
+        ' : '';
+
+        shell.innerHTML = savedBlock + '\
+          <div class="cs-panel">\
+            <h3 class="cs-panel-title">' + (current ? 'Replace signature' : 'Set up your signature') + '</h3>\
+            <p class="cs-panel-sub">Draw with a trackpad / mouse / touchscreen. Optionally type a title (e.g. "Owner", "Estimator") that prints under the signature.</p>\
+\
+            <div class="cs-field">\
+              <label for="signerName">Full name (as it should appear on contracts)</label>\
+              <input id="signerName" type="text" value="' + escapeAttr(current?.signer_name || '') + '" placeholder="e.g. Manny">\
+            </div>\
+            <div class="cs-field">\
+              <label for="printedTitle">Title (optional)</label>\
+              <input id="printedTitle" type="text" value="' + escapeAttr(current?.printed_title || '') + '" placeholder="e.g. Owner / Estimator">\
+            </div>\
+\
+            <div class="cs-field">\
+              <label>Signature</label>\
+              <div class="cs-pad-wrap is-empty" id="sigPadWrap">\
+                <canvas class="cs-pad" id="sigPad" width="600" height="200"></canvas>\
+              </div>\
+              <div class="cs-actions">\
+                <span style="font-size: 12px; color: var(--color-text-secondary);">Use your finger or mouse. Press Clear to start over.</span>\
+                <div style="display:flex; gap:6px;">\
+                  <button type="button" class="cs-btn" id="sigClearBtn">Clear</button>\
+                  <button type="button" class="cs-btn primary" id="sigSaveBtn" disabled>Save signature</button>\
+                </div>\
+              </div>\
+            </div>\
+          </div>\
+        ';
+
+        wireListeners();
+      }
+
+      function wireListeners() {
+        const canvas = document.getElementById('sigPad');
+        const padWrap = document.getElementById('sigPadWrap');
+        const clearBtn = document.getElementById('sigClearBtn');
+        const saveBtn = document.getElementById('sigSaveBtn');
+        const nameInput = document.getElementById('signerName');
+        if (!canvas) return;
+
+        hasStrokes = false;
+        function resizeCanvas() {
+          const ratio = window.devicePixelRatio || 1;
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width * ratio;
+          canvas.height = rect.height * ratio;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(ratio, ratio);
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = '#0f172a';
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let drawing = false;
+        function pointFromEvent(e) {
+          const rect = canvas.getBoundingClientRect();
+          const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+          const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
+          return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+        function start(e) { e.preventDefault(); drawing = true; const p = pointFromEvent(e); const ctx = canvas.getContext('2d'); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+        function move(e) {
+          if (!drawing) return;
+          e.preventDefault();
+          const p = pointFromEvent(e);
+          const ctx = canvas.getContext('2d');
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+          if (!hasStrokes) { hasStrokes = true; padWrap.classList.remove('is-empty'); updateSave(); }
+        }
+        function end() { drawing = false; }
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, { passive: false });
+        canvas.addEventListener('touchmove', move, { passive: false });
+        canvas.addEventListener('touchend', end);
+
+        clearBtn.addEventListener('click', function() {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          hasStrokes = false;
+          padWrap.classList.add('is-empty');
+          updateSave();
+        });
+        nameInput.addEventListener('input', updateSave);
+
+        function updateSave() {
+          saveBtn.disabled = !(hasStrokes && nameInput.value.trim().length >= 2);
+        }
+
+        saveBtn.addEventListener('click', async function() {
+          const name = nameInput.value.trim();
+          const title = document.getElementById('printedTitle').value.trim();
+          if (!name || !hasStrokes) return;
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving…';
+          try {
+            const dataUrl = canvas.toDataURL('image/png');
+            const res = await fetch('/api/admin/contractor-signature/', {
+              method: 'PUT',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ signer_name: name, printed_title: title || null, signature_data_url: dataUrl }),
+            });
+            const data = await res.json();
+            if (!data.success) { showToast(data.error || 'Save failed', 'error'); saveBtn.disabled = false; saveBtn.textContent = 'Save signature'; return; }
+            showToast('Signature saved', 'success');
+            loadSignature();
+          } catch {
+            showToast('Save failed', 'error');
+            saveBtn.disabled = false; saveBtn.textContent = 'Save signature';
+          }
+        });
+      }
+
+      window.deleteSignature = function() {
+        window.showConfirmModal({
+          title: 'Remove the contractor signature?',
+          text: 'New contracts will no longer have your signature auto-applied. Existing signed contracts keep theirs.',
+          confirmText: 'Remove signature',
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const res = await fetch('/api/admin/contractor-signature/', { method: 'DELETE', credentials: 'include' });
+              const data = await res.json();
+              if (!data.success) { showToast(data.error || 'Delete failed', 'error'); return; }
+              showToast('Signature removed', 'success');
+              loadSignature();
+            } catch {
+              showToast('Delete failed', 'error');
+            }
+          },
+        });
+      };
+
+      loadSignature();
+    </script>
+  </body>
+</html>

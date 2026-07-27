@@ -1,0 +1,616 @@
+---
+// Calendar view of all scheduled projects.
+// SSR-rendered with ?month=YYYY-MM (defaults to today in ET).
+// Click any project bar → opens that project's detail in /admin/projects/.
+
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../components/BellNotification.astro';
+import '../../styles/admin.css';
+import { todayDateEt } from '../../lib/dateEt';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const db = env?.MK_APP_DB;
+
+// ── Resolve the month being viewed ──────────────────────────────────────
+const monthParam = (Astro.url.searchParams.get('month') || '').trim();
+let viewYear: number;
+let viewMonth: number; // 1-12
+if (/^\d{4}-\d{2}$/.test(monthParam)) {
+  viewYear = parseInt(monthParam.slice(0, 4));
+  viewMonth = parseInt(monthParam.slice(5, 7));
+} else {
+  const todayEt = todayDateEt();
+  viewYear = todayEt.getUTCFullYear();
+  viewMonth = todayEt.getUTCMonth() + 1;
+}
+
+// First day of view month (UTC-anchored)
+const monthStart = new Date(Date.UTC(viewYear, viewMonth - 1, 1));
+
+// Calendar grid starts on Sunday before/equal to the 1st of the month
+const gridStart = new Date(monthStart);
+gridStart.setUTCDate(monthStart.getUTCDate() - monthStart.getUTCDay());
+// Always render 6 weeks (42 days) so the layout never jumps
+const gridEnd = new Date(gridStart);
+gridEnd.setUTCDate(gridStart.getUTCDate() + 41);
+
+// Prev/next month link targets
+const prev = new Date(Date.UTC(viewYear, viewMonth - 2, 1));
+const next = new Date(Date.UTC(viewYear, viewMonth, 1));
+const prevHref = `/admin/calendar?month=${prev.getUTCFullYear()}-${String(prev.getUTCMonth() + 1).padStart(2, '0')}`;
+const nextHref = `/admin/calendar?month=${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, '0')}`;
+
+const monthLabel = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+// ── Fetch projects that overlap the visible grid ────────────────────────
+function ymd(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+const gridStartStr = ymd(gridStart);
+const gridEndStr = ymd(gridEnd);
+
+interface ProjectRow {
+  id: number;
+  project_number: string;
+  customer_name: string;
+  customer_city: string | null;
+  status: string;
+  crew_lead_id: number | null;
+  services: string | null;
+  scheduled_start: string | null;
+  scheduled_end: string | null;
+  href?: string; // where the bar links (MK projects vs partner jobs)
+}
+let projects: ProjectRow[] = [];
+if (db) {
+  const r = await db.prepare(`
+    SELECT id, project_number, customer_name, customer_city, status, crew_lead_id, services,
+           scheduled_start, scheduled_end
+      FROM projects
+     WHERE scheduled_start IS NOT NULL
+       AND scheduled_end IS NOT NULL
+       AND date(scheduled_start) <= date(?)
+       AND date(scheduled_end)   >= date(?)
+     ORDER BY date(scheduled_start) ASC, id ASC
+  `).bind(gridEndStr, gridStartStr).all();
+  projects = (r.results || []) as ProjectRow[];
+  // Partner work now lives in the `projects` table as real projects (tagged
+  // via partner_id), migrated off the retired `partner_jobs` table — so it
+  // already shows above with a correct /admin/projects link. We no longer
+  // query partner_jobs here; doing so double-listed every migrated job with a
+  // dead link to the old partners page.
+}
+
+// Effective status mirrors dashboard logic — a project with a crew assigned
+// is "ready to start" even if its raw status is still 'needs_crew'.
+function effectiveStatus(p: ProjectRow): string {
+  if (p.status === 'needs_crew' && p.crew_lead_id) return 'ready_to_start';
+  return p.status;
+}
+
+// Status → palette
+const STATUS_STYLES: Record<string, { bg: string; border: string; text: string; label: string }> = {
+  needs_crew:    { bg: 'rgba(245, 158, 11, 0.18)', border: '#f59e0b', text: '#fbbf24', label: 'Needs crew' },
+  ready_to_start:{ bg: 'rgba(59, 130, 246, 0.18)', border: '#3b82f6', text: '#60a5fa', label: 'Ready to start' },
+  in_progress:   { bg: 'rgba(34, 197, 94, 0.18)',  border: '#22c55e', text: '#4ade80', label: 'In progress' },
+  completed:     { bg: 'rgba(99, 102, 241, 0.18)', border: '#6366f1', text: '#a5b4fc', label: 'Completed' },
+  portfolio:     { bg: 'rgba(148, 163, 184, 0.15)', border: '#94a3b8', text: '#cbd5e1', label: 'Portfolio' },
+};
+const DEFAULT_STYLE = { bg: 'rgba(255,255,255,0.08)', border: 'var(--color-border)', text: 'var(--color-text-secondary)', label: '' };
+
+function formatServices(json: string | null): string {
+  if (!json) return '';
+  try {
+    const arr = JSON.parse(json);
+    if (!Array.isArray(arr)) return '';
+    const types = arr.map((s: any) => s?.type || '').filter(Boolean);
+    return types.join(' + ');
+  } catch { return ''; }
+}
+
+// ── Compute weeks + per-week bar layout ─────────────────────────────────
+// For each week, collect overlapping projects, assign each a "row" within
+// the week using greedy first-fit (so vertically stacked bars don't collide).
+interface WeekBar {
+  projectId: number;
+  number: string;
+  customerName: string;
+  customerCity: string;
+  status: string;
+  services: string;
+  startCol: number; // 1..7 (CSS grid column line, inclusive)
+  endCol: number;   // 2..8 (CSS grid column line, exclusive end)
+  row: number;      // 1-based row within the week
+  continuesLeft: boolean;
+  continuesRight: boolean;
+  href: string;
+}
+interface Week {
+  days: { date: Date; inMonth: boolean; isToday: boolean }[];
+  bars: WeekBar[];
+  rowCount: number;
+}
+const weeks: Week[] = [];
+const todayEt = todayDateEt();
+const todayStr = ymd(todayEt);
+
+for (let w = 0; w < 6; w++) {
+  const weekStart = new Date(gridStart);
+  weekStart.setUTCDate(gridStart.getUTCDate() + w * 7);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+
+  const days: Week['days'] = [];
+  for (let d = 0; d < 7; d++) {
+    const date = new Date(weekStart);
+    date.setUTCDate(weekStart.getUTCDate() + d);
+    days.push({
+      date,
+      inMonth: date.getUTCMonth() + 1 === viewMonth,
+      isToday: ymd(date) === todayStr,
+    });
+  }
+
+  // Find projects overlapping this week
+  const overlapping = projects.filter(p => {
+    if (!p.scheduled_start || !p.scheduled_end) return false;
+    return p.scheduled_start <= ymd(weekEnd) && p.scheduled_end >= ymd(weekStart);
+  });
+
+  // Greedy row assignment: for each project, find the first row where
+  // it doesn't overlap any already-placed bar.
+  const occupiedRows: Array<Array<{ start: number; end: number }>> = [];
+  const bars: WeekBar[] = [];
+  for (const p of overlapping) {
+    const projStart = p.scheduled_start as string;
+    const projEnd = p.scheduled_end as string;
+    const startDayMs = Math.max(new Date(projStart + 'T12:00:00Z').getTime(), weekStart.getTime());
+    const endDayMs = Math.min(new Date(projEnd + 'T12:00:00Z').getTime(), weekEnd.getTime());
+    const startDayIdx = Math.floor((startDayMs - weekStart.getTime()) / 86400000); // 0..6
+    const endDayIdx = Math.floor((endDayMs - weekStart.getTime()) / 86400000);     // 0..6
+
+    // CSS grid columns are 1-indexed; bar spans [startCol, endCol)
+    const startCol = startDayIdx + 1;
+    const endCol = endDayIdx + 2;
+
+    let rowIdx = 0;
+    while (true) {
+      const used = occupiedRows[rowIdx] || (occupiedRows[rowIdx] = []);
+      const conflict = used.some(b => !(endCol <= b.start || startCol >= b.end));
+      if (!conflict) {
+        used.push({ start: startCol, end: endCol });
+        break;
+      }
+      rowIdx++;
+    }
+
+    bars.push({
+      projectId: p.id,
+      number: p.project_number,
+      customerName: p.customer_name,
+      customerCity: (p.customer_city || '').trim(),
+      status: effectiveStatus(p),
+      services: formatServices(p.services),
+      startCol,
+      endCol,
+      row: rowIdx + 1,
+      continuesLeft: projStart < ymd(weekStart),
+      continuesRight: projEnd > ymd(weekEnd),
+      href: p.href || `/admin/projects?open=${p.id}`,
+    });
+  }
+  weeks.push({ days, bars, rowCount: occupiedRows.length });
+}
+
+const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Status filter pills (all on by default) — count by effective status
+const projectsByStatus: Record<string, number> = {};
+for (const p of projects) {
+  const s = effectiveStatus(p);
+  projectsByStatus[s] = (projectsByStatus[s] || 0) + 1;
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('admin-theme') || 'dark'); } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      .calendar-page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+
+      .calendar-header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .month-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .month-nav-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-family: inherit;
+      }
+      .month-nav-btn:hover {
+        background: var(--glass-bg-hover);
+      }
+
+      .month-label {
+        font-size: 16px;
+        font-weight: 600;
+        min-width: 180px;
+        text-align: center;
+      }
+
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin-bottom: 12px;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid;
+      }
+
+      .calendar {
+        background: var(--glass-bg);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--glass-border);
+        overflow: hidden;
+      }
+
+      .weekdays-row {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: var(--glass-bg-hover);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .weekday-cell {
+        padding: 10px 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--color-text-secondary);
+        text-align: left;
+      }
+
+      .week {
+        position: relative;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .week:last-child {
+        border-bottom: none;
+      }
+
+      .days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+      }
+      .day {
+        position: relative;
+        padding: 14px 10px 4px 12px;
+        border-right: 1px solid var(--glass-border);
+        background: transparent;
+      }
+      .day:last-child { border-right: none; }
+      .day.out-of-month {
+        background: rgba(0, 0, 0, 0.15);
+      }
+      .day.out-of-month .date-num {
+        opacity: 0.4;
+      }
+      .day.is-today .date-num {
+        background: var(--color-primary);
+        color: #fff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .date-num {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.2px;
+      }
+
+      .bars-overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 46px;
+        bottom: 6px;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-auto-rows: 26px;
+        row-gap: 4px;
+        pointer-events: none;
+        padding: 0 4px;
+      }
+      /* Status conveyed via a chunky 4px left stripe + tinted fill, not just
+         a 1px border. The accent colour is passed in inline via --accent. */
+      .bar {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 10px;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 5px;
+        border-left: 4px solid var(--accent);
+        border-top: 1px solid rgba(255,255,255,0.04);
+        border-right: 1px solid rgba(255,255,255,0.04);
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0 2px;
+        line-height: 26px;
+      }
+      .bar:hover {
+        filter: brightness(1.18);
+      }
+      .bar.continues-left {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-width: 0;
+        box-shadow: inset 4px 0 0 var(--accent);
+      }
+      .bar.continues-right {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .bar-name { font-weight: 700; }
+      .bar-city { opacity: 0.75; font-weight: 500; }
+
+      /* Reserve enough vertical room for the bars in each week */
+      .week {
+        --week-rows: 1;
+        min-height: calc(46px + 6px + 26px * var(--week-rows) + 4px * (var(--week-rows) - 1));
+      }
+      .week .day {
+        min-height: 100%;
+      }
+
+      /* Empty state when no projects */
+      .empty-state {
+        padding: 48px 24px;
+        text-align: center;
+        color: var(--color-text-secondary);
+      }
+
+      @media (max-width: 768px) {
+        .weekday-cell { padding: 8px 4px; font-size: 10px; }
+        .day { padding: 10px 4px 4px 6px; }
+        .date-num { font-size: 13px; }
+        .day.is-today .date-num { width: 24px; height: 24px; font-size: 13px; }
+        .bars-overlay { top: 38px; padding: 0 2px; grid-auto-rows: 22px; row-gap: 3px; }
+        .bar {
+          font-size: 11px;
+          padding: 0 6px;
+          line-height: 22px;
+          border-left-width: 3px;
+        }
+        .bar.continues-left { box-shadow: inset 3px 0 0 var(--accent); }
+        .bar-city { display: none; }
+        .week {
+          min-height: calc(38px + 6px + 22px * var(--week-rows) + 3px * (var(--week-rows) - 1));
+        }
+        .month-label { min-width: 130px; font-size: 14px; }
+      }
+    </style>
+  </head>
+  <body>
+  <AdminPresence />
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="calendar" />
+      <!-- Mobile: Hamburger -->
+      <div class="mobile-header-right">
+        <BellNotification place="mobile" />
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <BellNotification place="desktop" />
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="calendar" />
+
+    <script is:inline>
+      // Theme + logout + mobile nav toggle — minimal copy of dashboard's
+      // header JS so the calendar page behaves the same way.
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) closeMobileNav();
+      });
+    </script>
+
+    <main class="calendar-page">
+      <div class="calendar-header">
+        <h1>Project Calendar</h1>
+        <div class="month-nav">
+          <a href={prevHref} class="month-nav-btn" aria-label="Previous month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </a>
+          <div class="month-label">{monthLabel}</div>
+          <a href={nextHref} class="month-nav-btn" aria-label="Next month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a href="/admin/calendar" class="month-nav-btn" style="width: auto; padding: 0 10px; font-size: 12px;">Today</a>
+        </div>
+      </div>
+
+      <div class="legend">
+        {Object.entries(STATUS_STYLES).map(([status, style]) => (
+          <span class="legend-item">
+            <span class="legend-swatch" style={`background:${style.bg}; border-color:${style.border};`}></span>
+            {style.label}{projectsByStatus[status] ? ` (${projectsByStatus[status]})` : ''}
+          </span>
+        ))}
+      </div>
+
+      <div class="calendar">
+        <div class="weekdays-row">
+          {weekdayLabels.map(d => <div class="weekday-cell">{d}</div>)}
+        </div>
+
+        {weeks.map(week => (
+          <div class="week" style={`--week-rows: ${Math.max(1, week.rowCount)};`}>
+            <div class="days-grid">
+              {week.days.map(d => (
+                <div class={`day${d.inMonth ? '' : ' out-of-month'}${d.isToday ? ' is-today' : ''}`}>
+                  <span class="date-num">{d.date.getUTCDate()}</span>
+                </div>
+              ))}
+            </div>
+            <div class="bars-overlay">
+              {week.bars.map(b => {
+                const style = STATUS_STYLES[b.status] || DEFAULT_STYLE;
+                const continuesCls = `${b.continuesLeft ? ' continues-left' : ''}${b.continuesRight ? ' continues-right' : ''}`;
+                const titleParts = [b.customerName];
+                if (b.customerCity) titleParts.push(b.customerCity);
+                titleParts.push(b.number);
+                if (b.services) titleParts.push(b.services);
+                return (
+                  <a
+                    href={b.href}
+                    class={`bar${continuesCls}`}
+                    title={titleParts.join(' — ')}
+                    style={`grid-column: ${b.startCol} / ${b.endCol}; grid-row: ${b.row}; background:${style.bg}; border-color:${style.border}; color:${style.text}; --accent:${style.border};`}
+                  >
+                    <span class="bar-name">{b.customerName}</span>
+                    {b.customerCity && <span class="bar-city">· {b.customerCity}</span>}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+
+        {projects.length === 0 && (
+          <div class="empty-state">
+            No scheduled projects this month.
+            <div style="margin-top: 8px;">
+              <a href="/admin/projects" style="color: var(--color-primary); text-decoration: none;">Open Projects →</a>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  </body>
+</html>

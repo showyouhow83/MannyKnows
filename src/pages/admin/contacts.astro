@@ -1,0 +1,1591 @@
+---
+// Admin Contacts Directory
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../components/ConfirmModal.astro';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin');
+}
+if (session.role === 'viewer') {
+  return Astro.redirect('/admin/portfolios');
+}
+
+// Fetch contacts from D1
+const db = env?.MK_APP_DB;
+let contacts: any[] = [];
+let totalContacts = 0;
+let error = '';
+
+if (db) {
+  try {
+    // Check if contacts table exists
+    const tableCheck = await db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='contacts'"
+    ).all();
+
+    if (tableCheck.results?.length > 0) {
+      const result = await db.prepare(`
+        SELECT c.*,
+          (SELECT COUNT(*) FROM contact_links WHERE contact_id = c.id AND link_type = 'lead') as lead_count,
+          (SELECT COUNT(*) FROM contact_links WHERE contact_id = c.id AND link_type = 'quote') as quote_count,
+          (SELECT COUNT(*) FROM contact_links WHERE contact_id = c.id AND link_type = 'project') as project_count
+        FROM contacts c
+        ORDER BY c.updated_at DESC
+        LIMIT 200
+      `).all();
+      contacts = result.results || [];
+
+      const countResult = await db.prepare('SELECT COUNT(*) as count FROM contacts').first();
+      totalContacts = (countResult as any)?.count || 0;
+    } else {
+      error = 'Contacts table not found. Run the migration first.';
+    }
+  } catch (e) {
+    error = 'Failed to load contacts';
+    console.error('Contacts fetch error:', e);
+  }
+} else {
+  error = 'Database not configured';
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacts | MannyKnows Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('admin-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* 2-column layout */
+    .admin-main {
+      display: flex;
+      height: calc(100vh - 65px - 60px);
+      padding: 16px;
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .contacts-list {
+      width: 320px;
+      min-width: 280px;
+      max-width: 360px;
+      overflow-y: auto;
+      padding: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-detail {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-detail.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header bar */
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .list-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+    }
+
+    .list-header .count {
+      font-weight: 400;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .header-actions-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--color-text-primary);
+      white-space: nowrap;
+    }
+
+    .btn-sm:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .btn-sm.primary {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+      border: none;
+    }
+
+    .btn-sm.primary:hover {
+      opacity: 0.9;
+    }
+
+    /* Search bar */
+    .search-bar {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-bar svg {
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      font-size: 14px;
+      outline: none;
+      background: transparent;
+      color: var(--color-text-primary);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    /* Contact cards — match lead-card style */
+    .contact-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-card:hover {
+      border-color: var(--color-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .contact-card.selected {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(255, 120, 29, 0.3);
+      background: rgba(255, 120, 29, 0.1);
+    }
+
+    .contact-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .contact-card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .contact-card-phone {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .contact-card-info {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .contact-card-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-lead { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .badge-quote { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .badge-project { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+    .badge-source { background: rgba(255, 215, 0, 0.15); color: #d4a800; }
+
+    /* Detail panel */
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .detail-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .detail-header .source-badge {
+      margin-top: 4px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid.full-width {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+
+    .form-group .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group .contact-link a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .form-group .contact-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Section dividers */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 24px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+
+    .status-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+    }
+
+    .status-confirmed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .status-pending_confirmation { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .status-promoted { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .status-draft { background: rgba(156, 163, 175, 0.2); color: #9ca3af; }
+    .status-sent { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .status-accepted { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .status-declined { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .status-project { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+    .status-needs_crew { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .status-in_progress { background: rgba(255, 120, 29, 0.15); color: #ff781d; }
+    .status-completed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .status-portfolio { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+
+    /* Empty/error states */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--color-text-secondary);
+    }
+
+    .empty-state svg {
+      opacity: 0.4;
+      margin-bottom: 12px;
+    }
+
+    .empty-state h3 {
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+    }
+
+    .error-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .migrate-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .migrate-banner button {
+      padding: 6px 14px;
+      background: #f59e0b;
+      color: #000;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Save bar */
+    .save-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .btn-save {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-save:hover { opacity: 0.9; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-delete {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .btn-delete:hover {
+      border-color: var(--color-error);
+      color: var(--color-error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* No detail selected placeholder */
+    .no-selection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--color-text-secondary);
+      text-align: center;
+      padding: 40px;
+    }
+
+    .no-selection svg { opacity: 0.3; margin-bottom: 16px; }
+    .no-selection h3 { color: var(--color-text-primary); margin-bottom: 8px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--color-text-primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-cancel {
+      padding: 10px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 2000;
+      animation: slideUp 0.3s ease;
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .toast.error {
+      background: var(--color-error);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .admin-main {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .contacts-list {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .contact-detail {
+        padding: 16px;
+      }
+
+      .contact-detail.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .back-btn {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        color: var(--color-text-primary);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 12px;
+      }
+
+      .contacts-list.hidden-mobile {
+        display: none;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .back-btn { display: none !important; }
+    }
+  </style>
+
+  <style is:global>
+    /* Pipeline history — applied to JS-rendered innerHTML */
+    .pipeline-chain {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      padding: 12px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 6px;
+    }
+    .pipeline-chain.repeat { border-left: 3px solid var(--color-primary); }
+    .pipeline-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 10px;
+      border-right: 1px solid var(--glass-border);
+    }
+    .pipeline-col:first-child { padding-left: 0; }
+    .pipeline-col:last-child { border-right: none; }
+    .pipeline-col .col-label { font-size: 10px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+    .pipeline-col .col-value { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+    .pipeline-col .col-sub { font-size: 12px; color: var(--color-text-secondary); }
+    .pipeline-col .col-empty { font-size: 12px; color: var(--color-text-secondary); opacity: 0.4; }
+    .pipeline-col a { color: var(--color-primary); text-decoration: none; font-size: 13px; font-weight: 500; display: block; margin-top: 2px; }
+    .pipeline-col a:hover { text-decoration: underline; }
+    .pipeline-col .col-field { font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; display: block; }
+    /* Status pills for contacts pipeline */
+    .contacts-status-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 99px;
+      text-transform: capitalize;
+      flex-shrink: 0;
+    }
+    .s-draft { background: rgba(156,163,175,.2); color: #9ca3af; }
+    .s-sent { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .s-accepted { background: rgba(34,197,94,.15); color: #22c55e; }
+    .s-declined { background: rgba(239,68,68,.15); color: #ef4444; }
+    .s-project { background: rgba(168,85,247,.15); color: #a855f7; }
+    .s-needs_crew { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .s-in_progress { background: rgba(255,120,29,.15); color: #ff781d; }
+    .s-completed { background: rgba(34,197,94,.15); color: #22c55e; }
+    .s-portfolio { background: rgba(168,85,247,.15); color: #a855f7; }
+    .s-confirmed { background: rgba(34,197,94,.15); color: #22c55e; }
+    .s-promoted { background: rgba(255,120,29,.15); color: #ff781d; }
+  </style>
+</head>
+<body>
+  <AdminPresence />
+  <header class="admin-header">
+    <a href="/admin/dashboard" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Admin</span>
+    </a>
+    <AdminNav active="contacts" />
+    <!-- Mobile: Bell + Hamburger -->
+    <div class="mobile-header-right">
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtnMobile" title="Notifications" aria-label="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge bell-badge-mobile" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdownMobile" style="display:none;">
+          <div class="bell-dropdown-header"><span>Notifications</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellListMobile">
+            <div class="bell-dropdown-empty">No new notifications</div>
+          </div>
+        </div>
+      </div>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtn" title="Notifications" aria-label="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdown" style="display:none;">
+          <div class="bell-dropdown-header"><span>Notifications</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellList">
+            <div class="bell-dropdown-empty">No new notifications</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <AdminMobileDrawer active="contacts" />
+
+  <ConfirmModal />
+
+  <main class="admin-main">
+    <!-- Left: Contacts List -->
+    <div class="contacts-list" id="contactsList">
+      {error && <div class="error-banner">{error}</div>}
+
+      {error.includes('migration') && (
+        <div class="migrate-banner">
+          <span>Run migration to create contacts table and populate from existing data.</span>
+          <button onclick="runMigration()">Run Migration</button>
+        </div>
+      )}
+
+      <div class="list-header">
+        <h2>Contacts <span class="count" id="contactCount">({totalContacts})</span></h2>
+        <div class="header-actions-row">
+          <button class="btn-sm" onclick="exportCSV()" title="Export for Google Ads">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export
+          </button>
+          <button class="btn-sm primary" onclick="showNewContactModal()">+ New</button>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search name, email, phone..." autocomplete="off">
+      </div>
+
+      <div id="contactCards">
+        {contacts.length === 0 && !error && (
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <h3>No Contacts Yet</h3>
+            <p>Run the migration to populate from existing leads, quotes, and projects.</p>
+          </div>
+        )}
+        {contacts.map((c: any) => (
+          <div class="contact-card" data-id={c.id} onclick={`selectContact(${c.id})`}>
+            <div class="contact-card-top">
+              <span class="contact-card-name">{c.first_name} {c.last_name || ''}</span>
+              {c.phone && <span class="contact-card-phone">{c.phone}</span>}
+            </div>
+            <div class="contact-card-info">
+              {c.email && <span>{c.email}</span>}
+            </div>
+            <div class="contact-card-badges">
+              {c.source && <span class="badge badge-source">{c.source}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Right: Contact Detail -->
+    <div class="contact-detail" id="contactDetail">
+      <div class="no-selection" id="noSelection">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <h3>Select a Contact</h3>
+        <p>Click a contact to view details and linked records</p>
+      </div>
+      <div id="detailContent" style="display:none;">
+        <button class="back-btn" onclick="backToList()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="detail-header">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <h2 id="detailName" style="margin:0;"></h2>
+            <span class="badge badge-source source-badge" id="detailSource"></span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="fieldFirstName">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="fieldLastName">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Company <span style="font-size:11px;font-weight:400;color:var(--color-text-secondary);">optional</span></label>
+            <input type="text" id="fieldCompany" placeholder="e.g. Pioneer Valley Montessori School">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <div class="contact-link">
+              <input type="email" id="fieldEmail" class="form-input" style="flex:1;">
+              <a href="#" id="emailLink" title="Send email" style="display:none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <div class="contact-link">
+              <input type="tel" id="fieldPhone" class="form-input" style="flex:1;">
+              <a href="#" id="phoneLink" title="Call" style="display:none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Street Address</label>
+            <input type="text" id="fieldAddress" placeholder="123 Main St">
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="fieldCity">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="fieldState" placeholder="MA">
+          </div>
+          <div class="form-group">
+            <label>Zip</label>
+            <input type="text" id="fieldZip">
+          </div>
+        </div>
+
+        <div class="form-grid full-width">
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea id="fieldNotes" placeholder="Internal notes about this contact..."></textarea>
+          </div>
+        </div>
+
+        <!-- Pipeline History -->
+        <div id="pipelineSection" style="display:none;">
+          <div class="section-title">Pipeline History</div>
+          <div id="pipelineList"></div>
+        </div>
+
+
+        <div class="save-bar">
+          <button class="btn-save" id="btnSave" onclick="saveContact()" title="Saves the contact and pushes name/email/phone/address to every linked Lead, Quote, and Project.">Save Changes</button>
+          <button class="btn-delete" id="btnDelete" onclick="deleteContact()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- New Contact Modal -->
+  <div class="modal-overlay" id="newContactModal">
+    <div class="modal">
+      <h3>New Contact</h3>
+      <form id="newContactForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" name="first_name" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="last_name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone">
+          </div>
+          <div class="form-group">
+            <label>Street Address</label>
+            <input type="text" name="address" placeholder="123 Main St">
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" name="state" placeholder="MA">
+          </div>
+          <div class="form-group">
+            <label>Zip</label>
+            <input type="text" name="zip">
+          </div>
+        </div>
+        <div class="form-grid full-width">
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea name="notes" placeholder="Optional notes..."></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="hideNewContactModal()">Cancel</button>
+          <button type="submit" class="btn-save" id="submitNewContact">Create Contact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script is:inline>
+    let selectedContactId = null;
+    let allContacts = [];
+
+    // Initialize contacts data from server
+    document.querySelectorAll('.contact-card').forEach(card => {
+      allContacts.push({
+        id: parseInt(card.dataset.id),
+        el: card,
+        text: card.textContent.toLowerCase()
+      });
+    });
+
+    // Deep link: /admin/contacts?open=ID opens that contact (used by the
+    // dashboard search "Contact" shortcut and the notification bell).
+    (function autoOpenFromUrl() {
+      const openId = new URLSearchParams(window.location.search).get('open');
+      if (!openId) return;
+      const id = parseInt(openId);
+      if (!id) return;
+      const target = allContacts.find(c => c.id === id);
+      if (target && target.el && target.el.scrollIntoView) {
+        target.el.scrollIntoView({ block: 'center' });
+      }
+      selectContact(id);
+    })();
+
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    let searchTimer = null;
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        const q = searchInput.value.toLowerCase().trim();
+        if (!q) {
+          allContacts.forEach(c => c.el.style.display = '');
+          return;
+        }
+        allContacts.forEach(c => {
+          c.el.style.display = c.text.includes(q) ? '' : 'none';
+        });
+      }, 200);
+    });
+
+    // Select contact
+    async function selectContact(id) {
+      selectedContactId = id;
+
+      // Highlight card
+      document.querySelectorAll('.contact-card').forEach(c => c.classList.remove('selected'));
+      const card = document.querySelector(`.contact-card[data-id="${id}"]`);
+      if (card) card.classList.add('selected');
+
+      // Show detail panel
+      document.getElementById('contactDetail').classList.add('active');
+      document.getElementById('noSelection').style.display = 'none';
+      document.getElementById('detailContent').style.display = 'block';
+
+      // Mobile: hide list, show detail
+      if (window.innerWidth <= 768) {
+        document.getElementById('contactsList').classList.add('hidden-mobile');
+      }
+
+      // Load full contact data
+      try {
+        const res = await fetch(`/api/admin/contacts/?id=${id}`, { credentials: 'include' });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.error || 'Failed to load contact', 'error');
+          return;
+        }
+
+        const c = data.contact;
+        document.getElementById('detailName').textContent = `${c.first_name} ${c.last_name || ''}`.trim();
+        document.getElementById('detailSource').textContent = c.source || 'unknown';
+
+        document.getElementById('fieldFirstName').value = c.first_name || '';
+        document.getElementById('fieldLastName').value = c.last_name || '';
+        document.getElementById('fieldCompany').value = c.company_name || '';
+        document.getElementById('fieldEmail').value = c.email || '';
+        document.getElementById('fieldPhone').value = formatPhoneDisplay(c.phone);
+        document.getElementById('fieldAddress').value = c.address || '';
+        document.getElementById('fieldCity').value = c.city || '';
+        document.getElementById('fieldState').value = c.state || '';
+        document.getElementById('fieldZip').value = c.zip || '';
+        document.getElementById('fieldNotes').value = c.notes || '';
+
+        // Email/phone action links
+        const emailLink = document.getElementById('emailLink');
+        const phoneLink = document.getElementById('phoneLink');
+        if (c.email) {
+          emailLink.href = `mailto:${c.email}`;
+          emailLink.style.display = '';
+        } else {
+          emailLink.style.display = 'none';
+        }
+        if (c.phone) {
+          phoneLink.href = `tel:${c.phone}`;
+          phoneLink.style.display = '';
+        } else {
+          phoneLink.style.display = 'none';
+        }
+
+        renderPipeline(data.linked);
+
+      } catch (err) {
+        showToast('Error loading contact', 'error');
+      }
+    }
+
+    // Save contact
+    async function saveContact() {
+      if (!selectedContactId) return;
+
+      const btn = document.getElementById('btnSave');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      try {
+        const res = await fetch('/api/admin/contacts/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            id: selectedContactId,
+            first_name: document.getElementById('fieldFirstName').value,
+            last_name: document.getElementById('fieldLastName').value,
+            company_name: document.getElementById('fieldCompany').value.trim() || null,
+            email: document.getElementById('fieldEmail').value,
+            phone: document.getElementById('fieldPhone').value,
+            address: document.getElementById('fieldAddress').value,
+            city: document.getElementById('fieldCity').value,
+            state: document.getElementById('fieldState').value,
+            zip: document.getElementById('fieldZip').value,
+            notes: document.getElementById('fieldNotes').value,
+            // Saving always re-pushes contact data to every linked
+            // Lead/Quote/Project — save and sync are one action.
+            force_sync: true,
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          showToast('Contact saved — synced to linked records');
+          // Update the card in the list
+          const card = document.querySelector(`.contact-card[data-id="${selectedContactId}"]`);
+          if (card && data.contact) {
+            card.querySelector('.contact-card-name').textContent = `${data.contact.first_name} ${data.contact.last_name || ''}`.trim();
+            const info = card.querySelector('.contact-card-info');
+            info.innerHTML = '';
+            if (data.contact.email) info.innerHTML += `<span>${escapeHtml(data.contact.email)}</span>`;
+            if (data.contact.phone) info.innerHTML += `<span>${escapeHtml(data.contact.phone)}</span>`;
+          }
+          document.getElementById('detailName').textContent = `${data.contact.first_name} ${data.contact.last_name || ''}`.trim();
+          // Update action links
+          const emailLink = document.getElementById('emailLink');
+          const phoneLink = document.getElementById('phoneLink');
+          if (data.contact.email) {
+            emailLink.href = `mailto:${data.contact.email}`;
+            emailLink.style.display = '';
+          } else {
+            emailLink.style.display = 'none';
+          }
+          if (data.contact.phone) {
+            phoneLink.href = `tel:${data.contact.phone}`;
+            phoneLink.style.display = '';
+          } else {
+            phoneLink.style.display = 'none';
+          }
+        } else {
+          showToast(data.error || 'Failed to save', 'error');
+        }
+      } catch (err) {
+        showToast('Error saving contact', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+      }
+    }
+
+    // (The old "Sync to Linked Records" button was folded into Save Changes —
+    // saveContact() always sends force_sync so linked Lead/Quote/Project
+    // records are re-pushed on every save.)
+
+    // Delete contact
+    function deleteContact() {
+      if (!selectedContactId) return;
+      const idToDelete = selectedContactId;
+      window.showConfirmModal({
+        title: 'Delete this contact?',
+        text: 'This cannot be undone.',
+        confirmText: 'Delete contact',
+        type: 'danger',
+        onConfirm: async () => {
+          try {
+            const res = await fetch(`/api/admin/contacts/?id=${idToDelete}`, {
+              method: 'DELETE',
+              credentials: 'include',
+            });
+            const data = await res.json();
+            if (data.success) {
+              showToast('Contact deleted');
+              const card = document.querySelector(`.contact-card[data-id="${idToDelete}"]`);
+              if (card) card.remove();
+              selectedContactId = null;
+              document.getElementById('noSelection').style.display = '';
+              document.getElementById('detailContent').style.display = 'none';
+              const countEl = document.getElementById('contactCount');
+              const currentCount = parseInt(countEl.textContent.match(/\d+/)?.[0] || '0');
+              countEl.textContent = `(${Math.max(0, currentCount - 1)})`;
+              backToList();
+            } else {
+              showToast(data.error || 'Failed to delete', 'error');
+            }
+          } catch (err) {
+            showToast('Error deleting contact', 'error');
+          }
+        },
+      });
+    }
+
+    // Mobile back button
+    function backToList() {
+      document.getElementById('contactsList').classList.remove('hidden-mobile');
+      if (window.innerWidth <= 768) {
+        document.getElementById('contactDetail').classList.remove('active');
+      }
+    }
+    window.backToList = backToList;
+
+    // New Contact Modal
+    function showNewContactModal() {
+      document.getElementById('newContactModal').classList.add('active');
+      document.getElementById('newContactForm').reset();
+    }
+    window.showNewContactModal = showNewContactModal;
+
+    function hideNewContactModal() {
+      document.getElementById('newContactModal').classList.remove('active');
+    }
+    window.hideNewContactModal = hideNewContactModal;
+
+    document.getElementById('newContactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitNewContact');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      const form = new FormData(e.target);
+      const data = {
+        first_name: form.get('first_name'),
+        last_name: form.get('last_name') || undefined,
+        email: form.get('email') || undefined,
+        phone: form.get('phone') || undefined,
+        address: form.get('address') || undefined,
+        city: form.get('city') || undefined,
+        state: form.get('state') || undefined,
+        zip: form.get('zip') || undefined,
+        notes: form.get('notes') || undefined,
+      };
+
+      if (!data.email && !data.phone) {
+        showToast('Email or phone is required', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Create Contact';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/contacts/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          hideNewContactModal();
+          showToast('Contact created');
+          setTimeout(() => location.reload(), 800);
+        } else {
+          showToast(result.error || 'Failed to create contact', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Contact';
+      }
+    });
+
+    // Create Lead from contact
+    // Render pipeline history: chain Lead → Quote → Project on same row
+    // Friendly label maps
+    const quoteStatusLabel = {
+      draft: 'Draft', sent: 'Pending Approval', accepted: 'Ready to Promote',
+      declined: 'Needs Review', project: 'Promoted', failed: 'Failed'
+    };
+    const projectStatusLabel = {
+      needs_crew: 'Needs Crew', in_progress: 'In Progress',
+      completed: 'Completed', portfolio: 'In Portfolio'
+    };
+    const leadStatusLabel = { confirmed: 'Confirmed', pending_confirmation: 'Unconfirmed', promoted: 'Promoted', won: 'Won' };
+
+    function renderPipeline(linked) {
+      const section = document.getElementById('pipelineSection');
+      const list = document.getElementById('pipelineList');
+      const quotes = linked.quotes || [];
+      const projects = linked.projects || [];
+      const leads = linked.leads || [];
+
+      if (quotes.length === 0 && projects.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      const usedLeadIds = new Set();
+      quotes.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+
+      let html = '';
+      quotes.forEach(q => {
+        const lead = leads.find(l => l.id === q.lead_id);
+        const project = projects.find(p => p.quote_id === q.id);
+        const isRepeat = lead && usedLeadIds.has(lead.id);
+        if (lead) usedLeadIds.add(lead.id);
+
+        html += `<div class="pipeline-chain${isRepeat ? ' repeat' : ''}">`;
+
+        // Col 1: LEAD
+        const leadSrc = lead ? escapeHtml(lead.source || 'lead') : '—';
+        const leadStatus = lead ? (leadStatusLabel[lead.status] || lead.status) : '—';
+        html += `<div class="pipeline-col">
+          <span class="col-label">${isRepeat ? 'Repeat' : 'Lead'}</span>
+          <span class="col-field">Status</span>
+          <span class="contacts-status-pill s-${lead?.status || ''}">${leadStatus}</span>
+          <span class="col-field">Source</span>
+          <span class="col-value">${leadSrc}</span>
+        </div>`;
+
+        // Col 2: QUOTE
+        const qNum = (q.quote_number || `#${q.id}`).replace('MK-', '');
+        const qTotal = q.total && Number(q.total) > 0 ? `$${Number(q.total).toLocaleString()}` : '';
+        const qLabel = quoteStatusLabel[q.status] || q.status || '';
+        html += `<div class="pipeline-col">
+          <span class="col-label">Quote</span>
+          <span class="col-field">Status</span>
+          <span class="contacts-status-pill s-${q.status}">${qLabel}</span>
+          <span class="col-field">ID</span>
+          <span class="col-value">${escapeHtml(qNum)}</span>
+          <span class="col-field">Price</span>
+          ${qTotal ? `<span class="col-value">${qTotal}</span>` : '<span class="col-empty">No price yet</span>'}
+          ${q.contract_url ? `<span class="col-field">Documents</span><a href="${escapeHtml(q.contract_url)}" target="_blank" rel="noopener">Signed contract ↗</a>` : ''}
+        </div>`;
+
+        // Col 3: PROJECT
+        if (project) {
+          const pLabel = projectStatusLabel[project.status] || project.status || '';
+          html += `<div class="pipeline-col">
+            <span class="col-label">Project</span>
+            <span class="col-field">Status</span>
+            <span class="contacts-status-pill s-${project.status}">${pLabel}</span>
+            <span class="col-field">Documents</span>
+            <a href="/admin/projects/?open=${project.id}" target="_blank" rel="noopener">Open project ↗</a>
+            ${project.project_contract_url ? `<a href="${escapeHtml(project.project_contract_url)}" target="_blank" rel="noopener">Project contract ↗</a>` : ''}
+          </div>`;
+        } else {
+          html += `<div class="pipeline-col"><span class="col-label">Project</span><span class="col-empty">Not yet</span></div>`;
+        }
+
+        // Col 4: PORTFOLIO
+        if (project?.portfolio_slug) {
+          html += `<div class="pipeline-col">
+            <span class="col-label">Portfolio</span>
+            <span class="col-field">Page</span>
+            <a href="/projects/${escapeHtml(project.portfolio_slug)}" target="_blank">View ↗</a>
+          </div>`;
+        } else {
+          html += `<div class="pipeline-col"><span class="col-label">Portfolio</span><span class="col-empty">Not published</span></div>`;
+        }
+
+        html += `</div>`;
+      });
+
+      section.style.display = 'block';
+      list.innerHTML = html;
+    }
+
+    // Export CSV
+    async function exportCSV() {
+      try {
+        const res = await fetch('/api/admin/contacts/export/', { credentials: 'include' });
+        if (!res.ok) {
+          showToast('Export failed', 'error');
+          return;
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mannyknows-contacts-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('CSV exported');
+      } catch (err) {
+        showToast('Export failed', 'error');
+      }
+    }
+    window.exportCSV = exportCSV;
+
+    // Run migration
+    async function runMigration() {
+      try {
+        showToast('Running migration...');
+        const res = await fetch('/api/admin/contacts/migrate/', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Migration complete: ${data.contacts_created} contacts, ${data.links_created} links`);
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast(data.error || 'Migration failed', 'error');
+        }
+      } catch (err) {
+        showToast('Migration failed: ' + err.message, 'error');
+      }
+    }
+    window.runMigration = runMigration;
+
+    // Toast
+    function showToast(message, type) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = `toast ${type || ''}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Display phone as (860) 559-9789, keep E.164 for tel: links
+    function formatPhoneDisplay(phone) {
+      if (!phone) return '';
+      const digits = phone.replace(/\D/g, '');
+      // Strip leading country code 1
+      const local = digits.startsWith('1') && digits.length === 11 ? digits.slice(1) : digits;
+      if (local.length === 10) {
+        return `(${local.slice(0,3)}) ${local.slice(3,6)}-${local.slice(6)}`;
+      }
+      return phone; // Return as-is if not a standard US number
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Theme
+    function initTheme() {
+      const saved = localStorage.getItem('admin-theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('admin-theme', next);
+    }
+    window.toggleTheme = toggleTheme;
+    initTheme();
+
+    // Mobile Navigation
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNavPanel = document.getElementById('mobileNavPanel');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNavToggle.classList.add('active');
+      mobileNavPanel.classList.add('active');
+      mobileNavOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+      mobileNavToggle.classList.remove('active');
+      mobileNavPanel.classList.remove('active');
+      mobileNavOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    window.closeMobileNav = closeMobileNav;
+
+    mobileNavToggle?.addEventListener('click', () => {
+      if (mobileNavPanel.classList.contains('active')) closeMobileNav();
+      else openMobileNav();
+    });
+    mobileNavClose?.addEventListener('click', closeMobileNav);
+    mobileNavOverlay?.addEventListener('click', closeMobileNav);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) closeMobileNav();
+    });
+
+    // Logout
+    async function logout() {
+      await fetch('/api/admin/logout/', { method: 'POST' });
+      window.location.href = '/admin';
+    }
+    window.logout = logout;
+
+    // Bell notifications
+    const bellBtn = document.getElementById('bellBtn');
+    const bellBadge = document.getElementById('bellBadge');
+    const bellDropdown = document.getElementById('bellDropdown');
+    const bellList = document.getElementById('bellList');
+    const bellBtnMobile = document.getElementById('bellBtnMobile');
+    const bellBadgeMobile = document.querySelector('.bell-badge-mobile');
+    const bellDropdownMobile = document.getElementById('bellDropdownMobile');
+    const bellListMobile = document.getElementById('bellListMobile');
+
+    let bellOpen = false;
+    let activeBellDropdown = null;
+
+    function closeBell() {
+      bellOpen = false;
+      if (bellDropdown) bellDropdown.style.display = 'none';
+      if (bellDropdownMobile) bellDropdownMobile.style.display = 'none';
+      activeBellDropdown = null;
+    }
+
+    [bellBtn, bellBtnMobile].forEach(btn => {
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = btn === bellBtn ? bellDropdown : bellDropdownMobile;
+        if (bellOpen && activeBellDropdown === dropdown) closeBell();
+        else {
+          closeBell();
+          bellOpen = true;
+          activeBellDropdown = dropdown;
+          if (dropdown) dropdown.style.display = 'block';
+        }
+      });
+    });
+
+    document.addEventListener('click', () => { if (bellOpen) closeBell(); });
+    bellDropdown?.addEventListener('click', (e) => e.stopPropagation());
+    bellDropdownMobile?.addEventListener('click', (e) => e.stopPropagation());
+
+    function bellGetTimeAgo(date) {
+      const diff = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    function renderBellNotifications(data, listEl) {
+      let html = '';
+      (data.leads || []).forEach(l => {
+        const timeAgo = l.created_at ? bellGetTimeAgo(new Date(l.created_at + 'Z')) : '';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/leads?open=${l.id}'" style="border-left: 3px solid #22c55e;">
+          <div class="bell-notification-top"><span class="bell-notification-name">${escapeHtml(l.customer_name || 'New Lead')}</span><span class="bell-notification-time">${timeAgo}</span></div>
+          <div class="bell-notification-body">${escapeHtml(l.service_type || 'New lead')}</div>
+          <div class="bell-notification-quote" style="color:#22c55e;">NEW LEAD</div>
+        </div>`;
+      });
+      (data.quoteResponses || []).forEach(q => {
+        const timeAgo = q.responded_at ? bellGetTimeAgo(new Date(q.responded_at + 'Z')) : '';
+        const accepted = q.status === 'accepted';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${accepted ? '#ff781d' : '#f59e0b'};">
+          <div class="bell-notification-top"><span class="bell-notification-name">${escapeHtml(q.customer_name || 'Customer')}</span><span class="bell-notification-time">${timeAgo}</span></div>
+          <div class="bell-notification-body">Quote ${accepted ? 'accepted' : 'declined'}</div>
+          <div class="bell-notification-quote" style="color:${accepted ? '#ff781d' : '#f59e0b'};">#${escapeHtml(q.quote_number || '')}</div>
+        </div>`;
+      });
+      (data.replies || []).forEach(r => {
+        const timeAgo = r.created_at ? bellGetTimeAgo(new Date(r.created_at + 'Z')) : '';
+        const preview = (r.body || '').substring(0, 80) + ((r.body || '').length > 80 ? '...' : '');
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${r.quote_id}'">
+          <div class="bell-notification-top"><span class="bell-notification-name">${escapeHtml(r.customer_name || r.sender_name || 'Customer')}</span><span class="bell-notification-time">${timeAgo}</span></div>
+          <div class="bell-notification-body">${escapeHtml(preview)}</div>
+          <div class="bell-notification-quote">#${escapeHtml(r.quote_number || '')}</div>
+        </div>`;
+      });
+      listEl.innerHTML = html || '<div style="padding:16px;text-align:center;color:var(--color-text-secondary);font-size:13px;">No new notifications</div>';
+    }
+
+    var bellErrorCount = 0;
+    async function loadBellNotifications() {
+      if (bellErrorCount >= 3) { window.location.href = '/admin/'; return; }
+      try {
+        const res = await fetch('/api/admin/unread-replies/', { credentials: 'same-origin' });
+        if (res.status === 401 || res.status === 403) { window.location.href = '/admin/'; return; }
+        if (!res.ok) { bellErrorCount++; return; }
+        const data = await res.json();
+        if (!data.success) return;
+        bellErrorCount = 0;
+        const total = data.total || 0;
+        [bellBadge, bellBadgeMobile].forEach(badge => {
+          if (badge) { badge.textContent = String(total); badge.style.display = total > 0 ? 'flex' : 'none'; }
+        });
+        [bellBtn, bellBtnMobile].forEach(btn => {
+          if (total > 0) btn?.classList.add('has-notifications');
+          else btn?.classList.remove('has-notifications');
+        });
+        if (bellList) renderBellNotifications(data, bellList);
+        if (bellListMobile) renderBellNotifications(data, bellListMobile);
+      } catch (err) { bellErrorCount++; }
+    }
+
+    async function markAllRead() {
+      try {
+        await fetch('/api/admin/unread-replies/', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mark_all: true }) });
+        loadBellNotifications();
+        closeBell();
+      } catch (err) { console.error('Failed to mark all read:', err); }
+    }
+    window.markAllRead = markAllRead;
+
+    loadBellNotifications();
+    setInterval(loadBellNotifications, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { bellErrorCount = 0; loadBellNotifications(); } });
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        const btnSave = document.getElementById('btnSave');
+        if (btnSave && btnSave.offsetParent !== null) saveContact();
+      }
+    });
+  </script>
+</body>
+</html>

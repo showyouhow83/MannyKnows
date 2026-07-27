@@ -1,0 +1,801 @@
+---
+// /admin/quotes/[id]/preview — print-friendly quote document.
+// Admin clicks "Preview PDF" in the quote detail → opens this page in a new
+// tab → Cmd/Ctrl+P → Save as PDF. The page is styled to mirror the Word
+// template the admin team has been authoring quotes in.
+import { AdminAuth } from '../../../../lib/adminAuth';
+import {
+  COMPANY_HEADER,
+  WARRANTY_TERMS,
+  quoteToScopes,
+  renderScopesHtml,
+  sumScopeSubtotals,
+} from '../../../../lib/quoteTemplateConstants';
+import { getBrand, SL_BRAND, type Brand } from '../../../../lib/brand';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.MK_APP_DB;
+const quoteId = Number(Astro.params.id);
+if (!db || !quoteId || Number.isNaN(quoteId)) {
+  return Astro.redirect('/admin/quotes');
+}
+
+// Auth model: either an admin session OR a `?token=<quote_token>` matching
+// the row. The token path exists so the customer-facing accept page can
+// load this preview in a hidden iframe to generate the signed PDF
+// (admin-session-only would block that flow).
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+const urlToken = (Astro.url.searchParams.get('token') || '').trim();
+
+const quote = await db.prepare(`
+  SELECT id, quote_number, quote_token, customer_name, customer_email, customer_phone,
+         address, city, state, zip,
+         services, scope_description, estimated_start, estimated_end,
+         estimated_duration, subtotal, discount, total,
+         materials, labor, labor_total, partner_id,
+         template_sections, project_images, pdf_image_urls, created_at, updated_at
+  FROM quotes WHERE id = ?
+`).bind(quoteId).first() as any;
+
+if (!quote) {
+  return new Response('Quote not found', { status: 404 });
+}
+
+const brand: Brand = await getBrand(db, quote.partner_id);
+
+// Authorize: admin session OR the URL token matches the row's quote_token
+// exactly. Constant-time-ish string compare to avoid timing attacks on the
+// token (it's 36 chars of UUID, same length every call).
+const tokenAuthorized = !!(urlToken && quote.quote_token && urlToken === quote.quote_token);
+if (!session.isAuthenticated && !tokenAuthorized) {
+  return Astro.redirect('/admin/');
+}
+
+// Friendly today date (used when admin saves the PDF — locks the document date
+// to the moment of generation, not the quote's original created_at).
+const today = new Date().toLocaleDateString('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric',
+});
+
+// Services pretty-print: the field is either a JSON array of strings or of
+// objects with {type, scope}. We just want a readable label list.
+function formatServices(raw: string | null): string {
+  if (!raw) return '';
+  try {
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return '';
+    return arr.map((s: any) => {
+      if (typeof s === 'string') return s;
+      return s?.type || '';
+    }).filter(Boolean).map((t: string) => t.charAt(0).toUpperCase() + t.slice(1)).join(' + ');
+  } catch { return ''; }
+}
+const servicesLabel = formatServices(quote.services);
+
+// Phase 5: a quote owns N scopes. If ?scope=<id> is present, we render
+// only that one scope (per-scope PDF). Otherwise we render every scope in
+// order, each prefixed with its title heading. quoteToScopes also synthesizes
+// a Main scope from legacy materials/labor for pre-Phase-5 quotes.
+const scopes = quoteToScopes(quote);
+const scopeIdParam = (Astro.url.searchParams.get('scope') || '').trim();
+const activeScope = scopeIdParam ? scopes.find(s => s.id === scopeIdParam) : null;
+const scopeFiltered = scopeIdParam && activeScope;
+// If admin requested a scope that doesn't exist, fall back to combined view
+// (no scope id filter applied) — better than a blank doc.
+const sectionsHtml = renderScopesHtml(scopes, scopeFiltered ? { scopeId: scopeIdParam } : undefined);
+
+// Scopes are now the only source of truth for quote body content.
+const bodyHtml = sectionsHtml;
+
+// Per-scope preview: totals reflect ONLY that scope's subtotal items. Discount
+// is a quote-level concept (applies to the whole job), so the per-scope PDF
+// hides it — including discount on one of N scopes would be misleading.
+// Combined preview: totals come from the saved quote.total (which already
+// auto-sums across every scope's subtotals + applies the quote-level discount).
+const grandTotal = scopeFiltered
+  ? sumScopeSubtotals(activeScope!)
+  : Number(quote.total || 0);
+const discount = scopeFiltered ? 0 : Number(quote.discount || 0);
+const subtotal = scopeFiltered
+  ? grandTotal
+  : Number(quote.subtotal || (grandTotal + discount));
+// Title shown in the toolbar + saved-PDF attachment label.
+const scopeTitle = scopeFiltered ? (activeScope!.title || 'Scope') : '';
+
+// Reference photos: parse JSON array from quotes.project_images. Show up to
+// 12 thumbnails to keep the printed PDF light. Filter out anything that
+// isn't an image (videos render fine in the admin tray but bloat the PDF).
+function pickPhotos(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .filter((u: unknown): u is string => typeof u === 'string')
+      .filter(u => !/\.(mp4|mov|webm|m4v)(\?|$)/i.test(u))
+      .slice(0, 12);
+  } catch { return []; }
+}
+// Reference photos live on images.mannyknows.com (R2 custom domain) which
+// does NOT return Access-Control-Allow-Origin headers. That bites html2canvas
+// during the Save-to-Quote-PDFs flow — a cross-origin <img> can't have its
+// pixel data read, so the canvas snapshot ends up with empty squares.
+// Fix: route the photo through the same-origin /r2-local proxy. Same-origin
+// images can always be read by canvas, no CORS dance needed. (The proxy
+// streams the bytes through the worker, so we lose the /cdn-cgi/image
+// resize but gain canvas-compatibility — the right trade.)
+function sameOriginPhoto(url: string): string {
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'images.mannyknows.com') {
+      return `/r2-local${u.pathname}/`;
+    }
+  } catch {}
+  return url;
+}
+// Prefer the admin's starred subset (pdf_image_urls). If none are starred,
+// fall back to all reference images so existing quotes are unaffected.
+const starredPhotos = pickPhotos(quote.pdf_image_urls);
+const referencePhotos = starredPhotos.length > 0 ? starredPhotos : pickPhotos(quote.project_images);
+
+// Customer signature lookup: when the customer accepted the quote at
+// /quote/accept/[token], a row landed in quote_signatures. We pull it
+// here so the preview can render an actual signature block (which then
+// gets baked into the saved "Estimate — Signed" PDF). Returns null when
+// the quote hasn't been accepted yet — in that case the preview falls
+// back to drawn signature lines for the unsigned version.
+type QuoteSigRow = {
+  signature_data_url: string;
+  signer_name: string;
+  signed_at: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  consent_text?: string | null;
+};
+let customerSig: QuoteSigRow | null = null;
+try {
+  const sigResult = await db.prepare(`
+    SELECT signature_data_url, signer_name, signed_at, ip_address, user_agent, consent_text
+    FROM quote_signatures
+    WHERE quote_id = ?
+    ORDER BY signed_at DESC LIMIT 1
+  `).bind(quoteId).first() as any;
+  // Render the acceptance section for ANY acceptance row — including one-click
+  // button accepts, which have no drawn signature image. (Previously this only
+  // fired when signature_data_url was set, so button-accepted quotes showed no
+  // proof of acceptance at all.)
+  if (sigResult) {
+    customerSig = {
+      signature_data_url: sigResult.signature_data_url || '',
+      signer_name: sigResult.signer_name,
+      signed_at: sigResult.signed_at,
+      ip_address: sigResult.ip_address ?? null,
+      user_agent: sigResult.user_agent ?? null,
+      consent_text: sigResult.consent_text ?? null,
+    };
+  }
+} catch (err) {
+  console.warn('[quote/preview] sig lookup failed:', err);
+}
+
+// Parse a User-Agent into a friendly "Browser on OS" so the audit panel
+// reads as plain English rather than a UA blob. Mirrors the helper used
+// on the contract preview.
+function parseUserAgent(ua: string | null | undefined): string {
+  if (!ua) return 'Unknown device';
+  let browser = 'Browser';
+  if (/Edg\//.test(ua)) browser = 'Edge';
+  else if (/Chrome\//.test(ua) && !/Edg\//.test(ua) && !/OPR\//.test(ua)) browser = 'Chrome';
+  else if (/Firefox\//.test(ua)) browser = 'Firefox';
+  else if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) browser = 'Safari';
+  let os = 'Unknown OS';
+  if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+  else if (/Mac OS X/.test(ua)) os = 'macOS';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  return `${browser} on ${os}`;
+}
+function fmtFullDateTime(s: string | null | undefined): string {
+  if (!s) return '—';
+  try {
+    const trimmed = String(s).replace(' ', 'T') + 'Z';
+    const d = new Date(trimmed);
+    if (isNaN(d.getTime())) return String(s);
+    return d.toLocaleString('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+    });
+  } catch { return String(s); }
+}
+function fmtDate(s: string | null | undefined): string {
+  if (!s) return '_______________';
+  try {
+    const trimmed = String(s).split(/[\sT]/)[0];
+    const d = new Date(trimmed + 'T00:00:00');
+    if (isNaN(d.getTime())) return String(s);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch { return String(s); }
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote {quote.quote_number}{scopeFiltered ? ` — ${scopeTitle}` : ''} — Preview</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+      /* Document styled for "Save as PDF" via the browser print dialog. The
+         page-level layout below is intentionally screen-friendly too so the
+         admin can read it back before printing. */
+      html {
+        /* Prevent mobile browsers from auto-inflating font sizes in narrow
+           viewports (e.g. when rendered in a hidden iframe on a phone).
+           Without this, Safari on iOS can double the body font-size, making
+           the generated PDF appear with "huge" text. */
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        font-size: 14px;
+      }
+      body {
+        margin: 0;
+        background: #f1f5f9;
+        color: #1f2937;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .toolbar {
+        position: sticky; top: 0; z-index: 10;
+        background: #0f172a; color: #fff;
+        padding: 10px 18px;
+        display: flex; justify-content: space-between; align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 13px;
+      }
+      .toolbar a { color: #93c5fd; text-decoration: none; }
+      .toolbar a:hover { text-decoration: underline; }
+      .toolbar button {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .doc-page {
+        max-width: 760px;
+        margin: 24px auto;
+        background: #fff;
+        padding: 40px 48px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+        color: #1f2937;
+      }
+      .doc-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        gap: 20px;
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+      }
+      .doc-header h1 {
+        margin: 0 0 4px 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: 0.3px;
+      }
+      .doc-header .subtitle {
+        font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 1px;
+      }
+      .contact-block {
+        text-align: right;
+        font-size: 12px;
+        color: #374151;
+        line-height: 1.55;
+      }
+      .contact-block strong { color: #111827; }
+      .info-block {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .info-row { display: grid; grid-template-columns: 130px 1fr; gap: 8px; }
+      .info-row .label {
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: #475569; padding-top: 2px;
+      }
+      .info-row .value { color: #111827; }
+
+      .grand-total-row {
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding: 14px 0;
+        border-top: 2px solid #0f172a;
+        border-bottom: 2px solid #0f172a;
+        margin: 24px 0;
+        font-size: 16px; font-weight: 700;
+      }
+      .grand-total-row .amount {
+        font-size: 22px; color: #0f172a;
+      }
+
+      .warranty-block {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.6;
+        font-style: italic;
+        margin-top: 28px;
+        padding-top: 14px;
+        border-top: 1px solid #cbd5e1;
+      }
+
+      .footnote {
+        font-size: 11px;
+        color: #94a3b8;
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      /* Print: drop screen-only chrome, force readable colors. */
+      @media print {
+        body { background: #fff; }
+        .toolbar { display: none; }
+        .doc-page { box-shadow: none; margin: 0; padding: 20px 18px; max-width: 100%; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <div>
+        <a href={`/admin/quotes?open=${quote.id}`}>← Back to quote</a>
+        <span style="margin-left: 10px; opacity: 0.7;">
+          Preview of quote {quote.quote_number}{scopeFiltered ? ` · ${scopeTitle}` : ''}
+        </span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button
+          id="saveToPdfsBtn"
+          data-quote-id={String(quote.id)}
+          data-quote-number={String(quote.quote_number)}
+          data-scope-title={scopeFiltered ? scopeTitle : ''}
+          style="background:rgba(255,255,255,0.08); color:#fff;"
+        >Save to Quote PDFs</button>
+        <button onclick="window.print()">Print / Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="doc-header">
+        <div>
+          {/* Inline SVG of the MannyKnows wordmark. Solid fill (not the
+              admin's masked gradient) so html2canvas + print rendering both
+              produce a clean black logo. Explicit width/height attrs are
+              required for html2canvas to compute a non-zero bounding box;
+              the fill on the inner <g> guarantees cascade even when
+              html2canvas drops root-level fill. */}
+          {brand.isPartner && brand.logoUrl && (
+            <img src={brand.logoUrl} alt={brand.name} style="display:block; margin-bottom:6px; max-width:220px; max-height:58px; height:auto;" />
+          )}
+          {brand.isPartner && !brand.logoUrl && (
+            <div style="font-size:28px; font-weight:800; color:#1c2b3e; margin-bottom:6px;">{brand.name}</div>
+          )}
+          {!brand.isPartner && (
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px;">
+            {/* VL mark — dark "L" variant so it prints on white letterhead */}
+            <svg viewBox="0 0 620 240" width="73" height="28" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-label="MannyKnows">
+              <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d"/>
+              <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#0f1219"/>
+            </svg>
+            <div style="font-size:21px; font-weight:800; color:#0f1219; letter-spacing:0.02em; line-height:1;">MANNYKNOWS</div>
+          </div>
+          )}
+          <div class="subtitle">Quote{scopeFiltered ? ' — ' + scopeTitle : ''}</div>
+          <div style="font-size:12px; color:#475569; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
+          <div style="font-size:12px; color:#475569;">Quote #: <strong style="color:#111827;">{quote.quote_number}</strong>{scopeFiltered ? <span> · Scope: <strong style="color:#111827;">{scopeTitle}</strong></span> : null}</div>
+        </div>
+        <div class="contact-block">
+          {brand.isPartner ? (
+            <Fragment>
+              {brand.phoneDisplay && <div><strong>Phone:</strong> {brand.phoneDisplay}</div>}
+              {brand.contactEmail && <div><strong>Email:</strong> {brand.contactEmail}</div>}
+              {brand.websiteLabel && <div><strong>Website:</strong> {brand.websiteLabel}</div>}
+              {brand.addressLines.length > 0 && <div>{brand.addressLines.join(', ')}</div>}
+            </Fragment>
+          ) : (
+            <Fragment>
+          <div><strong>{COMPANY_HEADER.licenseLabel} #:</strong> {COMPANY_HEADER.licenseNumber}</div>
+          <div><strong>Contact:</strong> {COMPANY_HEADER.contactName}</div>
+          <div><strong>Phone:</strong> {COMPANY_HEADER.phone}</div>
+          <div><strong>Email:</strong> {COMPANY_HEADER.email}</div>
+          <div><strong>Website:</strong> {COMPANY_HEADER.website.replace(/^https?:\/\//, '')}</div>
+            </Fragment>
+          )}
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-row">
+          <span class="label">Customer</span>
+          <span class="value">{quote.customer_name || ''}</span>
+        </div>
+        {quote.customer_phone && (
+          <div class="info-row">
+            <span class="label">Phone</span>
+            <span class="value">{quote.customer_phone}</span>
+          </div>
+        )}
+        {quote.customer_email && (
+          <div class="info-row">
+            <span class="label">Email</span>
+            <span class="value">{quote.customer_email}</span>
+          </div>
+        )}
+        <div class="info-row">
+          <span class="label">Work site</span>
+          <span class="value">{[quote.address, quote.city, quote.state, quote.zip].filter(Boolean).join(', ')}</span>
+        </div>
+        {servicesLabel && (
+          <div class="info-row">
+            <span class="label">Work type</span>
+            <span class="value">{servicesLabel}</span>
+          </div>
+        )}
+        {quote.scope_description && (
+          <div class="info-row">
+            <span class="label">Scope</span>
+            <span class="value">{quote.scope_description}</span>
+          </div>
+        )}
+        {quote.estimated_start && (
+          <div class="info-row">
+            <span class="label">Estimated</span>
+            <span class="value">{quote.estimated_start}{quote.estimated_end ? ` → ${quote.estimated_end}` : ''}{quote.estimated_duration ? ` (${quote.estimated_duration})` : ''}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Sections (or legacy materials/labor) */}
+      <div set:html={bodyHtml}></div>
+
+      <div class="grand-total-row">
+        <span>Total cost — labor and materials</span>
+        <span class="amount">${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+      </div>
+
+      {discount > 0 && (
+        <div style="font-size:12px; color:#475569; text-align:right; margin-top:-18px; margin-bottom:18px;">
+          Subtotal ${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Discount −${discount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      )}
+
+      {referencePhotos.length > 0 && (
+        <section style="margin: 24px 0 0 0;">
+          <h3 style="margin:0 0 10px 0; font-size:15px; font-weight:700; color:#111827; border-bottom:1px solid #e5e7eb; padding-bottom:5px; page-break-after:avoid;">Reference Photos</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            {referencePhotos.map(url => (
+              /* Same-origin /r2-local URL so html2canvas can read pixel data
+                 (cross-origin images.mannyknows.com would taint the canvas,
+                 leaving empty squares in the saved PDF). loading="eager"
+                 forces the image to start downloading immediately so the
+                 Save-to-PDFs flow can await it. */
+              <img src={sameOriginPhoto(url)} alt="Reference photo" loading="eager" style="width:100%; aspect-ratio:4/3; object-fit:cover; border:1px solid #cbd5e1; border-radius:4px;" />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Acceptance section — renders whenever the customer accepted (a
+          quote_signatures row exists), whether they drew a signature OR used
+          the one-click Accept button. Unsigned quotes omit it so the originally
+          -sent PDF stays clean. */}
+      {customerSig && (
+        <section style="margin: 28px 0 0 0; padding: 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid;">
+          <h3 style="margin:0 0 14px 0; font-size:15px; font-weight:700; color:#111827; border-bottom:1px solid #cbd5e1; padding-bottom:6px;">Quote Acceptance</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: end;">
+            <div>
+              <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; min-height: 90px; display: flex; align-items: center; justify-content: center;">
+                {customerSig.signature_data_url
+                  ? <img src={customerSig.signature_data_url} alt={`Signature by ${customerSig.signer_name}`} style="max-height: 76px; max-width: 100%;" />
+                  : (
+                    <div style="text-align:center; color:#16a34a;">
+                      <div style="font-size: 28px; line-height: 1;">&#10003;</div>
+                      <div style="font-size: 11px; font-weight: 700; color:#15803d; margin-top: 4px;">Accepted online</div>
+                      <div style="font-size: 10px; color:#64748b;">One-click Accept button</div>
+                    </div>
+                  )}
+              </div>
+              <div style="margin-top: 6px; font-size: 12px; color: #1e293b;">
+                <strong>{customerSig.signer_name}</strong>
+              </div>
+              <div style="font-size: 11px; color: #64748b;">Customer · {fmtDate(customerSig.signed_at)}</div>
+            </div>
+            <div style="font-size: 11px; line-height: 1.6; color: #475569;">
+              <div style="font-weight: 700; color: #0f172a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Audit Trail</div>
+              <div style="display: grid; grid-template-columns: 90px 1fr; gap: 2px 8px;">
+                <div>Accepted</div><div>{fmtFullDateTime(customerSig.signed_at)}</div>
+                <div>Method</div><div>{customerSig.signature_data_url ? 'Drawn e-signature' : 'One-click Accept button'}</div>
+                {customerSig.ip_address && (<><div>IP</div><div>{customerSig.ip_address}</div></>)}
+                {customerSig.user_agent && (<><div>Device</div><div>{parseUserAgent(customerSig.user_agent)}</div></>)}
+                <div>Quote</div><div>#{quote.quote_number}</div>
+              </div>
+              {customerSig.consent_text && (
+                <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1; font-style: italic; color: #64748b;">
+                  {customerSig.consent_text}
+                </div>
+              )}
+              <div style="margin-top: 8px; font-size: 10px; color: #94a3b8;">
+                Recorded under the ESIGN Act (15 U.S.C. § 7001 et seq.) and Massachusetts UETA.
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div class="warranty-block">{WARRANTY_TERMS}</div>
+
+      <div class="footnote">{brand.name}{brand.phoneDisplay ? ` · ${brand.phoneDisplay}` : ''}{brand.contactEmail ? ` · ${brand.contactEmail}` : ''}</div>
+    </div>
+
+    <!-- Save-to-Quote-PDFs flow: lazy-load html2pdf.js from a CDN, generate the
+         blob from the document container, POST it to the existing attachments
+         endpoint. Single click for the admin; no server-side PDF renderer needed. -->
+    <script is:inline>
+      (function() {
+        const btn = document.getElementById('saveToPdfsBtn');
+        if (!btn) return;
+        const quoteId = btn.dataset.quoteId;
+        const quoteNumber = btn.dataset.quoteNumber || 'quote';
+        // When ?scope=<id> is in the URL, this preview is for one specific
+        // scope. Reflect that in the attachment label + filename so the admin
+        // can tell the per-scope PDFs apart in the Quote PDFs tab.
+        const scopeTitle = (btn.dataset.scopeTitle || '').trim();
+        // Customer-side auth: when this page is loaded inside a hidden
+        // iframe from /quote/accept/[token], the URL carries ?token=
+        // (and ?signed=1 to flag the "Estimate — Signed" attachment label).
+        // Admin-session loads have neither.
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = (urlParams.get('token') || '').trim();
+        const signedMode = urlParams.get('signed') === '1';
+        function slug(s) {
+          return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'scope';
+        }
+
+        function loadHtml2Pdf() {
+          if (window.html2pdf) return Promise.resolve(window.html2pdf);
+          return new Promise(function(resolve, reject) {
+            const s = document.createElement('script');
+            // unpkg.com is in the CSP allowlist (was added for Leaflet earlier).
+            // cdnjs.cloudflare.com is NOT — using it triggers a CSP violation.
+            s.src = 'https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js';
+            s.onload = function() { resolve(window.html2pdf); };
+            s.onerror = function() { reject(new Error('Failed to load html2pdf.js')); };
+            document.head.appendChild(s);
+          });
+        }
+
+        // Core save flow — used both by the manual button click and by the
+        // ?autosave=1 lifecycle (triggered from the admin Send flow via a
+        // hidden iframe). Returns the attachment id on success, throws on
+        // failure. `interactive` toggles button text updates + the timed
+        // success animation; the iframe path runs non-interactive.
+        // Wait for every <img> in the document to finish loading (with the
+        // CORS-tagged version) before html2canvas captures the page. Without
+        // this, the canvas can capture an unloaded <img> and the PDF gets
+        // a blank square where the photo should be. We also resolve on
+        // error (broken img URLs shouldn't block PDF generation).
+        async function waitForImagesLoaded(root) {
+          var imgs = Array.from(root.querySelectorAll('img'));
+          await Promise.all(imgs.map(function(img) {
+            var loaded = (img.complete && img.naturalWidth > 0)
+              ? Promise.resolve()
+              : new Promise(function(resolve) {
+                  img.addEventListener('load', resolve, { once: true });
+                  img.addEventListener('error', resolve, { once: true });
+                  // Hard cap so a single hanging image doesn't block forever.
+                  setTimeout(resolve, 8000);
+                });
+            // decode() guarantees the bitmap is actually ready to PAINT —
+            // 'load' can fire before the image is decodable, which is exactly
+            // when html2canvas snapshots a blank/half-rendered photo.
+            return loaded.then(function() {
+              if (img.decode) { return img.decode().catch(function(){}); }
+            });
+          }));
+        }
+
+        async function runSavePdf(interactive) {
+          const orig = btn.textContent;
+          if (interactive) { btn.disabled = true; btn.textContent = 'Generating…'; }
+          try {
+            const html2pdf = await loadHtml2Pdf();
+            const target = document.querySelector('.doc-page');
+            if (!target) throw new Error('Preview not found');
+            // Make sure every image — especially the cross-origin reference
+            // photos pulled from images.mannyknows.com — has actually finished
+            // downloading + decoding before html2canvas snapshots the page.
+            await waitForImagesLoaded(target);
+            // Two more pre-capture guards that fix the intermittent
+            // "saved PDF is missing parts / wrong" bug:
+            //  1) Wait for web fonts — if html2canvas snapshots before fonts
+            //     load, text reflows after measurement and content clips.
+            //  2) Force two paint frames so the browser flushes final layout
+            //     (scopes, tables) before the snapshot.
+            try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+            await new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
+            // Final settle: let layout + paint fully flush so html2canvas
+            // measures the COMPLETE document height (otherwise the last
+            // section/photo row gets cut off the bottom of the PDF).
+            await new Promise(function(r){ setTimeout(r, 350); });
+            const blob = await html2pdf()
+              .from(target)
+              .set({
+                margin: [0.4, 0.4, 0.5, 0.4],
+                filename: 'quote-' + quoteNumber + (scopeTitle ? '-' + slug(scopeTitle) : '') + '.pdf',
+                image: { type: 'jpeg', quality: 0.92 },
+                // Pin the layout viewport so the PDF renders identically no
+                // matter the admin's screen width (and matches the contract PDF).
+                html2canvas: { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#ffffff', windowWidth: 900, scrollX: 0, scrollY: 0, imageTimeout: 15000 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+                // NOTE: do NOT use 'avoid-all' — it refuses to split ANY block,
+                // so content taller than one page (big photo grids, long scope
+                // tables) gets clipped/cut off. 'css' + 'legacy' paginates
+                // normally and only keeps together blocks we explicitly mark
+                // with page-break-inside: avoid.
+                pagebreak: { mode: ['css', 'legacy'] },
+              })
+              .output('blob');
+
+            if (interactive) btn.textContent = 'Uploading…';
+            const stemBase = scopeTitle
+              ? 'preview_' + quoteNumber + '_' + slug(scopeTitle)
+              : 'preview_' + quoteNumber;
+            const fileStem = (signedMode ? stemBase + '_signed' : stemBase) + '_' + Date.now();
+            const fileName = fileStem + '.pdf';
+            // Label resolution: per-scope → "Estimate — <scope>"; whole quote
+            // signed → "Estimate — Signed"; default → "Estimate". Server-side
+            // replace-on-save uses the label as the dedup key, so the signed
+            // version replaces any prior "Estimate — Signed" cleanly.
+            const label = signedMode
+              ? 'Estimate — Signed'
+              : (scopeTitle ? 'Estimate — ' + scopeTitle : 'Estimate');
+            // HTTP headers must be ISO-8859-1 / Latin-1 — em-dashes and
+            // other unicode in the label (e.g. "Estimate — Signed" or a
+            // per-scope title with accented chars) make fetch throw
+            // "String contains non ISO-8859-1 code point". URL-encode
+            // both label + filename so any unicode survives the round
+            // trip; the server URL-decodes on read.
+            const uploadHeaders = {
+              'Content-Type': 'application/pdf',
+              'X-Attachment-Label': encodeURIComponent(label),
+              'X-Attachment-Filename': encodeURIComponent(fileName),
+            };
+            // Customer-side auth: thread the URL token through as a
+            // header so the server can authorize without an admin cookie.
+            if (urlToken) uploadHeaders['X-Quote-Token'] = urlToken;
+            const res = await fetch('/api/quotes/' + quoteId + '/attachments/', {
+              method: 'POST',
+              credentials: 'include',
+              headers: uploadHeaders,
+              body: blob,
+            });
+            const data = await res.json().catch(function() { return null; });
+            if (!res.ok || (data && data.success === false)) {
+              throw new Error((data && data.error) || ('Upload failed (' + res.status + ')'));
+            }
+            if (interactive) {
+              btn.textContent = 'Saved ✓';
+              btn.style.background = 'rgba(34, 197, 94, 0.35)';
+              setTimeout(function() {
+                btn.textContent = orig || 'Save to Quote PDFs';
+                btn.style.background = 'rgba(255,255,255,0.08)';
+                btn.disabled = false;
+              }, 2500);
+            }
+            return (data && data.attachment) || null;
+          } catch (err) {
+            if (interactive) {
+              // No toast/modal system on this print-only page — surface the
+              // failure inline on the button itself so admin sees it without
+              // a native browser alert dialog.
+              var msg = err && err.message ? err.message : 'unknown error';
+              btn.textContent = 'Save failed — see console';
+              btn.style.background = 'rgba(220, 38, 38, 0.7)';
+              console.error('[Save PDF] ' + msg);
+              setTimeout(function() {
+                btn.textContent = orig || 'Save to Quote PDFs';
+                btn.style.background = '';
+                btn.disabled = false;
+              }, 4000);
+            }
+            throw err;
+          }
+        }
+
+        // Render in a fresh hidden 900px iframe (the SAME context the batch
+        // "Regenerate estimates" uses, which renders the full document) rather
+        // than capturing THIS live tab. The live tab is full-width and often
+        // scrolled, which makes html2canvas clip the output. The nested iframe
+        // loads ?autosave=1, runs the save itself, and posts the result back.
+        function saveViaIframe() {
+          const orig = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Generating…';
+          const u = new URL(window.location.href);
+          u.searchParams.set('autosave', '1'); // carries token/scope params too
+          const iframe = document.createElement('iframe');
+          iframe.src = u.pathname + u.search;
+          iframe.setAttribute('aria-hidden', 'true');
+          iframe.style.cssText = 'position:fixed; left:-9999px; top:0; width:900px; height:1400px; border:0; opacity:0; pointer-events:none;';
+          let settled = false;
+          function done(txt, color, reenable) {
+            btn.textContent = txt; if (color) btn.style.background = color;
+            setTimeout(function() { btn.textContent = orig || 'Save to Quote PDFs'; btn.style.background = ''; btn.disabled = false; }, reenable ? 4000 : 2500);
+          }
+          function cleanup() { window.removeEventListener('message', onMsg); if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }
+          function onMsg(e) {
+            if (e.source !== iframe.contentWindow) return;
+            const d = e.data; if (!d || typeof d !== 'object') return;
+            if (d.type === 'sl-pdf-saved' && d.quoteId === Number(quoteId)) { settled = true; cleanup(); done('Saved ✓', '#16a34a', false); }
+            else if (d.type === 'sl-pdf-failed' && d.quoteId === Number(quoteId)) { settled = true; cleanup(); done('Failed — retry', '', true); }
+          }
+          window.addEventListener('message', onMsg);
+          setTimeout(function() { if (!settled) { cleanup(); done('Timed out — retry', '', true); } }, 60000);
+          document.body.appendChild(iframe);
+        }
+        btn.addEventListener('click', saveViaIframe);
+
+        // Autosave lifecycle. When the preview page is loaded with ?autosave=1
+        // (admin clicked Send without a PDF attached, parent embeds us in a
+        // hidden iframe), we run the save flow automatically and postMessage
+        // the result back to the parent window. The parent waits for that
+        // signal before firing the customer email.
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('autosave') === '1') {
+          // Defer one tick so the page has fully rendered before html2canvas
+          // measures the .doc-page bounding box.
+          setTimeout(function() {
+            runSavePdf(false).then(function(attachment) {
+              try {
+                window.parent.postMessage({
+                  type: 'sl-pdf-saved',
+                  quoteId: Number(quoteId),
+                  attachment: attachment,
+                }, window.location.origin);
+              } catch (_) {}
+            }).catch(function(err) {
+              try {
+                window.parent.postMessage({
+                  type: 'sl-pdf-failed',
+                  quoteId: Number(quoteId),
+                  error: (err && err.message) || 'PDF generation failed',
+                }, window.location.origin);
+              } catch (_) {}
+            });
+          }, 150);
+        }
+      })();
+    </script>
+  <script is:inline>
+  // cdn-cgi thumbnail fallback: swap to the raw R2 URL when transformations 404.
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG' || img.dataset.cdnFallback) return;
+    var m = /^(https?:\/\/[^/]+)\/cdn-cgi\/image\/[^/]+(\/.+)$/.exec(img.src);
+    if (m) { img.dataset.cdnFallback = '1'; img.src = m[1] + m[2]; }
+  }, true);
+</script>
+</body>
+</html>

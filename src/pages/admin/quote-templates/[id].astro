@@ -1,0 +1,788 @@
+---
+// /admin/quote-templates/[id] — section + item editor for one quote template.
+// Renders the editor shell; JS owns the state + save flow.
+import { AdminAuth } from '../../../lib/adminAuth';
+import AdminNav from '../../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../../components/ConfirmModal.astro';
+import '../../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const templateId = Number(Astro.params.id);
+if (!templateId || Number.isNaN(templateId)) {
+  return Astro.redirect('/admin/quote-templates');
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Template — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <style is:global>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .te-page { max-width: 980px; margin: 0 auto; padding: 24px 16px 80px; }
+
+      .te-toolbar {
+        position: sticky; top: 0; z-index: 5;
+        background: var(--color-background);
+        padding: 16px 0 12px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+        margin-bottom: 20px;
+      }
+      .te-back {
+        text-decoration: none; color: var(--color-text-secondary);
+        font-size: 13px; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 4px;
+      }
+      .te-back:hover { color: var(--color-text-primary); }
+      .te-toolbar-spacer { flex: 1; }
+      .te-status {
+        font-size: 12px; color: var(--color-text-secondary);
+      }
+      .te-status.dirty { color: #fbbf24; }
+      .te-status.saved { color: #86efac; }
+      .te-toolbar button {
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+      }
+      .te-toolbar button.primary {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+        color: #fff; border-color: var(--color-primary);
+      }
+      .te-toolbar button.danger {
+        color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);
+      }
+      .te-toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .te-head-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr auto auto;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 700px) {
+        .te-head-grid { grid-template-columns: 1fr 1fr; }
+      }
+      .te-field label {
+        display: block; font-size: 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary); margin-bottom: 4px;
+      }
+      .te-field input, .te-field select {
+        width: 100%; box-sizing: border-box;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-family: inherit;
+      }
+      .te-toggle {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 13px; font-weight: 600;
+        user-select: none; white-space: nowrap;
+      }
+      .te-toggle input { accent-color: var(--color-primary); }
+
+      /* Section card */
+      .te-section {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+      .te-section-head {
+        display: flex; gap: 10px; align-items: center;
+        margin-bottom: 12px;
+      }
+      .te-section-title {
+        flex: 1;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 15px; font-weight: 700; font-family: inherit;
+      }
+      .te-icon-btn {
+        width: 30px; height: 30px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+      .te-icon-btn:hover { color: var(--color-text-primary); background: rgba(255,255,255,0.07); }
+      .te-icon-btn.danger:hover { color: #fca5a5; background: rgba(239, 68, 68, 0.1); }
+      .te-icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+      /* Hide section + item reorder/delete buttons until the parent is
+         hovered (or focused). Keeps the editor reading as content first,
+         controls second. Touch devices keep them visible. */
+      .te-section .te-icon-btn,
+      .te-item-actions {
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+      .te-section:hover .te-icon-btn,
+      .te-section:focus-within .te-icon-btn,
+      .te-item:hover .te-item-actions,
+      .te-item:focus-within .te-item-actions { opacity: 1; }
+      @media (hover: none) {
+        .te-section .te-icon-btn,
+        .te-item-actions { opacity: 1; }
+      }
+
+      /* Item card */
+      .te-item {
+        display: flex; gap: 8px; align-items: flex-start;
+        padding: 8px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: var(--radius-sm);
+        margin-bottom: 6px;
+      }
+      .te-item-type {
+        flex-shrink: 0;
+        width: 76px;
+        font-size: 9px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: var(--color-text-secondary);
+        padding: 6px 0; text-align: center;
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-sm);
+      }
+      .te-item-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+      .te-item-fields input, .te-item-fields textarea {
+        width: 100%; box-sizing: border-box;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 13px; font-family: inherit;
+        resize: vertical;
+      }
+      .te-item-fields textarea { min-height: 50px; line-height: 1.4; }
+      .te-item-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+
+      .te-item-row { display: flex; gap: 6px; }
+      .te-item-row > * { flex: 1; }
+      .te-amount-field { max-width: 130px; }
+
+      .te-add-row {
+        display: flex; flex-wrap: wrap; gap: 6px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--glass-border);
+        margin-top: 8px;
+      }
+      .te-add-row button {
+        padding: 6px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 12px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+      }
+      .te-add-row button:hover { background: rgba(255,255,255,0.08); }
+
+      .te-add-section {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: rgba(255,255,255,0.02);
+        border: 1.5px dashed var(--glass-border);
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        text-align: center;
+      }
+      .te-add-section:hover { background: rgba(255,255,255,0.04); color: var(--color-text-primary); }
+
+      .te-empty { padding: 40px; text-align: center; color: var(--color-text-secondary); }
+
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--color-background-light, #1f2937);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        font-size: 14px; z-index: 2000;
+        opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      }
+      .toast.visible { opacity: 1; }
+      .toast.success { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+      .toast.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    </style>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="quotes" />
+      <div class="mobile-header-right">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="quotes" />
+
+    <main class="te-page" data-template-id={String(templateId)}>
+      <div class="te-toolbar">
+        <a class="te-back" href="/admin/quote-templates">← All templates</a>
+        <span class="te-toolbar-spacer"></span>
+        <span class="te-status" id="saveStatus"></span>
+        <button id="clearAllSectionsBtn" onclick="clearAllSections()" style="color:#fca5a5;">Clear all sections</button>
+        <button id="archiveBtn" class="danger" onclick="archiveTemplate()">Archive</button>
+        <button id="deleteForeverBtn" class="danger" onclick="hardDeleteTemplate()" style="border-color:rgba(239,68,68,0.5); color:#fca5a5;">Delete forever</button>
+        <button id="saveBtn" class="primary" onclick="saveTemplate()" disabled>Save</button>
+      </div>
+
+      <div id="teShell">
+        <div class="te-empty">Loading template…</div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <ConfirmModal />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      mobileNavToggle?.addEventListener('click', () => {
+        const isActive = mobileNavPanel?.classList.contains('active');
+        mobileNavToggle?.classList.toggle('active', !isActive);
+        mobileNavPanel?.classList.toggle('active', !isActive);
+        mobileNavOverlay?.classList.toggle('active', !isActive);
+        document.body.style.overflow = !isActive ? 'hidden' : '';
+      });
+      mobileNavClose?.addEventListener('click', () => {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      mobileNavOverlay?.addEventListener('click', () => mobileNavClose?.click());
+
+      function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast visible ' + (type || '');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => el.classList.remove('visible'), 2500);
+      }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function uid(prefix) {
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      }
+
+      // ===== State =====
+      const templateId = Number(document.querySelector('.te-page').dataset.templateId);
+      // The single source of truth — mirrors the DB row's `sections` JSON plus
+      // the few top-level fields we expose in the toolbar.
+      let template = null;
+      let dirty = false;
+
+      function setDirty(d) {
+        dirty = d;
+        const status = document.getElementById('saveStatus');
+        const saveBtn = document.getElementById('saveBtn');
+        if (d) {
+          status.textContent = 'Unsaved changes';
+          status.className = 'te-status dirty';
+          saveBtn.disabled = false;
+        } else {
+          status.textContent = 'All changes saved';
+          status.className = 'te-status saved';
+          saveBtn.disabled = true;
+        }
+      }
+
+      async function loadTemplate() {
+        try {
+          const res = await fetch(`/api/admin/quote-templates/${templateId}/`, { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success || !data.template) {
+            document.getElementById('teShell').innerHTML = `<div class="te-empty">${data.error || 'Template not found'}</div>`;
+            return;
+          }
+          template = data.template;
+          if (!Array.isArray(template.sections)) template.sections = [];
+          render();
+          setDirty(false);
+        } catch {
+          showToast('Failed to load template', 'error');
+        }
+      }
+
+      function render() {
+        const shell = document.getElementById('teShell');
+        const archiveBtn = document.getElementById('archiveBtn');
+        archiveBtn.textContent = template.archived ? 'Restore' : 'Archive';
+        archiveBtn.classList.toggle('danger', !template.archived);
+
+        let html = '<div class="te-head-grid">';
+        html += `<div class="te-field"><label>Name</label><input id="tplName" type="text" value="${escapeHtml(template.name)}"></div>`;
+        // Project type list mirrors the services dropdown on the quote form,
+        // so a template can exist for any service the admin can pick.
+        const PROJECT_TYPES = [
+          ['kitchen_remodel', 'Kitchen Remodeling'],
+          ['bathroom_remodel', 'Bathroom Remodeling'],
+          ['interior_painting', 'Interior Painting'],
+          ['flooring', 'Flooring'],
+          ['general_repairs', 'General Repairs & Handyman'],
+          ['other', 'Other'],
+        ];
+        html += `<div class="te-field"><label>Project type</label><select id="tplType">${
+          PROJECT_TYPES.map(([v, l]) =>
+            `<option value="${v}"${template.project_type === v ? ' selected' : ''}>${l}</option>`
+          ).join('')
+        }</select></div>`;
+        html += `<label class="te-toggle"><input id="tplDefault" type="checkbox"${template.is_default ? ' checked' : ''}> Default for type</label>`;
+        html += `<span></span>`; // spacer for grid alignment
+        html += '</div>';
+
+        if (!template.sections.length) {
+          html += '<div class="te-empty">No sections yet — add the first one below.</div>';
+        }
+        template.sections.forEach((section, sIdx) => {
+          html += renderSection(section, sIdx);
+        });
+        html += `<button class="te-add-section" onclick="addSection()">+ Add section</button>`;
+        shell.innerHTML = html;
+
+        // Wire up top-level field listeners (input event = real-time dirty flag)
+        document.getElementById('tplName').addEventListener('input', (e) => {
+          template.name = e.target.value;
+          setDirty(true);
+        });
+        document.getElementById('tplType').addEventListener('change', (e) => {
+          template.project_type = e.target.value;
+          setDirty(true);
+        });
+        document.getElementById('tplDefault').addEventListener('change', (e) => {
+          template.is_default = e.target.checked ? 1 : 0;
+          setDirty(true);
+        });
+      }
+
+      function renderSection(section, sIdx) {
+        const lastIdx = template.sections.length - 1;
+        let html = `<div class="te-section" data-section-id="${section.id}">`;
+        html += `<div class="te-section-head">
+          <input class="te-section-title" type="text" value="${escapeHtml(section.title)}" oninput="updateSectionTitle('${section.id}', this.value)" placeholder="Section title">
+          <button class="te-icon-btn" ${sIdx === 0 ? 'disabled' : ''} onclick="moveSection('${section.id}', -1)" title="Move up">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <button class="te-icon-btn" ${sIdx === lastIdx ? 'disabled' : ''} onclick="moveSection('${section.id}', 1)" title="Move down">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="te-icon-btn danger" onclick="deleteSection('${section.id}')" title="Delete section">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>`;
+
+        section.items.forEach((item, iIdx) => {
+          html += renderItem(section.id, item, iIdx, section.items.length);
+        });
+
+        html += `<div class="te-add-row">
+          <button onclick="addItem('${section.id}', 'bullet')">+ Bullet</button>
+          <button onclick="addItem('${section.id}', 'fillable')">+ Color line</button>
+          <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button onclick="addItem('${section.id}', 'subtotal')">+ Subtotal</button>
+          <button onclick="addItem('${section.id}', 'note')">+ Note</button>
+        </div>`;
+        html += `</div>`;
+        return html;
+      }
+
+      function renderItem(sectionId, item, iIdx, itemsLen) {
+        const lastIdx = itemsLen - 1;
+        const typeLabel = item.type === 'bullet' ? 'BULLET'
+          : item.type === 'fillable' ? 'COLOR'
+          : item.type === 'choice' ? 'CHOICE'
+          : item.type === 'paint_line' ? 'PAINT/STAIN'
+          : item.type === 'subtotal' ? 'SUBTOTAL'
+          : 'NOTE';
+
+        let fields = '';
+        if (item.type === 'bullet' || item.type === 'note') {
+          fields = `<textarea oninput="updateItemField('${sectionId}', '${item.id}', 'text', this.value)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}">${escapeHtml(item.text || '')}</textarea>`;
+        } else if (item.type === 'fillable') {
+          // Color line — matches the rich card in the quote editor: code/name
+          // value + Paint/Stain type + Finish. All optional; flows to the
+          // portal + contract.
+          const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
+          const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
+          fields = `<div class="te-item-row">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Wall color — living room)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Color name or code">
+          </div>
+          <div class="te-item-row" style="margin-top:6px;">
+            <select onchange="updateItemField('${sectionId}', '${item.id}', 'product_type', this.value)">
+              <option value=""${!pt ? ' selected' : ''}>Paint or stain?</option>
+              <option value="paint"${pt === 'paint' ? ' selected' : ''}>Paint</option>
+              <option value="stain"${pt === 'stain' ? ' selected' : ''}>Stain</option>
+            </select>
+            <select onchange="updateItemField('${sectionId}', '${item.id}', 'finish', this.value)">
+              <option value=""${!item.finish ? ' selected' : ''}>Finish (optional)</option>
+              ${finishes.map(f => `<option value="${f}"${item.finish === f ? ' selected' : ''}>${f}</option>`).join('')}
+            </select>
+          </div>`;
+        } else if (item.type === 'choice') {
+          // Generic admin-defined dropdown. The options input is a
+          // comma-separated text field; the value field becomes a <select>
+          // populated from those options. Empty options list falls back to
+          // a plain text input so admin can still type a value while
+          // building up the option list.
+          const opts = Array.isArray(item.options) ? item.options : [];
+          const optionsStr = opts.join(', ');
+          const valueField = opts.length > 0
+            ? `<select onchange="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" style="flex:1;">
+                <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+                ${opts.map(o => `<option value="${escapeHtml(o)}"${item.value === o ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}
+              </select>`
+            : `<input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Default value (add options below to make a dropdown)">`;
+          fields = `<div class="te-item-row">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Countertop material, Sheen)">
+            ${valueField}
+          </div>
+          <input type="text" oninput="updateChoiceOptions('${sectionId}', '${item.id}', this.value)" onchange="updateChoiceOptions('${sectionId}', '${item.id}', this.value, true)" value="${escapeHtml(optionsStr)}" placeholder="Options (comma-separated, e.g. Granite, Quartz, Butcher block)" style="margin-top:6px; font-size:12px;">`;
+        } else if (item.type === 'paint_line') {
+          // Legacy paint_line — kept editable for already-saved rows.
+          const productType = item.product_type === 'stain' ? 'stain' : 'paint';
+          fields = `<div class="te-item-row" style="flex-wrap:wrap;">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Body color)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Default color / product (optional)">
+            <select onchange="updateItemField('${sectionId}', '${item.id}', 'product_type', this.value)" style="flex:0 0 110px;">
+              <option value="paint"${productType === 'paint' ? ' selected' : ''}>Paint</option>
+              <option value="stain"${productType === 'stain' ? ' selected' : ''}>Stain</option>
+            </select>
+          </div>`;
+        } else if (item.type === 'subtotal') {
+          fields = `<div class="te-item-row">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Total — labor and materials)">
+            <input class="te-amount-field" type="number" inputmode="decimal" step="0.01" oninput="updateItemField('${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00">
+          </div>`;
+        }
+
+        return `<div class="te-item">
+          <div class="te-item-type">${typeLabel}</div>
+          <div class="te-item-fields">${fields}</div>
+          <div class="te-item-actions">
+            <button class="te-icon-btn" ${iIdx === 0 ? 'disabled' : ''} onclick="moveItem('${sectionId}', '${item.id}', -1)" title="Move up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button class="te-icon-btn" ${iIdx === lastIdx ? 'disabled' : ''} onclick="moveItem('${sectionId}', '${item.id}', 1)" title="Move down">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button class="te-icon-btn danger" onclick="deleteItem('${sectionId}', '${item.id}')" title="Delete item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>`;
+      }
+
+      // ===== State mutators (all bump the dirty flag) =====
+      function getSection(id) { return template.sections.find(s => s.id === id); }
+
+      function updateSectionTitle(id, v) {
+        const s = getSection(id);
+        if (s) { s.title = v; setDirty(true); }
+      }
+      window.updateSectionTitle = updateSectionTitle;
+
+      function updateItemField(sId, iId, field, value) {
+        const s = getSection(sId);
+        if (!s) return;
+        const item = s.items.find(i => i.id === iId);
+        if (!item) return;
+        if (field === 'amount') {
+          item.amount = value === '' ? 0 : Number(value);
+        } else {
+          item[field] = value;
+        }
+        setDirty(true);
+      }
+      window.updateItemField = updateItemField;
+
+      function moveSection(id, dir) {
+        const idx = template.sections.findIndex(s => s.id === id);
+        const target = idx + dir;
+        if (idx === -1 || target < 0 || target >= template.sections.length) return;
+        const [moved] = template.sections.splice(idx, 1);
+        template.sections.splice(target, 0, moved);
+        setDirty(true);
+        render();
+      }
+      window.moveSection = moveSection;
+
+      function deleteSection(id) {
+        window.showConfirmModal({
+          title: 'Delete this section?',
+          text: 'The section and all its items (bullets, color lines, subtotals, notes) will be removed.',
+          confirmText: 'Delete section',
+          type: 'danger',
+          onConfirm: () => {
+            template.sections = template.sections.filter(s => s.id !== id);
+            setDirty(true);
+            render();
+          },
+        });
+      }
+      window.deleteSection = deleteSection;
+
+      function addSection() {
+        template.sections.push({ id: uid('s'), title: 'New section', items: [] });
+        setDirty(true);
+        render();
+      }
+      window.addSection = addSection;
+
+      // Clear all sections — wipes the editor state. Save is still required
+      // to persist; admin can also navigate away and lose the change.
+      function clearAllSections() {
+        if (!template?.sections?.length) { showToast('No sections to clear', 'info'); return; }
+        const n = template.sections.length;
+        window.showConfirmModal({
+          title: 'Clear all sections?',
+          text: `Remove all ${n} section${n === 1 ? '' : 's'} from this template? Click "Save" afterwards to commit.`,
+          confirmText: 'Clear sections',
+          type: 'danger',
+          onConfirm: () => {
+            template.sections = [];
+            setDirty(true);
+            render();
+          },
+        });
+      }
+      window.clearAllSections = clearAllSections;
+
+      function addItem(sectionId, type) {
+        const s = getSection(sectionId);
+        if (!s) return;
+        const base = { id: uid('i'), type };
+        if (type === 'bullet' || type === 'note') base.text = '';
+        else if (type === 'fillable') { base.label = ''; base.value = ''; }
+        else if (type === 'choice') { base.label = ''; base.value = ''; base.options = []; }
+        else if (type === 'paint_line') { base.label = ''; base.value = ''; base.product_type = 'paint'; }
+        else if (type === 'subtotal') { base.label = ''; base.amount = 0; }
+        s.items.push(base);
+        setDirty(true);
+        render();
+      }
+      window.addItem = addItem;
+
+      // Choice-specific option-list parser. Splits the comma-separated
+      // text into a clean array, drops empties, trims whitespace. Also
+      // clears `value` if the previously-selected one isn't in the new
+      // option list (prevents the dropdown from showing a stale value).
+      // doRender false on keystrokes (oninput) keeps the typed field alive;
+      // true on blur (onchange) re-renders so the value field can become a dropdown.
+      window.updateChoiceOptions = function(sectionId, itemId, raw, doRender) {
+        const s = getSection(sectionId); if (!s) return;
+        const item = s.items.find(i => i.id === itemId); if (!item) return;
+        const opts = String(raw || '').split(',').map(x => x.trim()).filter(Boolean);
+        item.options = opts;
+        if (item.value && !opts.includes(item.value)) item.value = '';
+        setDirty(true);
+        if (doRender) render();
+      };
+
+      function moveItem(sectionId, itemId, dir) {
+        const s = getSection(sectionId);
+        if (!s) return;
+        const idx = s.items.findIndex(i => i.id === itemId);
+        const target = idx + dir;
+        if (idx === -1 || target < 0 || target >= s.items.length) return;
+        const [moved] = s.items.splice(idx, 1);
+        s.items.splice(target, 0, moved);
+        setDirty(true);
+        render();
+      }
+      window.moveItem = moveItem;
+
+      function deleteItem(sectionId, itemId) {
+        const s = getSection(sectionId);
+        if (!s) return;
+        s.items = s.items.filter(i => i.id !== itemId);
+        setDirty(true);
+        render();
+      }
+      window.deleteItem = deleteItem;
+
+      // ===== Save =====
+      async function saveTemplate() {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        try {
+          const res = await fetch(`/api/admin/quote-templates/${templateId}/`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: template.name,
+              project_type: template.project_type,
+              is_default: template.is_default ? 1 : 0,
+              sections: template.sections,
+            }),
+          });
+          const data = await res.json();
+          if (!data.success) {
+            showToast(data.error || 'Save failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Save';
+            return;
+          }
+          showToast('Saved', 'success');
+          setDirty(false);
+          btn.textContent = 'Save';
+        } catch {
+          showToast('Save failed', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Save';
+        }
+      }
+      window.saveTemplate = saveTemplate;
+
+      async function archiveTemplate() {
+        const archiving = !template.archived;
+        const doFlip = async () => {
+          try {
+            const res = await fetch(`/api/admin/quote-templates/${templateId}/`, {
+              method: 'PATCH',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ archived: archiving ? 1 : 0 }),
+            });
+            const data = await res.json();
+            if (!data.success) { showToast(data.error || 'Failed', 'error'); return; }
+            template.archived = archiving ? 1 : 0;
+            render();
+            showToast(archiving ? 'Archived' : 'Restored', 'success');
+          } catch {
+            showToast('Failed', 'error');
+          }
+        };
+        if (archiving) {
+          window.showConfirmModal({
+            title: 'Archive this template?',
+            text: 'It will be hidden from the templates picker. Existing quotes that used it keep their copy. You can restore it later.',
+            confirmText: 'Archive',
+            type: 'warning',
+            onConfirm: doFlip,
+          });
+        } else {
+          doFlip();
+        }
+      }
+      window.archiveTemplate = archiveTemplate;
+
+      // Hard delete — drops the row entirely. Historical quotes that applied
+      // this template keep their frozen copy in template_sections, so the
+      // delete doesn't cascade. Once confirmed we navigate back to the list.
+      async function hardDeleteTemplate() {
+        const name = template?.name || 'this template';
+        window.showConfirmModal({
+          title: `Delete "${name}" forever?`,
+          text: "Quotes that already applied it keep their copy. This can't be undone.",
+          confirmText: 'Delete forever',
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const res = await fetch(`/api/admin/quote-templates/${templateId}/?hard=1`, {
+                method: 'DELETE',
+                credentials: 'include',
+              });
+              const data = await res.json();
+              if (!data.success) { showToast(data.error || 'Delete failed', 'error'); return; }
+              // Suppress the beforeunload guard since the template is gone.
+              dirty = false;
+              window.location.href = '/admin/quote-templates';
+            } catch {
+              showToast('Delete failed', 'error');
+            }
+          },
+        });
+      }
+      window.hardDeleteTemplate = hardDeleteTemplate;
+
+      // Cmd/Ctrl+S to save
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+          e.preventDefault();
+          if (dirty) saveTemplate();
+        }
+      });
+
+      // Warn before leaving with unsaved changes
+      window.addEventListener('beforeunload', (e) => {
+        if (dirty) { e.preventDefault(); e.returnValue = ''; }
+      });
+
+      loadTemplate();
+    </script>
+  </body>
+</html>

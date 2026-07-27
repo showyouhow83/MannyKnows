@@ -1,0 +1,2997 @@
+---
+// Admin Crew Leads Page - Glassmorphic Design
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../components/ConfirmModal.astro';
+import { computeBonus } from '../../lib/crewBonus';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin');
+}
+if (session.role === 'viewer') {
+  return Astro.redirect('/admin/portfolios');
+}
+
+// Fetch all crew leads from D1
+const db = env?.MK_APP_DB;
+let crewLeads: any[] = [];
+let archivedCrew: any[] = [];
+let error = '';
+
+if (db) {
+  try {
+    const result = await db.prepare(
+      'SELECT * FROM crew_leads WHERE active = 1 ORDER BY name ASC'
+    ).all();
+    crewLeads = result.results || [];
+    const archived = await db.prepare(
+      'SELECT * FROM crew_leads WHERE active = 0 ORDER BY name ASC'
+    ).all();
+    archivedCrew = archived.results || [];
+  } catch (e) {
+    error = 'Failed to load crew leads';
+    console.error('Crew leads fetch error:', e);
+  }
+} else {
+  error = 'Database not configured';
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crew Leads | MannyKnows Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    // Theme init - runs before CSS to prevent flash
+    (function() {
+      const theme = localStorage.getItem('admin-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* Page-specific styles */
+    .admin-main {
+      max-width: 1200px;
+    }
+
+    /* Search bar */
+    .search-bar {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-bar svg {
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      font-size: 14px;
+      outline: none;
+      background: transparent;
+      color: var(--color-text-primary);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    .crew-card.hidden {
+      display: none;
+    }
+
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--color-text-secondary);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      font-size: 14px;
+    }
+
+    .no-results.visible {
+      display: block;
+    }
+
+    .crew-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .crew-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .crew-card:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .crew-info h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-text-primary);
+    }
+
+    .crew-contact {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+    }
+
+    .crew-contact span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .crew-contact svg {
+      opacity: 0.7;
+    }
+
+    .crew-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Normalized to the shared admin button look (slim glass pill). */
+    .btn-edit {
+      padding: 9px 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .btn-edit:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    /* Remove = red outline (matches the destructive button style). */
+    .btn-delete {
+      padding: 9px 16px;
+      background: var(--glass-bg);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: var(--radius-md);
+      color: #fca5a5;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .btn-delete:hover {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+    }
+
+    .empty-state svg {
+      color: var(--color-text-secondary);
+      opacity: 0.5;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+    }
+
+    /* Error */
+    .error-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+
+    /* Modal overrides — match Leads/Quotes modal width */
+    .modal {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+      border: 1px solid var(--glass-border);
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+    }
+
+    .form-group input::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    .btn-cancel {
+      padding: 12px 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .btn-save {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(255, 120, 29, 0.3);
+    }
+
+    .btn-save:hover {
+      box-shadow: 0 6px 20px rgba(255, 120, 29, 0.4);
+    }
+
+    .btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Confirm Modal */
+    .confirm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .confirm-modal.active {
+      display: flex;
+    }
+
+    .confirm-content {
+      background: var(--color-background-light);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--glass-border);
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      animation: modalSlideIn 0.2s ease-out;
+    }
+
+    .confirm-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .confirm-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 10px;
+    }
+
+    .confirm-text {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .confirm-actions .btn {
+      padding: 12px 28px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .confirm-actions .btn-secondary {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--color-text-primary);
+    }
+
+    .confirm-actions .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .confirm-actions .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .confirm-actions .btn-danger:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Tabs */
+    .crew-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .crew-tab {
+      padding: 8px 20px;
+      border-radius: 14px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .crew-tab.active {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Archived crew section */
+    .archived-section { margin-top: 24px; }
+    .archived-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 10px 0;
+      color: var(--color-text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .archived-chevron { transition: transform 0.2s; }
+    .archived-toggle[aria-expanded="true"] .archived-chevron { transform: rotate(90deg); }
+    .archived-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+    .archived-card { opacity: 0.7; }
+    .archived-badge {
+      margin-left: 12px;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.18);
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hourly rate badge on crew card */
+    .crew-rate {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .crew-rate strong { color: var(--color-primary); }
+
+    /* WhatsApp link — same slim pill shape as the other crew buttons,
+       keeping the WhatsApp-green tint. */
+    .wa-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: rgba(37,211,102,0.15);
+      border: 1px solid rgba(37,211,102,0.35);
+      color: #25d366;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .wa-link:hover { background: rgba(37,211,102,0.22); }
+
+    /* Timesheets table */
+    .timesheet-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .week-picker {
+      padding: 8px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 14px;
+    }
+
+    .week-label {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+
+    /* Summary table */
+    .summary-table-wrap {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .summary-table-title {
+      padding: 16px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .summary-table th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+
+    .summary-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .summary-table tr:last-child td { border-bottom: none; }
+
+    .summary-table tr:hover td { background: var(--glass-bg-hover); }
+
+    .pay-amount {
+      font-weight: 700;
+      color: var(--color-success);
+    }
+
+    /* Logs table */
+    .logs-table-wrap {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .logs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .logs-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+
+    .logs-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .logs-table tr:last-child td { border-bottom: none; }
+
+    .logs-table tr:hover td { background: var(--glass-bg-hover); }
+
+    .log-open { color: var(--color-success); font-style: italic; }
+
+    .btn-edit-log {
+      padding: 6px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    /* Compare-day button + row highlight are styled inline in the JS render
+       (logsBody is built via innerHTML, which Astro's scoped styles don't reach). */
+
+    .btn-edit-log:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn-delete-log {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-delete-log:hover {
+      border-color: var(--color-error);
+      color: var(--color-error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Clocked-in now indicator */
+    .clocked-in-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 6px var(--color-success);
+      margin-right: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .crew-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .crew-actions { width: 100%; }
+      .crew-actions button, .crew-actions a { flex: 1; }
+      .crew-contact { flex-direction: column; gap: 4px; }
+
+      /* Timesheet controls — stack vertically */
+      .timesheet-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+      }
+
+      .timesheet-controls .week-label { text-align: center; }
+
+      .timesheet-controls > div[style*="margin-left"] {
+        margin-left: 0 !important;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      /* Prev/Next buttons side by side, centered */
+      .tc-nav-row { display: flex; gap: 8px; justify-content: center; }
+
+      /* Summary table: horizontal scroll */
+      .summary-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .summary-table { min-width: 700px; }
+      .summary-table th, .summary-table td { padding: 10px 12px !important; font-size: 12px !important; white-space: nowrap; }
+
+      /* Shift detail table: use initials on mobile, horizontal scroll */
+      .logs-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .logs-table { min-width: 600px; }
+      .logs-table th, .logs-table td { padding: 10px 8px !important; font-size: 12px !important; white-space: nowrap; }
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      padding: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-toggle span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--color-text-primary);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-toggle:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .mobile-nav-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-nav-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-nav-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-nav-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-nav-panel {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100vh;
+      background: var(--color-background);
+      border-left: 1px solid var(--glass-border);
+      z-index: 999;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-nav-panel.active {
+      right: 0;
+    }
+
+    .mobile-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .mobile-nav-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .mobile-nav-close {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--color-text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-close:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .mobile-nav-links {
+      padding: 16px;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+
+    .mobile-nav-link:hover {
+      background: var(--glass-bg-hover);
+      color: var(--color-text-primary);
+    }
+
+    .mobile-nav-link.active {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+    }
+
+    .mobile-nav-link svg {
+      flex-shrink: 0;
+    }
+
+    .mobile-nav-divider {
+      height: 1px;
+      background: var(--glass-border);
+      margin: 12px 0;
+    }
+
+    .mobile-nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      padding: 8px 16px 12px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-nav-toggle {
+        display: flex;
+      }
+
+      .admin-nav {
+        display: none;
+      }
+    }
+  </style>
+
+  <style is:global>
+    /* JS-rendered dynamic content styles */
+    .btn-edit-log {
+      padding: 6px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-edit-log:hover { background: var(--glass-bg-hover); border-color: var(--color-primary); color: var(--color-primary); }
+
+    .btn-delete-log {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-delete-log:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1); }
+
+    .pay-amount { font-weight: 700; color: #22c55e; }
+    .clocked-in-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e; margin-right: 6px; }
+    .log-open { color: #22c55e; font-style: italic; }
+
+    /* Table row hover for dynamically rendered rows */
+    .summary-table tbody tr:hover td { background: var(--glass-bg-hover); }
+    .logs-table tbody tr:hover td { background: var(--glass-bg-hover); }
+
+    /* Consistent column padding for alignment */
+    .summary-table th,
+    .logs-table th { padding: 14px 1rem !important; }
+    .summary-table td { padding: 18px 1rem !important; }
+    .logs-table td { padding: 14px 1rem !important; }
+  </style>
+</head>
+<body>
+  <AdminPresence />
+  <header class="admin-header">
+    <a href="/admin/dashboard" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Admin</span>
+    </a>
+    <AdminNav active="crew" />
+    <!-- Mobile: Bell + Hamburger -->
+    <div class="mobile-header-right">
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtnMobile" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge bell-badge-mobile" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdownMobile" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellListMobile">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtn" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdown" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellList">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <AdminMobileDrawer active="crew" />
+
+  <main class="admin-main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Crew</h1>
+        <p class="page-subtitle">Manage crew members and track their hours</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddModal()" id="addCrewBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Crew Member
+      </button>
+    </div>
+
+    {error && <div class="error-banner">{error}</div>}
+
+    <!-- Tabs -->
+    <div class="crew-tabs">
+      <button class="crew-tab active" id="tabMembers" onclick="switchTab('members')">Crew Members</button>
+      <button class="crew-tab" id="tabTimesheets" onclick="switchTab('timesheets')">Timesheets</button>
+    </div>
+
+    <!-- TAB 1: Crew Members -->
+    <div class="tab-panel active" id="panelMembers">
+      <div class="search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search crew...">
+      </div>
+
+      <div class="no-results" id="noResults">No crew members match your search</div>
+
+      <div class="crew-list" id="crewList">
+        {crewLeads.length === 0 ? (
+          <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <h3>No Crew Members Yet</h3>
+            <p>Add your first crew member to get started</p>
+          </div>
+        ) : (
+          crewLeads.map((lead) => {
+            const phone = String(lead.phone || '').replace(/\D/g, '');
+            const waPhone = phone.startsWith('1') ? phone : `1${phone}`;
+            const waUrl = `https://wa.me/${waPhone}`;
+            const isSalaried = lead.pay_model === 'salaried_daily';
+            const dailyTotal = (Number(lead.salary_daily_hours) || 0) * (Number(lead.salary_daily_rate) || 0);
+            const rate = isSalaried
+              ? `Salaried · $${dailyTotal.toFixed(2)}/day`
+              : (lead.hourly_rate ? `$${Number(lead.hourly_rate).toFixed(2)}/hr` : 'Rate not set');
+            const bonus = computeBonus(lead.bonus_start_date);
+            return (
+              <div class="crew-card" data-id={lead.id} data-search={`${lead.name} ${lead.email || ''} ${lead.phone}`.toLowerCase()}>
+                <div class="crew-info">
+                  <h3>{lead.name}</h3>
+                  <div class="crew-contact">
+                    {lead.email && (
+                      <span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                          <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        {lead.email}
+                      </span>
+                    )}
+                    <span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                      {lead.phone}
+                    </span>
+                  </div>
+                  <div class="crew-rate">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    <strong>{rate}</strong>
+                    {bonus.startDate && (
+                      <span style="margin-left:12px; font-size:12px; color:var(--color-text-secondary);" title={`Bonus accrued from ${bonus.startDate}; claimable on ${bonus.claimDate}`}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Bonus <strong style="color:#fbbf24;">${bonus.amount}</strong> <span style="opacity:0.7;">({bonus.days}d)</span>
+                      </span>
+                    )}
+                    {lead.is_driver ? (
+                      <span style="margin-left:12px; font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(99,102,241,0.18); color:#a5b4fc; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;" title="Driver — earns +1h per work day">
+                        Driver
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+                <div class="crew-actions">
+                  <a href={waUrl} target="_blank" class="wa-link" title="Message on WhatsApp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                  </a>
+                  <button class="btn-edit" onclick={`openMaterialsModal(${lead.id}, '${lead.name.replace(/'/g,"\\'")}')`} title="Track materials & gear given">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    Materials
+                  </button>
+                  <button class="btn-edit" onclick={`openEditModal(${lead.id}, '${lead.name.replace(/'/g,"\\'")}', '${(lead.email||'').replace(/'/g,"\\'")}', '${lead.phone}', ${lead.hourly_rate || 0}, '${lead.bonus_start_date || ''}', ${lead.is_driver ? 1 : 0}, '${lead.pay_model || 'hourly'}', ${lead.salary_daily_hours || 8}, ${lead.salary_daily_rate || 0})`}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Edit
+                  </button>
+                  <button class="btn-delete" onclick={`deleteCrew(${lead.id}, '${lead.name.replace(/'/g,"\\'")}')`}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Remove
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {archivedCrew.length > 0 && (
+        <div class="archived-section">
+          <button class="archived-toggle" type="button" onclick="toggleArchived()" aria-expanded="false">
+            <svg class="archived-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            Archived crew ({archivedCrew.length})
+          </button>
+          <div class="archived-list" id="archivedList" hidden>
+            {archivedCrew.map((lead) => {
+              const isSalaried = lead.pay_model === 'salaried_daily';
+              const dailyTotal = (Number(lead.salary_daily_hours) || 0) * (Number(lead.salary_daily_rate) || 0);
+              const rate = isSalaried
+                ? `Salaried · $${dailyTotal.toFixed(2)}/day`
+                : (lead.hourly_rate ? `$${Number(lead.hourly_rate).toFixed(2)}/hr` : 'Rate not set');
+              return (
+                <div class="crew-card archived-card" data-id={lead.id}>
+                  <div class="crew-info">
+                    <h3>{lead.name}</h3>
+                    <div class="crew-contact">
+                      {lead.email && <span>{lead.email}</span>}
+                      <span>{lead.phone}</span>
+                    </div>
+                    <div class="crew-rate">
+                      <strong>{rate}</strong>
+                      <span class="archived-badge">Archived</span>
+                    </div>
+                  </div>
+                  <div class="crew-actions">
+                    <button class="btn-edit" onclick={`restoreCrew(${lead.id}, '${lead.name.replace(/'/g,"\\'")}')`}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                      Restore
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- TAB 2: Timesheets -->
+    <div class="tab-panel" id="panelTimesheets">
+      <div class="timesheet-controls">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <label class="week-label">Week of:</label>
+          <input type="date" class="week-picker" id="weekPicker">
+          <div class="tc-nav-row">
+            <button class="btn btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="prevWeek()">← Prev</button>
+            <button class="btn btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="nextWeek()">Next →</button>
+          </div>
+          <span class="week-label" id="weekRangeLabel"></span>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="openAddShiftModal()">+ Shift</button>
+          <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="openAddExpenseModal()">+ Expense</button>
+          <label class="btn btn-secondary" style="padding:6px 12px; font-size:12px; cursor:pointer;">
+            Import
+            <input type="file" id="csvImport" accept=".csv" style="display:none;" onchange="importCSV(this)">
+          </label>
+          <button class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="exportWeekCSV()">Export</button>
+        </div>
+      </div>
+
+      <!-- Pay Summary -->
+      <div class="summary-table-wrap">
+        <div class="summary-table-title">Weekly Pay Summary</div>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Crew Member</th>
+              <th>Raw Hours</th>
+              <th>Paid Hours</th>
+              <th>Rate</th>
+              <th>Gross Pay</th>
+              <th>Expenses</th>
+              <th>Deductions</th>
+              <th>Total Payout</th>
+              <th>Pay Date</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody">
+            <tr><td colspan="9" style="text-align:center; padding:24px; color:var(--color-text-secondary);">Select a week to load data</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Detailed Logs -->
+      <div class="logs-table-wrap">
+        <div class="summary-table-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Shift Detail</span>
+          <span id="logsCount" style="font-weight:400; text-transform:none; letter-spacing:0;"></span>
+        </div>
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>Duration</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="logsBody">
+            <tr><td colspan="7" style="text-align:center; padding:24px; color:var(--color-text-secondary);">No shifts to show</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Reimbursable Expenses (paid out-of-pocket — added to crew payout) -->
+      <div class="logs-table-wrap" style="margin-top:24px;">
+        <div class="summary-table-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Reimbursable Expenses</span>
+          <span id="expensesTotal" style="font-weight:400; text-transform:none; letter-spacing:0;"></span>
+        </div>
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Receipt</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="expensesBody">
+            <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--color-text-secondary);">No expenses this week</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Company Expenses (paid with company card — tracked but NOT reimbursed) -->
+      <div class="logs-table-wrap" style="margin-top:24px;">
+        <div class="summary-table-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Company Expenses <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--color-text-secondary); font-size:12px;">(paid with company card)</span></span>
+          <span id="companyExpensesTotal" style="font-weight:400; text-transform:none; letter-spacing:0;"></span>
+        </div>
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Receipt</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="companyExpensesBody">
+            <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--color-text-secondary);">No company-card expenses this week</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Deductions (admin paid for something on crew's behalf — subtracted from paycheck) -->
+      <div class="logs-table-wrap" style="margin-top:24px;">
+        <div class="summary-table-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Deductions <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--color-text-secondary); font-size:12px;">(subtracted from paycheck)</span></span>
+          <span id="deductionsTotal" style="font-weight:400; text-transform:none; letter-spacing:0;"></span>
+        </div>
+        <table class="logs-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Note</th>
+              <th>Receipt</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="deductionsBody">
+            <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--color-text-secondary);">No deductions this week</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MK Footer -->
+  <footer class="admin-footer">
+    by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <ConfirmModal />
+
+  <!-- Confirm Modal -->
+  <div class="confirm-modal" id="crewDeleteModal">
+    <div class="confirm-content">
+      <div class="confirm-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+          <path d="M12 9v4m0 4h.01M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
+        </svg>
+      </div>
+      <h3 class="confirm-title" id="confirmTitle">Remove Crew Lead?</h3>
+      <p class="confirm-text" id="confirmText">This action cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" onclick="closeCrewDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" id="confirmBtn">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="crewModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Add Crew Lead</h2>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="crewId" value="">
+        <div class="form-group">
+          <label for="crewName">Name *</label>
+          <input type="text" id="crewName" placeholder="Enter full name" required>
+        </div>
+        <div class="form-group">
+          <label for="crewPhone">Phone (WhatsApp) *</label>
+          <input type="tel" id="crewPhone" placeholder="(413) 555-0000" required>
+        </div>
+        <div class="form-group">
+          <label for="crewEmail">Email (optional)</label>
+          <input type="email" id="crewEmail" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label for="crewPayModel">Pay Model *</label>
+          <select id="crewPayModel" class="form-select" onchange="syncPayModelFields()">
+            <option value="hourly">Hourly — clocks in/out, paid by the hour</option>
+            <option value="salaried_daily">Salaried — fixed daily pay, no clock-in</option>
+          </select>
+        </div>
+        <div class="form-group" id="hourlyFields">
+          <label for="crewRate">Hourly Rate ($)</label>
+          <input type="number" id="crewRate" placeholder="0.00" min="0" step="0.50">
+        </div>
+        <div class="form-group" id="salariedFields" style="display:none;">
+          <label for="crewSalaryDailyRate">Daily Pay Calculation</label>
+          <div style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap:8px; align-items:center;">
+            <input type="number" id="crewSalaryDailyHours" placeholder="8" min="0" step="0.25" value="8">
+            <span style="color:var(--color-text-secondary);">hr ×</span>
+            <input type="number" id="crewSalaryDailyRate" placeholder="0.00" min="0" step="0.50">
+            <span style="color:var(--color-text-secondary);">/hr =</span>
+            <span id="crewSalaryDailyTotal" style="font-weight:600; color:var(--color-text-primary);">$0.00/day</span>
+          </div>
+          <div style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">
+            Paid every day in the pay week (Sun–Sat) automatically. Weekly gross = 7 × daily total. No clock-in required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="crewBonusStart">Bonus Start Date</label>
+          <input type="date" id="crewBonusStart">
+          <div style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">
+            Year-end bonus accrues +$1/day from this date (capped at $365 / 365 days). Leave blank to disable.
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:500;">
+            <input type="checkbox" id="crewIsDriver" style="width:18px; height:18px; accent-color:var(--color-primary); cursor:pointer;">
+            <span>Driver</span>
+          </label>
+          <div style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">
+            Adds +1 hour to their timesheet on any day they work more than 30 minutes (paid at their hourly rate). Multiple shifts in a day still earn one bonus.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" id="saveBtn" onclick="saveCrew()">Save Crew Lead</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Materials / Gear Modal -->
+  <div class="modal-overlay" id="materialsModal">
+    <div class="modal" style="max-width: 640px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Materials &amp; gear — <span id="materialsCrewName"></span></h2>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="materialsCrewId" value="">
+        <!-- Free-text category suggestions (datalist, not enforced). Tuned to
+             MannyKnows trades: remodeling, painting, flooring, repairs.
+             Rows saved under the old SL Painting categories still display. -->
+        <datalist id="materialCategories">
+          <option value="Apparel"></option>
+          <option value="Tools"></option>
+          <option value="Paint Supplies"></option>
+          <option value="Hardware"></option>
+          <option value="Supplies"></option>
+          <option value="Safety"></option>
+        </datalist>
+
+        <!-- Add row -->
+        <div style="display:grid; grid-template-columns: 1.4fr 1fr 70px 150px; gap:8px; align-items:end;">
+          <div class="form-group" style="margin:0;">
+            <label for="matItem">Item *</label>
+            <input type="text" id="matItem" placeholder="e.g. Work T-shirt (L)">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label for="matCategory">Category</label>
+            <input type="text" id="matCategory" list="materialCategories" placeholder="Apparel">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label for="matQty">Qty</label>
+            <input type="number" id="matQty" value="1" min="0" step="1">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label for="matDate">Date given</label>
+            <input type="date" id="matDate">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label for="matNote">Note (optional)</label>
+          <input type="text" id="matNote" placeholder="e.g. replaced worn brush">
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+          <button class="btn-save" id="matAddBtn" onclick="addMaterial()">+ Add item</button>
+        </div>
+
+        <!-- List -->
+        <div style="margin-top:18px; border-top:1px solid var(--glass-border); padding-top:14px;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary); margin-bottom:8px;">Issued so far</div>
+          <div id="materialsList" style="display:flex; flex-direction:column; gap:6px; max-height:320px; overflow-y:auto;">
+            <div style="font-size:13px; color:var(--color-text-secondary); font-style:italic;">Loading…</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeMaterialsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Shift Modal -->
+  <div class="modal-overlay" id="addShiftModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Shift</h2>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="shiftCrewId">Crew Member *</label>
+          <select id="shiftCrewId" class="form-select">
+            <option value="">Select crew member...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="shiftDate">Work Date *</label>
+          <input type="date" id="shiftDate">
+        </div>
+        <div class="form-group">
+          <label for="shiftClockIn">Clock In *</label>
+          <select id="shiftClockIn" class="form-select">
+            <option value="">Select time...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="shiftClockOut">Clock Out (leave blank if still working)</label>
+          <select id="shiftClockOut" class="form-select">
+            <option value="">Still working / not set</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="shiftNotes">Notes</label>
+          <input type="text" id="shiftNotes" placeholder="Optional note">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeAddShiftModal()">Cancel</button>
+        <button class="btn-save" id="saveShiftBtn" onclick="saveShift()">Add Shift</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Shift Modal -->
+  <div class="modal-overlay" id="editShiftModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Shift</h2>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editShiftId">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="editShiftDate">
+        </div>
+        <div class="form-group">
+          <label>Clock In</label>
+          <select id="editShiftClockIn" class="form-select">
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Clock Out</label>
+          <select id="editShiftClockOut" class="form-select">
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" id="editShiftNotes" placeholder="Optional">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEditShiftModal()">Cancel</button>
+        <button class="btn-save" id="saveEditShiftBtn" onclick="saveEditShift()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Preview Modal -->
+  <div class="modal-overlay" id="receiptModal" onclick="if(event.target===this) closeReceiptModal()">
+    <div style="position:relative; max-width:90vw; max-height:90vh; display:flex; align-items:center; justify-content:center;">
+      <button onclick="closeReceiptModal()" style="position:absolute; top:-12px; right:-12px; width:32px; height:32px; border-radius:50%; background:var(--color-error); color:white; border:none; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;">&times;</button>
+      <img id="receiptPreviewImg" src="" alt="Receipt" style="max-width:90vw; max-height:85vh; border-radius:var(--radius-lg); object-fit:contain;">
+    </div>
+  </div>
+
+  <!-- Add/Edit Expense Modal -->
+  <div class="modal-overlay" id="addExpenseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="expModalTitle">Add Expense</h2>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="expEditId" value="">
+        <div class="form-group">
+          <label for="expCrewId">Crew Member *</label>
+          <select id="expCrewId" class="form-select">
+            <option value="">Select crew member...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expDate">Date *</label>
+          <input type="date" id="expDate">
+        </div>
+        <div class="form-group">
+          <label for="expAmount">Amount ($) *</label>
+          <input type="number" id="expAmount" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+        </div>
+        <div class="form-group">
+          <label>Type *</label>
+          <div id="expPaidWith" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <button type="button" data-value="crew" class="expPaidWithOpt" style="padding:12px; background:linear-gradient(135deg, var(--color-primary), #6366f1); color:#fff; border:1px solid var(--color-primary); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">Reimbursable</button>
+            <button type="button" data-value="company_card" class="expPaidWithOpt" style="padding:12px; background:rgba(255,255,255,0.05); color:var(--color-text-primary); border:1px solid var(--glass-border); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">Company card</button>
+            <button type="button" data-value="deduction" class="expPaidWithOpt" style="padding:12px; background:rgba(255,255,255,0.05); color:var(--color-text-primary); border:1px solid var(--glass-border); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">Deduct from pay</button>
+          </div>
+          <div id="expPaidWithHint" style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">Crew paid out of pocket — adds to their paycheck.</div>
+          <input type="hidden" id="expPaidWithValue" value="crew">
+        </div>
+        <div class="form-group">
+          <label for="expDescription">Description *</label>
+          <input type="text" id="expDescription" placeholder="Gas, materials, supplies, etc.">
+        </div>
+        <div class="form-group" id="expReceiptGroup">
+          <label for="expReceipt"><span id="expReceiptLabelText">Receipt Photo *</span></label>
+          <div style="border:2px dashed var(--glass-border); border-radius:var(--radius-md); padding:20px; text-align:center; cursor:pointer; transition:border-color 0.2s;" onclick="document.getElementById('expReceipt').click()" onmouseover="this.style.borderColor='var(--color-primary)'" onmouseout="this.style.borderColor='var(--glass-border)'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-text-secondary); margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div style="font-size:13px; color:var(--color-text-secondary);" id="expReceiptLabel">Click to upload receipt</div>
+            <input type="file" id="expReceipt" accept="image/*,application/pdf,.pdf" style="display:none;" onchange="if(this.files[0]) document.getElementById('expReceiptLabel').textContent = this.files[0].name;">
+          </div>
+          <div id="expCurrentReceipt" style="display:none; margin-top:8px; font-size:12px; color:var(--color-text-secondary);">
+            Current receipt: <a href="#" target="_blank" id="expCurrentReceiptLink" style="color:var(--color-primary);">View</a>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeExpenseModal()">Cancel</button>
+        <button class="btn-save" id="saveExpenseBtn" onclick="saveExpense()">Add Expense</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const noResults = document.getElementById('noResults');
+    const crewCards = document.querySelectorAll('.crew-card');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      crewCards.forEach(card => {
+        const searchData = card.getAttribute('data-search') || '';
+        const matches = query === '' || searchData.includes(query);
+        card.classList.toggle('hidden', !matches);
+        if (matches) visibleCount++;
+      });
+
+      noResults.classList.toggle('visible', visibleCount === 0 && query !== '');
+    });
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} visible`;
+      setTimeout(() => toast.classList.remove('visible'), 4000);
+    }
+
+    // Confirm modal
+    let pendingDeleteId = null;
+    let pendingDeleteName = null;
+
+    function showCrewDeleteModal(id, name) {
+      pendingDeleteId = id;
+      pendingDeleteName = name;
+      document.getElementById('confirmTitle').textContent = `Remove ${name}?`;
+      document.getElementById('confirmText').textContent = 'This crew lead will be archived and removed from the list. Their time logs are kept, and you can restore them anytime from the Archived section below.';
+      document.getElementById('crewDeleteModal').classList.add('active');
+    }
+
+    function closeCrewDeleteModal() {
+      document.getElementById('crewDeleteModal').classList.remove('active');
+      pendingDeleteId = null;
+      pendingDeleteName = null;
+    }
+
+    document.getElementById('confirmBtn').addEventListener('click', async function() {
+      if (!pendingDeleteId) return;
+
+      // Save values before closing modal (closeCrewDeleteModal resets them)
+      const idToDelete = pendingDeleteId;
+      const nameToDelete = pendingDeleteName;
+
+      closeCrewDeleteModal();
+
+      try {
+        const response = await fetch(`/api/crew/?crew_id=${idToDelete}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast(`${nameToDelete} archived`, 'success');
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          showToast(data.error || 'Failed to remove crew lead', 'error');
+        }
+      } catch (err) {
+        showToast('Failed to remove. Please try again.', 'error');
+      }
+    });
+
+    function toggleArchived() {
+      const btn = document.querySelector('.archived-toggle');
+      const list = document.getElementById('archivedList');
+      if (!btn || !list) return;
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      list.hidden = open;
+    }
+
+    async function restoreCrew(id, name) {
+      try {
+        const response = await fetch('/api/crew-leads/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ id, active: true })
+        });
+        const data = await response.json();
+        if (data.success) {
+          showToast(`${name} restored`, 'success');
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          showToast(data.error || 'Failed to restore crew lead', 'error');
+        }
+      } catch (err) {
+        showToast('Failed to restore. Please try again.', 'error');
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = 'Add Crew Lead';
+      document.getElementById('crewId').value = '';
+      document.getElementById('crewName').value = '';
+      document.getElementById('crewEmail').value = '';
+      document.getElementById('crewPhone').value = '';
+      document.getElementById('crewModal').classList.add('active');
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      document.getElementById('panelMembers').classList.toggle('active', tab === 'members');
+      document.getElementById('panelTimesheets').classList.toggle('active', tab === 'timesheets');
+      document.getElementById('tabMembers').classList.toggle('active', tab === 'members');
+      document.getElementById('tabTimesheets').classList.toggle('active', tab === 'timesheets');
+      document.getElementById('addCrewBtn').style.display = tab === 'members' ? '' : 'none';
+      if (tab === 'timesheets') initTimesheets();
+    }
+    window.switchTab = switchTab;
+
+    // Show/hide hourly vs salaried fields based on the pay-model select.
+    function syncPayModelFields() {
+      const model = document.getElementById('crewPayModel').value;
+      const hourly = document.getElementById('hourlyFields');
+      const salaried = document.getElementById('salariedFields');
+      if (model === 'salaried_daily') {
+        hourly.style.display = 'none';
+        salaried.style.display = '';
+      } else {
+        hourly.style.display = '';
+        salaried.style.display = 'none';
+      }
+      updateSalaryDailyTotal();
+    }
+    window.syncPayModelFields = syncPayModelFields;
+
+    function updateSalaryDailyTotal() {
+      const h = parseFloat(document.getElementById('crewSalaryDailyHours').value) || 0;
+      const r = parseFloat(document.getElementById('crewSalaryDailyRate').value) || 0;
+      document.getElementById('crewSalaryDailyTotal').textContent = `$${(h * r).toFixed(2)}/day`;
+    }
+    document.getElementById('crewSalaryDailyHours')?.addEventListener('input', updateSalaryDailyTotal);
+    document.getElementById('crewSalaryDailyRate')?.addEventListener('input', updateSalaryDailyTotal);
+
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = 'Add Crew Member';
+      document.getElementById('crewId').value = '';
+      document.getElementById('crewName').value = '';
+      document.getElementById('crewEmail').value = '';
+      document.getElementById('crewPhone').value = '';
+      document.getElementById('crewPayModel').value = 'hourly';
+      document.getElementById('crewRate').value = '';
+      document.getElementById('crewSalaryDailyHours').value = '8';
+      document.getElementById('crewSalaryDailyRate').value = '';
+      document.getElementById('crewBonusStart').value = '';
+      document.getElementById('crewIsDriver').checked = false;
+      syncPayModelFields();
+      document.getElementById('crewModal').classList.add('active');
+    }
+
+    function openEditModal(id, name, email, phone, rate, bonusStart, isDriver, payModel, salaryDailyHours, salaryDailyRate) {
+      document.getElementById('modalTitle').textContent = 'Edit Crew Member';
+      document.getElementById('crewId').value = id;
+      document.getElementById('crewName').value = name;
+      document.getElementById('crewEmail').value = email || '';
+      document.getElementById('crewPhone').value = phone;
+      document.getElementById('crewPayModel').value = payModel || 'hourly';
+      document.getElementById('crewRate').value = rate || '';
+      document.getElementById('crewSalaryDailyHours').value = salaryDailyHours || '8';
+      document.getElementById('crewSalaryDailyRate').value = salaryDailyRate || '';
+      document.getElementById('crewBonusStart').value = bonusStart || '';
+      document.getElementById('crewIsDriver').checked = !!isDriver;
+      syncPayModelFields();
+      document.getElementById('crewModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('crewModal').classList.remove('active');
+    }
+
+    // ===== Materials / gear issuance log =====
+    function escapeHtmlMat(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function todayIso() {
+      // Local date as YYYY-MM-DD (avoids UTC off-by-one on the date input).
+      const d = new Date();
+      const off = d.getTimezoneOffset();
+      const local = new Date(d.getTime() - off * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+    function openMaterialsModal(crewId, crewName) {
+      document.getElementById('materialsCrewId').value = String(crewId);
+      document.getElementById('materialsCrewName').textContent = crewName || '';
+      document.getElementById('matItem').value = '';
+      document.getElementById('matCategory').value = '';
+      document.getElementById('matQty').value = '1';
+      document.getElementById('matDate').value = todayIso();
+      document.getElementById('matNote').value = '';
+      document.getElementById('materialsModal').classList.add('active');
+      loadMaterials(crewId);
+    }
+    window.openMaterialsModal = openMaterialsModal;
+
+    function closeMaterialsModal() {
+      document.getElementById('materialsModal').classList.remove('active');
+    }
+    window.closeMaterialsModal = closeMaterialsModal;
+
+    function fmtMatDate(s) {
+      if (!s) return '—';
+      const d = new Date(String(s) + 'T00:00:00');
+      return isNaN(d.getTime()) ? s : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    async function loadMaterials(crewId) {
+      const list = document.getElementById('materialsList');
+      list.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary); font-style:italic;">Loading…</div>';
+      try {
+        const res = await fetch(`/api/admin/crew/materials/?crew_lead_id=${crewId}`, { credentials: 'include' });
+        const data = await res.json();
+        if (!data.success) { list.innerHTML = '<div style="font-size:13px; color:#fca5a5;">Failed to load.</div>'; return; }
+        const items = data.materials || [];
+        if (items.length === 0) {
+          list.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary); font-style:italic;">Nothing issued yet.</div>';
+          return;
+        }
+        list.innerHTML = items.map(m => `
+          <div style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:8px;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:600; color:var(--color-text-primary);">
+                ${m.quantity && Number(m.quantity) !== 1 ? `<span style="color:var(--color-text-secondary);">${Number(m.quantity)}×</span> ` : ''}${escapeHtmlMat(m.item)}
+                ${m.category ? `<span style="margin-left:6px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; padding:1px 6px; border-radius:999px; background:rgba(99,102,241,0.18); color:#a5b4fc;">${escapeHtmlMat(m.category)}</span>` : ''}
+              </div>
+              <div style="font-size:12px; color:var(--color-text-secondary); margin-top:2px;">
+                ${fmtMatDate(m.date_given)}${m.note ? ' · ' + escapeHtmlMat(m.note) : ''}
+              </div>
+            </div>
+            <button onclick="deleteMaterial(${m.id})" title="Remove" style="background:transparent; border:1px solid rgba(239,68,68,0.4); color:#fca5a5; width:28px; height:28px; border-radius:6px; cursor:pointer; flex-shrink:0;">×</button>
+          </div>
+        `).join('');
+      } catch {
+        list.innerHTML = '<div style="font-size:13px; color:#fca5a5;">Failed to load.</div>';
+      }
+    }
+    window.loadMaterials = loadMaterials;
+
+    async function addMaterial() {
+      const crewId = Number(document.getElementById('materialsCrewId').value);
+      const item = document.getElementById('matItem').value.trim();
+      if (!item) { showToast('Enter an item name', 'error'); return; }
+      const btn = document.getElementById('matAddBtn');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/crew/materials/', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            crew_lead_id: crewId,
+            item,
+            category: document.getElementById('matCategory').value.trim(),
+            quantity: Number(document.getElementById('matQty').value) || 1,
+            date_given: document.getElementById('matDate').value || null,
+            note: document.getElementById('matNote').value.trim(),
+          }),
+        });
+        const data = await res.json();
+        if (!data.success) { showToast(data.error || 'Failed to add', 'error'); btn.disabled = false; return; }
+        // Reset the item/qty/note for fast repeat entry; keep category + date.
+        document.getElementById('matItem').value = '';
+        document.getElementById('matQty').value = '1';
+        document.getElementById('matNote').value = '';
+        document.getElementById('matItem').focus();
+        showToast('Item added');
+        loadMaterials(crewId);
+      } catch {
+        showToast('Failed to add', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    window.addMaterial = addMaterial;
+
+    async function deleteMaterial(id) {
+      try {
+        const res = await fetch(`/api/admin/crew/materials/?id=${id}`, { method: 'DELETE', credentials: 'include' });
+        const data = await res.json();
+        if (!data.success) { showToast(data.error || 'Failed to remove', 'error'); return; }
+        loadMaterials(Number(document.getElementById('materialsCrewId').value));
+      } catch {
+        showToast('Failed to remove', 'error');
+      }
+    }
+    window.deleteMaterial = deleteMaterial;
+
+    async function saveCrew() {
+      const id = document.getElementById('crewId').value;
+      const name = document.getElementById('crewName').value.trim();
+      const email = document.getElementById('crewEmail').value.trim();
+      const phone = document.getElementById('crewPhone').value.trim();
+      const payModel = document.getElementById('crewPayModel').value;
+      const rate = parseFloat(document.getElementById('crewRate').value) || 0;
+      const salaryDailyHours = parseFloat(document.getElementById('crewSalaryDailyHours').value) || 8;
+      const salaryDailyRate = parseFloat(document.getElementById('crewSalaryDailyRate').value) || 0;
+      const bonusStart = document.getElementById('crewBonusStart').value.trim();
+      const isDriver = document.getElementById('crewIsDriver').checked;
+
+      if (!name || !phone) {
+        showToast('Name and phone are required', 'error');
+        return;
+      }
+      if (payModel === 'salaried_daily' && (salaryDailyHours <= 0 || salaryDailyRate <= 0)) {
+        showToast('Salaried crew need a daily-hours and daily-rate value', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      try {
+        const method = id ? 'PATCH' : 'POST';
+        const base = {
+          name, email: email || null, phone,
+          hourly_rate: rate,
+          pay_model: payModel,
+          salary_daily_hours: salaryDailyHours,
+          salary_daily_rate: salaryDailyRate,
+          bonus_start_date: bonusStart || null,
+          is_driver: isDriver,
+        };
+        const payload = id ? { id: parseInt(id), ...base } : base;
+
+        const response = await fetch('/api/crew-leads/', {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast(id ? 'Crew member updated' : 'Crew member added', 'success');
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          showToast(data.error || 'Failed to save', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Save';
+        }
+      } catch {
+        showToast('Failed to save. Please try again.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Save';
+      }
+    }
+
+    // =====================================================
+    // TIMESHEETS
+    // =====================================================
+    let currentWeekStart = null;
+
+    function getSundayOf(date) {
+      const d = new Date(date + 'T12:00:00Z'); // noon UTC avoids timezone shift
+      const day = d.getUTCDay(); // 0=Sun, 1=Mon, ... 6=Sat
+      // Pay week starts Sunday, runs Sun → Sat (7 days)
+      d.setUTCDate(d.getUTCDate() - day);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function addDays(dateStr, days) {
+      const d = new Date(dateStr + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() + days);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function fmtDate(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00Z');
+      return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    }
+
+    function fmtTime(dtStr) {
+      if (!dtStr) return '—';
+      // Normalize "T8:00" → "T08:00"
+      let s = dtStr.replace(/T(\d):/, 'T0$1:');
+      // Parse as ET (no Z suffix — treat as local time)
+      s = s.replace('Z', '');
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return dtStr;
+      return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' });
+    }
+
+    function fmtHours(mins) {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${h}h ${m.toString().padStart(2,'0')}m`;
+    }
+
+    function initTimesheets() {
+      if (currentWeekStart) return; // already initialized
+      const today = new Date().toISOString().slice(0, 10);
+      currentWeekStart = getSundayOf(today);
+      document.getElementById('weekPicker').value = currentWeekStart;
+      updateWeekLabel();
+      // Auto-load when date picker changes
+      document.getElementById('weekPicker').addEventListener('change', () => loadTimesheets());
+      loadTimesheets();
+    }
+
+    function updateWeekLabel() {
+      const end = addDays(currentWeekStart, 6);
+      document.getElementById('weekRangeLabel').textContent = `${fmtDate(currentWeekStart)} – ${fmtDate(end)}`;
+    }
+
+    function prevWeek() {
+      currentWeekStart = addDays(currentWeekStart, -7);
+      document.getElementById('weekPicker').value = currentWeekStart;
+      updateWeekLabel();
+      loadTimesheets();
+    }
+    window.prevWeek = prevWeek;
+
+    function nextWeek() {
+      currentWeekStart = addDays(currentWeekStart, 7);
+      document.getElementById('weekPicker').value = currentWeekStart;
+      updateWeekLabel();
+      loadTimesheets();
+    }
+    window.nextWeek = nextWeek;
+
+    async function loadTimesheets() {
+      const picker = document.getElementById('weekPicker').value;
+      if (picker) currentWeekStart = getSundayOf(picker);
+      updateWeekLabel();
+
+      const summaryBody = document.getElementById('summaryBody');
+      const logsBody = document.getElementById('logsBody');
+      const expensesBody = document.getElementById('expensesBody');
+      const expensesTotal = document.getElementById('expensesTotal');
+      const companyExpensesBody = document.getElementById('companyExpensesBody');
+      const companyExpensesTotal = document.getElementById('companyExpensesTotal');
+      const deductionsBody = document.getElementById('deductionsBody');
+      const deductionsTotal = document.getElementById('deductionsTotal');
+      summaryBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:16px;color:var(--color-text-secondary);">Loading...</td></tr>';
+      logsBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--color-text-secondary);">Loading...</td></tr>';
+      expensesBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--color-text-secondary);">Loading...</td></tr>';
+      companyExpensesBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--color-text-secondary);">Loading...</td></tr>';
+      deductionsBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--color-text-secondary);">Loading...</td></tr>';
+
+      const weekEnd = addDays(currentWeekStart, 6);
+
+      try {
+        // Fetch time logs + expenses in parallel
+        const [timeRes, expRes] = await Promise.all([
+          fetch(`/api/admin/crew/timelogs/?week_start=${currentWeekStart}`, { credentials: 'include' }),
+          fetch(`/api/admin/crew/expenses/?week_start=${currentWeekStart}&week_end=${weekEnd}`, { credentials: 'include' }),
+        ]);
+        const data = await timeRes.json();
+        const expData = await expRes.json();
+        if (!data.success) { showToast(data.error || 'Failed to load', 'error'); return; }
+
+        const allExpenses = (expData.success ? expData.expenses : []) || [];
+        // Three buckets:
+        //   reimbursable (paid_with='crew'): adds to paycheck
+        //   company-card: tracked separately, no pay impact
+        //   deduction:    subtracted from paycheck (admin paid for something on crew's behalf)
+        const expenses = allExpenses.filter(e => e.paid_with !== 'company_card' && e.paid_with !== 'deduction');
+        const companyExpenses = allExpenses.filter(e => e.paid_with === 'company_card');
+        const deductions = allExpenses.filter(e => e.paid_with === 'deduction');
+
+        const expenseByCrew = {};
+        let totalExpenses = 0;
+        for (const exp of expenses) {
+          expenseByCrew[exp.crew_lead_id] = (expenseByCrew[exp.crew_lead_id] || 0) + exp.amount;
+          totalExpenses += exp.amount;
+        }
+        const deductionByCrew = {};
+        let totalDeductions = 0;
+        for (const ded of deductions) {
+          deductionByCrew[ded.crew_lead_id] = (deductionByCrew[ded.crew_lead_id] || 0) + ded.amount;
+          totalDeductions += ded.amount;
+        }
+        let totalCompanyExpenses = 0;
+        for (const exp of companyExpenses) totalCompanyExpenses += exp.amount;
+
+        // Summary table
+        if (!data.summary || data.summary.length === 0) {
+          summaryBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--color-text-secondary);">No time tracked this week</td></tr>';
+        } else {
+          summaryBody.innerHTML = data.summary.map(s => {
+            const isSalaried = s.pay_model === 'salaried_daily';
+            const rawHours = isSalaried ? '—' : `${(s.raw_minutes / 60).toFixed(1)}h`;
+            // Paid hours = payable_minutes (for salaried = 7 × daily_hours × 60)
+            const paidMins = s.payable_minutes ?? s.total_minutes;
+            const extraMins = s.extra_minutes ?? 0;
+            const driverMins = s.driver_bonus_minutes || 0;
+            const driverDays = s.driver_bonus_days || 0;
+            const paidHours = fmtHours(paidMins);
+            const driverNote = driverMins > 0
+              ? `<div style="color:#a5b4fc; font-size:11px; margin-top:2px;">incl +${driverMins / 60}h driver (${driverDays}d)</div>`
+              : '';
+            const extraNote = extraMins > 0
+              ? `<div style="color:var(--color-text-secondary); font-size:11px; margin-top:2px;">+${extraMins}m unpaid</div>`
+              : '';
+            const salariedNote = isSalaried
+              ? `<div style="color:#a5b4fc; font-size:11px; margin-top:2px;">salaried · ${s.salary_daily_hours}h × 7 days</div>`
+              : '';
+            const rateCell = isSalaried
+              ? `$${Number(s.salary_daily_rate).toFixed(2)}/hr <span style="color:var(--color-text-secondary); font-size:11px;">(salaried)</span>`
+              : `$${Number(s.hourly_rate).toFixed(2)}/hr`;
+            const isClockedIn = data.logs.some(l => l.crew_lead_id === s.crew_lead_id && !l.clock_out);
+            const crewExpenses = expenseByCrew[s.crew_lead_id] || 0;
+            const crewDeductions = deductionByCrew[s.crew_lead_id] || 0;
+            const totalPayout = s.total_pay + crewExpenses - crewDeductions;
+            const dedCell = crewDeductions > 0
+              ? `<span style="color:#fca5a5;">−$${crewDeductions.toFixed(2)}</span>`
+              : '<span style="color:var(--color-text-secondary);">—</span>';
+            return `<tr>
+              <td>${isClockedIn ? '<span class="clocked-in-dot"></span>' : ''}${esc(s.name)}${isSalaried ? ' <span style="font-size:10px; padding:1px 6px; border-radius:999px; background:rgba(99,102,241,0.18); color:#a5b4fc; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Salaried</span>' : ''}</td>
+              <td style="color:var(--color-text-secondary);">${rawHours}</td>
+              <td><strong>${paidHours}</strong>${salariedNote}${driverNote}${extraNote}</td>
+              <td>${rateCell}</td>
+              <td>$${Number(s.total_pay).toFixed(2)}</td>
+              <td>${crewExpenses > 0 ? '$' + crewExpenses.toFixed(2) : '<span style="color:var(--color-text-secondary);">—</span>'}</td>
+              <td>${dedCell}</td>
+              <td class="pay-amount">$${totalPayout.toFixed(2)}</td>
+              <td style="color:var(--color-text-secondary);font-size:12px;">Pay ${fmtDate(addDays(currentWeekStart, 11))}</td>
+            </tr>`;
+          }).join('');
+        }
+
+        // Render expenses table
+        if (expenses.length === 0) {
+          expensesBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--color-text-secondary);">No expenses this week</td></tr>';
+          expensesTotal.textContent = '';
+        } else {
+          expensesTotal.textContent = `Total: $${totalExpenses.toFixed(2)}`;
+          const isMob = window.innerWidth <= 768;
+          expensesBody.innerHTML = expenses.map(e => {
+            const nameDisp = isMob ? esc(e.crew_name).split(' ').map(w => w[0]).join('') : esc(e.crew_name);
+            const receiptIcon = e.receipt_url
+              ? `<button onclick="showReceipt('${esc(e.receipt_url)}')" title="View receipt" style="background:none; border:none; color:var(--color-primary); cursor:pointer; padding:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>`
+              : '<span style="color:var(--color-text-secondary); opacity:0.3;">—</span>';
+            return `<tr>
+              <td title="${esc(e.crew_name)}">${nameDisp}</td>
+              <td>${fmtDate(e.work_date)}</td>
+              <td style="font-weight:600;">$${Number(e.amount).toFixed(2)}</td>
+              <td>${esc(e.description || '')}</td>
+              <td style="text-align:center;">${receiptIcon}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn-edit-log" onclick='editExpense(${JSON.stringify(e).replace(/'/g, "\\u0027")})'>Edit</button>
+                <button class="btn-delete-log" style="margin-left:4px;" onclick="deleteExpense(${e.id})">Del</button>
+              </td>
+            </tr>`;
+          }).join('');
+        }
+
+        // Company Expenses (paid with company card — not added to payout)
+        if (companyExpenses.length === 0) {
+          companyExpensesBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--color-text-secondary);">No company-card expenses this week</td></tr>';
+          companyExpensesTotal.textContent = '';
+        } else {
+          companyExpensesTotal.textContent = `Total: $${totalCompanyExpenses.toFixed(2)}`;
+          const isMobC = window.innerWidth <= 768;
+          companyExpensesBody.innerHTML = companyExpenses.map(e => {
+            const nameDisp = isMobC ? esc(e.crew_name).split(' ').map(w => w[0]).join('') : esc(e.crew_name);
+            const receiptIcon = e.receipt_url
+              ? `<button onclick="showReceipt('${esc(e.receipt_url)}')" title="View receipt" style="background:none; border:none; color:var(--color-primary); cursor:pointer; padding:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>`
+              : '<span style="color:var(--color-text-secondary); opacity:0.3;">—</span>';
+            return `<tr>
+              <td title="${esc(e.crew_name)}">${nameDisp}</td>
+              <td>${fmtDate(e.work_date)}</td>
+              <td style="font-weight:600;">$${Number(e.amount).toFixed(2)}</td>
+              <td>${esc(e.description || '')}</td>
+              <td style="text-align:center;">${receiptIcon}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn-edit-log" onclick='editExpense(${JSON.stringify(e).replace(/'/g, "\\u0027")})'>Edit</button>
+                <button class="btn-delete-log" style="margin-left:4px;" onclick="deleteExpense(${e.id})">Del</button>
+              </td>
+            </tr>`;
+          }).join('');
+        }
+
+        // Deductions (admin paid for something on crew's behalf — subtracted from paycheck)
+        if (deductions.length === 0) {
+          deductionsBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--color-text-secondary);">No deductions this week</td></tr>';
+          deductionsTotal.textContent = '';
+        } else {
+          deductionsTotal.textContent = `Total: −$${totalDeductions.toFixed(2)}`;
+          const isMobD = window.innerWidth <= 768;
+          deductionsBody.innerHTML = deductions.map(e => {
+            const nameDisp = isMobD ? esc(e.crew_name).split(' ').map(w => w[0]).join('') : esc(e.crew_name);
+            const receiptIcon = e.receipt_url
+              ? `<button onclick="showReceipt('${esc(e.receipt_url)}')" title="View receipt" style="background:none; border:none; color:var(--color-primary); cursor:pointer; padding:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>`
+              : '<span style="color:var(--color-text-secondary); opacity:0.3;">—</span>';
+            return `<tr>
+              <td title="${esc(e.crew_name)}">${nameDisp}</td>
+              <td>${fmtDate(e.work_date)}</td>
+              <td style="font-weight:600; color:#fca5a5;">−$${Number(e.amount).toFixed(2)}</td>
+              <td>${esc(e.description || '')}</td>
+              <td style="text-align:center;">${receiptIcon}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn-edit-log" onclick='editExpense(${JSON.stringify(e).replace(/'/g, "\\u0027")})'>Edit</button>
+                <button class="btn-delete-log" style="margin-left:4px;" onclick="deleteExpense(${e.id})">Del</button>
+              </td>
+            </tr>`;
+          }).join('');
+        }
+
+        // Detailed logs
+        if (!data.logs || data.logs.length === 0) {
+          logsBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--color-text-secondary);">No shifts logged this week</td></tr>';
+          document.getElementById('logsCount').textContent = '';
+        } else {
+          document.getElementById('logsCount').textContent = `${data.logs.length} shift${data.logs.length !== 1 ? 's' : ''}`;
+          const isMobile = window.innerWidth <= 768;
+          logsBody.innerHTML = data.logs.map(l => {
+            const isOpen = !l.clock_out;
+            const rawMins = isOpen ? null : Math.floor((new Date(l.clock_out) - new Date(l.clock_in)) / 60000);
+            // Client-side mirror of the auto-lunch rule (240 min → −30). Keep
+            // in sync with AUTO_LUNCH_* in src/lib/crewPay.ts (pending Manny's review).
+            const mins = rawMins !== null && rawMins >= 240 ? rawMins - 30 : rawMins;
+            // Use initials on mobile
+            const nameDisplay = isMobile ? esc(l.crew_name).split(' ').map(w => w[0]).join('') : esc(l.crew_name);
+            // Auto-closed shifts (crew forgot to clock out → capped at 17h) get a
+            // red note so they're easy to spot, plus a "Compare day" button to
+            // line up everyone who worked that date and fix the clock-out.
+            const autoClosed = (l.notes || '').includes('[auto-closed');
+            const noteHtml = esc(l.notes || '').replace(/(\[auto-closed[^\]]*\])/g, '<span style="color:#f87171; font-weight:700;">$1</span>');
+            return `<tr data-date="${esc(l.work_date)}"${autoClosed ? ' class="log-autoclosed"' : ''}>
+              <td title="${esc(l.crew_name)}">${nameDisplay}</td>
+              <td>${fmtDate(l.work_date)}</td>
+              <td>${fmtTime(l.clock_in)}</td>
+              <td class="${isOpen ? 'log-open' : ''}">${isOpen ? 'Active' : fmtTime(l.clock_out)}</td>
+              <td>${mins !== null ? fmtHours(mins) : '—'}</td>
+              <td style="font-size:12px; color:var(--color-text-secondary);">${noteHtml}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn-edit-log" onclick="editLog(${l.id}, '${l.clock_in}', '${l.clock_out || ''}', '${esc(l.notes||'')}')">Edit</button>
+                <button class="btn-delete-log" style="margin-left:4px;" onclick="deleteLog(${l.id})">Del</button>
+                ${autoClosed ? `<button class="btn-compare-day" style="margin-left:4px; padding:6px 10px; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:var(--radius-md); color:#fcd34d; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;" onclick="compareDay('${esc(l.work_date)}')" title="Show everyone who worked this day so you can match the clock-out">Compare day</button>` : ''}
+              </td>
+            </tr>`;
+          }).join('');
+        }
+      } catch { showToast('Failed to load timesheets', 'error'); }
+    }
+    window.loadTimesheets = loadTimesheets;
+
+    function esc(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Edit shift modal
+    function editLog(id, clockIn, clockOut, notes) {
+      document.getElementById('editShiftId').value = id;
+      document.getElementById('editShiftNotes').value = notes || '';
+
+      // Parse date and times from the datetime strings
+      const inStr = (clockIn || '').replace('Z','');
+      const outStr = (clockOut || '').replace('Z','');
+      const date = inStr.slice(0, 10);
+      const inTime = inStr.includes('T') ? inStr.split('T')[1].slice(0, 5) : '';
+      const outTime = outStr.includes('T') ? outStr.split('T')[1].slice(0, 5) : '';
+
+      document.getElementById('editShiftDate').value = date;
+
+      // Populate time dropdowns
+      populateTimeSelect(document.getElementById('editShiftClockIn'), false);
+      populateTimeSelect(document.getElementById('editShiftClockOut'), true);
+
+      // Set selected values
+      document.getElementById('editShiftClockIn').value = inTime;
+      document.getElementById('editShiftClockOut').value = outTime;
+
+      document.getElementById('editShiftModal').classList.add('active');
+    }
+    window.editLog = editLog;
+
+    function closeEditShiftModal() {
+      document.getElementById('editShiftModal').classList.remove('active');
+    }
+    window.closeEditShiftModal = closeEditShiftModal;
+
+    async function saveEditShift() {
+      const id = document.getElementById('editShiftId').value;
+      const date = document.getElementById('editShiftDate').value;
+      const clockIn = document.getElementById('editShiftClockIn').value;
+      const clockOut = document.getElementById('editShiftClockOut').value;
+      const notes = document.getElementById('editShiftNotes').value.trim();
+
+      if (!date || !clockIn) { showToast('Date and clock-in are required', 'error'); return; }
+
+      const btn = document.getElementById('saveEditShiftBtn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const clockInDT = `${date}T${clockIn}:00`;
+      const clockOutDT = clockOut ? `${date}T${clockOut}:00` : null;
+
+      try {
+        const res = await fetch('/api/admin/crew/timelogs/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ id: parseInt(id), clock_in: clockInDT, clock_out: clockOutDT, work_date: date, notes: notes || null })
+        });
+        const data = await res.json();
+        if (data.success) { closeEditShiftModal(); showToast('Shift updated'); loadTimesheets(); }
+        else showToast(data.error || 'Failed to update', 'error');
+      } catch { showToast('Error updating shift', 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Save Changes'; }
+    }
+    window.saveEditShift = saveEditShift;
+
+    function deleteLog(id) {
+      window.showConfirmModal({
+        title: 'Delete this shift log?',
+        text: 'This cannot be undone.',
+        confirmText: 'Delete log',
+        type: 'danger',
+        onConfirm: async () => {
+          try {
+            const res = await fetch(`/api/admin/crew/timelogs/?id=${id}`, { method: 'DELETE', credentials: 'include' });
+            const data = await res.json();
+            if (data.success) { showToast('Log deleted'); loadTimesheets(); }
+            else showToast(data.error || 'Failed', 'error');
+          } catch { showToast('Error', 'error'); }
+        },
+      });
+    }
+    window.deleteLog = deleteLog;
+
+    // Compare day: filter the Shift Detail table to a single date so every crew
+    // member who worked that day lines up — used to fix an auto-closed shift's
+    // clock-out to match when co-workers signed off. Toggles off on second click.
+    let _dayFilter = null;
+    function compareDay(date) {
+      const rows = document.querySelectorAll('#logsBody tr[data-date]');
+      if (_dayFilter === date) {
+        _dayFilter = null;
+        rows.forEach(r => { r.style.display = ''; r.style.background = ''; });
+        return;
+      }
+      _dayFilter = date;
+      rows.forEach(r => {
+        if (r.getAttribute('data-date') === date) { r.style.display = ''; r.style.background = 'rgba(245,158,11,0.12)'; }
+        else { r.style.display = 'none'; r.style.background = ''; }
+      });
+      const first = document.querySelector('#logsBody tr[data-date="' + date + '"]');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    window.compareDay = compareDay;
+
+    // =====================================================
+    // ADD SHIFT MODAL
+    // =====================================================
+    // Build time options from 00:00 to 23:30 in 30-min steps
+    function populateTimeSelect(selectEl, includeEmpty) {
+      selectEl.innerHTML = includeEmpty ? '<option value="">Still working / not set</option>' : '<option value="">Select time...</option>';
+      for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 30) {
+          const val = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+          const ampm = h === 0 ? '12' : h > 12 ? String(h - 12) : String(h);
+          const period = h < 12 ? 'AM' : 'PM';
+          const label = `${ampm}:${String(m).padStart(2,'0')} ${period}`;
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = label;
+          selectEl.appendChild(opt);
+        }
+      }
+    }
+
+    function openAddShiftModal() {
+      // Populate crew dropdown
+      const select = document.getElementById('shiftCrewId');
+      select.innerHTML = '<option value="">Select crew member...</option>';
+      document.querySelectorAll('.crew-card').forEach(card => {
+        const id = card.dataset.id;
+        const name = card.querySelector('h3')?.textContent || '';
+        if (id && name) {
+          const opt = document.createElement('option');
+          opt.value = id;
+          opt.textContent = name;
+          select.appendChild(opt);
+        }
+      });
+
+      // Populate time dropdowns
+      populateTimeSelect(document.getElementById('shiftClockIn'), false);
+      populateTimeSelect(document.getElementById('shiftClockOut'), true);
+
+      // Default date to today
+      document.getElementById('shiftDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('shiftNotes').value = '';
+      document.getElementById('addShiftModal').classList.add('active');
+    }
+    window.openAddShiftModal = openAddShiftModal;
+
+    function closeAddShiftModal() {
+      document.getElementById('addShiftModal').classList.remove('active');
+    }
+    window.closeAddShiftModal = closeAddShiftModal;
+
+    async function saveShift() {
+      const crewId = document.getElementById('shiftCrewId').value;
+      const date = document.getElementById('shiftDate').value;
+      const clockIn = document.getElementById('shiftClockIn').value;
+      const clockOut = document.getElementById('shiftClockOut').value;
+      const notes = document.getElementById('shiftNotes').value.trim();
+
+      if (!crewId || !date || !clockIn) {
+        showToast('Crew member, date, and clock-in time are required', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('saveShiftBtn');
+      btn.disabled = true; btn.textContent = 'Adding...';
+
+      // Store as local ET time (no UTC conversion)
+      const clockInDT = `${date}T${clockIn}:00`;
+      const clockOutDT = clockOut ? `${date}T${clockOut}:00` : null;
+
+      try {
+        const res = await fetch('/api/admin/crew/timelogs/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ crew_lead_id: parseInt(crewId), clock_in: clockInDT, clock_out: clockOutDT, work_date: date, notes: notes || null })
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeAddShiftModal();
+          showToast('Shift added');
+          loadTimesheets();
+        } else {
+          showToast(data.error || 'Failed to add shift', 'error');
+        }
+      } catch { showToast('Error adding shift', 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Add Shift'; }
+    }
+    window.saveShift = saveShift;
+
+    // =====================================================
+    // CSV IMPORT
+    // Format: name,date,clock_in,clock_out
+    // Example: Abdiaz,2026-04-01,07:30,16:00
+    // clock_out can be blank for open shifts
+    // =====================================================
+    async function importCSV(input) {
+      const file = input.files[0];
+      if (!file) return;
+      input.value = ''; // reset so same file can be re-imported
+
+      const text = await file.text();
+      const lines = text.trim().split('\n').filter(l => l.trim());
+      if (lines.length === 0) { showToast('CSV is empty', 'error'); return; }
+
+      // Skip header row if it starts with "name" (case-insensitive)
+      const dataLines = lines[0].toLowerCase().startsWith('name') ? lines.slice(1) : lines;
+      if (dataLines.length === 0) { showToast('No data rows found in CSV', 'error'); return; }
+
+      // Build crew name → id map from page
+      const crewMap = {};
+      document.querySelectorAll('.crew-card').forEach(card => {
+        const id = card.dataset.id;
+        const name = (card.querySelector('h3')?.textContent || '').trim().toLowerCase();
+        if (id && name) crewMap[name] = parseInt(id);
+      });
+
+      let imported = 0, skipped = 0, errors = [];
+
+      for (const line of dataLines) {
+        const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+        const [name, date, clockIn, clockOut] = cols;
+        if (!name || !date || !clockIn || clockIn.trim() === '') { skipped++; continue; }
+
+        const crewId = crewMap[name.toLowerCase()];
+        if (!crewId) { errors.push(`"${name}" not found`); skipped++; continue; }
+
+        // Normalize time: "8:00" → "08:00", "7:30" → "07:30"
+        function padTime(t) {
+          if (!t) return '';
+          const parts = t.split(':');
+          if (parts.length < 2) return t;
+          return `${parts[0].padStart(2,'0')}:${parts[1].padStart(2,'0')}`;
+        }
+        const normIn = padTime(clockIn);
+        const normOut = padTime(clockOut);
+        // Convert local ET to UTC (+4h EDT, +5h EST — use 4 for summer)
+        // Store as local ET time (no UTC conversion)
+        const clockInDT = `${date}T${normIn}:00`;
+        const clockOutDT = normOut ? `${date}T${normOut}:00` : null;
+
+        try {
+          const res = await fetch('/api/admin/crew/timelogs/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ crew_lead_id: crewId, clock_in: clockInDT, clock_out: clockOutDT, work_date: date, notes: 'Imported', override: true })
+          });
+          const data = await res.json();
+          if (data.success) imported++;
+          else { skipped++; errors.push(data.error); }
+        } catch { skipped++; }
+      }
+
+      if (errors.length > 0) console.warn('Import issues:', errors);
+      showToast(`Imported ${imported} shift${imported !== 1 ? 's' : ''}${skipped > 0 ? `, ${skipped} skipped` : ''}`);
+      if (imported > 0) loadTimesheets();
+    }
+    window.importCSV = importCSV;
+
+    // Export week to CSV (works with Google Sheets + Excel)
+    function exportWeekCSV() {
+      const summaryBody = document.getElementById('summaryBody');
+      const logsBody = document.getElementById('logsBody');
+      if (!summaryBody || !logsBody) { showToast('No data to export', 'error'); return; }
+
+      const weekEnd = addDays(currentWeekStart, 6);
+      let csv = `MannyKnows - Weekly Timesheet\n`;
+      csv += `Week: ${currentWeekStart} to ${weekEnd}\n\n`;
+
+      // Pay Summary
+      csv += `PAY SUMMARY\n`;
+      csv += `Name,Raw Hours,Paid Hours,Rate,Gross Pay,Expenses,Total Payout\n`;
+      summaryBody.querySelectorAll('tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 7) {
+          const name = cells[0].textContent.trim();
+          const rawH = cells[1].textContent.trim();
+          const netH = cells[2].textContent.trim();
+          const rate = cells[3].textContent.trim();
+          const gross = cells[4].textContent.trim();
+          const exp = cells[5].textContent.trim().replace('—', '$0.00');
+          const total = cells[6].textContent.trim();
+          csv += `"${name}",${rawH},${netH},"${rate}","${gross}","${exp}","${total}"\n`;
+        }
+      });
+
+      csv += `\nSHIFT DETAIL\n`;
+      csv += `Name,Date,Clock In,Clock Out,Duration,Notes\n`;
+      logsBody.querySelectorAll('tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 6) {
+          const vals = Array.from(cells).slice(0, 6).map(c => c.textContent.trim());
+          csv += vals.map(v => `"${v}"`).join(',') + '\n';
+        }
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `timesheet-${currentWeekStart}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV exported');
+    }
+    window.exportWeekCSV = exportWeekCSV;
+
+    // =====================================================
+    // EXPENSES
+    // =====================================================
+    function populateExpCrewSelect() {
+      const select = document.getElementById('expCrewId');
+      select.innerHTML = '<option value="">Select crew member...</option>';
+      document.querySelectorAll('.crew-card').forEach(card => {
+        const id = card.dataset.id;
+        const name = card.querySelector('h3')?.textContent || '';
+        if (id && name) {
+          const opt = document.createElement('option');
+          opt.value = id;
+          opt.textContent = name;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    function setExpPaidWith(val) {
+      const v = val === 'company_card' ? 'company_card'
+        : val === 'deduction' ? 'deduction'
+        : 'crew';
+      document.getElementById('expPaidWithValue').value = v;
+      // Deductions get a red active style so it's obvious you're subtracting pay.
+      const isDed = v === 'deduction';
+      const activeBg = isDed
+        ? 'linear-gradient(135deg, #dc2626, #b91c1c)'
+        : 'linear-gradient(135deg, var(--color-primary), #6366f1)';
+      const activeBorder = isDed ? '#dc2626' : 'var(--color-primary)';
+      document.querySelectorAll('.expPaidWithOpt').forEach(btn => {
+        const active = btn.getAttribute('data-value') === v;
+        btn.style.background = active ? activeBg : 'rgba(255,255,255,0.05)';
+        btn.style.color = active ? '#fff' : 'var(--color-text-primary)';
+        btn.style.borderColor = active ? activeBorder : 'var(--glass-border)';
+      });
+      // Update the hint + receipt label so admin knows what each type does.
+      const hint = document.getElementById('expPaidWithHint');
+      if (hint) {
+        hint.textContent = v === 'company_card'
+          ? 'Already paid by the company. Tracked for finances; no impact on the paycheck.'
+          : v === 'deduction'
+            ? 'You bought something on their behalf — this amount is subtracted from their paycheck. Crew sees the description as a note.'
+            : 'Crew paid out of pocket — adds to their paycheck.';
+      }
+      // Receipt is required for reimbursables (crew needs proof) and company-card
+      // (for the books), but not for deductions where the admin paid directly.
+      const labelText = document.getElementById('expReceiptLabelText');
+      if (labelText) labelText.textContent = isDed ? 'Receipt Photo (optional)' : 'Receipt Photo *';
+    }
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest && e.target.closest('.expPaidWithOpt');
+      if (btn) setExpPaidWith(btn.getAttribute('data-value'));
+    });
+
+    function openAddExpenseModal() {
+      populateExpCrewSelect();
+      document.getElementById('expModalTitle').textContent = 'Add Expense';
+      document.getElementById('saveExpenseBtn').textContent = 'Add Expense';
+      document.getElementById('expEditId').value = '';
+      document.getElementById('expCrewId').value = '';
+      document.getElementById('expDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('expAmount').value = '';
+      document.getElementById('expDescription').value = '';
+      document.getElementById('expReceipt').value = '';
+      document.getElementById('expReceiptLabel').textContent = 'Click to upload receipt';
+      document.getElementById('expCurrentReceipt').style.display = 'none';
+      setExpPaidWith('crew');
+      document.getElementById('addExpenseModal').classList.add('active');
+    }
+    window.openAddExpenseModal = openAddExpenseModal;
+
+    function editExpense(expense) {
+      // Backwards-compat: still accept positional args from old callers
+      let e = expense;
+      if (typeof expense !== 'object' || expense === null) {
+        e = { id: arguments[0], crew_lead_id: arguments[1], work_date: arguments[2], amount: arguments[3], description: arguments[4], receipt_url: arguments[5], paid_with: 'crew' };
+      }
+      populateExpCrewSelect();
+      document.getElementById('expModalTitle').textContent = 'Edit Expense';
+      document.getElementById('saveExpenseBtn').textContent = 'Save Changes';
+      document.getElementById('expEditId').value = String(e.id);
+      document.getElementById('expCrewId').value = String(e.crew_lead_id);
+      document.getElementById('expDate').value = e.work_date;
+      document.getElementById('expAmount').value = String(e.amount);
+      document.getElementById('expDescription').value = e.description || '';
+      document.getElementById('expReceipt').value = '';
+      document.getElementById('expReceiptLabel').textContent = 'Click to replace receipt (optional)';
+      const currentBox = document.getElementById('expCurrentReceipt');
+      const currentLink = document.getElementById('expCurrentReceiptLink');
+      if (e.receipt_url) {
+        currentLink.href = e.receipt_url;
+        currentBox.style.display = 'block';
+      } else {
+        currentBox.style.display = 'none';
+      }
+      setExpPaidWith(e.paid_with || 'crew');
+      document.getElementById('addExpenseModal').classList.add('active');
+    }
+    window.editExpense = editExpense;
+
+    function closeExpenseModal() {
+      document.getElementById('addExpenseModal').classList.remove('active');
+    }
+    window.closeExpenseModal = closeExpenseModal;
+
+    async function saveExpense() {
+      const editId = document.getElementById('expEditId').value;
+      const isEdit = !!editId;
+      const crewId = document.getElementById('expCrewId').value;
+      const date = document.getElementById('expDate').value;
+      const amount = parseFloat(document.getElementById('expAmount').value);
+      const description = document.getElementById('expDescription').value.trim();
+      const receiptInput = document.getElementById('expReceipt');
+      const receiptFile = receiptInput?.files?.[0];
+
+      if (!crewId || !date || !amount || !description) {
+        showToast('Crew member, date, amount, and description are required', 'error');
+        return;
+      }
+      const paidWithNow = document.getElementById('expPaidWithValue').value || 'crew';
+      // Receipt required for reimbursable + company-card entries, optional for deductions
+      // (admin paid directly — they're recording an internal subtraction, not requesting reimbursement).
+      if (!isEdit && !receiptFile && paidWithNow !== 'deduction') {
+        showToast('Receipt photo is required', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('saveExpenseBtn');
+      const originalBtnText = btn.textContent;
+      btn.disabled = true; btn.textContent = receiptFile ? 'Uploading receipt...' : 'Saving...';
+
+      try {
+        // Upload receipt image if a new one was selected
+        let receiptUrl;
+        if (receiptFile) {
+          const timestamp = Date.now();
+          const ext = receiptFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+          const uploadPath = `receipts/${timestamp}_receipt.${ext}`;
+          const uploadRes = await fetch('/api/r2-upload/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': receiptFile.type || 'image/jpeg',
+              'X-Upload-Path': uploadPath,
+              'X-Upload-Timestamp': String(timestamp),
+            },
+            body: receiptFile,
+          });
+          const uploadData = await uploadRes.json();
+          if (uploadData.success && (uploadData.fileUrl || uploadData.url)) {
+            receiptUrl = uploadData.fileUrl || uploadData.url;
+          } else {
+            showToast(uploadData.error || 'Receipt upload failed', 'error');
+            btn.disabled = false; btn.textContent = originalBtnText;
+            return;
+          }
+          btn.textContent = 'Saving...';
+        }
+
+        const payload = { crew_lead_id: parseInt(crewId), work_date: date, amount, description, paid_with: paidWithNow };
+        if (receiptUrl !== undefined) payload.receipt_url = receiptUrl;
+
+        let res;
+        if (isEdit) {
+          res = await fetch('/api/admin/crew/expenses/', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id: parseInt(editId), ...payload })
+          });
+        } else {
+          res = await fetch('/api/admin/crew/expenses/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const data = await res.json();
+        if (data.success) {
+          closeExpenseModal();
+          showToast(isEdit ? 'Expense updated' : 'Expense added');
+          loadTimesheets();
+        } else {
+          showToast(data.error || 'Failed to save expense', 'error');
+        }
+      } catch { showToast('Error saving expense', 'error'); }
+      finally { btn.disabled = false; btn.textContent = originalBtnText; }
+    }
+    window.saveExpense = saveExpense;
+
+    function deleteExpense(id) {
+      window.showConfirmModal({
+        title: 'Delete this expense?',
+        text: 'The expense row will be permanently removed from this shift.',
+        confirmText: 'Delete expense',
+        type: 'danger',
+        onConfirm: async () => {
+          try {
+            const res = await fetch(`/api/admin/crew/expenses/?id=${id}`, { method: 'DELETE', credentials: 'include' });
+            const data = await res.json();
+            if (data.success) { showToast('Expense deleted'); loadTimesheets(); }
+            else showToast(data.error || 'Failed', 'error');
+          } catch { showToast('Error', 'error'); }
+        },
+      });
+    }
+    window.deleteExpense = deleteExpense;
+
+    function showReceipt(url) {
+      // PDFs can't render in an <img> — open them in a new tab instead.
+      if (/\.pdf(\?|$)/i.test(url || '')) {
+        window.open(url, '_blank', 'noopener');
+        return;
+      }
+      document.getElementById('receiptPreviewImg').src = url;
+      document.getElementById('receiptModal').classList.add('active');
+    }
+    window.showReceipt = showReceipt;
+
+    function closeReceiptModal() {
+      document.getElementById('receiptModal').classList.remove('active');
+      document.getElementById('receiptPreviewImg').src = '';
+    }
+    window.closeReceiptModal = closeReceiptModal;
+
+    function deleteCrew(id, name) {
+      showCrewDeleteModal(id, name);
+    }
+
+    // Theme toggle
+    function initTheme() {
+      const saved = localStorage.getItem('admin-theme');
+      const theme = saved || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('admin-theme', next);
+    }
+    window.toggleTheme = toggleTheme;
+    initTheme();
+
+    // =====================================================
+    // MOBILE NAVIGATION
+    // =====================================================
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNavPanel = document.getElementById('mobileNavPanel');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNavToggle?.classList.add('active');
+      mobileNavPanel?.classList.add('active');
+      mobileNavOverlay?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+      mobileNavToggle?.classList.remove('active');
+      mobileNavPanel?.classList.remove('active');
+      mobileNavOverlay?.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    window.closeMobileNav = closeMobileNav;
+
+    mobileNavToggle?.addEventListener('click', () => {
+      if (mobileNavPanel?.classList.contains('active')) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
+      }
+    });
+
+    mobileNavClose?.addEventListener('click', closeMobileNav);
+    mobileNavOverlay?.addEventListener('click', closeMobileNav);
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) {
+        closeMobileNav();
+      }
+    });
+
+    // Logout
+    async function logout() {
+      await fetch('/api/admin/logout/', { method: 'POST' });
+      window.location.href = '/admin';
+    }
+    window.logout = logout;
+
+    // Modals do NOT close on backdrop click
+
+    // Close modals on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeCrewDeleteModal();
+      }
+    });
+
+    // Desktop bell
+    const bellBtn = document.getElementById('bellBtn');
+    const bellBadge = document.getElementById('bellBadge');
+    const bellDropdown = document.getElementById('bellDropdown');
+    const bellList = document.getElementById('bellList');
+    // Mobile bell
+    const bellBtnMobile = document.getElementById('bellBtnMobile');
+    const bellBadgeMobile = document.querySelector('.bell-badge-mobile');
+    const bellDropdownMobile = document.getElementById('bellDropdownMobile');
+    const bellListMobile = document.getElementById('bellListMobile');
+
+    let bellOpen = false;
+    let activeBellDropdown = null;
+
+    function closeBell() {
+      bellOpen = false;
+      if (bellDropdown) bellDropdown.style.display = 'none';
+      if (bellDropdownMobile) bellDropdownMobile.style.display = 'none';
+      activeBellDropdown = null;
+    }
+
+    [bellBtn, bellBtnMobile].forEach(btn => {
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = btn === bellBtn ? bellDropdown : bellDropdownMobile;
+        if (bellOpen && activeBellDropdown === dropdown) {
+          closeBell();
+        } else {
+          closeBell();
+          bellOpen = true;
+          activeBellDropdown = dropdown;
+          if (dropdown) dropdown.style.display = 'block';
+        }
+      });
+    });
+
+    document.addEventListener('click', () => { if (bellOpen) closeBell(); });
+    bellDropdown?.addEventListener('click', (e) => e.stopPropagation());
+    bellDropdownMobile?.addEventListener('click', (e) => e.stopPropagation());
+
+    function bellEscapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function bellGetTimeAgo(date) {
+      const now = new Date();
+      const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    function renderBellNotifications(data, listEl) {
+      let html = '';
+
+      // New leads
+      (data.leads || []).forEach((l) => {
+        const dateObj = l.created_at ? new Date(l.created_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/leads?open=${l.id}'" style="border-left: 3px solid #22c55e;">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(l.customer_name || 'New Lead')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">${bellEscapeHtml(l.service_type || 'New lead received')}</div>
+          <div class="bell-notification-quote" style="color: #22c55e;">NEW LEAD</div>
+        </div>`;
+      });
+
+      // Quote responses (accepted/declined)
+      (data.quoteResponses || []).forEach((q) => {
+        const dateObj = q.responded_at ? new Date(q.responded_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        const isAccepted = q.status === 'accepted';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#ff781d' : '#f59e0b'};">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(q.customer_name || 'Customer')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">Quote ${isAccepted ? 'accepted' : 'declined'}</div>
+          <div class="bell-notification-quote" style="color: ${isAccepted ? '#ff781d' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
+        </div>`;
+      });
+
+      // Customer replies
+      (data.replies || []).forEach((r) => {
+        const dateObj = r.created_at ? new Date(r.created_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        const preview = (r.body || '').substring(0, 80) + ((r.body || '').length > 80 ? '...' : '');
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${r.quote_id}'">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(r.customer_name || r.sender_name || 'Customer')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">${bellEscapeHtml(preview)}</div>
+          <div class="bell-notification-quote">#${bellEscapeHtml(r.quote_number || '')}</div>
+        </div>`;
+      });
+
+      listEl.innerHTML = html || '<div style="padding: 16px; text-align: center; color: var(--color-text-secondary); font-size: 13px;">No new notifications</div>';
+    }
+
+    var bellErrorCount = 0;
+    async function loadBellNotifications() {
+      if (bellErrorCount >= 3) { window.location.href = '/admin/'; return; }
+      try {
+        const res = await fetch('/api/admin/unread-replies/', { credentials: 'same-origin' });
+        if (res.status === 401 || res.status === 403) { window.location.href = '/admin/'; return; }
+        if (!res.ok) { bellErrorCount++; return; }
+        const data = await res.json();
+        if (!data.success) return;
+        bellErrorCount = 0;
+        const total = data.total || 0;
+        [bellBadge, bellBadgeMobile].forEach(badge => {
+          if (badge) {
+            badge.textContent = String(total);
+            badge.style.display = total > 0 ? 'flex' : 'none';
+          }
+        });
+        [bellBtn, bellBtnMobile].forEach(btn => {
+          if (total > 0) btn?.classList.add('has-notifications');
+          else btn?.classList.remove('has-notifications');
+        });
+        if (bellList) renderBellNotifications(data, bellList);
+        if (bellListMobile) renderBellNotifications(data, bellListMobile);
+      } catch (err) { bellErrorCount++; }
+    }
+    async function markAllRead() {
+      try {
+        await fetch('/api/admin/unread-replies/', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mark_all: true })
+        });
+        loadBellNotifications();
+        closeBell();
+      } catch (err) {
+        console.error('Failed to mark all as read:', err);
+      }
+    }
+    window.markAllRead = markAllRead;
+
+    loadBellNotifications();
+    setInterval(loadBellNotifications, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { bellErrorCount = 0; loadBellNotifications(); } });
+  </script>
+</body>
+</html>

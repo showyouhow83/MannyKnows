@@ -1,0 +1,885 @@
+---
+export const prerender = false;
+import { Resend } from 'resend';
+import { SERVICE_LABELS } from '../../data/serviceTypes';
+
+// Get the token from URL
+const { token } = Astro.params;
+
+// Access runtime environment for D1
+const runtime = Astro.locals.runtime;
+const db = runtime?.env?.MK_APP_DB;
+const resendApiKey = runtime?.env?.RESEND_API_KEY;
+const notificationEmail = runtime?.env?.NOTIFICATION_EMAIL || 'mm@mannyknows.com';
+
+let status = 'loading';
+let lead: any = null;
+let errorMessage = '';
+
+// Service display mapping (shared canonical list; custom values fall through
+// to their own raw text in the template).
+const serviceNames: Record<string, string> = SERVICE_LABELS;
+
+// HTML-escape user-supplied lead fields before interpolating into the admin
+// email HTML (name/address/notes were typed by the site visitor in chat).
+function esc(s: unknown): string {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Helper to send business notification
+async function notifyBusiness(leadData: any) {
+  if (!resendApiKey) {
+    console.log('[Confirm] No RESEND_API_KEY, skipping business notification');
+    return;
+  }
+
+  const resend = new Resend(resendApiKey);
+  const serviceName = serviceNames[leadData.service_type] || leadData.service_type || 'Home Services';
+  const fullAddress = [leadData.address, leadData.city, leadData.state, leadData.zip].filter(Boolean).join(', ');
+
+  try {
+    await resend.emails.send({
+      from: 'MK Booking Alerts <bookings@send.mannyknows.com>',
+      to: notificationEmail,
+      subject: `✅ CONFIRMED: ${leadData.customer_name} - ${serviceName} - ${leadData.preferred_date}`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; background: #f5f5f5;">
+  <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); padding: 24px; text-align: center;">
+      <h1 style="margin: 0; color: white; font-size: 24px;">✅ Appointment Confirmed!</h1>
+    </div>
+    <div style="padding: 24px;">
+      <p style="font-size: 16px; color: #333; margin: 0 0 20px;">A customer has confirmed their appointment. Time to follow up!</p>
+
+      <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <h2 style="margin: 0 0 16px; color: #1e293b; font-size: 18px;">📋 Appointment Details</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; color: #64748b; width: 140px;">Confirmation #</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(leadData.confirmation_code)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Customer</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(leadData.customer_name)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Email</td>
+            <td style="padding: 8px 0; color: #1e293b;">${esc(leadData.customer_email)}</td>
+          </tr>
+          ${leadData.customer_phone ? `
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Phone</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(leadData.customer_phone)}</td>
+          </tr>
+          ` : ''}
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Service</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(serviceName)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Date</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(leadData.preferred_date)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Time</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(leadData.preferred_time)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Address</td>
+            <td style="padding: 8px 0; color: #1e293b; font-weight: 600;">${esc(fullAddress)}</td>
+          </tr>
+        </table>
+      </div>
+
+      ${leadData.project_description ? `
+      <div style="background: #f0f9ff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 12px; color: #ff781d; font-size: 16px;">💬 Project Details</h3>
+        <p style="margin: 0; color: #334155; line-height: 1.6;">${esc(leadData.project_description)}</p>
+      </div>
+      ` : ''}
+
+      <div style="text-align: center; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+        <p style="margin: 0; color: #64748b; font-size: 14px;">
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}" style="color: #ff781d; text-decoration: none;">📍 View on Google Maps</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`,
+      text: `CONFIRMED: ${leadData.confirmation_code}\n\nCustomer: ${leadData.customer_name}\nEmail: ${leadData.customer_email}\nPhone: ${leadData.customer_phone || 'Not provided'}\n\nService: ${serviceName}\nDate: ${leadData.preferred_date}\nTime: ${leadData.preferred_time}\nAddress: ${fullAddress}\n\n${leadData.project_description ? `Project Details: ${leadData.project_description}` : ''}`
+    });
+    console.log(`[Confirm] Business notification sent for ${leadData.confirmation_code}`);
+  } catch (err) {
+    console.error('[Confirm] Failed to send business notification:', err);
+  }
+}
+
+// We used to show a "review masked info, then click confirm" intermediate
+// page on GET and only mark the lead confirmed on POST. That meant clicking
+// the email button always required a second confirm — and on the third
+// visit the user got the "Already Confirmed!" screen, which felt like an
+// error. Now we treat the email link itself as the confirmation: clicking
+// the magic-token link is intent enough.
+
+if (!db) {
+  status = 'error';
+  errorMessage = 'Database not available';
+} else if (!token || token.length < 20) {
+  status = 'invalid';
+  errorMessage = 'Invalid confirmation link';
+} else {
+  try {
+    // Look up lead by token
+    const result = await db.prepare(`
+      SELECT * FROM leads WHERE confirmation_token = ?
+    `).bind(token).first() as any;
+
+    if (!result) {
+      status = 'not_found';
+      errorMessage = 'Lead not found or link has expired';
+    } else if (result.status === 'confirmed') {
+      // Repeat visit — show the success page (with photo upload), not an
+      // alarming "Already Confirmed!" message. Same UI as a fresh confirm.
+      status = 'confirmed';
+      lead = result;
+    } else if (result.status === 'cancelled') {
+      status = 'cancelled';
+      errorMessage = 'This booking has been cancelled';
+    } else {
+      // First visit via the email link — confirm immediately and notify
+      // the business. POST to this URL also lands here (back-compat).
+      await db.prepare(`
+        UPDATE leads
+        SET status = 'confirmed',
+            confirmed_at = CURRENT_TIMESTAMP,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE confirmation_token = ?
+      `).bind(token).run();
+
+      status = 'confirmed';
+      lead = result;
+
+      // Send notification to business (best-effort; never block the page)
+      try { await notifyBusiness(result); } catch {}
+    }
+  } catch (err) {
+    console.error('Confirmation error:', err);
+    status = 'error';
+    errorMessage = 'An error occurred. Please try again or call us.';
+  }
+}
+
+// Time display - now stores actual time (e.g., "10:00 AM")
+// Legacy fallback for old bookings with time windows
+const legacyTimeDisplay: Record<string, string> = {
+  morning: '8:00 AM - 12:00 PM',
+  afternoon: '12:00 PM - 4:00 PM',
+  evening: '4:00 PM - 6:00 PM',
+  flexible: 'Flexible (we will confirm)'
+};
+
+function formatTime(time: string): string {
+  if (legacyTimeDisplay[time]) {
+    return legacyTimeDisplay[time];
+  }
+  return time;
+}
+
+const currentYear = new Date().getFullYear();
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Appointment Confirmation - MannyKnows</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+    /* Header — matches client portal */
+    .header {
+      background: #171717;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+    .header-content { max-width: 600px; margin: 0 auto; }
+    .logo { margin-bottom: 8px; }
+    .logo-svg { width: 52px; height: auto; }
+    /* Container + card — matches client portal (overlaps header) */
+    .container {
+      max-width: 900px;
+      margin: -40px auto 40px;
+      padding: 0 20px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    /* Content */
+    .content {
+      padding: 40px 30px;
+    }
+    /* Success Icon */
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .success-icon svg {
+      width: 40px;
+      height: 40px;
+      color: white;
+    }
+    .info-icon {
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+    }
+    .error-icon {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+    /* Confirmation Badge */
+    .confirmation-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+    /* Title */
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1e293b;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #475569;
+      line-height: 1.7;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    /* Details Card */
+    .details-card {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 30px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .details-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ff781d;
+      margin-bottom: 20px;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .details-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+    .details-table tr:last-child td {
+      border-bottom: none;
+    }
+    .details-label {
+      color: #64748b;
+      width: 120px;
+      vertical-align: top;
+    }
+    .details-value {
+      color: #1e293b;
+      font-weight: 600;
+    }
+    /* Next Steps */
+    .next-steps {
+      margin: 30px 0;
+    }
+    .next-steps-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .step-number {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+      border-radius: 50%;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-text {
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.6;
+      padding-top: 4px;
+    }
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: #ffffff;
+      padding: 18px 48px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      margin: 20px 0;
+    }
+    .cta-button:hover {
+      opacity: 0.95;
+    }
+    .cta-button.blue {
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+    }
+    /* Contact Section */
+    .contact-section {
+      text-align: center;
+      padding: 24px 0;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 30px;
+    }
+    .contact-label {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .contact-phone {
+      color: #ff781d;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .contact-phone:hover {
+      color: #c75800;
+    }
+    /* Footer — matches client portal */
+    .portal-footer {
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      padding: 28px 20px 36px;
+      text-align: center;
+    }
+    .portal-footer-creds { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+    .portal-footer-copy { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 8px; }
+    .portal-footer-legal a { color: #64748b; text-decoration: none; font-size: 13px; margin: 0 8px; }
+    .portal-footer-legal a:hover { color: #ff781d; }
+    /* Spinner */
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #ff781d;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .text-center { text-align: center; }
+    /* Image Upload Styles */
+    .image-upload-section {
+      margin: 30px 0;
+      padding: 24px;
+      background: #f0f9ff;
+      border-radius: 12px;
+      border: 1px solid #bae6fd;
+    }
+    .image-upload-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0369a1;
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .image-upload-desc {
+      color: #475569;
+      font-size: 14px;
+      margin: 0 0 16px 0;
+    }
+    .upload-dropzone {
+      border: 2px dashed #ff781d;
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .upload-dropzone:hover,
+    .upload-dropzone.dragover {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .upload-dropzone.uploading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      color: #ff781d;
+    }
+    .upload-text {
+      color: #1e293b;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .upload-hint {
+      color: #64748b;
+      font-size: 13px;
+    }
+    .upload-input {
+      display: none;
+    }
+    .image-previews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+</style>
+<style is:global>
+    /* Dynamic elements created by JavaScript need global styles */
+    .image-preview {
+      position: relative;
+      width: 100px !important;
+      height: 100px !important;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .image-preview img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+    }
+    .image-preview.uploading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-preview .upload-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      border: 3px solid #ff781d;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+</style>
+<style>
+    .upload-status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .upload-status.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .upload-status.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .upload-complete-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header — matches client portal -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo" style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+        <svg class="logo-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows">
+          <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d"/>
+          <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff"/>
+        </svg>
+        <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #ffffff; white-space: nowrap;">MannyKnows</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+    <!-- Content -->
+    <div class="content">
+      {status === 'confirmed' && lead && (
+        <>
+          <div class="text-center">
+            <div class="success-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div class="confirmation-badge">CONFIRMATION #{lead.confirmation_code}</div>
+            <h1 class="title">Appointment Confirmed!</h1>
+            <p class="subtitle">Thank you for confirming! We're looking forward to helping you with your project.</p>
+          </div>
+
+          <div class="details-card">
+            <h2 class="details-title">Appointment Details</h2>
+            <table class="details-table">
+              <tr>
+                <td class="details-label">Service</td>
+                <td class="details-value">{serviceNames[lead.service_type] || lead.service_type}</td>
+              </tr>
+              <tr>
+                <td class="details-label">Date</td>
+                <td class="details-value">{lead.preferred_date}</td>
+              </tr>
+              <tr>
+                <td class="details-label">Time</td>
+                <td class="details-value">{formatTime(lead.preferred_time)}</td>
+              </tr>
+              <tr>
+                <td class="details-label">Location</td>
+                <td class="details-value">
+                  {lead.address}
+                  {lead.city && `, ${lead.city}`}
+                  {lead.state && `, ${lead.state}`}
+                  {lead.zip && ` ${lead.zip}`}
+                </td>
+              </tr>
+              {lead.customer_phone && (
+              <tr>
+                <td class="details-label">Phone</td>
+                <td class="details-value">{lead.customer_phone}</td>
+              </tr>
+              )}
+            </table>
+          </div>
+
+          <div class="next-steps">
+            <h3 class="next-steps-title">What happens next?</h3>
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-text">We've received your confirmation — our team will reach out if anything about the time needs adjusting</div>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-text">You'll receive a reminder 24 hours before your appointment</div>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-text">The estimate is completely free, with no obligation</div>
+            </div>
+          </div>
+
+          <!-- Image Upload Section -->
+          <div class="image-upload-section" id="imageUploadSection">
+            <h3 class="image-upload-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Add Project Photos (Optional)
+            </h3>
+            <p class="image-upload-desc">Help us prepare for your estimate by uploading photos of the project area. Up to 3 photos.</p>
+
+            <div class="upload-dropzone" id="uploadDropzone">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <p class="upload-text">Tap to select photos or drag & drop</p>
+              <p class="upload-hint">JPEG, PNG, or HEIC • Max 10MB each</p>
+              <input type="file" class="upload-input" id="uploadInput" accept="image/jpeg,image/png,image/webp,image/heic" multiple />
+            </div>
+
+            <div class="image-previews" id="imagePreviews"></div>
+            <div id="uploadStatus"></div>
+          </div>
+
+          <div class="contact-section">
+            <p class="contact-label">Need to reschedule?</p>
+            <a href="tel:+14133618451" class="contact-phone">(413) 361-8451</a>
+          </div>
+        </>
+      )}
+
+      {(status === 'invalid' || status === 'not_found' || status === 'error' || status === 'cancelled') && (
+        <>
+          <div class="text-center">
+            <div class="success-icon error-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h1 class="title">Something Went Wrong</h1>
+            <p class="subtitle">{errorMessage}</p>
+            <p class="subtitle">If you need to schedule or confirm an appointment, please contact us directly.</p>
+          </div>
+
+          <div class="text-center">
+            <a href="tel:+14133618451" class="cta-button" style="display: inline-flex; align-items: center; gap: 8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              Call Us
+            </a>
+          </div>
+
+          <div class="text-center" style="margin-top: 20px;">
+            <a href="/" style="color: #ff781d; font-weight: 500; text-decoration: none;">Return to Homepage</a>
+          </div>
+        </>
+      )}
+
+      {status === 'loading' && (
+        <div class="text-center" style="padding: 40px 0;">
+          <div class="spinner"></div>
+          <p class="subtitle">Confirming your appointment...</p>
+        </div>
+      )}
+    </div>
+
+    </div><!-- /.card -->
+  </div><!-- /.container -->
+
+  <!-- Footer — matches client portal.
+       NOTE: no credentials line here on purpose — license/cert/warranty claims
+       are skipped until Manny provides real data (see CONTENT_TODOS.md). -->
+  <footer class="portal-footer">
+    <div class="portal-footer-copy">
+      &copy; {currentYear} MannyKnows &middot; Springfield, MA &middot; <a href="tel:+14133618451" style="color: inherit;">(413) 361-8451</a>
+    </div>
+  </footer>
+
+  <script define:vars={{ token, status }}>
+    // Image upload handling
+    (function() {
+      const confirmationToken = token;
+      const pageStatus = status;
+
+      // Only run on confirmed pages
+      if (pageStatus !== 'confirmed') return;
+
+      const MAX_IMAGES = 3;
+      let uploadedCount = 0;
+
+      // Initialize upload handlers for both primary and alt sections
+      const sections = [
+        { dropzone: 'uploadDropzone', input: 'uploadInput', previews: 'imagePreviews', statusEl: 'uploadStatus' }
+      ];
+
+      sections.forEach(ids => {
+        const dropzone = document.getElementById(ids.dropzone);
+        const input = document.getElementById(ids.input);
+        const previews = document.getElementById(ids.previews);
+        const statusEl = document.getElementById(ids.statusEl);
+
+        if (!dropzone || !input) return;
+
+        // Click to open file picker
+        dropzone.addEventListener('click', () => input.click());
+
+        // Drag events
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+          if (e.dataTransfer?.files) {
+            handleFiles(e.dataTransfer.files, previews, statusEl, dropzone);
+          }
+        });
+
+        // File input change
+        input.addEventListener('change', (e) => {
+          if (e.target.files) {
+            handleFiles(e.target.files, previews, statusEl, dropzone);
+          }
+        });
+      });
+
+      async function handleFiles(files, previewsEl, statusEl, dropzone) {
+        const remaining = MAX_IMAGES - uploadedCount;
+        if (remaining <= 0) {
+          showStatus(statusEl, 'error', 'Maximum 3 images already uploaded');
+          return;
+        }
+
+        const filesToUpload = Array.from(files).slice(0, remaining);
+
+        for (const file of filesToUpload) {
+          // Validate file type
+          if (!file.type.startsWith('image/')) {
+            showStatus(statusEl, 'error', `${file.name} is not an image`);
+            continue;
+          }
+
+          // Validate file size (10MB)
+          if (file.size > 10 * 1024 * 1024) {
+            showStatus(statusEl, 'error', `${file.name} is too large (max 10MB)`);
+            continue;
+          }
+
+          // Create preview
+          const preview = createPreview(file, previewsEl);
+
+          // Upload
+          try {
+            dropzone.classList.add('uploading');
+            const result = await uploadImage(file);
+
+            if (result.success) {
+              preview.classList.remove('uploading');
+              preview.querySelector('.upload-spinner')?.remove();
+              uploadedCount = result.imageCount;
+              showStatus(statusEl, 'success', `Photo uploaded! (${result.imageCount}/${MAX_IMAGES})`);
+
+              // Hide dropzone if max reached
+              if (result.remainingSlots === 0) {
+                dropzone.style.display = 'none';
+                showStatus(statusEl, 'success', 'All 3 photos uploaded!');
+              }
+
+              // Sync across both sections
+              syncUploadState(result.imageCount);
+            } else {
+              preview.remove();
+              showStatus(statusEl, 'error', result.error || 'Upload failed');
+            }
+          } catch (err) {
+            preview.remove();
+            showStatus(statusEl, 'error', 'Upload failed. Please try again.');
+          } finally {
+            dropzone.classList.remove('uploading');
+          }
+        }
+      }
+
+      function createPreview(file, previewsEl) {
+        const preview = document.createElement('div');
+        preview.className = 'image-preview uploading';
+
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        preview.appendChild(img);
+
+        const spinner = document.createElement('div');
+        spinner.className = 'upload-spinner';
+        preview.appendChild(spinner);
+
+        previewsEl.appendChild(preview);
+        return preview;
+      }
+
+      async function uploadImage(file) {
+        const response = await fetch('/api/leads/upload-image/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': file.type,
+            'X-Confirmation-Token': confirmationToken
+          },
+          body: file
+        });
+
+        return response.json();
+      }
+
+      function showStatus(statusEl, type, message) {
+        if (!statusEl) return;
+        statusEl.className = 'upload-status ' + type;
+        statusEl.textContent = message;
+        statusEl.style.display = 'block';
+
+        // Auto-hide success after 5s
+        if (type === 'success') {
+          setTimeout(() => {
+            statusEl.style.display = 'none';
+          }, 5000);
+        }
+      }
+
+      function syncUploadState(count) {
+        uploadedCount = count;
+
+        // If max reached, hide both dropzones
+        if (count >= MAX_IMAGES) {
+          sections.forEach(ids => {
+            const dz = document.getElementById(ids.dropzone);
+            if (dz) dz.style.display = 'none';
+          });
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+---
+// Quote Decline Feedback Page
+// Customer provides reason for declining
+import type { APIContext } from 'astro';
+
+export const prerender = false;
+
+const { token } = Astro.params;
+const env = Astro.locals.runtime?.env;
+const db = env?.MK_APP_DB;
+
+let quote: any = null;
+let error: string | null = null;
+let alreadyResponded = false;
+
+if (!token) {
+  error = 'Invalid quote link';
+} else if (!db) {
+  error = 'Service temporarily unavailable';
+} else {
+  // Look up quote by token
+  const result = await db.prepare(
+    'SELECT * FROM quotes WHERE quote_token = ?'
+  ).bind(token).first();
+
+  if (!result) {
+    error = 'Quote not found or link has expired';
+  } else if (result.status === 'declined') {
+    alreadyResponded = true;
+    quote = result;
+  } else if (result.status === 'accepted') {
+    error = 'This quote has already been accepted';
+  } else if (result.status !== 'sent') {
+    error = 'This quote is no longer available';
+  } else {
+    quote = result;
+  }
+}
+
+// Format currency
+function formatCurrency(amount?: number): string {
+  if (!amount) return '$0.00';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount);
+}
+
+// Format services
+function formatServices(servicesJson?: string): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    // Mirrors src/data/serviceTypes.ts; custom "other" services pass through.
+    const labels: Record<string, string> = {
+      'kitchen_remodel': 'Kitchen Remodeling',
+      'bathroom_remodel': 'Bathroom Remodeling',
+      'interior_painting': 'Interior Painting',
+      'flooring': 'Flooring',
+      'general_repairs': 'General Repairs & Handyman'
+    };
+    // Handle both array of strings and array of objects with {type, scope}
+    return services.map((s: string | { type?: string }) => {
+      const serviceKey = typeof s === 'string' ? s : (s.type || String(s));
+      return labels[serviceKey] || serviceKey;
+    }).join(', ');
+  } catch {
+    return servicesJson;
+  }
+}
+
+const firstName = quote?.customer_name?.split(' ')[0] || 'there';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{alreadyResponded ? 'Quote Already Declined' : 'Decline Quote'} - MannyKnows</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #0f172a;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .gold-bar {
+      height: 4px;
+      background: #ff781d;
+    }
+
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        max-width: 600px;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 24px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .badge-blue {
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+      color: white;
+    }
+
+    .badge-red {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .message {
+      font-size: 16px;
+      color: #475569;
+      line-height: 1.7;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .summary {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .summary-label {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .summary-value {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #ff781d;
+      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .optional {
+      font-weight: 400;
+      color: #64748b;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 18px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      transform: none;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-danger:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #64748b;
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-link {
+      background: none;
+      color: #ff781d;
+      text-decoration: underline;
+      font-size: 14px;
+      padding: 12px;
+    }
+
+    .contact {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .contact p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .contact a {
+      color: #ff781d;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .footer {
+      background: #0f172a;
+      padding: 30px;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .footer h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .footer p {
+      color: rgba(255,255,255,0.9);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      color: #ff781d;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-links span {
+      color: rgba(255,255,255,0.5);
+      margin: 0 8px;
+    }
+
+    .loading {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #decline-form.submitted .btn-text {
+      display: none;
+    }
+
+    #decline-form.submitted .loading {
+      display: flex;
+    }
+
+    .error-text {
+      color: #ef4444;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .error-text.visible {
+      display: block;
+    }
+
+    .success-message {
+      text-align: center;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>MannyKnows</h1>
+  </header>
+  <div class="gold-bar"></div>
+
+  <main class="container">
+    {error ? (
+      <div class="card">
+        <div class="card-body">
+          <div class="success-icon">:(</div>
+          <h2>Oops!</h2>
+          <p class="message">{error}</p>
+          <a href="https://mannyknows.com" class="btn btn-secondary">Return to Website</a>
+        </div>
+        <div class="contact">
+          <p>Need help?</p>
+          <a href="tel:4133618451">(413) 361-8451</a>
+        </div>
+      </div>
+    ) : alreadyResponded ? (
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-red">QUOTE DECLINED</span>
+        </div>
+        <div class="card-body">
+          <h2>Quote Already Declined</h2>
+          <p class="message">
+            You've previously declined this quote. If you've changed your mind, please give us a call!
+          </p>
+          <div class="summary">
+            <div class="summary-row">
+              <span class="summary-label">Quote #</span>
+              <span class="summary-value">{quote.quote_number}</span>
+            </div>
+            {quote.decline_reason && (
+              <div class="summary-row">
+                <span class="summary-label">Reason</span>
+                <span class="summary-value">{quote.decline_reason}</span>
+              </div>
+            )}
+          </div>
+          <a href="https://mannyknows.com" class="btn btn-secondary">Return to Website</a>
+        </div>
+        <div class="contact">
+          <p>Changed your mind?</p>
+          <a href="tel:4133618451">(413) 361-8451</a>
+        </div>
+      </div>
+    ) : (
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-blue">QUOTE #{quote.quote_number}</span>
+        </div>
+        <div class="card-body">
+          <h2>We're Sorry to See You Go</h2>
+          <p class="message">
+            Hi {firstName}, we'd love to know why so we can improve. Your feedback helps us serve customers better.
+          </p>
+
+          <div class="summary">
+            <div class="summary-row">
+              <span class="summary-label">Services</span>
+              <span class="summary-value">{formatServices(quote.services)}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Quoted Amount</span>
+              <span class="summary-value">{formatCurrency(quote.total)}</span>
+            </div>
+          </div>
+
+          <form id="decline-form">
+            <input type="hidden" name="token" value={token}>
+
+            <div class="form-group">
+              <label for="reason">Why are you declining? <span class="optional">(Required)</span></label>
+              <select id="reason" name="reason" required>
+                <option value="">Select a reason...</option>
+                <option value="Too expensive">Too expensive</option>
+                <option value="Timing not right">Timing not right</option>
+                <option value="Chose another company">Chose another company</option>
+                <option value="Project cancelled">Project cancelled</option>
+                <option value="Need to think about it">Need to think about it</option>
+                <option value="Other">Other</option>
+              </select>
+              <p class="error-text" id="reason-error">Please select a reason</p>
+            </div>
+
+            <div class="form-group">
+              <label for="feedback">Additional comments <span class="optional">(Optional)</span></label>
+              <textarea
+                id="feedback"
+                name="feedback"
+                placeholder="Is there anything we could do differently? Any feedback helps..."
+              ></textarea>
+            </div>
+
+            <div id="declineError" class="decline-error" style="display:none; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; padding: 10px 14px; border-radius: 8px; margin: 12px 0; font-size: 13px;"></div>
+
+            <button type="submit" class="btn btn-danger">
+              <span class="btn-text">Submit & Decline Quote</span>
+              <span class="loading">
+                <span class="spinner"></span>
+                Processing...
+              </span>
+            </button>
+          </form>
+
+          <a href={`/quote/accept/${token}`} class="btn btn-link">Wait, I'd like to accept instead</a>
+        </div>
+        <div class="contact">
+          <p>Want to discuss the quote first?</p>
+          <a href="tel:4133618451">(413) 361-8451</a>
+        </div>
+      </div>
+    )}
+  </main>
+
+  <footer class="footer">
+    <h3>MannyKnows</h3>
+    <p>Remodeling, Painting & Home Repairs — Springfield, MA</p>
+    <div class="footer-links">
+      <a href="https://mannyknows.com">mannyknows.com</a>
+      <span>|</span>
+      <a href="tel:4133618451">(413) 361-8451</a>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('decline-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const reasonSelect = document.getElementById('reason') as unknown as HTMLSelectElement;
+        const reasonError = document.getElementById('reason-error');
+
+        if (!reasonSelect.value) {
+          reasonError?.classList.add('visible');
+          reasonSelect.focus();
+          return;
+        }
+
+        reasonError?.classList.remove('visible');
+        form.classList.add('submitted');
+
+        const formData = new FormData(form as HTMLFormElement);
+        const token = formData.get('token');
+        const reason = formData.get('reason');
+        const feedback = formData.get('feedback');
+
+        try {
+          const response = await fetch('/api/quotes/respond/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              token,
+              action: 'decline',
+              decline_reason: reason,
+              decline_feedback: feedback || undefined
+            })
+          });
+
+          const data = await response.json() as any;
+
+          if (data.success) {
+            // Show success state
+            document.querySelector('.card-body')!.innerHTML = `
+              <div class="success-message">
+                <div class="success-icon">&#128077;</div>
+                <h2 style="color: #1e293b; margin-bottom: 16px;">Thank You for Your Feedback</h2>
+                <p class="message" style="color: #475569; margin-bottom: 24px;">
+                  We appreciate you letting us know. If your situation changes, we'd love to hear from you!
+                </p>
+                <a href="https://mannyknows.com" class="btn btn-secondary" style="display: block; padding: 16px; text-align: center; background: #f1f5f9; color: #64748b; text-decoration: none; border-radius: 8px;">
+                  Return to Website
+                </a>
+              </div>
+            `;
+          } else {
+            showError(data.error || 'Something went wrong. Please try again.');
+            form.classList.remove('submitted');
+          }
+        } catch (err) {
+          showError('Failed to connect. Please check your internet and try again.');
+          form.classList.remove('submitted');
+        }
+      });
+
+      // Inline error helper — replaces the gray browser alert() boxes with
+      // a styled red banner above the submit button.
+      function showError(msg) {
+        var el = document.getElementById('declineError');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  </script>
+</body>
+</html>

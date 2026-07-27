@@ -1,0 +1,476 @@
+---
+// /admin/contract-templates — list + create contract templates.
+// Editing one template happens in /admin/contract-templates/[id] (sub-page).
+// Parallels the structure of /admin/quote-templates so the admin only learns
+// one pattern; the extra contract-only fields surface inside the detail page.
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import ConfirmModal from '../../components/ConfirmModal.astro';
+import '../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contract Templates — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <style is:global>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .ct-page { max-width: 1400px; margin: 0 auto; padding: 24px 16px 48px; }
+      .ct-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+      .ct-header h1 { margin: 0 0 4px; font-size: 28px; font-weight: 700; }
+      .ct-header p { color: var(--color-text-secondary); margin: 0; font-size: 14px; }
+      .ct-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .ct-actions button, .ct-actions label {
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .ct-actions button.primary {
+        background: linear-gradient(135deg, var(--color-primary), #e05f00);
+        color: #fff;
+        border-color: var(--color-primary);
+      }
+      .ct-actions label { display: inline-flex; gap: 6px; align-items: center; user-select: none; }
+      .ct-actions label input { accent-color: var(--color-primary); }
+
+      .ct-type-pill {
+        display: inline-block;
+        font-size: 9px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 2px 7px; border-radius: 4px;
+        background: rgba(99, 102, 241, 0.18);
+        color: #a5b4fc;
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ct-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      @media (min-width: 768px) {
+        .ct-grid {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 12px;
+        }
+      }
+      .ct-card {
+        position: relative;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        text-decoration: none;
+        color: inherit;
+        display: flex; flex-direction: column; gap: 6px;
+        transition: filter 0.15s, transform 0.15s;
+        min-width: 0;
+      }
+      .ct-card:hover { filter: brightness(1.1); }
+      .ct-card.archived { opacity: 0.55; }
+      .ct-card-title { font-size: 13px; font-weight: 700; line-height: 1.3; word-break: break-word; }
+      .ct-card-meta { font-size: 11px; color: var(--color-text-secondary); }
+      .ct-card-meta .sep { color: var(--glass-border); margin: 0 4px; }
+      .ct-card-delete {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 24px;
+        height: 24px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--glass-border);
+        color: #fca5a5;
+        border-radius: 6px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+      }
+      .ct-card:hover .ct-card-delete,
+      .ct-card-delete:focus-visible { display: inline-flex; }
+      .ct-card-delete:hover {
+        background: rgba(239, 68, 68, 0.25);
+        border-color: rgba(239, 68, 68, 0.5);
+        color: #fff;
+      }
+      .ct-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+      .ct-badge {
+        display: inline-flex; align-items: center;
+        font-size: 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 3px 8px; border-radius: 999px;
+      }
+      .ct-badge.default {
+        background: linear-gradient(135deg, var(--color-primary), #e05f00);
+        color: #fff;
+      }
+      .ct-badge.archived { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+
+      .ct-empty {
+        padding: 40px 24px;
+        text-align: center;
+        color: var(--color-text-secondary);
+        background: var(--glass-bg);
+        border: 1px dashed var(--glass-border);
+        border-radius: var(--radius-lg);
+      }
+
+      .ct-modal {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+      }
+      .ct-modal.active { display: flex; }
+      .ct-modal-box {
+        background: var(--color-background-light, var(--color-background));
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        width: 100%; max-width: 480px;
+        overflow: hidden;
+        display: flex; flex-direction: column;
+      }
+      .ct-modal-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .ct-modal-header h2 { margin: 0; font-size: 16px; font-weight: 700; }
+      .ct-modal-close { background: transparent; border: none; color: var(--color-text-secondary); font-size: 22px; line-height: 1; cursor: pointer; }
+      .ct-modal-body { padding: 16px 18px; }
+      .ct-modal-footer {
+        padding: 12px 18px;
+        border-top: 1px solid var(--glass-border);
+        display: flex; gap: 8px; justify-content: flex-end;
+      }
+      .ct-modal-footer button {
+        padding: 8px 16px; border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+      }
+      .ct-modal-footer button.cancel { background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--color-text-primary); }
+      .ct-modal-footer button.primary { background: linear-gradient(135deg, var(--color-primary), #e05f00); color: #fff; border: 1px solid var(--color-primary); }
+      .ct-modal-footer button:disabled { opacity: 0.4; cursor: not-allowed; }
+      .ct-modal-field { margin-bottom: 12px; }
+      .ct-modal-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); margin-bottom: 4px; }
+      .ct-modal-field input, .ct-modal-field select {
+        width: 100%; box-sizing: border-box;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-family: inherit;
+      }
+
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--color-background-light, #1f2937);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        font-size: 14px; z-index: 2000;
+        opacity: 0; transition: opacity 0.2s; pointer-events: none;
+      }
+      .toast.visible { opacity: 1; }
+      .toast.success { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+      .toast.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    </style>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="projects" />
+      <div class="mobile-header-right">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="projects" />
+
+    <main class="ct-page">
+      <div class="ct-header">
+        <div>
+          <h1>Contract Templates</h1>
+          <p>Reusable contract scaffolds applied to a project. Defines scope + payment schedule + terms.</p>
+        </div>
+        <div class="ct-actions">
+          <label><input type="checkbox" id="showArchived" onchange="loadTemplates()"> Show archived</label>
+          <button class="primary" onclick="openNewModal()">+ New contract template</button>
+        </div>
+      </div>
+
+      <div id="ctList">
+        <div class="ct-empty">Loading…</div>
+      </div>
+    </main>
+
+    <div class="ct-modal" id="newModal" onclick="if(event.target===this) closeNewModal()">
+      <div class="ct-modal-box">
+        <div class="ct-modal-header">
+          <h2>New contract template</h2>
+          <button class="ct-modal-close" onclick="closeNewModal()">&times;</button>
+        </div>
+        <div class="ct-modal-body">
+          <div class="ct-modal-field">
+            <label for="newName">Name</label>
+            <input id="newName" type="text" placeholder="e.g. Interior — Standard Contract" />
+          </div>
+          <div class="ct-modal-field">
+            <label for="newType">Project type</label>
+            <select id="newType">
+              <option value="interior">Interior</option>
+              <option value="exterior">Exterior</option>
+              <option value="cabinet">Cabinet</option>
+              <option value="deck">Deck</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin:0;">A blank template will be created with default payment schedule (30% down × 3, 8 monthly) and one starter section.</p>
+        </div>
+        <div class="ct-modal-footer">
+          <button class="cancel" onclick="closeNewModal()">Cancel</button>
+          <button class="primary" id="newSubmitBtn" onclick="submitNew()">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <ConfirmModal />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+
+      const TYPE_LABEL = {
+        kitchen_remodel: 'Kitchen Remodeling', bathroom_remodel: 'Bathroom Remodeling',
+        interior_painting: 'Interior Painting', flooring: 'Flooring',
+        general_repairs: 'General Repairs & Handyman', other: 'Other',
+      };
+
+      function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast visible ' + (type || '');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => el.classList.remove('visible'), 2500);
+      }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      async function loadTemplates() {
+        const list = document.getElementById('ctList');
+        const showArchived = document.getElementById('showArchived').checked ? '?archived=1' : '';
+        try {
+          const res = await fetch('/api/admin/contract-templates/' + showArchived, { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success) { showToast(data.error || 'Failed to load', 'error'); return; }
+          const templates = data.templates || [];
+          if (!templates.length) {
+            list.innerHTML = '<div class="ct-empty">No contract templates yet. Click <strong>+ New contract template</strong> to create one.</div>';
+            return;
+          }
+          const order = ['kitchen_remodel', 'bathroom_remodel', 'interior_painting', 'flooring', 'general_repairs', 'other'];
+          const orderRank = (t) => {
+            const k = (t.project_type || 'other').toLowerCase();
+            const i = order.indexOf(k);
+            return i === -1 ? 999 : i;
+          };
+          templates.sort((a, b) => {
+            const r = orderRank(a) - orderRank(b);
+            if (r !== 0) return r;
+            return String(a.name || '').localeCompare(String(b.name || ''));
+          });
+          const cards = templates.map(t => {
+            const badges = [];
+            if (t.is_default) badges.push('<span class="ct-badge default">Default</span>');
+            if (t.archived) badges.push('<span class="ct-badge archived">Archived</span>');
+            const typeLabel = TYPE_LABEL[t.project_type] || t.project_type || 'Other';
+            // Payment summary so admin can see schedule shape at a glance.
+            const schedSummary =
+              `${t.down_payment_percent}% down`
+              + (t.down_payment_count > 1 ? ` × ${t.down_payment_count}` : '')
+              + (t.monthly_payment_count > 0 ? ` + ${t.monthly_payment_count} monthly` : '');
+            return `
+              <a class="ct-card${t.archived ? ' archived' : ''}" href="/admin/contract-templates/${t.id}/">
+                <button class="ct-card-delete" type="button" title="Delete forever" aria-label="Delete forever" onclick="hardDeleteTemplate(event, ${t.id}, '${escapeHtml(t.name).replace(/'/g, "\\'")}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                </button>
+                <div class="ct-card-title">${escapeHtml(t.name)}</div>
+                <div class="ct-type-pill">${escapeHtml(typeLabel)}</div>
+                <div class="ct-badges">${badges.join('')}</div>
+                <div class="ct-card-meta">${t.section_count} section${t.section_count === 1 ? '' : 's'}</div>
+                <div class="ct-card-meta">${escapeHtml(schedSummary)}</div>
+              </a>
+            `;
+          }).join('');
+          list.innerHTML = `<div class="ct-grid">${cards}</div>`;
+        } catch {
+          showToast('Failed to load templates', 'error');
+        }
+      }
+
+      function openNewModal() {
+        document.getElementById('newName').value = '';
+        document.getElementById('newType').value = 'exterior';
+        document.getElementById('newModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeNewModal() {
+        document.getElementById('newModal').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      window.openNewModal = openNewModal;
+      window.closeNewModal = closeNewModal;
+
+      async function submitNew() {
+        const name = document.getElementById('newName').value.trim();
+        const project_type = document.getElementById('newType').value;
+        if (!name) { showToast('Name is required', 'error'); return; }
+        const btn = document.getElementById('newSubmitBtn');
+        btn.disabled = true; btn.textContent = 'Creating…';
+        try {
+          const sections = [
+            { id: 's-' + Date.now(), title: 'Untitled Section', items: [] }
+          ];
+          // Terms defaults match the seed template — admin tweaks them in
+          // the detail editor.
+          const terms = {
+            marketing_release: { enabled: true, text: 'MannyKnows will be taking photos and videos of the project to promote our business on Google and social media.' },
+            reference_request: { enabled: true, text: 'Can we use you as a reference?' },
+            custom_terms: [],
+          };
+          const res = await fetch('/api/admin/contract-templates/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, project_type, sections, terms }),
+          });
+          const data = await res.json();
+          if (!data.success || !data.id) {
+            showToast(data.error || 'Failed to create', 'error');
+            btn.disabled = false; btn.textContent = 'Create';
+            return;
+          }
+          window.location.href = `/admin/contract-templates/${data.id}/`;
+        } catch {
+          showToast('Failed to create contract template', 'error');
+          btn.disabled = false; btn.textContent = 'Create';
+        }
+      }
+      window.submitNew = submitNew;
+      window.loadTemplates = loadTemplates;
+
+      async function hardDeleteTemplate(evt, id, name) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        window.showConfirmModal({
+          title: `Delete "${name}" forever?`,
+          text: "Projects that already applied it keep their frozen copy. This can't be undone.",
+          confirmText: 'Delete forever',
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              const res = await fetch(`/api/admin/contract-templates/${id}/?hard=1`, {
+                method: 'DELETE',
+                credentials: 'include',
+              });
+              const data = await res.json();
+              if (!data.success) { showToast(data.error || 'Delete failed', 'error'); return; }
+              showToast('Template deleted', 'success');
+              loadTemplates();
+            } catch {
+              showToast('Delete failed', 'error');
+            }
+          },
+        });
+      }
+      window.hardDeleteTemplate = hardDeleteTemplate;
+
+      loadTemplates();
+    </script>
+  </body>
+</html>

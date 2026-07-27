@@ -1,0 +1,465 @@
+---
+// Admin Portfolios Page - Showcase completed work + Manual portfolio management
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import buildInfo from '../../data/build-info.json';
+import { PORTFOLIO_TYPES, PORTFOLIO_TYPE_LABELS } from '../../lib/portfolio-copy';
+import { serviceLabel } from '../../data/serviceTypes';
+import { imagesDeliveryBase } from '../../lib/heroSlides';
+import { streamSubdomain } from '../../lib/stream';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin');
+}
+
+const userRole = session.role || 'admin';
+const isViewer = userRole === 'viewer';
+
+// Fetch data from D1
+const db = env?.MK_APP_DB;
+let fromProjectPortfolios: any[] = [];
+let manualPortfolios: any[] = [];
+let allPortfolios: any[] = [];
+
+if (db) {
+  try {
+    // Fetch ALL portfolios with media count
+    // cover_image: prioritize images, fall back to video if no images
+    const allResult = await db.prepare(`
+      SELECT
+        mp.*,
+        COUNT(mpm.id) as media_count,
+        COALESCE(
+          (SELECT media_url FROM portfolio_media
+           WHERE portfolio_id = mp.id AND media_type = 'image'
+           ORDER BY sort_order ASC, created_at ASC LIMIT 1),
+          (SELECT media_url FROM portfolio_media
+           WHERE portfolio_id = mp.id AND media_type = 'video'
+           ORDER BY sort_order ASC, created_at ASC LIMIT 1)
+        ) as cover_image,
+        (SELECT cloudflare_image_id FROM portfolio_media
+         WHERE portfolio_id = mp.id AND media_type = 'image'
+         ORDER BY sort_order ASC, created_at ASC LIMIT 1) as cover_cf_id,
+        (SELECT media_type FROM portfolio_media
+         WHERE portfolio_id = mp.id
+         ORDER BY CASE WHEN media_type = 'image' THEN 0 ELSE 1 END, sort_order ASC, created_at ASC
+         LIMIT 1) as cover_type,
+        pr.project_number AS src_project_number,
+        pr.quote_id AS src_quote_id,
+        q.quote_number AS src_quote_number,
+        q.lead_id AS src_lead_id
+      FROM portfolios mp
+      LEFT JOIN portfolio_media mpm ON mp.id = mpm.portfolio_id
+      LEFT JOIN projects pr ON pr.id = mp.source_project_id
+      LEFT JOIN quotes q ON q.id = pr.quote_id
+      GROUP BY mp.id
+      ORDER BY mp.created_at DESC
+    `).all();
+    allPortfolios = allResult.results || [];
+
+    // Separate by origin: source_project_id indicates "From Project"
+    fromProjectPortfolios = allPortfolios.filter((p: any) => p.source_project_id != null);
+    manualPortfolios = allPortfolios.filter((p: any) => p.source_project_id == null);
+  } catch (e) {
+    console.error('Portfolios fetch error:', e);
+  }
+}
+
+// Portfolio category labels (canonical list in src/lib/portfolio-copy.ts)
+const serviceLabels = PORTFOLIO_TYPE_LABELS;
+
+function formatServices(servicesJson: string | null): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    return services.map((s: any) => {
+      const key = typeof s === 'string' ? s : (s.type || s.service || 'service');
+      return serviceLabels[key] || serviceLabel(key) || key;
+    }).join(', ');
+  } catch {
+    return servicesJson || 'Home Services';
+  }
+}
+
+// Account-specific media config for the shared editor script
+// (/assets/admin-portfolios.js). Empty strings mean "not configured" — the
+// script falls back to raw URLs.
+const mediaConfig = {
+  imagesBase: imagesDeliveryBase(env),          // https://imagedelivery.net/<hash> or ''
+  streamSubdomain: streamSubdomain(env),        // customer-….cloudflarestream.com or ''
+  publicHost: env?.MEDIA_PUBLIC_HOST || 'images.mannyknows.com',
+  siteHost: 'mannyknows.com',
+};
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return 'N/A';
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+const totalCount = fromProjectPortfolios.length + manualPortfolios.length;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolios | MannyKnows Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    // Theme init - runs before CSS to prevent flash
+    (function() {
+      const theme = localStorage.getItem('admin-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/assets/admin-portfolios.css" />
+</head>
+<body data-role={userRole}>
+  <AdminPresence />
+  <header class="admin-header">
+    <a href="/admin/dashboard" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Admin</span>
+    </a>
+    {isViewer ? (
+      <nav class="admin-nav">
+        <a href="/admin/portfolios" class="nav-link active">Portfolios</a>
+      </nav>
+    ) : (
+      <AdminNav active="portfolios" />
+    )}
+    <!-- Mobile: Bell + Hamburger -->
+    <div class="mobile-header-right">
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtnMobile" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge bell-badge-mobile" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdownMobile" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellListMobile">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtn" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdown" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellList">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  {isViewer ? (
+    <Fragment>
+      <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+      <nav class="mobile-nav-panel" id="mobileNavPanel">
+        <div class="mobile-nav-header">
+          <div class="logo-gradient-wrapper" style="width: 100px; height: 28px;"></div>
+          <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="mobile-nav-links">
+          <div class="mobile-nav-section-title">Content</div>
+          <a href="/admin/portfolios" class="mobile-nav-link active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Portfolios
+          </a>
+          <div class="mobile-nav-divider"></div>
+          <div class="mobile-nav-section-title">Settings</div>
+          <button class="mobile-nav-link" id="mobileThemeToggle" onclick="toggleTheme(); closeMobileNav();">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span class="theme-label">Dark Mode</span>
+          </button>
+          <button class="mobile-nav-link logout" onclick="logout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </button>
+        </div>
+      </nav>
+    </Fragment>
+  ) : (
+    <AdminMobileDrawer active="portfolios" />
+  )}
+
+  <main class="admin-main">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">Portfolio Showcase</h1>
+        <p class="page-subtitle">Completed projects showcasing our work</p>
+      </div>
+      <div class="page-header-right">
+        <span class="page-count">{totalCount} project{totalCount !== 1 ? 's' : ''}</span>
+        {!isViewer && (
+          <button class="btn btn-primary btn-add-portfolio" onclick="openCreateModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Portfolio
+          </button>
+        )}
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All ({totalCount})</button>
+      <button class="filter-tab" data-filter="manual">Manual ({manualPortfolios.length})</button>
+      <button class="filter-tab" data-filter="promoted">From Projects ({fromProjectPortfolios.length})</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="Search portfolios..."
+      >
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="no-results" id="noResults">
+        No portfolios match your search
+      </div>
+
+      {/* All portfolios in ONE list, newest added first (created_at DESC from
+          the query). Tabs filter by data-type via JS; rendering them in a
+          single loop keeps the global newest-first order instead of grouping
+          Manual then From-Project. */}
+      {allPortfolios.map((portfolio) => {
+        const mediaCount = portfolio.media_count || 0;
+        const isVideoCover = portfolio.cover_type === 'video';
+        const isFromProject = portfolio.source_project_id != null;
+        // Prefer the Cloudflare Images variant when available — required for
+        // HEIC originals (browsers can't decode those) and faster everywhere.
+        // Fall back to cdn-cgi/image, then the raw URL.
+        let coverUrl = null;
+        if (portfolio.cover_image) {
+          if (isVideoCover) {
+            coverUrl = portfolio.cover_image; // Videos don't use image transforms
+          } else if (portfolio.cover_cf_id && mediaConfig.imagesBase) {
+            coverUrl = `${mediaConfig.imagesBase}/${portfolio.cover_cf_id}/w=640,q=80,fit=cover,f=auto`;
+          } else {
+            try {
+              const coverImgUrl = new URL(portfolio.cover_image);
+              coverUrl = `${coverImgUrl.origin}/cdn-cgi/image/width=640,height=400,fit=cover,quality=80,format=auto${coverImgUrl.pathname}`;
+            } catch {
+              coverUrl = portfolio.cover_image;
+            }
+          }
+        }
+
+        return (
+          <div
+            class="gallery-card"
+            data-id={`manual-${portfolio.id}`}
+            data-type={isFromProject ? 'promoted' : 'manual'}
+            data-portfolio={JSON.stringify(portfolio)}
+            data-search={`${portfolio.project_name} ${portfolio.project_type} ${portfolio.description || ''} ${portfolio.client_name || ''} ${portfolio.client_city || ''}`.toLowerCase()}
+            onclick={`window.location.href='/admin/portfolios/${portfolio.id}/'`}
+          >
+            <div class="card-cover">
+              {coverUrl && isVideoCover ? (
+                <video src={coverUrl} muted preload="metadata" style="pointer-events: none;"></video>
+              ) : coverUrl ? (
+                <img src={coverUrl} alt={portfolio.project_name} loading="lazy" />
+              ) : (
+                <div class="card-cover-placeholder">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span style="font-size: 11px;">No images</span>
+                </div>
+              )}
+              <span class={`card-badge ${isFromProject ? 'promoted' : 'manual'}`}>{isFromProject ? 'From Project' : 'Manual'}</span>
+              {mediaCount > 0 && (
+                <span class="image-count-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  </svg>
+                  {mediaCount}
+                </span>
+              )}
+            </div>
+            <div class="card-info">
+              <span class="card-type">{serviceLabels[portfolio.project_type] || portfolio.project_type}</span>
+              <h3 class="card-title">{portfolio.project_name}</h3>
+              <p class="card-meta">Added {formatDate(portfolio.created_at)}</p>
+              {(portfolio.src_project_number || portfolio.src_lead_id) && (
+                <p class="card-lineage">
+                  {portfolio.src_project_number && <span title="Source project / quote ID">{portfolio.src_project_number}</span>}
+                  {portfolio.src_lead_id && <span title="Source lead">Lead #{portfolio.src_lead_id}</span>}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Empty state */}
+      {totalCount === 0 && (
+        <div class="empty-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <h3>No Portfolio Items Yet</h3>
+          <p>Click "Add Portfolio" to manually add projects, or promote completed projects from the Projects page</p>
+        </div>
+      )}
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+      <button id="portfolioLoadMore" class="filter-tab" type="button" style="display:none;">Load more</button>
+    </div>
+  </main>
+
+  <!-- Create Portfolio Modal -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Portfolio</h3>
+        <button class="modal-close" onclick="closeCreateModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="createPortfolioForm">
+          <div class="form-group">
+            <label class="form-label">Project Name *</label>
+            <input type="text" class="form-input" id="projectName" placeholder="e.g., Maple Street Kitchen Remodel" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type *</label>
+            <select class="form-select" id="projectType" required>
+              {PORTFOLIO_TYPES.map((t) => (
+                <option value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="projectDescription" placeholder="Brief description of the project..."></textarea>
+          </div>
+
+          <div class="collapsible-section">
+            <button type="button" class="collapsible-toggle" onclick="toggleClientInfo()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+              Client Info (Optional)
+            </button>
+            <div class="collapsible-content" id="clientInfoSection">
+              <div class="form-group">
+                <label class="form-label">Client Name</label>
+                <input type="text" class="form-input" id="clientName" placeholder="Client name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="clientEmail" placeholder="client@email.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="tel" class="form-input" id="clientPhone" placeholder="(555) 123-4567">
+              </div>
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" class="form-input" id="clientCity" placeholder="Springfield">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="createPortfolio()" id="createBtn">Create Portfolio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The portfolio editor (incl. manualDetailModal, deleteConfirmModal,
+       lightbox, and fileInput) now lives on /admin/portfolios/[id] — only
+       reachable by navigating from a card click. Keeping the toast here so
+       create-portfolio feedback still shows on this page. -->
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- MK Footer -->
+  <footer class="admin-footer">
+    by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
+  </footer>
+
+  <script is:inline define:vars={{ mediaConfig }}>
+    // Account-specific media endpoints for the shared editor script.
+    window.MK_MEDIA = mediaConfig;
+  </script>
+  <script src={`/assets/admin-portfolios.js?v=${buildInfo.commit}`} is:inline></script>
+</body>
+</html>

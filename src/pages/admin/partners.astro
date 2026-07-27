@@ -1,0 +1,372 @@
+---
+// Admin Partners — manage partner contractors who send us work and the jobs
+// that come through them. Separate from the leads/quotes/projects pipeline.
+// Each job has its own crew page (no customer portal).
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../components/BellNotification.astro';
+import ConfirmModal from '../../components/ConfirmModal.astro';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) return Astro.redirect('/admin');
+if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partners | MannyKnows Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="robots" content="noindex, nofollow" />
+  <script>(function(){var t=localStorage.getItem('admin-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style is:global>
+    .admin-main { max-width: 1280px; }
+    .pt-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
+    @media (max-width: 900px) { .pt-layout { grid-template-columns: 1fr; } }
+    .pt-list { display: flex; flex-direction: column; gap: 8px; }
+    .pt-list-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .pt-card { padding: 12px 14px; border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: var(--glass-bg); cursor: pointer; }
+    .pt-card.active { border-color: var(--color-primary); background: rgba(255,120,29,0.10); }
+    .pt-card-name { font-weight: 700; font-size: 15px; }
+    .pt-card-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+    .pt-detail { border: 1px solid var(--glass-border); border-radius: var(--radius-lg, 14px); background: var(--glass-bg); padding: 20px; min-height: 300px; }
+    .pt-empty { color: var(--color-text-secondary); text-align: center; padding: 60px 20px; }
+    .pt-field { margin-bottom: 12px; }
+    .pt-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-text-secondary); margin-bottom: 4px; }
+    .pt-field input, .pt-field select, .pt-field textarea { width: 100%; padding: 9px 11px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--color-text-primary); border-radius: var(--radius-sm); font-size: 14px; }
+    .pt-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .pt-grid2 { grid-template-columns: 1fr; } }
+    .pt-job { border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; }
+    .pt-job-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .pt-job-title { font-weight: 700; font-size: 15px; }
+    .pt-job-meta { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+    .pt-job-price { font-weight: 700; color: var(--color-primary); white-space: nowrap; }
+    .pt-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: capitalize; }
+    .pt-badge.pending { background: rgba(148,163,184,0.2); color: #94a3b8; }
+    .pt-badge.in_progress { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .pt-badge.completed { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .pt-row-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .pt-mini { font-size: 12px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04); color: var(--color-text-primary); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+    .pt-mini.danger { border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+    .pt-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); margin: 22px 0 12px; }
+    /* Options (⋯) menu — keeps destructive actions out of one-tap reach. */
+    .pt-opt-wrap { position: relative; display: inline-block; }
+    .pt-kebab { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04); color: var(--color-text-primary); cursor: pointer; font-size: 18px; line-height: 1; }
+    .pt-menu { position: absolute; right: 0; top: calc(100% + 4px); min-width: 160px; background: var(--color-background); border: 1px solid var(--glass-border); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); padding: 6px; z-index: 20; display: none; }
+    .pt-menu.open { display: block; }
+    .pt-menu button { display: block; width: 100%; text-align: left; padding: 9px 12px; border: none; background: none; color: var(--color-text-primary); border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .pt-menu button:hover { background: rgba(255,255,255,0.06); }
+    .pt-menu button.danger { color: #fca5a5; }
+    .pt-menu button.danger:hover { background: rgba(239,68,68,0.12); }
+  </style>
+</head>
+<body>
+  <AdminPresence />
+  <header class="admin-header">
+    <a href="/admin/dashboard" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Admin</span>
+    </a>
+    <AdminNav active="partners" />
+    <div class="mobile-header-right">
+      <BellNotification place="mobile" />
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <BellNotification place="desktop" />
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <AdminMobileDrawer active="partners" />
+
+  <main class="admin-main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Partners</h1>
+        <p class="page-subtitle">Set up each partner's brand — logo, name, phone, website, address. When you assign a Quote or Project to a partner, every customer-facing message (emails, portal, contract &amp; PDFs) uses their branding instead of MannyKnows's.</p>
+      </div>
+    </div>
+
+    <div class="pt-layout">
+      <div>
+        <div class="pt-list-head">
+          <strong style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Partners</strong>
+          <button class="btn btn-primary" style="padding:6px 12px; font-size:13px;" onclick="addPartner()">+ Add</button>
+        </div>
+        <div class="pt-list" id="ptList"><div class="pt-empty">Loading…</div></div>
+      </div>
+      <div class="pt-detail" id="ptDetail"><div class="pt-empty">Select a partner, or add one to get started.</div></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <ConfirmModal />
+
+  <script is:inline>
+    (function(){var t=localStorage.getItem('admin-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+    function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');var n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('admin-theme',n);}
+    async function logout(){await fetch('/api/admin/logout/',{method:'POST'});window.location.href='/admin';}
+    var t=document.getElementById('mobileNavToggle'),p=document.getElementById('mobileNavPanel'),o=document.getElementById('mobileNavOverlay'),c=document.getElementById('mobileNavClose');
+    t&&t.addEventListener('click',function(){var a=p.classList.contains('active');p.classList.toggle('active',!a);o.classList.toggle('active',!a);document.body.style.overflow=!a?'hidden':'';});
+    c&&c.addEventListener('click',function(){p.classList.remove('active');o.classList.remove('active');document.body.style.overflow='';});
+    o&&o.addEventListener('click',function(){c&&c.click();});
+
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function fmt(n){return (Number(n)||0).toLocaleString('en-US',{style:'currency',currency:'USD'});}
+    function showToast(m,type){var e=document.getElementById('toast');e.textContent=m;e.className='toast visible '+(type||'');clearTimeout(window._tt);window._tt=setTimeout(function(){e.classList.remove('visible');},2500);}
+
+    var partners=[], selectedId=null, jobs=[];
+
+    async function loadPartners(){
+      var res=await fetch('/api/admin/partners/',{credentials:'include'});
+      var data=await res.json();
+      partners=data.partners||[];
+      renderList();
+      if(selectedId && !partners.find(function(p){return p.id===selectedId;})) selectedId=null;
+      if(selectedId) selectPartner(selectedId);
+    }
+    function renderList(){
+      var el=document.getElementById('ptList');
+      if(!partners.length){el.innerHTML='<div class="pt-empty" style="padding:30px 10px;">No partners yet.</div>';return;}
+      el.innerHTML=partners.map(function(p){
+        return '<div class="pt-card'+(p.id===selectedId?' active':'')+'" onclick="selectPartner('+p.id+')">'
+          +'<div class="pt-card-name">'+esc(p.name)+'</div>'
+          +'<div class="pt-card-sub">'+(p.job_count||0)+' project'+(p.job_count===1?'':'s')+' · '+fmt(p.total)+'</div></div>';
+      }).join('');
+    }
+
+    async function addPartner(){
+      // Create with a placeholder name + open the detail panel so the admin
+      // renames inline — no browser prompt() (matches the Add-job flow).
+      var res=await fetch('/api/admin/partners/',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'New Partner'})});
+      var data=await res.json();
+      if(!data.success){showToast(data.error||'Failed','error');return;}
+      selectedId=data.id;
+      await loadPartners();
+      var block=document.getElementById('ptEditBlock');
+      if(block) block.style.display='block';
+      var nameEl=document.getElementById('p_name');
+      if(nameEl){nameEl.focus();nameEl.select();}
+      showToast('Partner added — rename it on the right');
+    }
+
+    async function selectPartner(id){
+      selectedId=id; renderList();
+      var p=partners.find(function(x){return x.id===id;});
+      if(!p)return;
+      var res=await fetch('/api/admin/partners/jobs/?partner_id='+id,{credentials:'include'});
+      var data=await res.json();
+      jobs=data.jobs||[];
+      renderDetail(p);
+    }
+
+    function renderDetail(p){
+      var el=document.getElementById('ptDetail');
+      var total=jobs.reduce(function(s,j){return s+(Number(j.price)||0);},0);
+      // Header: read-only partner identity + a contact summary. The editable
+      // fields live behind "Edit details" so they're not one-tap editable.
+      var contactBits=[p.contact_name,p.phone,p.email].filter(Boolean).map(esc).join(' · ');
+      var html=''
+        +'<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">'
+        +'<div><div style="font-size:20px; font-weight:700;">'+esc(p.name)+'</div>'
+        +(p.code?'<div style="font-family:monospace; color:#93c5fd; font-size:12px; margin-top:2px;">'+esc(p.code)+'</div>':'')
+        +(contactBits?'<div style="font-size:13px; color:var(--color-text-secondary); margin-top:6px;">'+contactBits+'</div>':'')
+        +'</div>'
+        +'<button class="pt-mini" onclick="toggleEdit()">Hide / show</button>'
+        +'</div>'
+        // Branding-purpose callout — this is what the page is FOR.
+        +'<div style="margin-top:12px; padding:11px 13px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.28); border-radius:10px; font-size:12.5px; color:var(--color-text-secondary); line-height:1.5;">'
+        +'<strong style="color:var(--color-text);">This is the partner\'s brand.</strong> The logo, name, phone, website &amp; address below are used in <strong>every customer-facing message</strong> — emails, the project portal, contract &amp; PDFs — for any Quote or Project you assign to '+esc(p.name)+'.'
+        +'</div>'
+        // Editable fields — shown by default so partner setup is discoverable.
+        +'<div id="ptEditBlock" style="display:block; margin-top:14px; padding-top:14px; border-top:1px solid var(--glass-border);">'
+        +'<div class="pt-grid2">'
+        +ptInput('Partner name','p_name',p.name)
+        +ptInput('ID code (job # prefix)','p_code',p.code)
+        +ptInput('Contact name','p_contact',p.contact_name)
+        +ptInput('Phone','p_phone',p.phone)
+        +ptInput('Email','p_email',p.email)
+        +ptInput('Website','p_website',p.website)
+        +'</div>'
+        +'<div class="pt-section-title" style="margin-top:4px;">White-label branding <span style="font-weight:400; font-size:11px; color:var(--color-text-secondary);">— used on customer emails, portal & PDFs for this partner\'s projects</span></div>'
+        +'<div class="pt-field"><label>Logo <span style="font-weight:400; font-size:11px; color:var(--color-text-secondary);">(white background works best)</span></label>'
+        +'<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">'
+        +'<input id="p_logo_file" type="file" accept="image/*,.svg,image/svg+xml" style="display:none;" onchange="uploadPartnerLogo('+p.id+', this)">'
+        +'<button type="button" class="btn btn-secondary" onclick="document.getElementById(\'p_logo_file\').click()">Upload logo</button>'
+        +'<span id="p_logo_status" style="font-size:12px; color:var(--color-text-secondary);"></span>'
+        +'</div>'
+        +'<input id="p_logo" type="text" value="'+esc(p.logo_url||'')+'" placeholder="…or paste an image URL" oninput="renderPartnerLogoPreview()">'
+        +'</div>'
+        +'<div id="p_logo_preview" style="margin:-4px 0 10px;">'+(p.logo_url?'<img src="'+esc(p.logo_url)+'" alt="logo preview" style="max-height:48px; max-width:220px; background:#fff; padding:6px 10px; border-radius:6px;">':'')+'</div>'
+        +'<div class="pt-field"><label>Mailing address</label><input id="p_address" type="text" value="'+esc(p.address||'')+'" placeholder="123 Main St, Springfield, MA 01103"></div>'
+        +'<div class="pt-field"><label>Notes</label><textarea id="p_notes" rows="2">'+esc(p.notes||'')+'</textarea></div>'
+        +'<div style="display:flex; gap:8px; align-items:center;">'
+        +'<button class="btn btn-primary" onclick="savePartner('+p.id+')">Save partner</button>'
+        +'<div class="pt-opt-wrap"><button class="pt-kebab" title="Options" onclick="toggleMenu(event,\'pmenu\')">⋯</button>'
+        +'<div class="pt-menu" id="pmenu"><button class="danger" onclick="deletePartner('+p.id+')">Delete partner</button></div></div>'
+        +'</div>'
+        +'</div>'
+        // Projects pointer — partner work now lives in the normal pipeline.
+        +'<div class="pt-section-title">Projects</div>'
+        +'<div style="font-size:13px; color:var(--color-text-secondary); line-height:1.6;">'
+        +'This partner\'s work lives in <a href="/admin/projects/" style="color:var(--color-primary); text-decoration:none;">Projects</a>, shown white-labeled. '
+        +'To add a job for '+esc(p.name)+', create a Project (or Quote) and set its <strong>Representing</strong> to this partner.'
+        +'</div>';
+      el.innerHTML=html;
+    }
+    function toggleEdit(){var b=document.getElementById('ptEditBlock');if(b)b.style.display=(b.style.display==='none'?'block':'none');}
+    window.toggleEdit=toggleEdit;
+    function ptInput(label,id,val){return '<div class="pt-field"><label>'+label+'</label><input id="'+id+'" type="text" value="'+esc(val||'')+'"></div>';}
+
+    function renderPartnerLogoPreview(){
+      var inp=document.getElementById('p_logo'); var url=inp?inp.value:'';
+      var box=document.getElementById('p_logo_preview');
+      if(box) box.innerHTML = url ? '<img src="'+url.replace(/"/g,'&quot;')+'" alt="logo preview" style="max-height:48px; max-width:220px; background:#fff; padding:6px 10px; border-radius:6px;">' : '';
+    }
+    window.renderPartnerLogoPreview=renderPartnerLogoPreview;
+
+    async function uploadPartnerLogo(id, input){
+      var f = input.files && input.files[0]; input.value='';
+      if(!f) return;
+      var st=document.getElementById('p_logo_status');
+      if(f.size > 5*1024*1024){ if(st){st.textContent='Logo too large (max 5MB)'; st.style.color='#dc2626';} return; }
+      if(st){ st.textContent='Uploading…'; st.style.color='var(--color-text-secondary)'; }
+      // Browsers report SVG file.type inconsistently (often empty) — force the
+      // correct content type from the extension so the upload isn't rejected.
+      var ct = /\.svg$/i.test(f.name) ? 'image/svg+xml' : (f.type || 'image/png');
+      try{
+        var res=await fetch('/api/admin/partners/logo-upload',{ method:'POST', credentials:'include', headers:{'Content-Type':ct,'X-Partner-Id':String(id)}, body:f });
+        var data=await res.json();
+        if(!data.success){ if(st){st.textContent=data.error||'Upload failed'; st.style.color='#dc2626';} return; }
+        var inp=document.getElementById('p_logo'); if(inp) inp.value=data.url;
+        renderPartnerLogoPreview();
+        if(st){ st.textContent='Uploaded — click Save partner'; st.style.color='#16a34a'; }
+      }catch(e){ if(st){st.textContent='Upload failed'; st.style.color='#dc2626';} }
+    }
+    window.uploadPartnerLogo=uploadPartnerLogo;
+
+    function renderJob(j){
+      var crewUrl=j.crew_token?('/partners/crew/'+j.crew_token):'';
+      return '<div class="pt-job" data-job-id="'+j.id+'">'
+        +'<div class="pt-job-head"><div><div class="pt-job-title">'+esc(j.client_name||'(no name)')+' '
+        +'<span class="pt-badge '+(j.status||'pending')+'">'+esc((j.status||'pending').replace('_',' '))+'</span></div>'
+        +'<div class="pt-job-meta">'+esc([j.work_type,j.address].filter(Boolean).join(' · ')||'—')+'</div>'
+        +(j.job_number?'<div class="pt-job-meta" style="font-family:monospace; color:#93c5fd; margin-top:2px;">'+esc(j.job_number)+'</div>':'')
+        +'</div>'
+        +'<div class="pt-job-price">'+fmt(j.price)+'</div></div>'
+        +(j.colors?'<div class="pt-job-meta" style="margin-top:6px;">Colors: '+esc(j.colors)+'</div>':'')
+        +(j.scope?'<div class="pt-job-meta" style="margin-top:4px; white-space:pre-wrap;">'+esc(j.scope)+'</div>':'')
+        +'<div class="pt-row-actions">'
+        +'<button class="pt-mini" onclick="editJob('+j.id+')">✎ Edit</button>'
+        +(j.pdf_url?'<a class="pt-mini" href="'+esc(j.pdf_url)+'" target="_blank" rel="noopener">'+esc(j.pdf_name||'PDF')+'</a>':'')
+        +(crewUrl?'<a class="pt-mini" href="'+crewUrl+'" target="_blank" rel="noopener">Crew page</a>':'')
+        +'<div class="pt-opt-wrap"><button class="pt-kebab" style="width:28px;height:28px;font-size:15px;" title="Options" onclick="toggleMenu(event,\'jmenu'+j.id+'\')">⋯</button>'
+        +'<div class="pt-menu" id="jmenu'+j.id+'"><button class="danger" onclick="deleteJob('+j.id+')">Delete job</button></div></div>'
+        +'</div></div>';
+    }
+
+    async function savePartner(id){
+      var body={id:id,name:val('p_name'),code:val('p_code'),contact_name:val('p_contact'),phone:val('p_phone'),email:val('p_email'),website:val('p_website'),logo_url:val('p_logo'),address:val('p_address'),notes:val('p_notes')};
+      var res=await fetch('/api/admin/partners/',{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      var data=await res.json();
+      if(!data.success){showToast(data.error||'Failed','error');return;}
+      showToast('Saved'); await loadPartners();
+    }
+    function deletePartner(id){
+      window.showConfirmModal({title:'Delete this partner?',text:'All of its jobs will be removed too.',confirmText:'Delete',type:'danger',onConfirm:async function(){
+        var res=await fetch('/api/admin/partners/?id='+id,{method:'DELETE',credentials:'include'});
+        var data=await res.json(); if(!data.success){showToast(data.error||'Failed','error');return;}
+        selectedId=null; document.getElementById('ptDetail').innerHTML='<div class="pt-empty">Select a partner.</div>'; await loadPartners();
+      }});
+    }
+    function val(id){var e=document.getElementById(id);return e?e.value:'';}
+
+    async function addJob(partnerId){
+      var res=await fetch('/api/admin/partners/jobs/',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({partner_id:partnerId,client_name:'New job'})});
+      var data=await res.json(); if(!data.success){showToast(data.error||'Failed','error');return;}
+      await selectPartner(partnerId);
+      editJob(data.id);
+    }
+
+    function editJob(id){
+      var j=jobs.find(function(x){return x.id===id;}); if(!j)return;
+      var card=document.querySelector('.pt-job[data-job-id="'+id+'"]'); if(!card)return;
+      var WT=['','Kitchen Remodeling','Bathroom Remodeling','Interior Painting','Flooring','General Repairs','Other'];
+      card.innerHTML='<div class="pt-grid2">'
+        +ptInput('Client name','j_client_'+id,j.client_name)
+        +ptInput('Phone','j_phone_'+id,j.phone)
+        +'</div>'
+        +ptInput('Address','j_address_'+id,j.address)
+        +'<div class="pt-grid2">'
+        +'<div class="pt-field"><label>Work type</label><select id="j_work_'+id+'">'+WT.map(function(w){return '<option value="'+w+'"'+((j.work_type||'')===w?' selected':'')+'>'+(w||'Select…')+'</option>';}).join('')+'</select></div>'
+        +'<div class="pt-field"><label>Status</label><select id="j_status_'+id+'">'+['pending','in_progress','completed'].map(function(s){return '<option value="'+s+'"'+((j.status||'pending')===s?' selected':'')+'>'+s.replace('_',' ')+'</option>';}).join('')+'</select></div>'
+        +'</div>'
+        +'<div class="pt-field"><label>Scope</label><textarea id="j_scope_'+id+'" rows="3">'+esc(j.scope||'')+'</textarea></div>'
+        +'<div class="pt-grid2">'
+        +ptInput('Colors / finishes','j_colors_'+id,j.colors)
+        +'<div class="pt-field"><label>Price ($)</label><input id="j_price_'+id+'" type="number" step="0.01" min="0" value="'+(Number(j.price)||0)+'"></div>'
+        +'</div>'
+        +'<div class="pt-grid2">'
+        +'<div class="pt-field"><label>Start date</label><input id="j_start_'+id+'" type="date" value="'+esc((j.scheduled_start||'').split(/[\\sT]/)[0])+'"></div>'
+        +'<div class="pt-field"><label>End date</label><input id="j_end_'+id+'" type="date" value="'+esc((j.scheduled_end||'').split(/[\\sT]/)[0])+'"></div>'
+        +'</div>'
+        +'<div class="pt-field"><label>Notes</label><textarea id="j_notes_'+id+'" rows="2">'+esc(j.notes||'')+'</textarea></div>'
+        +'<div class="pt-field"><label>Partner PDF '+(j.pdf_url?'(uploaded: '+esc(j.pdf_name||'PDF')+')':'')+' — admin only, not shown to crew</label><input id="j_pdf_'+id+'" type="file" accept="application/pdf"></div>'
+        +'<div style="display:flex; gap:8px;"><button class="btn btn-primary" onclick="saveJob('+id+')">Save job</button>'
+        +'<button class="pt-mini" onclick="selectPartner('+selectedId+')">Cancel</button></div>';
+    }
+
+    async function saveJob(id){
+      var btnUploadFile=document.getElementById('j_pdf_'+id);
+      var pdf={};
+      if(btnUploadFile && btnUploadFile.files && btnUploadFile.files[0]){
+        var f=btnUploadFile.files[0];
+        showToast('Uploading PDF…');
+        var u=await fetch('/api/r2-upload-url/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:f.name,contentType:f.type||'application/pdf',folder:'partners'})});
+        var ud=await u.json();
+        if(ud.success){var put=await fetch(ud.uploadUrl,{method:'PUT',body:f,headers:{'Content-Type':f.type||'application/pdf'}}); if(put.ok){pdf={pdf_url:ud.publicUrl,pdf_name:f.name};}}
+      }
+      var body=Object.assign({id:id,
+        client_name:val('j_client_'+id),phone:val('j_phone_'+id),address:val('j_address_'+id),
+        work_type:val('j_work_'+id),status:val('j_status_'+id),scope:val('j_scope_'+id),
+        colors:val('j_colors_'+id),price:val('j_price_'+id),notes:val('j_notes_'+id),
+        scheduled_start:val('j_start_'+id),scheduled_end:val('j_end_'+id)},pdf);
+      var res=await fetch('/api/admin/partners/jobs/',{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      var data=await res.json(); if(!data.success){showToast(data.error||'Failed','error');return;}
+      showToast('Job saved'); await loadPartners(); await selectPartner(selectedId);
+    }
+    function deleteJob(id){
+      window.showConfirmModal({title:'Delete this job?',text:'This removes the job and its crew page.',confirmText:'Delete',type:'danger',onConfirm:async function(){
+        var res=await fetch('/api/admin/partners/jobs/?id='+id,{method:'DELETE',credentials:'include'});
+        var data=await res.json(); if(!data.success){showToast(data.error||'Failed','error');return;}
+        await loadPartners(); await selectPartner(selectedId);
+      }});
+    }
+
+    window.addPartner=addPartner; window.selectPartner=selectPartner; window.savePartner=savePartner;
+    // Options (⋯) dropdowns — open one at a time, close on outside click.
+    function toggleMenu(evt, id){
+      evt.stopPropagation();
+      var menu=document.getElementById(id);
+      var wasOpen=menu && menu.classList.contains('open');
+      document.querySelectorAll('.pt-menu.open').forEach(function(m){m.classList.remove('open');});
+      if(menu && !wasOpen) menu.classList.add('open');
+    }
+    document.addEventListener('click',function(){document.querySelectorAll('.pt-menu.open').forEach(function(m){m.classList.remove('open');});});
+    window.toggleMenu=toggleMenu;
+    window.deletePartner=deletePartner; window.addJob=addJob; window.editJob=editJob; window.saveJob=saveJob; window.deleteJob=deleteJob;
+    loadPartners();
+  </script>
+</body>
+</html>

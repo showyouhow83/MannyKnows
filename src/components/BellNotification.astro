@@ -1,0 +1,123 @@
+---
+// Shared notification bell — markup + behavior in one place so every admin page
+// gets the same working bell. Render TWO instances per page:
+//   <BellNotification place="mobile" />    inside .mobile-header-right
+//   <BellNotification place="desktop" />   inside .header-actions
+// The desktop instance also emits the behavior script (guarded so it inits once).
+// Polls /api/admin/unread-replies/ every 30s; exposes window.markAllRead().
+//
+// Note: pages that already have an inline bell (dashboard, leads, quotes,
+// projects, portfolios, crew, contacts) keep their own copy — this component is
+// for the pages that were missing or broken (web, calendar, media-pool, partners).
+interface Props { place?: 'mobile' | 'desktop' }
+const { place = 'desktop' } = Astro.props;
+const isMobile = place === 'mobile';
+const btnId = isMobile ? 'bellBtnMobile' : 'bellBtn';
+const dropdownId = isMobile ? 'bellDropdownMobile' : 'bellDropdown';
+const listId = isMobile ? 'bellListMobile' : 'bellList';
+const badgeClass = isMobile ? 'bell-badge bell-badge-mobile' : 'bell-badge';
+const badgeId = isMobile ? undefined : 'bellBadge';
+---
+<div class="notification-bell-wrapper">
+  <button class="btn-bell" id={btnId} title="Notifications" aria-label="Notifications">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class={badgeClass} id={badgeId} style="display:none;">0</span>
+  </button>
+  <div class="bell-dropdown" id={dropdownId} style="display:none;">
+    <div class="bell-dropdown-header"><span>Notifications</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+    <div class="bell-dropdown-list" id={listId}>
+      <div class="bell-dropdown-empty">No new notifications</div>
+    </div>
+  </div>
+</div>
+{!isMobile && (
+  <script is:inline>
+    (function adminBell() {
+      if (window.__adminBellInit) return;
+      var bellBtn = document.getElementById('bellBtn');
+      var bellBadge = document.getElementById('bellBadge');
+      var bellDropdown = document.getElementById('bellDropdown');
+      var bellList = document.getElementById('bellList');
+      var bellBtnMobile = document.getElementById('bellBtnMobile');
+      var bellBadgeMobile = document.querySelector('.bell-badge-mobile');
+      var bellDropdownMobile = document.getElementById('bellDropdownMobile');
+      var bellListMobile = document.getElementById('bellListMobile');
+      if (!bellBtn && !bellBtnMobile) return;
+      window.__adminBellInit = true;
+
+      var bellOpen = false, activeDropdown = null;
+      function closeBell() {
+        bellOpen = false;
+        if (bellDropdown) bellDropdown.style.display = 'none';
+        if (bellDropdownMobile) bellDropdownMobile.style.display = 'none';
+        activeDropdown = null;
+      }
+      [bellBtn, bellBtnMobile].forEach(function (btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var dd = btn === bellBtn ? bellDropdown : bellDropdownMobile;
+          if (bellOpen && activeDropdown === dd) { closeBell(); }
+          else { closeBell(); bellOpen = true; activeDropdown = dd; if (dd) dd.style.display = 'block'; }
+        });
+      });
+      document.addEventListener('click', function () { if (bellOpen) closeBell(); });
+      if (bellDropdown) bellDropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+      if (bellDropdownMobile) bellDropdownMobile.addEventListener('click', function (e) { e.stopPropagation(); });
+
+      function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+      function timeAgo(d) {
+        var diff = Math.floor((Date.now() - d.getTime()) / 1000);
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        return Math.floor(diff / 86400) + 'd ago';
+      }
+      function renderBell(data, listEl) {
+        var html = '';
+        (data.leads || []).forEach(function (l) {
+          var d = l.created_at ? new Date(l.created_at + 'Z') : null; var t = d ? timeAgo(d) : '';
+          html += '<div class="bell-notification" onclick="window.location.href=\'/admin/leads?open=' + l.id + '\'" style="border-left:3px solid #22c55e;"><div class="bell-notification-top"><span class="bell-notification-name">' + esc(l.customer_name || 'New Lead') + '</span><span class="bell-notification-time">' + t + '</span></div><div class="bell-notification-body">' + esc(l.service_type || 'New lead received') + '</div><div class="bell-notification-quote" style="color:#22c55e;">NEW LEAD</div></div>';
+        });
+        (data.quoteResponses || []).forEach(function (q) {
+          var d = q.responded_at ? new Date(q.responded_at + 'Z') : null; var t = d ? timeAgo(d) : ''; var acc = q.status === 'accepted';
+          html += '<div class="bell-notification" onclick="window.location.href=\'/admin/quotes?open=' + q.id + '\'" style="border-left:3px solid ' + (acc ? '#ff781d' : '#f59e0b') + ';"><div class="bell-notification-top"><span class="bell-notification-name">' + esc(q.customer_name || 'Customer') + '</span><span class="bell-notification-time">' + t + '</span></div><div class="bell-notification-body">Quote ' + (acc ? 'accepted' : 'declined') + '</div><div class="bell-notification-quote" style="color:' + (acc ? '#ff781d' : '#f59e0b') + ';">#' + esc(q.quote_number || '') + '</div></div>';
+        });
+        (data.replies || []).forEach(function (r) {
+          var d = r.created_at ? new Date(r.created_at + 'Z') : null; var t = d ? timeAgo(d) : ''; var p = (r.body || '').substring(0, 80) + ((r.body || '').length > 80 ? '...' : '');
+          html += '<div class="bell-notification" onclick="window.location.href=\'/admin/quotes?open=' + r.quote_id + '\'"><div class="bell-notification-top"><span class="bell-notification-name">' + esc(r.customer_name || r.sender_name || 'Customer') + '</span><span class="bell-notification-time">' + t + '</span></div><div class="bell-notification-body">' + esc(p) + '</div><div class="bell-notification-quote">#' + esc(r.quote_number || '') + '</div></div>';
+        });
+        listEl.innerHTML = html || '<div style="padding:16px;text-align:center;color:var(--color-text-secondary);font-size:13px;">No new notifications</div>';
+      }
+      var errCount = 0;
+      function loadBell() {
+        fetch('/api/admin/unread-replies/', { credentials: 'same-origin' })
+          .then(function (res) {
+            if (res.status === 401 || res.status === 403) { window.location.href = '/admin/'; return null; }
+            if (!res.ok) { errCount++; return null; }
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || !data.success) return;
+            errCount = 0;
+            var total = data.total || 0;
+            [bellBadge, bellBadgeMobile].forEach(function (b) { if (b) { b.textContent = String(total); b.style.display = total > 0 ? 'flex' : 'none'; } });
+            [bellBtn, bellBtnMobile].forEach(function (b) { if (b) { if (total > 0) b.classList.add('has-notifications'); else b.classList.remove('has-notifications'); } });
+            if (bellList) renderBell(data, bellList);
+            if (bellListMobile) renderBell(data, bellListMobile);
+          })
+          .catch(function () { errCount++; });
+      }
+      function markAllRead() {
+        fetch('/api/admin/unread-replies/', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mark_all: true }) })
+          .then(function () { loadBell(); closeBell(); })
+          .catch(function () {});
+      }
+      window.markAllRead = markAllRead;
+
+      loadBell();
+      setInterval(loadBell, 30000);
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) { errCount = 0; loadBell(); } });
+    })();
+  </script>
+)}

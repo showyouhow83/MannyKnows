@@ -1,0 +1,424 @@
+---
+// /admin/web/wiki — searchable internal guide to the admin. One article per
+// admin page, each broken into sections describing how it works. Content is
+// authored below as data and rendered + made searchable client-side.
+import { AdminAuth } from '../../../lib/adminAuth';
+import AdminNav from '../../../components/AdminNav.astro';
+import AdminPresence from '../../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../../components/BellNotification.astro';
+import '../../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+interface WikiSection { h: string; body: string; }
+interface WikiArticle { id: string; title: string; href?: string; summary: string; sections: WikiSection[]; }
+
+const WIKI: WikiArticle[] = [
+  {
+    id: 'overview',
+    title: 'How the admin is organized',
+    summary: 'The big picture: the pipeline every job flows through, and how the pages connect.',
+    sections: [
+      { h: 'The pipeline', body: 'Work moves in one direction: Lead → Quote → Project → Portfolio. A Lead is an inquiry. Promote it to a Quote to price the work. When the customer accepts, it becomes a Project. When the project is done, publish it to a Portfolio. Each step carries the customer info forward, so you rarely re-type anything.' },
+      { h: 'Where records live', body: 'Leads, Quotes, Projects, Portfolios, Crew, Contacts, and Partners each have their own page in the top navigation. Calendar and Media Pool are supporting views. Web holds website-content tools (hero slider, this wiki).' },
+      { h: 'Two-column layout', body: 'Most list pages (Leads, Quotes, Projects) use the same layout: a scrollable list on the left grouped by status, and a detail/edit panel on the right. On mobile the list collapses to accordions and the detail takes the full width.' },
+      { h: 'Contacts are the source of truth', body: 'Every Lead/Quote/Project is linked to a Contact record (the person/company). Editing a contact updates the shared details in one place. See the Contacts article.' },
+    ],
+  },
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+    summary: 'Your admin home — pipeline health and quick numbers at a glance.',
+    sections: [
+      { h: 'Pipeline stats', body: 'The stat tiles show live counts across the pipeline (new leads, open quotes, active projects, etc.). On mobile they compress into a tight grid so nothing clips.' },
+      { h: 'Notification bell', body: 'The bell (top-right) polls every 30 seconds for new leads, quote responses, and customer replies. A number badge shows unread items; "Mark all read" clears them. The same bell appears on every admin page.' },
+      { h: 'Analytics', body: 'Conversion and traffic figures are pulled from Cloudflare and Google. These are read-only summaries — the numbers refresh on their own.' },
+    ],
+  },
+  {
+    id: 'leads',
+    title: 'Leads',
+    href: '/admin/leads',
+    summary: 'Every inquiry — from the website forms, the Remi chat, or added by hand.',
+    sections: [
+      { h: 'Confirmed vs Pending sections', body: 'Leads are grouped into "Confirmed" (the customer clicked the confirmation link in their email) and "Pending confirmation" (not yet). Each section is collapsible; on mobile only one opens at a time.' },
+      { h: 'New Lead', body: 'The "New Lead" button (above the search bar) opens a modal to add a lead manually — name, contact, address, and Service Type. The Service Type dropdown is the shared list (Kitchen Remodeling, Bathroom Remodeling, Interior Painting, Flooring, General Repairs & Handyman) with an "Other" option that lets you type a custom service.' },
+      { h: 'Lead detail', body: 'Selecting a lead shows Appointment Details: service, best day/time to call, location (with a Get Directions link), and source (website form, Remi chat, or manual). Phone and email are clickable to call/email directly.' },
+      { h: 'Lead images', body: 'Photos the customer attached (from the form or chat) appear read-only here. They travel forward automatically when you promote the lead to a quote.' },
+      { h: 'Promote to Quote', body: 'The "Promote" button turns a lead into a draft Quote, carrying the customer info and images across. The lead stays linked so you can trace where a quote came from.' },
+      { h: 'Delete', body: 'Removing a lead is confirmed with an in-page dialog (no browser pop-ups). Deleting is for junk/duplicates — promote real inquiries instead.' },
+    ],
+  },
+  {
+    id: 'quotes',
+    title: 'Quotes',
+    href: '/admin/quotes',
+    summary: 'Price the work, present it to the customer, and turn accepted quotes into projects.',
+    sections: [
+      { h: 'Statuses', body: 'Quotes are grouped by status: Draft (being built), Sent/Pending (with the customer), Accepted, and Declined. The list is grouped and collapsible like Leads.' },
+      { h: 'New Quote', body: 'Create a quote from scratch with "New Quote", or promote a Lead. The customer/service fields use the same shared Service Type dropdown with an "Other" custom option.' },
+      { h: 'Service scopes (color cards)', body: 'A quote can contain multiple scopes of work — each is a card with its own service type, scope description, and (where relevant) chosen colors. Add or remove scope rows as needed.' },
+      { h: 'Materials & labor editor', body: 'Each scope has a materials/labor breakdown that rolls up into the quote total. This detail also feeds the project receipt later.' },
+      { h: 'Quote images', body: 'Attach reference photos to the quote (up to a large limit). On promotion to a project these migrate into the project as "before" reference media.' },
+      { h: 'Send to customer', body: 'Sending emails the customer a branded quote with a secure link to review, accept, or decline. Accepted/declined responses notify you via the bell and email.' },
+      { h: 'Quote PDF', body: 'A PDF of the quote can be attached/generated. A signed copy is produced when the customer accepts. If a signed PDF is ever missing, the project page can regenerate it.' },
+      { h: 'Promote to Project', body: 'An accepted quote becomes a Project (you can also promote manually). Images and scope carry over.' },
+    ],
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    href: '/admin/projects',
+    summary: 'Manage active work — schedule, crew, contract, media, and invoicing.',
+    sections: [
+      { h: 'Statuses', body: 'Projects are grouped into Ready (needs crew), In Progress, and Completed. Move a project along as the work progresses.' },
+      { h: 'New Project', body: 'Create a project directly (for already-won or partner work) with "New Project" — internal or tied to a Partner. The modal matches the New Lead/Quote styling and does not close if you click outside it (use the × button), so a half-filled form is not lost.' },
+      { h: 'Tabs', body: 'A selected project has tabs: Details (customer + scope), Schedule/pricing, Contract, Documents, Crew, Messages, and Management. The tab strip scrolls horizontally on mobile.' },
+      { h: 'Schedule & pricing', body: 'Set start/end dates and the agreed price. These dates drive the Calendar and the customer portal timeline. Edit is locked behind an "Edit" toggle per section to prevent accidental changes.' },
+      { h: 'Contract', body: 'Generate a contract for the project, send it for e-signature, or mark it signed in person / offline. Once signed, the signed PDF is stored and shown with a green "Signed" badge. Partner projects render the partner\'s branding on the contract.' },
+      { h: 'Reference media', body: 'Photos/videos attached to the project. The section header shows an "X images · Y videos" count. Reference media is de-duplicated by filename — re-adding the same file overwrites its entry instead of piling up duplicates. Videos play via the Cloudflare Stream player.' },
+      { h: 'Updates feed', body: 'Crew upload progress photos from the crew portal; admins can add updates too. These appear newest-first and feed the customer portal.' },
+      { h: 'Invoicing (Send Invoice)', body: 'The "Send Invoice" button emails the customer a mail-a-check invoice (with the amount, due date, and where to send payment). The button shows "Invoiced {date}" once sent; resending asks you to confirm and warns if you sent very recently.' },
+      { h: 'Client & crew portals', body: 'Each project has a private client portal (status, progress photos, timeline, receipt) and a crew portal (reference images + upload progress photos), both reached by secure token links — no login needed for the customer or crew.' },
+    ],
+  },
+  {
+    id: 'portfolios',
+    title: 'Portfolios',
+    href: '/admin/portfolios',
+    summary: 'Publish finished work to the public projects gallery.',
+    sections: [
+      { h: 'From-project vs manual', body: 'A portfolio can be promoted from a completed Project (pulling its media and details) or built manually for older/one-off work.' },
+      { h: 'Media galleries', body: 'Arrange the images and videos shown on the public page. Hover a media item to copy its URL. Videos use the Cloudflare Stream player with auto-generated posters.' },
+      { h: 'Before/after pairs', body: 'Pair a "before" and "after" image so the public page can show the transformation with a slider.' },
+      { h: 'Public showcase', body: 'Published portfolios will appear on the public /projects gallery and their own detail pages once the public site renders them (admin manages the data now; public pages come later). Public images carry a tiled "MannyKnows.com" watermark, and the opened lightbox image is watermarked into the pixels.' },
+      { h: 'Portfolio review email', body: 'You can email the customer a link to review the published portfolio and leave a Google review.' },
+    ],
+  },
+  {
+    id: 'crew',
+    title: 'Crew',
+    href: '/admin/crew',
+    summary: 'Your crew leads, their pay setup, timesheets, and job assignments.',
+    sections: [
+      { h: 'Crew directory', body: 'Each crew lead has a card with contact info (with a WhatsApp shortcut) and their pay setup. Add a new crew member with the Add button; a login token/SMS invite can be sent so they can use the crew portal and timeclock.' },
+      { h: 'Pay model', body: 'A crew member is Hourly (rate/hr) or Salaried (daily hours × daily rate). A "Driver" flag adds +1 hour per work day. A bonus can accrue from a start date and become claimable later.' },
+      { h: 'Archive & Restore (soft delete)', body: 'Removing a crew member ARCHIVES them (keeps all their time logs) rather than wiping them — it never deletes payroll history. Archived crew disappear from the list and assignment dropdowns. An "Archived crew" section at the bottom lets you Restore anyone with one click; their logs reconnect intact.' },
+      { h: 'Timesheets', body: 'The Timesheets tab shows clock-in/out logs, expenses, materials given, and deductions per crew member, exportable for payroll.' },
+      { h: 'Assignments', body: 'Crew are assigned to projects (from the project\'s Crew tab). You cannot archive a crew member who is still on an active project until it is reassigned or finished.' },
+    ],
+  },
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    href: '/admin/calendar',
+    summary: 'A month view of everything scheduled.',
+    sections: [
+      { h: 'Month grid', body: 'Scheduled projects (including partner projects) show on their start dates in a month grid. Use it to see the week/month at a glance.' },
+      { h: 'Jump to a project', body: 'Click any entry to open that project\'s detail page. The dates come from each project\'s Schedule section.' },
+    ],
+  },
+  {
+    id: 'contacts',
+    title: 'Contacts',
+    href: '/admin/contacts',
+    summary: 'The single source-of-truth record for each person or company.',
+    sections: [
+      { h: 'One row per contact', body: 'Every customer is one contact record (name, company_name, phone, email, address). Leads/Quotes/Projects all link back to it, so updating a contact updates the shared details everywhere.' },
+      { h: 'Linked records', body: 'From a contact you can see the leads, quotes, and projects tied to them — useful for repeat customers.' },
+    ],
+  },
+  {
+    id: 'partners',
+    title: 'Partners',
+    href: '/admin/partners',
+    summary: 'White-label branding for partner companies.',
+    sections: [
+      { h: 'Partner branding', body: 'Each partner has a logo (upload; SVG supported), name, phone, website, and address. Tag a Lead/Quote/Project with a partner and every customer-facing surface — emails, quote, contract, portals, PDFs — shows the partner\'s branding instead of MannyKnows\'. Internal admin chrome always stays MannyKnows.' },
+      { h: 'Assigned projects', body: 'The partner card counts how many projects are assigned to that partner. Partner work is usually created as a direct (already-won) Project.' },
+    ],
+  },
+  {
+    id: 'media-pool',
+    title: 'Media Pool',
+    href: '/admin/media-pool',
+    summary: 'Staging area for crew-captured photos/videos before they are filed.',
+    sections: [
+      { h: 'What lands here', body: 'Crew upload media from the timeclock; it collects in the Media Pool for triage rather than going straight to a project.' },
+      { h: 'Triage & assign', body: 'Select one or more items and assign them to a Lead, Quote, Project, or Portfolio — or delete junk. Filter chips (by note/tag) and copy-URL-on-hover help you sort quickly.' },
+      { h: 'Videos', body: 'Video tiles show a lightweight poster; click to play via the Cloudflare Stream player (no heavy download just to preview).' },
+    ],
+  },
+  {
+    id: 'web',
+    title: 'Web',
+    href: '/admin/web',
+    summary: 'Tools that edit the public website content.',
+    sections: [
+      { h: 'Hero Slider', body: 'Add, remove, reorder, and show/hide the homepage hero carousel slides. A visible slide is published; hidden is a draft. Each slide has an image (upload or paste a URL, which is cached to the CDN), a link, and title/description with length limits. The public homepage does not render the slider yet — slides managed here go live when it does.' },
+      { h: 'Wiki', body: 'This guide. Search the box at the top to jump to any page or feature.' },
+      { h: 'Blog', body: 'Planned next — write posts with AI help and publish to the site. Shown as "coming soon" for now.' },
+    ],
+  },
+  {
+    id: 'concepts',
+    title: 'Concepts across the whole admin',
+    summary: 'Ideas that show up on many pages — read these once and the rest makes sense.',
+    sections: [
+      { h: 'Roles & access', body: 'There are two roles: admin (full access) and viewer (read-only). A viewer can look but cannot create, edit, or delete — write actions are blocked for them everywhere.' },
+      { h: 'Notification bell', body: 'The shared bell polls every 30 seconds for new leads, quote accept/declines, and customer replies. It appears on every admin page; "Mark all read" clears it.' },
+      { h: 'Image & media lifecycle', body: 'Media follows the pipeline: Lead images → migrate to the Quote → migrate to the Project (as "before" reference) → can be published to a Portfolio. Auto-tags mark timing: (b) before, (d) during, (a) after. iPhone HEIC photos are converted automatically.' },
+      { h: 'Star (feature) marks', body: 'Stars flag featured media. On a quote a ★ means "feature in the PDF"; on a project the star is crew-facing vs client-facing depending on context; portfolios use the unstarred set for the public gallery.' },
+      { h: 'Contracts & e-signatures', body: 'Projects generate a contract that the customer e-signs via a secure link, or you mark it signed in person/offline. The signed PDF is stored and shown with a green Signed badge. Partner branding is applied automatically for partner projects.' },
+      { h: 'Videos (Cloudflare Stream)', body: 'All project/portfolio/pool videos play through Cloudflare Stream — auto thumbnails, adaptive playback, and cross-browser support. Tiles show a tiny poster image instead of downloading the full video.' },
+      { h: 'Remi AI chat', body: 'The public site\'s Remi chatbot captures leads directly into this admin (they show up in Leads, source = chat) and can book appointments that create a pending-confirmation lead.' },
+      { h: 'Data integrity tools', body: 'Behind the scenes, sync tools keep statuses consistent across Leads/Quotes/Projects and migrate legacy images. Ask the developer to run these if something looks out of sync.' },
+    ],
+  },
+];
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wiki — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { try { document.documentElement.setAttribute('data-theme', localStorage.getItem('admin-theme') || 'dark'); } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); } })();
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .wiki-page { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+      .wiki-head h1 { margin: 0 0 6px; font-size: 28px; font-weight: 700; }
+      .wiki-head p.subtitle { color: var(--color-text-secondary); margin: 0 0 20px; }
+
+      .wiki-search-wrap { position: relative; margin-bottom: 22px; }
+      .wiki-search {
+        width: 100%; box-sizing: border-box;
+        padding: 12px 14px 12px 40px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        color: var(--color-text-primary);
+        font-size: 15px;
+      }
+      .wiki-search:focus { outline: none; border-color: var(--color-primary); }
+      .wiki-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); pointer-events: none; }
+
+      .wiki-layout { display: grid; grid-template-columns: 230px 1fr; gap: 28px; align-items: start; }
+      /* Sticky table of contents */
+      .wiki-toc { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 2px; }
+      .wiki-toc a {
+        display: block; padding: 8px 12px; border-radius: var(--radius-sm);
+        color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 600;
+        border-left: 2px solid transparent;
+      }
+      .wiki-toc a:hover { background: rgba(255,255,255,0.05); color: var(--color-text-primary); }
+      .wiki-toc a.active { color: var(--color-primary); border-left-color: var(--color-primary); }
+
+      .wiki-content { min-width: 0; display: flex; flex-direction: column; gap: 26px; }
+      .wiki-article {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 22px 22px 8px;
+        scroll-margin-top: 16px;
+      }
+      .wiki-article-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .wiki-article h2 { margin: 0; font-size: 20px; font-weight: 700; }
+      .wiki-article .open-link { font-size: 12px; font-weight: 700; color: var(--color-primary); text-decoration: none; white-space: nowrap; }
+      .wiki-article .article-summary { color: var(--color-text-secondary); font-size: 14px; margin: 6px 0 14px; }
+      .wiki-section { padding: 12px 0; border-top: 1px solid var(--glass-border); }
+      .wiki-section h3 { margin: 0 0 5px; font-size: 15px; font-weight: 700; }
+      .wiki-section p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-text-primary); opacity: 0.92; }
+      mark { background: rgba(251, 191, 36, 0.35); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+      .wiki-noresults { display: none; padding: 40px 16px; text-align: center; color: var(--color-text-secondary); }
+      .wiki-noresults.show { display: block; }
+
+      @media (max-width: 860px) {
+        .wiki-layout { grid-template-columns: 1fr; gap: 16px; }
+        .wiki-toc { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+        .wiki-toc a { border-left: none; border: 1px solid var(--glass-border); }
+      }
+    </style>
+  </head>
+  <body>
+  <AdminPresence />
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="web" />
+      <div class="mobile-header-right">
+        <BellNotification place="mobile" />
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <BellNotification place="desktop" />
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="web" />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) closeMobileNav();
+      });
+    </script>
+
+    <main class="wiki-page">
+      <div class="wiki-head">
+        <h1>Admin Wiki</h1>
+        <p class="subtitle">How every page and section of this admin works. Search below, or pick a topic.</p>
+      </div>
+
+      <div class="wiki-search-wrap">
+        <svg class="wiki-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="wiki-search" id="wikiSearch" type="search" placeholder="Search the wiki — e.g. invoice, archive crew, before/after, partner logo…" autocomplete="off" />
+      </div>
+
+      <div class="wiki-layout">
+        <nav class="wiki-toc" id="wikiToc">
+          {WIKI.map((a) => (<a href={`#${a.id}`} data-toc={a.id}>{a.title}</a>))}
+        </nav>
+
+        <div class="wiki-content" id="wikiContent">
+          {WIKI.map((a) => (
+            <article class="wiki-article" id={a.id} data-title={a.title}>
+              <div class="wiki-article-head">
+                <h2>{a.title}</h2>
+                {a.href && (<a class="open-link" href={a.href}>Open page →</a>)}
+              </div>
+              <p class="article-summary">{a.summary}</p>
+              {a.sections.map((s) => (
+                <div class="wiki-section" data-h={s.h}>
+                  <h3>{s.h}</h3>
+                  <p>{s.body}</p>
+                </div>
+              ))}
+            </article>
+          ))}
+          <div class="wiki-noresults" id="wikiNoResults">No matches. Try a different word (e.g. "quote", "crew", "video").</div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ── Search filter + scroll-spy for the table of contents ──────────────
+      const search = document.getElementById('wikiSearch');
+      const articles = Array.from(document.querySelectorAll('.wiki-article'));
+      const tocLinks = Array.from(document.querySelectorAll('#wikiToc a'));
+      const noResults = document.getElementById('wikiNoResults');
+
+      function clearMarks(el) {
+        el.querySelectorAll('mark').forEach((m) => { m.replaceWith(document.createTextNode(m.textContent || '')); });
+      }
+      function markText(el, q) {
+        // Highlight matches in the text nodes of h3/p only (avoid breaking structure).
+        el.querySelectorAll('h3, p').forEach((node) => {
+          const txt = node.textContent || '';
+          const idx = txt.toLowerCase().indexOf(q);
+          if (idx === -1) return;
+          node.innerHTML = txt.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>');
+        });
+      }
+
+      function runSearch() {
+        const q = (search.value || '').trim().toLowerCase();
+        let anyVisible = false;
+        articles.forEach((art) => {
+          clearMarks(art);
+          const sections = Array.from(art.querySelectorAll('.wiki-section'));
+          const title = (art.getAttribute('data-title') || '').toLowerCase();
+          let artHasMatch = q === '' || title.includes(q);
+          sections.forEach((sec) => {
+            const text = (sec.textContent || '').toLowerCase();
+            const hit = q === '' || text.includes(q);
+            sec.style.display = hit ? '' : 'none';
+            if (hit && q !== '') artHasMatch = true;
+          });
+          // If only the title matched, keep all sections visible.
+          if (q !== '' && title.includes(q)) sections.forEach((sec) => { sec.style.display = ''; });
+          art.style.display = artHasMatch ? '' : 'none';
+          if (artHasMatch) { anyVisible = true; if (q) markText(art, q); }
+        });
+        noResults.classList.toggle('show', !anyVisible);
+      }
+
+      let t;
+      search?.addEventListener('input', () => { clearTimeout(t); t = setTimeout(runSearch, 120); });
+
+      // Scroll-spy: highlight the TOC entry for the article in view.
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const id = e.target.id;
+            tocLinks.forEach((l) => l.classList.toggle('active', l.getAttribute('data-toc') === id));
+          }
+        });
+      }, { rootMargin: '-10% 0px -80% 0px' });
+      articles.forEach((a) => spy.observe(a));
+    </script>
+  </body>
+</html>

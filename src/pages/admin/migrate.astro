@@ -1,0 +1,95 @@
+---
+// Admin Migration Runner UI — runs bundled D1 migrations with one click.
+// Auth is enforced by middleware (all /admin/* pages) + double-checked here.
+import { AdminAuth } from '../../lib/adminAuth';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const session = await AdminAuth.validateSession(Astro.request, env?.SESSION_SECRET || env?.ADMIN_PASSWORD);
+if (!session.isAuthenticated) return Astro.redirect('/admin');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migrations | MannyKnows Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <main style="max-width:760px;margin:40px auto;padding:0 20px;">
+    <a href="/admin/dashboard" style="color:var(--color-text-secondary);text-decoration:none;font-size:13px;">&larr; Back to Dashboard</a>
+    <h1 style="font-size:22px;font-weight:700;margin:14px 0 6px;">Database Migrations</h1>
+    <p style="color:var(--color-text-secondary);font-size:14px;margin-bottom:22px;">
+      Runs the bundled SQL migration files directly against D1. Safe to re-run
+      (statements are IF NOT EXISTS) — except <code>002</code>'s initial
+      <code>leads</code> rebuild, which should only run before go-live.
+    </p>
+
+    <div class="glass-card" style="padding:20px;" id="list">
+      <div style="color:var(--color-text-secondary);font-size:14px;">Loading migrations…</div>
+    </div>
+
+    <div class="glass-card" style="padding:20px;margin-top:16px;display:none;" id="output">
+      <div class="detail-section-title" style="margin-bottom:10px;">Result</div>
+      <pre id="log" style="font-size:12px;line-height:1.6;white-space:pre-wrap;max-height:420px;overflow-y:auto;color:var(--color-text-primary);"></pre>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <script>
+    const list = document.getElementById('list');
+    const output = document.getElementById('output');
+    const log = document.getElementById('log');
+
+    async function load() {
+      const res = await fetch('/api/admin/run-migration/', { credentials: 'include' });
+      const data = await res.json();
+      if (!data.success) { list.innerHTML = `<div style="color:#f87171;">${data.error || 'Failed to load'}</div>`; return; }
+      list.innerHTML = data.migrations.map(m => `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;">
+          <div>
+            <div style="font-weight:600;font-size:15px;">${m.name}</div>
+            <div style="color:var(--color-text-secondary);font-size:12px;">${m.statements} statements · ${(m.bytes/1024).toFixed(1)} KB</div>
+          </div>
+          <button class="btn btn-primary btn-sm" data-file="${m.name}">Run</button>
+        </div>`).join('');
+      list.querySelectorAll('button[data-file]').forEach(btn => {
+        btn.addEventListener('click', () => run(btn.dataset.file, btn));
+      });
+    }
+
+    async function run(file, btn) {
+      if (!confirm(`Run migration "${file}" against the live database?`)) return;
+      btn.disabled = true; btn.textContent = 'Running…';
+      output.style.display = 'block';
+      log.textContent = `Running ${file}…\n`;
+      try {
+        const res = await fetch('/api/admin/run-migration/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ file }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          log.textContent += `\n✅ SUCCESS — ${data.executed}/${data.total} statements executed.\n\n` +
+            data.results.map(r => `  ✓ [${r.i}] ${r.head}`).join('\n');
+        } else {
+          log.textContent += `\n❌ FAILED at statement ${data.failedAt} (${data.executed} executed before it)\n` +
+            `   Error: ${data.results?.at(-1)?.error || data.error}\n\n` +
+            (data.results || []).map(r => `  ${r.ok ? '✓' : '✗'} [${r.i}] ${r.head}${r.error ? '\n      → ' + r.error : ''}`).join('\n') +
+            `\n\nFix the issue, then re-run — completed statements are IF NOT EXISTS and will no-op.`;
+        }
+      } catch (e) {
+        log.textContent += `\n❌ Request failed: ${e.message}`;
+      } finally {
+        btn.disabled = false; btn.textContent = 'Run';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

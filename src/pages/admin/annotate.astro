@@ -1,0 +1,458 @@
+---
+// /admin/annotate?src=<imageUrl>&target=quote|project&id=<n>&back=<url>
+//
+// WhatsApp-style image markup tool. Draw red/green pen + arrows, drop text
+// notes, and place numbered pins with a legend. On save, the annotations are
+// flattened onto a NEW image (original untouched) and stored under R2
+// 'annotations/' — excluded from portfolio + the customer gallery.
+
+import { AdminAuth } from '../../lib/adminAuth';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const src = Astro.url.searchParams.get('src') || '';
+const target = Astro.url.searchParams.get('target') || '';
+const id = Astro.url.searchParams.get('id') || '';
+const back = Astro.url.searchParams.get('back') || '/admin/';
+
+if (!src || (target !== 'quote' && target !== 'project') || !id) {
+  return Astro.redirect(back || '/admin/');
+}
+
+// Load the source image through our SAME-ORIGIN proxy. The canvas can only
+// be exported (toDataURL) if the image is same-origin or CORS-clean; the media
+// CDN's cdn-cgi transform doesn't send CORS headers, so we proxy server-side.
+// The proxy also transcodes HEIC + downscales huge photos. Host matches the
+// img-proxy allowlist (MEDIA_PUBLIC_HOST, default images.mannyknows.com).
+const mediaHost = env?.MEDIA_PUBLIC_HOST || 'images.mannyknows.com';
+function displaySrc(u: string): string {
+  try {
+    const url = new URL(u);
+    if (url.hostname === mediaHost) {
+      return `/api/admin/img-proxy/?url=${encodeURIComponent(u)}`;
+    }
+  } catch {}
+  return u;
+}
+const imgSrc = displaySrc(src);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Annotate image — MannyKnows Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; background: #0f172a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overscroll-behavior: none; }
+    .anno-page { display: flex; flex-direction: column; min-height: 100vh; }
+    .anno-toolbar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 10px 14px; background: #1e293b; border-bottom: 1px solid #334155;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .anno-tool {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1px solid #334155;
+      background: #0f172a; color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer;
+      touch-action: manipulation;
+    }
+    .anno-tool.active { border-color: #3b82f6; background: rgba(59,130,246,0.18); color: #fff; }
+    .anno-sep { width: 1px; height: 28px; background: #334155; margin: 0 4px; }
+    .anno-color { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #475569; cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
+    .anno-color.active { border-color: #fff; box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px currentColor; }
+    .anno-spacer { flex: 1; min-width: 8px; }
+    .anno-tool.primary { background: linear-gradient(135deg, #2563eb, #1e40af); border: none; color: #fff; }
+    .anno-tool.ghost { background: transparent; }
+    .anno-tool:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Image on the left, pin legend as a panel on the right (lots of empty
+       room beside the image otherwise). Stacks on mobile. */
+    .anno-body { flex: 1; display: flex; min-height: 0; }
+    .anno-stage-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px; overflow: auto; min-width: 0; }
+    .anno-stage { position: relative; line-height: 0; box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
+    /* touch-action:none + user-select:none so drawing never scrolls/zooms
+       the page or selects UI. Works for finger + Apple Pencil. */
+    #annoCanvas { max-width: 100%; max-height: 72vh; touch-action: none; -webkit-user-select: none; user-select: none; cursor: crosshair; border-radius: 4px; }
+
+    @media (max-width: 768px) {
+      .anno-toolbar { gap: 6px; padding: 8px 10px; }
+      .anno-tool { padding: 10px 12px; font-size: 13px; flex: 1 1 auto; min-width: 0; }
+      .anno-tool.ghost, .anno-tool.primary, #cancelBtn { flex: 1 1 100%; }
+      .anno-spacer { display: none; }
+      #annoCanvas { max-height: 60vh; }
+    }
+
+    .anno-legend {
+      width: 320px; flex-shrink: 0; overflow-y: auto;
+      background: #1e293b; border-left: 1px solid #334155; padding: 16px 18px;
+    }
+    .anno-legend h3 { margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
+    .anno-legend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .anno-legend-num {
+      width: 26px; height: 26px; border-radius: 50%; background: #ff0000; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .anno-legend-row input {
+      flex: 1; min-width: 0; padding: 9px 11px; border-radius: 8px; border: 1px solid #334155;
+      background: #0f172a; color: #e2e8f0; font-size: 14px;
+    }
+    .anno-legend-row input:focus { outline: none; border-color: #3b82f6; }
+    @media (max-width: 768px) {
+      .anno-body { flex-direction: column; }
+      .anno-legend { width: auto; border-left: none; border-top: 1px solid #334155; max-height: 40vh; }
+    }
+    .anno-hint { font-size: 12px; color: #94a3b8; padding: 4px 16px 0; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #334155; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100; }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="anno-page">
+    <div class="anno-toolbar">
+      <button class="anno-tool active" data-tool="pen" title="Freehand pen">✏️ Pen</button>
+      <button class="anno-tool" data-tool="arrow" title="Arrow">➟ Arrow</button>
+      <button class="anno-tool" data-tool="text" title="Text note">T Text</button>
+      <button class="anno-tool" data-tool="pin" title="Numbered pin + legend">① Pin</button>
+      <div class="anno-sep"></div>
+      <span class="anno-color active" data-color="#ff0000" style="background:#ff0000; color:#ff0000;" title="Red"></span>
+      <span class="anno-color" data-color="#39ff14" style="background:#39ff14; color:#39ff14;" title="Green"></span>
+      <span class="anno-color" data-color="#ff781d" style="background:#ff781d; color:#ff781d;" title="Orange"></span>
+      <span class="anno-color" data-color="#ffd400" style="background:#ffd400; color:#ffd400;" title="Yellow"></span>
+      <div class="anno-sep"></div>
+      <button class="anno-tool ghost" id="undoBtn" title="Undo last">↩ Undo</button>
+      <button class="anno-tool ghost" id="clearBtn" title="Clear all">✕ Clear</button>
+      <div class="anno-spacer"></div>
+      <a class="anno-tool ghost" id="cancelBtn" href={back}>Cancel</a>
+      <button class="anno-tool primary" id="saveBtn">Save annotated copy</button>
+    </div>
+
+    <div class="anno-hint" id="annoHint">Pen selected — draw on the image. Switch tools above. Pins drop numbered markers you can label below.</div>
+
+    <div class="anno-body">
+      <div class="anno-stage-wrap">
+        <div class="anno-stage">
+          <canvas id="annoCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="anno-legend" id="annoLegend" style="display:none;">
+        <h3>Pin legend</h3>
+        <div id="annoLegendRows"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script is:inline define:vars={{ imgSrc, target, id, back }}>
+    (function () {
+      var canvas = document.getElementById('annoCanvas');
+      var ctx = canvas.getContext('2d');
+      var hint = document.getElementById('annoHint');
+      var toastEl = document.getElementById('toast');
+
+      var tool = 'pen';
+      var color = '#ff0000';
+      var shapes = [];       // { type, color, points|x1..|x|n }
+      var legend = {};       // pin number -> description
+      var pinCounter = 0;
+      var drawing = false;
+      var current = null;
+
+      var img = new Image();
+      var _blobUrl = null; // keep a ref so we can revoke it
+
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+      }
+
+      // Fit the display canvas to the image aspect within the viewport.
+      function sizeCanvas() {
+        var maxW = Math.min(window.innerWidth - 32, img.naturalWidth);
+        var maxH = window.innerHeight * 0.78;
+        var scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+      }
+
+      img.onload = function () {
+        if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
+        sizeCanvas();
+        redraw();
+      };
+      img.onerror = function () {
+        showToast('Could not load the image. Try again.');
+      };
+
+      // Always load via fetch+blob so the canvas is never tainted — this
+      // handles HEIC files (which cdn-cgi transcodes to JPEG server-side),
+      // and ensures admin cookies are always sent (img.src alone doesn't
+      // reliably send cookies in all browsers for same-origin requests).
+      (async function loadImage() {
+        try {
+          var res = await fetch(imgSrc, { credentials: 'include' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          var blob = await res.blob();
+          _blobUrl = URL.createObjectURL(blob);
+          img.src = _blobUrl;
+        } catch (e) {
+          console.error('Image load failed:', e);
+          showToast('Could not load the image. Try again.');
+        }
+      })();
+
+      window.addEventListener('resize', function () { sizeCanvas(); redraw(); });
+
+      // ── Drawing helpers (all coords stored normalized 0..1) ──
+      function toNorm(e) {
+        var rect = canvas.getBoundingClientRect();
+        var cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        var cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        return { x: Math.max(0, Math.min(1, cx / rect.width)), y: Math.max(0, Math.min(1, cy / rect.height)) };
+      }
+
+      // Pick black/white text for legibility on a given pin color.
+      function contrastText(hex) {
+        var h = String(hex || '#ff0000').replace('#', '');
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        var r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+        // relative luminance
+        return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0f172a' : '#ffffff';
+      }
+
+      // Word-wrap text to fit a max pixel width (keeps annotation copy inside
+      // the image instead of running off the right edge).
+      function wrapText(ctx, text, maxWidth) {
+        var out = [];
+        var paras = String(text).split('\n');
+        for (var pi = 0; pi < paras.length; pi++) {
+          var words = paras[pi].split(/\s+/).filter(Boolean);
+          if (!words.length) { out.push(''); continue; }
+          var line = words[0];
+          for (var i = 1; i < words.length; i++) {
+            var test = line + ' ' + words[i];
+            if (ctx.measureText(test).width > maxWidth) { out.push(line); line = words[i]; }
+            else line = test;
+          }
+          out.push(line);
+        }
+        return out.length ? out : [''];
+      }
+
+      function drawAll(c, cx2, W, H) {
+        var lw = Math.max(2, W * 0.005);
+        var font = Math.max(22, W * 0.05);
+        cx2.lineCap = 'round'; cx2.lineJoin = 'round';
+        for (var i = 0; i < shapes.length; i++) {
+          var s = shapes[i];
+          cx2.strokeStyle = s.color; cx2.fillStyle = s.color; cx2.lineWidth = lw;
+          if (s.type === 'pen' && s.points.length) {
+            cx2.beginPath();
+            cx2.moveTo(s.points[0].x * W, s.points[0].y * H);
+            for (var p = 1; p < s.points.length; p++) cx2.lineTo(s.points[p].x * W, s.points[p].y * H);
+            cx2.stroke();
+          } else if (s.type === 'arrow') {
+            drawArrow(cx2, s.x1 * W, s.y1 * H, s.x2 * W, s.y2 * H, lw);
+          } else if (s.type === 'text') {
+            cx2.font = '700 ' + font + 'px sans-serif';
+            cx2.textBaseline = 'top';
+            var tx = s.x * W, ty = s.y * H;
+            var pad = font * 0.4;
+            // Wrap to the space remaining to the right edge (min a few chars).
+            var maxW = Math.max(font * 5, W - tx - pad);
+            var lines = wrapText(cx2, s.text, maxW);
+            var lh = font * 1.25;
+            cx2.lineWidth = Math.max(3, lw);
+            for (var li = 0; li < lines.length; li++) {
+              var ly = ty + li * lh;
+              cx2.strokeStyle = 'rgba(0,0,0,0.55)';
+              cx2.strokeText(lines[li], tx, ly);
+              cx2.fillStyle = s.color;
+              cx2.fillText(lines[li], tx, ly);
+            }
+          } else if (s.type === 'pin') {
+            var pinColor = s.color || '#ff0000';
+            var r = Math.max(12, W * 0.022);
+            cx2.beginPath();
+            cx2.arc(s.x * W, s.y * H, r, 0, Math.PI * 2);
+            cx2.fillStyle = pinColor; cx2.fill();
+            cx2.lineWidth = Math.max(2, lw * 0.6); cx2.strokeStyle = '#fff'; cx2.stroke();
+            cx2.fillStyle = contrastText(pinColor); cx2.font = '700 ' + (r * 1.1) + 'px sans-serif';
+            cx2.textAlign = 'center'; cx2.textBaseline = 'middle';
+            cx2.fillText(String(s.n), s.x * W, s.y * H);
+            cx2.textAlign = 'start';
+          }
+        }
+      }
+
+      function drawArrow(c, x1, y1, x2, y2, lw) {
+        var head = Math.max(10, lw * 3.5);
+        var ang = Math.atan2(y2 - y1, x2 - x1);
+        c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+        c.beginPath();
+        c.moveTo(x2, y2);
+        c.lineTo(x2 - head * Math.cos(ang - Math.PI / 6), y2 - head * Math.sin(ang - Math.PI / 6));
+        c.lineTo(x2 - head * Math.cos(ang + Math.PI / 6), y2 - head * Math.sin(ang + Math.PI / 6));
+        c.closePath(); c.fill();
+      }
+
+      function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (img.complete) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        drawAll(canvas, ctx, canvas.width, canvas.height);
+        // live shape preview
+        if (current) {
+          var saved = shapes; shapes = [current]; drawAll(canvas, ctx, canvas.width, canvas.height); shapes = saved;
+        }
+      }
+
+      // ── Pointer handlers ──
+      function onDown(e) {
+        e.preventDefault();
+        var p = toNorm(e);
+        if (tool === 'pen') { current = { type: 'pen', color: color, points: [p] }; drawing = true; }
+        else if (tool === 'arrow') { current = { type: 'arrow', color: color, x1: p.x, y1: p.y, x2: p.x, y2: p.y }; drawing = true; }
+        else if (tool === 'text') {
+          var t = window.prompt('Note text:');
+          if (t && t.trim()) { shapes.push({ type: 'text', color: color, x: p.x, y: p.y, text: t.trim() }); redraw(); }
+        }
+        else if (tool === 'pin') {
+          pinCounter++;
+          shapes.push({ type: 'pin', x: p.x, y: p.y, n: pinCounter, color: color });
+          legend[pinCounter] = legend[pinCounter] || '';
+          renderLegend(); redraw();
+        }
+      }
+      function onMove(e) {
+        if (!drawing || !current) return;
+        e.preventDefault();
+        var p = toNorm(e);
+        if (current.type === 'pen') current.points.push(p);
+        else if (current.type === 'arrow') { current.x2 = p.x; current.y2 = p.y; }
+        redraw();
+      }
+      function onUp() {
+        if (drawing && current) { shapes.push(current); }
+        drawing = false; current = null; redraw();
+      }
+      canvas.addEventListener('mousedown', onDown);
+      canvas.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+      canvas.addEventListener('touchstart', onDown, { passive: false });
+      canvas.addEventListener('touchmove', onMove, { passive: false });
+      canvas.addEventListener('touchend', onUp);
+
+      // ── Toolbar ──
+      document.querySelectorAll('[data-tool]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          tool = b.dataset.tool;
+          document.querySelectorAll('[data-tool]').forEach(function (x) { x.classList.toggle('active', x === b); });
+          var hints = { pen: 'Pen — draw freehand on the image.', arrow: 'Arrow — drag from tail to head.', text: 'Text — click where you want the note, then type it.', pin: 'Pin — click to drop a numbered marker, then describe it below.' };
+          hint.textContent = hints[tool] || '';
+        });
+      });
+      document.querySelectorAll('[data-color]').forEach(function (sw) {
+        sw.addEventListener('click', function () {
+          color = sw.dataset.color;
+          document.querySelectorAll('[data-color]').forEach(function (x) { x.classList.toggle('active', x === sw); });
+        });
+      });
+      document.getElementById('undoBtn').addEventListener('click', function () {
+        var last = shapes.pop();
+        if (last && last.type === 'pin') { delete legend[last.n]; pinCounter = Math.max(0, pinCounter - 1); renderLegend(); }
+        redraw();
+      });
+      document.getElementById('clearBtn').addEventListener('click', function () {
+        shapes = []; legend = {}; pinCounter = 0; renderLegend(); redraw();
+      });
+
+      // ── Legend ──
+      function renderLegend() {
+        var pins = shapes.filter(function (s) { return s.type === 'pin'; });
+        var wrap = document.getElementById('annoLegend');
+        var rows = document.getElementById('annoLegendRows');
+        if (!pins.length) { wrap.style.display = 'none'; rows.innerHTML = ''; return; }
+        wrap.style.display = '';
+        rows.innerHTML = pins.map(function (p) {
+          var c = p.color || '#ff0000';
+          return '<div class="anno-legend-row"><span class="anno-legend-num" style="background:' + c + '; color:' + contrastText(c) + ';">' + p.n + '</span>' +
+            '<input type="text" data-legend="' + p.n + '" placeholder="Describe marker ' + p.n + '…" value="' + (legend[p.n] || '').replace(/"/g, '&quot;') + '"></div>';
+        }).join('');
+        rows.querySelectorAll('[data-legend]').forEach(function (inp) {
+          inp.addEventListener('input', function () { legend[inp.dataset.legend] = inp.value; });
+        });
+      }
+
+      // ── Save: flatten at natural resolution + legend strip ──
+      document.getElementById('saveBtn').addEventListener('click', async function () {
+        var btn = this;
+        btn.disabled = true; btn.textContent = 'Saving…';
+        try {
+          var W = img.naturalWidth || canvas.width;
+          var H = img.naturalHeight || canvas.height;
+          var pins = shapes.filter(function (s) { return s.type === 'pin'; });
+          var legendItems = pins
+            .map(function (p) { return { text: p.n + '. ' + (legend[p.n] || ''), color: p.color || '#ff0000' }; })
+            .filter(function (l) { return l.text.trim().length > 2; });
+          var legendLines = legendItems.map(function (l) { return l.text; });
+          var legendH = legendLines.length ? Math.round(H * 0.04) * legendLines.length + Math.round(H * 0.03) : 0;
+
+          var out = document.createElement('canvas');
+          out.width = W; out.height = H + legendH;
+          var oc = out.getContext('2d');
+          oc.fillStyle = '#ffffff'; oc.fillRect(0, 0, out.width, out.height);
+          if (img.complete) oc.drawImage(img, 0, 0, W, H);
+          drawAll(out, oc, W, H);
+
+          if (legendH) {
+            var fs = Math.round(H * 0.028);
+            oc.textBaseline = 'top'; oc.textAlign = 'start';
+            oc.font = '600 ' + fs + 'px sans-serif';
+            var y = H + Math.round(H * 0.015);
+            for (var i = 0; i < legendItems.length; i++) {
+              // Color-coded dot + text so each line matches its pin color.
+              oc.fillStyle = legendItems[i].color;
+              oc.beginPath();
+              oc.arc(Math.round(W * 0.02) + fs * 0.4, y + fs * 0.55, fs * 0.4, 0, Math.PI * 2);
+              oc.fill();
+              oc.fillStyle = '#0f172a';
+              oc.fillText(legendItems[i].text, Math.round(W * 0.02) + fs * 1.1, y);
+              y += Math.round(H * 0.04);
+            }
+          }
+
+          // Send the flattened image as RAW BINARY (a base64 data_url in JSON
+          // tripped Cloudflare's WAF → 403). target/id go in the query string.
+          var blob = await new Promise(function (resolve) { out.toBlob(resolve, 'image/jpeg', 0.9); });
+          if (!blob) { showToast('Save failed — could not render image'); btn.disabled = false; btn.textContent = 'Save annotated copy'; return; }
+          var res = await fetch('/api/admin/annotate-save/?target=' + encodeURIComponent(target) + '&id=' + encodeURIComponent(Number(id)), {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': blob.type || 'image/jpeg', 'X-Anno-Caption': 'Annotated' },
+            body: blob,
+          });
+          var data = await res.json();
+          if (!data.success) { showToast(data.error || 'Save failed'); btn.disabled = false; btn.textContent = 'Save annotated copy'; return; }
+          showToast('Saved — returning…');
+          setTimeout(function () { window.location.href = back; }, 900);
+        } catch (err) {
+          console.error(err);
+          showToast('Save failed — ' + (err && err.message ? err.message : 'unknown'));
+          btn.disabled = false; btn.textContent = 'Save annotated copy';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1517 @@
+---
+// Crew Lead Project Portal - View project details and upload progress
+import { normalizeAddress } from '../../../lib/address';
+import { SERVICE_LABELS } from '../../../data/serviceTypes';
+import { getBrand, SL_BRAND, type Brand } from '../../../lib/brand';
+const { token } = Astro.params;
+
+const env = Astro.locals.runtime?.env;
+const db = env?.MK_APP_DB;
+
+let brand: Brand = SL_BRAND;
+let project: any = null;
+let leadImages: any[] = [];
+let progressUpdates: any[] = [];
+let crewColors: any[] = [];
+let clientPosts: any[] = [];
+let error = '';
+
+if (db && token) {
+  try {
+    // Fetch project by crew_token with quote data (for timeline + scopes).
+    project = await db.prepare(`
+      SELECT
+        p.*,
+        cl.name as crew_lead_name,
+        cl.phone as crew_lead_phone,
+        q.estimated_start,
+        q.estimated_end,
+        q.estimated_duration,
+        q.template_sections as quote_template_sections,
+        q.materials as quote_materials,
+        q.labor as quote_labor,
+        q.labor_total as quote_labor_total,
+        l.project_images as lead_images
+      FROM projects p
+      LEFT JOIN crew_leads cl ON p.crew_lead_id = cl.id
+      LEFT JOIN quotes q ON p.quote_id = q.id
+      LEFT JOIN leads l ON q.lead_id = l.id
+      WHERE p.crew_token = ?
+    `).bind(token).first();
+
+    if (project) brand = await getBrand(db, (project as any).partner_id);
+    if (!project) {
+      error = 'Project not found or access denied';
+    } else {
+      // Reference images: admin-uploaded + migrated from quote (NOT crew-uploaded).
+      // Pull id + poster_url too so the video grid can serve cached poster
+      // frames directly when available, falling back to lazy-mount otherwise.
+      try {
+        // Crew sees every STARRED image (★ = crew-only), regardless of who
+        // uploaded it — admin, quote-migrated, annotated, or a crew photo the
+        // office flagged. Non-starred reference images are reserved for the
+        // client portal. (Previously this was limited to admin/quote_migration,
+        // which silently hid starred annotation/crew images from the crew.)
+        const refResult = await db.prepare(`
+          SELECT id, image_url, poster_url FROM project_updates
+          WHERE project_id = ? AND image_url IS NOT NULL
+            AND COALESCE(is_starred, 0) = 1
+          ORDER BY created_at DESC
+        `).bind(project.id).all();
+        leadImages = (refResult.results || []).map((r: any) => ({
+          id: r.id, url: r.image_url, poster_url: r.poster_url,
+        }));
+      } catch {}
+      // Fallback: legacy lead images if no project_updates exist
+      if (leadImages.length === 0 && project.lead_images) {
+        try {
+          leadImages = JSON.parse(project.lead_images);
+          if (!Array.isArray(leadImages)) leadImages = [];
+        } catch {}
+      }
+
+      // Fetch progress updates (crew-uploaded only, not reference images)
+      const updatesResult = await db.prepare(`
+        SELECT * FROM project_updates
+        WHERE project_id = ? AND posted_by = 'crew_lead'
+        ORDER BY created_at DESC
+      `).bind(project.id).all();
+      progressUpdates = updatesResult.results || [];
+
+      // Customer posts from the client portal — so the crew sees questions /
+      // photos the homeowner shared.
+      try {
+        const cp = await db.prepare(`
+          SELECT id, image_url, note, created_at FROM project_updates
+          WHERE project_id = ? AND posted_by = 'client'
+          ORDER BY created_at DESC
+        `).bind(project.id).all();
+        clientPosts = cp.results || [];
+      } catch (e) { console.error('crew client posts query failed:', e); }
+
+      // Colors the customer picked in their portal (v73) — crew references
+      // these on-site so there's no chasing the office for color codes.
+      try {
+        const colorRes = await db.prepare(
+          'SELECT label, product_type, color_value, finish, note FROM project_colors WHERE project_id = ? AND (color_value IS NOT NULL OR finish IS NOT NULL) ORDER BY created_at ASC'
+        ).bind(project.id).all();
+        crewColors = colorRes.results || [];
+      } catch (e) {
+        console.error('crew project_colors query failed (table missing?):', e);
+      }
+    }
+  } catch (e) {
+    console.error('Crew portal fetch error:', e);
+    error = 'Unable to load project';
+  }
+} else {
+  error = 'Invalid crew access link';
+}
+
+// Format services
+function formatServices(servicesJson: string | null): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    return services.map((s: any) => {
+      const key = typeof s === 'string' ? s : (s.type || s.service || 'service');
+      return SERVICE_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    }).join(', ');
+  } catch {
+    return servicesJson || 'Home Services';
+  }
+}
+
+// Format date
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return 'TBD';
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+// (Scope-of-work card was intentionally removed from the crew portal —
+// contract/quote scope is admin/customer-facing, not crew-facing. The crew
+// only sees what we deliberately expose: location, weather, timeline,
+// reference images, and their own progress uploads.)
+
+// Normalize the address once, server-side. Handles both shapes (structured
+// fields vs. a legacy single-string address) and yields the geocode
+// candidates + clean map query the weather card + map link consume.
+const addr = normalizeAddress({
+  address: project?.customer_address,
+  city: project?.customer_city,
+  state: project?.customer_state,
+  zip: project?.customer_zip,
+});
+
+// Get thumbnail URL using Cloudflare Image Resizing
+function getThumbnailUrl(url: string, size = 200): string {
+  if (!url) return '';
+  try {
+    const urlObj = new URL(url);
+    const path = urlObj.pathname;
+    return `${urlObj.origin}/cdn-cgi/image/width=${size},height=${size},fit=cover,quality=80${path}`;
+  } catch {
+    return url;
+  }
+}
+
+// Status info
+// The crew is viewing their OWN project (they hold the crew token), so a crew
+// is always assigned here — "Needs Crew" never makes sense. 'needs_crew' means
+// the project is scheduled + ready for them to begin.
+const statusLabels: Record<string, { label: string; color: string }> = {
+  'needs_crew': { label: 'Ready to Start', color: '#ff781d' },
+  'in_progress': { label: 'In Progress', color: '#3b82f6' },
+  'completed': { label: 'Completed', color: '#10b981' }
+};
+const status = project?.status ? statusLabels[project.status] : { label: 'Scheduled', color: '#64748b' };
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{project ? `Crew: ${project.project_number}` : 'Crew Portal'} | {brand.name}</title>
+  <style>
+    :root {
+      --color-primary: #ff781d;
+      --color-primary-dark: #2563eb;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-surface: #ffffff;
+      --color-background: #eef4ff;
+      --color-text: #1e293b;
+      --color-text-secondary: #64748b;
+      --color-border: #e2e8f0;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--color-background);
+      min-height: 100vh;
+      color: var(--color-text);
+    }
+
+    .header {
+      background: rgb(15, 18, 25);
+      padding: 24px 20px;
+      color: white;
+    }
+
+    .header-content {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-svg {
+      width: 150px;
+      height: auto;
+    }
+    .portal-partner-logo {
+      height: 52px; width: auto; max-width: 240px;
+      background: #fff; padding: 7px 12px; border-radius: 10px; display: inline-block;
+    }
+    .portal-partner-name { display:inline-block; color:#fff; font-size:24px; font-weight:800; letter-spacing:0.3px; }
+
+    .crew-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .project-header {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ph-left { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; min-width: 0; }
+    .ph-lead { font-size: 13px; color: var(--color-text-secondary); }
+    .ph-lead strong { color: var(--color-text); }
+
+    /* Directions nav button (right half of the header). */
+    .ph-directions {
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      padding: 12px 16px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      border: 1px solid #bbf7d0; color: #15803d; flex-shrink: 0;
+      transition: filter 0.15s ease;
+    }
+    .ph-directions:hover { filter: brightness(0.98); }
+    .ph-dir-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #16a34a, #15803d); color: #fff;
+    }
+    .ph-dir-text { display: flex; flex-direction: column; line-height: 1.25; }
+    .ph-dir-text strong { font-size: 14px; color: #166534; }
+    .ph-dir-text small { font-size: 12px; color: #15803d; opacity: 0.85; }
+    .ph-dir-arrow { color: #16a34a; flex-shrink: 0; }
+    @media (max-width: 560px) {
+      .ph-directions { width: 100%; }
+    }
+
+    .project-number {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 14px;
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* Map Link Styles */
+    .location-card {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1px solid #bbf7d0;
+    }
+
+    .map-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: white;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--color-text);
+      border: 1px solid #d1fae5;
+      transition: all 0.2s;
+    }
+
+    .map-link:hover {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .map-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .map-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .map-label {
+      font-weight: 600;
+      font-size: 15px;
+      color: #059669;
+    }
+
+    .map-hint {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+
+    .map-arrow {
+      color: #10b981;
+    }
+
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .info-value a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .scope-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-text);
+      white-space: pre-wrap;
+    }
+
+    /* Tables */
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .list-table th {
+      text-align: left;
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      padding: 8px 12px;
+      background: var(--color-background);
+      font-weight: 600;
+    }
+
+    .list-table td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--color-border);
+      font-size: 14px;
+    }
+
+    .qty-cell {
+      text-align: center;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    /* Images */
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px;
+    }
+
+    .image-thumb {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-background);
+      border: 1px solid var(--color-border);
+    }
+
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .no-content {
+      text-align: center;
+      padding: 20px;
+      color: var(--color-text-secondary);
+      font-size: 13px;
+      background: var(--color-background);
+      border-radius: var(--radius-md);
+    }
+
+    /* Upload section */
+    .upload-section {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(168, 85, 247, 0.05));
+      border: 2px dashed var(--color-primary);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .upload-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-primary);
+    }
+
+    .upload-subtitle {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff781d 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+
+    /* Progress updates */
+    .update-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      background: var(--color-background);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+    }
+
+    .update-image {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .update-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .update-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .update-note {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .update-meta {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+
+    /* Notes form */
+    .notes-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .notes-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    /* Error state */
+    .error-container {
+      max-width: 400px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .error-title {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .error-message {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Weather + Job Location side-by-side on desktop, stacked on mobile */
+    .weather-location-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .weather-location-row > .card { margin-bottom: 0; }
+    @media (max-width: 640px) {
+      .weather-location-row { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* Weather card shell. The INNER content (temp/rain/extras) is injected
+       via JS innerHTML and styled with inline styles — Astro's scoped CSS
+       can't reach JS-built nodes, so those rules would never apply here. */
+    .weather-card { padding: 18px 20px; }
+
+    /* Lightbox — full-screen, prev/next, download */
+    .cm-lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.94);
+      z-index: 10000;
+      align-items: center; justify-content: center;
+      padding: 12px;
+    }
+    .cm-lightbox.show { display: flex; flex-direction: column; }
+    .cm-lb-stage {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      max-width: 100%; max-height: 100%; overflow: hidden;
+    }
+    .cm-lb-stage img, .cm-lb-stage video {
+      max-width: 95vw; max-height: 78vh;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .cm-lb-close {
+      position: absolute; top: 12px; right: 14px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; width: 44px; height: 44px; border-radius: 50%;
+      font-size: 28px; cursor: pointer; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cm-lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; width: 52px; height: 52px; border-radius: 50%;
+      font-size: 32px; cursor: pointer; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cm-lb-prev { left: 14px; }
+    .cm-lb-next { right: 14px; }
+    .cm-lb-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 10px 6px 4px;
+      max-width: 95vw; width: 100%;
+    }
+    .cm-lb-counter { font-size: 13px; color: rgba(255,255,255,0.7); }
+    .cm-lb-download {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 6px;
+      text-decoration: none; font-size: 13px; font-weight: 600;
+    }
+    .cm-lb-download:hover { background: rgba(255,255,255,0.18); }
+    @media (max-width: 640px) {
+      .cm-lb-nav { width: 44px; height: 44px; font-size: 26px; }
+      .cm-lb-prev { left: 8px; } .cm-lb-next { right: 8px; }
+    }
+
+    .image-thumb { cursor: pointer; }
+    .update-image { cursor: pointer; }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      }
+    }
+  
+    /* iOS auto-zoom fix: inputs must be >=16px on mobile so focusing a field
+       doesn't zoom the page. */
+    @media (max-width: 768px) {
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      select, textarea { font-size: 16px !important; }
+    }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        {brand.isPartner ? (
+          brand.logoUrl
+            ? <img src={brand.logoUrl} alt={brand.name} class="portal-partner-logo" />
+            : <span class="portal-partner-name">{brand.name}</span>
+        ) : (
+        <svg class="logo-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows">
+          <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d" />
+          <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff" />
+        </svg>
+        )}
+      </div>
+      <div class="crew-badge">Crew Portal</div>
+    </div>
+  </header>
+
+  {error ? (
+    <div class="error-container">
+      <div class="error-icon">🔐</div>
+      <h1 class="error-title">Access Denied</h1>
+      <p class="error-message">{error}</p>
+    </div>
+  ) : project && (
+    <div class="container">
+      <!-- Project Header: left = project + crew + status, right = directions nav -->
+      <div class="project-header">
+        <div class="ph-left">
+          <div class="project-number">{project.project_number}</div>
+          {project.crew_lead_name && <div class="ph-lead">Crew lead: <strong>{project.crew_lead_name}</strong></div>}
+          <span class="status-badge" style={`background: ${status.color}`}>{status.label}</span>
+        </div>
+        {addr.hasLocation && (
+          <a class="ph-directions" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr.mapQuery)}`} target="_blank" rel="noopener noreferrer">
+            <span class="ph-dir-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            <span class="ph-dir-text"><strong>{addr.oneLine}</strong><small>Open in Maps · directions</small></span>
+            <svg class="ph-dir-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        )}
+      </div>
+
+      <!-- Weather + Job Location: grouped side-by-side on desktop, stacked on mobile -->
+      {addr.hasLocation && (
+        <div class="weather-location-row">
+          <!-- Today's Weather at the job site. Lazy-loaded client-side via
+               Open-Meteo (free, no API key). Rain probability is highlighted
+               since rain is the main thing that stops exterior work.
+               The geocode candidates + state are computed server-side by
+               normalizeAddress() — handles both structured fields and a
+               legacy single-string address. -->
+          <div class="card weather-card" id="weatherCard"
+               data-zip={addr.zip}
+               data-state-name={addr.stateName}
+               data-geo={JSON.stringify(addr.geoCandidates)}>
+            <div class="card-title" style="display:flex; align-items:center; justify-content:space-between;">
+              <span>Today's Weather</span>
+              <span id="weatherLocLabel" style="font-size:12px; font-weight:400; color:var(--color-text-secondary);"></span>
+            </div>
+            <div id="weatherContent" style="padding: 8px 0;">
+              <div style="display:flex; align-items:center; gap:10px; color:var(--color-text-secondary); font-size:13px;">
+                <div class="weather-spinner" style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; animation: spin 0.8s linear infinite;"></div>
+                Loading forecast…
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Location moved into the header (directions button). -->
+        </div>
+      )}
+
+      <!-- Services & Scope -->
+      <div class="card">
+        <div class="card-title">Job Details</div>
+        <div class="info-item" style="margin-bottom: 16px;">
+          <span class="info-label">Services</span>
+          <span class="info-value">{formatServices(project.services)}</span>
+        </div>
+        {project.scope_description && (
+          <div class="info-item">
+            <span class="info-label">Scope of Work</span>
+            <p class="scope-text">{project.scope_description}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Colors the customer picked in their portal (v73). Read-only here so
+          the crew has the codes + finishes on-site. */}
+      {crewColors.length > 0 && (
+        <div class="card">
+          <div class="card-title">Customer Colors</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            {crewColors.map((c: any) => (
+              <div style="padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border, #e2e8f0); border-radius:10px;">
+                <div style="font-weight:700; font-size:14px; margin-bottom:4px;">{c.label || 'Color'}</div>
+                <div style="font-size:14px;">
+                  {c.product_type && <span style="text-transform:capitalize; opacity:0.8;">{c.product_type} · </span>}
+                  <strong>{c.color_value || '—'}</strong>
+                  {c.finish && <span style="opacity:0.8;"> · {c.finish}</span>}
+                </div>
+                {c.note && <div style="font-size:13px; opacity:0.7; margin-top:4px;">{c.note}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {clientPosts.length > 0 && (
+        <div class="card">
+          <div class="card-title">Customer Updates</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            {clientPosts.map((p: any) => (
+              <div style="padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border, #e2e8f0); border-radius:10px;">
+                {p.image_url && !/\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(p.image_url) && (
+                  <img src={p.image_url} alt="Customer photo" loading="lazy" style="width:120px; height:120px; object-fit:cover; border-radius:8px; display:block; margin-bottom:8px;" />
+                )}
+                {p.note && <div style="font-size:14px; line-height:1.5;">{p.note}</div>}
+                <div style="font-size:11px; opacity:0.6; margin-top:6px;">{new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Timeline — prefer the admin-set project schedule, fall back to
+           the original quote estimate. Otherwise newly-scheduled projects
+           show "TBD" because q.estimated_start is null. -->
+      <div class="card">
+        <div class="card-title">Timeline</div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Start Date</span>
+            <span class="info-value">{formatDate(project.scheduled_start || project.estimated_start)}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">End Date</span>
+            <span class="info-value">{formatDate(project.scheduled_end || project.estimated_end)}</span>
+          </div>
+          {project.estimated_duration && (
+            <div class="info-item">
+              <span class="info-label">Duration</span>
+              <span class="info-value">{project.estimated_duration}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Reference Images from Lead -->
+      <div class="card">
+        <div class="card-title">Reference Images</div>
+        {leadImages.length > 0 ? (
+          <div class="images-grid" data-media-group="reference">
+            {leadImages.map((img: any, idx: number) => {
+              const fullUrl = typeof img === 'string' ? img : img.url;
+              const rowId = typeof img === 'object' ? img.id : null;
+              const posterUrl = typeof img === 'object' ? img.poster_url : null;
+              const isVideo = /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(fullUrl || '');
+              return isVideo ? (
+                <div class="image-thumb is-video" style="position:relative; overflow:hidden;"
+                     data-media-group="reference" data-media-idx={idx}
+                     data-media-type="video" data-media-url={fullUrl}
+                     {...(posterUrl ? {} : { 'data-video-src': fullUrl })}
+                     {...(rowId && !posterUrl ? { 'data-update-id': String(rowId) } : {})}>
+                  {posterUrl ? (
+                    <img src={posterUrl} alt="Video thumbnail" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0; z-index:0;" />
+                  ) : (
+                    <div class="video-fallback" style="width:100%; height:100%; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.85); transition:opacity 0.3s; position:relative; z-index:1;">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                    </div>
+                  )}
+                  <span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.7); color:#fff; padding:2px 5px; border-radius:3px; font-size:9px; font-weight:700; z-index:2;">VIDEO</span>
+                </div>
+              ) : (
+                <div class="image-thumb"
+                     data-media-group="reference" data-media-idx={idx}
+                     data-media-type="image" data-media-url={fullUrl}>
+                  <img
+                    src={getThumbnailUrl(fullUrl, 150)}
+                    alt="Reference"
+                    loading="lazy"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="no-content">No reference images available</div>
+        )}
+      </div>
+
+      <!-- Progress Upload Section -->
+      <div class="upload-section">
+        <div class="upload-title">Upload Progress Photos</div>
+        <div class="upload-subtitle">Document your work with photos (select multiple). Photos are reviewed by the office before the customer sees them.</div>
+        <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)" />
+        <button class="btn btn-primary" id="uploadBtn" onclick="document.getElementById('imageInput').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          Take Photo or Upload
+        </button>
+        <div id="uploadProgress" style="display: none; margin-top: 12px; font-size: 13px; color: var(--color-text-secondary);"></div>
+      </div>
+
+      <!-- Add Note Section -->
+      <div class="card">
+        <div class="card-title">Add Internal Note</div>
+        <form class="notes-form" onsubmit="submitNote(event)">
+          <input type="text" class="notes-input" id="noteInput" placeholder="Add a note about the job..." />
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+
+      <!-- Progress Updates -->
+      <div class="card">
+        <div class="card-title">Progress Updates</div>
+        <div id="updatesList" data-media-group="progress">
+          {progressUpdates.length > 0 ? (
+            progressUpdates.map((update, idx) => {
+              const isVideo = /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(update.image_url || '');
+              return (
+              <div class="update-item">
+                {update.image_url && (
+                  <div class="update-image" style="position:relative; overflow:hidden;"
+                       data-media-group="progress" data-media-idx={idx}
+                       data-media-type={isVideo ? 'video' : 'image'} data-media-url={update.image_url}
+                       {...(isVideo && !update.poster_url ? { 'data-video-src': update.image_url } : {})}
+                       {...(isVideo && !update.poster_url ? { 'data-update-id': String(update.id) } : {})}>
+                    {isVideo ? (
+                      update.poster_url ? (
+                        <img src={update.poster_url} alt="Video thumbnail" loading="lazy" style="width:100%; aspect-ratio:1; object-fit:cover; display:block; border-radius: var(--radius-md);" />
+                      ) : (
+                        <div class="video-fallback" style="cursor:pointer; width:100%; aspect-ratio:1; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.85); border-radius: var(--radius-md); transition:opacity 0.3s; position:relative; z-index:1; overflow:hidden;">
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                        </div>
+                      )
+                    ) : (
+                      <img src={getThumbnailUrl(update.image_url, 120)} alt="Progress" loading="lazy" />
+                    )}
+                  </div>
+                )}
+                <div class="update-content">
+                  {update.note && <div class="update-note">{update.note}</div>}
+                  <div class="update-meta">
+                    {update.posted_by_name || 'Crew'} · {new Date(update.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                  </div>
+                </div>
+              </div>
+              );
+            })
+          ) : (
+            <div class="no-content">No updates yet. Add your first progress photo!</div>
+          )}
+        </div>
+      </div>
+
+      <!-- Contact -->
+      {brand.phoneDisplay && (
+      <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(168, 85, 247, 0.1));">
+        <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px;">Questions? Contact the office</div>
+        <a href={`tel:${brand.phoneTel}`} style="font-size: 18px; font-weight: 600; color: var(--color-primary); text-decoration: none;">{brand.phoneDisplay}</a>
+      </div>
+      )}
+    </div>
+  )}
+
+  <!-- Media Lightbox: prev/next nav + download, supports images + videos -->
+  <div class="cm-lightbox" id="cmLightbox" onclick="cmLbOnBackdrop(event)">
+    <button class="cm-lb-close" onclick="cmLbClose()" aria-label="Close">&times;</button>
+    <button class="cm-lb-nav cm-lb-prev" onclick="cmLbStep(-1)" aria-label="Previous">‹</button>
+    <button class="cm-lb-nav cm-lb-next" onclick="cmLbStep(1)" aria-label="Next">›</button>
+    <div class="cm-lb-stage" onclick="event.stopPropagation()">
+      <img id="cmLbImg" alt="" />
+      <video id="cmLbVideo" controls playsinline style="display:none;"></video>
+    </div>
+    <div class="cm-lb-bottom">
+      <div class="cm-lb-counter" id="cmLbCounter"></div>
+      <a class="cm-lb-download" id="cmLbDownload" target="_blank" rel="noopener" download>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script is:inline define:vars={{ projectId: project?.id, crewToken: token }}>
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = isError ? '#dc2626' : '#1e293b';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    async function handleImageSelect(event) {
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
+
+      // Check file sizes (max 10MB each)
+      const oversizedFiles = files.filter(f => f.size > 10 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        showToast(`${oversizedFiles.length} file(s) too large. Max 10MB each.`, true);
+        return;
+      }
+
+      const uploadBtn = document.getElementById('uploadBtn');
+      const progressDiv = document.getElementById('uploadProgress');
+
+      // Disable button and show progress
+      if (uploadBtn) uploadBtn.disabled = true;
+      if (progressDiv) {
+        progressDiv.style.display = 'block';
+        progressDiv.textContent = `Uploading 0 of ${files.length}...`;
+      }
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      // Upload each file sequentially
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (progressDiv) {
+          progressDiv.textContent = `Uploading ${i + 1} of ${files.length}...`;
+        }
+
+        try {
+          // First, get upload URL
+          const urlRes = await fetch('/api/r2-upload-url/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              filename: file.name,
+              contentType: file.type,
+              folder: 'progress'
+            })
+          });
+
+          const urlData = await urlRes.json();
+          if (!urlData.success) {
+            throw new Error(urlData.error || 'Failed to get upload URL');
+          }
+
+          // Upload to R2
+          const r2Res = await fetch(urlData.uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: { 'Content-Type': file.type }
+          });
+
+          // Check if R2 upload succeeded
+          if (!r2Res.ok) {
+            const r2Error = await r2Res.json().catch(() => ({ error: 'Upload failed' }));
+            throw new Error(r2Error.error || `R2 upload failed: ${r2Res.status}`);
+          }
+
+          // Create progress update
+          const updateRes = await fetch(`/api/projects/${projectId}/updates/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              crew_token: crewToken,
+              image_url: urlData.publicUrl,
+              note: ''
+            })
+          });
+
+          const updateData = await updateRes.json();
+          if (updateData.success) {
+            successCount++;
+          } else {
+            throw new Error(updateData.error || 'Failed to save update');
+          }
+        } catch (err) {
+          console.error(`Upload error for ${file.name}:`, err);
+          errorCount++;
+        }
+      }
+
+      // Re-enable button and hide progress
+      if (uploadBtn) uploadBtn.disabled = false;
+      if (progressDiv) progressDiv.style.display = 'none';
+
+      // Show result. Crew photos go to the office for review before the customer
+      // sees them, so word it as "sent" rather than "posted".
+      if (errorCount === 0) {
+        showToast(`${successCount} photo${successCount > 1 ? 's' : ''} sent to the office for review.`);
+        setTimeout(() => window.location.reload(), 1200);
+      } else if (successCount > 0) {
+        showToast(`${successCount} sent, ${errorCount} failed.`, true);
+        setTimeout(() => window.location.reload(), 2000);
+      } else {
+        showToast('Upload failed. Please try again.', true);
+      }
+
+      // Clear the input
+      event.target.value = '';
+    }
+
+    async function submitNote(event) {
+      event.preventDefault();
+
+      const input = document.getElementById('noteInput');
+      const note = input.value.trim();
+      if (!note) return;
+
+      try {
+        const res = await fetch(`/api/projects/${projectId}/updates/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            crew_token: crewToken,
+            note: note
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          showToast('Note added!');
+          input.value = '';
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        console.error('Note error:', err);
+        showToast('Failed to add note.', true);
+      }
+    }
+
+    // Make functions global
+    window.handleImageSelect = handleImageSelect;
+    window.submitNote = submitNote;
+
+    /* ===================== MEDIA LIGHTBOX ===================== */
+    // One lightbox shared across both Reference + Progress media grids.
+    // Items are addressed by group + index, and prev/next walk all items
+    // *across both groups* in document order (most recent first feels
+    // natural for crew use).
+    var cmLbState = { items: [], idx: 0 };
+
+    function cmCollectMediaItems() {
+      var items = [];
+      var nodes = document.querySelectorAll('[data-media-url]');
+      nodes.forEach(function (n) {
+        items.push({
+          url: n.dataset.mediaUrl,
+          type: n.dataset.mediaType || 'image',
+          group: n.dataset.mediaGroup || '',
+        });
+      });
+      return items;
+    }
+
+    function cmAttachThumbClicks() {
+      var nodes = document.querySelectorAll('[data-media-url]:not([data-lb-bound])');
+      nodes.forEach(function (n) {
+        n.dataset.lbBound = '1';
+        n.addEventListener('click', function (e) {
+          // Don't intercept clicks on actual buttons inside the tile
+          if (e.target.closest('button, a')) return;
+          var url = n.dataset.mediaUrl;
+          if (!url) return;
+          cmLbState.items = cmCollectMediaItems();
+          cmLbState.idx = Math.max(0, cmLbState.items.findIndex(function (it) { return it.url === url; }));
+          cmLbRender();
+          document.getElementById('cmLightbox').classList.add('show');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+    }
+
+    function cmLbRender() {
+      var item = cmLbState.items[cmLbState.idx];
+      if (!item) return;
+      var img = document.getElementById('cmLbImg');
+      var vid = document.getElementById('cmLbVideo');
+      var dl = document.getElementById('cmLbDownload');
+      var counter = document.getElementById('cmLbCounter');
+      // Tear down any prior video playback before swapping sources
+      try { vid.pause(); vid.removeAttribute('src'); vid.load(); } catch (e) {}
+      if (item.type === 'video') {
+        img.style.display = 'none';
+        vid.style.display = '';
+        vid.src = item.url;
+        var p = vid.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      } else {
+        vid.style.display = 'none';
+        img.style.display = '';
+        // Route through cdn-cgi/image so HEIC (iOS) originals get
+        // transcoded — browsers can't render image/heic natively.
+        var src = item.url;
+        try {
+          var u = new URL(item.url);
+          if (u.hostname === 'images.mannyknows.com' && !window.location.hostname.includes('localhost')) {
+            src = u.origin + '/cdn-cgi/image/width=1600,fit=scale-down,quality=85,format=auto' + u.pathname;
+          }
+        } catch (e) {}
+        img.src = src;
+      }
+      dl.href = item.url;
+      var fname = item.url.split('/').pop() || 'download';
+      dl.setAttribute('download', fname);
+      counter.textContent = (cmLbState.idx + 1) + ' / ' + cmLbState.items.length;
+      // Hide nav buttons if only one item
+      document.querySelectorAll('.cm-lb-nav').forEach(function (b) {
+        b.style.display = cmLbState.items.length > 1 ? '' : 'none';
+      });
+    }
+
+    function cmLbStep(delta) {
+      if (cmLbState.items.length === 0) return;
+      cmLbState.idx = (cmLbState.idx + delta + cmLbState.items.length) % cmLbState.items.length;
+      cmLbRender();
+    }
+
+    function cmLbClose() {
+      var vid = document.getElementById('cmLbVideo');
+      try { vid.pause(); vid.removeAttribute('src'); vid.load(); } catch (e) {}
+      document.getElementById('cmLightbox').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function cmLbOnBackdrop(e) {
+      if (e.target.id === 'cmLightbox') cmLbClose();
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (!document.getElementById('cmLightbox').classList.contains('show')) return;
+      if (e.key === 'Escape') cmLbClose();
+      else if (e.key === 'ArrowLeft') cmLbStep(-1);
+      else if (e.key === 'ArrowRight') cmLbStep(1);
+    });
+
+    window.cmLbStep = cmLbStep;
+    window.cmLbClose = cmLbClose;
+    window.cmLbOnBackdrop = cmLbOnBackdrop;
+    window.cmAttachThumbClicks = cmAttachThumbClicks;
+
+    /* ===================== LAZY VIDEO POSTERS ===================== */
+    // Mount a <video preload="metadata" src="...#t=0.5"> behind the
+    // play-icon placeholder once a tile scrolls into view, so each video
+    // shows its own frame as a still. Fallback icon fades out once the
+    // frame paints.
+    // Captures one frame from a lazy-mounted <video> and POSTs it to
+    // /api/portal/video-poster so the next viewer gets an instant <img>.
+    // Crew portal authenticates via the X-Crew-Token header.
+    async function cmCachePosterFrame(updateId, videoEl) {
+      try {
+        var canvas = document.createElement('canvas');
+        var w = videoEl.videoWidth || 640;
+        var h = videoEl.videoHeight || 480;
+        // Cap dimensions — first-frame posters don't need full resolution
+        var scale = Math.min(1, 640 / Math.max(w, h));
+        canvas.width = Math.round(w * scale);
+        canvas.height = Math.round(h * scale);
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+        await fetch('/api/portal/video-poster/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Crew-Token': crewToken },
+          body: JSON.stringify({ kind: 'project_update', id: Number(updateId), data_url: dataUrl }),
+        });
+      } catch (e) {
+        // Best-effort; failing to cache shouldn't break the UI.
+        console.warn('Poster cache failed:', e);
+      }
+    }
+
+    var _cmVideoObs = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.dataset.posterMounted) return;
+        el.dataset.posterMounted = '1';
+        var src = el.dataset.videoSrc;
+        if (!src) return;
+        var video = document.createElement('video');
+        video.src = src + (src.indexOf('#') >= 0 ? '' : '#t=0.5');
+        video.muted = true; video.playsInline = true; video.preload = 'metadata';
+        video.setAttribute('crossorigin', 'anonymous');
+        video.setAttribute('disablepictureinpicture', '');
+        video.style.cssText = 'position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; z-index:0;';
+        var fallback = el.querySelector('.video-fallback');
+        var updateId = el.dataset.updateId;
+        video.addEventListener('loadeddata', function () {
+          if (fallback) fallback.style.opacity = '0';
+          // Defer to seeked event when possible so the frame at #t=0.5 is
+          // painted, otherwise loadeddata's first frame is fine.
+          if (updateId) {
+            // Give the browser one tick so the seeked frame is rendered
+            setTimeout(function () { cmCachePosterFrame(updateId, video); }, 50);
+          }
+        }, { once: true });
+        el.insertBefore(video, el.firstChild);
+        _cmVideoObs.unobserve(el);
+      });
+    }, { rootMargin: '300px 0px' }) : null;
+
+    function cmMountVideoPosters() {
+      if (!_cmVideoObs) return;
+      document.querySelectorAll('[data-video-src]:not([data-poster-mounted])').forEach(function (el) {
+        _cmVideoObs.observe(el);
+      });
+    }
+    window.cmMountVideoPosters = cmMountVideoPosters;
+
+    /* ===================== WEATHER WIDGET ===================== */
+    // Today's forecast via Open-Meteo (free, no key). Geocode the project
+    // address → fetch current conditions + today's daily aggregates →
+    // render with rain emphasis.
+    async function cmLoadWeather() {
+      var card = document.getElementById('weatherCard');
+      if (!card) return;
+      var content = document.getElementById('weatherContent');
+      var locLabel = document.getElementById('weatherLocLabel');
+
+      // The geocode candidates + state were computed server-side by
+      // normalizeAddress() (src/lib/address.ts) — it handles both the
+      // structured fields and a legacy single-string address, and emits an
+      // ordered list of place-name candidates. We just try them here.
+      var zip = (card.dataset.zip || '').trim();
+      var wantState = (card.dataset.stateName || '').trim(); // full name e.g. "Massachusetts"
+      var cityCandidates = [];
+      try { cityCandidates = JSON.parse(card.dataset.geo || '[]'); } catch (e) { cityCandidates = []; }
+
+      if (!zip && cityCandidates.length === 0) {
+        content.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary);">No location set for this project.</div>';
+        return;
+      }
+
+      try {
+        var g = null;
+        var firstUsFallback = null; // first US match across all candidates, if no state match
+
+        // 1) ZIP is unambiguous — try it first if present.
+        if (zip) {
+          var zres = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&countryCode=US&format=json&name=' + encodeURIComponent(zip));
+          var zjson = await zres.json();
+          if (zjson.results && zjson.results.length > 0) g = zjson.results[0];
+        }
+
+        // 2) City + state disambiguation across all candidates. For each
+        //    candidate fetch up to 10 same-named US places; the first one
+        //    whose state matches the project wins. Garbage candidates (e.g.
+        //    "St Longmeadow" from a parsed street address) simply return no
+        //    state match and are skipped.
+        for (var ci = 0; ci < cityCandidates.length && !g; ci++) {
+          var cres = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&format=json&name=' + encodeURIComponent(cityCandidates[ci]));
+          var cjson = await cres.json();
+          var results = (cjson.results || []).filter(function (r) { return r.country_code === 'US' || r.country === 'United States'; });
+          if (wantState) {
+            g = results.find(function (r) { return r.admin1 && r.admin1.toLowerCase() === wantState.toLowerCase(); }) || null;
+          }
+          if (!g && results.length && !firstUsFallback) firstUsFallback = results[0];
+        }
+        // No state-matched hit anywhere → use the first plausible US result.
+        if (!g && firstUsFallback) g = firstUsFallback;
+
+        if (!g) {
+          content.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary);">Couldn\'t look up weather for this location.</div>';
+          return;
+        }
+        if (locLabel) locLabel.textContent = (g.name || '') + (g.admin1 ? ', ' + g.admin1 : '');
+
+        var wxUrl = 'https://api.open-meteo.com/v1/forecast' +
+          '?latitude=' + g.latitude + '&longitude=' + g.longitude +
+          '&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m' +
+          '&daily=precipitation_probability_max,precipitation_sum,temperature_2m_max,temperature_2m_min,weather_code,sunrise,sunset' +
+          '&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch' +
+          '&timezone=auto&forecast_days=1';
+        var wxRes = await fetch(wxUrl);
+        var wx = await wxRes.json();
+        cmRenderWeather(wx);
+      } catch (err) {
+        console.error('Weather load failed:', err);
+        content.innerHTML = '<div style="font-size:13px; color:var(--color-text-secondary);">Weather unavailable.</div>';
+      }
+    }
+
+    function cmWeatherCondition(code) {
+      // WMO weather codes → readable label + emoji
+      if (code === 0) return { label: 'Clear', icon: '☀️' };
+      if (code === 1 || code === 2) return { label: 'Mostly clear', icon: '🌤️' };
+      if (code === 3) return { label: 'Overcast', icon: '☁️' };
+      if (code === 45 || code === 48) return { label: 'Foggy', icon: '🌫️' };
+      if (code >= 51 && code <= 57) return { label: 'Drizzle', icon: '🌦️' };
+      if (code >= 61 && code <= 67) return { label: 'Rain', icon: '🌧️' };
+      if (code >= 71 && code <= 77) return { label: 'Snow', icon: '🌨️' };
+      if (code >= 80 && code <= 82) return { label: 'Rain showers', icon: '🌧️' };
+      if (code >= 85 && code <= 86) return { label: 'Snow showers', icon: '🌨️' };
+      if (code >= 95 && code <= 99) return { label: 'Thunderstorm', icon: '⛈️' };
+      return { label: 'Unknown', icon: '🌡️' };
+    }
+
+    function cmRenderWeather(wx) {
+      var content = document.getElementById('weatherContent');
+      if (!content) return;
+      var c = wx.current || {};
+      var d = (wx.daily || {});
+      var dayCode = d.weather_code && d.weather_code[0];
+      var cond = cmWeatherCondition(c.weather_code != null ? c.weather_code : dayCode);
+      var rainPct = d.precipitation_probability_max ? d.precipitation_probability_max[0] : null;
+      var rainTotal = d.precipitation_sum ? d.precipitation_sum[0] : null;
+      var hi = d.temperature_2m_max ? Math.round(d.temperature_2m_max[0]) : null;
+      var lo = d.temperature_2m_min ? Math.round(d.temperature_2m_min[0]) : null;
+      var temp = c.temperature_2m != null ? Math.round(c.temperature_2m) : null;
+      var wind = c.wind_speed_10m != null ? Math.round(c.wind_speed_10m) : null;
+      var humidity = c.relative_humidity_2m != null ? c.relative_humidity_2m : null;
+
+      var rainHigh = (rainPct != null && rainPct >= 40) || (rainTotal != null && rainTotal >= 0.1);
+
+      // NOTE: styles are inlined here (not class-based) on purpose. This
+      // HTML is injected via innerHTML, so Astro's *scoped* <style> rules
+      // (which only match elements stamped with a data-astro-cid attribute
+      // at build time) never apply to it. Inlining guarantees it renders.
+      var rainColor = rainHigh ? '#f87171' : '#60a5fa';
+      var rainBg = rainHigh ? 'rgba(239,68,68,0.1)' : 'rgba(59,130,246,0.08)';
+      var rainBorder = rainHigh ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.18)';
+
+      var banner = '';
+      if (rainHigh) {
+        var bits = [];
+        if (rainPct != null) bits.push(rainPct + '% chance');
+        if (rainTotal != null && rainTotal > 0) bits.push(rainTotal.toFixed(2) + '" expected');
+        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; font-size:13px; color:#dc2626; font-weight:600;">⚠️ Rain likely today — ' + bits.join(' · ') + '</div>';
+      } else if (rainPct != null) {
+        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); border-radius:10px; font-size:13px; color:#16a34a; font-weight:600;">✓ Low rain risk — ' + rainPct + '% chance of precipitation</div>';
+      }
+
+      var extraCell = function (label, value) {
+        return '<div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.06); border-radius:8px; padding:8px 10px; text-align:center;">' +
+          '<span style="color:#64748b; display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">' + label + '</span>' +
+          '<span style="color:#0f172a; font-weight:600; font-size:14px;">' + value + '</span>' +
+        '</div>';
+      };
+
+      content.innerHTML =
+        '<div style="display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center;">' +
+          '<div style="font-size:42px; line-height:1;">' + cond.icon + '</div>' +
+          '<div>' +
+            (temp != null ? '<div style="font-size:36px; font-weight:700; color:#0f172a; line-height:1;">' + temp + '<span style="font-size:18px; vertical-align:top; margin-left:2px; opacity:0.7;">°F</span></div>' : '') +
+            '<div style="font-size:13px; color:#64748b; margin-top:4px;">' + cond.label +
+              (hi != null && lo != null ? ' · H ' + hi + '° / L ' + lo + '°' : '') +
+            '</div>' +
+          '</div>' +
+          (rainPct != null
+            ? '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; padding:10px 14px; border-radius:10px; background:' + rainBg + '; border:1px solid ' + rainBorder + ';">' +
+                '<span style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; font-weight:700;">Rain</span>' +
+                '<span style="font-size:22px; font-weight:700; color:' + rainColor + ';">' + rainPct + '%</span>' +
+              '</div>'
+            : '') +
+        '</div>' +
+        '<div style="margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; font-size:12px;">' +
+          (humidity != null ? extraCell('Humidity', humidity + '%') : '') +
+          (wind != null ? extraCell('Wind', wind + ' mph') : '') +
+          (rainTotal != null ? extraCell("Today's rain", rainTotal.toFixed(2) + '"') : '') +
+        '</div>' +
+        banner;
+    }
+
+    /* ===================== BOOT ===================== */
+    cmAttachThumbClicks();
+    cmMountVideoPosters();
+    cmLoadWeather();
+  </script>
+</body>
+</html>

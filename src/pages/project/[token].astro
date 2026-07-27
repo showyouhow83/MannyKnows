@@ -1,0 +1,2540 @@
+---
+// Customer Project Portal - View project status and progress
+// Privacy-focused: No address, no pricing, no personal details shown
+import { normalizeAddress } from '../../lib/address';
+import { SERVICE_LABELS } from '../../data/serviceTypes';
+import { streamSubdomain } from '../../lib/stream';
+import { AdminAuth } from '../../lib/adminAuth';
+import {
+  portalCookieName, verifyMagicToken,
+  makeSessionValue, verifySessionValue, SESSION_MAX_AGE,
+} from '../../lib/portalAuth';
+import { getBrand, SL_BRAND, type Brand } from '../../lib/brand';
+const { token } = Astro.params;
+const currentYear = new Date().getFullYear();
+
+const env = Astro.locals.runtime?.env;
+const db = env?.MK_APP_DB;
+// Stream customer subdomain ('' when Stream isn't configured — the video
+// lightbox then falls back to playing the raw file URL).
+const streamSub = streamSubdomain(env);
+// Resolved after the project loads (white-label when it has a partner_id).
+let brand: Brand = SL_BRAND;
+
+// Light email-confirmation gate. The portal link is private, but forwardable —
+// so we require the customer to prove they own the email on the project once,
+// then drop a signed 30-day cookie. `authed` decides whether we render the
+// portal or the email gate. Admins (valid session) bypass it.
+let authed = false;
+let docContractSigned = false;
+let docDepositReceived = false;
+let paymentSchedule: any[] = [];
+const paymentReceiptByRow: Record<string, any> = {};
+const paymentAvailByRow: Record<string, any> = {};
+
+let project: any = null;
+let progressImages: any[] = [];
+let clientPosts: any[] = [];
+let contractScopesRaw: string | null = null;
+// The contract's own (admin-edited) total — the LATEST agreed amount, which can
+// differ from the frozen quote-time project.total. Prefer it for the receipt.
+let contractTotal: number | null = null;
+let signedQuoteDoc: { label: string; file_url: string; file_name: string | null; uploaded_at: string | null } | null = null;
+let quoteDoc: { label: string; file_url: string; file_name: string | null; uploaded_at: string | null } | null = null;
+let signedContractUrl: string | null = null;
+let signedContractAt: string | null = null;
+let savedColors: any[] = [];
+let error = '';
+
+if (db && token) {
+  try {
+    project = await db.prepare(`
+      SELECT
+        p.id, p.project_number, p.customer_name, p.customer_address,
+        p.customer_city, p.customer_state, p.customer_zip,
+        p.services, p.scope_description, p.total, p.colors_locked,
+        p.status, p.started_at, p.completed_at, p.created_at, p.crew_lead_id,
+        p.scheduled_start, p.scheduled_end, p.partner_id,
+        q.estimated_start, q.estimated_end, q.estimated_duration,
+        q.quote_number, q.template_sections as quote_template_sections,
+        q.materials as quote_materials, q.labor as quote_labor,
+        q.labor_total as quote_labor_total,
+        q.subtotal, q.discount,
+        q.sent_at, q.responded_at, q.contract_url
+      FROM projects p
+      LEFT JOIN quotes q ON p.quote_id = q.id
+      WHERE p.client_token = ?
+    `).bind(token).first();
+
+    if (!project) {
+      error = 'Project not found';
+    } else {
+      // White-label branding for partner projects (SL otherwise).
+      brand = await getBrand(db, (project as any).partner_id);
+      // ── Auth gate ──────────────────────────────────────────────────────
+      const secret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+      // 1) Magic link click: ?verify=<token> → set cookie + redirect to clean URL.
+      const verifyParam = Astro.url.searchParams.get('verify');
+      if (verifyParam && secret) {
+        const pid = await verifyMagicToken(verifyParam, secret);
+        if (pid === project.id) {
+          const val = await makeSessionValue(project.id, secret);
+          Astro.cookies.set(portalCookieName(project.id), val, {
+            httpOnly: true, secure: true, sameSite: 'lax', path: '/', maxAge: SESSION_MAX_AGE,
+          });
+          return Astro.redirect(`/project/${token}`);
+        }
+      }
+      // 2) Valid portal cookie?
+      if (secret) {
+        const cookieVal = Astro.cookies.get(portalCookieName(project.id))?.value;
+        if (cookieVal && await verifySessionValue(cookieVal, project.id, secret)) authed = true;
+      }
+      // 3) Admin session bypasses the gate (so staff can preview the portal).
+      if (!authed) {
+        try {
+          const adminSession = await AdminAuth.validateSession(Astro.request, secret);
+          if (adminSession.isAuthenticated) authed = true;
+        } catch {}
+      }
+
+      if (authed) {
+      // Fetch progress images (only images, no internal notes). poster_url
+      // is included so the renderer can serve cached video posters as <img>
+      // tags directly instead of lazy-mounting videos every pageview.
+      // Client sees only NON-starred images. Starred reference images are
+      // crew-only (internal), so they're hidden from the customer portal.
+      const updatesResult = await db.prepare(`
+        SELECT id, image_url, poster_url, stream_uid, created_at
+        FROM project_updates
+        WHERE project_id = ? AND image_url IS NOT NULL
+          AND COALESCE(posted_by, '') != 'annotation'
+          AND COALESCE(posted_by, '') != 'client'
+          AND COALESCE(is_starred, 0) = 0
+        ORDER BY created_at DESC
+      `).bind(project.id).all();
+      progressImages = updatesResult.results || [];
+
+      // The customer's own posts (image and/or comment) — shown back to them
+      // as a thread so they can see what they've shared.
+      try {
+        const cp = await db.prepare(`
+          SELECT id, image_url, note, created_at FROM project_updates
+          WHERE project_id = ? AND posted_by = 'client'
+          ORDER BY created_at DESC
+        `).bind(project.id).all();
+        clientPosts = cp.results || [];
+      } catch (e) { console.error('client posts query failed:', e); }
+
+      // Signed quote PDF (any quote_attachments row whose label ends in
+      // "Signed" — picks the most recent if multiple). project.id is the
+      // project row; quote_attachments lives off the joined quote, so we
+      // pull the quote_id first.
+      const quoteIdRow = await db.prepare(
+        `SELECT quote_id FROM projects WHERE id = ?`
+      ).bind(project.id).first() as { quote_id: number | null } | null;
+      if (quoteIdRow?.quote_id) {
+        const sigDoc = await db.prepare(`
+          SELECT label, file_url, file_name, uploaded_at
+            FROM quote_attachments
+           WHERE quote_id = ?
+             AND label LIKE '%Signed'
+           ORDER BY uploaded_at DESC, id DESC
+           LIMIT 1
+        `).bind(quoteIdRow.quote_id).first() as any;
+        if (sigDoc) signedQuoteDoc = sigDoc;
+
+        // The plain (unsigned) Estimate PDF, so the customer can always pull
+        // up their quote from the Documents section.
+        const estDoc = await db.prepare(`
+          SELECT label, file_url, file_name, uploaded_at
+            FROM quote_attachments
+           WHERE quote_id = ?
+             AND label NOT LIKE '%Signed'
+           ORDER BY uploaded_at DESC, id DESC
+           LIMIT 1
+        `).bind(quoteIdRow.quote_id).first() as any;
+        if (estDoc) quoteDoc = estDoc;
+      }
+
+      // Signed contract (project_contracts is 1:1 with projects). Link the LIVE
+      // contract-preview page (renders the current signatures, incl. the
+      // contractor's) rather than the static signed PDF — that snapshot is
+      // frozen at signing time and can be missing a contractor signature that
+      // was applied/backfilled afterward.
+      const contractRow = await db.prepare(`
+        SELECT contract_token, status, signed_pdf_url, signed_at
+          FROM project_contracts
+         WHERE project_id = ?
+         LIMIT 1
+      `).bind(project.id).first() as { contract_token: string | null; status: string | null; signed_pdf_url: string | null; signed_at: string | null } | null;
+      if (contractRow && (contractRow.status === 'signed' || contractRow.status === 'countersigned') && contractRow.contract_token) {
+        signedContractUrl = `/project/contract-preview/${contractRow.contract_token}/`;
+        signedContractAt = contractRow.signed_at;
+      } else if (contractRow?.signed_pdf_url) {
+        signedContractUrl = contractRow.signed_pdf_url;
+        signedContractAt = contractRow.signed_at;
+      }
+
+      // Document milestones for the dual timeline + the portal payment table:
+      // contract status, payment schedule, per-row receipts, and the customer's
+      // saved availability. (Colors-selected is derived from project_colors.)
+      try {
+        const c = await db.prepare(
+          'SELECT id, status, payment_schedule, scopes, total FROM project_contracts WHERE project_id = ? LIMIT 1'
+        ).bind(project.id).first() as { id: number; status: string; payment_schedule: string | null; scopes: string | null; total: number | null } | null;
+        if (c) {
+          // The contract carries its own (admin-edited) copy of the scopes AND
+          // total — prefer them so the portal mirrors exactly what the admin
+          // sees (the quote-time project.total can be stale after scope edits).
+          if (c.scopes) contractScopesRaw = c.scopes;
+          if (typeof c.total === 'number' && c.total > 0) contractTotal = c.total;
+          if (c.status === 'signed' || c.status === 'countersigned') docContractSigned = true;
+          try { paymentSchedule = JSON.parse(c.payment_schedule || '[]'); } catch { paymentSchedule = []; }
+          if (!Array.isArray(paymentSchedule)) paymentSchedule = [];
+
+          const recRows = await db.prepare(
+            'SELECT row_id, amount, payment_method, check_number, collected_at FROM payment_receipts WHERE project_contract_id = ?'
+          ).bind(c.id).all();
+          for (const r of (recRows.results || []) as any[]) paymentReceiptByRow[r.row_id] = r;
+          if ((recRows.results || []).length > 0) docDepositReceived = true;
+
+          try {
+            const availRows = await db.prepare(
+              'SELECT row_id, available_date, available_time, note FROM payment_availability WHERE project_contract_id = ?'
+            ).bind(c.id).all();
+            for (const r of (availRows.results || []) as any[]) paymentAvailByRow[r.row_id] = r;
+          } catch (e) { /* table may not exist yet */ }
+        }
+      } catch (e) {
+        console.error('contract/payment query failed:', e);
+      }
+      // A signed/accepted quote PDF stands in for the contract ONLY when there
+      // is no formal contract record yet. Once a contract exists (even in
+      // draft), ITS status (set above) is authoritative — a draft contract must
+      // NOT read as "signed" just because the customer accepted the quote.
+      if (!contractRow && signedQuoteDoc) docContractSigned = true;
+
+      // Customer-submitted paint colors (v73). Keyed by scope item id so the
+      // Colors form can prefill what the customer already chose.
+      try {
+        const colorRes = await db.prepare(
+          'SELECT item_id, product_type, color_value, color_hex, finish, note, image_url FROM project_colors WHERE project_id = ?'
+        ).bind(project.id).all();
+        savedColors = colorRes.results || [];
+      } catch (e) {
+        console.error('project_colors query failed (table missing?):', e);
+      }
+      } // end if (authed)
+    }
+  } catch (e) {
+    console.error('Project fetch error:', e);
+    error = 'Unable to load project';
+  }
+} else {
+  error = 'Invalid project link';
+}
+
+// Format services
+function formatServices(servicesJson: string | null): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    return services.map((s: any) => {
+      const key = typeof s === 'string' ? s : (s.type || s.service || 'service');
+      return SERVICE_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    }).join(', ');
+  } catch {
+    return servicesJson || 'Home Services';
+  }
+}
+
+// Group images by date
+function groupImagesByDate(images: any[]): Map<string, any[]> {
+  const groups = new Map<string, any[]>();
+  images.forEach(img => {
+    const date = new Date(img.created_at).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+    if (!groups.has(date)) {
+      groups.set(date, []);
+    }
+    groups.get(date)!.push(img);
+  });
+  return groups;
+}
+
+const imageGroups = groupImagesByDate(progressImages);
+
+// Normalized address for clean display (handles structured + legacy one-liner).
+const addr = normalizeAddress({
+  address: project?.customer_address,
+  city: project?.customer_city,
+  state: project?.customer_state,
+  zip: project?.customer_zip,
+});
+
+// Format currency
+function formatCurrency(amount?: number): string {
+  if (!amount) return '$0.00';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount);
+}
+
+// Scopes are now the customer's source-of-truth view of the work. Pricing
+// is hidden — the receipt at the bottom of the portal shows the total.
+// quoteToScopes synthesizes a Main scope from legacy materials/labor for
+// pre-Phase-5 projects so the customer keeps seeing the work list.
+import { quoteToScopes, renderScopesHtml, parseScopes } from '../../lib/quoteTemplateConstants';
+// Prefer the contract's own (admin-edited) scopes so the portal mirrors what
+// the admin sees. Fall back to the quote's scopes when there's no contract yet.
+const contractScopes = contractScopesRaw ? parseScopes(contractScopesRaw) : [];
+const scopes = (contractScopes && contractScopes.length > 0)
+  ? contractScopes
+  : (project ? quoteToScopes({
+      template_sections: project.quote_template_sections as string | null,
+      materials: project.quote_materials as string | null,
+      labor: project.quote_labor as string | null,
+      labor_total: project.quote_labor_total as number | null,
+    }) : []);
+const scopesHtml = renderScopesHtml(scopes, { hidePricing: true });
+// Priced version for the receipt — keeps every subtotal/charge row (incl. any
+// added "more work" scopes), so the receipt itemizes all charges from the
+// contract, not just the grand total.
+const scopesPricedHtml = renderScopesHtml(scopes, { hidePricing: false });
+const hasPricedScopes = Array.isArray(scopes) && scopes.length > 0;
+
+// ── Colors capture ──────────────────────────────────────────────────────
+// Pull every scope item that needs a customer color decision: choice items
+// (e.g. "Paint vs Stain"), paint_line items, and fillable items. The customer
+// fills these in the Colors section; answers persist to project_colors and
+// flow to the crew page + contract. Saved values prefill the form.
+const colorByItem: Record<string, any> = {};
+for (const c of savedColors) colorByItem[c.item_id] = c;
+// Once finalized, colors/selections are locked into the contract — the form
+// renders read-only & collapsible. Only an admin scope update reopens it.
+const colorsLocked = !!(project as any)?.colors_locked;
+type ColorInput = { id: string; label: string; kind: string; options: string[]; product_type: string; value: string; finish: string };
+const colorInputs: ColorInput[] = [];
+for (const sc of scopes) {
+  for (const sec of (sc.sections || [])) {
+    // Only fields inside the contract's "Colors" section are color choices.
+    // Other fillables (e.g. "Number of colors covered" under Product
+    // Recommendations) are NOT colors and must not appear in this form.
+    if (!/colou?rs?/i.test(sec.title || '')) continue;
+    for (const it of (sec.items || []) as any[]) {
+      // Only true color LINES ("+ Color line" → fillable, or paint_line) become
+      // customer color fields. Choice boxes (e.g. "Color type: Paint/Stain") are
+      // NOT a color to fill in and must not appear as a color line in the portal.
+      if (it && (it.type === 'paint_line' || it.type === 'fillable')) {
+        colorInputs.push({
+          id: it.id,
+          label: it.label || it.text || sec.title || 'Color',
+          kind: it.type,
+          options: Array.isArray(it.options) ? it.options : [],
+          product_type: it.product_type || '',
+          value: it.value || '',   // admin-filled value from the contract scope
+          finish: it.finish || '',
+        });
+      }
+    }
+  }
+}
+
+// CHOICE items (admin-defined custom choices, e.g. "Hardware finish: Brass,
+// Nickel, Black") become a customer "Your Selections" section — a labeled
+// dropdown each. The pick persists to project_colors (color_value = selection)
+// so the admin sees what the customer chose. Pulled from ANY section.
+type ChoiceInput = { id: string; label: string; options: string[]; value: string };
+const choiceInputs: ChoiceInput[] = [];
+for (const sc of scopes) {
+  for (const sec of (sc.sections || [])) {
+    for (const it of (sec.items || []) as any[]) {
+      if (it && it.type === 'choice' && Array.isArray(it.options) && it.options.filter(Boolean).length > 0) {
+        const saved = colorByItem[it.id] || {};
+        choiceInputs.push({
+          id: it.id,
+          label: it.label || 'Choose an option',
+          options: it.options.filter(Boolean),
+          value: String(saved.color_value || it.value || ''),
+        });
+      }
+    }
+  }
+}
+
+// ── Document milestones (dual timeline) ──────────────────────────────────
+// The project schedule "can't start" until the paperwork is done: contract
+// signed, colors chosen (when the scope needs them), and the deposit received.
+const docColorsSelected = colorInputs.length === 0
+  || savedColors.some((c: any) => c.color_value && String(c.color_value).trim());
+const docSteps: { label: string; done: boolean; hint?: string }[] = [
+  { label: 'Contract signed', done: docContractSigned },
+  ...(colorInputs.length > 0
+    ? [{ label: 'Colors selected', done: docColorsSelected, hint: docColorsSelected ? undefined : 'pick them below' }]
+    : []),
+  { label: 'Deposit received', done: docDepositReceived },
+];
+const docDone = docSteps.filter(s => s.done).length;
+const docTotal = docSteps.length;
+const docsComplete = docDone === docTotal;
+
+// Receipt total: the contract's admin-edited total (latest) wins over the
+// quote-time project.total, which can be stale after the scope was changed.
+const receiptTotal: number | null = contractTotal != null ? contractTotal : ((project.total as number | null) ?? null);
+
+// Calculate timeline progress
+function calculateProgress(start: string | null, end: string | null, status: string | null): number {
+  // If project is completed (by admin or naturally), show 100%
+  if (status === 'completed') return 100;
+
+  if (!start || !end) return 0;
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const today = new Date();
+
+  if (today < startDate) return 0;
+  if (today >= endDate) return 100;
+
+  const total = endDate.getTime() - startDate.getTime();
+  const elapsed = today.getTime() - startDate.getTime();
+  return Math.round((elapsed / total) * 100);
+}
+
+// Prefer scheduled dates (set by admin on project) over quote estimates
+const effectiveStart = project?.scheduled_start || project?.estimated_start;
+const effectiveEnd = project?.scheduled_end || project?.estimated_end;
+const timelineProgress = calculateProgress(effectiveStart, effectiveEnd, project?.status);
+
+// Get thumbnail URL using Cloudflare Image Resizing
+function getThumbnailUrl(url: string, size = 200): string {
+  if (!url) return '';
+  try {
+    const urlObj = new URL(url);
+    const path = urlObj.pathname;
+    return `${urlObj.origin}/cdn-cgi/image/width=${size},height=${size},fit=cover,quality=80${path}`;
+  } catch {
+    return url;
+  }
+}
+
+// Format date
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return 'To be scheduled';
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+// Status info - crew assigned changes the needs_crew message
+const hasCrewAssigned = project?.crew_lead_id != null;
+const statusInfo: Record<string, { label: string; color: string; description: string }> = {
+  'needs_crew': {
+    label: hasCrewAssigned ? 'Ready to Start' : 'Scheduling',
+    color: hasCrewAssigned ? '#3b82f6' : '#f59e0b',
+    description: hasCrewAssigned
+      ? 'Your crew has been assigned and your project is ready to begin. We will notify you when work starts!'
+      : 'We are preparing your project and assigning a crew. Check back here for progress updates!'
+  },
+  'in_progress': {
+    label: 'In Progress',
+    color: '#3b82f6',
+    description: 'Your project is currently underway! Our crew is working hard to deliver quality results.'
+  },
+  'completed': {
+    label: 'Completed',
+    color: '#10b981',
+    description: 'Your project has been completed. Thank you for choosing MannyKnows!'
+  }
+};
+
+const status = project?.status ? statusInfo[project.status] : null;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{project ? `Project ${project.project_number}` : 'Project Portal'} | {brand.name}</title>
+  <style>
+    :root {
+      --color-primary: #ff781d;
+      --color-primary-light: #ffa25c;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-surface: #ffffff;
+      --color-background: #f8fafc;
+      --color-text: #1e293b;
+      --color-text-secondary: #64748b;
+      --color-border: #e2e8f0;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Form controls default to the browser's monospace/system font — force the
+       site font so textareas + inputs match everything else. */
+    input, textarea, select, button { font-family: inherit; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--color-background);
+      min-height: 100vh;
+      color: var(--color-text);
+    }
+
+    .header {
+      background: rgb(15, 18, 25);
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .header-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-bottom: 8px;
+    }
+
+    .logo-svg {
+      width: 200px;
+      height: auto;
+    }
+
+    /* Partner white-label logo sits on a white pill so a colour logo reads on the dark header. */
+    .portal-partner-logo {
+      max-width: 240px;
+      max-height: 66px;
+      height: auto;
+      background: #ffffff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    /* Text fallback when a partner has no logo uploaded. */
+    .portal-partner-name {
+      display: inline-block;
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: -40px auto 40px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .status-banner {
+      padding: 24px;
+      text-align: center;
+      color: white;
+    }
+
+    .status-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .status-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .status-description {
+      font-size: 15px;
+      opacity: 0.9;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .project-number {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+    }
+
+    /* Card pattern mirrored from the crew portal so admin can screenshot
+       either page and the layouts read the same. */
+    .job-card {
+      background: var(--color-surface, #fff);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--color-border);
+    }
+    .job-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .job-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .job-info-label {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .job-info-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+    .job-scope-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      white-space: pre-wrap;
+      margin: 4px 0 0 0;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .info-value {
+      font-weight: 500;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .total-row {
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-top: 16px;
+    }
+
+    .total-row .info-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .total-row .info-value {
+      font-size: 24px;
+      color: var(--color-primary);
+    }
+
+    .crew-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .crew-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .crew-phone {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .crew-phone a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .portal-footer {
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      padding: 28px 20px 36px;
+      text-align: center;
+    }
+    .portal-footer-creds { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+    .portal-footer-copy { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 8px; }
+    .portal-footer-copy a { color: #ff781d; text-decoration: none; font-weight: 600; }
+    .portal-footer-legal a { color: #64748b; text-decoration: none; font-size: 13px; margin: 0 8px; }
+    .portal-footer-legal a:hover { color: #ff781d; }
+    @media print { .portal-footer { display: none !important; } }
+
+    .contact-section {
+      background: #f8fafc;
+      padding: 24px 32px;
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .contact-title {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .contact-phone {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .contact-phone a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .error-container {
+      max-width: 500px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .error-title {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .error-message {
+      color: var(--color-text-secondary);
+    }
+
+    /* Progress Gallery */
+    .progress-gallery {
+      margin-top: 12px;
+    }
+
+    .date-group {
+      margin-bottom: 20px;
+    }
+
+    .date-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .date-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, rgba(255, 120, 29, 0.10), rgba(255, 120, 29, 0.05));
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+
+    .image-thumb {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-background);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: transform 0.2s;
+      position: relative;
+    }
+    .image-thumb.is-video > div { width: 100%; height: 100%; }
+
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .no-photos {
+      text-align: center;
+      padding: 32px 20px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+      border-radius: var(--radius-lg);
+      border: 1px dashed var(--color-border);
+    }
+
+    .no-photos-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .no-photos-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .no-photos-sub {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    /* Timeline Visual */
+    .timeline-visual {
+      margin: 16px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .timeline-bar-container {
+      position: relative;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .timeline-bar-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #ff781d, #ffa25c);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .timeline-bar-today {
+      position: absolute;
+      top: -4px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border: 3px solid #ff781d;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .timeline-dates {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .timeline-date {
+      text-align: center;
+    }
+
+    .timeline-date-label {
+      color: var(--color-text-secondary);
+      margin-bottom: 2px;
+    }
+
+    .timeline-date-value {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .timeline-progress-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--color-primary);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: var(--radius-md);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Receipt Section */
+    .receipt-section {
+      border-top: 2px solid var(--color-border);
+      padding: 32px;
+    }
+
+    .docs-section {
+      border-top: 2px solid var(--color-border);
+      padding: 32px;
+    }
+
+    .docs-header { margin-bottom: 16px; }
+
+    .docs-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .docs-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .doc-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      color: var(--color-text-primary);
+      transition: all 0.15s;
+    }
+
+    .doc-link:hover {
+      background: #f1f5f9;
+      border-color: #ff781d;
+      transform: none;
+    }
+
+    .doc-link svg { color: #ff781d; flex-shrink: 0; }
+
+    .doc-link-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .doc-link-label { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
+    .doc-link-meta { font-size: 12px; color: var(--color-text-secondary); }
+
+    .doc-link-action {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e05f00;
+      padding: 6px 14px;
+      border: 1px solid #ff781d;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+
+    .doc-link:hover .doc-link-action { background: #ff781d; color: white; }
+
+    @media (max-width: 768px) {
+      .docs-section { padding: 24px 16px; }
+      .doc-link { padding: 12px 14px; gap: 10px; }
+      .doc-link-label { font-size: 14px; }
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .receipt-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ff781d 0%, #e05f00 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-download:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(255, 120, 29, 0.3);
+    }
+
+    .receipt-card {
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .receipt-card-header {
+      background: rgb(15, 18, 25);
+      padding: 20px 24px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .receipt-card-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .receipt-quote-num {
+      font-size: 13px;
+      opacity: 0.9;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    .receipt-body {
+      padding: 24px;
+    }
+
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .receipt-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 0;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .receipt-table th:last-child {
+      text-align: right;
+    }
+
+    .receipt-table td {
+      padding: 12px 0;
+      font-size: 14px;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .receipt-table tr:last-child td,
+    .receipt-table tbody tr:last-child td {
+      border-bottom: none !important;
+    }
+
+    .receipt-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .receipt-totals {
+      margin-top: 16px;
+      padding-top: 16px;
+    }
+
+    .receipt-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .receipt-total-row.discount {
+      color: #10b981;
+    }
+
+    .receipt-total-row.grand-total {
+      padding-top: 12px;
+      margin-top: 8px;
+      border-top: 2px solid var(--color-border);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .receipt-total-row.grand-total .total-amount {
+      color: var(--color-primary);
+    }
+
+    .receipt-meta {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      .header, .contact-section, .btn-download, .lightbox, .docs-section { display: none !important; }
+      .status-banner, .content { display: none !important; }
+      body { background: white !important; }
+      .container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+      .card { box-shadow: none !important; border-radius: 0 !important; }
+      .receipt-section { border-top: none !important; padding: 0 !important; }
+      .receipt-header { display: none !important; }
+      .receipt-card { border: none !important; }
+      .receipt-card-header {
+        border-radius: 0 !important;
+        padding: 30px 24px !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .receipt-card-header svg path { fill: #0f1219 !important; }
+      .receipt-card-header svg path:first-of-type { fill: #ff781d !important; }
+      .receipt-quote-num {
+        background: #f1f5f9 !important;
+        color: #1e293b !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .receipt-total-row.grand-total .total-amount {
+        color: #e05f00 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header {
+        padding: 32px 16px;
+      }
+
+      .container {
+        padding: 0 16px;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      .info-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .info-value {
+        text-align: left;
+      }
+
+      .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+
+      .receipt-section {
+        padding: 24px;
+      }
+
+      .receipt-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .receipt-card-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
+
+      .receipt-meta {
+        flex-direction: column;
+        gap: 4px;
+      }
+    }
+
+    /* ── Colors capture form ── */
+    .colors-form { display: flex; flex-direction: column; gap: 14px; }
+
+    /* Color row card */
+    .color-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .cr-head { display: flex; align-items: center; gap: 10px; }
+    .cr-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e2e8f0; flex-shrink: 0; background: #e2e8f0; transition: background 0.2s; }
+    .cr-swatch[data-filled="true"] { border-color: rgba(0,0,0,0.12); }
+    .cr-label { font-weight: 700; font-size: 14px; color: #1e293b; flex: 1; }
+    .cr-browse-btn { display: flex; align-items: center; gap: 5px; padding: 6px 11px; background: #fff; border: 1px solid #fdba74; border-radius: 20px; font-size: 12px; font-weight: 600; color: #c2410c; cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s; }
+    .cr-browse-btn:hover { background: #fff7ed; border-color: #ff781d; }
+    .color-field { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; color: #0f172a; background: #fff; width: 100%; box-sizing: border-box; }
+    .color-field:focus { outline: none; border-color: #ff781d; }
+    .color-field:disabled { background: #f8fafc; color: #64748b; }
+    .color-value { font-weight: 500; }
+
+    /* Product / finish pill toggles */
+    .cr-pill-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .cr-pill-label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; min-width: 38px; }
+    .cr-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+    .cr-pill { padding: 5px 12px; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 12.5px; font-weight: 500; color: #475569; background: #fff; cursor: pointer; transition: all 0.12s; }
+    .cr-pill:hover { border-color: #94a3b8; color: #1e293b; }
+    .cr-pill.active { background: #1e293b; border-color: #1e293b; color: #fff; font-weight: 600; }
+
+    /* Paint card photo */
+    .cr-photo-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .cr-photo-btn { display: flex; align-items: center; gap: 6px; padding: 7px 12px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 12.5px; color: #64748b; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+    .cr-photo-btn:hover { border-color: #ff781d; color: #ff781d; }
+    .cr-photo-thumb { display: block; width: 44px; height: 44px; border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0; flex-shrink: 0; }
+    .cr-photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── SW Color Picker panel ── */
+    .swcp-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 900; }
+    .swcp-overlay[hidden] { display: none; }
+    .swcp { position: fixed; bottom: 0; left: 0; right: 0; z-index: 901; background: #fff; border-radius: 20px 20px 0 0; box-shadow: 0 -8px 40px rgba(0,0,0,0.18); display: flex; flex-direction: column; max-height: 80vh; overflow: hidden; }
+    .swcp[hidden] { display: none; }
+    .swcp-drag { width: 36px; height: 4px; background: #e2e8f0; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }
+    .swcp-bar { display: flex; align-items: center; gap: 10px; padding: 8px 14px 12px; }
+    .swcp-title { font-size: 14px; font-weight: 700; color: #1e293b; flex: 1; }
+    .swcp-search { flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 13px; font-size: 14px; outline: none; background: #f8fafc; }
+    .swcp-search:focus { border-color: #ff781d; background: #fff; }
+    .swcp-close { width: 34px; height: 34px; background: #f1f5f9; border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: #475569; }
+    .swcp-families { display: flex; gap: 5px; padding: 0 14px 10px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #f1f5f9; }
+    .swcp-families::-webkit-scrollbar { display: none; }
+    .swcp-fam { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; color: #475569; transition: all 0.12s; }
+    .swcp-fam.active { background: #1e293b; border-color: #1e293b; color: #fff; }
+    .swcp-fam-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .swcp-grid { flex: 1; overflow-y: auto; padding: 12px 14px; display: grid; grid-template-columns: repeat(auto-fill, 38px); gap: 5px; align-content: start; }
+    .swcp-sw { width: 38px; height: 38px; border-radius: 9px; border: 2px solid transparent; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+    .swcp-sw:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.7); }
+    .swcp-sw.picked { border-color: #1e293b !important; transform: scale(1.2); box-shadow: 0 0 0 3px rgba(30,41,59,0.18); }
+    .swcp-empty { padding: 32px 14px; text-align: center; color: #94a3b8; font-size: 14px; grid-column: 1/-1; }
+    .swcp-foot { padding: 14px; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; flex-shrink: 0; background: #f0fdf4; }
+    .swcp-foot[hidden] { display: none; }
+    .swcp-foot-sw { width: 44px; height: 44px; border-radius: 9px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+    .swcp-foot-info { flex: 1; min-width: 0; }
+    .swcp-foot-info strong { display: block; font-size: 14px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .swcp-foot-info span { font-size: 12px; color: #64748b; }
+    .swcp-confirm { padding: 14px 24px; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0; box-shadow: 0 2px 10px rgba(22,163,74,0.35); }
+    .swcp-confirm:hover { filter: brightness(1.05); }
+    @media (max-width: 560px) {
+      .swcp-foot { flex-wrap: wrap; }
+      .swcp-confirm { flex: 1 1 100%; order: 3; }
+    }
+
+    /* Custom choices ("Your Selections") */
+    .choices-form { display: flex; flex-direction: column; gap: 12px; }
+    .choice-row { padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .choice-row-label { font-weight: 700; font-size: 14px; color: #1e293b; }
+    .choice-field { flex: 0 1 220px; min-width: 160px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; color: #0f172a; background: #fff; }
+    .choice-field:focus { outline: none; border-color: #ff781d; }
+    .color-note { font-size: 13px; }
+    .colors-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 16px; }
+    .colors-status { font-size: 13px; color: #64748b; margin-right: auto; }
+    .colors-status.ok { color: #16a34a; font-weight: 600; }
+    .colors-status.err { color: #dc2626; font-weight: 600; }
+    .colors-save-btn { background: linear-gradient(135deg, #ff781d 0%, #e05f00 100%); color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .colors-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .colors-save-ghost { background: #fff; color: #475569; border: 1px solid #cbd5e1; }
+    .colors-save-btn.confirm-armed { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+
+    /* ── Finalized (locked) colors / selections card ── */
+    .colors-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .colors-collapse-toggle { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; padding: 0; font: inherit; }
+    .locked-badge { font-size: 12px; font-weight: 700; color: #16a34a; background: #dcfce7; border-radius: 999px; padding: 3px 10px; }
+    .colors-collapse-toggle .chev { color: #94a3b8; font-size: 12px; transition: transform 0.2s; }
+    .colors-lockable.collapsed .chev { transform: rotate(-90deg); }
+    .colors-lockable.collapsed .colors-collapse-body { display: none; }
+    .colors-lockable.is-locked .color-field,
+    .colors-lockable.is-locked .choice-field { background: #f1f5f9; color: #64748b; cursor: not-allowed; }
+
+    /* ── Dual timeline: documents checklist + project schedule ── */
+    .doc-timeline { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
+    .doc-timeline-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 12px; }
+    .doc-timeline-count { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #e2e8f0; color: #475569; }
+    .doc-timeline-count.done { background: #dcfce7; color: #16a34a; }
+    .doc-steps { display: flex; flex-direction: column; gap: 8px; }
+    .doc-step { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #64748b; }
+    .doc-step-mark { width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; border: 2px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; }
+    .doc-step.done { color: #1e293b; font-weight: 600; }
+    .doc-step.done .doc-step-mark { background: #16a34a; border-color: #16a34a; }
+    .doc-step-hint { color: #ff781d; font-weight: 600; }
+    .project-timeline-wrap { }
+    .project-timeline-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 10px; }
+    .timeline-gate-note { background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%); border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13px; color: #92400e; margin-bottom: 14px; }
+
+    /* Payments */
+    .pay-rows { display: flex; flex-direction: column; gap: 12px; }
+    .pay-row { padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
+    .pay-row.paid { background: #f0fdf4; border-color: #bbf7d0; }
+    .pay-row-main { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .pay-row-label { font-weight: 700; font-size: 15px; color: #1e293b; }
+    .pay-row-amt { font-weight: 700; font-size: 16px; color: #ff781d; white-space: nowrap; }
+    .pay-row-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 4px; font-size: 13px; color: #64748b; }
+    .pay-badge { font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #e2e8f0; color: #475569; }
+    .pay-badge.paid { background: #dcfce7; color: #16a34a; }
+    .pay-avail { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
+    .pay-avail-label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+    .pay-avail-time { width: 100%; max-width: 160px; }
+    .pay-avail-date { width: 100%; max-width: 220px; }
+    .pay-avail-note { width: 100%; margin-top: 8px; }
+    .pay-avail-date, .pay-avail-note, .pay-avail-time { padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; color: #0f172a; background: #fff; }
+    .pay-avail-date:focus, .pay-avail-note:focus, .pay-avail-time:focus { outline: none; border-color: #ff781d; }
+    .pay-altdate { margin-top: 10px; }
+    .pay-avail-sublabel { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; }
+    .pay-altdate-toggle, .pay-note-toggle { display: inline-block; margin-top: 10px; margin-right: 14px; background: none; border: none; padding: 2px 0; color: #ff781d; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .pay-altdate-toggle:hover, .pay-note-toggle:hover { text-decoration: underline; }
+
+    /* Customer post / updates thread */
+    .job-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .client-post-toggle { border: 1px solid #cbd5e1; background: #fff; color: #2563eb; font-weight: 600; font-size: 13px; padding: 7px 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+    .client-post-toggle:hover { background: #f1f5f9; }
+    .client-post-file { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-weight: 600; color: #475569; cursor: pointer; background: #fff; }
+    .client-post-file:hover { background: #f1f5f9; }
+    .client-posts-thread { margin-top: 18px; padding-top: 16px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 12px; }
+    .client-post { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; }
+    .client-post-img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; display: block; margin-bottom: 8px; }
+    .client-post-note { font-size: 14px; color: #1e293b; line-height: 1.5; white-space: pre-wrap; }
+    .client-post-time { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+
+    /* Scope accordion */
+    details.scope-accordion > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+    details.scope-accordion > summary::-webkit-details-marker { display: none; }
+    details.scope-accordion > summary::after { content: '▾'; color: #94a3b8; font-size: 16px; transition: transform 0.2s ease; }
+    details.scope-accordion[open] > summary::after { transform: rotate(180deg); }
+  
+    /* iOS auto-zoom fix: inputs must be >=16px on mobile so focusing a field
+       doesn't zoom the page. */
+    @media (max-width: 768px) {
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      select, textarea { font-size: 16px !important; }
+    }
+
+    /* Date inputs overflow their container on iOS unless min-width is dropped.
+       We keep the NATIVE appearance (so the iOS calendar control is visible +
+       tappable — stripping appearance hid it, which read as "no calendar"),
+       and constrain width to stop the overflow. */
+    input[type="date"], input[type="time"], input[type="datetime-local"] {
+      min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box;
+    }
+    /* Make the calendar icon clearly visible/tappable on WebKit. */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 1; cursor: pointer;
+    }
+</style>
+<style is:global>
+  /* Color picker — JS-rendered elements don't carry Astro scope hash */
+  .swcp-fam { display:flex; align-items:center; gap:5px; padding:5px 11px; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; color:#475569; transition:all 0.12s; }
+  .swcp-fam.active { background:#1e293b; border-color:#1e293b; color:#fff; }
+  .swcp-fam-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; display:inline-block; }
+  .swcp-sw { width:38px; height:38px; border-radius:9px; border:2px solid transparent; cursor:pointer; display:inline-block; transition:transform 0.1s, box-shadow 0.1s; }
+  .swcp-sw:hover { box-shadow:0 3px 10px rgba(0,0,0,0.2); border-color:rgba(255,255,255,0.7); }
+  .swcp-sw.picked { border-color:#1e293b !important; transform:scale(1.2); box-shadow:0 0 0 3px rgba(30,41,59,0.18); }
+  .swcp-empty { padding:32px 14px; text-align:center; color:#94a3b8; font-size:14px; }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        {brand.isPartner ? (
+          brand.logoUrl
+            ? <img src={brand.logoUrl} alt={brand.name} class="portal-partner-logo" />
+            : <span class="portal-partner-name">{brand.name}</span>
+        ) : (
+        <svg class="logo-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows">
+          <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d" />
+          <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff" />
+        </svg>
+        )}
+      </div>
+    </div>
+  </header>
+
+  {error ? (
+    <div class="error-container">
+      <div class="error-icon">🔍</div>
+      <h1 class="error-title">Project Not Found</h1>
+      <p class="error-message">{error}</p>
+    </div>
+  ) : (project && !authed) ? (
+    <Fragment>
+    <div class="container">
+      <div class="card" style="max-width:460px;margin:88px auto 40px;padding:32px 28px;text-align:center;">
+        <h1 style="font-size:22px;color:#1e293b;margin:0 0 8px;">Open your project</h1>
+        <p style="font-size:14px;color:#64748b;line-height:1.6;margin:0 0 22px;">
+          For your privacy, confirm the email on your project. We'll send you a secure link — no password needed.
+        </p>
+        <form id="portalGateForm" style="display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <input type="email" id="gateEmail" placeholder="you@email.com" autocomplete="email" required
+            style="width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;color:#0f172a;" />
+          <button type="submit" id="gateBtn"
+            style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#ff781d,#e05f00);color:#fff;font-size:16px;font-weight:700;cursor:pointer;">
+            Send me a secure link
+          </button>
+        </form>
+        <p id="gateStatus" style="font-size:13px;margin:16px 0 0;min-height:18px;"></p>
+      </div>
+    </div>
+    <script is:inline define:vars={{ token }}>
+      (function () {
+        var form = document.getElementById('portalGateForm');
+        if (!form) return;
+        var btn = document.getElementById('gateBtn');
+        var statusEl = document.getElementById('gateStatus');
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var email = (document.getElementById('gateEmail').value || '').trim();
+          if (!email) return;
+          btn.disabled = true; btn.textContent = 'Sending…';
+          statusEl.style.color = '#64748b'; statusEl.textContent = '';
+          try {
+            var res = await fetch('/api/portal/auth/request', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: token, email: email }),
+            });
+            var data = await res.json();
+            statusEl.style.color = '#16a34a';
+            statusEl.textContent = data.message || 'Check your email for the secure link.';
+          } catch (err) {
+            statusEl.style.color = '#dc2626';
+            statusEl.textContent = 'Something went wrong. Please try again.';
+          }
+          btn.disabled = false; btn.textContent = 'Send me a secure link';
+        });
+      })();
+    </script>
+    </Fragment>
+  ) : project && status && (
+    <div class="container">
+      <div class="card">
+        <div class="status-banner" style={`background: ${status.color}`}>
+          <div class="status-label">Project Status</div>
+          <div class="status-title">{status.label}</div>
+          <div class="status-description">{status.description}</div>
+          <div class="project-number">{project.project_number}</div>
+        </div>
+
+        <div class="content">
+          {/* ── Timeline (top): documents checklist + project schedule ──
+              The get-ready checklist must be 100% before the project schedule
+              starts. Job Details moved to the crew page (not customer-facing). */}
+          <div class="section">
+            <div class="section-title">Timeline</div>
+
+            <div class="doc-timeline">
+              <div class="doc-timeline-head">
+                <span>Before we start</span>
+                <span class={`doc-timeline-count ${docsComplete ? 'done' : ''}`}>{docDone}/{docTotal} complete</span>
+              </div>
+              <div class="doc-steps">
+                {docSteps.map((s) => (
+                  <div class={`doc-step ${s.done ? 'done' : ''}`}>
+                    <span class="doc-step-mark">{s.done ? '✓' : ''}</span>
+                    <span class="doc-step-label">{s.label}{s.hint ? <span class="doc-step-hint"> — {s.hint}</span> : null}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="project-timeline-wrap">
+              <div class="project-timeline-title">Project schedule</div>
+              {!docsComplete && (
+                <div class="timeline-gate-note">Your project schedule begins once the items above are complete.</div>
+              )}
+
+              {effectiveStart && effectiveEnd && (
+                <div class="timeline-visual" style={docsComplete ? '' : 'opacity:0.55;'}>
+                  <div class="timeline-bar-container">
+                    <div class="timeline-bar-progress" style={`width: ${timelineProgress}%`}></div>
+                    {timelineProgress > 0 && timelineProgress < 100 && (
+                      <div class="timeline-bar-today" style={`left: ${timelineProgress}%`}></div>
+                    )}
+                  </div>
+                  <div class="timeline-dates">
+                    <div class="timeline-date">
+                      <div class="timeline-date-label">Start</div>
+                      <div class="timeline-date-value">{new Date(effectiveStart).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                    </div>
+                    {project.estimated_duration && (
+                      <div class="timeline-date" style="flex: 1; text-align: center;">
+                        <div class="timeline-date-label">Duration</div>
+                        <div class="timeline-date-value">{project.estimated_duration}</div>
+                      </div>
+                    )}
+                    <div class="timeline-date">
+                      <div class="timeline-date-label">End</div>
+                      <div class="timeline-date-value">{new Date(effectiveEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                    </div>
+                  </div>
+                  {(project.status === 'in_progress' || project.status === 'completed') && (
+                    <div class="timeline-progress-text">
+                      {project.status === 'completed' ? 'Project Complete!' :
+                       timelineProgress === 0 ? 'Starting soon' :
+                       timelineProgress >= 100 ? 'Wrapping up' :
+                       `${timelineProgress}% complete`}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div class="info-row">
+                <span class="info-label">Estimated Start</span>
+                <span class="info-value">{formatDate(effectiveStart)}</span>
+              </div>
+              {effectiveEnd && (
+                <div class="info-row">
+                  <span class="info-label">Estimated Completion</span>
+                  <span class="info-value">{formatDate(effectiveEnd)}</span>
+                </div>
+              )}
+              {project.estimated_duration && !effectiveStart && (
+                <div class="info-row">
+                  <span class="info-label">Duration</span>
+                  <span class="info-value">{project.estimated_duration}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Colors — the customer picks their paint/stain colors + finish here.
+              Saved to project_colors; flows to the crew page + contract. Open
+              by default (the one section we want them to act on). */}
+          {colorInputs.length > 0 && (
+            <div class={`job-card colors-lockable${colorsLocked ? ' is-locked collapsed' : ''}`} id="colorsCard">
+              <div class="job-card-title colors-card-head">
+                <span>Your Colors</span>
+                {colorsLocked && (
+                  <button type="button" class="colors-collapse-toggle" aria-label="Show or hide">
+                    <span class="locked-badge">🔒 Finalized</span>
+                    <span class="chev">▾</span>
+                  </button>
+                )}
+              </div>
+              {colorsLocked ? (
+                <p class="colors-locked-note" style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
+                  Your colors are finalized and locked into your contract. Need a change? Just message us and we'll reopen this for you.
+                </p>
+              ) : (
+                <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
+                  Pick your colors below. Enter a code (e.g. <strong>SW 7008</strong> or <strong>BM OC-17</strong>), or just tell us
+                  <em>"same as current"</em> and we'll color-match. You can update these any time before we start — when you're sure, <strong>finalize</strong> to lock them in.
+                </p>
+              )}
+              <div class="colors-form colors-collapse-body">
+                {colorInputs.map((ci) => {
+                  const saved = colorByItem[ci.id] || {};
+                  // Prefill: the customer's own saved choice wins; otherwise show
+                  // whatever the admin already put on the contract for this field.
+                  const pf = {
+                    product_type: saved.product_type || ci.product_type || '',
+                    color_value: saved.color_value || ci.value || '',
+                    color_hex: saved.color_hex || '',
+                    finish: saved.finish || ci.finish || '',
+                    note: saved.note || '',
+                    image_url: saved.image_url || '',
+                  };
+                  return (
+                    <div class="color-row" data-item-id={ci.id} data-label={ci.label}>
+                      {/* Header: swatch + label + browse button */}
+                      <div class="cr-head">
+                        <span class="cr-swatch" style={pf.color_hex ? `background:${pf.color_hex}` : ''} data-filled={!!pf.color_hex}></span>
+                        <span class="cr-label">{ci.label}</span>
+                        {!colorsLocked && (
+                          <button type="button" class="cr-browse-btn" data-item-id={ci.id}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="13" r="2.5"/><circle cx="8" cy="14" r="2.5"/><path d="M11 7.5l4 3.5"/><path d="M10.4 13.5l5.1 2"/></svg>
+                            Browse colors
+                          </button>
+                        )}
+                      </div>
+                      {/* Color value + hidden hex */}
+                      <input type="text" class="color-field color-value" placeholder="Color name or code — e.g. SW 7008, BM OC-17, same as current" value={pf.color_value} disabled={colorsLocked} />
+                      <input type="hidden" class="color-hex" value={pf.color_hex} />
+                      {/* Product type pills */}
+                      {!colorsLocked ? (
+                        <div class="cr-pill-row">
+                          <span class="cr-pill-label">Type</span>
+                          <div class="cr-pills" data-group="product">
+                            {['paint','stain'].map((v) => (
+                              <button type="button" class={`cr-pill${pf.product_type === v ? ' active' : ''}`} data-value={v}>{v === 'paint' ? 'Paint' : 'Stain'}</button>
+                            ))}
+                          </div>
+                          <input type="hidden" class="color-product" value={pf.product_type} />
+                        </div>
+                      ) : (
+                        <input type="hidden" class="color-product" value={pf.product_type} />
+                      )}
+                      {/* Finish pills */}
+                      {!colorsLocked ? (
+                        <div class="cr-pill-row">
+                          <span class="cr-pill-label">Finish</span>
+                          <div class="cr-pills cr-pills--finish" data-group="finish">
+                            {['Flat','Matte','Eggshell','Satin','Semi-gloss','Gloss'].map((f) => (
+                              <button type="button" class={`cr-pill${pf.finish === f ? ' active' : ''}`} data-value={f}>{f}</button>
+                            ))}
+                          </div>
+                          <input type="hidden" class="color-finish" value={pf.finish} />
+                        </div>
+                      ) : (
+                        <input type="hidden" class="color-finish" value={pf.finish} />
+                      )}
+                      {/* Notes */}
+                      <input type="text" class="color-field color-note" placeholder="Notes (optional) — e.g. accent wall only, trim only" value={pf.note} disabled={colorsLocked} />
+                      {/* Paint card photo */}
+                      {!colorsLocked && (
+                        <div class="cr-photo-row">
+                          <input type="file" class="cr-photo-input" accept="image/*,image/heic" hidden />
+                          <input type="hidden" class="cr-photo-url" value={pf.image_url} />
+                          <button type="button" class="cr-photo-btn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            {pf.image_url ? 'Change photo' : 'Add paint card photo'}
+                          </button>
+                          {pf.image_url && (
+                            <a class="cr-photo-thumb" href={pf.image_url} target="_blank" rel="noopener">
+                              <img src={pf.image_url} alt="Paint card" loading="lazy" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              {!colorsLocked && (
+                <div class="colors-actions colors-collapse-body">
+                  <span class="colors-status" id="colorsStatus"></span>
+                  <button type="button" class="colors-save-btn colors-save-ghost" id="colorsSaveBtn">Save for now</button>
+                  <button type="button" class="colors-save-btn" id="colorsFinalizeBtn">Finalize colors</button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Custom choices (admin-defined) — the customer picks an option each. */}
+          {choiceInputs.length > 0 && (
+            <div class={`job-card colors-lockable${colorsLocked ? ' is-locked collapsed' : ''}`} id="choicesCard">
+              <div class="job-card-title colors-card-head">
+                <span>Your Selections</span>
+                {colorsLocked && (
+                  <button type="button" class="colors-collapse-toggle" aria-label="Show or hide">
+                    <span class="locked-badge">🔒 Finalized</span>
+                    <span class="chev">▾</span>
+                  </button>
+                )}
+              </div>
+              {colorsLocked ? (
+                <p class="colors-locked-note" style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
+                  Your selections are finalized and locked into your contract. Need a change? Just message us.
+                </p>
+              ) : (
+                <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
+                  A few choices for your project — let us know what you'd like. You can update these any time before we start.
+                </p>
+              )}
+              <div class="choices-form colors-collapse-body">
+                {choiceInputs.map((ci) => (
+                  <div class="choice-row" data-item-id={ci.id} data-label={ci.label}>
+                    <div class="choice-row-label">{ci.label}</div>
+                    <select class="choice-field" disabled={colorsLocked}>
+                      <option value="" selected={!ci.value}>— Select —</option>
+                      {ci.options.map((o) => (
+                        <option value={o} selected={ci.value === o}>{o}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+              {!colorsLocked && (
+                <div class="colors-actions colors-collapse-body">
+                  <span class="colors-status" id="choicesStatus"></span>
+                  <button type="button" class="colors-save-btn" id="choicesSaveBtn">Save my selections</button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Quote-derived scopes (pricing hidden). Collapsed accordion — the
+              customer can expand to read the full scope, but Colors stays the
+              focus above. */}
+          {scopes.length > 0 && (
+            <details class="job-card scope-accordion" open>
+              <summary class="job-card-title">{scopes.length > 1 ? 'Scopes of Work' : 'Scope of Work'}</summary>
+              <div class="client-scopes" set:html={scopesHtml} style="margin-top:14px;"></div>
+            </details>
+          )}
+
+          {/* Payments card removed from the client portal per request — the
+              schedule lives in the contract/receipt; the portal stays focused on
+              progress + colors. (Availability-save JS below is now inert.) */}
+
+          <!-- Progress Gallery -->
+          <div class="section">
+            <div class="section-title">Progress Photos</div>
+            {progressImages.length > 0 ? (
+              <div class="progress-gallery">
+                {Array.from(imageGroups.entries()).map(([date, images]) => (
+                  <div class="date-group">
+                    <div class="date-label">{date}</div>
+                    <div class="images-grid">
+                      {images.map((img: any) => {
+                        const isVideo = /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(img.image_url || '');
+                        return isVideo ? (
+                          <div class="image-thumb is-video"
+                               {...(img.poster_url ? {} : { 'data-video-src': img.image_url })}
+                               {...(img.id && !img.poster_url ? { 'data-update-id': String(img.id) } : {})}
+                               onclick={`openVideoLightbox('${String(img.image_url).replace(/'/g, "\\'")}', '${img.stream_uid || ''}')`}
+                               style="overflow:hidden;">
+                            {img.poster_url ? (
+                              <img src={img.poster_url} alt="Video thumbnail" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;" />
+                            ) : (
+                              <div class="video-fallback" style="width:100%; height:100%; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.85); transition:opacity 0.3s; position:relative; z-index:1;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                              </div>
+                            )}
+                            <span style="position:absolute; top:6px; left:6px; background:rgba(0,0,0,0.7); color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:700; z-index:2;">VIDEO</span>
+                          </div>
+                        ) : (
+                          <div class="image-thumb" onclick={`openLightbox('${img.image_url}')`}>
+                            <img src={getThumbnailUrl(img.image_url, 200)} alt="Progress photo" loading="lazy" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div class="no-photos">
+                <div class="no-photos-text">Your project is being worked on!</div>
+                <div class="no-photos-sub">Progress photos will appear here as work progresses.</div>
+              </div>
+            )}
+          </div>
+
+          {/* Customer 'Share an Update' card removed per request — customers no
+              longer post photos/notes to the portal. */}
+        </div>
+
+        {/* Project Documents — always shown when at least one signed PDF
+            exists. Just links; no inline rendering (keeps the portal page
+            short). */}
+        {(quoteDoc || signedQuoteDoc || signedContractUrl) && (
+          <div class="docs-section">
+            <div class="docs-header">
+              <div class="docs-title">Project Documents</div>
+            </div>
+            <div class="docs-list">
+              {quoteDoc && (
+                <a class="doc-link" href={quoteDoc.file_url} target="_blank" rel="noopener">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span class="doc-link-text">
+                    <span class="doc-link-label">Estimate (Quote PDF)</span>
+                    {quoteDoc.uploaded_at && <span class="doc-link-meta">{formatDate(quoteDoc.uploaded_at)}</span>}
+                  </span>
+                  <span class="doc-link-action">Open</span>
+                </a>
+              )}
+              {signedQuoteDoc && (
+                <a class="doc-link" href={signedQuoteDoc.file_url} target="_blank" rel="noopener">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span class="doc-link-text">
+                    <span class="doc-link-label">Signed Estimate</span>
+                    {signedQuoteDoc.uploaded_at && <span class="doc-link-meta">Signed {formatDate(signedQuoteDoc.uploaded_at)}</span>}
+                  </span>
+                  <span class="doc-link-action">Open</span>
+                </a>
+              )}
+              {signedContractUrl && (
+                <a class="doc-link" href={signedContractUrl} target="_blank" rel="noopener">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span class="doc-link-text">
+                    <span class="doc-link-label">Signed Contract</span>
+                    {signedContractAt && <span class="doc-link-meta">Signed {formatDate(signedContractAt)}</span>}
+                  </span>
+                  <span class="doc-link-action">Open</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Receipt / Quote Summary — only when the project is complete (and
+            therefore paid in full). Until then we don't show a "Total Paid"
+            amount because nothing is paid yet. */}
+        {receiptTotal && project.status === 'completed' && (
+          <div class="receipt-section" id="receiptSection">
+            <div class="receipt-header">
+              <div class="receipt-title">Project Receipt</div>
+              <button class="btn-download" onclick="window.print()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Receipt
+              </button>
+            </div>
+
+            <div class="receipt-card">
+              <div class="receipt-card-header">
+                {brand.isPartner ? (
+                  brand.logoUrl
+                    ? <img src={brand.logoUrl} alt={brand.name} style="height: 40px; width: auto; max-width: 200px; background:#fff; padding:4px 8px; border-radius:4px;" />
+                    : <span style="color:#fff; font-size:20px; font-weight:800;">{brand.name}</span>
+                ) : (
+                <svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" style="height: 36px; width: auto;" role="img" aria-label="MannyKnows">
+                  <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d" />
+          <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff" />
+                </svg>
+                )}
+                {project.quote_number && <span class="receipt-quote-num" title={project.quote_number}>#{project.quote_number.slice(-4)}</span>}
+              </div>
+              <div class="receipt-body">
+                {/* Service info */}
+                <div style="margin-bottom: 16px;">
+                  <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px;">Customer</div>
+                  <div style="font-size: 15px; font-weight: 600;">{project.customer_name}</div>
+                  {addr.oneLine && (
+                    <div style="font-size: 13px; color: var(--color-text-secondary); margin-top: 2px;">
+                      {addr.oneLine}
+                    </div>
+                  )}
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                  <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px;">Services</div>
+                  <div style="font-size: 14px; font-weight: 500;">{formatServices(project.services)}</div>
+                </div>
+
+                {/* Itemized scope of work + all charges (every subtotal row from
+                    the contract, including any added work). */}
+                {hasPricedScopes && (
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px;">Scope of Work &amp; Charges</div>
+                    <div class="receipt-scopes" set:html={scopesPricedHtml}></div>
+                  </div>
+                )}
+
+                {/* Free-text scope_description is CREW-ONLY (shown on the crew
+                    portal). Customers see the structured Scopes of Work above. */}
+
+                {/* Totals */}
+                <div class="receipt-totals">
+                  {Number(project.discount) > 0 && (
+                    <div class="receipt-total-row discount">
+                      <span>Discount</span>
+                      <span>-{formatCurrency(project.discount)}</span>
+                    </div>
+                  )}
+                  <div class="receipt-total-row grand-total">
+                    <span>Total Paid</span>
+                    <span class="total-amount">{formatCurrency(receiptTotal ?? undefined)}</span>
+                  </div>
+                </div>
+
+                <div class="receipt-meta">
+                  {project.responded_at && <span>Accepted: {formatDate(project.responded_at)}</span>}
+                  <span>{project.project_number}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {brand.phoneDisplay && (
+        <div class="contact-section">
+          <div class="contact-title">Questions? Contact us</div>
+          <div class="contact-phone">
+            <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+          </div>
+        </div>
+        )}
+      </div>
+    </div>
+  )}
+
+  <!-- Site footer strip (matches the main site bottom — minus the floating nav) -->
+  <footer class="portal-footer">
+    {!brand.isPartner && (
+    <div class="portal-footer-creds">
+      Serving Springfield, MA &amp; the Pioneer Valley &nbsp;|&nbsp; Remodeling, Painting &amp; Home Repairs
+    </div>
+    )}
+    {brand.isPartner && (brand.phoneDisplay || brand.websiteLabel) && (
+    <div class="portal-footer-creds">
+      {[brand.phoneDisplay, brand.websiteLabel, ...brand.addressLines].filter(Boolean).join('  |  ')}
+    </div>
+    )}
+    <div class="portal-footer-copy">
+      &copy; {currentYear} {brand.name}. All rights reserved.<br />
+      by <a href="https://mannyknows.com" target="_blank" rel="noopener">MK <span aria-hidden="true">🚀</span></a>
+    </div>
+    {/* Legal links (/privacy, /terms, /accessibility) removed — those pages
+        don't exist in this repo yet. Restore when built (see CONTENT_TODOS.md
+        confirm-page-footer-creds note). */}
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <img id="lightboxImage" src="" alt="Full size" onclick="event.stopPropagation()" />
+    <video id="lightboxVideo" controls playsinline style="max-width:95vw; max-height:90vh; display:none;" onclick="event.stopPropagation()"></video>
+  </div>
+
+  <script is:inline define:vars={{ streamSub }}>
+    /* Lazy-mount poster frames + cache them server-side. Once a frame is
+       captured and POSTed to /api/portal/video-poster, the next page load
+       skips the video element entirely and renders an <img> directly. */
+    var _cpClientToken = (function () {
+      var m = window.location.pathname.match(/\/project\/([^/]+)/);
+      return m ? m[1] : '';
+    })();
+
+    /* ── Collapse toggles for finalized (locked) color/selection cards ── */
+    (function () {
+      var toggles = document.querySelectorAll('.colors-collapse-toggle');
+      Array.prototype.forEach.call(toggles, function (t) {
+        t.addEventListener('click', function () {
+          var card = t.closest('.colors-lockable');
+          if (card) card.classList.toggle('collapsed');
+        });
+      });
+    })();
+
+    /* ── Colors capture: collect each row + save to project_colors ──
+       "Save for now" keeps colors editable; "Finalize colors" locks them into
+       the contract (two-step inline confirm, no browser dialog). */
+    (function () {
+      var saveBtn = document.getElementById('colorsSaveBtn');
+      var finalizeBtn = document.getElementById('colorsFinalizeBtn');
+      if (!saveBtn && !finalizeBtn) return;
+      var statusEl = document.getElementById('colorsStatus');
+      var confirmArmed = false, confirmTimer = null;
+
+      function collect() {
+        var rows = Array.prototype.slice.call(document.querySelectorAll('#colorsCard .color-row'));
+        return rows.map(function (row) {
+          return {
+            item_id: row.getAttribute('data-item-id'),
+            label: row.getAttribute('data-label') || '',
+            product_type: (row.querySelector('.color-product') || {}).value || '',
+            color_value: ((row.querySelector('.color-value') || {}).value || '').trim(),
+            color_hex: ((row.querySelector('.color-hex') || {}).value || '').trim(),
+            finish: (row.querySelector('.color-finish') || {}).value || '',
+            note: ((row.querySelector('.color-note') || {}).value || '').trim(),
+            image_url: ((row.querySelector('.cr-photo-url') || {}).value || '').trim(),
+          };
+        });
+      }
+
+      async function save(finalize) {
+        var colors = collect();
+        if (saveBtn) saveBtn.disabled = true;
+        if (finalizeBtn) finalizeBtn.disabled = true;
+        statusEl.className = 'colors-status';
+        statusEl.textContent = finalize ? 'Finalizing…' : 'Saving…';
+        try {
+          var res = await fetch('/api/portal/colors', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: _cpClientToken, colors: colors, finalize: !!finalize }),
+          });
+          var data = await res.json();
+          if (!data.success) {
+            statusEl.className = 'colors-status err';
+            statusEl.textContent = data.error || 'Could not save. Try again.';
+            if (saveBtn) saveBtn.disabled = false;
+            if (finalizeBtn) finalizeBtn.disabled = false;
+            return;
+          }
+          statusEl.className = 'colors-status ok';
+          statusEl.textContent = finalize
+            ? '✓ Finalized — your colors are locked into your contract.'
+            : '✓ Saved — thank you! We’ll use these colors for your project.';
+          // Refresh so the "Colors selected" timeline milestone (+ progress
+          // count + schedule gate + locked state) reflect the save immediately.
+          setTimeout(function () { window.location.reload(); }, 1000);
+        } catch (e) {
+          statusEl.className = 'colors-status err';
+          statusEl.textContent = 'Network error. Try again.';
+          if (saveBtn) saveBtn.disabled = false;
+          if (finalizeBtn) finalizeBtn.disabled = false;
+        }
+      }
+
+      if (saveBtn) saveBtn.addEventListener('click', function () { save(false); });
+      if (finalizeBtn) finalizeBtn.addEventListener('click', function () {
+        if (!confirmArmed) {
+          confirmArmed = true;
+          finalizeBtn.textContent = 'Click again to lock';
+          finalizeBtn.classList.add('confirm-armed');
+          statusEl.className = 'colors-status';
+          statusEl.textContent = 'Once finalized, colors lock to your contract.';
+          confirmTimer = setTimeout(function () {
+            confirmArmed = false;
+            finalizeBtn.textContent = 'Finalize colors';
+            finalizeBtn.classList.remove('confirm-armed');
+            statusEl.textContent = '';
+          }, 4000);
+          return;
+        }
+        if (confirmTimer) clearTimeout(confirmTimer);
+        confirmArmed = false;
+        save(true);
+      });
+    })();
+
+    /* ── Custom choices ("Your Selections"): save the customer's picks ──
+       Stored in project_colors (color_value = the chosen option) so the admin
+       sees what was selected. No reload — choices don't gate the timeline. */
+    (function () {
+      var saveBtn = document.getElementById('choicesSaveBtn');
+      if (!saveBtn) return;
+      var statusEl = document.getElementById('choicesStatus');
+      saveBtn.addEventListener('click', async function () {
+        var rows = Array.prototype.slice.call(document.querySelectorAll('#choicesCard .choice-row'));
+        var colors = rows.map(function (row) {
+          var sel = row.querySelector('.choice-field');
+          return {
+            item_id: row.getAttribute('data-item-id'),
+            label: row.getAttribute('data-label') || '',
+            color_value: (sel && sel.value) || '',
+            product_type: '', finish: '', note: '',
+          };
+        });
+        saveBtn.disabled = true;
+        statusEl.className = 'colors-status';
+        statusEl.textContent = 'Saving…';
+        try {
+          var res = await fetch('/api/portal/colors', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: _cpClientToken, colors: colors }),
+          });
+          var data = await res.json();
+          if (!data.success) {
+            statusEl.className = 'colors-status err';
+            statusEl.textContent = data.error || 'Could not save. Try again.';
+            saveBtn.disabled = false;
+            return;
+          }
+          statusEl.className = 'colors-status ok';
+          statusEl.textContent = '✓ Saved — thank you!';
+          saveBtn.disabled = false;
+        } catch (e) {
+          statusEl.className = 'colors-status err';
+          statusEl.textContent = 'Network error. Try again.';
+          saveBtn.disabled = false;
+        }
+      });
+    })();
+
+    /* "+ Add a note" reveals the hidden note input; "Request another date"
+       toggles the alternative-date picker. */
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.classList && t.classList.contains('pay-note-toggle')) {
+        var note = t.parentNode.querySelector('.pay-avail-note');
+        if (note) { note.style.display = ''; note.focus(); }
+        t.style.display = 'none';
+      }
+      if (t && t.classList && t.classList.contains('pay-altdate-toggle')) {
+        var alt = t.parentNode.querySelector('.pay-altdate');
+        if (alt) {
+          var hidden = alt.style.display === 'none';
+          alt.style.display = hidden ? '' : 'none';
+          if (hidden) { var d = alt.querySelector('.pay-avail-date'); if (d) d.focus(); }
+        }
+      }
+    });
+
+    /* ── Payment availability: save the customer's preferred pay timing ── */
+    (function () {
+      var saveBtn = document.getElementById('payAvailSaveBtn');
+      if (!saveBtn) return;
+      var statusEl = document.getElementById('payAvailStatus');
+      saveBtn.addEventListener('click', async function () {
+        var rows = Array.prototype.slice.call(document.querySelectorAll('#paymentsCard .pay-row'));
+        var items = rows.map(function (row) {
+          var dateEl = row.querySelector('.pay-avail-date');
+          var timeEl = row.querySelector('.pay-avail-time');
+          var noteEl = row.querySelector('.pay-avail-note');
+          if (!dateEl && !noteEl && !timeEl) return null; // paid rows have no inputs
+          return {
+            row_id: row.getAttribute('data-row-id'),
+            available_date: (dateEl && dateEl.value) || '',
+            available_time: (timeEl && timeEl.value) || '',
+            note: ((noteEl && noteEl.value) || '').trim(),
+          };
+        }).filter(Boolean);
+        if (!items.length) { return; }
+        saveBtn.disabled = true;
+        statusEl.className = 'colors-status';
+        statusEl.textContent = 'Saving…';
+        try {
+          var res = await fetch('/api/portal/payment-availability', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: _cpClientToken, items: items }),
+          });
+          var data = await res.json();
+          if (!data.success) {
+            statusEl.className = 'colors-status err';
+            statusEl.textContent = data.error || 'Could not save. Try again.';
+            saveBtn.disabled = false;
+            return;
+          }
+          statusEl.className = 'colors-status ok';
+          statusEl.textContent = '✓ Saved — thanks! We’ll keep your availability in mind.';
+          saveBtn.disabled = false;
+        } catch (e) {
+          statusEl.className = 'colors-status err';
+          statusEl.textContent = 'Network error. Try again.';
+          saveBtn.disabled = false;
+        }
+      });
+    })();
+
+    /* ── Customer post: photo and/or comment → project_updates(client) ── */
+    (function () {
+      var card = document.getElementById('clientPostCard');
+      if (!card) return;
+      var projectId = card.getAttribute('data-project-id');
+      var btn = document.getElementById('clientPostBtn');
+      var noteEl = document.getElementById('clientPostNote');
+      var fileEl = document.getElementById('clientPostFile');
+      var fileNameEl = document.getElementById('clientPostFileName');
+      var statusEl = document.getElementById('clientPostStatus');
+
+      // Collapse the form by default — only reveal it when the customer wants
+      // to write something, so the page stays light.
+      var toggle = document.getElementById('clientPostToggle');
+      var form = document.getElementById('clientPostForm');
+      if (toggle && form) {
+        toggle.addEventListener('click', function () {
+          var open = form.style.display !== 'none';
+          form.style.display = open ? 'none' : 'block';
+          toggle.textContent = open ? '+ Add a note or photo' : 'Cancel';
+          if (!open) { try { noteEl.focus(); } catch (e) {} }
+        });
+      }
+
+      fileEl.addEventListener('change', function () {
+        fileNameEl.textContent = fileEl.files && fileEl.files[0] ? fileEl.files[0].name : '';
+      });
+
+      btn.addEventListener('click', async function () {
+        var note = (noteEl.value || '').trim();
+        var file = fileEl.files && fileEl.files[0];
+        if (!note && !file) { statusEl.className = 'colors-status err'; statusEl.textContent = 'Add a message or a photo first.'; return; }
+        btn.disabled = true;
+        statusEl.className = 'colors-status';
+        statusEl.textContent = file ? 'Uploading…' : 'Sending…';
+        try {
+          var imageUrl = '';
+          if (file) {
+            var urlRes = await fetch('/api/r2-upload-url/', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: file.name, contentType: file.type, folder: 'progress' }),
+            });
+            var urlData = await urlRes.json();
+            if (!urlData.success) throw new Error(urlData.error || 'upload url failed');
+            var put = await fetch(urlData.uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+            if (!put.ok) throw new Error('R2 upload failed');
+            imageUrl = urlData.publicUrl;
+          }
+          var res = await fetch('/api/projects/' + projectId + '/updates/', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ client_token: _cpClientToken, image_url: imageUrl || undefined, note: note || undefined }),
+          });
+          var data = await res.json();
+          if (!data.success) throw new Error(data.error || 'failed');
+          statusEl.className = 'colors-status ok';
+          statusEl.textContent = '✓ Sent — thanks! The team can see it now.';
+          noteEl.value = ''; fileEl.value = ''; fileNameEl.textContent = '';
+          setTimeout(function () { window.location.reload(); }, 900);
+        } catch (e) {
+          statusEl.className = 'colors-status err';
+          statusEl.textContent = 'Could not send. Try again.';
+          btn.disabled = false;
+        }
+      });
+    })();
+
+    async function _cpCachePoster(updateId, videoEl) {
+      try {
+        var canvas = document.createElement('canvas');
+        var w = videoEl.videoWidth || 640;
+        var h = videoEl.videoHeight || 480;
+        var scale = Math.min(1, 640 / Math.max(w, h));
+        canvas.width = Math.round(w * scale);
+        canvas.height = Math.round(h * scale);
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+        await fetch('/api/portal/video-poster/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Client-Token': _cpClientToken },
+          body: JSON.stringify({ kind: 'project_update', id: Number(updateId), data_url: dataUrl }),
+        });
+      } catch (e) {
+        console.warn('Poster cache failed:', e);
+      }
+    }
+
+    var _cpVideoObs = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.dataset.posterMounted) return;
+        el.dataset.posterMounted = '1';
+        var src = el.dataset.videoSrc;
+        if (!src) return;
+        var video = document.createElement('video');
+        video.src = src + (src.indexOf('#') >= 0 ? '' : '#t=0.5');
+        video.muted = true; video.playsInline = true; video.preload = 'metadata';
+        video.setAttribute('crossorigin', 'anonymous');
+        video.setAttribute('disablepictureinpicture', '');
+        video.style.cssText = 'position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; z-index:0;';
+        var fallback = el.querySelector('.video-fallback');
+        var updateId = el.dataset.updateId;
+        video.addEventListener('loadeddata', function () {
+          if (fallback) fallback.style.opacity = '0';
+          if (updateId) setTimeout(function () { _cpCachePoster(updateId, video); }, 50);
+        }, { once: true });
+        el.insertBefore(video, el.firstChild);
+        _cpVideoObs.unobserve(el);
+      });
+    }, { rootMargin: '300px 0px' }) : null;
+    if (_cpVideoObs) {
+      document.querySelectorAll('[data-video-src]:not([data-poster-mounted])').forEach(function (el) {
+        _cpVideoObs.observe(el);
+      });
+    }
+
+    function openLightbox(url) {
+      document.getElementById('lightboxImage').src = url;
+      document.getElementById('lightboxImage').style.display = '';
+      document.getElementById('lightboxVideo').style.display = 'none';
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openVideoLightbox(url, streamUid) {
+      const box = document.getElementById('lightbox');
+      const v = document.getElementById('lightboxVideo');
+      const img = document.getElementById('lightboxImage');
+      img.src = '';
+      img.style.display = 'none';
+      var prior = box.querySelector('iframe.lightbox-stream');
+      if (prior) prior.remove();
+      if (streamUid && streamSub) {
+        // Cloudflare Stream player — adaptive + plays in every browser
+        try { v.pause(); v.removeAttribute('src'); v.load(); } catch {}
+        v.style.display = 'none';
+        var iframe = document.createElement('iframe');
+        iframe.className = 'lightbox-stream';
+        iframe.src = 'https://' + streamSub + '/' + streamUid + '/iframe?autoplay=true';
+        iframe.setAttribute('allow', 'accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;');
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.style.cssText = 'width:90vw; max-width:1000px; aspect-ratio:16/9; max-height:85vh; border:none; border-radius:8px;';
+        box.appendChild(iframe);
+      } else {
+        v.src = url;
+        v.style.display = '';
+        const p = v.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      }
+      box.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const box = document.getElementById('lightbox');
+      const v = document.getElementById('lightboxVideo');
+      try { v.pause(); v.removeAttribute('src'); v.load(); } catch {}
+      var sf = box.querySelector('iframe.lightbox-stream');
+      if (sf) sf.remove();
+      box.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Make functions global
+    window.openLightbox = openLightbox;
+    window.openVideoLightbox = openVideoLightbox;
+    window.closeLightbox = closeLightbox;
+  </script>
+  <!-- SW Color Picker panel (single instance, shared across all color rows) -->
+  <div id="swcpOverlay" class="swcp-overlay" hidden></div>
+  <div id="swcp" class="swcp" hidden role="dialog" aria-modal="true" aria-label="Browse Sherwin-Williams colors">
+    <div class="swcp-drag"></div>
+    <div class="swcp-bar">
+      <input type="search" id="swcpSearch" class="swcp-search" placeholder="Search colors by name or code…" autocomplete="off" />
+      <button type="button" id="swcpClose" class="swcp-close" aria-label="Close color picker">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="swcpFamilies" class="swcp-families"></div>
+    <div id="swcpGrid" class="swcp-grid"></div>
+    <div id="swcpFoot" class="swcp-foot" hidden>
+      <span id="swcpFootSw" class="swcp-foot-sw"></span>
+      <div class="swcp-foot-info">
+        <strong id="swcpFootName"></strong>
+        <span id="swcpFootRef"></span>
+      </div>
+      <button type="button" id="swcpConfirm" class="swcp-confirm">Use this color</button>
+    </div>
+  </div>
+
+  <script is:inline>
+  /* ── SW Color Picker ─────────────────────────────────────────────── */
+  (function () {
+    var lib = null, pickerFamily = 'Neutral', pickerItemId = null, pickerSel = null;
+    var FDOTS = { Red:'#ef4444', Orange:'#f97316', Yellow:'#d97706', Green:'#22c55e', Blue:'#3b82f6', Purple:'#a855f7', Neutral:'#78716c', White:'#94a3b8' };
+
+    function loadLib(cb) {
+      if (lib) { cb(lib); return; }
+      fetch('/sw-color-library.json').then(function(r){ return r.json(); }).then(function(d){ lib = d; cb(lib); });
+    }
+
+    function openPicker(itemId) {
+      pickerItemId = itemId; pickerSel = null;
+      document.getElementById('swcp').hidden = false;
+      document.getElementById('swcpOverlay').hidden = false;
+      document.getElementById('swcpFoot').hidden = true;
+      document.getElementById('swcpSearch').value = '';
+      document.body.style.overflow = 'hidden';
+      loadLib(function(d) { renderFams(d); renderGrid(d[pickerFamily] || [], ''); });
+    }
+
+    function closePicker() {
+      document.getElementById('swcp').hidden = true;
+      document.getElementById('swcpOverlay').hidden = true;
+      document.body.style.overflow = '';
+      pickerItemId = null; pickerSel = null;
+    }
+
+    function renderFams(d) {
+      var el = document.getElementById('swcpFamilies');
+      el.innerHTML = Object.keys(d).map(function(f) {
+        return '<button type="button" class="swcp-fam' + (f === pickerFamily ? ' active' : '') + '" data-fam="' + f + '">' +
+          '<span class="swcp-fam-dot" style="background:' + (FDOTS[f] || '#999') + '"></span>' + f + '</button>';
+      }).join('');
+      el.querySelectorAll('.swcp-fam').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          pickerFamily = btn.dataset.fam;
+          el.querySelectorAll('.swcp-fam').forEach(function(b){ b.classList.remove('active'); });
+          btn.classList.add('active');
+          renderGrid(lib[pickerFamily] || [], document.getElementById('swcpSearch').value);
+        });
+      });
+    }
+
+    function renderGrid(colors, q) {
+      q = (q || '').toLowerCase().trim();
+      var list = q ? colors.filter(function(c){ return c.name.toLowerCase().includes(q) || (c._sw_ref||'').toLowerCase().includes(q); }) : colors;
+      var el = document.getElementById('swcpGrid');
+      if (!list.length) { el.innerHTML = '<div class="swcp-empty">No colors found for "' + q + '"</div>'; return; }
+      el.innerHTML = list.map(function(c) {
+        var title = c.name + (c._sw_ref ? ' · ' + c._sw_ref : '');
+        return '<button type="button" class="swcp-sw" style="background:' + c.hex + '" title="' + title + '" data-hex="' + c.hex + '" data-name="' + c.name.replace(/"/g,'&quot;') + '" data-ref="' + (c._sw_ref||'') + '"></button>';
+      }).join('');
+      el.querySelectorAll('.swcp-sw').forEach(function(sw) {
+        sw.addEventListener('click', function() {
+          el.querySelectorAll('.swcp-sw').forEach(function(s){ s.classList.remove('picked'); });
+          sw.classList.add('picked');
+          pickerSel = { hex: sw.dataset.hex, name: sw.dataset.name, ref: sw.dataset.ref };
+          var foot = document.getElementById('swcpFoot');
+          foot.hidden = false;
+          document.getElementById('swcpFootSw').style.background = pickerSel.hex;
+          document.getElementById('swcpFootName').textContent = pickerSel.name;
+          document.getElementById('swcpFootRef').textContent = pickerSel.ref;
+        });
+      });
+    }
+
+    function confirmColor() {
+      if (!pickerSel || !pickerItemId) return;
+      var row = document.querySelector('.color-row[data-item-id="' + pickerItemId + '"]');
+      if (row) {
+        var vi = row.querySelector('.color-value'), hi = row.querySelector('.color-hex'), sw = row.querySelector('.cr-swatch');
+        if (vi) vi.value = pickerSel.name + (pickerSel.ref ? ' (' + pickerSel.ref + ')' : '');
+        if (hi) hi.value = pickerSel.hex;
+        if (sw) { sw.style.background = pickerSel.hex; sw.setAttribute('data-filled','true'); }
+      }
+      closePicker();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('swcpOverlay').addEventListener('click', closePicker);
+      document.getElementById('swcpClose').addEventListener('click', closePicker);
+      document.getElementById('swcpConfirm').addEventListener('click', confirmColor);
+      document.getElementById('swcpSearch').addEventListener('input', function() {
+        if (!lib) return;
+        var q = this.value.toLowerCase().trim();
+        var src = q ? Object.values(lib).flat() : (lib[pickerFamily] || []);
+        renderGrid(src, this.value);
+      });
+      document.querySelectorAll('.cr-browse-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { openPicker(btn.getAttribute('data-item-id')); });
+      });
+      /* Pill toggles for product type + finish */
+      document.querySelectorAll('.cr-pills').forEach(function(group) {
+        var hidden = group.nextElementSibling;
+        group.querySelectorAll('.cr-pill').forEach(function(pill) {
+          pill.addEventListener('click', function() {
+            group.querySelectorAll('.cr-pill').forEach(function(p){ p.classList.remove('active'); });
+            pill.classList.add('active');
+            if (hidden && hidden.tagName === 'INPUT') hidden.value = pill.getAttribute('data-value');
+          });
+        });
+      });
+      /* Paint card photo upload */
+      document.querySelectorAll('.color-row').forEach(function(row) {
+        var btn = row.querySelector('.cr-photo-btn');
+        var input = row.querySelector('.cr-photo-input');
+        var urlHidden = row.querySelector('.cr-photo-url');
+        if (!btn || !input) return;
+        btn.addEventListener('click', function() { input.click(); });
+        input.addEventListener('change', function() {
+          var file = input.files[0];
+          if (!file) return;
+          var origLabel = btn.querySelector('span') ? btn.querySelector('span').textContent : btn.textContent.trim();
+          btn.disabled = true;
+          btn.textContent = 'Uploading…';
+          var fd = new FormData();
+          fd.append('token', window._cpClientToken || '');
+          fd.append('item_id', row.getAttribute('data-item-id') || '');
+          fd.append('file', file);
+          fetch('/api/portal/colors/upload-image', { method: 'POST', body: fd })
+            .then(function(r){ return r.json(); })
+            .then(function(d) {
+              if (d.success && d.url) {
+                if (urlHidden) urlHidden.value = d.url;
+                var thumb = row.querySelector('.cr-photo-thumb');
+                if (thumb) {
+                  thumb.href = d.url;
+                  var img = thumb.querySelector('img'); if (img) img.src = d.url;
+                } else {
+                  var a = document.createElement('a');
+                  a.className = 'cr-photo-thumb'; a.href = d.url; a.target = '_blank'; a.rel = 'noopener';
+                  a.innerHTML = '<img src="' + d.url + '" alt="Paint card" loading="lazy" />';
+                  btn.parentElement.insertBefore(a, btn.nextSibling);
+                }
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Change photo';
+              } else {
+                btn.textContent = 'Upload failed — try again';
+                setTimeout(function(){ btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Add paint card photo'; }, 3000);
+              }
+            })
+            .catch(function() { btn.textContent = 'Upload failed — try again'; })
+            .finally(function() { btn.disabled = false; });
+        });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

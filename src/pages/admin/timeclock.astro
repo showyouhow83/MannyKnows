@@ -1,0 +1,1164 @@
+---
+// Crew Time Tracking — /admin/timeclock
+import '../../styles/admin.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- maximum-scale=1 prevents iOS Safari from auto-zooming when a field with
+       font-size < 16px gets focus (it never zooms back out cleanly). We keep
+       user-scalable=yes so pinch-zoom still works for accessibility. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Crew Time Tracking | MannyKnows</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+  </script>
+  <style>
+    /* Lock the page to viewport width on every device — iOS Safari otherwise
+       lets a single off-by-one element (date input, modal backdrop, toast)
+       push the body wider than the viewport and force a horizontal scroll.
+       overscroll-behavior-x stops the rubber-band horizontal pan that some
+       Android keyboards trigger when fields are focused. */
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
+    }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    .tc-card * { max-width: 100%; box-sizing: border-box; }
+    /* iOS Safari auto-zooms on focus of any input < 16px font-size and never
+       zooms back. Bump every editable control on this page to 16px so the
+       trigger never fires. */
+    .tc-card input,
+    .tc-card textarea,
+    .tc-card select,
+    .tc-form-group input,
+    .tc-form-group textarea,
+    .tc-form-group select {
+      font-size: 16px;
+    }
+    /* iOS Safari renders the native calendar widget so the input visibly
+       overflows its container — neutralise the native chrome so the field
+       behaves like the rest of the .form-input controls. */
+    .tc-card input[type="date"].form-input {
+      -webkit-appearance: none;
+      appearance: none;
+      min-height: 44px;
+    }
+
+    /* Header uses admin-header from admin.css */
+
+    /* Layout */
+    .tc-main { flex: 1; padding: 24px 16px 48px; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+    @media (min-width: 768px) {
+      .tc-main { padding: 32px 24px 48px; }
+      .tc-layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+    }
+
+    .tc-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl); padding: 24px; backdrop-filter: blur(20px); margin-bottom: 16px;
+    }
+    .tc-card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-secondary); margin-bottom: 16px; }
+
+    /* Login */
+    .tc-form-group { margin-bottom: 14px; }
+    .tc-form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .tc-form-group input { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--color-text-primary); font-size: 15px; outline: none; }
+    .tc-form-group input:focus { border-color: var(--color-primary); }
+    .tc-form-group input::placeholder { color: var(--color-text-secondary); }
+
+    /* Buttons */
+    .tc-btn { width: 100%; padding: 12px; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .tc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .tc-btn-login { background: linear-gradient(135deg, var(--color-primary), #6366f1); color: white; }
+    .tc-btn-in { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+    .tc-btn-out { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .tc-btn-break { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+    .tc-btn-lunch { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+    .tc-btn-end-break { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+    .tc-btn-sm { padding: 10px; font-size: 13px; }
+
+    /* Status */
+    .tc-status { padding: 10px 14px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+    .tc-status-working { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+    .tc-status-idle { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--color-text-secondary); }
+    .tc-status-break { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+    .tc-status-lunch { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); color: #a78bfa; }
+    .tc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .tc-status-working .tc-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .tc-status-idle .tc-dot { background: #94a3b8; }
+    .tc-status-break .tc-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+    .tc-status-lunch .tc-dot { background: #8b5cf6; box-shadow: 0 0 6px #8b5cf6; }
+
+    /* Timer */
+    .tc-timer { font-size: 36px; font-weight: 700; text-align: center; letter-spacing: -1px; font-variant-numeric: tabular-nums; color: var(--color-text-primary); margin: 4px 0; }
+    .tc-timer-label { text-align: center; font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .tc-welcome-name { font-size: 18px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
+    .tc-welcome-date { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 14px; }
+
+    /* Break countdown */
+    .tc-break-countdown { font-size: 28px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; margin: 4px 0; }
+    .tc-break-label { text-align: center; font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+
+    /* Button rows */
+    .tc-btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .tc-btn-row .tc-btn { flex: 1; }
+
+    /* Tables */
+    .tc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tc-table th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); padding: 8px 12px; border-bottom: 1px solid var(--glass-border); }
+    .tc-table td { padding: 14px 12px; border-bottom: 1px solid var(--glass-border); color: var(--color-text-primary); font-size: 13px; }
+    .tc-table tr:last-child td { border-bottom: none; }
+    .tc-shift-active { color: #22c55e; font-weight: 600; }
+    .tc-pay-amount { font-weight: 700; color: #22c55e; }
+
+    /* Summary card on right */
+    .tc-summary-inline { display: flex; gap: 24px; flex-wrap: wrap; }
+    .tc-summary-item { display: flex; flex-direction: column; gap: 2px; }
+    .tc-summary-item .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); }
+    .tc-summary-item .value { font-size: 15px; font-weight: 700; color: var(--color-text-primary); }
+    .tc-summary-item .value.pay { color: #22c55e; }
+
+    .tc-error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: 16px; display: none; }
+    .tc-error.visible { display: block; }
+    .hidden { display: none !important; }
+
+    /* Crew messages strip (year-end bonus today; admin broadcasts later). */
+    .tc-msg-strip { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .tc-bonus-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, rgba(251,191,36,0.10), rgba(245,158,11,0.05));
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      transition: padding 0.18s ease;
+    }
+    .tc-bonus-banner-content { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .tc-bonus-banner-content svg { color: #fbbf24; flex-shrink: 0; }
+    .tc-bonus-banner-text { font-size: 13px; line-height: 1.4; }
+    .tc-bonus-banner-summary { font-size: 13px; line-height: 1.4; display: none; }
+    /* Minimized state: hide the verbose text, show the short summary, and
+       tighten padding so the banner shrinks to a pill but stays visible. */
+    .tc-bonus-banner.minimized { padding: 6px 12px; }
+    .tc-bonus-banner.minimized .tc-bonus-banner-text { display: none; }
+    .tc-bonus-banner.minimized .tc-bonus-banner-summary { display: block; }
+    .tc-bonus-banner-close {
+      background: transparent; border: none; color: var(--color-text-secondary);
+      line-height: 1; cursor: pointer; padding: 4px 6px;
+      flex-shrink: 0;
+      display: flex; align-items: center;
+    }
+    .tc-bonus-banner-close:hover { color: var(--color-text-primary); }
+
+    /* Expenses modal — replaces the old tc-card panel in the right column. */
+    .tc-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .tc-modal.active { display: flex; }
+    .tc-modal-box {
+      background: var(--color-background-light, var(--color-background));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .tc-modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .tc-modal-header h3 { margin: 0; font-size: 15px; font-weight: 700; }
+    .tc-modal-close {
+      background: transparent; border: none; color: var(--color-text-secondary);
+      font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px;
+    }
+    .tc-modal-body { padding: 16px 18px; overflow-y: auto; }
+  </style>
+
+  <style is:global>
+    /* JS-rendered content — must be global to avoid scoped attribute mismatch */
+    .tc-summary-inline { display: flex; gap: 24px; flex-wrap: wrap; }
+    .tc-summary-item { display: flex; flex-direction: column; gap: 2px; }
+    .tc-summary-item .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); }
+    .tc-summary-item .value { font-size: 14px; font-weight: 600; color: var(--color-text-primary); }
+    .tc-summary-item .value.pay { color: #22c55e; }
+    .tc-table td { padding: 14px 1rem !important; border-bottom: 1px solid var(--glass-border) !important; }
+    .tc-table th { padding: 12px 1rem !important; }
+    .tc-table tr:last-child td { border-bottom: none !important; }
+    .tc-shift-active { color: #22c55e; font-weight: 600; }
+    .tc-pay-amount { font-weight: 700; color: #22c55e; }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <a href="/admin/timeclock" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Crew</span>
+    </a>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <button class="btn-logout hidden" id="logoutBtn" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="tc-main">
+    <div class="tc-error" id="errorMsg"></div>
+
+    <!-- LOGIN -->
+    <div class="tc-card" id="loginPanel" style="max-width:400px; margin:40px auto;">
+      <div class="tc-card-title">Crew Time Tracking</div>
+      <div class="tc-form-group">
+        <label>Your Name</label>
+        <input type="text" id="loginName" placeholder="First and Last Name" autocomplete="name">
+      </div>
+      <div class="tc-form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="loginPhone" placeholder="(413) 555-0000" autocomplete="tel">
+      </div>
+      <button class="tc-btn tc-btn-login" id="loginBtn" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <!-- TRACKING -->
+    <div class="hidden" id="trackingPanel">
+      <!-- Messages strip: bonus banner (and future admin broadcasts). Always
+           present once a crew member is logged in; clicking the banner toggles
+           between expanded and minimized. Minimized leaves a small pill at
+           the top so crew can re-expand whenever they want. -->
+      <div class="tc-msg-strip hidden" id="msgStrip">
+        <div class="tc-bonus-banner" id="bonusBanner" onclick="toggleBonusBanner()" role="button" tabindex="0">
+          <div class="tc-bonus-banner-content">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9 12 2"/></svg>
+            <div class="tc-bonus-banner-text" id="bonusBannerText"></div>
+            <div class="tc-bonus-banner-summary" id="bonusBannerSummary"></div>
+          </div>
+          <button class="tc-bonus-banner-close" onclick="event.stopPropagation(); toggleBonusBanner();" aria-label="Toggle">
+            <svg id="bonusBannerChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="tc-layout">
+        <!-- Left: Clock controls -->
+        <div>
+          <div class="tc-card">
+            <div class="tc-welcome-name" id="welcomeName"></div>
+            <div class="tc-welcome-date" id="welcomeDate"></div>
+
+            <div class="tc-status tc-status-idle" id="statusBanner">
+              <div class="tc-dot"></div>
+              <span id="statusText">Not clocked in</span>
+            </div>
+
+            <div class="tc-timer" id="timerDisplay">0:00:00</div>
+            <div class="tc-timer-label">Today's Hours</div>
+
+            <!-- IDLE -->
+            <div id="idlePanel">
+              <button class="tc-btn tc-btn-in" onclick="doClockIn()">Clock In</button>
+            </div>
+
+            <!-- WORKING -->
+            <div class="hidden" id="workingPanel">
+              <button class="tc-btn tc-btn-out" onclick="doClockOut()">Clock Out</button>
+            </div>
+
+            <!-- Expenses moved to a modal so it doesn't compete visually with
+                 Capture Media. Summary on the button keeps it useful at a glance. -->
+            <button class="tc-btn tc-btn-sm" id="openExpensesBtn" onclick="openExpensesModal()"
+              style="background:linear-gradient(135deg, var(--color-primary), #6366f1); border:1px solid var(--color-primary); color:#fff; margin-top:12px; font-weight:600;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Expenses <span id="expensesSummary" style="opacity:0.85; font-weight:500;"></span>
+            </button>
+
+            <!-- Capture Media lives in a modal too, triggered right below Expenses. -->
+            <button class="tc-btn tc-btn-sm" id="openMediaBtn" onclick="openMediaModal()"
+              style="background:var(--glass-bg); border:1px solid var(--glass-border); color:var(--color-text-primary); margin-top:8px; font-weight:600;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Capture Media
+            </button>
+          </div>
+
+          <!-- Today's shifts -->
+          <div class="tc-card hidden" id="shiftsCard">
+            <div class="tc-card-title">Today's Shifts</div>
+            <table class="tc-table">
+              <thead><tr><th>In</th><th>Out</th><th>Hours</th></tr></thead>
+              <tbody id="shiftsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: This week's summary (desktop) -->
+        <div>
+          <div class="tc-card">
+            <div class="tc-card-title">This Week</div>
+            <div id="weekSummary" style="padding:8px 0;">
+              <div style="text-align:center; color:var(--color-text-secondary); font-size:13px;">Loading...</div>
+            </div>
+          </div>
+
+          <div class="tc-card">
+            <div class="tc-card-title">Week's Shifts</div>
+            <table class="tc-table">
+              <thead><tr><th>Day</th><th>In</th><th>Out</th><th>Hours</th></tr></thead>
+              <tbody id="weekShiftsBody">
+                <tr><td colspan="4" style="text-align:center; color:var(--color-text-secondary);">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Expenses this week — read-only mirror of the modal's list so
+               crew can see what they've logged at a glance without opening
+               the modal. Add/Edit still happens inside the modal. -->
+          <div class="tc-card">
+            <div class="tc-card-title">Expenses This Week</div>
+            <div id="crewExpensesBodyList" style="font-size:13px; color:var(--color-text-secondary);">Loading...</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    let crewId = null, crewName = '', currentState = 'idle';
+    let timerInterval = null;
+    // Server-computed work minutes at the moment of the last API response,
+    // and the local Date.now() at which we received that response. The live
+    // timer ticks from this anchor — never re-parsing server datetimes — so
+    // crew on different devices/timezones see the correct elapsed time.
+    let workMinutesAtAnchor = 0;
+    let apiAnchorMs = 0;
+    let breakEndTime = null, breakCountdownInterval = null;
+
+    function formatDuration(sec) {
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function fmtTime(dtStr) {
+      if (!dtStr) return '—';
+      const s = dtStr.replace('Z','').replace(/T(\d):/,'T0$1:');
+      const d = new Date(s);
+      return isNaN(d.getTime()) ? dtStr : d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'America/New_York'});
+    }
+
+    function fmtMins(m) { const h = Math.floor(m/60); return h > 0 ? `${h}h ${m%60}m` : `${m%60}m`; }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg; el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 5000);
+    }
+
+    function startTimer() {
+      stopTimer();
+      timerInterval = setInterval(() => {
+        let sec = workMinutesAtAnchor * 60;
+        if (currentState === 'working' && apiAnchorMs) {
+          sec += Math.floor((Date.now() - apiAnchorMs) / 1000);
+        }
+        document.getElementById('timerDisplay').textContent = formatDuration(Math.max(0, sec));
+      }, 1000);
+    }
+
+    function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+
+    function updateBreakCountdown() {
+      if (!breakEndTime) return;
+      const remaining = Math.max(0, Math.floor((breakEndTime.getTime() - Date.now()) / 1000));
+      document.getElementById('breakCountdown').textContent = `${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
+      if (remaining <= 0) { clearInterval(breakCountdownInterval); breakCountdownInterval = null; loadStatus(); }
+    }
+
+    function updateUI(data) {
+      const state = data.state || 'idle';
+      currentState = state;
+      // Anchor the live timer on Date.now() at the moment we received the
+      // server's work_minutes_now figure. Subsequent ticks add the wall-clock
+      // delta only — no server datetime parsing on the client.
+      workMinutesAtAnchor = data.work_minutes_now ?? data.total_minutes_today ?? 0;
+      apiAnchorMs = Date.now();
+
+      const banner = document.getElementById('statusBanner');
+      const statusText = document.getElementById('statusText');
+      const idle = document.getElementById('idlePanel');
+      const working = document.getElementById('workingPanel');
+
+      idle.classList.add('hidden');
+      working.classList.add('hidden');
+
+      if (state === 'working' || state === 'on_break' || state === 'on_lunch') {
+        banner.className = 'tc-status tc-status-working';
+        statusText.textContent = `Clocked in since ${fmtTime(data.clock_in_time)}`;
+        working.classList.remove('hidden');
+      } else {
+        banner.className = 'tc-status tc-status-idle';
+        statusText.textContent = 'Not clocked in';
+        idle.classList.remove('hidden');
+      }
+
+      // Today's shifts
+      const logs = data.logs || [];
+      const tbody = document.getElementById('shiftsBody');
+      const shiftsCard = document.getElementById('shiftsCard');
+      if (logs.length > 0) {
+        shiftsCard.classList.remove('hidden');
+        tbody.innerHTML = logs.map(l => {
+          const isOpen = !l.clock_out;
+          const dur = isOpen ? null : Math.floor((new Date(l.clock_out) - new Date(l.clock_in)) / 60000);
+          return `<tr><td>${fmtTime(l.clock_in)}</td><td class="${isOpen?'tc-shift-active':''}">${isOpen?'Working...':fmtTime(l.clock_out)}</td><td>${dur !== null ? fmtMins(dur) : '—'}</td></tr>`;
+        }).join('');
+      } else { shiftsCard.classList.add('hidden'); }
+
+      startTimer();
+    }
+
+    // Pay summary is built from two API calls (timeclock + expenses). Both stash
+    // their data here, then renderWeekStats() draws the final unified card.
+    let payModel = 'hourly'; // 'hourly' | 'salaried_daily'
+    let weekStats = {
+      totalMinutes: 0, payableMinutes: 0, rate: 0,
+      driverBonusMinutes: 0, driverBonusDays: 0, driverBonusDates: [],
+      // Salaried-only fields:
+      salaryDailyHours: 0, salaryDailyRate: 0, salaryDaysPerWeek: 7,
+    };
+    let weekExtras = { reimbursable: 0, deductions: 0 };
+
+    // Show/hide clock-in / today / shifts cards based on pay model.
+    // Salaried crew never clock in, so those controls just confuse them.
+    function applyPayModelLayout(model) {
+      payModel = model;
+      const isSalaried = model === 'salaried_daily';
+      // Cards that are irrelevant for salaried crew
+      const hideForSalaried = [
+        'statusBanner', 'timerDisplay', 'idlePanel', 'workingPanel',
+        'shiftsCard',
+      ];
+      // The "Today's Hours" label sits as a sibling of timerDisplay — toggle by
+      // searching for it (it's a class, not an id, so just hide the timer block).
+      hideForSalaried.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = isSalaried ? 'none' : '';
+      });
+      // The "Today's Hours" label is a class — hide via the timer's parent.
+      document.querySelectorAll('.tc-timer-label').forEach(el => {
+        el.style.display = isSalaried ? 'none' : '';
+      });
+      // Week's Shifts table doesn't apply either.
+      const weekShifts = document.getElementById('weekShiftsBody');
+      const weekShiftsCard = weekShifts?.closest('.tc-card');
+      if (weekShiftsCard) weekShiftsCard.style.display = isSalaried ? 'none' : '';
+    }
+
+    function fmtMoney(n) {
+      const sign = n < 0 ? '−' : '';
+      return `${sign}$${Math.abs(n).toFixed(2)}`;
+    }
+
+    function renderWeekStats() {
+      const summaryEl = document.getElementById('weekSummary');
+      if (!summaryEl) return;
+      const reimb = weekExtras.reimbursable;
+      const ded = weekExtras.deductions;
+      const showTakeHome = (reimb > 0 || ded > 0);
+      const reimbRow = reimb > 0
+        ? `<div class="tc-summary-item"><span class="label">Reimbursable</span><span class="value" style="color:#4ade80;">+$${reimb.toFixed(2)}</span></div>`
+        : '';
+      const dedRow = ded > 0
+        ? `<div class="tc-summary-item"><span class="label">Deductions</span><span class="value" style="color:#fca5a5;">−$${ded.toFixed(2)}</span></div>`
+        : '';
+
+      if (payModel === 'salaried_daily') {
+        // Fixed pay: 7 days × daily_hours × daily_rate. No driver bonus, no
+        // 30-min rounding. Crew portal shows the breakdown so they understand
+        // exactly how their salary is computed.
+        const dailyHours = Number(weekStats.salaryDailyHours) || 0;
+        const dailyRate = Number(weekStats.salaryDailyRate) || 0;
+        const days = Number(weekStats.salaryDaysPerWeek) || 7;
+        const dailyTotal = dailyHours * dailyRate;
+        const grossPay = days * dailyTotal;
+        const takeHome = grossPay + reimb - ded;
+        summaryEl.innerHTML = `
+          <div class="tc-summary-inline">
+            <div class="tc-summary-item"><span class="label">Pay Model</span><span class="value">Salaried</span></div>
+            <div class="tc-summary-item"><span class="label">Daily</span><span class="value">${dailyHours}h × $${dailyRate.toFixed(2)}</span></div>
+            <div class="tc-summary-item"><span class="label">Daily Total</span><span class="value">$${dailyTotal.toFixed(2)}</span></div>
+            <div class="tc-summary-item"><span class="label">Days (Sun–Sat)</span><span class="value">${days}</span></div>
+            <div class="tc-summary-item"><span class="label">Gross Pay</span><span class="value${showTakeHome ? '' : ' pay'}">$${grossPay.toFixed(2)}</span></div>
+            ${reimbRow}
+            ${dedRow}
+            ${showTakeHome ? `<div class="tc-summary-item"><span class="label">Take-home</span><span class="value pay">$${takeHome.toFixed(2)}</span></div>` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      // Hourly: original layout with optional driver-bonus row
+      const totalHrs = (weekStats.totalMinutes / 60).toFixed(1);
+      const paidHrs = (weekStats.payableMinutes / 60).toFixed(1);
+      const rate = Number(weekStats.rate) || 0;
+      const grossPay = (weekStats.payableMinutes / 60) * rate;
+      const takeHome = grossPay + reimb - ded;
+      const driverHrs = (weekStats.driverBonusMinutes / 60);
+      const driverRow = driverHrs > 0
+        ? `<div class="tc-summary-item"><span class="label">Driver Bonus</span><span class="value" style="color:#a5b4fc;">+${driverHrs}h <span style="opacity:0.7; font-size:12px;">(${weekStats.driverBonusDays}d)</span></span></div>`
+        : '';
+      summaryEl.innerHTML = `
+        <div class="tc-summary-inline">
+          <div class="tc-summary-item"><span class="label">Total Hours</span><span class="value">${totalHrs}h</span></div>
+          ${driverRow}
+          <div class="tc-summary-item"><span class="label">Paid Hours</span><span class="value">${paidHrs}h</span></div>
+          <div class="tc-summary-item"><span class="label">Rate</span><span class="value">$${rate.toFixed(2)}/hr</span></div>
+          <div class="tc-summary-item"><span class="label">Gross Pay</span><span class="value${showTakeHome ? '' : ' pay'}">$${grossPay.toFixed(2)}</span></div>
+          ${reimbRow}
+          ${dedRow}
+          ${showTakeHome ? `<div class="tc-summary-item"><span class="label">Take-home</span><span class="value pay">$${takeHome.toFixed(2)}</span></div>` : ''}
+        </div>
+      `;
+    }
+
+    // Year-end bonus — rendered into a slim banner at the top of the messages
+    // strip. Always present once a bonus exists; crew can minimize to a pill
+    // but can't dismiss outright (preference is persisted in localStorage).
+    function renderBonusCard(bonus) {
+      const strip = document.getElementById('msgStrip');
+      const banner = document.getElementById('bonusBanner');
+      const text = document.getElementById('bonusBannerText');
+      const summary = document.getElementById('bonusBannerSummary');
+      if (!banner || !text || !summary) return;
+      if (!bonus || !bonus.startDate) {
+        banner.classList.add('hidden');
+        if (strip) strip.classList.add('hidden');
+        return;
+      }
+      strip.classList.remove('hidden');
+      banner.classList.remove('hidden');
+      const claimDate = new Date(bonus.claimDate + 'T12:00:00Z')
+        .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+      text.innerHTML = `<strong style="color:#fbbf24;">$${bonus.amount}</strong> bonus accrued · <strong>${bonus.days}/365 days</strong> · full $365 on <strong>${claimDate}</strong>`;
+      // Minimized form: short pill with just the dollar amount.
+      summary.innerHTML = `<strong style="color:#fbbf24;">$${bonus.amount}</strong> · ${bonus.days}/365`;
+      // Apply persisted minimize state (default expanded).
+      if (localStorage.getItem('bonusBannerMinimized') === '1') {
+        banner.classList.add('minimized');
+        setBonusChevron(true);
+      } else {
+        banner.classList.remove('minimized');
+        setBonusChevron(false);
+      }
+    }
+
+    function setBonusChevron(isMinimized) {
+      const svg = document.getElementById('bonusBannerChevron');
+      if (!svg) return;
+      svg.innerHTML = isMinimized
+        ? '<polyline points="6 9 12 15 18 9"/>'
+        : '<polyline points="18 15 12 9 6 15"/>';
+    }
+
+    function toggleBonusBanner() {
+      const banner = document.getElementById('bonusBanner');
+      if (!banner) return;
+      const wasMin = banner.classList.toggle('minimized');
+      localStorage.setItem('bonusBannerMinimized', wasMin ? '1' : '0');
+      setBonusChevron(wasMin);
+    }
+    window.toggleBonusBanner = toggleBonusBanner;
+
+    async function loadWeekSummary() {
+      if (!crewId) return;
+      try {
+        // Pay week starts Sunday, runs Sun → Sat (7 days)
+        const now = new Date();
+        const day = now.getDay(); // 0=Sun, 1=Mon ... 6=Sat
+        const sun = new Date(now); sun.setDate(now.getDate() - day);
+        const weekStart = sun.toISOString().slice(0,10);
+
+        const res = await fetch(`/api/crew/timeclock/?week=true&week_start=${weekStart}`, { credentials: 'include' });
+        const data = await res.json();
+
+        // Keep payModel in sync — week summary is the authoritative source.
+        if (data.pay_model) applyPayModelLayout(data.pay_model);
+        weekStats = {
+          totalMinutes: data.total_minutes_week || 0,
+          // Fallback mirrors PAY_BLOCK_MINUTES rounding in src/lib/crewPay.ts
+          // (pending Manny's review); the API value wins when present.
+          payableMinutes: data.payable_minutes_week ?? Math.floor((data.total_minutes_week || 0) / 30) * 30,
+          rate: data.hourly_rate || 0,
+          driverBonusMinutes: data.driver_bonus_minutes || 0,
+          driverBonusDays: data.driver_bonus_days || 0,
+          driverBonusDates: data.driver_bonus_dates || [],
+          salaryDailyHours: data.salary_daily_hours || 0,
+          salaryDailyRate: data.salary_daily_rate || 0,
+          salaryDaysPerWeek: data.salary_days_per_week || 7,
+        };
+        renderWeekStats();
+        renderBonusCard(data.bonus);
+
+        // Week's shifts
+        const weekLogs = data.week_logs || [];
+        const bonusDates = new Set(data.driver_bonus_dates || []);
+        const weekBody = document.getElementById('weekShiftsBody');
+        if (weekLogs.length === 0) {
+          weekBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--color-text-secondary);">No shifts this week</td></tr>';
+        } else {
+          // Render shifts in order; after the LAST shift of any day that earned
+          // a driver bonus, append a subtle "+1h driver" row so the crew sees
+          // exactly which days the bonus came from.
+          const rows = [];
+          for (let i = 0; i < weekLogs.length; i++) {
+            const l = weekLogs[i];
+            const isOpen = !l.clock_out;
+            const dur = isOpen ? null : Math.floor((new Date(l.clock_out) - new Date(l.clock_in)) / 60000);
+            const dayName = new Date(l.work_date + 'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'});
+            rows.push(`<tr><td>${dayName}</td><td>${fmtTime(l.clock_in)}</td><td class="${isOpen?'tc-shift-active':''}">${isOpen?'Active':fmtTime(l.clock_out)}</td><td>${dur!==null?fmtMins(dur):'—'}</td></tr>`);
+            const next = weekLogs[i + 1];
+            const isLastOfDay = !next || next.work_date !== l.work_date;
+            if (isLastOfDay && bonusDates.has(l.work_date)) {
+              rows.push(`<tr style="background:rgba(99,102,241,0.06);"><td></td><td colspan="2" style="color:#a5b4fc; font-size:12px; font-style:italic;">+ Driver bonus</td><td style="color:#a5b4fc;">+1h 0m</td></tr>`);
+            }
+          }
+          weekBody.innerHTML = rows.join('');
+        }
+      } catch { /* silent */ }
+      loadCrewExpenses();
+      loadMediaPoolRecent();
+    }
+
+    let crewExpPaidWith = 'crew';
+    function setCrewExpPaidWith(val) {
+      crewExpPaidWith = val === 'company_card' ? 'company_card' : 'crew';
+      document.querySelectorAll('.crewExpPaidWithOpt').forEach(btn => {
+        const active = btn.getAttribute('data-value') === crewExpPaidWith;
+        btn.style.background = active ? 'linear-gradient(135deg, var(--color-primary), #6366f1)' : 'rgba(255,255,255,0.05)';
+        btn.style.color = active ? '#fff' : 'var(--color-text-primary)';
+        btn.style.borderColor = active ? 'var(--color-primary)' : 'var(--glass-border)';
+      });
+    }
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest && e.target.closest('.crewExpPaidWithOpt');
+      if (btn) setCrewExpPaidWith(btn.getAttribute('data-value'));
+    });
+
+    function toggleExpenseForm() {
+      const form = document.getElementById('expenseForm');
+      const btn = document.getElementById('addExpenseBtn');
+      const isHidden = form.style.display === 'none';
+      form.style.display = isHidden ? '' : 'none';
+      // Mirror the button: opening the form hides "+ Add Expense"; closing
+      // (e.g. after submit) brings it back.
+      if (btn) btn.style.display = isHidden ? 'none' : '';
+      if (isHidden) {
+        document.getElementById('crewExpDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('crewExpAmount').value = '';
+        document.getElementById('crewExpDesc').value = '';
+        document.getElementById('crewExpReceipt').value = '';
+        document.getElementById('crewExpReceiptLabel').textContent = 'Tap to upload';
+        setCrewExpPaidWith('crew');
+      }
+    }
+
+    async function submitCrewExpense() {
+      const date = document.getElementById('crewExpDate').value;
+      const amount = parseFloat(document.getElementById('crewExpAmount').value);
+      const description = document.getElementById('crewExpDesc').value.trim();
+      const receiptInput = document.getElementById('crewExpReceipt');
+      const receiptFile = receiptInput?.files?.[0];
+
+      if (!date || !amount || !description) { showError('Date, amount, and description are required.'); return; }
+      if (!receiptFile) { showError('Receipt photo is required.'); return; }
+
+      const btn = document.getElementById('crewExpSubmitBtn');
+      btn.disabled = true; btn.textContent = 'Uploading...';
+
+      try {
+        const ts = Date.now();
+        const ext = receiptFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const uploadRes = await fetch('/api/r2-upload/', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': receiptFile.type || 'image/jpeg', 'X-Upload-Path': `receipts/${ts}_receipt.${ext}`, 'X-Upload-Timestamp': String(ts) },
+          body: receiptFile,
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadData.success || !(uploadData.fileUrl || uploadData.url)) {
+          showError(uploadData.error || 'Receipt upload failed. Try again.');
+          btn.disabled = false; btn.textContent = 'Submit Expense';
+          return;
+        }
+        const receiptUrl = uploadData.fileUrl || uploadData.url;
+        btn.textContent = 'Saving...';
+
+        const res = await fetch('/api/crew/expenses/', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+          body: JSON.stringify({ work_date: date, amount, description, receipt_url: receiptUrl, paid_with: crewExpPaidWith })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('expenseForm').style.display = 'none';
+          // Bring the "+ Add Expense" button back since the form is collapsed.
+          const addBtn = document.getElementById('addExpenseBtn');
+          if (addBtn) addBtn.style.display = '';
+          // Clear form for next submission
+          document.getElementById('crewExpAmount').value = '';
+          document.getElementById('crewExpDesc').value = '';
+          document.getElementById('crewExpReceipt').value = '';
+          document.getElementById('crewExpReceiptLabel').textContent = 'Tap to upload receipt';
+          loadCrewExpenses();
+          loadWeekSummary();
+        } else { showError(data.error || 'Failed to submit expense.'); }
+      } catch { showError('Error submitting expense.'); }
+      finally { btn.disabled = false; btn.textContent = 'Submit Expense'; }
+    }
+
+    function setExpensesSummary(count, reimbursableTotal) {
+      const el = document.getElementById('expensesSummary');
+      if (!el) return;
+      if (!count) { el.textContent = ''; return; }
+      const money = reimbursableTotal > 0 ? ` · $${reimbursableTotal.toFixed(2)}` : '';
+      el.textContent = `(${count}${money})`;
+    }
+
+    async function loadCrewExpenses() {
+      // Render into both targets: the modal list (#crewExpensesList) and the
+      // body card mirror (#crewExpensesBodyList). Some pages render only one
+      // of the two depending on view, so guard each individually.
+      // NB: this <script is:inline> block is raw JS — Astro does NOT compile
+      // it through TypeScript. Type assertions (`as Foo`) and parameter type
+      // annotations (`(x: string)`) would parse as syntax errors at runtime
+      // and crash the whole login script. Keep this block JS-clean.
+      const targets = [
+        document.getElementById('crewExpensesList'),
+        document.getElementById('crewExpensesBodyList'),
+      ].filter(Boolean);
+      if (!targets.length || !crewId) return;
+      const writeAll = (html) => { for (const el of targets) el.innerHTML = html; };
+      try {
+        const res = await fetch('/api/crew/expenses/', { credentials: 'include' });
+        const data = await res.json();
+        if (!data.success || !data.expenses || data.expenses.length === 0) {
+          writeAll('<div style="text-align:center; padding:12px; color:var(--color-text-secondary); font-size:12px;">No expenses this week</div>');
+          weekExtras = { reimbursable: 0, deductions: 0 };
+          renderWeekStats();
+          setExpensesSummary(0, 0);
+          return;
+        }
+        const expenses = data.expenses.filter(e => e.paid_with !== 'deduction');
+        const deductions = data.expenses.filter(e => e.paid_with === 'deduction');
+        // Reimbursable = out-of-pocket only ('crew' value or default).
+        // Company-card rows are tracked but never affect the paycheck.
+        const reimbursableSum = expenses
+          .filter(e => e.paid_with !== 'company_card')
+          .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+        const deductionsSum = deductions
+          .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+        weekExtras = { reimbursable: reimbursableSum, deductions: deductionsSum };
+        renderWeekStats();
+        setExpensesSummary(data.expenses.length, reimbursableSum);
+        let reimbTotal = 0;
+        let dedTotal = 0;
+        const renderRow = (e, isDeduction) => {
+          const isCompanyCard = e.paid_with === 'company_card';
+          const receipt = e.receipt_url ? `<a href="${e.receipt_url}" target="_blank" style="color:var(--color-primary); font-size:11px;">Receipt</a>` : '';
+          const day = new Date(e.work_date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+          const tag = isDeduction
+            ? `<span style="font-size:10px; padding:2px 6px; border-radius:6px; background:rgba(220,38,38,0.15); color:#fca5a5; font-weight:600;">Deduction</span>`
+            : isCompanyCard
+              ? `<span style="font-size:10px; padding:2px 6px; border-radius:6px; background:rgba(59,130,246,0.15); color:#60a5fa; font-weight:600;">Company card</span>`
+              : '';
+          const amountColor = isDeduction ? '#fca5a5' : 'var(--color-text-primary)';
+          const amountText = isDeduction ? `−$${Number(e.amount).toFixed(2)}` : `$${Number(e.amount).toFixed(2)}`;
+          return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+            <div><span style="color:${amountColor}; font-weight:500;">${amountText}</span> <span style="color:var(--color-text-secondary); font-size:12px;">${e.description || ''}</span> ${tag}</div>
+            <div style="display:flex; gap:8px; align-items:center;"><span style="font-size:11px; color:var(--color-text-secondary);">${day}</span>${receipt}</div>
+          </div>`;
+        };
+
+        let html = '';
+        if (expenses.length > 0) {
+          html += expenses.map(e => {
+            if (e.paid_with !== 'company_card') reimbTotal += e.amount;
+            return renderRow(e, false);
+          }).join('');
+          html += `<div style="text-align:right; padding:8px 0; font-weight:600; color:var(--color-text-primary);">Reimbursable total: $${reimbTotal.toFixed(2)}</div>`;
+        }
+        if (deductions.length > 0) {
+          html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Deductions <span style="text-transform:none; letter-spacing:0; opacity:0.7;">(items the company bought for you — subtracted from this paycheck)</span></div>`;
+          html += deductions.map(e => {
+            dedTotal += e.amount;
+            return renderRow(e, true);
+          }).join('');
+          html += `<div style="text-align:right; padding:8px 0; font-weight:600; color:#fca5a5;">Deductions total: −$${dedTotal.toFixed(2)}</div>`;
+        }
+        writeAll(html);
+      } catch { writeAll('<div style="color:var(--color-text-secondary); font-size:12px;">Failed to load</div>'); }
+    }
+
+    async function loadStatus() {
+      try {
+        const res = await fetch('/api/crew/timeclock/', { credentials: 'include' });
+        if (res.status === 401) { showLoginPanel(); return; }
+        const data = await res.json();
+        if (!data.success) { showError(data.error || 'Failed'); return; }
+        crewId = data.crew.id; crewName = data.crew.name;
+        applyPayModelLayout(data.pay_model || 'hourly');
+        showTrackingPanel(data);
+        loadWeekSummary();
+      } catch { showError('Connection error.'); }
+    }
+
+    function showTrackingPanel(data) {
+      document.getElementById('loginPanel').classList.add('hidden');
+      document.getElementById('trackingPanel').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      document.getElementById('welcomeName').textContent = `Hi, ${data.crew.name}`;
+      document.getElementById('welcomeDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+      updateUI(data);
+    }
+
+    function showLoginPanel() {
+      document.getElementById('loginPanel').classList.remove('hidden');
+      document.getElementById('trackingPanel').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+      stopTimer();
+    }
+
+    async function doLogin() {
+      const name = document.getElementById('loginName').value.trim();
+      const phone = document.getElementById('loginPhone').value.trim();
+      if (!name || !phone) { showError('Enter name and phone.'); return; }
+      const btn = document.getElementById('loginBtn'); btn.disabled = true;
+      try {
+        const res = await fetch('/api/crew/login/',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({name,phone})});
+        const data = await res.json();
+        if (data.success) await loadStatus(); else showError(data.error || 'Failed.');
+      } catch { showError('Connection error.'); } finally { btn.disabled = false; }
+    }
+
+    async function doClockIn() {
+      try {
+        const res = await fetch('/api/crew/timeclock/',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'clock_in'})});
+        const data = await res.json();
+        if (data.success) await loadStatus(); else showError(data.error);
+      } catch { showError('Connection error.'); }
+    }
+
+    async function doClockOut() {
+      try {
+        const res = await fetch('/api/crew/timeclock/',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'clock_out'})});
+        const data = await res.json();
+        if (data.success) await loadStatus(); else showError(data.error);
+      } catch { showError('Connection error.'); }
+    }
+
+    async function doAction(action) {
+      try {
+        const res = await fetch('/api/crew/timeclock/',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action})});
+        const data = await res.json();
+        if (data.success) await loadStatus(); else showError(data.error);
+      } catch { showError('Connection error.'); }
+    }
+
+    async function logout() {
+      await fetch('/api/crew/login/',{method:'DELETE',credentials:'include'});
+      stopTimer(); showLoginPanel();
+      document.getElementById('loginName').value = '';
+      document.getElementById('loginPhone').value = '';
+    }
+
+    // ===== Media Pool (capture photos/videos from the job site) =====
+    async function handleMediaPoolFiles(files) {
+      if (!files || !files.length) return;
+      const noteEl = document.getElementById('mediaPoolNote');
+      const note = (noteEl?.value || '').trim();
+      const noteErr = document.getElementById('mediaPoolNoteError');
+      // Note is required — it's how admin groups the batch when triaging.
+      if (!note) {
+        if (noteErr) noteErr.style.display = 'block';
+        if (noteEl) {
+          noteEl.style.borderColor = 'rgba(239,68,68,0.6)';
+          noteEl.focus();
+        }
+        // Clear the file pickers so the next try-with-note doesn't re-upload.
+        const cIn = document.getElementById('mediaPoolCamera');
+        const lIn = document.getElementById('mediaPoolLibrary');
+        if (cIn) cIn.value = '';
+        if (lIn) lIn.value = '';
+        return;
+      }
+      if (noteErr) noteErr.style.display = 'none';
+      if (noteEl) noteEl.style.borderColor = '';
+      const progressEl = document.getElementById('mediaPoolProgress');
+      const cameraInput = document.getElementById('mediaPoolCamera');
+      const libraryInput = document.getElementById('mediaPoolLibrary');
+      progressEl.style.display = 'block';
+
+      const total = files.length;
+      let done = 0, failed = 0;
+      // Per-file audit trail — posted at the end so we have a RECORD of why any
+      // file dropped (too_large / rate_limited / upload_failed / save_failed /
+      // network) instead of just a silent "X failed".
+      const uploadLogs = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const isVideo = (file.type || '').startsWith('video/');
+        // Match the server caps (25MB images / 100MB videos) so we don't reject
+        // files the server would have accepted.
+        const maxSize = isVideo ? 100 * 1024 * 1024 : 25 * 1024 * 1024;
+        const baseLog = { filename: file.name, file_size: file.size, media_type: isVideo ? 'video' : 'image', note };
+        progressEl.textContent = `Uploading ${i + 1} of ${total}: ${file.name}`;
+        try {
+          if (file.size > maxSize) {
+            failed++;
+            uploadLogs.push({ ...baseLog, result: 'failed', reason: 'too_large' });
+            continue;
+          }
+          const ts = Date.now();
+          const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+          const ext = (safeName.split('.').pop() || (isVideo ? 'mp4' : 'jpg')).toLowerCase();
+          const baseName = safeName.replace(new RegExp(`\\.${ext}$`, 'i'), '') || 'upload';
+          const path = `pool/${ts}_${baseName}.${ext}`;
+
+          const uploadRes = await fetch('/api/r2-upload/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': file.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
+              'X-Upload-Path': path,
+              'X-Upload-Timestamp': String(ts),
+            },
+            body: file,
+          });
+          const uploadData = await uploadRes.json();
+          const mediaUrl = uploadData.fileUrl || uploadData.url;
+          if (!uploadData.success || !mediaUrl) {
+            failed++;
+            const reason = uploadRes.status === 429 ? 'rate_limited' : 'upload_failed';
+            uploadLogs.push({ ...baseLog, result: 'failed', reason });
+            continue;
+          }
+
+          const saveRes = await fetch('/api/crew/media-pool/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              media_url: mediaUrl,
+              media_type: isVideo ? 'video' : 'image',
+              file_size: file.size,
+              original_filename: file.name,
+              note,
+            }),
+          });
+          const saveData = await saveRes.json();
+          if (!saveData.success) {
+            failed++;
+            uploadLogs.push({ ...baseLog, result: 'failed', reason: 'save_failed' });
+            continue;
+          }
+          done++;
+          uploadLogs.push({ ...baseLog, result: 'ok', reason: null });
+        } catch {
+          failed++;
+          uploadLogs.push({ ...baseLog, result: 'failed', reason: 'network' });
+        }
+      }
+
+      // Persist the audit trail (best-effort — never block the UI on it).
+      try {
+        await fetch('/api/crew/upload-log/', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ logs: uploadLogs }),
+        });
+      } catch {}
+
+      if (cameraInput) cameraInput.value = '';
+      if (libraryInput) libraryInput.value = '';
+      if (noteEl) noteEl.value = '';
+      progressEl.textContent = failed > 0
+        ? `${done} uploaded, ${failed} failed`
+        : `Uploaded ${done} of ${total} ✓`;
+      setTimeout(() => { progressEl.style.display = 'none'; }, 3000);
+      loadMediaPoolRecent();
+    }
+    window.handleMediaPoolFiles = handleMediaPoolFiles;
+
+    async function loadMediaPoolRecent() {
+      const recent = document.getElementById('mediaPoolRecent');
+      if (!recent) return;
+      try {
+        const res = await fetch('/api/crew/media-pool/', { credentials: 'include' });
+        const data = await res.json();
+        if (!data.success || !data.items || !data.items.length) {
+          recent.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); opacity:0.6;">No uploads yet — your captures will show here.</div>';
+          return;
+        }
+        recent.innerHTML = data.items.slice(0, 10).map(it => {
+          const isVideo = it.media_type === 'video';
+          const thumb = isVideo
+            ? '<div style="width:64px; height:64px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px solid var(--glass-border);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-secondary);"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>'
+            : `<img src="${it.media_url}" style="width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--glass-border);" alt="">`;
+          const title = (it.note || '').replace(/"/g, '&quot;');
+          return `<div style="flex:0 0 auto;" title="${title}">${thumb}</div>`;
+        }).join('');
+      } catch {
+        recent.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); opacity:0.6;">Couldn\'t load recent uploads.</div>';
+      }
+    }
+
+    document.getElementById('loginPhone').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    (async function() {
+      const res = await fetch('/api/crew/login/',{credentials:'include'});
+      const data = await res.json();
+      if (data.authenticated) await loadStatus();
+    })();
+
+    // ===== Expenses modal =====
+    function openExpensesModal() {
+      const modal = document.getElementById('expensesModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      // Refresh list every time we open so totals stay accurate.
+      loadCrewExpenses();
+      // Open in "list view": form collapsed, "+ Add Expense" button visible.
+      document.getElementById('expenseForm').style.display = 'none';
+      const btn = document.getElementById('addExpenseBtn');
+      if (btn) btn.style.display = '';
+    }
+    function closeExpensesModal() {
+      document.getElementById('expensesModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    window.openExpensesModal = openExpensesModal;
+    window.closeExpensesModal = closeExpensesModal;
+
+    function openMediaModal() {
+      const modal = document.getElementById('mediaModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      loadMediaPoolRecent(); // refresh recent uploads each open
+    }
+    function closeMediaModal() {
+      document.getElementById('mediaModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    window.openMediaModal = openMediaModal;
+    window.closeMediaModal = closeMediaModal;
+  </script>
+
+  <!-- Expenses modal — replaces the old right-column card. The form + list
+       live in here so the main page stays focused on clock controls + media. -->
+  <div class="tc-modal" id="expensesModal" onclick="if(event.target===this) closeExpensesModal()">
+    <div class="tc-modal-box">
+      <div class="tc-modal-header">
+        <h3>Expenses This Week</h3>
+        <button class="tc-modal-close" onclick="closeExpensesModal()">&times;</button>
+      </div>
+      <div class="tc-modal-body">
+        <button class="tc-btn" id="addExpenseBtn" style="background:var(--glass-bg); border:1px solid var(--glass-border); color:var(--color-text-primary); font-size:13px; padding:10px; margin-bottom:14px;" onclick="toggleExpenseForm()">+ Add Expense</button>
+
+        <!-- Inline expense form (hidden until + Add tapped) -->
+        <div id="expenseForm" style="display:none; margin-bottom:16px; padding:14px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md);">
+          <div style="margin-bottom:10px;">
+            <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Date *</label>
+            <input type="date" id="crewExpDate" class="form-input">
+          </div>
+          <div style="margin-bottom:10px;">
+            <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Amount ($) *</label>
+            <input type="number" id="crewExpAmount" class="form-input" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+          </div>
+          <div style="margin-bottom:10px;">
+            <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Paid with *</label>
+            <div id="crewExpPaidWith" style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <button type="button" data-value="crew" class="crewExpPaidWithOpt" style="padding:8px 10px; background:linear-gradient(135deg, var(--color-primary), #6366f1); color:#fff; border:1px solid var(--color-primary); border-radius:8px; font-size:12px; font-weight:600; cursor:pointer;">My money</button>
+              <button type="button" data-value="company_card" class="crewExpPaidWithOpt" style="padding:8px 10px; background:rgba(255,255,255,0.05); color:var(--color-text-primary); border:1px solid var(--glass-border); border-radius:8px; font-size:12px; font-weight:600; cursor:pointer;">Company card</button>
+            </div>
+            <div style="font-size:11px; color:var(--color-text-secondary); margin-top:4px;">Reimbursable amounts add to your weekly payout. Company-card receipts are tracked but not paid back.</div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Description *</label>
+            <input type="text" id="crewExpDesc" class="form-input" placeholder="Gas, materials, supplies...">
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Receipt *</label>
+            <div style="border:1.5px dashed var(--glass-border); border-radius:8px; padding:12px; text-align:center; cursor:pointer;" onclick="document.getElementById('crewExpReceipt').click()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-text-secondary); display:block; margin:0 auto 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div style="font-size:12px; color:var(--color-text-secondary);" id="crewExpReceiptLabel">Tap to upload receipt</div>
+              <input type="file" id="crewExpReceipt" accept="image/*,application/pdf,.pdf" style="display:none;" onchange="if(this.files[0]) document.getElementById('crewExpReceiptLabel').textContent = this.files[0].name;">
+            </div>
+          </div>
+          <button class="tc-btn" id="crewExpSubmitBtn" onclick="submitCrewExpense()" style="background:linear-gradient(135deg, var(--color-primary), #6366f1); color:white; font-size:13px; padding:10px;">Submit Expense</button>
+        </div>
+
+        <div id="crewExpensesList" style="font-size:13px; color:var(--color-text-secondary);">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capture Media modal — moved out of the right-column card; opened by the
+       Capture Media button below Expenses. -->
+  <div class="tc-modal" id="mediaModal" onclick="if(event.target===this) closeMediaModal()">
+    <div class="tc-modal-box">
+      <div class="tc-modal-header">
+        <h3>Capture Media</h3>
+        <button class="tc-modal-close" onclick="closeMediaModal()">&times;</button>
+      </div>
+      <div class="tc-modal-body">
+        <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:12px; line-height:1.5;">
+          Take photos and videos <strong>before</strong> you start, <strong>while you work</strong>, and <strong>before you leave</strong> each day. Before-photos protect us (and you) if a customer claims something was broken when we arrived. During and after photos build the project's portfolio. Don't worry about which project — admin sorts everything later. Tip: type a note like “Smith house — before” so the whole batch stays grouped.
+        </div>
+
+        <!-- Note first so crew can label the batch before tapping a capture button. -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Note <span style="color:#fca5a5;">*</span> <span style="font-weight:500; text-transform:none; letter-spacing:0; opacity:0.8;">(required — tags the whole batch so admin can group it)</span></label>
+          <input type="text" id="mediaPoolNote" class="form-input" required placeholder="e.g. Smith house — before" aria-required="true">
+          <div id="mediaPoolNoteError" style="display:none; font-size:11px; color:#fca5a5; margin-top:4px;">Add a note before uploading — it's what lets admin group your batch.</div>
+        </div>
+
+        <!-- Separate camera + library inputs. Single picker is unreliable on Android. -->
+        <input type="file" id="mediaPoolCamera" accept="image/*,video/*" capture="environment" style="display:none;" onchange="handleMediaPoolFiles(this.files)">
+        <input type="file" id="mediaPoolLibrary" accept="image/*,video/mp4,video/quicktime,video/webm" multiple style="display:none;" onchange="handleMediaPoolFiles(this.files)">
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+          <button class="tc-btn" style="padding:10px 12px; font-size:13px; background:linear-gradient(135deg, var(--color-primary), #6366f1); color:#fff; border:1px solid var(--color-primary); display:flex; align-items:center; justify-content:center; gap:6px;" onclick="document.getElementById('mediaPoolCamera').click()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Take Photo / Video
+          </button>
+          <button class="tc-btn" style="padding:10px 12px; font-size:13px; background:var(--glass-bg); border:1px solid var(--glass-border); color:var(--color-text-primary); display:flex; align-items:center; justify-content:center; gap:6px;" onclick="document.getElementById('mediaPoolLibrary').click()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            From Library
+          </button>
+        </div>
+
+        <div id="mediaPoolProgress" style="display:none; margin-bottom:12px; padding:10px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md); font-size:12px; color:var(--color-text-secondary);"></div>
+
+        <div style="font-size:11px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px;">Recent Uploads</div>
+        <div id="mediaPoolRecent" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; min-height:60px;">
+          <div style="font-size:12px; color:var(--color-text-secondary); opacity:0.6;">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

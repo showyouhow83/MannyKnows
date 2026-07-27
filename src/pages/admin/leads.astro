@@ -1,0 +1,2731 @@
+---
+// Admin Leads Page - Opportunities View
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import { SERVICE_TYPES, SERVICE_LABELS } from '../../data/serviceTypes';
+import '../../styles/admin.css';
+
+const env = Astro.locals.runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin');
+}
+if (session.role === 'viewer') {
+  return Astro.redirect('/admin/portfolios');
+}
+
+// Fetch all leads from D1
+const db = env?.MK_APP_DB;
+let allLeads: any[] = [];
+let partnersList: any[] = [];
+let error = '';
+
+if (db) {
+  try {
+    // Exclude leads that have already been promoted to a quote — they live in
+    // the Quotes pipeline now and shouldn't double up in the Leads list. We
+    // filter by BOTH status='promoted' and the presence of a linked quote, so a
+    // promoted lead is hidden even if its status flag was never updated.
+    const result = await db.prepare(`
+      SELECT * FROM leads
+       WHERE COALESCE(status, '') != 'promoted'
+         AND id NOT IN (SELECT lead_id FROM quotes WHERE lead_id IS NOT NULL)
+       ORDER BY created_at DESC
+    `).all();
+    allLeads = result.results || [];
+    try {
+      const pr = await db.prepare('SELECT id, name FROM partners WHERE archived = 0 ORDER BY name ASC').all();
+      partnersList = pr.results || [];
+    } catch { partnersList = []; }
+  } catch (e) {
+    error = 'Failed to load leads';
+    console.error('Leads fetch error:', e);
+  }
+} else {
+  error = 'Database not configured';
+}
+
+// Split into confirmed and unconfirmed
+const confirmedLeads = allLeads.filter(l => l.status === 'confirmed');
+const unconfirmedLeads = allLeads.filter(l => l.status === 'pending_confirmation');
+
+// Source labels
+const sourceLabels: Record<string, string> = {
+  'quote-form': 'Quote Form',
+  'footer-form': 'Footer Quote Form',
+  'remi-chat': 'Remi',
+  'phone': 'Phone',
+  'angies-list': "Angie's List",
+  'thumbtack': 'Thumbtack',
+  'google': 'Google',
+  'referral': 'Referral',
+  'other': 'Other'
+};
+
+// Helper to format source with test badge
+function formatSource(source: string): { label: string; isTest: boolean } {
+  const isTest = source.includes('(test)');
+  const cleanSource = source.replace(' (test)', '').replace('(test)', '');
+  const label = sourceLabels[cleanSource] || cleanSource;
+  return { label, isTest };
+}
+
+// Service labels (shared canonical list; custom values fall back to raw text)
+const serviceLabels: Record<string, string> = SERVICE_LABELS;
+
+// Directions origin — city-level only (no office street address on file yet).
+const adminAddress = 'Springfield, MA';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads | MannyKnows Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    // Theme init - runs before CSS to prevent flash
+    (function() {
+      const theme = localStorage.getItem('admin-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* Page-specific styles - extends admin.css */
+
+    /* Main content - 3-column layout with rounded cards */
+    .admin-main {
+      display: flex;
+      align-items: flex-start;
+      min-height: calc(100vh - 65px - 60px);
+      padding: 16px;
+      gap: 16px;
+    }
+
+    /* Left column - Confirmed leads. Sticky sidebar so the page (and detail
+       card) scroll as one — no second scrollbar on the detail. */
+    .leads-list {
+      width: 300px;
+      min-width: 280px;
+      max-width: 320px;
+      position: sticky;
+      top: 16px;
+      align-self: flex-start;
+      max-height: calc(100vh - 65px - 60px - 16px);
+      overflow-y: auto;
+      padding: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Middle column - Lead detail. Grows to natural height; the PAGE scrolls
+       (single scrollbar) instead of an inner scroll region. */
+    .lead-detail-panel {
+      flex: 1;
+      /* Flex child defaults to min-width:auto and won't shrink below its
+         content — wide inner content then pushes the panel past the viewport
+         on mobile. Allow it to shrink to the available width. */
+      min-width: 0;
+      max-width: 100%;
+      padding: 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Lead sections (collapsible on mobile) */
+    .lead-section {
+      margin-bottom: 16px;
+    }
+
+    .lead-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-chevron {
+      display: none;
+    }
+
+    /* Smaller cards for right column */
+    .status-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+    }
+
+    .status-card:hover {
+      border-color: var(--color-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .status-card.selected {
+      border-color: var(--color-primary);
+      background: rgba(255, 120, 29, 0.15);
+    }
+
+    .status-card.hidden {
+      display: none;
+    }
+
+    .status-card-code {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 10px;
+      color: var(--color-primary);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .status-card-name {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--color-text-primary);
+    }
+
+    .status-card-meta {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+
+    .status-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .btn-confirm {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+    }
+
+    .btn-confirm:hover {
+      opacity: 0.9;
+    }
+
+    /* Search bar */
+    .search-bar {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-bar svg {
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      font-size: 14px;
+      outline: none;
+      background: transparent;
+      color: var(--color-text-primary);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    /* New Lead Modal */
+    .new-lead-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .new-lead-modal.active {
+      display: flex;
+    }
+
+    .new-lead-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .new-lead-modal-content {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: modalSlideIn 0.2s ease-out;
+    }
+
+    .new-lead-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .new-lead-modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .new-lead-modal-close {
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .new-lead-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group-modal {
+      margin-bottom: 16px;
+    }
+
+    .form-group-modal label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-group-modal label .required {
+      color: #ef4444;
+    }
+
+    .form-group-modal input,
+    .form-group-modal select,
+    .form-group-modal textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      transition: all 0.2s;
+    }
+
+    .form-group-modal input:focus,
+    .form-group-modal select:focus,
+    .form-group-modal textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.1);
+    }
+
+    .form-group-modal input::placeholder,
+    .form-group-modal textarea::placeholder {
+      color: var(--color-text-secondary);
+      opacity: 0.6;
+    }
+
+    .form-group-modal textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .new-lead-modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .btn-modal-cancel {
+      flex: 1;
+      padding: 12px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-cancel:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+    }
+
+    .btn-modal-submit {
+      flex: 1;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-submit:hover {
+      opacity: 0.9;
+    }
+
+    .btn-modal-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Section */
+    .leads-section {
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-count {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .section-count.confirmed {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+    }
+
+    .section-count.unconfirmed {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    /* Lead card */
+    .lead-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .lead-card:hover {
+      border-color: var(--color-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .lead-card.selected {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(255, 120, 29, 0.3);
+      background: rgba(255, 120, 29, 0.1);
+    }
+
+    .lead-card.hidden {
+      display: none;
+    }
+
+    .lead-code {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: var(--color-primary);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .lead-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: var(--color-text-primary);
+    }
+
+    .lead-contact {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .lead-contact a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .lead-contact a:hover {
+      text-decoration: underline;
+    }
+
+    .lead-brief {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+
+    .lead-brief span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Detail panel */
+    .detail-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--color-text-secondary);
+      text-align: center;
+    }
+
+    .detail-placeholder svg {
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .detail-content {
+      display: none;
+    }
+
+    .detail-content.visible {
+      display: block;
+    }
+
+    .detail-header {
+      margin-bottom: 24px;
+    }
+
+    .detail-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .detail-header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .detail-code {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .detail-name {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--color-text-primary);
+    }
+
+    .btn-promote-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-promote-small:hover {
+      opacity: 0.9;
+    }
+
+    .btn-promote-small svg {
+      flex-shrink: 0;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-delete-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-delete-small:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-delete-small svg {
+      flex-shrink: 0;
+    }
+
+    .detail-contact-info {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+    }
+
+    .detail-section {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .detail-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .detail-row:first-of-type {
+      padding-top: 0;
+    }
+
+    .detail-label {
+      width: 120px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .detail-notes {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-text-primary);
+    }
+
+    .detail-photos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .photo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .photo-link:hover {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .photo-link svg {
+      flex-shrink: 0;
+    }
+
+    /* Confirmation Modal - Dark theme */
+    .confirm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-modal.active {
+      display: flex;
+    }
+
+    .confirm-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .confirm-modal-content {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: modalSlideIn 0.2s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .confirm-modal-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-modal-icon svg {
+      color: #f87171;
+    }
+
+    .confirm-modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0 0 8px;
+    }
+
+    .confirm-modal-text {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin: 0 0 24px;
+      line-height: 1.5;
+    }
+
+    .confirm-modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .confirm-btn-cancel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--color-text-secondary);
+    }
+
+    .confirm-btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+    }
+
+    .confirm-btn-delete {
+      background: #dc2626;
+      border: none;
+      color: white;
+    }
+
+    .confirm-btn-delete:hover {
+      background: #b91c1c;
+    }
+
+    /* Lead card layout */
+    .lead-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .lead-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .lead-card-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .lead-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .lead-status-pill.confirmed {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+
+    .lead-status-pill.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+
+    .btn-card-promote {
+      padding: 5px 11px;
+      background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    .lead-card:hover .btn-card-promote {
+      opacity: 1;
+    }
+
+    .btn-card-promote:hover {
+      opacity: 0.9;
+    }
+
+    /* Touch devices have no hover — always show the promote button (it was
+       invisible/unreachable on tablet + phone). */
+    @media (hover: none) {
+      .btn-card-promote { opacity: 1; }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--color-text-secondary);
+      font-size: 13px;
+    }
+
+    /* Error state */
+    .error-message {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+
+    /* No results */
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      color: var(--color-text-secondary);
+    }
+
+    .no-results.visible {
+      display: block;
+    }
+
+    /* Source badge in detail */
+    .source-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--glass-bg);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      margin-left: 12px;
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+
+    .status-badge.confirmed {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* Map link */
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 12px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .map-link:hover {
+      opacity: 0.9;
+    }
+
+    .map-link svg {
+      flex-shrink: 0;
+    }
+
+    /* Financing badge (detail panel) */
+    .financing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: white;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Financing label (card list) */
+    .financing-label {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Test badge */
+    .test-badge {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .source-label {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+    }
+
+    /* Tablet (incl. iPad): keep the 2-column layout so the detail shows beside
+       the list, not stacked below. Narrow the list; collapse it for more room. */
+    @media (min-width: 769px) and (max-width: 1180px) {
+      .leads-list { width: 248px; min-width: 220px; max-width: 268px; }
+    }
+    .list-toggle-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      position: fixed; left: 8px; top: 50%; transform: translateY(-50%); z-index: 60;
+      width: 34px; height: 34px; border-radius: 8px; font-size: 18px; line-height: 1;
+      border: 1px solid var(--glass-border); background: var(--glass-bg);
+      color: var(--color-text-primary); cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+    .admin-main.list-collapsed > .leads-list { display: none; }
+
+    @media (max-width: 768px) {
+      .admin-main {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 20px;
+        /* Stretch children to full width — base align-items:flex-start would
+           otherwise size the detail card to its content instead of the screen. */
+        align-items: stretch;
+      }
+
+      .leads-list {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        max-height: 45vh;
+        padding: 10px;
+      }
+
+      .lead-detail-panel {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 12px;
+      }
+
+      /* Mobile: sections are collapsible */
+      .section-chevron {
+        display: block;
+        margin-left: auto;
+        transition: transform 0.2s;
+      }
+
+      .section-toggle {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .section-toggle.collapsed .section-chevron {
+        transform: rotate(-90deg);
+      }
+
+      .collapsed-mobile {
+        display: none;
+      }
+
+      /* Compact detail header */
+      .detail-header {
+        margin-bottom: 12px;
+      }
+
+      .detail-header-top {
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .detail-code {
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+      }
+
+      .detail-name {
+        font-size: 20px;
+      }
+
+      .detail-header-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .detail-actions {
+        margin-top: 8px;
+        gap: 6px;
+      }
+
+      .btn-promote-small,
+      .btn-delete-small {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+      }
+
+      .detail-contact-info {
+        font-size: 13px;
+        margin-top: 6px;
+      }
+
+      /* Compact detail sections */
+      .detail-section {
+        padding: 14px;
+        margin-bottom: 12px;
+        border-radius: var(--radius-md);
+      }
+
+      .detail-section-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .detail-row {
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 0;
+      }
+
+      .detail-label {
+        width: auto;
+        font-size: 12px;
+      }
+
+      .detail-value {
+        font-size: 13px;
+      }
+
+      .detail-notes {
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      /* Compact status badge */
+      .status-badge {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+
+      /* Directions button */
+      .btn-directions {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      /* New Lead Modal - Full screen on mobile */
+      .new-lead-modal {
+        padding: 0 !important;
+        align-items: flex-start !important;
+      }
+
+      .new-lead-modal-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .new-lead-modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+        padding: 12px 16px;
+        margin-bottom: 0;
+        border-bottom: 1px solid var(--glass-border);
+      }
+
+      .new-lead-modal-title {
+        font-size: 16px;
+      }
+
+      .new-lead-modal-close {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .new-lead-modal-close svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Form styles for mobile modal */
+      #newLeadForm {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .form-group-modal {
+        margin-bottom: 12px;
+      }
+
+      .form-group-modal label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      .form-group-modal input,
+      .form-group-modal select,
+      .form-group-modal textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      .new-lead-modal-actions {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+        margin: 0;
+        padding: 12px 16px;
+        border-top: 1px solid var(--glass-border);
+        gap: 8px;
+      }
+
+      .btn-modal-cancel,
+      .btn-modal-submit {
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+      }
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      padding: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-toggle span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--color-text-primary);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-toggle:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .mobile-nav-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-nav-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-nav-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-nav-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-nav-panel {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100vh;
+      background: var(--color-background);
+      border-left: 1px solid var(--glass-border);
+      z-index: 999;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-nav-panel.active {
+      right: 0;
+    }
+
+    .mobile-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .mobile-nav-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .mobile-nav-close {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--color-text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .mobile-nav-close:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .mobile-nav-links {
+      padding: 16px;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+
+    .mobile-nav-link:hover {
+      background: var(--glass-bg-hover);
+      color: var(--color-text-primary);
+    }
+
+    .mobile-nav-link.active {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: white;
+    }
+
+    .mobile-nav-link svg {
+      flex-shrink: 0;
+    }
+
+    .mobile-nav-divider {
+      height: 1px;
+      background: var(--glass-border);
+      margin: 12px 0;
+    }
+
+    .mobile-nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      padding: 8px 16px 12px;
+      opacity: 0.7;
+    }
+
+    /* Sub-action links (New Lead, New Quote, etc.) - compact inline style */
+    .mobile-nav-sub-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px 8px 48px;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+
+    .mobile-nav-sub-action:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .mobile-nav-sub-action svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-nav-toggle {
+        display: flex;
+      }
+
+      .admin-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <AdminPresence />
+  <header class="admin-header">
+    <a href="/admin/dashboard" class="admin-logo-link">
+      <div class="logo-gradient-wrapper"></div>
+      <span class="admin-badge">Admin</span>
+    </a>
+    <AdminNav active="leads" />
+    <!-- Mobile: Bell + Hamburger -->
+    <div class="mobile-header-right">
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtnMobile" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge bell-badge-mobile" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdownMobile" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellListMobile">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="notification-bell-wrapper">
+        <button class="btn-bell" id="bellBtn" title="Customer Replies" aria-label="Customer Replies">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdown" style="display:none;">
+          <div class="bell-dropdown-header"><span>Customer Replies</span><button class="bell-mark-all-read" onclick="markAllRead()">Mark all read</button></div>
+          <div class="bell-dropdown-list" id="bellList">
+            <div class="bell-dropdown-empty">No new replies</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <AdminMobileDrawer active="leads" />
+
+  <button class="list-toggle-btn" id="listToggleBtn" title="Show / hide list" aria-label="Toggle list">‹</button>
+  <main class="admin-main">
+    <!-- Left: Leads List -->
+    <div class="leads-list">
+      {error && <div class="error-message">{error}</div>}
+
+      <button type="button" class="new-record-btn" onclick="showNewLeadModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        New Lead
+      </button>
+
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Search by code, name, email, phone..."
+        >
+      </div>
+
+      <div class="no-results" id="noResults">
+        No leads match your search
+      </div>
+
+      <!-- Confirmed Leads -->
+      <div class="lead-section">
+        <div class="section-header section-toggle" data-section="confirmed">
+          <h2 class="section-title">Confirmed</h2>
+          <span class="section-count confirmed">{confirmedLeads.length}</span>
+          <svg class="section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="section-body" id="sectionConfirmed">
+          {confirmedLeads.length === 0 ? (
+            <div class="empty-state">No confirmed leads yet</div>
+          ) : (
+            confirmedLeads.map((lead) => {
+              const sourceInfo = formatSource(lead.source || 'other');
+              return (
+              <div
+                class="lead-card"
+                data-search={`${lead.confirmation_code} ${lead.customer_name} ${lead.customer_email} ${lead.customer_phone} ${lead.id}`.toLowerCase()}
+                data-lead={JSON.stringify(lead)}
+              >
+                <div class="lead-card-header">
+                  <div class="lead-card-info">
+                    <div class="lead-code" title={lead.confirmation_code}>#{(lead.confirmation_code || '').slice(-4)}</div>
+                    <div class="lead-name">{lead.customer_name}</div>
+                    <div class="lead-contact">
+                      {lead.customer_phone && <a href={`tel:${lead.customer_phone}`} onclick="event.stopPropagation()">{lead.customer_phone}</a>}
+                      {lead.customer_phone && lead.customer_email && ' · '}
+                      {lead.customer_email && <a href={`mailto:${lead.customer_email}`} onclick="event.stopPropagation()">{lead.customer_email}</a>}
+                    </div>
+                  </div>
+                  <div class="lead-card-right">
+                    <span class={`lead-status-pill ${lead.status === 'confirmed' ? 'confirmed' : 'pending'}`}>
+                      {lead.status === 'confirmed' ? 'Confirmed' : 'Pending'}
+                    </span>
+                    <button class="btn-card-promote" data-id={lead.id} onclick="event.stopPropagation(); promoteLead(this.dataset.id)">Promote</button>
+                  </div>
+                </div>
+                <div class="lead-brief">
+                  <span>{serviceLabels[lead.service_type] || lead.service_type}</span>
+                  <span>{lead.city}</span>
+                  {lead.preferred_date !== 'TBD' && <span>{lead.preferred_date}</span>}
+                  {lead.financing_interest && <span class="financing-label">💰 Financing</span>}
+                  <span class="source-label">{sourceInfo.label}</span>
+                  {sourceInfo.isTest && <span class="test-badge">Test</span>}
+                </div>
+              </div>
+            );
+            })
+          )}
+        </div>
+      </div>
+
+      <!-- Pending Confirmation -->
+      <div class="lead-section">
+        <div class="section-header section-toggle" data-section="pending">
+          <h2 class="section-title">Pending Confirmation</h2>
+          <span class="section-count unconfirmed">{unconfirmedLeads.length}</span>
+          <svg class="section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="section-body collapsed-mobile" id="sectionPending">
+          {unconfirmedLeads.length === 0 ? (
+            <div class="empty-state">No unconfirmed leads</div>
+          ) : (
+            unconfirmedLeads.map((lead) => {
+              const sourceInfo = formatSource(lead.source || 'other');
+              return (
+              <div
+                class="lead-card"
+                data-search={`${lead.confirmation_code} ${lead.customer_name} ${lead.customer_email} ${lead.customer_phone} ${lead.id}`.toLowerCase()}
+                data-lead={JSON.stringify(lead)}
+              >
+                <div class="lead-card-header">
+                  <div class="lead-card-info">
+                    <div class="lead-code" title={lead.confirmation_code}>#{(lead.confirmation_code || '').slice(-4)}</div>
+                    <div class="lead-name">{lead.customer_name}</div>
+                    <div class="lead-contact">
+                      {lead.customer_phone && <a href={`tel:${lead.customer_phone}`} onclick="event.stopPropagation()">{lead.customer_phone}</a>}
+                      {lead.customer_phone && lead.customer_email && ' · '}
+                      {lead.customer_email && <a href={`mailto:${lead.customer_email}`} onclick="event.stopPropagation()">{lead.customer_email}</a>}
+                    </div>
+                  </div>
+                  <div class="lead-card-right">
+                    <span class="lead-status-pill pending">Pending</span>
+                    <button class="btn-sm btn-confirm" data-id={lead.id} onclick="event.stopPropagation(); confirmLead(this.dataset.id)">Confirm</button>
+                  </div>
+                </div>
+                <div class="lead-brief">
+                  <span>{serviceLabels[lead.service_type] || lead.service_type}</span>
+                  <span>{lead.city}</span>
+                  <span class="source-label">{sourceInfo.label}</span>
+                  {sourceInfo.isTest && <span class="test-badge">Test</span>}
+                </div>
+              </div>
+            );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: Detail Panel -->
+    <div class="lead-detail-panel">
+      <!-- Mobile Back Button -->
+      <button class="mobile-back-btn" onclick="hideMobileDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back to list
+      </button>
+
+      <div class="detail-placeholder" id="detailPlaceholder">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <p>Select a lead to view details</p>
+      </div>
+
+      <div class="detail-content" id="detailContent">
+        <div class="detail-header">
+          <div class="detail-header-top">
+            <div class="detail-code" id="detailCode"></div>
+            <span class="status-badge" id="detailStatus"></span>
+          </div>
+          <div class="detail-header-main">
+            <h1 class="detail-name" id="detailName"></h1>
+            <div class="detail-actions">
+              <button class="btn-promote-small" id="btnPromote">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Promote
+              </button>
+              <button class="btn-delete-small" id="btnDelete">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="detail-contact-info" id="detailContactInfo"></div>
+        </div>
+
+        <div class="detail-section">
+          <h2 class="detail-section-title">Appointment Details</h2>
+          <div class="detail-row">
+            <div class="detail-label">Service</div>
+            <div class="detail-value" id="detailService"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Best Day to Call</div>
+            <div class="detail-value" id="detailDate"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Preferred Time</div>
+            <div class="detail-value" id="detailTime"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Location</div>
+            <div class="detail-value">
+              <span id="detailLocation"></span>
+              <a href="#" id="detailMapLink" target="_blank" class="map-link" style="display: none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+          <div class="detail-row" id="detailNotesRow" style="display: none;">
+            <div class="detail-label">Notes</div>
+            <div class="detail-value" id="detailNotes"></div>
+          </div>
+          <div class="detail-row" id="detailFinancingRow" style="display: none;">
+            <div class="detail-label">Financing</div>
+            <div class="detail-value">
+              <span class="financing-badge" id="detailFinancing">Interested</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Source</div>
+            <div class="detail-value">
+              <span id="detailSource"></span>
+              <span class="test-badge" id="detailTestBadge" style="display: none; margin-left: 8px;">Test</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section" id="detailPhotosSection" style="display: none;">
+          <h2 class="detail-section-title">Photos</h2>
+          <div class="detail-photos" id="detailPhotos"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="confirm-modal" id="confirmModal">
+    <div class="confirm-modal-backdrop"></div>
+    <div class="confirm-modal-content">
+      <div class="confirm-modal-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 9v4m0 4h.01M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
+        </svg>
+      </div>
+      <h3 class="confirm-modal-title">Delete Lead?</h3>
+      <p class="confirm-modal-text">This action cannot be undone. The lead and all associated data will be permanently removed.</p>
+      <div class="confirm-modal-actions">
+        <button class="confirm-btn confirm-btn-cancel" id="confirmCancel">Cancel</button>
+        <button class="confirm-btn confirm-btn-delete" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promote Confirmation Modal -->
+  <div class="confirm-modal" id="promoteModal">
+    <div class="confirm-modal-backdrop" onclick="hidePromoteModal()"></div>
+    <div class="confirm-modal-content">
+      <div class="confirm-modal-icon" style="background: linear-gradient(135deg, rgba(255, 120, 29, 0.1), rgba(99, 102, 241, 0.1));">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#promoteGradient)" stroke-width="1.5">
+          <defs>
+            <linearGradient id="promoteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#ff781d"/>
+              <stop offset="100%" style="stop-color:#6366f1"/>
+            </linearGradient>
+          </defs>
+          <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+      </div>
+      <h3 class="confirm-modal-title">Promote to Quote?</h3>
+      <p class="confirm-modal-text">
+        <strong id="promoteLeadCode" style="color: #ff781d;"></strong><br>
+        <span id="promoteLeadName"></span>
+      </p>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 24px;">
+        This will create a new Quote from this lead. You can then add pricing, materials, and timeline details.
+      </p>
+      <div class="confirm-modal-actions">
+        <button class="confirm-btn confirm-btn-cancel" onclick="hidePromoteModal()">Cancel</button>
+        <button class="confirm-btn" id="confirmPromote" style="background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%); color: white; border: none;">Promote</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-icon" id="toastIcon"></div>
+    <span class="toast-message" id="toastMessage"></span>
+  </div>
+
+  <!-- New Lead Modal -->
+  <div class="new-lead-modal" id="newLeadModal">
+    <div class="new-lead-modal-backdrop"></div>
+    <div class="new-lead-modal-content">
+      <div class="new-lead-modal-header">
+        <h3 class="new-lead-modal-title">Create New Lead</h3>
+        <button class="new-lead-modal-close" onclick="hideNewLeadModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="newLeadForm">
+        <!-- Representing (partner white-label) — set at creation so it carries
+             through Lead → Quote → Project; avoids creating as SL then reassigning. -->
+        <div class="form-group-modal">
+          <label for="leadPartner">Representing</label>
+          <select id="leadPartner" name="partner_id">
+            <option value="">MannyKnows (internal)</option>
+            {partnersList.map((pt) => (<option value={pt.id}>{pt.name}</option>))}
+          </select>
+        </div>
+
+        <!-- Source -->
+        <div class="form-group-modal">
+          <label for="leadSource">Source <span class="required">*</span></label>
+          <select id="leadSource" name="source" required>
+            <option value="">Select how they contacted us...</option>
+            <option value="phone">Phone Call</option>
+            <option value="angies-list">Angie's List</option>
+            <option value="thumbtack">Thumbtack</option>
+            <option value="google">Google</option>
+            <option value="referral">Referral</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Referral Source (shown when source = referral) -->
+        <div class="form-group-modal" id="referralSourceGroup" style="display: none;">
+          <label for="referralSource">Referred By</label>
+          <input type="text" id="referralSource" name="referral_source" placeholder="Who referred them?">
+        </div>
+
+        <!-- Customer Info -->
+        <div class="form-row">
+          <div class="form-group-modal">
+            <label for="customerName">Customer Name <span class="required">*</span></label>
+            <input type="text" id="customerName" name="customer_name" required placeholder="Full name">
+          </div>
+          <div class="form-group-modal">
+            <label for="customerPhone">Phone</label>
+            <input type="tel" id="customerPhone" name="customer_phone" placeholder="(555) 123-4567">
+          </div>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="customerEmail">Email</label>
+          <input type="email" id="customerEmail" name="customer_email" placeholder="email@example.com">
+        </div>
+
+        <!-- Address -->
+        <div class="form-group-modal">
+          <label for="leadAddress">Address <span class="required">*</span></label>
+          <input type="text" id="leadAddress" name="address" placeholder="Street address">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group-modal">
+            <label for="leadCity">City <span class="required">*</span></label>
+            <input type="text" id="leadCity" name="city" placeholder="City">
+          </div>
+          <div class="form-group-modal">
+            <label for="leadZip">ZIP</label>
+            <input type="text" id="leadZip" name="zip" placeholder="01108">
+          </div>
+        </div>
+
+        <!-- Service -->
+        <div class="form-group-modal">
+          <label for="serviceType">Service Type <span class="required">*</span></label>
+          <select id="serviceType" name="service_type" required onchange="toggleCustomService(this, 'serviceTypeCustom')">
+            <option value="">Select service...</option>
+            {SERVICE_TYPES.map((s) => (<option value={s.value}>{s.label}</option>))}
+          </select>
+          <input type="text" id="serviceTypeCustom" name="service_type_custom" class="form-input" placeholder="Enter custom service" style="display:none; margin-top:8px;" />
+        </div>
+
+        <!-- Project Description -->
+        <div class="form-group-modal">
+          <label for="projectDescription">Project Notes</label>
+          <textarea id="projectDescription" name="project_description" placeholder="Brief description of the project..."></textarea>
+        </div>
+
+
+        <div class="new-lead-modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="hideNewLeadModal()">Cancel</button>
+          <button type="submit" class="btn-modal-submit" id="submitNewLead">Create Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MK Footer -->
+  <footer class="admin-footer">
+    by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
+  </footer>
+
+  <script define:vars={{ serviceLabels, adminAddress }}>
+    // Show/hide a custom-service text input when "Other" is picked in a
+    // service dropdown. Shared by the New Lead modal (and mirrored in Quotes
+    // and Projects). The typed value becomes the stored service_type.
+    window.toggleCustomService = function(sel, customId) {
+      const inp = document.getElementById(customId);
+      if (!inp) return;
+      const isOther = sel.value === 'other';
+      inp.style.display = isOther ? 'block' : 'none';
+      if (!isOther) inp.value = '';
+    };
+
+    // Store leads data for detail panel
+    const allCards = document.querySelectorAll('.lead-card');
+    const detailPlaceholder = document.getElementById('detailPlaceholder');
+    const detailContent = document.getElementById('detailContent');
+    let selectedCard = null;
+    let selectedLeadId = null;
+
+    // Click handler for all cards (both columns)
+    allCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Update selection state
+        if (selectedCard) {
+          selectedCard.classList.remove('selected');
+        }
+        card.classList.add('selected');
+        selectedCard = card;
+
+        // Parse lead data
+        const lead = JSON.parse(card.getAttribute('data-lead') || '{}');
+        selectedLeadId = lead.id;
+        // Presence: announce which lead this admin is now viewing/editing.
+        // NOTE: this is an is:inline script (define:vars) — emitted verbatim,
+        // so NO TypeScript syntax (a stray `as any` here breaks the whole
+        // script and stops leads from opening). Plain JS feature check only.
+        if (selectedLeadId && typeof window.setPresenceRecord === 'function') {
+          window.setPresenceRecord('lead', selectedLeadId);
+        }
+
+        // Show detail panel
+        detailPlaceholder.style.display = 'none';
+        detailContent.classList.add('visible');
+
+        // On mobile, show the detail view
+        showMobileDetail();
+
+        // Populate detail fields (show #last4; full code on hover)
+        var _dc = document.getElementById('detailCode');
+        _dc.textContent = lead.confirmation_code ? ('#' + lead.confirmation_code.slice(-4)) : 'N/A';
+        _dc.title = lead.confirmation_code || '';
+
+        const statusBadge = document.getElementById('detailStatus');
+        if (lead.status === 'confirmed') {
+          statusBadge.textContent = 'Confirmed';
+          statusBadge.className = 'status-badge confirmed';
+        } else {
+          statusBadge.textContent = 'Pending';
+          statusBadge.className = 'status-badge pending';
+        }
+
+        document.getElementById('detailName').textContent = lead.customer_name || 'Unknown';
+        const phone = lead.customer_phone || '';
+        const email = lead.customer_email || '';
+        const contactEl = document.getElementById('detailContactInfo');
+        if (contactEl) {
+          contactEl.innerHTML =
+            (phone ? '<a href="tel:' + phone + '" style="color: var(--color-primary); text-decoration: none;">' + phone + '</a>' : 'No phone') +
+            ' · ' +
+            (email ? '<a href="mailto:' + email + '" style="color: var(--color-primary); text-decoration: none;">' + email + '</a>' : 'No email');
+        }
+
+        document.getElementById('detailService').textContent =
+          serviceLabels[lead.service_type] || lead.service_type || 'Not specified';
+        document.getElementById('detailDate').textContent = lead.preferred_date || 'TBD';
+        document.getElementById('detailTime').textContent = lead.preferred_time || 'TBD';
+
+        // Build location
+        const locationParts = [lead.address, lead.city, lead.state].filter(Boolean);
+        const locationText = locationParts.length > 0 ? locationParts.join(', ') : 'Not provided';
+        document.getElementById('detailLocation').textContent = locationText;
+
+        // Generate map directions link
+        const mapLink = document.getElementById('detailMapLink');
+        if (locationParts.length > 0) {
+          const destination = encodeURIComponent(locationText);
+          const origin = encodeURIComponent(adminAddress);
+          mapLink.href = `https://www.google.com/maps/dir/${origin}/${destination}`;
+          mapLink.style.display = 'inline-flex';
+        } else {
+          mapLink.style.display = 'none';
+        }
+
+        // Notes (combine project_description and conversation_summary)
+        const notesRow = document.getElementById('detailNotesRow');
+        const notesEl = document.getElementById('detailNotes');
+        const notesParts = [lead.project_description, lead.conversation_summary].filter(Boolean);
+        if (notesParts.length > 0) {
+          notesRow.style.display = 'flex';
+          notesEl.textContent = notesParts.join('\n\n');
+        } else {
+          notesRow.style.display = 'none';
+        }
+
+        // Financing interest
+        const financingRow = document.getElementById('detailFinancingRow');
+        if (lead.financing_interest) {
+          financingRow.style.display = 'flex';
+        } else {
+          financingRow.style.display = 'none';
+        }
+
+        // Source with test badge
+        const source = lead.source || 'other';
+        const isTest = source.includes('(test)');
+        const cleanSource = source.replace(' (test)', '').replace('(test)', '');
+        const sourceLabel = {
+          'quote-form': 'Quote Form',
+          'footer-form': 'Footer Quote Form',
+          'remi-chat': 'Remi chat',
+          'phone': 'Phone',
+          'referral': 'Referral'
+        }[cleanSource] || cleanSource;
+        document.getElementById('detailSource').textContent = sourceLabel;
+        const testBadge = document.getElementById('detailTestBadge');
+        testBadge.style.display = isTest ? 'inline' : 'none';
+
+        // Photos
+        const photosSection = document.getElementById('detailPhotosSection');
+        const photosEl = document.getElementById('detailPhotos');
+
+        // Convert R2 URLs to images.mannyknows.com (works from both localhost and production)
+        const toPublicUrl = (url) => {
+          // Extract the leads path from any URL format
+          const leadsPathMatch = url.match(/(leads\/[^/]+\/.+)$/);
+          if (leadsPathMatch) {
+            return `https://images.mannyknows.com/${leadsPathMatch[1]}`;
+          }
+
+          // Already a proxy URL - convert to public URL
+          if (url.startsWith('/api/leads/image/')) {
+            const path = url.replace('/api/leads/image/', '');
+            return `https://images.mannyknows.com/leads/${path}`;
+          }
+
+          return url;
+        };
+
+        if (lead.project_images) {
+          try {
+            const images = JSON.parse(lead.project_images);
+            if (images.length > 0) {
+              photosSection.style.display = 'block';
+              photosEl.innerHTML = images.map((url, i) => {
+                const publicUrl = toPublicUrl(url);
+                return `<a href="${publicUrl}" target="_blank" class="photo-link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+                  </svg>
+                  Photo ${i + 1}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                </a>`;
+              }).join('');
+            } else {
+              photosSection.style.display = 'none';
+            }
+          } catch {
+            photosSection.style.display = 'none';
+          }
+        } else {
+          photosSection.style.display = 'none';
+        }
+
+      });
+    });
+
+    // Search functionality - searches both columns
+    const searchInput = document.getElementById('searchInput');
+    const noResults = document.getElementById('noResults');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      allCards.forEach(card => {
+        const searchData = card.getAttribute('data-search') || '';
+        const matches = query === '' || searchData.includes(query);
+        card.classList.toggle('hidden', !matches);
+        if (matches) visibleCount++;
+      });
+
+      noResults.classList.toggle('visible', visibleCount === 0 && query !== '');
+
+      // On mobile: auto-expand sections with matches
+      if (query && window.innerWidth <= 768) {
+        document.querySelectorAll('.section-body').forEach(body => {
+          const hasVisible = body.querySelector('.lead-card:not(.hidden)');
+          if (hasVisible) {
+            body.classList.remove('collapsed-mobile');
+            body.previousElementSibling?.classList.remove('collapsed');
+          }
+        });
+      }
+    });
+
+    // Mobile section toggle (accordion - one at a time)
+    document.querySelectorAll('.section-toggle').forEach(header => {
+      header.addEventListener('click', () => {
+        if (window.innerWidth > 768) return;
+        const sectionName = header.getAttribute('data-section');
+        const body = document.getElementById('section' + sectionName.charAt(0).toUpperCase() + sectionName.slice(1));
+        if (!body) return;
+        const isCollapsed = body.classList.contains('collapsed-mobile');
+        const selectedCard = document.querySelector('.lead-card.selected');
+
+        if (isCollapsed) {
+          document.querySelectorAll('.section-body').forEach(b => b.classList.add('collapsed-mobile'));
+          document.querySelectorAll('.section-toggle').forEach(h => h.classList.add('collapsed'));
+          body.classList.remove('collapsed-mobile');
+          header.classList.remove('collapsed');
+        } else {
+          body.classList.add('collapsed-mobile');
+          header.classList.add('collapsed');
+        }
+
+        // If selected card is now in a collapsed section, clear detail
+        if (selectedCard) {
+          const parentBody = selectedCard.closest('.section-body');
+          if (parentBody && parentBody.classList.contains('collapsed-mobile')) {
+            allCards.forEach(c => c.classList.remove('selected'));
+            if (detailContent) detailContent.classList.remove('visible');
+            if (detailPlaceholder) detailPlaceholder.style.display = 'flex';
+            hideMobileDetail();
+          }
+        }
+      });
+    });
+
+    // Promote modal
+    const promoteModal = document.getElementById('promoteModal');
+    let pendingPromoteId = null;
+    let pendingPromoteLead = null;
+
+    function showPromoteModal(leadId) {
+      // Find the lead data
+      const card = document.querySelector(`[data-lead*='"id":${leadId}']`) ||
+                   document.querySelector(`[data-lead*='"id": ${leadId}']`);
+      if (card) {
+        pendingPromoteLead = JSON.parse(card.getAttribute('data-lead') || '{}');
+      }
+      pendingPromoteId = leadId;
+
+      // Populate modal
+      document.getElementById('promoteLeadCode').textContent = pendingPromoteLead?.confirmation_code || `Lead #${leadId}`;
+      document.getElementById('promoteLeadName').textContent = pendingPromoteLead?.customer_name || 'Unknown';
+
+      promoteModal.classList.add('active');
+    }
+
+    function hidePromoteModal() {
+      promoteModal.classList.remove('active');
+      pendingPromoteId = null;
+      pendingPromoteLead = null;
+    }
+    window.hidePromoteModal = hidePromoteModal;
+
+    // Confirm promote button
+    document.getElementById('confirmPromote').addEventListener('click', async () => {
+      if (!pendingPromoteId) return;
+
+      const leadId = pendingPromoteId;
+      hidePromoteModal();
+
+      try {
+        const res = await fetch('/api/quotes/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ lead_id: parseInt(leadId) }),
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          showToast('Lead promoted to Quote!');
+          // Redirect to quotes page after short delay
+          setTimeout(() => {
+            window.location.href = '/admin/quotes';
+          }, 1000);
+        } else {
+          showToast(result.error || 'Failed to promote lead', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    });
+
+    // Promote to Quote - global function for both card and detail buttons
+    function promoteLead(leadId) {
+      showPromoteModal(leadId);
+    }
+    window.promoteLead = promoteLead;
+
+    // Detail panel promote button
+    document.getElementById('btnPromote').addEventListener('click', () => {
+      if (selectedLeadId) {
+        promoteLead(selectedLeadId);
+      }
+    });
+
+    // Toast notification helper
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastIcon = document.getElementById('toastIcon');
+      const toastMessage = document.getElementById('toastMessage');
+
+      toast.className = `toast ${type}`;
+      toastMessage.textContent = message;
+      toastIcon.innerHTML = type === 'success'
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 3000);
+    }
+
+    // Confirmation modal
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmCancel = document.getElementById('confirmCancel');
+    const confirmDelete = document.getElementById('confirmDelete');
+    let pendingDeleteId = null;
+
+    function showDeleteConfirm(leadId) {
+      pendingDeleteId = leadId;
+      confirmModal.classList.add('active');
+    }
+
+    function hideDeleteConfirm() {
+      confirmModal.classList.remove('active');
+      pendingDeleteId = null;
+    }
+
+    confirmCancel.addEventListener('click', hideDeleteConfirm);
+    document.querySelector('.confirm-modal-backdrop').addEventListener('click', hideDeleteConfirm);
+
+    confirmDelete.addEventListener('click', async () => {
+      if (!pendingDeleteId) return;
+
+      const leadId = pendingDeleteId;
+      hideDeleteConfirm();
+
+      try {
+        const response = await fetch(`/api/leads/capture/?id=${leadId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Remove the card from the list
+          const card = document.querySelector(`[data-lead*='"id":${leadId}']`);
+          if (card) card.remove();
+
+          // Hide detail panel
+          detailPlaceholder.style.display = 'flex';
+          detailContent.classList.remove('visible');
+          selectedCard = null;
+          selectedLeadId = null;
+
+          showToast('Lead deleted successfully');
+
+          // Reload after short delay to show toast
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast('Failed to delete: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+      }
+    });
+
+    // Delete lead function (opens confirmation modal)
+    function deleteLead(leadId) {
+      showDeleteConfirm(leadId);
+    }
+    window.deleteLead = deleteLead;
+
+    // Confirm lead function (moves from unconfirmed to confirmed)
+    async function confirmLead(leadId) {
+      try {
+        const response = await fetch('/api/leads/capture/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            id: parseInt(leadId),
+            status: 'confirmed'
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast('Lead confirmed!');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showToast('Failed to confirm: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+      }
+    }
+    window.confirmLead = confirmLead;
+
+    // Detail panel delete button
+    document.getElementById('btnDelete').addEventListener('click', () => {
+      if (selectedLeadId) {
+        deleteLead(selectedLeadId);
+      }
+    });
+
+    // Theme toggle
+    function initTheme() {
+      const saved = localStorage.getItem('admin-theme');
+      const theme = saved || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('admin-theme', next);
+    }
+    window.toggleTheme = toggleTheme;
+    initTheme();
+
+    // =====================================================
+    // MOBILE NAVIGATION
+    // =====================================================
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNavPanel = document.getElementById('mobileNavPanel');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNavToggle.classList.add('active');
+      mobileNavPanel.classList.add('active');
+      mobileNavOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+      mobileNavToggle.classList.remove('active');
+      mobileNavPanel.classList.remove('active');
+      mobileNavOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    window.closeMobileNav = closeMobileNav;
+
+    mobileNavToggle?.addEventListener('click', () => {
+      if (mobileNavPanel.classList.contains('active')) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
+      }
+    });
+
+    mobileNavClose?.addEventListener('click', closeMobileNav);
+    mobileNavOverlay?.addEventListener('click', closeMobileNav);
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) {
+        closeMobileNav();
+      }
+    });
+
+    // =====================================================
+    // MOBILE DETAIL VIEW (for 3-column layouts)
+    // =====================================================
+    function showMobileDetail() {
+      const main = document.querySelector('.admin-main');
+      main?.classList.add('detail-active');
+    }
+
+    function hideMobileDetail() {
+      const main = document.querySelector('.admin-main');
+      main?.classList.remove('detail-active');
+    }
+    window.hideMobileDetail = hideMobileDetail;
+
+    // Logout
+    async function logout() {
+      await fetch('/api/admin/logout/', { method: 'POST' });
+      window.location.href = '/admin';
+    }
+    window.logout = logout;
+
+    // New Quote - redirect to quotes page with auto-open
+    function showNewQuoteModal() {
+      window.location.href = '/admin/quotes?new=1';
+    }
+    window.showNewQuoteModal = showNewQuoteModal;
+
+    // =====================================================
+    // NEW LEAD MODAL
+    // =====================================================
+    const newLeadModal = document.getElementById('newLeadModal');
+    const newLeadForm = document.getElementById('newLeadForm');
+    const leadSourceSelect = document.getElementById('leadSource');
+    const referralSourceGroup = document.getElementById('referralSourceGroup');
+
+    function showNewLeadModal() {
+      newLeadModal.classList.add('active');
+      // Reset form
+      newLeadForm.reset();
+      referralSourceGroup.style.display = 'none';
+    }
+    window.showNewLeadModal = showNewLeadModal;
+
+    function hideNewLeadModal() {
+      newLeadModal.classList.remove('active');
+    }
+    window.hideNewLeadModal = hideNewLeadModal;
+
+    // Show/hide referral source field based on source selection
+    leadSourceSelect.addEventListener('change', () => {
+      referralSourceGroup.style.display = leadSourceSelect.value === 'referral' ? 'block' : 'none';
+    });
+
+    // Check for ?new=1 parameter to auto-open modal
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('new') === '1') {
+        showNewLeadModal();
+        // Clean up URL
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    })();
+
+    // Handle form submission
+    newLeadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitNewLead');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating...';
+
+      // Gather form data
+      const formData = new FormData(newLeadForm);
+      const data = {
+        customer_name: formData.get('customer_name'),
+        customer_email: formData.get('customer_email') || undefined,
+        customer_phone: formData.get('customer_phone') || undefined,
+        address: formData.get('address'),
+        city: formData.get('city'),
+        zip: formData.get('zip') || undefined,
+        service_type: formData.get('service_type') === 'other'
+          ? ((formData.get('service_type_custom') || '').toString().trim() || 'other')
+          : formData.get('service_type'),
+        project_description: formData.get('project_description') || undefined,
+        source: formData.get('source'),
+        referral_source: formData.get('referral_source') || undefined,
+        partner_id: formData.get('partner_id') || undefined
+      };
+
+      // Validate at least one contact method
+      if (!data.customer_email && !data.customer_phone) {
+        showToast('Please provide at least an email or phone number', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/admin/leads/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          hideNewLeadModal();
+          showToast(`Lead created: ${result.lead.confirmation_code}`);
+          // Reload, then open the newly created lead instead of an empty list.
+          const newId = result.lead && result.lead.id;
+          setTimeout(() => { location.href = location.pathname + (newId ? '?open=' + newId : ''); }, 900);
+        } else {
+          showToast(result.error || 'Failed to create lead', 'error');
+        }
+      } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Desktop bell
+    const bellBtn = document.getElementById('bellBtn');
+    const bellBadge = document.getElementById('bellBadge');
+    const bellDropdown = document.getElementById('bellDropdown');
+    const bellList = document.getElementById('bellList');
+    // Mobile bell
+    const bellBtnMobile = document.getElementById('bellBtnMobile');
+    const bellBadgeMobile = document.querySelector('.bell-badge-mobile');
+    const bellDropdownMobile = document.getElementById('bellDropdownMobile');
+    const bellListMobile = document.getElementById('bellListMobile');
+
+    let bellOpen = false;
+    let activeBellDropdown = null;
+
+    function closeBell() {
+      bellOpen = false;
+      if (bellDropdown) bellDropdown.style.display = 'none';
+      if (bellDropdownMobile) bellDropdownMobile.style.display = 'none';
+      activeBellDropdown = null;
+    }
+
+    [bellBtn, bellBtnMobile].forEach(btn => {
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = btn === bellBtn ? bellDropdown : bellDropdownMobile;
+        if (bellOpen && activeBellDropdown === dropdown) {
+          closeBell();
+        } else {
+          closeBell();
+          bellOpen = true;
+          activeBellDropdown = dropdown;
+          if (dropdown) dropdown.style.display = 'block';
+        }
+      });
+    });
+
+    document.addEventListener('click', () => { if (bellOpen) closeBell(); });
+    bellDropdown?.addEventListener('click', (e) => e.stopPropagation());
+    bellDropdownMobile?.addEventListener('click', (e) => e.stopPropagation());
+
+    function bellEscapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function bellGetTimeAgo(date) {
+      const now = new Date();
+      const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    function renderBellNotifications(data, listEl) {
+      let html = '';
+
+      // New leads
+      (data.leads || []).forEach((l) => {
+        const dateObj = l.created_at ? new Date(l.created_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/leads?open=${l.id}'" style="border-left: 3px solid #22c55e;">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(l.customer_name || 'New Lead')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">${bellEscapeHtml(l.service_type || 'New lead received')}</div>
+          <div class="bell-notification-quote" style="color: #22c55e;">NEW LEAD</div>
+        </div>`;
+      });
+
+      // Quote responses (accepted/declined)
+      (data.quoteResponses || []).forEach((q) => {
+        const dateObj = q.responded_at ? new Date(q.responded_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        const isAccepted = q.status === 'accepted';
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${q.id}'" style="border-left: 3px solid ${isAccepted ? '#ff781d' : '#f59e0b'};">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(q.customer_name || 'Customer')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">Quote ${isAccepted ? 'accepted' : 'declined'}</div>
+          <div class="bell-notification-quote" style="color: ${isAccepted ? '#ff781d' : '#f59e0b'};">#${bellEscapeHtml(q.quote_number || '')}</div>
+        </div>`;
+      });
+
+      // Customer replies
+      (data.replies || []).forEach((r) => {
+        const dateObj = r.created_at ? new Date(r.created_at + 'Z') : null;
+        const timeAgo = dateObj ? bellGetTimeAgo(dateObj) : '';
+        const preview = (r.body || '').substring(0, 80) + ((r.body || '').length > 80 ? '...' : '');
+        html += `<div class="bell-notification" onclick="window.location.href='/admin/quotes?open=${r.quote_id}'">
+          <div class="bell-notification-top">
+            <span class="bell-notification-name">${bellEscapeHtml(r.customer_name || r.sender_name || 'Customer')}</span>
+            <span class="bell-notification-time">${timeAgo}</span>
+          </div>
+          <div class="bell-notification-body">${bellEscapeHtml(preview)}</div>
+          <div class="bell-notification-quote">#${bellEscapeHtml(r.quote_number || '')}</div>
+        </div>`;
+      });
+
+      listEl.innerHTML = html || '<div style="padding: 16px; text-align: center; color: var(--color-text-secondary); font-size: 13px;">No new notifications</div>';
+    }
+
+    var bellErrorCount = 0;
+    async function loadBellNotifications() {
+      if (bellErrorCount >= 3) { window.location.href = '/admin/'; return; }
+      try {
+        const res = await fetch('/api/admin/unread-replies/', { credentials: 'same-origin' });
+        if (res.status === 401 || res.status === 403) { window.location.href = '/admin/'; return; }
+        if (!res.ok) { bellErrorCount++; return; }
+        const data = await res.json();
+        if (!data.success) return;
+        bellErrorCount = 0;
+        const total = data.total || 0;
+        [bellBadge, bellBadgeMobile].forEach(badge => {
+          if (badge) {
+            badge.textContent = String(total);
+            badge.style.display = total > 0 ? 'flex' : 'none';
+          }
+        });
+        [bellBtn, bellBtnMobile].forEach(btn => {
+          if (total > 0) btn?.classList.add('has-notifications');
+          else btn?.classList.remove('has-notifications');
+        });
+        if (bellList) renderBellNotifications(data, bellList);
+        if (bellListMobile) renderBellNotifications(data, bellListMobile);
+      } catch (err) { bellErrorCount++; }
+    }
+    async function markAllRead() {
+      try {
+        await fetch('/api/admin/unread-replies/', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mark_all: true })
+        });
+        loadBellNotifications();
+        closeBell();
+      } catch (err) {
+        console.error('Failed to mark all as read:', err);
+      }
+    }
+    window.markAllRead = markAllRead;
+
+    loadBellNotifications();
+    setInterval(loadBellNotifications, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { bellErrorCount = 0; loadBellNotifications(); } });
+
+    // ─── Collapsible list sidebar (desktop + tablet) ─────────────────────
+    (function () {
+      var toggle = document.getElementById('listToggleBtn');
+      var main = document.querySelector('.admin-main');
+      if (!toggle || !main) return;
+      function setCollapsed(c) { main.classList.toggle('list-collapsed', c); toggle.textContent = c ? '›' : '‹'; }
+      toggle.addEventListener('click', function () { setCollapsed(!main.classList.contains('list-collapsed')); });
+      // Auto-collapse the list when a lead is selected (any screen size).
+      document.addEventListener('click', function (e) {
+        var card = e.target && e.target.closest ? e.target.closest('.lead-card') : null;
+        if (card) setCollapsed(true);
+      });
+    })();
+
+    // Auto-open a specific lead if ?open=LEAD_ID is in the URL (bell deep link)
+    (function() {
+      var openId = new URLSearchParams(window.location.search).get('open');
+      if (!openId) return;
+      window.history.replaceState({}, '', window.location.pathname);
+      var tries = 0;
+      (function tryOpen() {
+        var card = document.querySelector("[data-lead*='\"id\":" + openId + "']")
+                || document.querySelector("[data-lead*='\"id\": " + openId + "']");
+        if (card) {
+          card.click();
+          // No scrollIntoView — it scrolls the page on tablet and pulls the
+          // footer up over the content after each save.
+        } else if (tries++ < 15) {
+          setTimeout(tryOpen, 150);
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

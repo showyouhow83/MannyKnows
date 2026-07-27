@@ -1,0 +1,2212 @@
+/* MannyKnows Admin - Glassmorphic Design System */
+
+/* ============================================================================
+   STYLE GUIDE — Use these classes everywhere. Do NOT inline-style fields or
+   buttons. New admin code must reference these tokens so the visual language
+   stays consistent across pages.
+
+   Form fields (text, email, tel, number, date, time, datetime-local):
+     <input class="form-input" type="..." />
+     <input class="form-input" type="date" />     ← color-scheme: dark wired in
+     <select class="form-select"> ... </select>
+     <textarea class="form-textarea"> ... </textarea>
+
+   Wrap each in:
+     <div class="form-group">
+       <label for="x">Label *</label>
+       <input id="x" class="form-input" />
+     </div>
+
+   Buttons (use the base .btn + a variant):
+     <button class="btn btn-primary">    Filled gradient (primary action)
+     <button class="btn btn-secondary">  Outlined glass (secondary)
+     <button class="btn btn-success">    Green (confirmations)
+     <button class="btn btn-danger">     Red (destructive)
+     <button class="btn btn-warning">    Amber (caution)
+     <button class="btn btn-purple">     Purple (special accents)
+
+   Sizing modifiers:
+     <button class="btn btn-primary btn-sm">  small
+     <button class="btn btn-primary btn-lg">  large
+     <button class="btn btn-icon">            icon-only square button
+
+   Other shared building blocks:
+     .glass-card / --glass-bg / --glass-border  — translucent card surface
+     .form-group                                 — label + input wrapper
+     .crew-card, .quick-stat, .analytics-stat   — card variants
+
+   If you need something new, ADD a new class here rather than inline-styling.
+   That keeps the "one place to change all admin fields" promise intact.
+   ============================================================================ */
+
+/* ============================================
+   Custom Scrollbars
+   ============================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+* { scrollbar-width: thin; scrollbar-color: var(--glass-border) transparent; }
+
+:root {
+  /* Typography */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+  /* Spacing */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  /* Brand Colors (constant) */
+  --color-primary: #ff781d;
+  --color-primary-dark: #c75800;
+  --color-primary-light: #ff9a4d;
+  --color-secondary: #f263be; /* Pink secondary accent (gradient-text highlights) */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+
+/* ============================================
+   Dark Theme (Default)
+   ============================================ */
+:root,
+[data-theme="dark"] {
+  --color-surface: #ffffff;
+  --color-background: #0f172a;
+  --color-background-light: #1e293b;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-border: rgba(255, 255, 255, 0.1);
+
+  /* Glassmorphism - Dark */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-bg-active: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* Background gradients */
+  --bg-gradient-1: rgba(255, 120, 29, 0.15);
+  --bg-gradient-2: rgba(242, 99, 190, 0.1); /* Pink accent */
+
+  /* Card backgrounds */
+  --card-bg: rgba(0, 0, 0, 0.2);
+  --input-bg: rgba(0, 0, 0, 0.2);
+  --input-bg-focus: rgba(0, 0, 0, 0.3);
+
+  /* Modal */
+  --modal-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+  --modal-backdrop: rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================
+   Light Theme
+   ============================================ */
+[data-theme="light"] {
+  --color-surface: #ffffff;
+  --color-background: #f1f5f9;
+  --color-background-light: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-border: rgba(0, 0, 0, 0.1);
+
+  /* Glassmorphism - Light */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-bg-active: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  /* Background gradients */
+  --bg-gradient-1: rgba(255, 120, 29, 0.08);
+  --bg-gradient-2: rgba(99, 102, 241, 0.06);
+
+  /* Card backgrounds */
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-bg-focus: rgba(255, 255, 255, 0.95);
+
+  /* Modal */
+  --modal-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.98));
+  --modal-backdrop: rgba(0, 0, 0, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background: var(--color-background);
+  min-height: 100vh;
+  color: var(--color-text-primary);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, var(--bg-gradient-1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, var(--bg-gradient-2) 0%, transparent 50%);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   Header
+   ============================================ */
+.admin-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-logo-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-gradient-wrapper {
+  width: 140px;
+  height: 40px;
+  /* Brand accent gradient: orange → light orange → amber */
+  background: linear-gradient(135deg, #ff781d 0%, #ff9a4d 50%, #fbbf24 100%);
+  background-size: 300% 300%;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 240'%3E%3Cpath d='M0 0H85V226L211 0H290L160 240H0Z'/%3E%3Cpath d='M290 0L370 0L456.67 160L619 160L619 240L420 240Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 240'%3E%3Cpath d='M0 0H85V226L211 0H290L160 240H0Z'/%3E%3Cpath d='M290 0L370 0L456.67 160L619 160L619 240L420 240Z'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+  transition: transform 0.3s ease;
+}
+
+.admin-logo-link:hover .logo-gradient-wrapper {
+  transform: none;
+}
+
+@keyframes logoGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.admin-badge {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap; /* keep "Media Pool" on one line — never wrap a link */
+}
+
+.nav-link:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+}
+
+/* Special-emphasis nav link (Web). Always shows the brand 3-color gradient
+   — same family as .promo-banner__btn--finance — so it visually stands out
+   from the standard pipeline links. Match in mobile drawer below. */
+/* "Web" nav item — styled like every other nav link (no gradient). The
+   .nav-link-special class is kept on the element but no longer restyles it;
+   base .nav-link + .nav-link.active rules apply. */
+
+/* Nav Dropdown */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  padding: 8px 0;
+  background: var(--color-background-light);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  z-index: 200;
+}
+
+.nav-item:hover .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.nav-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.nav-dropdown-link:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.nav-dropdown-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.nav-dropdown-link:hover svg {
+  opacity: 1;
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 8px 0;
+}
+
+.nav-dropdown-link.action {
+  color: var(--color-primary);
+}
+
+.nav-dropdown-link.action:hover {
+  background: rgba(255, 120, 29, 0.1);
+  color: var(--color-primary);
+}
+
+.btn-logout {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Notification Bell */
+.btn-bell {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-bell:hover {
+  color: var(--color-text-primary, #fff);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.1));
+}
+
+.bell-badge {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+/* Inline pill on nav links (e.g. Media Pool unread count). */
+.nav-link .nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), #f59e0b);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 5px;
+  margin-left: 6px;
+  line-height: 1;
+}
+
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(12deg); }
+  30% { transform: rotate(-10deg); }
+  45% { transform: rotate(8deg); }
+  60% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+}
+
+.btn-bell.has-notifications {
+  animation: bellShake 0.6s ease;
+}
+
+.notification-bell-wrapper {
+  position: relative;
+}
+
+/* Mobile: bell + hamburger group */
+.mobile-header-right {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.bell-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 320px;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.bell-dropdown-header {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+  border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bell-mark-all-read {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #60a5fa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.bell-mark-all-read:hover {
+  background: rgba(96, 165, 250, 0.15);
+  color: #93bbfc;
+}
+
+.bell-dropdown-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.bell-dropdown-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.35));
+  font-size: 13px;
+}
+
+.bell-notification {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bell-notification:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.bell-notification-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bell-notification-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #60a5fa;
+}
+
+.bell-notification-time {
+  font-size: 10px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.35));
+}
+
+.bell-notification-body {
+  font-size: 12px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.65));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bell-notification-quote {
+  font-size: 10px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.35));
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--color-text-secondary);
+}
+
+.theme-toggle:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+/* Sun icon (shown in dark mode) */
+.theme-toggle .icon-sun {
+  display: block;
+}
+
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+/* Moon icon (shown in light mode) */
+[data-theme="light"] .theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* ============================================
+   Main Content
+   ============================================ */
+.admin-main {
+  padding: 32px 24px;
+  padding-bottom: 80px;
+  /* No max-width cap — admin uses the full viewport width on desktop so list +
+     detail layouts get as much room as possible. Inner content blocks keep
+     their own max-widths for readability. */
+  margin: 0 auto;
+}
+
+.admin-main-full {
+  padding-bottom: 80px;
+}
+
+/* ============================================
+   3-Column Layout (Leads, Quotes, Projects)
+   ============================================ */
+.admin-main-3col {
+  display: flex;
+  height: calc(100vh - 65px - 60px);
+  padding: 16px;
+  gap: 16px;
+}
+
+/* Side columns (left list, right status) */
+.column-left,
+.column-right {
+  width: 300px;
+  min-width: 280px;
+  max-width: 320px;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
+}
+
+/* Middle column (detail/content) */
+.column-center {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
+}
+
+/* Section headers in columns */
+.column-section {
+  margin-bottom: 16px;
+}
+
+.column-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.column-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.column-section-count {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--glass-bg);
+}
+
+/* Card styles for list items */
+.list-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.list-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--color-primary);
+}
+
+.list-card.selected {
+  background: rgba(255, 120, 29, 0.15);
+  border-color: var(--color-primary);
+}
+
+/* Gallery/Grid layout (Portfolios) */
+.admin-main-gallery {
+  padding: 24px;
+  padding-bottom: 80px;
+  overflow-y: auto;
+  height: calc(100vh - 65px - 60px);
+}
+
+/* Single column centered layout (Crew) */
+.admin-main-centered {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  padding-bottom: 80px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+}
+
+/* ============================================
+   Glass Cards
+   ============================================ */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+}
+
+.glass-card-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.glass-card-body {
+  padding: 24px 28px;
+}
+
+/* ============================================
+   Buttons - Gradient Style
+   ============================================ */
+/* ── Unified admin button system ──────────────────────────────────────────
+   One consistent look across the whole admin, matching the contract-editor
+   toolbar: slim glass pills with a thin border. The base .btn IS the neutral
+   (glass) button; variants only re-tint. Destructive = outline, not filled. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: var(--radius-md, 10px);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, filter 0.18s ease;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:hover { background: var(--glass-bg-hover); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary, #ff781d), #f59e0b);
+  color: #fff;
+  border-color: var(--color-primary, #ff781d);
+}
+.btn-primary:hover { filter: brightness(1.07); background: linear-gradient(135deg, var(--color-primary, #ff781d), #f59e0b); }
+
+.btn-secondary {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+}
+.btn-secondary:hover { background: var(--glass-bg-hover); }
+
+/* Shared "New X" creation button — uniform across the Leads / Quotes /
+   Projects list columns (sits at the top of the list, above the search bar). */
+.new-record-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; margin-bottom: 12px; padding: 11px 14px;
+  border: none; border-radius: var(--radius-lg); cursor: pointer;
+  font-size: 14px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, var(--color-primary, #ff781d) 0%, #f59e0b 100%);
+  box-shadow: 0 2px 8px rgba(255,120,29,0.25);
+}
+.new-record-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(255,120,29,0.35); }
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  border-color: #16a34a;
+}
+.btn-success:hover { filter: brightness(1.07); background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+/* Destructive = red outline (matches the editor's "Void"), not a heavy fill. */
+.btn-danger {
+  background: var(--glass-bg);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.btn-danger:hover { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.6); }
+
+.btn-purple {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  border-color: #7c3aed;
+}
+.btn-purple:hover { filter: brightness(1.07); background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+/* Compact variant — used in dense action rows. */
+.btn-compact {
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-secondary);
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: var(--glass-bg);
+  color: var(--color-text-primary);
+}
+
+/* Overflow (⋯) menu — keeps rare + destructive actions out of one-tap reach. */
+.cmenu-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.cmenu-kebab {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cmenu-kebab:hover {
+  background: var(--glass-bg-hover);
+}
+
+.cmenu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  min-width: 190px;
+  background: var(--color-background, #0f172a);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  padding: 6px;
+  z-index: 30;
+  display: none;
+}
+
+.cmenu.open {
+  display: block;
+}
+
+.cmenu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.cmenu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cmenu button.danger {
+  color: #fca5a5;
+}
+
+.cmenu button.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border-color: #d97706;
+}
+
+.btn-warning:hover { filter: brightness(1.07); background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 15px;
+}
+
+.btn-icon {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.sync-btn:hover {
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+  filter: brightness(1.05);
+}
+
+.sync-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.sync-btn:hover svg {
+  transform: rotate(180deg);
+}
+
+.sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sync-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Spinning animation for sync in progress */
+.sync-btn.syncing svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Class is doubled (.form-input.form-input) to raise specificity to (0,0,2,0)
+   so it wins over per-page descendant selectors like `.form-group input`
+   (specificity 0,0,1,1). Without this trick, every page that wrote
+   `.form-group input { background: ... }` overrides the canonical style and
+   the page-to-page drift returns. */
+.form-input.form-input,
+.form-select.form-select,
+.form-textarea.form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  /* Tells browser native widgets (date/time pickers, dropdowns, scrollbars)
+     to use the dark/light variant matching the current admin theme. Without
+     this, Chrome forces the date input's internal background to system white
+     even when our CSS sets a dark background — that's the white-on-white bug.
+     Light theme overrides this further down. */
+  color-scheme: dark;
+}
+
+[data-theme="light"] .form-input.form-input,
+[data-theme="light"] .form-select.form-select,
+[data-theme="light"] .form-textarea.form-textarea {
+  color-scheme: light;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.form-input.form-input:focus,
+.form-select.form-select:focus,
+.form-textarea.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.form-textarea.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Select-specific extras: layered on top of .form-select base above so the
+   bg/padding/border/radius all match .form-input exactly. We only add the
+   appearance reset + the custom dropdown chevron here. Doubled class for the
+   same specificity reason described above. */
+.form-select.form-select,
+.form-input.form-input[type="select"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+select option,
+.form-select option {
+  background: var(--color-background-light, #1e1e2e);
+  color: var(--color-text-primary, #fff);
+  padding: 8px;
+}
+
+select:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+}
+
+[data-theme="light"] select,
+[data-theme="light"] .form-select {
+  background-color: #fff;
+  color: #1e293b;
+}
+
+[data-theme="light"] select option,
+[data-theme="light"] .form-select option {
+  background: #fff;
+  color: #1e293b;
+}
+
+/* Search Bar */
+.search-bar {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.search-bar:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.2);
+}
+
+.search-bar svg {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Tables
+   ============================================ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.data-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background: var(--glass-bg);
+}
+
+/* ============================================
+   Status Badges
+   ============================================ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.status-badge.pending::before { background: #f59e0b; }
+
+.status-badge.confirmed,
+.status-badge.active,
+.status-badge.accepted,
+.status-badge.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+.status-badge.confirmed::before,
+.status-badge.active::before,
+.status-badge.accepted::before,
+.status-badge.completed::before { background: #22c55e; }
+
+.status-badge.promoted,
+.status-badge.sent,
+.status-badge.in-progress {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+.status-badge.promoted::before,
+.status-badge.sent::before,
+.status-badge.in-progress::before { background: #3b82f6; }
+
+.status-badge.draft,
+.status-badge.needs-crew {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+}
+.status-badge.draft::before,
+.status-badge.needs-crew::before { background: #64748b; }
+
+.status-badge.won,
+.status-badge.portfolio,
+.status-badge.project {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+.status-badge.won::before,
+.status-badge.portfolio::before,
+.status-badge.project::before { background: #8b5cf6; }
+
+.status-badge.failed,
+.status-badge.declined {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+.status-badge.failed::before,
+.status-badge.declined::before { background: #ef4444; }
+
+/* ============================================
+   Modals
+   ============================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--color-background-light);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.modal-body {
+  padding: 24px 28px;
+}
+
+.modal-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Confirm Modal */
+.confirm-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-modal-icon.warning {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.confirm-modal-icon.success {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.confirm-modal-icon.primary {
+  background: rgba(255, 120, 29, 0.1);
+}
+
+/* ============================================
+   Toast
+   ============================================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--color-background-light);
+  color: white;
+  padding: 16px 28px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 10001;
+  border: 1px solid var(--glass-border);
+}
+
+.toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.success {
+  border-left: 4px solid var(--color-success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--color-error);
+}
+
+.toast.info {
+  border-left: 4px solid var(--color-primary);
+}
+
+.toast.warning {
+  border-left: 4px solid var(--color-warning);
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.admin-footer {
+  /* Static (not fixed): a fixed footer floats ~20% off the bottom on iPad
+     Chrome because a glassmorphic ancestor's backdrop-filter/transform becomes
+     its containing block + the dynamic viewport offsets it. It's just a credit
+     line, so let it sit at the end of the page flow. */
+  margin-top: 24px;
+  background: var(--glass-bg);
+  border-top: 1px solid var(--glass-border);
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Animated rainbow gradient - Pink to Orange */
+.footer-link {
+  background: linear-gradient(
+    90deg,
+    #ff1493,  /* Hot Pink */
+    #ff69b4,  /* Bright Pink */
+    #ff6347,  /* Tomato Red */
+    #ff4500,  /* Orange Red */
+    #ffa500,  /* Orange */
+    #ffd700   /* Gold */
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+  animation-duration: 1s;
+}
+
+@keyframes footerGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Rocket emoji animation - subtle floating movement */
+.footer-link .rocket-emoji {
+  display: inline-block !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentcolor !important;
+  color: inherit !important;
+  opacity: 1 !important;
+  animation: rocketFloat 3s ease-in-out infinite;
+  text-decoration: none !important;
+  font-size: 1.3em !important;
+  transition: transform 0.3s ease !important;
+}
+
+/* Match the public site Footer: rocket stays upright, just an amplified
+   idle wobble. No rotate on hover. */
+@keyframes rocketFloat {
+  0%, 100% { transform: translateY(0)    translateX(0); }
+  25%      { transform: translateY(-3px)  translateX(1.5px); }
+  50%      { transform: translateY(-1.5px) translateX(-1.5px); }
+  75%      { transform: translateY(-4px)  translateX(1px); }
+}
+
+/* ============================================
+   Empty States
+   ============================================ */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+}
+
+.empty-state svg {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state-text {
+  font-size: 14px;
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+
+.bg-glass { background: var(--glass-bg); }
+.border-glass { border: 1px solid var(--glass-border); }
+
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+
+.font-mono { font-family: var(--font-family-mono); }
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================
+   Responsive - Mobile-First Approach
+   ============================================ */
+
+/* Mobile Nav Toggle Button (Hamburger) */
+.mobile-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 5px;
+}
+
+.mobile-nav-toggle:hover {
+  background: var(--glass-bg-hover);
+}
+
+.mobile-nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-nav-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-nav-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile Navigation Overlay */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-nav-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Mobile Navigation Panel */
+.mobile-nav-panel {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80vw;
+  max-width: 480px;
+  background: var(--color-background);
+  border-left: 1px solid var(--glass-border);
+  z-index: 999;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.mobile-nav-panel.active {
+  transform: translateX(0);
+}
+
+.mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.mobile-nav-close {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mobile-nav-close:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.mobile-nav-links {
+  padding: 16px 12px;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.mobile-nav-link.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+}
+
+/* "Web" mobile nav item — styled like every other drawer link (no gradient),
+   matching the desktop .nav-link-special neutralization. The class is kept on
+   the element but no longer restyles it; base .mobile-nav-link + .active apply. */
+
+.mobile-nav-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.mobile-nav-link:hover svg,
+.mobile-nav-link.active svg {
+  opacity: 1;
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 12px 0;
+}
+
+.mobile-nav-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  padding: 8px 16px;
+  margin-top: 8px;
+}
+
+/* Mobile Nav - Button Links (for theme toggle, logout) */
+button.mobile-nav-link {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.mobile-nav-link.logout {
+  color: var(--color-error);
+}
+
+.mobile-nav-link.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.mobile-nav-link .theme-label {
+  flex: 1;
+}
+
+/* Theme toggle icons in mobile nav */
+.mobile-nav-link .icon-sun,
+.mobile-nav-link .icon-moon {
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .mobile-nav-link .icon-sun {
+  display: block;
+}
+
+[data-theme="dark"] .mobile-nav-link .icon-moon {
+  display: none !important;
+}
+
+[data-theme="light"] .mobile-nav-link .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .mobile-nav-link .icon-moon {
+  display: block !important;
+}
+
+/* Mobile Nav Sub-actions (New Lead, New Quote, etc.) */
+.mobile-nav-sub-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 44px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.mobile-nav-sub-action:hover {
+  background: var(--glass-bg-hover);
+  color: var(--color-primary-light);
+}
+
+/* Mobile Back Button for Detail Views */
+.mobile-back-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.mobile-back-btn:hover {
+  background: var(--glass-bg-hover);
+}
+
+.mobile-back-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================
+   Tablet Breakpoint (768px - 1279px)
+   ============================================ */
+@media (max-width: 1279px) {
+  /* Hide right column on tablet, show content inline */
+  .column-right {
+    display: none;
+  }
+
+  /* Give center column more space */
+  .column-left {
+    width: 280px;
+    min-width: 250px;
+    max-width: 300px;
+  }
+}
+
+/* Mid-desktop band (1025–1500px): 11 nav items cram together at full desktop
+   sizing and "Media Pool" would wrap / push items off. Scale padding/font/gap
+   down so they fit on one tidy row until there's enough room for full sizing. */
+@media (min-width: 1025px) and (max-width: 1500px) {
+  .admin-nav { gap: 2px; }
+  .nav-link { padding: 8px 10px; font-size: 12.5px; }
+}
+@media (min-width: 1025px) and (max-width: 1180px) {
+  .nav-link { padding: 7px 8px; font-size: 12px; }
+}
+
+@media (max-width: 1024px) {
+  /* Hide desktop nav + desktop header actions, show the hamburger group.
+     (This switch used to start at 768px, but the desktop nav hides at 1024px —
+     so 769–1024px had NO visible nav at all. Keep them in lockstep here.) */
+  .admin-nav {
+    display: none;
+  }
+
+  .header-actions {
+    display: none;
+  }
+
+  .mobile-header-right {
+    display: flex;
+  }
+
+  .mobile-nav-toggle {
+    display: flex;
+  }
+
+  .mobile-nav-panel {
+    display: block;
+  }
+
+  /* Make sidebar wider on tablet when nav is hidden */
+  .column-left {
+    width: 320px;
+    min-width: 300px;
+    max-width: 360px;
+  }
+}
+
+/* ============================================
+   Mobile Breakpoint (<768px)
+   ============================================ */
+@media (max-width: 768px) {
+  /* Header - all controls in one row */
+  .admin-header {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .admin-badge {
+    display: none;
+  }
+
+  /* Logo larger on mobile */
+  .logo-gradient-wrapper {
+    width: 160px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  /* Smaller page headers on mobile - LEFT aligned */
+  .page-header {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .page-title {
+    font-size: 20px;
+    text-align: left;
+  }
+
+  .page-subtitle {
+    font-size: 12px;
+    text-align: left;
+  }
+
+  /* Hamburger stays visible with other controls */
+  .mobile-nav-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  /* Hide header actions on mobile - moved to hamburger menu */
+  .header-actions {
+    display: none;
+  }
+
+  /* Show mobile bell + hamburger group */
+  .mobile-header-right {
+    display: flex;
+  }
+
+  /* Header layout: logo left, hamburger right */
+  .admin-header {
+    justify-content: space-between;
+  }
+
+  .admin-logo-link {
+    flex: 1;
+  }
+
+  /* Main content */
+  .admin-main {
+    padding: 16px;
+  }
+
+  .admin-main-full {
+    padding-bottom: 70px;
+  }
+
+  /* 3-Column Layout becomes 1 column */
+  .admin-main-3col {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 65px - 60px);
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .column-left,
+  .column-right {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    max-height: 50vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .column-center {
+    padding: 16px;
+    min-height: 400px;
+  }
+
+  /* When detail is active on mobile, hide list and show back button */
+  .admin-main-3col.detail-active .column-left {
+    display: none;
+  }
+
+  .admin-main-3col.detail-active .column-center {
+    display: block;
+  }
+
+  .admin-main-3col.detail-active .mobile-back-btn {
+    display: flex;
+  }
+
+  /* When no detail selected, hide center on mobile */
+  .admin-main-3col:not(.detail-active) .column-center {
+    display: none;
+  }
+
+  /* Gallery layout */
+  .admin-main-gallery {
+    padding: 12px;
+    height: auto;
+    min-height: calc(100vh - 65px - 60px);
+  }
+
+  /* Centered layout */
+  .admin-main-centered {
+    padding: 16px;
+  }
+
+  /* Page headers stack on mobile */
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* Buttons in header center on mobile */
+  .page-header .btn,
+  .page-header .btn-group {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Glass cards */
+  .glass-card-header,
+  .glass-card-body {
+    padding: 16px 20px;
+  }
+
+  /* Forms - single column on mobile */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  /* Search bar full width */
+  .search-bar {
+    width: 100%;
+    padding: 12px 14px;
+  }
+
+  /* Modals */
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    margin: 0;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    padding: 16px 20px;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Buttons - improve touch targets */
+  .btn {
+    padding: 14px 20px;
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    padding: 10px 14px;
+    min-height: 40px;
+  }
+
+  /* List cards */
+  .list-card {
+    padding: 14px 16px;
+  }
+
+  /* Status badges may wrap */
+  .status-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  /* Tables - horizontal scroll */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  .data-table {
+    min-width: 500px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  /* Footer */
+  .admin-footer {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  /* Toast */
+  .toast {
+    left: 16px;
+    right: 16px;
+    transform: translateX(0) translateY(100px);
+    max-width: calc(100vw - 32px);
+  }
+
+  .toast.visible {
+    transform: translateX(0) translateY(0);
+  }
+
+  /* Empty states */
+  .empty-state {
+    padding: 32px 16px;
+  }
+
+  .empty-state-title {
+    font-size: 16px;
+  }
+
+  /* Section headers */
+  .column-section-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* ============================================
+   Small Mobile (<480px)
+   ============================================ */
+@media (max-width: 480px) {
+  /* Extra compact header */
+  .admin-header {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  /* Keep logo at 160px on small mobile too */
+  .logo-gradient-wrapper {
+    width: 160px;
+    height: 44px;
+  }
+
+  /* Smaller controls */
+  .mobile-nav-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .btn-logout {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Tighter main padding + prevent overflow */
+  .admin-main,
+  .admin-main-3col {
+    padding: 10px;
+    overflow-x: hidden;
+  }
+
+  /* Page titles */
+  .page-title {
+    font-size: 20px;
+  }
+
+  /* Cards - prevent overflow */
+  .glass-card-header,
+  .glass-card-body {
+    padding: 14px 16px;
+  }
+
+  .list-card {
+    padding: 12px 14px;
+  }
+
+  /* Column sections - keep full width on small screens */
+  .column-left,
+  .column-right {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px;
+  }
+
+  .column-center {
+    padding: 14px;
+  }
+
+  /* Modals full screen on very small devices */
+  .modal {
+    max-height: 90vh;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   iOS auto-zoom fix. Mobile Safari zooms the page when you focus an input
+   whose font-size is < 16px. Many admin inputs are 14px, so tapping a field
+   zoomed the whole admin in. Forcing >=16px on touch widths stops the zoom
+   without disabling pinch-zoom (better for accessibility than maximum-scale).
+   ────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Date/time inputs keep a native intrinsic min-width on iOS/Safari and refuse
+   to shrink to their container — overflowing on tablet/mobile. Strip the
+   native appearance + min-width so they honor width:100% like other inputs. */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}

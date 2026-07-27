@@ -1,0 +1,399 @@
+---
+// /admin/projects/[id]/collect/[rowId] — record a payment receipt for ONE
+// schedule row: amount received, method, check #, date, and BOTH signatures
+// (client + contractor). Mirrors the in-person contract signing flow but
+// scoped to a single payment. Opened from the Contract tab's payment table.
+import { AdminAuth } from '../../../../../lib/adminAuth';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const projectId = Number(Astro.params.id);
+const rowId = String(Astro.params.rowId || '');
+if (!projectId || Number.isNaN(projectId) || !rowId) {
+  return Astro.redirect('/admin/projects');
+}
+
+const db = env?.MK_APP_DB;
+let project: any = null;
+let contract: any = null;
+let row: any = null;
+let existingReceipt: any = null;
+let contractorDefaultName = '';
+let reuseCtrSig = '';
+let reuseCtrName = '';
+let reuseCustSig = '';
+let reuseCustName = '';
+let error = '';
+
+if (db) {
+  project = await db.prepare(
+    'SELECT id, project_number, customer_name FROM projects WHERE id = ?'
+  ).bind(projectId).first();
+  if (!project) return Astro.redirect('/admin/projects');
+
+  contract = await db.prepare(
+    'SELECT id, payment_schedule, status FROM project_contracts WHERE project_id = ?'
+  ).bind(projectId).first();
+
+  if (!contract) {
+    error = 'No contract on this project yet.';
+  } else {
+    let sched: any[] = [];
+    try { sched = JSON.parse(contract.payment_schedule || '[]'); } catch {}
+    row = sched.find((r: any) => r.id === rowId) || null;
+    if (!row) error = 'That payment row no longer exists. Reload the contract and try again.';
+
+    existingReceipt = await db.prepare(
+      `SELECT row_id, amount, payment_method, check_number, customer_name,
+              customer_signature_data_url, contractor_name, contractor_signature_data_url, collected_at
+       FROM payment_receipts WHERE project_contract_id = ? AND row_id = ?`
+    ).bind(contract.id, rowId).first();
+  }
+
+  const sc = await db.prepare('SELECT signer_name, signature_data_url FROM contractor_signature WHERE id = 1').first() as { signer_name: string; signature_data_url: string } | null;
+  contractorDefaultName = sc?.signer_name || '';
+  reuseCtrSig = sc?.signature_data_url || '';
+  reuseCtrName = sc?.signer_name || '';
+
+  // The customer's signature on this project's contract — offered as a one-tap
+  // "reuse" so the same people don't have to re-draw for an in-person receipt.
+  if (contract) {
+    const cs = await db.prepare(
+      "SELECT signature_data_url, signer_name FROM contract_signatures WHERE project_contract_id = ? AND signer_role = 'customer' ORDER BY signed_at DESC LIMIT 1"
+    ).bind(contract.id).first() as { signature_data_url: string; signer_name: string } | null;
+    reuseCustSig = cs?.signature_data_url || '';
+    reuseCustName = cs?.signer_name || project?.customer_name || '';
+  }
+}
+
+function fmtMoney(n: number): string {
+  return (Number(n) || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+function todayISO(): string {
+  // Build at request time on the server.
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${m}-${dd}`;
+}
+
+const pageTitle = project ? `Collect — ${project.project_number}` : 'Collect payment';
+const prefill = {
+  amount: existingReceipt ? Number(existingReceipt.amount) : (row ? Number(row.amount) || 0 : 0),
+  date: existingReceipt?.collected_at ? String(existingReceipt.collected_at).split(/[\sT]/)[0] : todayISO(),
+  method: existingReceipt?.payment_method || 'check',
+  check: existingReceipt?.check_number || '',
+  custName: existingReceipt?.customer_name || project?.customer_name || '',
+  ctrName: existingReceipt?.contractor_name || contractorDefaultName || '',
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>{pageTitle} — MannyKnows Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #0f172a; }
+    .page { max-width: 900px; margin: 0 auto; padding: 16px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+    .topbar-title { font-size: 18px; font-weight: 700; }
+    .topbar-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+    .btn { padding: 10px 18px; border-radius: 8px; border: 1px solid transparent; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-cancel { background: #fff; border-color: #cbd5e1; color: #475569; }
+    .btn-primary { background: linear-gradient(135deg, #ff781d 0%, #e05f00 100%); color: #fff; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-undo { background: #fff; border-color: #fecaca; color: #b91c1c; }
+    .err { padding: 16px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; color: #b91c1c; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+    .recap-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+    .recap-row .label { color: #475569; }
+    .recap-row .value { font-weight: 700; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .fields { grid-template-columns: 1fr; } }
+    .field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; margin-bottom: 4px; }
+    .field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; color: #0f172a; }
+    .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 700px) { .sig-grid { grid-template-columns: 1fr; } }
+    .sig-card { border: 2px solid #e2e8f0; border-radius: 14px; padding: 14px; }
+    .sig-role { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #64748b; margin-bottom: 8px; }
+    .sig-pad-wrap { border: 1px dashed #cbd5e1; border-radius: 8px; background: #fff; position: relative; }
+    .sig-pad-wrap.is-empty::after { content: 'Sign here'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #cbd5e1; font-size: 14px; pointer-events: none; }
+    .sig-pad { width: 100%; height: 150px; display: block; touch-action: none; }
+    .sig-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 8px; }
+    .name-input { width: 100%; margin-top: 10px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; }
+    .btn-clear { background: #fff; border: 1px solid #cbd5e1; color: #475569; border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+    .submit-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .submit-status { flex: 1; font-size: 13px; color: #64748b; align-self: center; }
+    .submit-error { color: #b91c1c; font-weight: 600; }
+  
+    /* iOS auto-zoom fix: inputs must be >=16px on mobile so focusing a field
+       doesn't zoom the page. */
+    @media (max-width: 768px) {
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      select, textarea { font-size: 16px !important; }
+    }
+
+    /* Date inputs overflow their container on iOS/tablet unless the native
+       min-width + appearance are stripped. */
+    input[type="date"], input[type="time"], input[type="datetime-local"] {
+      -webkit-appearance: none; appearance: none;
+      min-width: 0; max-width: 100%; box-sizing: border-box;
+    }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Collect payment</div>
+        {project && <div class="topbar-sub">{project.project_number} · {project.customer_name}</div>}
+      </div>
+      <a class="btn btn-cancel" href={`/admin/projects?open=${projectId}`}>Cancel</a>
+    </div>
+
+    {error && <div class="err">{error}</div>}
+
+    {!error && row && (
+      <div>
+        <div class="card">
+          <div class="recap-row"><span class="label">Payment</span><span class="value">{row.label || row.kind || 'Payment'}</span></div>
+          {row.due_date && <div class="recap-row"><span class="label">Scheduled due</span><span class="value">{row.due_date}</span></div>}
+          <div class="recap-row"><span class="label">Scheduled amount</span><span class="value">{fmtMoney(Number(row.amount) || 0)}</span></div>
+          {existingReceipt && <div class="recap-row"><span class="label" style="color:#16a34a;">Already collected</span><span class="value" style="color:#16a34a;">{fmtMoney(Number(existingReceipt.amount) || 0)} · {existingReceipt.payment_method}{existingReceipt.check_number ? ` #${existingReceipt.check_number}` : ''}</span></div>}
+        </div>
+
+        <div class="card">
+          <div class="fields">
+            <div class="field"><label>Amount received</label><input type="number" step="0.01" min="0" id="amount" value={prefill.amount} /></div>
+            <div class="field"><label>Date received</label><input type="date" id="date" value={prefill.date} /></div>
+            <div class="field"><label>Method</label>
+              <select id="method">
+                <option value="check" selected={prefill.method === 'check'}>Check</option>
+                <option value="cash" selected={prefill.method === 'cash'}>Cash</option>
+                <option value="card" selected={prefill.method === 'card'}>Card</option>
+                <option value="transfer" selected={prefill.method === 'transfer'}>Bank transfer</option>
+              </select>
+            </div>
+            <div class="field"><label id="refLabel">Check #</label><input type="text" id="check" value={prefill.check} placeholder="e.g. 1042" autocomplete="off" /></div>
+          </div>
+        </div>
+
+        {(reuseCustSig || reuseCtrSig) && (
+          <div style="margin-bottom:12px;">
+            <button type="button" class="btn" id="reuseSigBtn" style="background:#fff;border:1px solid #cbd5e1;color:#334155;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+              ✍️ Reuse signatures on file
+            </button>
+            <span style="font-size:12px;color:#94a3b8;margin-left:8px;">Drops in the client's contract signature + your saved signature.</span>
+          </div>
+        )}
+
+        <div class="sig-grid">
+          <div class="sig-card">
+            <div class="sig-role">Client signature</div>
+            <div class="sig-pad-wrap is-empty" data-pad="cust"><canvas class="sig-pad"></canvas></div>
+            <div class="sig-actions"><span style="font-size:12px;color:#94a3b8;">Client signs to confirm payment made.</span><button type="button" class="btn-clear" data-clear="cust">Clear</button></div>
+            <input type="text" class="name-input" id="custName" value={prefill.custName} placeholder="Client full name" autocomplete="name" />
+          </div>
+          <div class="sig-card">
+            <div class="sig-role">Contractor signature</div>
+            <div class="sig-pad-wrap is-empty" data-pad="ctr"><canvas class="sig-pad"></canvas></div>
+            <div class="sig-actions"><span style="font-size:12px;color:#94a3b8;">MannyKnows confirms receipt.</span><button type="button" class="btn-clear" data-clear="ctr">Clear</button></div>
+            <input type="text" class="name-input" id="ctrName" value={prefill.ctrName} placeholder="Contractor full name" autocomplete="name" />
+          </div>
+        </div>
+
+        <div class="submit-bar">
+          <div class="submit-status" id="status">Both signatures + amount required.</div>
+          {existingReceipt && <button type="button" class="btn btn-undo" id="undoBtn">Undo receipt</button>}
+          {existingReceipt && <button type="button" class="btn" id="editBtn" style="background:#fff;border-color:#cbd5e1;color:#334155;">Edit receipt</button>}
+          <button type="button" class="btn" id="markPaidBtn" style="background:#fff;border:1px solid #86efac;color:#16a34a;" title="Record this payment as received without signatures (e.g. paid by transfer)">Mark as already paid</button>
+          <button type="button" class="btn btn-primary" id="saveBtn">Save receipt</button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <script is:inline define:vars={{ projectId, rowId, rowLabel: row?.label || '', rowKind: row?.kind || '', hasExisting: !!existingReceipt, reuseCustSig, reuseCtrSig, reuseCustName, reuseCtrName }}>
+    (function () {
+      var saveBtn = document.getElementById('saveBtn');
+      if (!saveBtn) return;
+
+      // ── Signature pads ──
+      var pads = {};
+      document.querySelectorAll('[data-pad]').forEach(function (wrap) {
+        var canvas = wrap.querySelector('.sig-pad');
+        var ctx = canvas.getContext('2d');
+        var drawing = false, hasInk = false;
+        var lastW = 0, lastH = 0;
+        function applyCtx(ratio) { ctx.scale(ratio, ratio); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0f172a'; }
+        function resize() {
+          var ratio = window.devicePixelRatio || 1;
+          var rect = canvas.getBoundingClientRect();
+          var w = Math.round(rect.width), h = Math.round(rect.height);
+          if (!w || !h) return;
+          // Skip spurious resize events (mobile URL-bar show/hide, keyboard
+          // open/close) that DON'T change the pad's size — re-initing the
+          // backing store would wipe the signature even though hasInk is true,
+          // leaving a blank canvas that exports empty to the PDF.
+          if (w === lastW && h === lastH) return;
+          // Preserve any drawing across a genuine resize (e.g. orientation).
+          var prev = hasInk ? canvas.toDataURL('image/png') : null;
+          lastW = w; lastH = h;
+          canvas.width = w * ratio; canvas.height = h * ratio;
+          applyCtx(ratio);
+          if (prev) {
+            var img = new Image();
+            img.onload = function () { ctx.drawImage(img, 0, 0, w, h); };
+            img.src = prev;
+          }
+        }
+        resize(); window.addEventListener('resize', resize);
+        // Orientation changes fire before layout settles — re-run shortly after.
+        window.addEventListener('orientationchange', function () { setTimeout(resize, 250); });
+        function pt(e) { var r = canvas.getBoundingClientRect(); var t = e.touches ? e.touches[0] : e; return { x: t.clientX - r.left, y: t.clientY - r.top }; }
+        function start(e) { e.preventDefault(); drawing = true; var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+        function move(e) { if (!drawing) return; e.preventDefault(); var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke(); if (!hasInk) { hasInk = true; wrap.classList.remove('is-empty'); update(); } }
+        function end() { drawing = false; }
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); canvas.addEventListener('touchend', end);
+        pads[wrap.dataset.pad] = {
+          isEmpty: function () { return !hasInk; },
+          dataUrl: function () { return canvas.toDataURL('image/png'); },
+          clear: function () { ctx.clearRect(0, 0, canvas.width, canvas.height); hasInk = false; wrap.classList.add('is-empty'); update(); },
+          // Draw a saved signature image onto the pad (fit, centered).
+          load: function (url) {
+            if (!url) return;
+            var img = new Image();
+            img.onload = function () {
+              var r = canvas.getBoundingClientRect();
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              var cw = r.width, ch = r.height;
+              var scale = Math.min(cw / img.width, ch / img.height);
+              var dw = img.width * scale, dh = img.height * scale;
+              ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+              hasInk = true; wrap.classList.remove('is-empty'); update();
+            };
+            img.src = url;
+          },
+        };
+      });
+      document.querySelectorAll('[data-clear]').forEach(function (b) { b.addEventListener('click', function () { var p = pads[b.dataset.clear]; if (p) p.clear(); }); });
+
+      // ── Reuse signatures on file (client's contract sig + admin's saved sig) ──
+      var reuseBtn = document.getElementById('reuseSigBtn');
+      if (reuseBtn) reuseBtn.addEventListener('click', function () {
+        if (typeof locked !== 'undefined' && locked) { locked = false; if (editBtn) editBtn.style.display = 'none'; saveBtn.textContent = 'Update receipt'; }
+        if (reuseCustSig && pads.cust) pads.cust.load(reuseCustSig);
+        if (reuseCtrSig && pads.ctr) pads.ctr.load(reuseCtrSig);
+        var cn = document.getElementById('custName'); if (cn && !cn.value && reuseCustName) cn.value = reuseCustName;
+        var tn = document.getElementById('ctrName'); if (tn && !tn.value && reuseCtrName) tn.value = reuseCtrName;
+        setTimeout(update, 60);
+      });
+
+      // ── Method → reference label ──
+      var methodEl = document.getElementById('method');
+      function syncRef() { var m = methodEl.value; document.getElementById('refLabel').textContent = m === 'check' ? 'Check #' : m === 'card' ? 'Card last 4' : m === 'transfer' ? 'Reference #' : 'Reference (optional)'; }
+      methodEl.addEventListener('change', syncRef); syncRef();
+
+      var statusEl = document.getElementById('status');
+      // Already-collected rows start LOCKED so the collect action can't be
+      // re-fired by accident. The admin must tap "Edit receipt" to make changes.
+      var locked = !!hasExisting;
+      var editBtn = document.getElementById('editBtn');
+      if (editBtn) editBtn.addEventListener('click', function () {
+        locked = false;
+        editBtn.style.display = 'none';
+        saveBtn.textContent = 'Update receipt';
+        update();
+      });
+      function update() {
+        if (locked) {
+          saveBtn.disabled = true;
+          statusEl.textContent = 'Already collected — tap “Edit receipt” to change it, or “Undo receipt” to remove it.';
+          return;
+        }
+        var ok = !pads.cust.isEmpty() && !pads.ctr.isEmpty()
+          && Number(document.getElementById('amount').value) > 0
+          && document.getElementById('custName').value.trim().length >= 2
+          && document.getElementById('ctrName').value.trim().length >= 2;
+        saveBtn.disabled = !ok;
+        statusEl.textContent = ok ? 'Ready to save.' : 'Both signatures + amount + names required.';
+      }
+      ['amount', 'custName', 'ctrName'].forEach(function (id) { document.getElementById(id).addEventListener('input', update); });
+      update();
+
+      saveBtn.addEventListener('click', async function () {
+        if (saveBtn.disabled) return;
+        saveBtn.disabled = true; statusEl.textContent = 'Saving…';
+        try {
+          var res = await fetch('/api/admin/projects/' + projectId + '/collect-payment/', {
+            method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              row_id: rowId, row_label: rowLabel, row_kind: rowKind,
+              amount: Number(document.getElementById('amount').value),
+              payment_method: methodEl.value,
+              check_number: document.getElementById('check').value.trim() || null,
+              collected_at: document.getElementById('date').value || null,
+              customer_name: document.getElementById('custName').value.trim(),
+              customer_signature_data_url: pads.cust.dataUrl(),
+              contractor_name: document.getElementById('ctrName').value.trim(),
+              contractor_signature_data_url: pads.ctr.dataUrl(),
+            }),
+          });
+          var data = await res.json();
+          if (!data.success) { statusEl.innerHTML = '<span class="submit-error">' + (data.error || 'Failed to save') + '</span>'; saveBtn.disabled = false; return; }
+          window.location.href = '/admin/projects?open=' + projectId;
+        } catch (e) { statusEl.innerHTML = '<span class="submit-error">Network error. Try again.</span>'; saveBtn.disabled = false; }
+      });
+
+      // "Mark as already paid" — records the receipt with NO signatures (paid
+      // another way). Only needs an amount.
+      var markPaidBtn = document.getElementById('markPaidBtn');
+      if (markPaidBtn) markPaidBtn.addEventListener('click', async function () {
+        var amt = Number(document.getElementById('amount').value);
+        if (!(amt > 0)) { statusEl.innerHTML = '<span class="submit-error">Enter the amount received first.</span>'; return; }
+        markPaidBtn.disabled = true; statusEl.textContent = 'Saving…';
+        try {
+          var res = await fetch('/api/admin/projects/' + projectId + '/collect-payment/', {
+            method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              row_id: rowId, row_label: rowLabel, row_kind: rowKind,
+              amount: amt, payment_method: methodEl.value,
+              check_number: document.getElementById('check').value.trim() || null,
+              collected_at: document.getElementById('date').value || null,
+              customer_name: document.getElementById('custName').value.trim() || null,
+              no_signature: true,
+            }),
+          });
+          var data = await res.json();
+          if (!data.success) { statusEl.innerHTML = '<span class="submit-error">' + (data.error || 'Failed to save') + '</span>'; markPaidBtn.disabled = false; return; }
+          window.location.href = '/admin/projects?open=' + projectId;
+        } catch (e) { statusEl.innerHTML = '<span class="submit-error">Network error. Try again.</span>'; markPaidBtn.disabled = false; }
+      });
+
+      var undoBtn = document.getElementById('undoBtn');
+      if (undoBtn) undoBtn.addEventListener('click', async function () {
+        if (!confirm('Remove this receipt and both signatures? The row unlocks for editing.')) return;
+        undoBtn.disabled = true;
+        try {
+          var res = await fetch('/api/admin/projects/' + projectId + '/collect-payment/?row_id=' + encodeURIComponent(rowId), { method: 'DELETE', credentials: 'include' });
+          var data = await res.json();
+          if (!data.success) { statusEl.innerHTML = '<span class="submit-error">' + (data.error || 'Failed to undo') + '</span>'; undoBtn.disabled = false; return; }
+          window.location.href = '/admin/projects?open=' + projectId;
+        } catch (e) { statusEl.innerHTML = '<span class="submit-error">Network error.</span>'; undoBtn.disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>

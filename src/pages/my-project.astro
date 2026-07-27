@@ -1,0 +1,331 @@
+---
+// My Project Lookup — customers request their project portal link via email.
+// Posts to /api/project-lookup, which emails the portal link if a project
+// matches. Uses the real site chrome (BaseHead/Header/Footer) so it feels
+// like any other page on mannyknows.com.
+import BaseHead from '../components/portal/BaseHead.astro';
+import Header from '../components/portal/Header.astro';
+import Footer from '../components/portal/Footer.astro';
+
+export const prerender = false;
+---
+
+<html lang="en">
+<head>
+  <BaseHead
+    title="Find My Project | MannyKnows"
+    description="Look up your MannyKnows project portal. Enter your email to receive your project link."
+  />
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    .lookup-hero {
+      background: #ffffff;
+      padding: 56px 24px 8px;
+      text-align: center;
+    }
+
+    .lookup-hero-container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .lookup-badge {
+      display: inline-block;
+      background: rgba(255, 120, 29, 0.1);
+      color: #c75800;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .lookup-hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: rgb(15, 18, 25);
+      margin: 0 0 12px 0;
+    }
+
+    .lookup-hero p {
+      font-size: 1rem;
+      color: #475569;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .lookup-container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 40px 20px 64px;
+    }
+
+    .lookup-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .lookup-card-body {
+      padding: 36px;
+    }
+
+    .lookup-form-group {
+      margin-bottom: 20px;
+    }
+
+    .lookup-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .lookup-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      color: #1e293b;
+      transition: border-color 0.2s;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .lookup-input:focus {
+      border-color: #ff781d;
+      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.1);
+    }
+
+    .lookup-btn {
+      display: block;
+      width: 100%;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: linear-gradient(135deg, #ff781d 0%, #e05f00 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 120, 29, 0.3);
+    }
+
+    .lookup-btn:hover {
+      transform: none;
+      box-shadow: 0 6px 20px rgba(255, 120, 29, 0.4);
+    }
+
+    .lookup-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .lookup-success {
+      display: none;
+      text-align: center;
+      padding: 24px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .lookup-success .check-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+
+    .lookup-success .check-icon svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    .lookup-success p {
+      font-size: 15px;
+      color: #166534;
+      line-height: 1.6;
+    }
+
+    .lookup-error {
+      display: none;
+      text-align: center;
+      padding: 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #dc2626;
+    }
+
+    .lookup-contact {
+      text-align: center;
+      padding: 20px 36px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .lookup-contact p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .lookup-contact a {
+      color: #ff781d;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .lookup-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: lookup-spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes lookup-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .lookup-hero {
+        padding: 40px 16px 4px;
+      }
+      .lookup-hero h1 {
+        font-size: 1.75rem;
+      }
+      .lookup-hero p {
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .lookup-card-body {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <Header />
+
+  <section class="lookup-hero">
+    <div class="lookup-hero-container">
+      <span class="lookup-badge">Customer Portal</span>
+      <h1>Find My Project</h1>
+      <p>Enter your email to receive a link to your project portal where you can track progress and download your receipt.</p>
+    </div>
+  </section>
+
+  <div class="lookup-container">
+    <div class="lookup-card">
+      <div class="lookup-card-body">
+        <form id="lookup-form">
+          <div class="lookup-form-group">
+            <label class="lookup-label" for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              class="lookup-input"
+              placeholder="your@email.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+          <button type="submit" class="lookup-btn" id="submit-btn">
+            <span id="btn-text">Send My Project Link</span>
+            <span class="lookup-spinner" id="spinner"></span>
+          </button>
+        </form>
+
+        <div class="lookup-success" id="success">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p><strong>Check your email!</strong><br>If we have a project on file, you'll receive your project link shortly.</p>
+        </div>
+
+        <div class="lookup-error" id="error"></div>
+      </div>
+
+      <div class="lookup-contact">
+        <p>Or call us directly</p>
+        <a href="tel:+14133618451">(413) 361-8451</a>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+
+  <script is:inline>
+    const form = document.getElementById('lookup-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const spinner = document.getElementById('spinner');
+    const successDiv = document.getElementById('success');
+    const errorDiv = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) return;
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/project-lookup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          form.style.display = 'none';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = data.error || 'Something went wrong. Please try again.';
+          errorDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          btnText.style.display = 'block';
+          spinner.style.display = 'none';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Network error. Please try again.';
+        errorDiv.style.display = 'block';
+        submitBtn.disabled = false;
+        btnText.style.display = 'block';
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

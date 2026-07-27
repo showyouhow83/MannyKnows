@@ -1,0 +1,767 @@
+---
+// /admin/projects/[id]/sign-in-person
+//
+// iPad-optimized in-person signing flow. Admin opens this with the
+// customer (e.g. at deposit pickup), they walk through the contract
+// recap together, customer signs on one pad, admin signs on the other,
+// submit → both signatures saved + contract = countersigned + signed
+// PDF generated via the same hidden-iframe pattern the remote flow uses.
+//
+// Auth: admin session required. No customer token — this is fully an
+// admin tool. The admin's signature here OVERRIDES the saved singleton
+// for THIS contract only; the global contractor_signature row is left
+// alone (so signing in person doesn't wipe the default for everyone).
+
+import { AdminAuth } from '../../../../lib/adminAuth';
+import { parseScopes, renderScopesHtml } from '../../../../lib/quoteTemplateConstants';
+import { normalizeAddress } from '../../../../lib/address';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const { id: rawId } = Astro.params;
+const projectId = Number(rawId);
+if (!Number.isFinite(projectId) || projectId <= 0) {
+  return Astro.redirect('/admin/projects');
+}
+
+const db = env?.MK_APP_DB;
+
+let project: any = null;
+let contract: any = null;
+let savedContractor: any = null;
+let error = '';
+
+if (db) {
+  try {
+    project = await db.prepare(`
+      SELECT p.id, p.project_number, p.customer_name, p.customer_email,
+             p.customer_address, p.customer_city, p.customer_state, p.customer_zip,
+             p.services, p.scope_description
+        FROM projects p
+       WHERE p.id = ?
+    `).bind(projectId).first();
+
+    if (!project) {
+      error = 'Project not found';
+    } else {
+      contract = await db.prepare(`
+        SELECT id, scopes, total, discount, start_date,
+               down_payment_percent, down_payment_count, monthly_payment_count,
+               cancellation_window_days, cancellation_fee_amount,
+               late_fee_amount, late_fee_grace_days, warranty_months,
+               payment_schedule, terms, status
+          FROM project_contracts
+         WHERE project_id = ?
+      `).bind(projectId).first();
+
+      if (!contract) {
+        error = 'No contract has been started for this project yet. Apply a template from the contract page first.';
+      } else if (contract.status === 'countersigned') {
+        error = 'This contract is already fully signed.';
+      } else if (contract.status === 'void') {
+        error = 'This contract has been voided.';
+      }
+
+      // The saved contractor singleton is the default pre-filled name +
+      // signature. Admin can still re-draw it (the whole point of the
+      // in-person flow is that the contractor signs fresh too).
+      savedContractor = await db.prepare(
+        "SELECT signer_name, printed_title, signature_data_url FROM contractor_signature WHERE id = 1"
+      ).first();
+    }
+  } catch (e) {
+    console.error('[sign-in-person] fetch error:', e);
+    error = 'Unable to load contract';
+  }
+}
+
+const scopes = contract ? parseScopes(contract.scopes) : [];
+const scopesHtml = renderScopesHtml(scopes);
+
+const addr = normalizeAddress({
+  address: project?.customer_address,
+  city: project?.customer_city,
+  state: project?.customer_state,
+  zip: project?.customer_zip,
+});
+
+let paymentSchedule: any[] = [];
+try { paymentSchedule = JSON.parse(contract?.payment_schedule || '[]'); } catch {}
+
+let terms: any = {};
+try { terms = JSON.parse(contract?.terms || '{}'); } catch {}
+
+const total = Number(contract?.total) || 0;
+const discount = Number(contract?.discount) || 0;
+function fmtMoney(n: number): string {
+  return (Number(n) || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+
+function buildPaymentPlanSummary(): string {
+  const pct = Number(contract?.down_payment_percent) || 0;
+  const downRows = paymentSchedule.filter((r: any) => r.kind === 'down');
+  const endDateRow = paymentSchedule.find((r: any) => r.due_source === 'end_date');
+  const monthlyRows = paymentSchedule.filter((r: any) => r.kind === 'monthly');
+  const downCount = downRows.length || Number(contract?.down_payment_count) || 0;
+  const pctStr = pct % 1 === 0 ? `${pct}%` : `${pct.toFixed(2)}%`;
+  let text = `${pctStr} down · ${downCount} payment${downCount !== 1 ? 's' : ''}`;
+  if (endDateRow) {
+    const dueStr = endDateRow.due_date ? `on ${fmtDate(endDateRow.due_date)}` : 'on completion';
+    text += ` · then ${fmtMoney(Number(endDateRow.amount) || 0)} ${dueStr}`;
+  } else if (monthlyRows.length > 0) {
+    text += ` · then ${fmtMoney(Number(monthlyRows[0].amount) || 0)}/mo for ${monthlyRows.length} month${monthlyRows.length !== 1 ? 's' : ''}`;
+  }
+  return text;
+}
+function fmtDate(s: string | null | undefined): string {
+  if (!s) return '—';
+  try {
+    const d = new Date(String(s).split(/[\sT]/)[0] + 'T00:00:00');
+    if (isNaN(d.getTime())) return String(s);
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  } catch { return String(s); }
+}
+
+const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Sign in person';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>{pageTitle} — MannyKnows Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      overscroll-behavior-y: none;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; color: #0f172a; }
+    .topbar-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-cancel { background: #fff; border-color: #cbd5e1; color: #475569; }
+    .btn-primary { background: linear-gradient(135deg, #ff781d 0%, #e05f00 100%); color: #fff; border: none; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn:active { transform: none; }
+    .err {
+      padding: 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      color: #b91c1c;
+    }
+
+    .summary {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+    .summary-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      margin: 0 0 10px 0;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    .summary-row .label { color: #475569; }
+    .summary-row .value { font-weight: 600; color: #0f172a; }
+    .summary-total {
+      border-top: 2px solid #cbd5e1;
+      margin-top: 8px;
+      padding-top: 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    details.collapsible { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+    details.collapsible summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; list-style: none; display: flex; align-items: center; gap: 8px; }
+    details.collapsible summary::after { content: '+'; margin-left: auto; font-size: 18px; color: #94a3b8; }
+    details.collapsible[open] summary::after { content: '−'; }
+    details.collapsible .collapse-body { padding-top: 10px; }
+
+    .scope-preview { font-size: 13px; line-height: 1.55; color: #334155; }
+    .scope-preview h3 { font-size: 14px; margin: 14px 0 6px 0; }
+    .scope-preview ul { margin: 4px 0 8px 18px; padding: 0; }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .sign-grid { grid-template-columns: 1fr; }
+    }
+
+    .sig-card {
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .sig-card.is-customer { border-color: #93c5fd; }
+    .sig-card.is-contractor { border-color: #86efac; }
+    .sig-role {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .sig-card.is-customer .sig-role { background: #dbeafe; color: #1e40af; }
+    .sig-card.is-contractor .sig-role { background: #dcfce7; color: #166534; }
+
+    .sig-pad-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 5;
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .sig-pad-wrap.is-empty::after {
+      content: 'Sign here with your finger or Apple Pencil';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #94a3b8; font-size: 13px; font-style: italic;
+      pointer-events: none;
+    }
+    .sig-pad { width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+
+    .sig-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .btn-clear {
+      background: none;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-family: inherit;
+    }
+    .name-input:focus { outline: 2px solid #ff781d; outline-offset: -1px; }
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    .consent input { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; }
+
+    .ref-block {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .ref-block label { margin-right: 16px; cursor: pointer; }
+    .ref-block input { margin-right: 4px; }
+
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      background: linear-gradient(to top, #f8fafc 60%, rgba(248,250,252,0));
+      padding: 16px 0 12px 0;
+      margin-top: 16px;
+    }
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .submit-status { font-size: 13px; color: #475569; }
+    .submit-error { color: #b91c1c; font-weight: 600; }
+
+    .iframe-bridge { display: none; }
+
+    .done-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.96);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 1000;
+      padding: 24px;
+      text-align: center;
+    }
+    .done-overlay.show { display: flex; }
+    .done-overlay h2 { margin: 0; font-size: 22px; }
+    .done-overlay p { margin: 0; color: #cbd5e1; }
+    .done-overlay .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  
+    /* iOS auto-zoom fix: inputs must be >=16px on mobile so focusing a field
+       doesn't zoom the page. */
+    @media (max-width: 768px) {
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      select, textarea { font-size: 16px !important; }
+    }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">In-person signing</div>
+        {project && (
+          <div class="topbar-sub">{project.project_number} · {project.customer_name}</div>
+        )}
+      </div>
+      <a class="btn btn-cancel" href={`/admin/projects?open=${projectId}`}>Cancel</a>
+    </div>
+
+    {error && (
+      <div class="err">{error}</div>
+    )}
+
+    {!error && contract && (
+      <div>
+        <!-- Compact contract recap. The full text is on the dedicated
+             contract page; here we just need enough for the customer to
+             confirm what they're signing. -->
+        <div class="summary">
+          <div class="summary-title">Contract recap</div>
+          <div class="summary-row"><span class="label">Project</span><span class="value">{project.project_number}</span></div>
+          <div class="summary-row"><span class="label">Customer</span><span class="value">{project.customer_name}</span></div>
+          {addr.oneLine && (
+            <div class="summary-row"><span class="label">Address</span><span class="value">{addr.oneLine}</span></div>
+          )}
+          {contract.start_date && (
+            <div class="summary-row"><span class="label">Start date</span><span class="value">{fmtDate(contract.start_date)}</span></div>
+          )}
+          {discount > 0 && (
+            <div class="summary-row"><span class="label">Discount</span><span class="value">−{fmtMoney(discount)}</span></div>
+          )}
+          <div class="summary-row summary-total"><span class="label">Total</span><span class="value">{fmtMoney(total)}</span></div>
+          <div class="summary-row">
+            <span class="label">Payment plan</span>
+            <span class="value">{buildPaymentPlanSummary()}</span>
+          </div>
+          <div class="summary-row" style="align-items: center; gap: 8px;">
+            <span class="label">Check # <span style="font-weight:400; color:#94a3b8;">(optional)</span></span>
+            <input type="text" id="checkNumber" placeholder="e.g. 1042" autocomplete="off"
+              style="flex:1; padding:4px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:600; color:#0f172a; max-width:160px; text-align:right;" />
+          </div>
+          <div class="summary-row">
+            <span class="label">Warranty</span>
+            <span class="value">{contract.warranty_months} months</span>
+          </div>
+        </div>
+
+        {/* Scope expansion — collapsed by default; admin opens if customer wants to re-read */}
+        {scopes.length > 0 && (
+          <details class="collapsible">
+            <summary>Scope of work {scopes.length > 1 ? `(${scopes.length} scopes)` : ''}</summary>
+            <div class="collapse-body scope-preview" set:html={scopesHtml}></div>
+          </details>
+        )}
+
+        <details class="collapsible">
+          <summary>Payment schedule ({paymentSchedule.length} rows)</summary>
+          <div class="collapse-body">
+            {paymentSchedule.length === 0 ? (
+              <div style="font-size:13px; color:#64748b;">No payment rows yet.</div>
+            ) : (
+              <div style="display:grid; gap:6px; font-size:13px;">
+                {paymentSchedule.map((row: any) => (
+                  <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #e2e8f0;">
+                    <span>{row.label || row.kind || 'Payment'}{row.due_date ? ` · due ${fmtDate(row.due_date)}` : ''}</span>
+                    <strong>{fmtMoney(Number(row.amount) || 0)}</strong>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </details>
+
+        <details class="collapsible">
+          <summary>Key terms</summary>
+          <div class="collapse-body" style="font-size:13px; line-height:1.6; color:#334155;">
+            <p><strong>Cancellation:</strong> {contract.cancellation_window_days} day{contract.cancellation_window_days === 1 ? '' : 's'} for a full refund of the deposit. After that, a {fmtMoney(contract.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.</p>
+            <p><strong>Late fee:</strong> {fmtMoney(contract.late_fee_amount)} after {contract.late_fee_grace_days}-day grace period.</p>
+            <p><strong>Workmanship warranty:</strong> {contract.warranty_months} months from project completion.</p>
+            {Array.isArray(terms.custom_terms) && terms.custom_terms.length > 0 && (
+              terms.custom_terms.map((ct: any) => (
+                ct?.text ? <p>{ct.title ? <><strong>{ct.title}:</strong>{' '}</> : null}{ct.text}</p> : null
+              ))
+            )}
+          </div>
+        </details>
+
+        <!-- Two signature pads side-by-side on iPad landscape -->
+        <div class="sign-grid">
+          <!-- Customer signature -->
+          <div class="sig-card is-customer">
+            <div class="sig-role">Customer</div>
+            <div class="sig-pad-wrap is-empty" data-pad="customer">
+              <canvas class="sig-pad"></canvas>
+            </div>
+            <div class="sig-actions">
+              <span>Customer signs with finger or stylus.</span>
+              <button type="button" class="btn-clear" data-clear="customer">Clear</button>
+            </div>
+            <input type="text" class="name-input" data-input="customer_name" placeholder="Customer full legal name" autocomplete="name" />
+            <label class="consent">
+              <input type="checkbox" data-input="customer_consent" />
+              <span data-text="customer_consent">I agree my electronic signature and typed name are the legal equivalent of my handwritten signature. I authorize MannyKnows to begin the project at the agreed price, subject to the payment schedule and terms shown above.</span>
+            </label>
+            {terms.reference_request?.enabled && (
+              <div class="ref-block">
+                <strong style="font-size:12px; display:block; margin-bottom:6px;">{terms.reference_request.text || 'Can we use you as a reference?'}</strong>
+                <label><input type="radio" name="useAsReference" value="yes" /> Yes</label>
+                <label><input type="radio" name="useAsReference" value="no" /> No</label>
+                <span style="font-size:11px; color:#94a3b8;">(optional)</span>
+              </div>
+            )}
+          </div>
+
+          <!-- Contractor signature -->
+          <div class="sig-card is-contractor">
+            <div class="sig-role">MannyKnows</div>
+            <div class="sig-pad-wrap is-empty" data-pad="contractor">
+              <canvas class="sig-pad"></canvas>
+            </div>
+            <div class="sig-actions">
+              <span>Admin signs fresh — overrides the saved default for this project only.</span>
+              <button type="button" class="btn-clear" data-clear="contractor">Clear</button>
+            </div>
+            <input type="text" class="name-input" data-input="contractor_name" placeholder="Your full legal name" autocomplete="name" value={savedContractor?.signer_name || ''} />
+            <label class="consent">
+              <input type="checkbox" data-input="contractor_consent" />
+              <span data-text="contractor_consent">By signing, I confirm I am authorized to bind MannyKnows to this agreement and accept the terms above.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="submit-bar">
+          <div class="submit-row">
+            <div class="submit-status" id="submitStatus">Both signatures + names + consent boxes required to submit.</div>
+            <button type="button" class="btn btn-primary" id="submitBtn" disabled>Complete signing</button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- Hidden iframe used to generate the signed PDF via the existing
+       preview page's autosave path. -->
+  <iframe id="pdfBridge" class="iframe-bridge" sandbox="allow-scripts allow-same-origin"></iframe>
+
+  <div class="done-overlay" id="doneOverlay">
+    <div class="spinner" id="doneSpinner"></div>
+    <h2 id="doneTitle">Saving signatures…</h2>
+    <p id="doneSub">Generating the signed PDF. This takes a few seconds.</p>
+  </div>
+
+  <script is:inline define:vars={{ projectId, savedContractor }}>
+    (function () {
+      var submitStatus = document.getElementById('submitStatus');
+      var submitBtn = document.getElementById('submitBtn');
+      if (!submitBtn) return;
+
+      // ─── Pad setup (one canvas per role) ────────────────────────────────
+      var pads = {};
+      document.querySelectorAll('[data-pad]').forEach(function (wrap) {
+        var role = wrap.dataset.pad;
+        var canvas = wrap.querySelector('.sig-pad');
+        var lastCanvasW = 0, lastCanvasH = 0;
+        function resizeCanvas() {
+          var ratio = window.devicePixelRatio || 1;
+          var rect = canvas.getBoundingClientRect();
+          var w = Math.round(rect.width), h = Math.round(rect.height);
+          if (!w || !h) return;
+          // Skip spurious mobile resize events (URL-bar / keyboard) that don't
+          // change the pad size — re-initing the backing store would wipe the
+          // signature even though hasStrokes is true, exporting a blank PDF.
+          if (w === lastCanvasW && h === lastCanvasH) return;
+          var prev = hasStrokes ? canvas.toDataURL('image/png') : null;
+          lastCanvasW = w; lastCanvasH = h;
+          canvas.width = w * ratio;
+          canvas.height = h * ratio;
+          var ctx = canvas.getContext('2d');
+          ctx.scale(ratio, ratio);
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = '#0f172a';
+          if (prev) {
+            var img = new Image();
+            img.onload = function () { ctx.drawImage(img, 0, 0, w, h); };
+            img.src = prev;
+          }
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', function () { setTimeout(resizeCanvas, 250); });
+
+        var drawing = false;
+        var hasStrokes = false;
+        function pt(e) {
+          var rect = canvas.getBoundingClientRect();
+          var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+          var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+          return { x: x, y: y };
+        }
+        function start(e) {
+          e.preventDefault();
+          drawing = true;
+          var p = pt(e);
+          var ctx = canvas.getContext('2d');
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+        }
+        function move(e) {
+          if (!drawing) return;
+          e.preventDefault();
+          var p = pt(e);
+          var ctx = canvas.getContext('2d');
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+          if (!hasStrokes) {
+            hasStrokes = true;
+            wrap.classList.remove('is-empty');
+            updateState();
+          }
+        }
+        function end() { drawing = false; }
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, { passive: false });
+        canvas.addEventListener('touchmove', move, { passive: false });
+        canvas.addEventListener('touchend', end);
+
+        pads[role] = {
+          canvas: canvas,
+          wrap: wrap,
+          isEmpty: function () { return !hasStrokes; },
+          dataUrl: function () { return canvas.toDataURL('image/png'); },
+          clear: function () {
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasStrokes = false;
+            wrap.classList.add('is-empty');
+            updateState();
+          },
+        };
+      });
+
+      // ─── Clear buttons ──────────────────────────────────────────────────
+      document.querySelectorAll('[data-clear]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var role = btn.dataset.clear;
+          if (pads[role]) pads[role].clear();
+        });
+      });
+
+      // ─── Submit gating ──────────────────────────────────────────────────
+      function $val(role) {
+        return (document.querySelector('[data-input="' + role + '_name"]') || {}).value || '';
+      }
+      function $checked(role) {
+        var el = document.querySelector('[data-input="' + role + '_consent"]');
+        return !!(el && el.checked);
+      }
+      function updateState() {
+        var ok = !pads.customer.isEmpty()
+          && !pads.contractor.isEmpty()
+          && $val('customer').trim().length >= 2
+          && $val('contractor').trim().length >= 2
+          && $checked('customer')
+          && $checked('contractor');
+        submitBtn.disabled = !ok;
+        submitStatus.textContent = ok
+          ? 'Ready to submit. The contract will be marked countersigned and a signed PDF will be generated.'
+          : 'Both signatures + names + consent boxes required to submit.';
+      }
+      document.querySelectorAll('[data-input]').forEach(function (el) {
+        el.addEventListener('input', updateState);
+        el.addEventListener('change', updateState);
+      });
+      updateState();
+
+      // ─── Submit ─────────────────────────────────────────────────────────
+      submitBtn.addEventListener('click', async function () {
+        if (submitBtn.disabled) return;
+        submitBtn.disabled = true;
+        submitStatus.textContent = 'Submitting…';
+
+        var refEl = document.querySelector('input[name="useAsReference"]:checked');
+        var useAsRef = refEl ? (refEl.value === 'yes') : null;
+
+        var custConsent = (document.querySelector('[data-text="customer_consent"]') || {}).textContent || '';
+        var ctrConsent = (document.querySelector('[data-text="contractor_consent"]') || {}).textContent || '';
+
+        try {
+          var checkNumEl = document.getElementById('checkNumber');
+          var checkNum = checkNumEl ? checkNumEl.value.trim() : '';
+
+          var res = await fetch('/api/admin/projects/' + projectId + '/sign-in-person/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customer_name: $val('customer').trim(),
+              customer_signature_data_url: pads.customer.dataUrl(),
+              customer_consent_text: custConsent.trim(),
+              contractor_name: $val('contractor').trim(),
+              contractor_signature_data_url: pads.contractor.dataUrl(),
+              contractor_consent_text: ctrConsent.trim(),
+              use_as_reference: useAsRef,
+              check_number: checkNum || null,
+            }),
+          });
+          var data = await res.json();
+          if (!data.success) {
+            submitStatus.innerHTML = '<span class="submit-error">' + (data.error || 'Failed to save') + '</span>';
+            submitBtn.disabled = false;
+            return;
+          }
+
+          // Show the "saving signed PDF" overlay and kick off the hidden-
+          // iframe autosave flow used by the remote-signing path.
+          document.getElementById('doneOverlay').classList.add('show');
+          generatePdfAndExit();
+        } catch (err) {
+          console.error(err);
+          submitStatus.innerHTML = '<span class="submit-error">Network error. Try again.</span>';
+          submitBtn.disabled = false;
+        }
+      });
+
+      function generatePdfAndExit() {
+        var bridge = document.getElementById('pdfBridge');
+        var done = false;
+
+        function finish(success) {
+          if (done) return;
+          done = true;
+          var title = document.getElementById('doneTitle');
+          var sub = document.getElementById('doneSub');
+          var spinner = document.getElementById('doneSpinner');
+          if (success) {
+            if (title) title.textContent = '✓ Contract signed.';
+            if (sub) sub.textContent = 'Returning to the project…';
+            if (spinner) spinner.style.display = 'none';
+          } else {
+            if (title) title.textContent = 'Signed, but PDF generation failed.';
+            if (sub) sub.textContent = 'Signatures are saved. You can regenerate the PDF later from the contract page.';
+            if (spinner) spinner.style.display = 'none';
+          }
+          setTimeout(function () {
+            window.location.href = '/admin/projects?open=' + projectId;
+          }, success ? 1500 : 3500);
+        }
+
+        function onMsg(e) {
+          if (!e.data || typeof e.data !== 'object') return;
+          if (e.data.type === 'sl-contract-signed-pdf-saved') {
+            window.removeEventListener('message', onMsg);
+            finish(true);
+          } else if (e.data.type === 'sl-contract-signed-pdf-failed') {
+            window.removeEventListener('message', onMsg);
+            finish(false);
+          }
+        }
+        window.addEventListener('message', onMsg);
+
+        // 25-second timeout fallback.
+        setTimeout(function () {
+          if (!done) { window.removeEventListener('message', onMsg); finish(false); }
+        }, 25000);
+
+        bridge.src = '/admin/projects/' + projectId + '/contract/preview/?autosave=1';
+      }
+    })();
+  </script>
+</body>
+</html>

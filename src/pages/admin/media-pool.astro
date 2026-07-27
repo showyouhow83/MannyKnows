@@ -1,0 +1,978 @@
+---
+// /admin/media-pool — admin triage for crew-captured photos and videos.
+// Crew upload from /admin/timeclock; admin assigns each item to a Lead, Quote,
+// Project, or Portfolio (or deletes it).
+import { AdminAuth } from '../../lib/adminAuth';
+import AdminNav from '../../components/AdminNav.astro';
+import AdminPresence from '../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../components/BellNotification.astro';
+import { streamSubdomain } from '../../lib/stream';
+import '../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+// Cloudflare Stream customer subdomain (env STREAM_CUSTOMER_SUBDOMAIN).
+// '' when not configured — the grid then plays raw video URLs instead.
+const STREAM_SUBDOMAIN = streamSubdomain(env);
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media Pool — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+    </script>
+    <style is:global>
+      body {
+        min-height: 100vh;
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .pool-page { max-width: 1400px; margin: 0 auto; padding: 24px 16px 48px; }
+      .pool-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+      .pool-header h1 { margin: 0 0 4px; font-size: 28px; font-weight: 700; }
+      .pool-header p { color: var(--color-text-secondary); margin: 0; font-size: 14px; }
+      .pool-actions { display: flex; gap: 8px; }
+      .pool-actions button {
+        padding: 8px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .pool-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+      .pool-actions button.primary { background: linear-gradient(135deg, var(--color-primary), #6366f1); color: #fff; border-color: var(--color-primary); }
+      .pool-actions button.danger { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+
+      .pool-tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); }
+      .pool-tab {
+        padding: 10px 18px;
+        background: transparent;
+        border: none;
+        color: var(--color-text-secondary);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+      }
+      .pool-tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-primary); }
+
+      /* Tag filter chips — one per distinct note */
+      .pool-filters {
+        display: flex; flex-wrap: wrap; gap: 6px;
+        margin-bottom: 14px;
+      }
+      .pool-filters:empty { display: none; }
+      .filter-chip {
+        padding: 6px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-secondary);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .filter-chip:hover { background: rgba(255,255,255,0.08); color: var(--color-text-primary); }
+      .filter-chip.active {
+        background: linear-gradient(135deg, var(--color-primary), #6366f1);
+        color: #fff;
+        border-color: var(--color-primary);
+      }
+      .filter-chip-count { opacity: 0.6; margin-left: 4px; font-weight: 500; }
+
+      .pool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 14px;
+      }
+      .pool-empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 48px 16px;
+        color: var(--color-text-secondary);
+        font-size: 14px;
+      }
+      .pool-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .pool-card.selected { border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25); }
+      .pool-card-thumb {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: rgba(255,255,255,0.04);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      .pool-card-thumb img, .pool-card-thumb video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      .pool-card-video-badge {
+        position: absolute; top: 8px; left: 8px;
+        background: rgba(0,0,0,0.6); color: #fff;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.4px;
+        padding: 3px 7px; border-radius: 6px;
+        display: flex; align-items: center; gap: 4px;
+      }
+      /* Video placeholder — shown until the user clicks Play. Avoids
+         fetching video metadata for every card on initial grid render. */
+      .video-poster {
+        width: 100%; height: 100%;
+        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 8px; color: #94a3b8;
+        font-size: 11px; padding: 12px;
+        text-align: center;
+      }
+      .video-poster .play-icon {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 120, 29, 0.9);
+        display: flex; align-items: center; justify-content: center;
+        color: #fff;
+      }
+      .video-poster .vp-filename {
+        font-size: 11px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      /* Copy-URL overlay (top-left, clear of the select dot at top-right) */
+      .pool-copy {
+        position: absolute; top: 8px; left: 8px;
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 5px 9px;
+        font-size: 11px; font-weight: 700;
+        color: #fff; background: rgba(0,0,0,0.72);
+        border: 1px solid rgba(255,255,255,0.25); border-radius: 999px;
+        cursor: pointer; z-index: 3;
+        opacity: 0; transform: translateY(-2px);
+        transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+      }
+      .pool-card-thumb:hover .pool-copy { opacity: 1; }
+      .pool-copy:hover { background: var(--color-primary, #ff781d); }
+      .pool-copy.copied { background: #16a34a; opacity: 1; }
+      /* Touch devices have no hover — keep the copy button visible there (iPad). */
+      @media (hover: none) { .pool-copy { opacity: 1; transform: none; } }
+      .pool-card-select {
+        position: absolute; top: 8px; right: 8px;
+        width: 24px; height: 24px;
+        background: rgba(0,0,0,0.7);
+        border: 2px solid #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        font-size: 14px; color: #fff;
+      }
+      .pool-card.selected .pool-card-select { background: var(--color-primary); border-color: var(--color-primary); }
+      .pool-card-body {
+        padding: 10px 12px 12px;
+        display: flex; flex-direction: column; gap: 4px;
+        font-size: 12px;
+      }
+      .pool-card-meta { color: var(--color-text-secondary); font-size: 11px; }
+      .pool-card-note { color: var(--color-text-primary); font-size: 12px; min-height: 16px; }
+      .pool-card-tag {
+        display: inline-block; align-self: flex-start; margin-bottom: 4px;
+        font-size: 11px; font-weight: 600; color: #93c5fd;
+        background: rgba(255,120,29,0.12); border: 1px solid rgba(255,120,29,0.3);
+        padding: 2px 8px; border-radius: 999px; max-width: 100%;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .pool-card-actions {
+        display: flex; gap: 4px; padding: 0 8px 8px;
+      }
+      .pool-card-actions button {
+        flex: 1;
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .pool-card-actions button.assign { background: linear-gradient(135deg, var(--color-primary), #6366f1); color: #fff; border-color: var(--color-primary); }
+      .pool-card-actions button.delete { color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+      .pool-card-actions a {
+        flex: 1;
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      /* Assign modal */
+      .modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+      }
+      .modal-overlay.active { display: flex; }
+      .modal-box {
+        background: var(--color-background-light, var(--color-background));
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex; flex-direction: column;
+      }
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .modal-header h2 { margin: 0; font-size: 17px; font-weight: 700; }
+      .modal-close {
+        background: transparent; border: none; color: var(--color-text-secondary);
+        font-size: 22px; cursor: pointer; line-height: 1;
+      }
+      .modal-body { padding: 16px 20px; overflow-y: auto; }
+      .modal-footer {
+        padding: 12px 20px;
+        border-top: 1px solid var(--glass-border);
+        display: flex; gap: 8px; justify-content: flex-end;
+      }
+      .modal-footer button {
+        padding: 8px 16px;
+        border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600;
+        cursor: pointer;
+      }
+      .modal-footer button.cancel { background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--color-text-primary); }
+      .modal-footer button.primary { background: linear-gradient(135deg, var(--color-primary), #6366f1); color: #fff; border: 1px solid var(--color-primary); }
+      .modal-footer button.primary.danger { background: linear-gradient(135deg, #ef4444, #b91c1c); border-color: #ef4444; }
+      .modal-footer button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .type-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+      .type-picker button {
+        padding: 10px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: 13px; font-weight: 600;
+        cursor: pointer;
+      }
+      .type-picker button.active { background: linear-gradient(135deg, var(--color-primary), #6366f1); color: #fff; border-color: var(--color-primary); }
+      .form-input, .form-textarea {
+        width: 100%; box-sizing: border-box;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+      .form-textarea { min-height: 64px; resize: vertical; font-family: inherit; }
+      .field-label { font-size: 11px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 4px; }
+      .search-results {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        background: rgba(255,255,255,0.02);
+      }
+      .search-result {
+        padding: 10px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .search-result:last-child { border-bottom: none; }
+      .search-result:hover { background: rgba(255,255,255,0.04); }
+      .search-result.selected { background: rgba(99, 102, 241, 0.15); }
+      .toast {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--color-background-light, #1f2937);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        z-index: 2000;
+        opacity: 0; transition: opacity 0.2s;
+        pointer-events: none;
+      }
+      .toast.visible { opacity: 1; }
+      .toast.success { border-color: rgba(34, 197, 94, 0.4); color: #86efac; }
+      .toast.error { border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    </style>
+  </head>
+  <body>
+  <AdminPresence />
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="media-pool" />
+      <div class="mobile-header-right">
+        <BellNotification place="mobile" />
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <BellNotification place="desktop" />
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="media-pool" />
+
+    <main class="pool-page">
+      <div class="pool-header">
+        <div>
+          <h1>Media Pool</h1>
+          <p>Crew uploads here from the timeclock. Assign each item to a Lead, Quote, Project, or Portfolio.</p>
+        </div>
+        <div class="pool-actions">
+          <button id="selectAllBtn" onclick="selectAllOnTab()">Select all on tab</button>
+          <button id="clearSelBtn" onclick="clearSelection()" style="display:none;">Clear (<span id="clearSelCount">0</span>)</button>
+          <button id="bulkAssignBtn" disabled onclick="openAssignModal()">Assign selected (<span id="selectedCount">0</span>)</button>
+          <button id="bulkDeleteBtn" class="danger" disabled onclick="bulkDelete()">Delete selected</button>
+        </div>
+      </div>
+
+      <div class="pool-tabs">
+        <button class="pool-tab active" data-tab="images" onclick="switchTab('images')">Images (<span id="imagesCount">0</span>)</button>
+        <button class="pool-tab" data-tab="videos" onclick="switchTab('videos')">Videos (<span id="videosCount">0</span>)</button>
+      </div>
+
+      <!-- Tag filters: one chip per distinct crew note across the whole pool -->
+      <div class="pool-filters" id="poolFilters"></div>
+
+      <div class="pool-grid" id="poolGrid">
+        <div class="pool-empty">Loading…</div>
+      </div>
+    </main>
+
+    <!-- Assign Modal -->
+    <div class="modal-overlay" id="assignModal" onclick="if(event.target===this) closeAssignModal()">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Assign <span id="assignCount">0</span> item(s)</h2>
+          <button class="modal-close" onclick="closeAssignModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="field-label">Destination type</div>
+          <div class="type-picker" id="typePicker">
+            <button data-type="lead" onclick="setTargetType('lead')">Lead</button>
+            <button data-type="quote" onclick="setTargetType('quote')">Quote</button>
+            <button data-type="project" onclick="setTargetType('project')">Project</button>
+            <button data-type="portfolio" onclick="setTargetType('portfolio')">Portfolio</button>
+          </div>
+
+          <div class="field-label">Search</div>
+          <input type="text" class="form-input" id="searchInput" placeholder="Type to filter… (or leave blank for most recent)" oninput="onSearch()">
+
+          <div class="field-label">Pick destination</div>
+          <div class="search-results" id="searchResults">
+            <div style="padding:12px; font-size:13px; color:var(--color-text-secondary);">Pick a destination type above.</div>
+          </div>
+
+          <div class="field-label">Caption (optional, applied to all)</div>
+          <textarea class="form-textarea" id="captionInput" placeholder="e.g. bathroom demo — day 1"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel" onclick="closeAssignModal()">Cancel</button>
+          <button class="primary" id="confirmAssignBtn" disabled onclick="confirmAssign()">Assign</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom confirm dialog (replaces native confirm/alert) -->
+    <div class="modal-overlay" id="confirmModal">
+      <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+          <h2 id="confirmTitle">Confirm</h2>
+        </div>
+        <div class="modal-body">
+          <p id="confirmText" style="margin:0; font-size:14px; line-height:1.5;"></p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel" id="confirmCancelBtn">Cancel</button>
+          <button class="primary" id="confirmOkBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script is:inline define:vars={{ STREAM_SUBDOMAIN }}>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+
+      // Mobile nav toggle (same pattern as other admin pages)
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+
+      // Toast
+      function showToast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast visible ' + (type || '');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => { el.classList.remove('visible'); }, 2500);
+      }
+
+      // Copy a media item's URL (image or video) to the clipboard — paste it
+      // into the hero slider builder to reuse it as a slide.
+      function copyMediaUrl(url, btn) {
+        navigator.clipboard.writeText(url)
+          .then(() => {
+            showToast('URL copied', 'success');
+            if (btn) {
+              var orig = btn.innerHTML;
+              btn.classList.add('copied');
+              btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+              setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+            }
+          })
+          .catch(() => showToast('Copy failed', 'error'));
+      }
+      window.copyMediaUrl = copyMediaUrl;
+
+      // Custom confirm — replaces window.confirm so destructive prompts match the
+      // rest of the admin UI. Returns a Promise<boolean>.
+      function customConfirm(message, opts) {
+        opts = opts || {};
+        return new Promise(resolve => {
+          const modal = document.getElementById('confirmModal');
+          document.getElementById('confirmTitle').textContent = opts.title || 'Confirm';
+          document.getElementById('confirmText').textContent = message;
+          const okBtn = document.getElementById('confirmOkBtn');
+          const cancelBtn = document.getElementById('confirmCancelBtn');
+          okBtn.textContent = opts.okLabel || 'Confirm';
+          okBtn.className = opts.danger ? 'primary danger' : 'primary';
+          cancelBtn.textContent = opts.cancelLabel || 'Cancel';
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+
+          const cleanup = (result) => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            okBtn.onclick = null;
+            cancelBtn.onclick = null;
+            modal.onclick = null;
+            document.removeEventListener('keydown', onKey);
+            resolve(result);
+          };
+          const onKey = (e) => {
+            if (e.key === 'Escape') cleanup(false);
+            else if (e.key === 'Enter') cleanup(true);
+          };
+          okBtn.onclick = () => cleanup(true);
+          cancelBtn.onclick = () => cleanup(false);
+          modal.onclick = (e) => { if (e.target === modal) cleanup(false); };
+          document.addEventListener('keydown', onKey);
+        });
+      }
+
+      // ===== State =====
+      let pool = { images: [], videos: [] };
+      let activeTab = 'images';
+      let activeFilter = null; // null = all notes; otherwise exact note string ('' for untagged)
+      let lastSelectedId = null; // anchor for shift-click range
+      const selected = new Set();
+      let assignTargetType = null;
+      let assignTargetId = null;
+      let searchDebounce = null;
+
+      // Build a Cloudflare-resized thumbnail URL for grid display so we don't
+      // load full-resolution phone uploads (~3-5 MB each) just to render a 220px tile.
+      function thumbUrl(rawUrl, size) {
+        try {
+          const u = new URL(rawUrl);
+          return `${u.origin}/cdn-cgi/image/width=${size || 480},quality=70,format=auto${u.pathname}`;
+        } catch { return rawUrl; }
+      }
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      // Safe for a value inside a single-quoted JS string within a double-quoted
+      // on*="" attribute: JS-escape ' and \ (survive HTML decoding), HTML-escape
+      // " and <>. Prevents onclick breakout from e.g. a filename with an apostrophe.
+      function jsAttr(s) {
+        return String(s == null ? '' : s)
+          .replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+          .replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/[\r\n]/g, '');
+      }
+
+      function fmtDate(iso) {
+        if (!iso) return '';
+        const d = new Date(iso.replace(' ', 'T') + (iso.endsWith('Z') ? '' : 'Z'));
+        return isNaN(d.getTime()) ? iso : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      }
+
+      // Lazy-mount the actual <video> for the clicked poster. .play() can
+      // reject if the user clicks somewhere else mid-load — swallow the
+      // AbortError so it doesn't litter the console.
+      function playPoolVideo(posterEl, url, streamUid) {
+        if (!posterEl || !posterEl.parentNode) return;
+        if (streamUid && STREAM_SUBDOMAIN) {
+          // Open the Cloudflare Stream player in a new tab. Embedding it inline
+          // is blocked by the /admin CSP (frame-src), so a top-level navigation
+          // is the reliable way to play it. Falls through to raw playback when
+          // the Stream subdomain isn't configured.
+          window.open('https://' + STREAM_SUBDOMAIN + '/' + streamUid + '/watch', '_blank', 'noopener');
+          return;
+        }
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        video.autoplay = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
+        posterEl.parentNode.replaceChild(video, posterEl);
+        const p = video.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      }
+      window.playPoolVideo = playPoolVideo;
+
+      async function loadPool() {
+        try {
+          const res = await fetch('/api/admin/media-pool/', { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success) { showToast(data.error || 'Failed to load', 'error'); return; }
+          pool.images = data.images || [];
+          pool.videos = data.videos || [];
+          document.getElementById('imagesCount').textContent = pool.images.length;
+          document.getElementById('videosCount').textContent = pool.videos.length;
+          renderFilters();
+          render();
+          // Force the nav badge to catch up — its 30s poll otherwise shows
+          // a stale count after we delete/assign things on this page.
+          if (typeof window.refreshMediaPoolBadge === 'function') window.refreshMediaPoolBadge();
+        } catch {
+          showToast('Failed to load media pool', 'error');
+        }
+      }
+
+      function switchTab(tab) {
+        activeTab = tab;
+        document.querySelectorAll('.pool-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === tab);
+        });
+        render();
+      }
+
+      // Items currently visible: active tab × active note filter.
+      function visibleItems() {
+        const items = activeTab === 'images' ? pool.images : pool.videos;
+        if (activeFilter === null) return items;
+        return items.filter(it => (it.note || '') === activeFilter);
+      }
+
+      // Chips are computed across the WHOLE pool (both tabs) so admin sees every
+      // tag at a glance; the tab + filter combine when rendering the grid.
+      function renderFilters() {
+        const el = document.getElementById('poolFilters');
+        const counts = new Map();
+        for (const it of [...pool.images, ...pool.videos]) {
+          const key = it.note ? it.note.trim() : '';
+          counts.set(key, (counts.get(key) || 0) + 1);
+        }
+        if (counts.size === 0 || (counts.size === 1 && counts.has(''))) {
+          // Only untagged items — no filtering value, hide chips entirely.
+          el.innerHTML = '';
+          activeFilter = null;
+          return;
+        }
+        const total = pool.images.length + pool.videos.length;
+        const chips = [`<button class="filter-chip${activeFilter === null ? ' active' : ''}" data-note="__all__">All <span class="filter-chip-count">${total}</span></button>`];
+        // Tagged first (alphabetical), untagged last for predictable layout.
+        const tagged = [...counts.entries()].filter(([k]) => k !== '').sort((a, b) => a[0].localeCompare(b[0]));
+        const untagged = counts.get('') || 0;
+        for (const [note, count] of tagged) {
+          const active = activeFilter === note ? ' active' : '';
+          chips.push(`<button class="filter-chip${active}" data-note="${escapeHtml(note)}">${escapeHtml(note)} <span class="filter-chip-count">${count}</span></button>`);
+        }
+        if (untagged) {
+          const active = activeFilter === '' ? ' active' : '';
+          chips.push(`<button class="filter-chip${active}" data-note="__none__">No note <span class="filter-chip-count">${untagged}</span></button>`);
+        }
+        el.innerHTML = chips.join('');
+      }
+
+      function setFilter(note) {
+        activeFilter = note;
+        renderFilters();
+        updateSelectAllLabel();
+        render();
+      }
+      window.setFilter = setFilter;
+
+      // Single event delegation for chip clicks — keeps the chip HTML simple
+      // and survives re-renders.
+      document.getElementById('poolFilters').addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-chip');
+        if (!btn) return;
+        const note = btn.dataset.note;
+        if (note === '__all__') setFilter(null);
+        else if (note === '__none__') setFilter('');
+        else setFilter(note);
+      });
+
+      function render() {
+        const grid = document.getElementById('poolGrid');
+        const items = visibleItems();
+        if (!items.length) {
+          const reason = activeFilter !== null ? 'with this tag' : `in the pool right now`;
+          grid.innerHTML = `<div class="pool-empty">No ${activeTab} ${reason}.</div>`;
+          return;
+        }
+        grid.innerHTML = items.map(it => {
+          const isVideo = it.media_type === 'video';
+          const isSelected = selected.has(it.id);
+          // Videos render a static poster div (no <video> tag). Clicking
+          // Play swaps in a real <video> element and starts it. This keeps
+          // grid renders to ~zero network I/O even with 100+ video cards.
+          const poolPoster = (it.stream_uid && STREAM_SUBDOMAIN) ? `https://${STREAM_SUBDOMAIN}/${it.stream_uid}/thumbnails/thumbnail.jpg?time=1s&height=400` : '';
+          const thumb = isVideo
+            ? `<div class="video-poster" onclick="event.stopPropagation(); playPoolVideo(this, '${jsAttr(it.media_url)}', '${jsAttr(it.stream_uid || '')}')">
+                 ${poolPoster ? `<img src="${escapeHtml(poolPoster)}" alt="" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;" onerror="this.style.display='none'" />` : ''}
+                 <div class="play-icon" style="position:relative; z-index:1;"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>
+                 <div class="vp-filename" style="position:relative; z-index:1;">${escapeHtml(it.original_filename || 'video')}</div>
+                 <div style="font-size:10px; opacity:0.6; position:relative; z-index:1;">Tap to play</div>
+               </div><div class="pool-card-video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>VIDEO</div>`
+            : `<img src="${escapeHtml(thumbUrl(it.media_url, 480))}" alt="" loading="lazy" decoding="async">`;
+          return `
+            <div class="pool-card${isSelected ? ' selected' : ''}" data-id="${it.id}">
+              <div class="pool-card-thumb" onclick="toggleSelect(${it.id}, event)">
+                ${thumb}
+                <div class="pool-card-select" onclick="event.stopPropagation(); toggleSelect(${it.id}, event);">${isSelected ? '✓' : ''}</div>
+                <button class="pool-copy" onclick="event.stopPropagation(); copyMediaUrl('${jsAttr(it.media_url)}', this)" title="Copy media URL">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy URL
+                </button>
+              </div>
+              <div class="pool-card-body">
+                ${it.project_number ? `<div class="pool-card-tag" title="Uploaded from the crew page for this project">📁 ${escapeHtml(it.project_number)}${it.project_customer ? ' · ' + escapeHtml(it.project_customer) : ''}</div>` : ''}
+                <div class="pool-card-note">${escapeHtml(it.note) || '<span style="opacity:0.4;">No note</span>'}</div>
+                <div class="pool-card-meta">${escapeHtml(it.uploader_name || 'Crew')} · ${fmtDate(it.created_at)}</div>
+              </div>
+              <div class="pool-card-actions">
+                <a href="${escapeHtml(it.media_url)}" target="_blank" rel="noopener" download>Download</a>
+                <button class="assign" onclick="openAssignModal(${it.id})">Assign</button>
+                <button class="delete" onclick="deleteOne(${it.id})">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Targeted DOM update for one card — replaces the full grid re-render that
+      // was tearing down + re-decoding all visible images on every click.
+      function setCardSelected(id, isSelected) {
+        const card = document.querySelector(`.pool-card[data-id="${id}"]`);
+        if (!card) return;
+        card.classList.toggle('selected', isSelected);
+        const dot = card.querySelector('.pool-card-select');
+        if (dot) dot.textContent = isSelected ? '✓' : '';
+      }
+
+      function toggleSelect(id, evt) {
+        // Shift-click extends a range from the last clicked card. Only meaningful
+        // inside the currently visible item list.
+        if (evt && evt.shiftKey && lastSelectedId != null) {
+          const items = visibleItems();
+          const ids = items.map(i => i.id);
+          const start = ids.indexOf(lastSelectedId);
+          const end = ids.indexOf(id);
+          if (start !== -1 && end !== -1) {
+            const [a, b] = start < end ? [start, end] : [end, start];
+            for (let i = a; i <= b; i++) {
+              if (!selected.has(ids[i])) {
+                selected.add(ids[i]);
+                setCardSelected(ids[i], true);
+              }
+            }
+            lastSelectedId = id;
+            updateBulkBar();
+            return;
+          }
+        }
+        if (selected.has(id)) {
+          selected.delete(id);
+          setCardSelected(id, false);
+        } else {
+          selected.add(id);
+          setCardSelected(id, true);
+        }
+        lastSelectedId = id;
+        updateBulkBar();
+      }
+
+      function selectAllOnTab() {
+        // When a tag filter is active, treat the tag as a "this is one batch"
+        // signal and pull in BOTH tabs (a batch can mix photos + videos).
+        // Without a filter, fall back to tab-scoped — useful for things like
+        // "select all current images and bulk delete".
+        let items;
+        if (activeFilter !== null) {
+          items = [...pool.images, ...pool.videos].filter(it => (it.note || '') === activeFilter);
+        } else {
+          items = visibleItems();
+        }
+        for (const it of items) {
+          if (!selected.has(it.id)) {
+            selected.add(it.id);
+            setCardSelected(it.id, true);
+          }
+        }
+        updateBulkBar();
+      }
+      window.selectAllOnTab = selectAllOnTab;
+
+      // Keep the button label honest about which scope is in play, since the
+      // behavior changes based on whether a tag filter is active.
+      function updateSelectAllLabel() {
+        const btn = document.getElementById('selectAllBtn');
+        if (!btn) return;
+        if (activeFilter !== null) {
+          const label = activeFilter === '' ? 'untagged' : `“${activeFilter}”`;
+          btn.textContent = `Select all ${label} (images + videos)`;
+        } else {
+          btn.textContent = 'Select all on tab';
+        }
+      }
+
+      function clearSelection() {
+        for (const id of selected) setCardSelected(id, false);
+        selected.clear();
+        lastSelectedId = null;
+        updateBulkBar();
+      }
+      window.clearSelection = clearSelection;
+
+      function updateBulkBar() {
+        const count = selected.size;
+        document.getElementById('selectedCount').textContent = count;
+        document.getElementById('bulkAssignBtn').disabled = count === 0;
+        document.getElementById('bulkDeleteBtn').disabled = count === 0;
+        const clearBtn = document.getElementById('clearSelBtn');
+        document.getElementById('clearSelCount').textContent = count;
+        clearBtn.style.display = count > 0 ? 'inline-flex' : 'none';
+      }
+
+      async function deleteOne(id) {
+        const ok = await customConfirm('Delete this item? The file will be removed from storage and cannot be recovered.', { okLabel: 'Delete', danger: true });
+        if (!ok) return;
+        const res = await fetch(`/api/admin/media-pool/?id=${id}`, { method: 'DELETE', credentials: 'include' });
+        const data = await res.json();
+        if (data.success) {
+          selected.delete(id);
+          updateBulkBar();
+          loadPool();
+          showToast('Deleted', 'success');
+        } else {
+          showToast(data.error || 'Delete failed', 'error');
+        }
+      }
+
+      async function bulkDelete() {
+        if (!selected.size) return;
+        const ok = await customConfirm(`Delete ${selected.size} item(s) from the pool?`, { okLabel: 'Delete', danger: true });
+        if (!ok) return;
+        const ids = Array.from(selected);
+        for (const id of ids) {
+          await fetch(`/api/admin/media-pool/?id=${id}`, { method: 'DELETE', credentials: 'include' });
+        }
+        selected.clear();
+        updateBulkBar();
+        loadPool();
+        showToast(`Deleted ${ids.length} item(s)`, 'success');
+      }
+
+      // ===== Assign modal =====
+      function openAssignModal(singleId) {
+        if (singleId != null) {
+          selected.clear();
+          selected.add(singleId);
+          updateBulkBar();
+        }
+        if (!selected.size) { showToast('Select at least one item', 'error'); return; }
+        document.getElementById('assignCount').textContent = selected.size;
+        document.getElementById('assignModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // Reset
+        assignTargetType = null;
+        assignTargetId = null;
+        document.querySelectorAll('.type-picker button').forEach(b => b.classList.remove('active'));
+        document.getElementById('searchInput').value = '';
+        document.getElementById('captionInput').value = '';
+        document.getElementById('searchResults').innerHTML = '<div style="padding:12px; font-size:13px; color:var(--color-text-secondary);">Pick a destination type above.</div>';
+        document.getElementById('confirmAssignBtn').disabled = true;
+      }
+
+      function closeAssignModal() {
+        document.getElementById('assignModal').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      function setTargetType(type) {
+        assignTargetType = type;
+        assignTargetId = null;
+        document.querySelectorAll('.type-picker button').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+        document.getElementById('confirmAssignBtn').disabled = true;
+        runSearch('');
+      }
+
+      function onSearch() {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => runSearch(document.getElementById('searchInput').value), 200);
+      }
+
+      async function runSearch(q) {
+        if (!assignTargetType) return;
+        const results = document.getElementById('searchResults');
+        try {
+          const url = `/api/admin/media-pool/search/?type=${assignTargetType}&q=${encodeURIComponent(q || '')}`;
+          const res = await fetch(url, { credentials: 'include' });
+          const data = await res.json();
+          if (!data.success || !data.results || !data.results.length) {
+            results.innerHTML = '<div style="padding:12px; font-size:13px; color:var(--color-text-secondary);">No matches.</div>';
+            return;
+          }
+          results.innerHTML = data.results.map(r => `
+            <div class="search-result${r.id === assignTargetId ? ' selected' : ''}" data-id="${r.id}" onclick="selectResult(${r.id}, this)">
+              ${escapeHtml(r.label)}
+            </div>
+          `).join('');
+        } catch {
+          results.innerHTML = '<div style="padding:12px; font-size:13px; color:#fca5a5;">Search failed.</div>';
+        }
+      }
+
+      function selectResult(id, el) {
+        assignTargetId = id;
+        document.querySelectorAll('.search-result').forEach(r => r.classList.toggle('selected', r.dataset.id == String(id)));
+        document.getElementById('confirmAssignBtn').disabled = false;
+      }
+
+      async function confirmAssign() {
+        if (!assignTargetType || !assignTargetId || !selected.size) return;
+        const btn = document.getElementById('confirmAssignBtn');
+        btn.disabled = true; btn.textContent = 'Assigning…';
+        try {
+          const res = await fetch('/api/admin/media-pool/assign/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              pool_ids: Array.from(selected),
+              target_type: assignTargetType,
+              target_id: assignTargetId,
+              caption: document.getElementById('captionInput').value.trim() || undefined,
+            }),
+          });
+          const data = await res.json();
+          if (!data.success) {
+            showToast(data.error || 'Assignment failed', 'error');
+            btn.disabled = false; btn.textContent = 'Assign';
+            return;
+          }
+          const errs = (data.errors || []).length;
+          const parts = [`${data.added ?? data.assigned_count} added`];
+          if (data.overwritten) parts.push(`${data.overwritten} overwritten`);
+          if (errs) parts.push(`${errs} skipped`);
+          showToast(parts.join(' · '), errs ? 'error' : 'success');
+          selected.clear();
+          updateBulkBar();
+          closeAssignModal();
+          loadPool();
+        } catch {
+          showToast('Assignment failed', 'error');
+        } finally {
+          btn.disabled = false; btn.textContent = 'Assign';
+        }
+      }
+
+      // Boot
+      loadPool();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,582 @@
+---
+// /project/contract-preview/[token] — customer-facing printable preview.
+// Token-gated public mirror of /admin/projects/[id]/contract/preview, so
+// the customer can hit "Download PDF" on the signing page and get a clean
+// printable document with no admin chrome. Cmd/Ctrl+P → Save as PDF.
+import {
+  COMPANY_HEADER,
+  parseScopes,
+  renderScopesHtml,
+} from '../../../lib/quoteTemplateConstants';
+import { getBrand, SL_BRAND, type Brand } from '../../../lib/brand';
+import { streamThumb } from '../../../lib/stream';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.MK_APP_DB;
+const token = (Astro.params.token || '').trim();
+
+if (!db || !token) {
+  return new Response('Contract not found', { status: 404 });
+}
+
+const row = await db.prepare(`
+  SELECT
+    p.id AS project_id, p.project_number, p.customer_name, p.customer_email,
+    p.customer_phone, p.customer_address, p.customer_city, p.customer_state, p.customer_zip,
+    p.services, p.partner_id,
+    c.id AS contract_id, c.scopes AS contract_scopes,
+    c.total, c.discount, c.start_date,
+    c.down_payment_percent, c.down_payment_count, c.monthly_payment_count,
+    c.cancellation_window_days, c.cancellation_fee_amount,
+    c.late_fee_amount, c.late_fee_grace_days, c.warranty_months,
+    c.payment_schedule, c.terms, c.status, c.contract_token, c.use_as_reference
+  FROM project_contracts c
+  INNER JOIN projects p ON p.id = c.project_id
+  WHERE c.contract_token = ?
+`).bind(token).first() as any;
+
+const brand: Brand = row ? await getBrand(db, row.partner_id) : SL_BRAND;
+
+if (!row) {
+  return new Response('Contract not found', { status: 404 });
+}
+// Voided contracts shouldn't be downloadable.
+if (row.status === 'void') {
+  return new Response('This contract has been voided.', { status: 410 });
+}
+
+const today = new Date().toLocaleDateString('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric',
+});
+function fmtDate(s: string | null | undefined): string {
+  if (!s) return '_______________';
+  try {
+    const trimmed = String(s).split(/[\sT]/)[0];
+    const d = new Date(trimmed + 'T00:00:00');
+    if (isNaN(d.getTime())) return String(s);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch { return String(s); }
+}
+function fmtMoney(n: number | string | null | undefined): string {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return '$0.00';
+  return v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+function formatServices(raw: string | null): string {
+  if (!raw) return '';
+  try {
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return '';
+    return arr.map((s: any) => typeof s === 'string' ? s : s?.type || '').filter(Boolean)
+      .map((t: string) => t.charAt(0).toUpperCase() + t.slice(1)).join(' + ');
+  } catch { return ''; }
+}
+function parseUserAgent(ua: string | null | undefined): string {
+  if (!ua) return 'Unknown device';
+  let browser = 'Browser';
+  if (/Edg\//.test(ua)) browser = 'Edge';
+  else if (/Chrome\//.test(ua) && !/Edg\//.test(ua) && !/OPR\//.test(ua)) browser = 'Chrome';
+  else if (/Firefox\//.test(ua)) browser = 'Firefox';
+  else if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) browser = 'Safari';
+  let os = 'Unknown OS';
+  if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+  else if (/Mac OS X/.test(ua)) os = 'macOS';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  return `${browser} on ${os}`;
+}
+function fmtFullDateTime(s: string | null | undefined): string {
+  if (!s) return '—';
+  try {
+    const trimmed = String(s).replace(' ', 'T') + 'Z';
+    const d = new Date(trimmed);
+    if (isNaN(d.getTime())) return String(s);
+    return d.toLocaleString('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+    });
+  } catch { return String(s); }
+}
+
+// Pull both signatures (contractor pre-applied; customer present once signed).
+type SigRow = {
+  signature_data_url: string;
+  signer_name: string;
+  signed_at: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  consent_text?: string | null;
+};
+let contractorSig: SigRow | null = null;
+let customerSig: SigRow | null = null;
+if (row.contract_id) {
+  const sigs = await db.prepare(
+    "SELECT signature_data_url, signer_name, signed_at, ip_address, user_agent, consent_text, signer_role FROM contract_signatures WHERE project_contract_id = ? ORDER BY signed_at DESC"
+  ).bind(row.contract_id).all() as any;
+  for (const s of (sigs.results || [])) {
+    const sigRow: SigRow = {
+      signature_data_url: s.signature_data_url,
+      signer_name: s.signer_name,
+      signed_at: s.signed_at,
+      ip_address: s.ip_address ?? null,
+      user_agent: s.user_agent ?? null,
+      consent_text: s.consent_text ?? null,
+    };
+    if (s.signer_role === 'contractor' && !contractorSig) contractorSig = sigRow;
+    if (s.signer_role === 'customer' && !customerSig) customerSig = sigRow;
+  }
+}
+
+// Per-payment receipts — populate the schedule's signature column for any
+// payment that's been collected (down, progress, final). Keyed by row id.
+// Mirrors the admin contract preview so the customer sees the same signed,
+// "PAID" payment schedule they signed in person.
+type ReceiptRow = {
+  row_id: string;
+  amount: number;
+  payment_method: string | null;
+  check_number: string | null;
+  customer_name: string | null;
+  customer_signature_data_url: string | null;
+  contractor_name: string | null;
+  contractor_signature_data_url: string | null;
+  collected_at: string | null;
+};
+const receiptByRow: Record<string, ReceiptRow> = {};
+if (row.contract_id) {
+  try {
+    const recs = await db.prepare(
+      `SELECT row_id, amount, payment_method, check_number, customer_name,
+              customer_signature_data_url, contractor_name, contractor_signature_data_url, collected_at
+       FROM payment_receipts WHERE project_contract_id = ?`
+    ).bind(row.contract_id).all() as any;
+    for (const r of (recs.results || [])) receiptByRow[r.row_id] = r as ReceiptRow;
+  } catch (e) {
+    console.error('[contract-preview] payment_receipts query failed (table missing?):', e);
+  }
+}
+// Only show the Signatures column once at least one payment has been collected
+// (keeps a brand-new contract clean; reveals signed/PAID rows after collection).
+const hasReceipts = Object.keys(receiptByRow).length > 0;
+
+const scopes = parseScopes(row.contract_scopes);
+const scopesHtml = renderScopesHtml(scopes);
+let paymentSchedule: Array<{ id: string; kind: 'down' | 'monthly'; label: string; amount: number; due_date: string }> = [];
+try { paymentSchedule = JSON.parse(row.payment_schedule || '[]'); } catch {}
+let terms: any = {};
+try { terms = JSON.parse(row.terms || '{}'); } catch {}
+
+// Starred project photos (same as the live contract page) so the PDF includes them.
+let contractPhotos: Array<{ url: string; isVideo: boolean }> = [];
+if (row?.project_id) {
+  try {
+    const ph = await db.prepare(`
+      SELECT image_url, stream_uid, poster_url FROM project_updates
+      WHERE project_id = ? AND COALESCE(is_starred, 0) = 1 AND image_url IS NOT NULL
+      ORDER BY created_at ASC
+    `).bind(row.project_id).all();
+    contractPhotos = (ph.results || []).map((r: any) => {
+      const isVideo = !!r.stream_uid || /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(r.image_url || '');
+      let url = r.image_url;
+      if (isVideo) url = (r.stream_uid ? streamThumb(r.stream_uid, '1s', env) : '') || r.poster_url || r.image_url;
+      else { try { const u = new URL(r.image_url); url = `${u.origin}/cdn-cgi/image/width=800,quality=80,format=auto${u.pathname}`; } catch {} }
+      return { url, isVideo };
+    });
+  } catch (e) { console.error('[contract-preview] starred photos query failed', e); }
+}
+
+const total = Number(row.total) || 0;
+const discount = Number(row.discount) || 0;
+const downRows = paymentSchedule.filter(r => r.kind === 'down');
+const monthlyRows = paymentSchedule.filter(r => r.kind === 'monthly');
+const downSum = downRows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+const monthlyAmount = monthlyRows[0]?.amount || 0;
+// scheduleTotal sums every row so the footer is correct under either plan;
+// balanceSum is everything that isn't the down payment (monthly installments
+// OR a single balance-on-completion row).
+const scheduleTotal = paymentSchedule.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+const balanceSum = +(scheduleTotal - downSum).toFixed(2);
+const isMonthlyPlan = monthlyRows.length > 0;
+
+const servicesLabel = formatServices(row.services);
+const fullAddress = [row.customer_address, row.customer_city, [row.customer_state, row.customer_zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contract — {row.project_number} — {brand.name}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+      body { margin: 0; background: #f1f5f9; color: #1f2937; font-family: Georgia, 'Times New Roman', Times, serif; font-size: 14px; line-height: 1.5; }
+      .toolbar {
+        position: sticky; top: 0; z-index: 10;
+        background: #0f172a; color: #fff;
+        padding: 10px 18px;
+        display: flex; justify-content: space-between; align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 13px; flex-wrap: wrap; gap: 8px;
+      }
+      .toolbar a { color: #93c5fd; text-decoration: none; }
+      .toolbar a:hover { text-decoration: underline; }
+      .toolbar button {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #ff781d, #e05f00);
+        color: #fff; border: none; border-radius: 8px;
+        font-size: 13px; font-weight: 600; cursor: pointer;
+        font-family: inherit;
+      }
+      .doc-page {
+        max-width: 760px; margin: 24px auto;
+        background: #fff;
+        padding: 40px 48px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+        color: #1f2937;
+      }
+      .doc-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        gap: 20px;
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 16px; margin-bottom: 20px;
+      }
+      .doc-header .subtitle { font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 1px; }
+      .contact-block { text-align: right; font-size: 12px; color: #374151; line-height: 1.55; }
+      .contact-block strong { color: #111827; }
+
+      .info-block {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 14px 18px; margin-bottom: 24px;
+        font-size: 13px; line-height: 1.7;
+      }
+      .info-row { display: grid; grid-template-columns: 130px 1fr; gap: 8px; }
+      .info-row .label {
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: #475569; padding-top: 2px;
+      }
+      .info-row .value { color: #111827; }
+
+      h2.section-h { font-size: 16px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+      .contract-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px; }
+      .contract-photo { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: #1e293b; border: 1px solid #cbd5e1; }
+      .contract-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .contract-photo-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; }
+
+      .pay-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 18px; }
+      .pay-table th, .pay-table td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+      .pay-table th { background: #f8fafc; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #475569; }
+      .pay-table td.amount { text-align: right; font-weight: 700; }
+      .pay-table tr.total td { background: #fef9c3; font-weight: 700; border-top: 2px solid #0f172a; }
+
+      .sig-block { margin: 28px 0 16px; padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
+      .sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 18px; }
+      .sig-line { border-bottom: 1px solid #94a3b8; height: 28px; margin-bottom: 4px; }
+      .sig-caption { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+
+      .term-block { margin: 14px 0; padding: 10px 14px; background: #f8fafc; border-left: 4px solid #cbd5e1; font-size: 12px; line-height: 1.6; }
+
+      .grand-total-row {
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding: 14px 0;
+        border-top: 2px solid #0f172a;
+        border-bottom: 2px solid #0f172a;
+        margin: 24px 0;
+        font-size: 16px; font-weight: 700;
+      }
+      .grand-total-row .amount { font-size: 22px; color: #0f172a; }
+
+      .footnote { font-size: 11px; color: #94a3b8; text-align: center; margin-top: 30px; }
+
+      @media print {
+        body { background: #fff; }
+        .toolbar { display: none; }
+        .doc-page { box-shadow: none; margin: 0; padding: 20px 18px; max-width: 100%; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <div>
+        <a href={`/project/contract/${token}/`}>← Back to contract</a>
+        <span style="margin-left: 10px; opacity: 0.7;">Contract preview · {row.project_number}</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="window.print()">Download / Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="doc-page">
+      <div class="doc-header">
+        <div>
+          {brand.isPartner && brand.logoUrl && (
+            <img src={brand.logoUrl} alt={brand.name} style="display:block; margin-bottom:6px; max-width:240px; max-height:64px; height:auto;" />
+          )}
+          {brand.isPartner && !brand.logoUrl && (
+            <div style="font-size:30px; font-weight:800; color:#1c2b3e; margin-bottom:6px;">{brand.name}</div>
+          )}
+          {!brand.isPartner && (
+          <svg viewBox="0 0 620 240" width="150" height="58" xmlns="http://www.w3.org/2000/svg" style="display:block; margin-bottom:6px;" role="img" aria-label="MannyKnows">
+            <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d" />
+            <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#0f172a" />
+          </svg>
+          )}
+          <div class="subtitle">Home Improvement Contract</div>
+          <div style="font-size:12px; color:#475569; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
+          <div style="font-size:12px; color:#475569;">Contract #: <strong style="color:#111827;">{row.project_number}</strong></div>
+        </div>
+        <div class="contact-block">
+          {brand.isPartner ? (
+            <Fragment>
+              {brand.phoneDisplay && <div><strong>Phone:</strong> {brand.phoneDisplay}</div>}
+              {brand.contactEmail && <div><strong>Email:</strong> {brand.contactEmail}</div>}
+              {brand.websiteLabel && <div><strong>Website:</strong> {brand.websiteLabel}</div>}
+              {brand.addressLines.length > 0 && <div>{brand.addressLines.join(', ')}</div>}
+            </Fragment>
+          ) : (
+            <Fragment>
+              {COMPANY_HEADER.licenseNumber && <div><strong>{COMPANY_HEADER.licenseLabel} #:</strong> {COMPANY_HEADER.licenseNumber}</div>}
+              <div><strong>Contact:</strong> {COMPANY_HEADER.contactName}</div>
+              <div><strong>Phone:</strong> {COMPANY_HEADER.phone}</div>
+              <div><strong>Email:</strong> {COMPANY_HEADER.email}</div>
+              <div><strong>Website:</strong> {COMPANY_HEADER.website.replace(/^https?:\/\//, '')}</div>
+            </Fragment>
+          )}
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-row"><span class="label">Customer</span><span class="value">{row.customer_name || ''}</span></div>
+        {row.customer_phone && (<div class="info-row"><span class="label">Phone</span><span class="value">{row.customer_phone}</span></div>)}
+        {row.customer_email && (<div class="info-row"><span class="label">Email</span><span class="value">{row.customer_email}</span></div>)}
+        <div class="info-row"><span class="label">Work site</span><span class="value">{fullAddress}</span></div>
+        {servicesLabel && (<div class="info-row"><span class="label">Work type</span><span class="value">{servicesLabel}</span></div>)}
+        <div class="info-row"><span class="label">Start date</span><span class="value">{fmtDate(row.start_date)}</span></div>
+      </div>
+
+      <div set:html={scopesHtml}></div>
+
+      {contractPhotos.length > 0 && (
+        <>
+          <h2 class="section-h">Project Photos</h2>
+          <div class="contract-photos">
+            {contractPhotos.map((p) => (
+              <div class="contract-photo">
+                <img src={p.url} alt="Project photo" loading="lazy" />
+                {p.isVideo && <span class="contract-photo-badge">Video</span>}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <div class="grand-total-row">
+        <span>Total — labor and materials</span>
+        <span class="amount">{fmtMoney(total)}</span>
+      </div>
+      {discount > 0 && (
+        <div style="font-size:12px; color:#475569; text-align:right; margin-top:-18px; margin-bottom:18px;">
+          Includes discount of {fmtMoney(discount)}
+        </div>
+      )}
+
+      <h2 class="section-h">Payment Schedule</h2>
+      <p style="font-size:12px; color:#475569; margin:0 0 8px;">
+        {row.down_payment_percent}% down split into {row.down_payment_count} payment{row.down_payment_count === 1 ? '' : 's'},
+        {isMonthlyPlan
+          ? ` with the balance divided into ${row.monthly_payment_count} monthly payment${row.monthly_payment_count === 1 ? '' : 's'} starting after job completion.`
+          : ' with the remaining balance due on completion.'}
+      </p>
+
+      <table class="pay-table">
+        <thead>
+          <tr>
+            <th style="width: 100px;">Kind</th>
+            <th>Label</th>
+            <th style="width: 130px;">Due date</th>
+            <th style="width: 120px; text-align:right;">Amount</th>
+            {hasReceipts && <th style="width: 180px;">Signatures</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {paymentSchedule.map((r) => {
+            const rec = receiptByRow[r.id];
+            return (
+            <tr>
+              <td style="text-transform: capitalize; font-size:12px; color:#475569;">{r.kind}</td>
+              <td>{r.label}</td>
+              <td>{fmtDate(r.due_date)}</td>
+              <td class="amount">{fmtMoney(r.amount)}</td>
+              {hasReceipts && (rec ? (
+                <td style="font-size:9px; color:#475569;">
+                  <div style="display:flex; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:0;">
+                      {rec.customer_signature_data_url && (
+                        <img src={rec.customer_signature_data_url} alt="Client signature" style="display:block; max-height:26px; max-width:100%;" />
+                      )}
+                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                      {rec.contractor_signature_data_url && (
+                        <img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />
+                      )}
+                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:2px; color:#16a34a; font-weight:700;">
+                    PAID {rec.collected_at ? fmtDate(rec.collected_at) : ''}{rec.payment_method ? ` · ${rec.payment_method}` : ''}{rec.check_number ? ` #${rec.check_number}` : ''}
+                  </div>
+                </td>
+              ) : (
+                <td style="font-size:10px; color:#94a3b8;">Client _______ / Contractor _______</td>
+              ))}
+            </tr>
+            );
+          })}
+          {paymentSchedule.length > 0 && (
+            <tr class="total">
+              <td colspan="3">TOTAL</td>
+              <td class="amount">{fmtMoney(scheduleTotal)}</td>
+              {hasReceipts && <td></td>}
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      <div style={`display: grid; grid-template-columns: ${isMonthlyPlan ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 16px; margin: 12px 0 22px;`}>
+        <div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Total down</div>
+          <div style="font-size:18px; font-weight:700;">{fmtMoney(downSum)}</div>
+        </div>
+        <div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Balance</div>
+          <div style="font-size:18px; font-weight:700;">{fmtMoney(balanceSum)}</div>
+        </div>
+        {isMonthlyPlan && (
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Each monthly</div>
+            <div style="font-size:18px; font-weight:700;">{fmtMoney(monthlyAmount)}</div>
+          </div>
+        )}
+      </div>
+
+      <h2 class="section-h">Terms</h2>
+      <div class="term-block">
+        <strong>Cancellation:</strong> Customer has {row.cancellation_window_days} day{row.cancellation_window_days === 1 ? '' : 's'} to cancel for a full refund of the deposit. After that window, a {fmtMoney(row.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.
+      </div>
+      <div class="term-block">
+        <strong>Late payments:</strong> Any invoice or progress payment not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date will be considered late, and a late fee of {fmtMoney(row.late_fee_amount)} will be applied.
+      </div>
+      <div class="term-block">
+        <strong>Workmanship warranty:</strong> {row.warranty_months} months from the project completion date. Covers workmanship failures by our crew; excludes weather, homeowner-caused damage, structural issues, and pre-existing conditions.
+      </div>
+      {terms.marketing_release?.enabled && terms.marketing_release.text && (
+        <div class="term-block">
+          <strong>Marketing release:</strong> {terms.marketing_release.text}
+        </div>
+      )}
+      {terms.reference_request?.enabled && (
+        <div class="term-block">
+          <strong>{terms.reference_request.text || 'Permission to use as a reference / for promotions'}:</strong>{' '}
+          {row.use_as_reference == null ? 'Not answered' : (row.use_as_reference ? 'Yes' : 'No')}
+        </div>
+      )}
+      {Array.isArray(terms.custom_terms) && terms.custom_terms.length > 0 && terms.custom_terms.map((ct: any) => (
+        ct?.text ? (
+          <div class="term-block">
+            {ct.title && <><strong>{ct.title}:</strong>{' '}</>}{ct.text}
+          </div>
+        ) : null
+      ))}
+
+      <h2 class="section-h">Signatures</h2>
+      <div class="sig-block">
+        <div class="sig-row">
+          <div>
+            {customerSig ? (
+              <>
+                <img src={customerSig.signature_data_url} alt={`Signature by ${customerSig.signer_name}`} style="display:block; max-height:80px; max-width:100%; margin-bottom: 4px;" />
+                <div class="sig-caption" style="border-top:1px solid #94a3b8; padding-top:4px;">Customer signature &mdash; {customerSig.signer_name}</div>
+              </>
+            ) : (
+              <>
+                <div class="sig-line"></div>
+                <div class="sig-caption">Customer signature</div>
+              </>
+            )}
+          </div>
+          <div>
+            {contractorSig ? (
+              <>
+                <img src={contractorSig.signature_data_url} alt={`Signature by ${contractorSig.signer_name}`} style="display:block; max-height:80px; max-width:100%; margin-bottom: 4px;" />
+                <div class="sig-caption" style="border-top:1px solid #94a3b8; padding-top:4px;">Contractor signature &mdash; {contractorSig.signer_name}</div>
+              </>
+            ) : (
+              <>
+                <div class="sig-line"></div>
+                <div class="sig-caption">Contractor signature</div>
+              </>
+            )}
+          </div>
+        </div>
+        <div class="sig-row" style="margin-top: 14px;">
+          <div>
+            {customerSig ? (
+              <div class="sig-caption" style="border-bottom:1px solid #94a3b8; padding-bottom:4px;">
+                {customerSig.signer_name} &middot; {fmtDate(customerSig.signed_at)}
+              </div>
+            ) : (
+              <div class="sig-line"></div>
+            )}
+            <div class="sig-caption" style="margin-top:4px;">Printed name / date</div>
+          </div>
+          <div>
+            {contractorSig ? (
+              <div class="sig-caption" style="border-bottom:1px solid #94a3b8; padding-bottom:4px;">
+                {contractorSig.signer_name} &middot; {fmtDate(contractorSig.signed_at)}
+              </div>
+            ) : (
+              <div class="sig-line"></div>
+            )}
+            <div class="sig-caption" style="margin-top:4px;">Printed name / date</div>
+          </div>
+        </div>
+      </div>
+
+      {customerSig && (
+        <div style="margin-top: 22px; padding: 14px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; line-height: 1.6; color: #475569;">
+          <div style="font-weight: 700; color: #0f172a; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Signature Audit Trail</div>
+          <div style="display: grid; grid-template-columns: 130px 1fr; gap: 4px 12px;">
+            <div>Signed by</div><div><strong style="color:#0f172a;">{customerSig.signer_name}</strong></div>
+            <div>Date &amp; time</div><div>{fmtFullDateTime(customerSig.signed_at)}</div>
+            {customerSig.ip_address && (<><div>IP address</div><div>{customerSig.ip_address}</div></>)}
+            {customerSig.user_agent && (<><div>Device</div><div>{parseUserAgent(customerSig.user_agent)}</div></>)}
+            <div>Contract</div><div>#{row.project_number}</div>
+            {customerSig.consent_text && (<><div>Consent</div><div style="font-style: italic;">{customerSig.consent_text}</div></>)}
+          </div>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 10px; color: #94a3b8;">
+            Recorded under the ESIGN Act (15 U.S.C. § 7001 et seq.) and Massachusetts UETA.
+          </div>
+        </div>
+      )}
+
+      <div class="footnote">{brand.name}{brand.phoneDisplay ? ` · ${brand.phoneDisplay}` : ''}{brand.contactEmail ? ` · ${brand.contactEmail}` : ''}</div>
+    </div>
+  <script is:inline>
+  // cdn-cgi thumbnail fallback: swap to the raw R2 URL when transformations 404.
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG' || img.dataset.cdnFallback) return;
+    var m = /^(https?:\/\/[^/]+)\/cdn-cgi\/image\/[^/]+(\/.+)$/.exec(img.src);
+    if (m) { img.dataset.cdnFallback = '1'; img.src = m[1] + m[2]; }
+  }, true);
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+---
+import { SITE_TITLE } from '../../consts';
+const today = new Date();
+const PHONE_DISPLAY = '+1 (413) 361-8451';
+const PHONE_TEL = '+14133618451';
+---
+
+<footer>
+	<div class="footer__inner">
+		<div class="footer__col">
+			<p class="footer__brand">{SITE_TITLE}</p>
+			<p class="footer__location">Springfield, MA · Pioneer Valley</p>
+		</div>
+		<div class="footer__col">
+			<p class="footer__phone">
+				<a href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
+			</p>
+			<p>
+				<a href="/contact">Get a free estimate</a>
+			</p>
+		</div>
+		<div class="footer__col footer__col--nav">
+			<a href="/">Home</a>
+			<a href="/locations/">Service Areas</a>
+			<a href="/blog">Blog</a>
+			<a href="/about">About</a>
+			<a href="/contact">Contact</a>
+		</div>
+	</div>
+	<div class="footer__legal">
+		<p class="copyright-text">
+			&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.<br />
+			by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
+		</p>
+	</div>
+</footer>
+
+<style>
+	footer {
+		background: rgb(var(--black));
+		color: white;
+		padding: 3rem 1.5rem 2rem;
+	}
+	.footer__inner {
+		max-width: 1120px;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2rem;
+	}
+	.footer__col p {
+		margin: 0 0 0.5rem;
+	}
+	.footer__brand {
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	.footer__location {
+		color: rgba(255, 255, 255, 0.7);
+	}
+	.footer__phone a {
+		font-size: 1.2rem;
+		font-weight: 700;
+	}
+	.footer__col--nav {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	footer a {
+		color: white;
+		text-decoration: none;
+	}
+	footer a:hover {
+		color: var(--accent);
+	}
+	.footer__legal {
+		max-width: 1120px;
+		margin: 2rem auto 0;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		text-align: center;
+		color: rgba(255, 255, 255, 0.55);
+		font-size: 0.875rem;
+	}
+	.copyright-text {
+		color: #ffffff;
+		font-size: 0.75rem;
+		margin: 0;
+		line-height: 1.7;
+	}
+	.footer-link {
+		background: linear-gradient(
+			90deg,
+			#ff1493,
+			#ff69b4,
+			#ff6347,
+			#ff4500,
+			#ffa500,
+			#ffd700
+		);
+		background-size: 300% 100%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+		text-decoration: none;
+		font-size: 0.875rem;
+		font-weight: 800;
+		transition: all 0.3s ease;
+	}
+	.footer-link .rocket-emoji {
+		display: inline-block !important;
+		animation: rocketFloat 3s ease-in-out infinite;
+		text-decoration: none !important;
+		font-size: 1.3em !important;
+		transition: transform 0.3s ease !important;
+		background: none !important;
+		background-image: none !important;
+		background-clip: border-box !important;
+		-webkit-background-clip: border-box !important;
+		-webkit-text-fill-color: white !important;
+		color: white !important;
+		text-shadow: none !important;
+		font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+			"Emoji", sans-serif !important;
+		line-height: 1 !important;
+		vertical-align: baseline !important;
+		opacity: 1 !important;
+		filter: none !important;
+	}
+	@keyframes rocketFloat {
+		0%, 100% {
+			transform: translateY(0) translateX(0);
+		}
+		25% {
+			transform: translateY(-3px) translateX(1px);
+		}
+		50% {
+			transform: translateY(-2px) translateX(-1.5px);
+		}
+		75% {
+			transform: translateY(-4px) translateX(1px);
+		}
+	}
+	@media (min-width: 720px) {
+		.footer__inner {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>

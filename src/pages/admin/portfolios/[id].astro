@@ -1,0 +1,235 @@
+---
+// /admin/portfolios/[id] — dedicated portfolio editor page (replaces the
+// modal in /admin/portfolios). The editor JS + CSS are shared with the list
+// page via static assets at /assets/admin-portfolios.{js,css}.
+
+import { AdminAuth } from '../../../lib/adminAuth';
+import AdminNav from '../../../components/AdminNav.astro';
+import AdminMobileDrawer from '../../../components/AdminMobileDrawer.astro';
+import buildInfo from '../../../data/build-info.json';
+import { imagesDeliveryBase } from '../../../lib/heroSlides';
+import { streamSubdomain } from '../../../lib/stream';
+import '../../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+const { id: rawId } = Astro.params;
+const portfolioId = Number(rawId);
+if (!Number.isFinite(portfolioId) || portfolioId <= 0) {
+  return Astro.redirect('/admin/portfolios');
+}
+
+const db = env?.MK_APP_DB;
+let portfolio: any = null;
+if (db) {
+  try {
+    const r = await db.prepare('SELECT * FROM portfolios WHERE id = ?').bind(portfolioId).first();
+    portfolio = r || null;
+  } catch (e) {
+    console.error('Portfolio fetch error:', e);
+  }
+}
+if (!portfolio) {
+  return Astro.redirect('/admin/portfolios');
+}
+
+const userRole = session.role || 'admin';
+const portfolioTitle = portfolio.project_name || `Portfolio #${portfolioId}`;
+
+// Account-specific media config for the shared editor script (see portfolios.astro).
+const mediaConfig = {
+  imagesBase: imagesDeliveryBase(env),
+  streamSubdomain: streamSubdomain(env),
+  publicHost: env?.MEDIA_PUBLIC_HOST || 'images.mannyknows.com',
+  siteHost: 'mannyknows.com',
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{portfolioTitle} — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <!-- Page styles shared with /admin/portfolios — modal, upload area,
+         pair list, gallery list, etc. -->
+    <link rel="stylesheet" href="/assets/admin-portfolios.css" />
+    <style is:global>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .pf-page { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
+      .pf-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 13px;
+        margin-bottom: 14px;
+      }
+      .pf-back:hover { color: var(--color-text-primary); }
+
+      /* Override the modal styling so the editor renders inline as a regular
+         page section instead of a fixed overlay covering everything. */
+      #manualDetailModal.modal-overlay {
+        position: static !important;
+        inset: auto !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        display: block !important;
+        padding: 0;
+      }
+      #manualDetailModal .modal-container.detail-modal-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        max-height: none;
+        height: auto;
+      }
+      /* Hide the "close" buttons inside the editor — there's no modal to close;
+         users navigate back via the standard "Back to portfolios" link above. */
+      #manualDetailModal .mobile-close-header,
+      #manualDetailModal .btn-close-desktop { display: none !important; }
+
+      /* Other modals (delete confirm, lightbox) continue to render as overlays
+         — they're triggered from within the editor and are still modal in
+         nature. Their default CSS (display:none → .show toggles to flex)
+         keeps them hidden until needed. */
+    </style>
+  </head>
+  <body data-role={userRole}>
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="portfolios" />
+      <div class="mobile-header-right">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="portfolios" />
+
+    <main class="pf-page">
+      <a href="/admin/portfolios" class="pf-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to portfolios
+      </a>
+
+      <!-- Editor renders inline here. The shared script (admin-portfolios.js)
+           writes to #manualDetailContent the same way it does on the list
+           page when the modal opens. -->
+      <div class="modal-overlay" id="manualDetailModal">
+        <div class="modal-container detail-modal-container" id="manualDetailContent">
+          <div style="padding:48px 24px; text-align:center; color:var(--color-text-secondary);">
+            Loading portfolio…
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Delete confirmation modal (still modal — triggered from the editor) -->
+    <div class="modal-overlay" id="deleteConfirmModal">
+      <div class="modal-container" style="max-width: 400px;">
+        <div class="modal-header">
+          <h3 class="modal-title" style="color: #ef4444;">Delete Portfolio</h3>
+          <button class="modal-close" onclick="closeDeleteConfirm()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+            This will permanently delete this portfolio and all its media. This action cannot be undone.
+          </p>
+          <p style="color: var(--color-text-primary); margin-bottom: 12px;">
+            Type <strong id="deleteConfirmName" style="color: #ef4444;"></strong> to confirm:
+          </p>
+          <input type="text" id="deleteConfirmInput" class="form-input" placeholder="Type portfolio name here" autocomplete="off" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeDeleteConfirm()">Cancel</button>
+          <button class="btn btn-danger" id="deleteConfirmBtn" disabled onclick="executeDeletePortfolio()">
+            Delete Forever
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <img id="lightboxImage" src="" alt="Full size media" />
+      <video id="lightboxVideo" src="" controls style="display: none;"></video>
+      <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+      <span id="toastMessage"></span>
+    </div>
+
+    <!-- Hidden file input (used by editor upload flow) -->
+    <input type="file" id="fileInput" accept="image/*,image/heic,image/heif,video/*" multiple style="display: none;">
+
+    <!-- Pass the portfolio id and a copy of the data to the editor JS. The
+         editor's openManualDetail() expects to find this when looking for a
+         card on the list — we expose the same shape here. -->
+    <div id="manualDetailRoot" data-portfolio-id={portfolioId} style="display:none;"
+         data-portfolio={JSON.stringify(portfolio)}></div>
+
+    <script is:inline define:vars={{ mediaConfig }}>
+      // Account-specific media endpoints for the shared editor script.
+      window.MK_MEDIA = mediaConfig;
+    </script>
+    <script src={`/assets/admin-portfolios.js?v=${buildInfo.commit}`} is:inline></script>
+    <script is:inline define:vars={{ portfolioId, portfolio }}>
+      // Sub-page bootstrap: synthesize the list-card the editor JS looks for,
+      // then open the editor for this portfolio on load.
+      (function () {
+        const root = document.getElementById('manualDetailRoot');
+        if (!root) return;
+        // openManualDetail() does `document.querySelector('[data-id="manual-<id>"]')`
+        // to find the source card; we plant a stub so it can pluck out the data.
+        const stubCard = document.createElement('div');
+        stubCard.className = 'gallery-card';
+        stubCard.style.display = 'none';
+        stubCard.dataset.id = 'manual-' + portfolioId;
+        stubCard.dataset.type = portfolio.source_project_id != null ? 'project' : 'manual';
+        stubCard.dataset.portfolio = JSON.stringify(portfolio);
+        document.body.appendChild(stubCard);
+
+        // Now open the editor.
+        if (typeof openManualDetail === 'function') {
+          openManualDetail(portfolioId);
+        } else {
+          console.error('[portfolio-sub-page] editor JS did not load');
+        }
+      })();
+    </script>
+  </body>
+</html>

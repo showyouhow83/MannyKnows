@@ -1,0 +1,1019 @@
+---
+// Quote Accept Confirmation Page
+// Customer confirms they want to accept the quote
+import { getBrand, SL_BRAND, type Brand } from '../../../lib/brand';
+export const prerender = false;
+
+const { token } = Astro.params;
+const env = Astro.locals.runtime?.env;
+const db = env?.MK_APP_DB;
+
+let quote: any = null;
+let error: string | null = null;
+let alreadyResponded = false;
+let brand: Brand = SL_BRAND;
+
+if (!token) {
+  error = 'Invalid quote link';
+} else if (!db) {
+  error = 'Service temporarily unavailable';
+} else {
+  // Look up quote by token
+  const result = await db.prepare(
+    'SELECT * FROM quotes WHERE quote_token = ?'
+  ).bind(token).first();
+
+  if (result) brand = await getBrand(db, (result as any).partner_id);
+  if (!result) {
+    error = 'Quote not found or link has expired';
+  } else if (result.status === 'accepted' || result.status === 'project') {
+    alreadyResponded = true;
+    quote = result;
+  } else if (result.status === 'declined') {
+    error = 'This quote has already been declined';
+  } else if (result.status !== 'sent') {
+    error = 'This quote is no longer available';
+  } else {
+    quote = result;
+  }
+}
+
+// Per-quote acceptance mode. Default Simple (one Accept button); Advanced
+// (require_signature=1) shows the ESIGN signature pad.
+const requireSig = !!(quote && (quote as any).require_signature);
+
+// Load multi-attachment list with legacy fallback
+let attachments: Array<{ id: number; label: string; file_url: string }> = [];
+if (quote && db) {
+  try {
+    const attRes = await db.prepare(`
+      SELECT id, label, file_url FROM quote_attachments
+       WHERE quote_id = ? ORDER BY uploaded_at ASC, id ASC
+    `).bind(quote.id).all();
+    attachments = (attRes.results || []) as typeof attachments;
+  } catch {}
+}
+if (attachments.length === 0 && quote?.contract_url) {
+  attachments = [{ id: 0, label: 'Quote PDF', file_url: quote.contract_url as string }];
+}
+
+// Format currency. Quotes round cleanly to dollars — drop cents.
+function formatCurrency(amount?: number): string {
+  const n = Math.round(Number(amount) || 0);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+// Format services
+function formatServices(servicesJson?: string): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    // Mirrors src/data/serviceTypes.ts; custom "other" services pass through.
+    const labels: Record<string, string> = {
+      'kitchen_remodel': 'Kitchen Remodeling',
+      'bathroom_remodel': 'Bathroom Remodeling',
+      'interior_painting': 'Interior Painting',
+      'flooring': 'Flooring',
+      'general_repairs': 'General Repairs & Handyman'
+    };
+    // Handle both array of strings and array of objects with {type, scope}
+    return services.map((s: string | { type?: string }) => {
+      const serviceKey = typeof s === 'string' ? s : (s.type || String(s));
+      return labels[serviceKey] || serviceKey;
+    }).join(', ');
+  } catch {
+    return servicesJson;
+  }
+}
+
+const firstName = quote?.customer_name?.split(' ')[0] || 'there';
+
+// Chrome refuses to load cross-origin PDFs in an iframe even when the
+// response carries no X-Frame-Options / CSP — the PDF plugin treats the
+// embed as a cross-site navigation and blocks it. Workaround: rewrite the
+// iframe src to a same-origin proxy (/r2-local/<path>/) that pipes the
+// bytes through the main Worker. The original URL still gets used for the
+// "Open in new tab" link and the download buttons (no iframe → no block).
+function sameOriginPdfUrl(fileUrl: string): string {
+  try {
+    const u = new URL(fileUrl);
+    if (u.hostname === 'images.mannyknows.com') {
+      return `/r2-local${u.pathname}/`;
+    }
+  } catch {}
+  return fileUrl;
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{alreadyResponded ? 'Quote Already Accepted' : 'Accept Quote'} - {brand.name}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #0f172a;
+      padding: 36px 30px 32px;
+      text-align: center;
+    }
+
+    .header-logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .header-logo {
+      display: inline-block;
+      max-width: 260px;
+      height: auto;
+    }
+
+    .partner-logo {
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      max-height: 70px;
+      max-width: 240px;
+      width: auto;
+    }
+    .footer-logo.partner-logo { max-height: 50px; }
+
+    .gold-bar {
+      height: 4px;
+      background: #ff781d;
+    }
+
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        max-width: 600px;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 24px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .badge-blue {
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+      color: white;
+    }
+
+    .badge-green {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: white;
+    }
+
+    .badge-red {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .message {
+      font-size: 16px;
+      color: #475569;
+      line-height: 1.7;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .contract-embed {
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .contract-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      background: #f8fafc;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Inline PDF preview. Smaller default height (480px) so the section
+       feels integrated rather than dominating the page — the customer's
+       primary action is the signature above; this is a reference. iframe
+       renders the PDF inline on every desktop browser; on iOS Safari it
+       shows a tap-to-open thumbnail of the first page rather than a blank
+       box, so we keep it for all devices. The "Open in new tab" link below
+       is the escape hatch for anyone who wants the full viewer. */
+    .contract-pdf {
+      width: 100%;
+      height: 480px;
+      border: none;
+      display: block;
+      background: #f8fafc;
+    }
+
+    @media (max-width: 640px) {
+      .contract-pdf {
+        height: 320px;
+      }
+    }
+
+    .contract-open-new {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      color: #ff781d;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .contract-open-new:hover { text-decoration: underline; }
+
+    .contract-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      color: #ff781d;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .contract-download:hover {
+      background: #eef2ff;
+    }
+
+    .summary {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-label {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .summary-value {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .total-row {
+      padding-top: 16px;
+      margin-top: 8px;
+    }
+
+    .total-row .summary-value {
+      font-size: 24px;
+      color: #ff781d;
+    }
+
+    /* Action buttons. Desktop: capped width so the green CTA doesn't span the
+       whole card. Mobile: full width (tap target). */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .btn { width: auto; min-width: 220px; padding: 12px 28px; font-size: 15px; }
+      .btn-row { flex-direction: row; justify-content: center; gap: 12px; }
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: none;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* ─── Signature block ─────────────────────────────────────────────── */
+    .sig-block {
+      margin: 24px 0 8px;
+      padding: 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fafbfc;
+    }
+    .sig-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .sig-pad-wrap {
+      position: relative;
+      background: #fff;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .sig-pad-wrap.is-empty::after {
+      content: 'Draw your signature here';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 14px;
+      font-style: italic;
+      pointer-events: none;
+    }
+    .sig-pad {
+      display: block;
+      width: 100%;
+      height: 160px;
+      touch-action: none;     /* let the canvas own touch events */
+      cursor: crosshair;
+      background: transparent;
+    }
+    .sig-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .sig-clear {
+      background: none;
+      border: none;
+      color: #ff781d;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .sig-clear:hover { text-decoration: underline; }
+
+    .sig-name-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-top: 14px;
+      background: #fff;
+      font-family: inherit;
+    }
+    .sig-name-input:focus {
+      outline: none;
+      border-color: #ff781d;
+      box-shadow: 0 0 0 3px rgba(255, 120, 29, 0.1);
+    }
+
+    .sig-consent {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #475569;
+    }
+    .sig-consent input {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #10b981;
+    }
+    .sig-consent label { cursor: pointer; user-select: none; }
+
+    /* Inline error / status messages in place of native alert(). */
+    .form-error {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      border-radius: 0 8px 8px 0;
+      color: #991b1b;
+      font-size: 14px;
+    }
+    .form-error.is-visible { display: block; }
+
+    .warning {
+      background: #fef3c7;
+      border-left: 4px solid #ff781d;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .warning p {
+      font-size: 14px;
+      color: #92400e;
+      margin: 0;
+    }
+
+    .success-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .contact {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .contact p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .contact a {
+      color: #ff781d;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .footer {
+      background: #0f172a;
+      padding: 32px 30px;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .footer-logo-link {
+      display: inline-block;
+      margin-bottom: 14px;
+      text-decoration: none;
+    }
+
+    .footer-logo {
+      display: inline-block;
+      max-width: 180px;
+      height: auto;
+    }
+
+    .footer p {
+      color: rgba(255,255,255,0.9);
+      font-size: 13px;
+      margin: 0 0 12px 0;
+    }
+
+    .footer-links {
+      margin: 12px 0;
+    }
+
+    .footer-links a {
+      color: #ff781d;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-links span {
+      color: rgba(255,255,255,0.5);
+      margin: 0 8px;
+    }
+
+    .footer-certs {
+      color: rgba(255,255,255,0.65) !important;
+      font-size: 11px !important;
+      margin: 12px 0 0 0 !important;
+      letter-spacing: 0.3px;
+    }
+
+    .loading {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #confirm-form.submitted .btn-text {
+      display: none;
+    }
+
+    #confirm-form.submitted .loading {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="https://mannyknows.com" class="header-logo-link">
+      {brand.isPartner && brand.logoUrl
+        ? <img src={brand.logoUrl} alt={brand.name} class="header-logo partner-logo" />
+        : <img src="/logo.svg" alt="MannyKnows" width="180" height="70" class="header-logo" />}
+    </a>
+  </header>
+  <div class="gold-bar"></div>
+
+  <main class="container">
+    {error ? (
+      <div class="card">
+        <div class="card-body">
+          <div class="error-icon">:(</div>
+          <h2>Oops!</h2>
+          <p class="message">{error}</p>
+          <a href="https://mannyknows.com" class="btn btn-secondary" style="display:block; width:fit-content; min-width:220px; margin-left:auto; margin-right:auto;">Return to Website</a>
+        </div>
+        <div class="contact">
+          <p>Need help?</p>
+          <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+        </div>
+      </div>
+    ) : alreadyResponded ? (
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-green">ALREADY ACCEPTED</span>
+        </div>
+        <div class="card-body">
+          <div class="success-icon">&#10003;</div>
+          <h2>Quote Already Accepted!</h2>
+          <p class="message">
+            You've already accepted this quote. Below are your quote documents — open or save them for your records.
+          </p>
+
+          {attachments.length > 0 && (
+            <div class="contract-embed">
+              <div class="contract-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;">{attachments.length === 1 ? attachments[0].label : 'Quote Documents'}</span>
+                <a href={attachments[0].file_url} target="_blank" rel="noopener" class="contract-open-new" title="Open in new tab">
+                  Open in new tab
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+              <iframe src={sameOriginPdfUrl(attachments[0].file_url)} class="contract-pdf" title="Quote PDF preview"></iframe>
+              {attachments.length > 1 && (
+                <div style="display:flex; flex-wrap:wrap; gap:8px; padding:12px;">
+                  {attachments.map(a => (
+                    <a href={a.file_url} target="_blank" rel="noopener" class="contract-download">
+                      {a.label}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div class="summary">
+            <div class="summary-row">
+              <span class="summary-label">Quote #</span>
+              <span class="summary-value">{quote.quote_number}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Services</span>
+              <span class="summary-value">{formatServices(quote.services)}</span>
+            </div>
+            <div class="summary-row total-row">
+              <span class="summary-label">Total</span>
+              <span class="summary-value">{formatCurrency(quote.total)}</span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <a href="https://mannyknows.com" class="btn btn-secondary" style="display:block; width:fit-content; min-width:220px; margin-left:auto; margin-right:auto;">Return to Website</a>
+          </div>
+        </div>
+        <div class="contact">
+          <p>Questions?</p>
+          <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+        </div>
+      </div>
+    ) : (
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-blue">QUOTE #{quote.quote_number}</span>
+        </div>
+        <div class="card-body">
+          <h2>Accept Your Quote</h2>
+          <p class="message">
+            Hi {firstName}! Please review the estimate below, then {requireSig ? 'sign to accept' : 'accept to get started'}.
+          </p>
+
+          {/* Estimate PDF first — the customer reviews the full document before
+              signing. (The old text summary card was removed; the PDF is the
+              source of truth.) iframe renders inline on desktop; iOS Safari
+              shows a tap-to-open thumbnail, and the "Open in new tab" link
+              covers the full viewer. */}
+          {attachments.length > 0 && (
+            <div class="contract-embed" style="margin-bottom:18px;">
+              <div class="contract-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;">{attachments.length === 1 ? attachments[0].label : 'Quote Documents'}</span>
+                <a href={attachments[0].file_url} target="_blank" rel="noopener" class="contract-open-new" title="Open in new tab">
+                  Open in new tab
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
+              <iframe src={sameOriginPdfUrl(attachments[0].file_url)} class="contract-pdf" title="Quote PDF preview"></iframe>
+              {attachments.length > 1 && (
+                <div style="display:flex; flex-wrap:wrap; gap:8px; padding:12px;">
+                  {attachments.map(a => (
+                    <a href={a.file_url} target="_blank" rel="noopener" class="contract-download">
+                      {a.label}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div class="warning">
+            <p><strong>By accepting,</strong> you agree to the quoted price and authorize {brand.name} to begin your project.</p>
+          </div>
+
+          <form id="confirm-form" novalidate>
+            <input type="hidden" name="token" value={token}>
+            <input type="hidden" name="action" value="accept">
+
+            {requireSig && (
+              <div class="sig-block">
+                <div class="sig-label">Sign here</div>
+                <div class="sig-pad-wrap is-empty" id="sigPadWrap">
+                  <canvas class="sig-pad" id="sigPad" width="600" height="160"></canvas>
+                </div>
+                <div class="sig-actions">
+                  <span>Use your finger or mouse to sign.</span>
+                  <button type="button" class="sig-clear" id="sigClearBtn">Clear</button>
+                </div>
+
+                <input
+                  type="text"
+                  id="sigNameInput"
+                  class="sig-name-input"
+                  placeholder="Type your full legal name"
+                  autocomplete="name"
+                  required
+                >
+
+                <div class="sig-consent">
+                  <input type="checkbox" id="sigConsentBox">
+                  <label for="sigConsentBox" id="sigConsentLabel">
+                    I agree that my electronic signature above and my typed name are the legal equivalent of my manual handwritten signature. I authorize {brand.name} to begin the project at the quoted price.
+                  </label>
+                </div>
+              </div>
+            )}
+
+            <div class="form-error" id="formError"></div>
+
+            <div class="btn-row">
+              <button type="submit" class="btn btn-primary" id="acceptBtn" disabled={requireSig}>
+                <span class="btn-text">{requireSig ? 'Confirm — Accept Quote' : 'Accept Quote'}</span>
+                <span class="loading">
+                  <span class="spinner"></span>
+                  Processing…
+                </span>
+              </button>
+              <a href={`/quote/decline/${token}`} class="btn btn-secondary">I'd like to decline</a>
+            </div>
+          </form>
+        </div>
+        <div class="contact">
+          <p>Questions before accepting?</p>
+          <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+        </div>
+      </div>
+    )}
+  </main>
+
+  <footer class="footer">
+    <a href="https://mannyknows.com" class="footer-logo-link">
+      {brand.isPartner && brand.logoUrl
+        ? <img src={brand.logoUrl} alt={brand.name} class="footer-logo partner-logo" />
+        : <img src="/logo.svg" alt="MannyKnows" width="129" height="50" class="footer-logo" />}
+    </a>
+    <p>Remodeling, Painting &amp; Home Repairs &mdash; Springfield, MA</p>
+    <div class="footer-links">
+      <a href="https://mannyknows.com">mannyknows.com</a>
+      <span>|</span>
+      <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+    </div>
+    {/* Partner brands show their mailing address; MK shows no cert line —
+        never re-add license/certification claims without real numbers
+        (CONTENT_TODOS.md: quotes-license-number). */}
+    {brand.isPartner && brand.addressLines.length > 0 && <p class="footer-certs">{brand.addressLines.join(', ')}</p>}
+  </footer>
+
+  <script is:inline>
+    (function() {
+      var form = document.getElementById('confirm-form');
+      if (!form) return;
+
+      var canvas = document.getElementById('sigPad');
+      var padWrap = document.getElementById('sigPadWrap');
+      var clearBtn = document.getElementById('sigClearBtn');
+      var nameInput = document.getElementById('sigNameInput');
+      var consentBox = document.getElementById('sigConsentBox');
+      var consentLabel = document.getElementById('sigConsentLabel');
+      var acceptBtn = document.getElementById('acceptBtn');
+      var errorEl = document.getElementById('formError');
+
+      // Simple mode (no signature pad in the DOM) → the Accept button is the
+      // whole flow. Advanced mode wires up the canvas + consent below.
+      var sigMode = !!canvas;
+      var hasStrokes = false;
+      var ctx = null;
+
+      if (sigMode) {
+      // Canvas setup. Resize for the device pixel ratio so strokes are crisp
+      // on retina screens, and keep the drawing buffer in sync if the layout
+      // width changes (window resize / orientation change).
+      ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        var rect = canvas.getBoundingClientRect();
+        var dpr = window.devicePixelRatio || 1;
+        var prevImage = hasStrokes ? canvas.toDataURL('image/png') : null;
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+        ctx.scale(dpr, dpr);
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = '#0f172a';
+        if (prevImage) {
+          var img = new Image();
+          img.onload = function() { ctx.drawImage(img, 0, 0, rect.width, rect.height); };
+          img.src = prevImage;
+        }
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Pointer events cover mouse + touch + pen with one code path.
+      var drawing = false;
+      function pointToCanvas(e) {
+        var rect = canvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      }
+      canvas.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        canvas.setPointerCapture(e.pointerId);
+        drawing = true;
+        var p = pointToCanvas(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+      });
+      canvas.addEventListener('pointermove', function(e) {
+        if (!drawing) return;
+        var p = pointToCanvas(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        if (!hasStrokes) {
+          hasStrokes = true;
+          padWrap.classList.remove('is-empty');
+          refreshAcceptBtn();
+        }
+      });
+      function endStroke(e) {
+        if (!drawing) return;
+        drawing = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      canvas.addEventListener('pointerup', endStroke);
+      canvas.addEventListener('pointercancel', endStroke);
+      canvas.addEventListener('pointerleave', endStroke);
+
+      clearBtn.addEventListener('click', function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hasStrokes = false;
+        padWrap.classList.add('is-empty');
+        refreshAcceptBtn();
+      });
+
+      function refreshAcceptBtn() {
+        var nameOk = (nameInput.value || '').trim().length >= 2;
+        var consentOk = !!consentBox.checked;
+        acceptBtn.disabled = !(hasStrokes && nameOk && consentOk);
+      }
+      nameInput.addEventListener('input', refreshAcceptBtn);
+      consentBox.addEventListener('change', refreshAcceptBtn);
+      } // end if (sigMode)
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.add('is-visible');
+      }
+      function clearError() {
+        errorEl.classList.remove('is-visible');
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearError();
+
+        var fd = new FormData(form);
+        var token = fd.get('token');
+        var payload = { token: token, action: 'accept' };
+
+        if (sigMode) {
+          if (!hasStrokes) { showError('Please draw your signature in the box above.'); return; }
+          var typedName = (nameInput.value || '').trim();
+          if (typedName.length < 2) { showError('Please type your full legal name.'); return; }
+          if (!consentBox.checked) { showError('Please tick the consent box to accept.'); return; }
+          payload.signature_data_url = canvas.toDataURL('image/png');
+          payload.signer_name = typedName;
+          payload.consent_text = (consentLabel.textContent || '').trim();
+        }
+
+        form.classList.add('submitted');
+
+        try {
+          var response = await fetch('/api/quotes/respond/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          var data = await response.json();
+
+          if (data && data.success) {
+            // Kick off a hidden-iframe autosave of the signed-quote PDF.
+            // The customer's browser loads /admin/quotes/{id}/preview with
+            // ?token=...&signed=1&autosave=1 — the preview page sees the
+            // signature on the DB row, renders the Signatures section, and
+            // html2pdf uploads the resulting "Estimate — Signed" PDF back
+            // to /api/quotes/{id}/attachments using the token for auth.
+            // Best-effort: the success UI shows immediately, the iframe
+            // does its work in the background. If PDF generation fails the
+            // customer never sees an error — admin can backfill later.
+            if (data.quote_id) {
+              try {
+                var iframe = document.createElement('iframe');
+                iframe.style.cssText = 'position:fixed; left:-9999px; top:0; width:900px; height:1400px; border:0; opacity:0; pointer-events:none;';
+                iframe.setAttribute('aria-hidden', 'true');
+                iframe.src = '/admin/quotes/' + data.quote_id + '/preview/?token=' + encodeURIComponent(token) + '&signed=1&autosave=1';
+                document.body.appendChild(iframe);
+                // Self-cleanup after 90s so we don't leave the iframe around.
+                setTimeout(function() { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 90000);
+              } catch (_) {}
+            }
+
+            document.querySelector('.card-body').innerHTML =
+              '<div class="success-icon" style="font-size: 64px; color: #10b981; text-align:center;">&#10003;</div>' +
+              '<h2 style="color: #1e293b; margin-bottom: 16px; text-align: center;">Quote Accepted!</h2>' +
+              '<p class="message" style="color: #475569; text-align: center; margin-bottom: 24px;">' +
+              'Thank you! You can track your project progress online. Questions? Call us at (413) 361-8451.' +
+              '</p>' +
+              '<div class="btn-row" style="justify-content:center;">' +
+                '<a href="https://mannyknows.com" class="btn btn-secondary" style="display:block; width:fit-content; min-width:220px; margin-left:auto; margin-right:auto;">Return to Website</a>' +
+              '</div>';
+          } else {
+            showError((data && data.error) || 'Something went wrong. Please try again.');
+            form.classList.remove('submitted');
+          }
+        } catch (err) {
+          showError('Failed to connect. Please check your internet and try again.');
+          form.classList.remove('submitted');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

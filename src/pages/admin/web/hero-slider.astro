@@ -1,0 +1,684 @@
+---
+// /admin/web/hero-slider — manage the homepage hero carousel slides. One of the
+// sections under the /admin/web hub (blog + more to follow).
+import { AdminAuth } from '../../../lib/adminAuth';
+import AdminNav from '../../../components/AdminNav.astro';
+import AdminPresence from '../../../components/AdminPresence.astro';
+import AdminMobileDrawer from '../../../components/AdminMobileDrawer.astro';
+import BellNotification from '../../../components/BellNotification.astro';
+import { imagesDeliveryBase } from '../../../lib/heroSlides';
+import '../../../styles/admin.css';
+
+export const prerender = false;
+
+const env = (Astro.locals as any).runtime?.env;
+const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+const session = await AdminAuth.validateSession(Astro.request, sessionSecret);
+if (!session.isAuthenticated) {
+  return Astro.redirect('/admin/');
+}
+
+// Cloudflare Images delivery base (env IMAGES_ACCOUNT_HASH) — '' when not
+// configured; the manager then relies on the URLs the upload API returns.
+const IMAGES_BASE = imagesDeliveryBase(env);
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hero Slider — MannyKnows Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
+    </script>
+    <style>
+      body {
+        min-height: 100vh;
+        background: var(--color-background);
+        color: var(--color-text-primary);
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .web-page { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+      .web-page h1 { margin: 0 0 8px; font-size: 28px; font-weight: 700; }
+      .web-page p.subtitle { color: var(--color-text-secondary); margin: 0 0 28px; }
+      .web-back { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+      .web-back:hover { color: var(--color-text-primary); }
+
+      /* Section grid — same glass card pattern used elsewhere in admin. */
+      .web-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .web-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        text-decoration: none;
+        color: inherit;
+        transition: filter 0.15s, transform 0.15s;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .web-card[data-disabled="1"] { opacity: 0.55; cursor: default; }
+      .web-card:not([data-disabled="1"]):hover { filter: brightness(1.08); }
+      .web-card-title { font-size: 15px; font-weight: 700; }
+      .web-card-desc { font-size: 13px; color: var(--color-text-secondary); }
+      .web-card-soon {
+        margin-top: 6px;
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        color: #fbbf24;
+      }
+    </style>
+  </head>
+  <body>
+  <AdminPresence />
+    <header class="admin-header">
+      <a href="/admin/dashboard" class="admin-logo-link">
+        <div class="logo-gradient-wrapper"></div>
+        <span class="admin-badge">Admin</span>
+      </a>
+      <AdminNav active="web" />
+      <!-- Mobile: Bell + Hamburger (matches dashboard structure) -->
+      <div class="mobile-header-right">
+        <BellNotification place="mobile" />
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <BellNotification place="desktop" />
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <AdminMobileDrawer active="web" />
+
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('admin-theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+      function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+      }
+      async function logout() {
+        await fetch('/api/admin/logout/', { method: 'POST' });
+        window.location.href = '/admin';
+      }
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      function openMobileNav() {
+        mobileNavToggle?.classList.add('active');
+        mobileNavPanel?.classList.add('active');
+        mobileNavOverlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav() {
+        mobileNavToggle?.classList.remove('active');
+        mobileNavPanel?.classList.remove('active');
+        mobileNavOverlay?.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      mobileNavToggle?.addEventListener('click', () => {
+        if (mobileNavPanel?.classList.contains('active')) closeMobileNav();
+        else openMobileNav();
+      });
+      mobileNavClose?.addEventListener('click', closeMobileNav);
+      mobileNavOverlay?.addEventListener('click', closeMobileNav);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNavPanel?.classList.contains('active')) closeMobileNav();
+      });
+    </script>
+
+    <main class="web-page">
+      <a href="/admin/web/" class="web-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Web
+      </a>
+      <h1>Hero Slider</h1>
+      <p class="subtitle">Slides shown in the homepage hero carousel. Reorder with the arrows, toggle visibility, and keep titles &amp; descriptions short so they fit the slide design.</p>
+
+      <section class="hm-section">
+        <div class="hm-head">
+          <div class="hm-head-text"></div>
+          <button type="button" class="hm-add-btn" id="hmAddBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            New slide
+          </button>
+        </div>
+        <div id="hmList" class="hm-list"><div class="hm-loading">Loading slides…</div></div>
+        <input type="file" id="hmFileInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+        <div id="hmToast" class="hm-toast" role="status" aria-live="polite"></div>
+
+        <!-- New slide modal: choose an image (upload OR URL), fill everything, then create. -->
+        <div class="hm-modal" id="hmModal">
+          <div class="hm-modal-backdrop" data-act="modal-close"></div>
+          <div class="hm-modal-card" role="dialog" aria-label="New slide">
+            <div class="hm-modal-head">
+              <h3 class="hm-modal-title">New slide</h3>
+              <button type="button" class="hm-modal-x" data-act="modal-close" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <div class="hm-modal-body">
+              <div class="hm-field">
+                <label class="hm-label">Desktop image</label>
+                <p class="hm-size-hint">Wide <strong>16:9</strong> photo — about <strong>1600&times;900px</strong> (min 1200&times;675). Shows full-width on desktop. JPG/WebP, ideally under ~500&nbsp;KB.</p>
+                <div class="hm-modal-imgwrap">
+                  <img id="hmmThumb" class="hm-modal-thumb" alt="" style="display:none" />
+                  <div id="hmmPlaceHolder" class="hm-modal-imgph">No image yet — upload one or paste a URL</div>
+                </div>
+                <div class="hm-media-btns">
+                  <button type="button" class="hm-img-btn" data-act="modal-upload">Upload</button>
+                  <button type="button" class="hm-img-btn" data-act="modal-url-toggle">From URL</button>
+                </div>
+                <div class="hm-url-actions" id="hmmUrlRow" style="display:none">
+                  <input type="url" class="hm-input hm-urlfield" id="hmmUrlInput" placeholder="Paste an image URL (e.g. copied from a portfolio or the media pool)" />
+                  <button type="button" class="hm-save" data-act="modal-url-apply">Use</button>
+                </div>
+              </div>
+              <div class="hm-field">
+                <label class="hm-label">Mobile image <span class="hm-opt">(optional)</span></label>
+                <p class="hm-size-hint">Taller <strong>portrait</strong> crop — about <strong>800&times;1000px</strong> (4:5). Leave empty and the desktop image is used on phones.</p>
+                <div class="hm-modal-imgwrap hm-modal-imgwrap-mobile">
+                  <img id="hmmThumbMobile" class="hm-modal-thumb" alt="" style="display:none" />
+                  <div id="hmmPlaceHolderMobile" class="hm-modal-imgph">Uses the desktop image unless you add one</div>
+                </div>
+                <div class="hm-media-btns">
+                  <button type="button" class="hm-img-btn" data-act="modal-upload-mobile">Upload</button>
+                  <button type="button" class="hm-img-btn" data-act="modal-url-toggle-mobile">From URL</button>
+                </div>
+                <div class="hm-url-actions" id="hmmUrlRowMobile" style="display:none">
+                  <input type="url" class="hm-input hm-urlfield" id="hmmUrlInputMobile" placeholder="Paste a mobile image URL" />
+                  <button type="button" class="hm-save" data-act="modal-url-apply-mobile">Use</button>
+                </div>
+              </div>
+              <div class="hm-field"><div class="hm-label-row"><label class="hm-label">Title</label><span class="hm-count" id="hmmTitleCount">0/34</span></div>
+                <input class="hm-input" id="hmmTitle" maxlength="34" placeholder="e.g. Kitchen Remodeling" /></div>
+              <div class="hm-field"><div class="hm-label-row"><label class="hm-label">Description</label><span class="hm-count" id="hmmDescCount">0/120</span></div>
+                <textarea class="hm-input hm-textarea" id="hmmDesc" maxlength="120" rows="2" placeholder="Short supporting line"></textarea></div>
+              <div class="hm-field"><div class="hm-label-row"><label class="hm-label">Link</label></div>
+                <input class="hm-input" id="hmmLink" placeholder="/contact/ or https://…" /></div>
+              <label class="hm-toggle hm-modal-visible"><input type="checkbox" id="hmmVisible" checked /><span>Visible (published)</span></label>
+              <p class="hm-modal-hint">Leave this off to save a draft — the slide is created but won't appear on the site until you make it visible.</p>
+            </div>
+            <div class="hm-modal-foot">
+              <button type="button" class="hm-save hm-cancel" data-act="modal-close">Cancel</button>
+              <button type="button" class="hm-save" id="hmmCreate" data-act="modal-create">Create slide</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <style is:global>
+      /* Hero Slider manager — cards are injected via JS, so styles must be global. */
+      .hm-section { margin-top: 4px; }
+      .hm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+      .hm-head-text { flex: 1; min-width: 240px; }
+      .hm-title { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+      .hm-sub { margin: 0; font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; max-width: 680px; }
+      .hm-add-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: none; border-radius: var(--radius-lg); cursor: pointer; font-size: 14px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--color-primary, #ff781d) 0%, #6366f1 100%); box-shadow: 0 2px 8px rgba(255,120,29,0.25); white-space: nowrap; }
+      .hm-add-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(255,120,29,0.35); }
+      .hm-list { display: flex; flex-direction: column; gap: 14px; }
+      .hm-loading, .hm-empty { padding: 24px; text-align: center; color: var(--color-text-secondary); font-size: 14px; background: var(--glass-bg); border: 1px dashed var(--glass-border); border-radius: var(--radius-lg); }
+      .hm-card { display: flex; gap: 16px; padding: 14px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); }
+      .hm-media { flex: 0 0 200px; display: flex; flex-direction: column; gap: 12px; }
+      .hm-media-slot { display: flex; flex-direction: column; gap: 6px; }
+      .hm-media-cap { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-text-secondary); }
+      .hm-thumb { width: 100%; aspect-ratio: 1200 / 675; object-fit: cover; border-radius: var(--radius-md); background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); }
+      .hm-thumb-mobile { aspect-ratio: 4 / 5; }
+      .hm-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-text-secondary); }
+      .hm-size-hint { margin: 4px 0 8px; font-size: 12px; line-height: 1.5; color: var(--color-text-secondary); }
+      .hm-size-hint strong { color: var(--color-text-primary); }
+      .hm-opt { font-weight: 500; color: var(--color-text-secondary); font-size: 12px; }
+      .hm-modal-imgwrap-mobile { aspect-ratio: 4 / 5; max-width: 220px; }
+      .hm-img-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--color-text-primary); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); }
+      .hm-img-btn:hover { background: var(--glass-bg-hover); }
+      .hm-media-btns { display: flex; gap: 6px; }
+      .hm-media-btns .hm-img-btn { flex: 1; }
+      .hm-urlfield { font-size: 12px; padding: 7px 9px; }
+      .hm-url-actions { display: flex; gap: 6px; margin-top: 6px; }
+      .hm-url-actions .hm-save { flex: 1; padding: 6px 10px; font-size: 12px; }
+      .hm-urladd { display: flex; gap: 8px; margin: 0 0 14px; flex-wrap: wrap; }
+      .hm-urladd-input { flex: 1; min-width: 200px; }
+      .hm-urladd-btn { white-space: nowrap; }
+      /* New slide modal */
+      .hm-modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+      .hm-modal.open { display: flex; }
+      .hm-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+      .hm-modal-card { position: relative; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; background: var(--color-background-light, #1e1e2e); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: 0 24px 60px rgba(0,0,0,0.45); }
+      .hm-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--glass-border); }
+      .hm-modal-title { margin: 0; font-size: 17px; font-weight: 700; }
+      .hm-modal-x { background: none; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 4px; border-radius: 8px; display: inline-flex; line-height: 0; }
+      .hm-modal-x:hover { background: var(--glass-bg-hover); color: var(--color-text-primary); }
+      .hm-modal-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+      .hm-modal-imgwrap { width: 100%; aspect-ratio: 1200 / 675; border-radius: var(--radius-md); overflow: hidden; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; }
+      .hm-modal-thumb { width: 100%; height: 100%; object-fit: cover; }
+      .hm-modal-imgph { font-size: 13px; color: var(--color-text-secondary); padding: 16px; text-align: center; }
+      .hm-modal-visible { margin-top: 2px; }
+      .hm-modal-hint { margin: 0; font-size: 12px; color: var(--color-text-secondary); line-height: 1.45; }
+      .hm-modal-foot { display: flex; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--glass-border); }
+      .hm-modal-foot .hm-save { flex: 1; padding: 11px; }
+      .hm-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+      .hm-field { display: flex; flex-direction: column; gap: 4px; }
+      .hm-label-row { display: flex; align-items: center; justify-content: space-between; }
+      .hm-label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+      .hm-count { font-size: 11px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+      .hm-input { width: 100%; box-sizing: border-box; padding: 9px 11px; font-size: 14px; font-family: inherit; color: var(--color-text-primary); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); }
+      .hm-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(255,120,29,0.12); }
+      .hm-textarea { resize: vertical; line-height: 1.4; }
+      .hm-actions { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+      .hm-grow { flex: 1; }
+      .hm-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; user-select: none; }
+      .hm-toggle input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--color-primary); }
+      .hm-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; cursor: pointer; color: var(--color-text-secondary); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); }
+      .hm-icon:hover:not(:disabled) { background: var(--glass-bg-hover); color: var(--color-text-primary); }
+      .hm-icon:disabled { opacity: 0.35; cursor: not-allowed; }
+      .hm-icon.hm-danger:hover:not(:disabled) { color: #fca5a5; border-color: rgba(239,68,68,0.4); }
+      .hm-save { padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--color-primary, #ff781d) 0%, #6366f1 100%); border: none; border-radius: var(--radius-sm); }
+      .hm-save:hover { filter: brightness(1.07); }
+      .hm-save:disabled { opacity: 0.6; cursor: wait; }
+      .hm-cancel { background: var(--glass-bg); color: var(--color-text-secondary); border: 1px solid var(--glass-border); }
+      .hm-danger-btn { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+      .hm-confirm-text { font-size: 13px; font-weight: 600; color: #fca5a5; }
+      .hm-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); padding: 11px 18px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; color: #fff; background: #1e293b; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.35); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 1000; }
+      .hm-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      .hm-toast.ok { background: #16a34a; }
+      .hm-toast.err { background: #dc2626; }
+      @media (max-width: 640px) {
+        .hm-card { flex-direction: column; }
+        .hm-media { flex-basis: auto; }
+      }
+    </style>
+
+    <script is:inline define:vars={{ IMAGES_BASE }}>
+      (function heroManager() {
+        var API = '/api/admin/hero-slides/'; // trailing slash required (trailingSlash: always)
+        // Cloudflare Images delivery base, injected from env (IMAGES_ACCOUNT_HASH).
+        // Empty when unconfigured — uploads then use the URLs the API returns.
+        function heroUrls(id) {
+          if (!IMAGES_BASE || !id) return { desktop: '', mobile: '' };
+          return { desktop: IMAGES_BASE + '/' + id + '/w=1200,q=78,f=auto', mobile: IMAGES_BASE + '/' + id + '/w=640,q=65,f=auto' };
+        }
+        var LIMITS = { title: 34, description: 120 };
+        var slides = [];
+        var pendingFor = null; // 'new' to create, or a slide id to replace its image
+
+        var listEl = document.getElementById('hmList');
+        var fileInput = document.getElementById('hmFileInput');
+        var addBtn = document.getElementById('hmAddBtn');
+        var toastEl = document.getElementById('hmToast');
+        var urlInput = document.getElementById('hmUrlInput');
+        var urlAddBtn = document.getElementById('hmUrlAddBtn');
+        var modalEl = document.getElementById('hmModal');
+        var mThumb = document.getElementById('hmmThumb');
+        var mPlace = document.getElementById('hmmPlaceHolder');
+        var mUrlRow = document.getElementById('hmmUrlRow');
+        var mUrlInput = document.getElementById('hmmUrlInput');
+        var mTitle = document.getElementById('hmmTitle');
+        var mDesc = document.getElementById('hmmDesc');
+        var mLink = document.getElementById('hmmLink');
+        var mVisible = document.getElementById('hmmVisible');
+        var mTitleCount = document.getElementById('hmmTitleCount');
+        var mDescCount = document.getElementById('hmmDescCount');
+        var modalImage = { desktop: '', mobile: '' }; // chosen for the new slide
+        var pendingKind = 'desktop'; // which viewport the next upload/URL targets
+        var mThumbM = document.getElementById('hmmThumbMobile');
+        var mPlaceM = document.getElementById('hmmPlaceHolderMobile');
+        var mUrlRowM = document.getElementById('hmmUrlRowMobile');
+        var mUrlInputM = document.getElementById('hmmUrlInputMobile');
+        if (!listEl || !fileInput || !addBtn) return;
+
+        var toastTimer = null;
+        function toast(msg, kind) {
+          toastEl.textContent = msg;
+          toastEl.className = 'hm-toast show' + (kind ? ' ' + kind : '');
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { toastEl.className = 'hm-toast'; }, 2600);
+        }
+        function esc(s) {
+          return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        var ICONS = {
+          up: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>',
+          down: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>',
+          del: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>',
+          img: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+          link: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+        };
+
+        function cardHtml(s, i, n) {
+          var checked = (s.enabled === 0) ? '' : 'checked';
+          var tLen = (s.title || '').length, dLen = (s.description || '').length;
+          var mobileThumb = s.image_mobile_url
+            ? '<img class="hm-thumb hm-thumb-mobile" src="' + esc(s.image_mobile_url) + '" alt="" loading="lazy" />'
+            : '<div class="hm-thumb hm-thumb-mobile hm-thumb-empty">Uses desktop</div>';
+          return '<div class="hm-card" data-id="' + s.id + '">'
+            + '<div class="hm-media">'
+            +   '<div class="hm-media-slot">'
+            +     '<span class="hm-media-cap">Desktop · 16:9</span>'
+            +     '<img class="hm-thumb" src="' + esc(s.image_url || '') + '" alt="" loading="lazy" />'
+            +     '<div class="hm-media-btns">'
+            +       '<button type="button" class="hm-img-btn" data-act="image">' + ICONS.img + ' Upload</button>'
+            +       '<button type="button" class="hm-img-btn" data-act="image-url">' + ICONS.link + ' URL</button>'
+            +     '</div>'
+            +   '</div>'
+            +   '<div class="hm-media-slot">'
+            +     '<span class="hm-media-cap">Mobile · 4:5' + (s.image_mobile_url ? '' : ' · optional') + '</span>'
+            +     mobileThumb
+            +     '<div class="hm-media-btns">'
+            +       '<button type="button" class="hm-img-btn" data-act="image-mobile">' + ICONS.img + ' Upload</button>'
+            +       '<button type="button" class="hm-img-btn" data-act="image-url-mobile">' + ICONS.link + ' URL</button>'
+            +     '</div>'
+            +   '</div>'
+            + '</div>'
+            + '<div class="hm-body">'
+            +   '<div class="hm-field"><div class="hm-label-row"><label class="hm-label">Title</label><span class="hm-count" data-count="title">' + tLen + '/' + LIMITS.title + '</span></div>'
+            +     '<input class="hm-input" data-field="title" maxlength="' + LIMITS.title + '" value="' + esc(s.title) + '" placeholder="e.g. Kitchen Remodeling" /></div>'
+            +   '<div class="hm-field"><div class="hm-label-row"><label class="hm-label">Description</label><span class="hm-count" data-count="description">' + dLen + '/' + LIMITS.description + '</span></div>'
+            +     '<textarea class="hm-input hm-textarea" data-field="description" maxlength="' + LIMITS.description + '" rows="2" placeholder="Short supporting line">' + esc(s.description) + '</textarea></div>'
+            +   '<div class="hm-field"><div class="hm-label-row"><label class="hm-label">Link</label></div>'
+            +     '<input class="hm-input" data-field="link_url" value="' + esc(s.link_url) + '" placeholder="/contact/ or https://…" /></div>'
+            +   '<div class="hm-actions">'
+            +     '<label class="hm-toggle"><input type="checkbox" data-act="enabled" ' + checked + ' /><span>Visible</span></label>'
+            +     '<span class="hm-grow"></span>'
+            +     '<button type="button" class="hm-icon" data-act="up" title="Move up"' + (i === 0 ? ' disabled' : '') + '>' + ICONS.up + '</button>'
+            +     '<button type="button" class="hm-icon" data-act="down" title="Move down"' + (i === n - 1 ? ' disabled' : '') + '>' + ICONS.down + '</button>'
+            +     '<button type="button" class="hm-icon hm-danger" data-act="delete" title="Delete slide">' + ICONS.del + '</button>'
+            +     '<button type="button" class="hm-save" data-act="save">Save</button>'
+            +   '</div>'
+            + '</div>'
+            + '</div>';
+        }
+
+        function render() {
+          if (!slides.length) { listEl.innerHTML = '<div class="hm-empty">No slides yet. Click <strong>Add slide</strong> to create one.</div>'; return; }
+          var n = slides.length;
+          listEl.innerHTML = slides.map(function (s, i) { return cardHtml(s, i, n); }).join('');
+        }
+        function findSlide(id) { for (var i = 0; i < slides.length; i++) { if (String(slides[i].id) === String(id)) return slides[i]; } return null; }
+
+        async function load() {
+          try {
+            var res = await fetch(API, { credentials: 'include' });
+            var data = await res.json();
+            if (!data.success) { listEl.innerHTML = '<div class="hm-empty">Failed to load slides.</div>'; return; }
+            if (data.limits) LIMITS = data.limits;
+            slides = data.slides || [];
+            render();
+          } catch (e) { listEl.innerHTML = '<div class="hm-empty">Failed to load slides.</div>'; }
+        }
+
+        async function patch(body) {
+          try {
+            var res = await fetch(API, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) });
+            var data = await res.json();
+            if (!data.success) { toast(data.error || 'Save failed', 'err'); return false; }
+            return true;
+          } catch (e) { toast('Network error', 'err'); return false; }
+        }
+        async function del(id) {
+          try {
+            var res = await fetch(API + '?id=' + encodeURIComponent(id), { method: 'DELETE', credentials: 'include' });
+            var data = await res.json();
+            if (!data.success) { toast(data.error || 'Delete failed', 'err'); return false; }
+            return true;
+          } catch (e) { toast('Network error', 'err'); return false; }
+        }
+        // Resolve/cache an image URL into our CDN → { desktop, mobile } or null.
+        // URLs already on our CDN are reused as-is; others are copied to
+        // Cloudflare Images so the same optimized variants apply.
+        async function cacheUrl(url) {
+          toast('Caching image…');
+          try {
+            var res = await fetch('/api/admin/cache-image/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ url: url }) });
+            var data = await res.json();
+            if (!data.success) { toast(data.error || 'Could not use that URL', 'err'); return null; }
+            return { desktop: data.desktop, mobile: data.mobile };
+          } catch (e) { toast('Network error', 'err'); return null; }
+        }
+
+        // Live character counters
+        listEl.addEventListener('input', function (e) {
+          var t = e.target;
+          var field = t.getAttribute && t.getAttribute('data-field');
+          if (!field || !LIMITS[field]) return;
+          var card = t.closest('.hm-card');
+          var counter = card && card.querySelector('[data-count="' + field + '"]');
+          if (counter) counter.textContent = t.value.length + '/' + LIMITS[field];
+        });
+
+        // Enabled toggle
+        listEl.addEventListener('change', async function (e) {
+          var t = e.target;
+          if (!(t.getAttribute && t.getAttribute('data-act') === 'enabled')) return;
+          var card = t.closest('.hm-card'); var id = card.getAttribute('data-id');
+          var enabled = t.checked ? 1 : 0;
+          var ok = await patch({ id: Number(id), enabled: enabled });
+          if (ok) { var s = findSlide(id); if (s) s.enabled = enabled; toast(enabled ? 'Slide visible' : 'Slide hidden', 'ok'); }
+          else { t.checked = !t.checked; }
+        });
+
+        // Buttons
+        listEl.addEventListener('click', async function (e) {
+          var btn = e.target.closest('[data-act]');
+          if (!btn) return;
+          var act = btn.getAttribute('data-act');
+          var card = btn.closest('.hm-card'); if (!card) return;
+          var id = card.getAttribute('data-id');
+
+          if (act === 'save') {
+            var title = card.querySelector('[data-field="title"]').value;
+            var description = card.querySelector('[data-field="description"]').value;
+            var link_url = card.querySelector('[data-field="link_url"]').value;
+            btn.disabled = true;
+            var ok = await patch({ id: Number(id), title: title, description: description, link_url: link_url });
+            btn.disabled = false;
+            if (ok) { var s = findSlide(id); if (s) { s.title = title; s.description = description; s.link_url = link_url; } toast('Slide saved', 'ok'); }
+          } else if (act === 'image') {
+            pendingFor = Number(id); pendingKind = 'desktop'; fileInput.value = ''; fileInput.click();
+          } else if (act === 'image-mobile') {
+            pendingFor = Number(id); pendingKind = 'mobile'; fileInput.value = ''; fileInput.click();
+          } else if (act === 'image-url' || act === 'image-url-mobile') {
+            var ukind = (act === 'image-url-mobile') ? 'mobile' : 'desktop';
+            var slot = btn.closest('.hm-media-slot');
+            var mb = slot ? slot.querySelector('.hm-media-btns') : card.querySelector('.hm-media-btns');
+            if (mb) mb.innerHTML = '<input type="url" class="hm-input hm-urlfield" placeholder="Paste image URL" />'
+              + '<div class="hm-url-actions"><button type="button" class="hm-save hm-cancel" data-act="image-url-cancel">Cancel</button>'
+              + '<button type="button" class="hm-save" data-act="image-url-apply" data-kind="' + ukind + '">Apply</button></div>';
+            var f = mb ? mb.querySelector('.hm-urlfield') : null; if (f) f.focus();
+          } else if (act === 'image-url-cancel') {
+            render();
+          } else if (act === 'image-url-apply') {
+            var akind = btn.getAttribute('data-kind') || 'desktop';
+            var aslot = btn.closest('.hm-media-slot');
+            var field = aslot ? aslot.querySelector('.hm-urlfield') : card.querySelector('.hm-urlfield');
+            var url = field ? field.value.trim() : '';
+            if (!url) { toast('Paste a URL first', 'err'); return; }
+            btn.disabled = true;
+            var cu = await cacheUrl(url);
+            btn.disabled = false;
+            if (cu) {
+              var ubody = (akind === 'mobile') ? { id: Number(id), image_mobile_url: cu.mobile } : { id: Number(id), image_url: cu.desktop };
+              var okc = await patch(ubody);
+              if (okc) { var sc = findSlide(id); if (sc) { if (akind === 'mobile') sc.image_mobile_url = cu.mobile; else sc.image_url = cu.desktop; } render(); toast('Image updated', 'ok'); }
+            }
+          } else if (act === 'up' || act === 'down') {
+            var idx = slides.findIndex(function (x) { return String(x.id) === String(id); });
+            var to = act === 'up' ? idx - 1 : idx + 1;
+            if (idx < 0 || to < 0 || to >= slides.length) return;
+            var tmp = slides[idx]; slides[idx] = slides[to]; slides[to] = tmp;
+            render();
+            var ok2 = await patch({ reorder: slides.map(function (x) { return x.id; }) });
+            if (ok2) toast('Order saved', 'ok');
+          } else if (act === 'delete') {
+            var actions = card.querySelector('.hm-actions');
+            if (actions) actions.innerHTML = '<span class="hm-confirm-text">Delete this slide?</span><span class="hm-grow"></span>'
+              + '<button type="button" class="hm-save hm-cancel" data-act="cancel-delete">Cancel</button>'
+              + '<button type="button" class="hm-save hm-danger-btn" data-act="confirm-delete">Delete</button>';
+          } else if (act === 'confirm-delete') {
+            var ok3 = await del(id);
+            if (ok3) { slides = slides.filter(function (x) { return String(x.id) !== String(id); }); render(); toast('Slide deleted', 'ok'); }
+          } else if (act === 'cancel-delete') {
+            render();
+          }
+        });
+
+        // New slide → open the creation modal (image + all fields in one place)
+        addBtn.addEventListener('click', openModal);
+
+        // Add slide from a pasted URL (cached to our CDN first)
+        if (urlAddBtn && urlInput) {
+          urlAddBtn.addEventListener('click', async function () {
+            var url = (urlInput.value || '').trim();
+            if (!url) { toast('Paste an image URL first', 'err'); urlInput.focus(); return; }
+            urlAddBtn.disabled = true;
+            var cu = await cacheUrl(url);
+            if (cu) {
+              var res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+                body: JSON.stringify({ image_url: cu.desktop, image_mobile_url: cu.mobile, title: '', description: '', link_url: '#' }) });
+              var d = await res.json();
+              if (d.success) { urlInput.value = ''; await load(); toast('Slide added — set its title, link, and visibility', 'ok'); }
+              else { toast(d.error || 'Create failed', 'err'); }
+            }
+            urlAddBtn.disabled = false;
+          });
+        }
+
+        fileInput.addEventListener('change', async function () {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          var target = pendingFor; pendingFor = null;
+          var kind = pendingKind; pendingKind = 'desktop';
+          toast('Uploading image…');
+          var fd = new FormData(); fd.append('file', file);
+          try {
+            var res = await fetch('/api/cloudflare-images-upload/', { method: 'POST', credentials: 'include', body: fd });
+            var data = await res.json();
+            if (!data.success || !data.cloudflare_image_id) { toast(data.error || 'Upload failed', 'err'); return; }
+            // Prefer the server-computed variants; fall back to the injected base.
+            var urls = (data.hero_urls && data.hero_urls.desktop) ? data.hero_urls : heroUrls(data.cloudflare_image_id);
+            if (!urls.desktop) { toast('Image CDN not configured (IMAGES_ACCOUNT_HASH)', 'err'); return; }
+            if (target === 'modal') {
+              setModalImage(urls, kind);
+              toast(kind === 'mobile' ? 'Mobile image ready' : 'Image ready', 'ok');
+            } else if (target) {
+              var body = (kind === 'mobile')
+                ? { id: Number(target), image_mobile_url: urls.mobile }
+                : { id: Number(target), image_url: urls.desktop };
+              var ok = await patch(body);
+              if (ok) { var s = findSlide(target); if (s) { if (kind === 'mobile') s.image_mobile_url = urls.mobile; else s.image_url = urls.desktop; } render(); toast('Image updated', 'ok'); }
+            }
+          } catch (e) { toast('Upload error', 'err'); }
+          finally { fileInput.value = ''; }
+        });
+
+        // ── New slide modal ─────────────────────────────────────────────
+        function setModalImage(urls, kind) {
+          if (kind === 'mobile') {
+            modalImage.mobile = urls.mobile;
+            if (mThumbM) { mThumbM.src = urls.mobile; mThumbM.style.display = 'block'; }
+            if (mPlaceM) mPlaceM.style.display = 'none';
+          } else {
+            modalImage.desktop = urls.desktop;
+            if (mThumb) { mThumb.src = urls.desktop; mThumb.style.display = 'block'; }
+            if (mPlace) mPlace.style.display = 'none';
+          }
+        }
+        function openModal() {
+          if (!modalEl) return;
+          modalImage = { desktop: '', mobile: '' };
+          if (mThumb) { mThumb.src = ''; mThumb.style.display = 'none'; }
+          if (mPlace) mPlace.style.display = '';
+          if (mThumbM) { mThumbM.src = ''; mThumbM.style.display = 'none'; }
+          if (mPlaceM) mPlaceM.style.display = '';
+          if (mUrlRow) mUrlRow.style.display = 'none';
+          if (mUrlInput) mUrlInput.value = '';
+          if (mUrlRowM) mUrlRowM.style.display = 'none';
+          if (mUrlInputM) mUrlInputM.value = '';
+          if (mTitle) mTitle.value = '';
+          if (mDesc) mDesc.value = '';
+          if (mLink) mLink.value = '';
+          if (mVisible) mVisible.checked = true;
+          if (mTitleCount) mTitleCount.textContent = '0/' + LIMITS.title;
+          if (mDescCount) mDescCount.textContent = '0/' + LIMITS.description;
+          modalEl.classList.add('open');
+          if (mTitle) setTimeout(function () { mTitle.focus(); }, 50);
+        }
+        function closeModal() { if (modalEl) modalEl.classList.remove('open'); }
+
+        if (modalEl) {
+          if (mTitle && mTitleCount) mTitle.addEventListener('input', function () { mTitleCount.textContent = mTitle.value.length + '/' + LIMITS.title; });
+          if (mDesc && mDescCount) mDesc.addEventListener('input', function () { mDescCount.textContent = mDesc.value.length + '/' + LIMITS.description; });
+
+          modalEl.addEventListener('click', async function (e) {
+            var b = e.target.closest('[data-act]');
+            if (!b) return;
+            var act = b.getAttribute('data-act');
+            if (act === 'modal-close') {
+              closeModal();
+            } else if (act === 'modal-upload') {
+              pendingFor = 'modal'; pendingKind = 'desktop'; fileInput.value = ''; fileInput.click();
+            } else if (act === 'modal-upload-mobile') {
+              pendingFor = 'modal'; pendingKind = 'mobile'; fileInput.value = ''; fileInput.click();
+            } else if (act === 'modal-url-toggle') {
+              if (mUrlRow) { mUrlRow.style.display = (mUrlRow.style.display === 'none' ? 'flex' : 'none'); if (mUrlInput && mUrlRow.style.display !== 'none') mUrlInput.focus(); }
+            } else if (act === 'modal-url-toggle-mobile') {
+              if (mUrlRowM) { mUrlRowM.style.display = (mUrlRowM.style.display === 'none' ? 'flex' : 'none'); if (mUrlInputM && mUrlRowM.style.display !== 'none') mUrlInputM.focus(); }
+            } else if (act === 'modal-url-apply') {
+              var u = mUrlInput ? mUrlInput.value.trim() : '';
+              if (!u) { toast('Paste a URL first', 'err'); return; }
+              b.disabled = true;
+              var cu = await cacheUrl(u);
+              b.disabled = false;
+              if (cu) { setModalImage(cu, 'desktop'); toast('Image ready', 'ok'); }
+            } else if (act === 'modal-url-apply-mobile') {
+              var um = mUrlInputM ? mUrlInputM.value.trim() : '';
+              if (!um) { toast('Paste a URL first', 'err'); return; }
+              b.disabled = true;
+              var cum = await cacheUrl(um);
+              b.disabled = false;
+              if (cum) { setModalImage(cum, 'mobile'); toast('Mobile image ready', 'ok'); }
+            } else if (act === 'modal-create') {
+              if (!modalImage.desktop) { toast('Add a desktop image first', 'err'); return; }
+              b.disabled = true;
+              var payload = {
+                image_url: modalImage.desktop, image_mobile_url: modalImage.mobile || null,
+                title: mTitle ? mTitle.value : '', description: mDesc ? mDesc.value : '',
+                link_url: (mLink && mLink.value) ? mLink.value : '#',
+                enabled: (mVisible && mVisible.checked) ? 1 : 0
+              };
+              try {
+                var res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(payload) });
+                var d = await res.json();
+                if (d.success) { closeModal(); await load(); toast(payload.enabled ? 'Slide created' : 'Draft slide created (not visible)', 'ok'); }
+                else { toast(d.error || 'Create failed', 'err'); }
+              } catch (err) { toast('Network error', 'err'); }
+              b.disabled = false;
+            }
+          });
+
+          document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal(); });
+        }
+
+        load();
+      })();
+    </script>
+  </body>
+</html>

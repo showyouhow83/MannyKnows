@@ -1,0 +1,641 @@
+---
+// Customer Quote View Page
+// Shows full quote details with Accept/Decline options
+import { getBrand, SL_BRAND, type Brand } from '../../lib/brand';
+export const prerender = false;
+
+const { token } = Astro.params;
+const env = Astro.locals.runtime?.env;
+const db = env?.MK_APP_DB;
+
+let quote: any = null;
+let error: string | null = null;
+let responseStatus: string | null = null;
+let brand: Brand = SL_BRAND;
+
+if (!token) {
+  error = 'Invalid quote link';
+} else if (!db) {
+  error = 'Service temporarily unavailable';
+} else {
+  // Look up quote by token (always fresh from DB)
+  const result = await db.prepare(
+    'SELECT * FROM quotes WHERE quote_token = ?'
+  ).bind(token).first();
+
+  if (result) brand = await getBrand(db, (result as any).partner_id);
+  if (!result) {
+    error = 'Quote not found or link has expired';
+  } else if (result.status === 'accepted') {
+    responseStatus = 'accepted';
+    quote = result;
+  } else if (result.status === 'declined') {
+    responseStatus = 'declined';
+    quote = result;
+  } else if (result.status !== 'sent') {
+    error = 'This quote is no longer available';
+  } else {
+    quote = result;
+  }
+}
+
+// Load quote attachments (multi-PDF list)
+let attachments: Array<{ id: number; label: string; file_url: string }> = [];
+if (quote && db) {
+  try {
+    const attRes = await db.prepare(`
+      SELECT id, label, file_url FROM quote_attachments
+       WHERE quote_id = ? AND COALESCE(is_internal, 0) = 0
+       ORDER BY uploaded_at ASC, id ASC
+    `).bind(quote.id).all();
+    attachments = (attRes.results || []) as typeof attachments;
+  } catch {}
+}
+// Fall back to legacy single-PDF field if no rows in the new table
+if (attachments.length === 0 && quote?.contract_url) {
+  attachments = [{ id: 0, label: 'Quote PDF', file_url: quote.contract_url as string }];
+}
+
+// Format currency. Quotes round cleanly to dollars — drop cents.
+function formatCurrency(amount?: number): string {
+  const n = Math.round(Number(amount) || 0);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+// Format services
+function formatServices(servicesJson?: string): string {
+  if (!servicesJson) return 'Home Services';
+  try {
+    const services = JSON.parse(servicesJson);
+    // Mirrors src/data/serviceTypes.ts; custom "other" services pass through.
+    const labels: Record<string, string> = {
+      'kitchen_remodel': 'Kitchen Remodeling',
+      'bathroom_remodel': 'Bathroom Remodeling',
+      'interior_painting': 'Interior Painting',
+      'flooring': 'Flooring',
+      'general_repairs': 'General Repairs & Handyman'
+    };
+    return services.map((s: any) => {
+      const key = typeof s === 'string' ? s : (s.type || s.service || 'service');
+      return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    }).join(', ');
+  } catch {
+    return servicesJson || 'Home Services';
+  }
+}
+
+// Format date
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return 'TBD';
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+const firstName = quote?.customer_name?.split(' ')[0] || 'there';
+
+// Quote-template scopes (v64 / Phase 5). Each scope renders as a distinct
+// titled block followed by its sections. quoteToScopes() also synthesizes a
+// scope from legacy materials/labor for pre-Phase-5 quotes.
+import { quoteToScopes, renderScopesHtml, sumScopeSubtotals } from '../../lib/quoteTemplateConstants';
+const templateScopes = quote ? quoteToScopes(quote as any) : [];
+const templateSectionsHtml = renderScopesHtml(templateScopes);
+// Per-scope subtotal rows in the Pricing summary (only meaningful when there
+// are 2+ scopes; for a single scope we still fall through to the quote-level
+// subtotal/discount/total trio).
+const scopeSubtotalRows = templateScopes
+  .map(sc => ({ title: sc.title || 'Scope', amount: sumScopeSubtotals(sc) }))
+  .filter(r => r.amount > 0);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{quote ? `Quote ${quote.quote_number}` : 'View Quote'} - {brand.name}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+
+    .header {
+      background: #0f172a;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .gold-bar {
+      height: 4px;
+      background: #ff781d;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: -40px auto 40px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .quote-badge {
+      background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .greeting {
+      padding: 32px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .greeting h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .greeting p {
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    .section {
+      padding: 24px 32px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* Pricing table */
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .pricing-table th {
+      text-align: left;
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .pricing-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      max-width: 250px;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 768px) {
+      .pricing-table td {
+        max-width: 100px;
+      }
+    }
+
+    .pricing-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pricing-table .text-right {
+      text-align: right;
+    }
+
+    .totals {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .total-row.grand {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e40af;
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    /* Action buttons */
+    .actions {
+      padding: 32px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    @media (max-width: 500px) {
+      .actions { flex-direction: column; }
+    }
+
+    .btn {
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-accept {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .btn-accept:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-decline {
+      background: #f1f5f9;
+      color: #64748b;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .btn-decline:hover {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Contact */
+    .contact {
+      background: #f8fafc;
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .contact p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .contact a {
+      color: #1e40af;
+      font-size: 20px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Error state */
+    .error-container {
+      max-width: 500px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .error-title {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .error-message {
+      color: #64748b;
+    }
+
+    /* Response status */
+    .status-banner {
+      padding: 24px 32px;
+      text-align: center;
+    }
+
+    .status-banner.accepted {
+      background: #f0fdf4;
+      border-bottom: 1px solid #bbf7d0;
+    }
+
+    .status-banner.declined {
+      background: #fef2f2;
+      border-bottom: 1px solid #fecaca;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-badge.accepted {
+      background: #22c55e;
+      color: white;
+    }
+
+    .status-badge.declined {
+      background: #dc2626;
+      color: white;
+    }
+
+    .status-message {
+      margin-top: 12px;
+      font-size: 15px;
+      color: #64748b;
+    }
+
+    /* Valid period notice */
+    .notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 24px 32px;
+      font-size: 13px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <!-- MannyKnows logo (inline copy of public/logo.svg — orange V + white L, needs the dark header behind it) -->
+    <svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" fill="none" role="img" aria-label="MannyKnows" style="width: 150px; height: auto; margin: 0 auto; display: block;">
+      <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d"/>
+      <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff"/>
+    </svg>
+  </header>
+  <div class="gold-bar"></div>
+
+  {error ? (
+    <div class="error-container">
+      <div class="error-icon">:(</div>
+      <h2 class="error-title">Quote Unavailable</h2>
+      <p class="error-message">{error}</p>
+    </div>
+  ) : quote && (
+    <div class="container">
+      <div class="card">
+        <!-- Response status banner if already responded -->
+        {responseStatus === 'accepted' && (
+          <div class="status-banner accepted">
+            <span class="status-badge accepted">Quote Accepted</span>
+            <p class="status-message">Thank you for choosing {brand.name}! We will contact you shortly to schedule your project.</p>
+          </div>
+        )}
+
+        {responseStatus === 'declined' && (
+          <div class="status-banner declined">
+            <span class="status-badge declined">Quote Declined</span>
+            <p class="status-message">Thank you for your feedback. We hope to serve you in the future.</p>
+          </div>
+        )}
+
+        <!-- Greeting -->
+        <div class="greeting">
+          <span class="quote-badge">{quote.quote_number}</span>
+          <h2>Hi {firstName}, here's your quote!</h2>
+          <p>We've prepared a detailed quote for your project.</p>
+        </div>
+
+        <!-- Valid period notice (only if not responded) -->
+        {!responseStatus && (
+          <div class="notice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 6v6l4 2"></path>
+            </svg>
+            This quote is valid for 7 days from when it was sent.
+          </div>
+        )}
+
+        <!-- Services & Details -->
+        <div class="section">
+          <div class="section-title">Services</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Project Type</span>
+              <span class="info-value">{formatServices(quote.services)}</span>
+            </div>
+            {quote.scope_description && (
+              <div class="info-item">
+                <span class="info-label">Scope</span>
+                <span class="info-value">{quote.scope_description}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="section">
+          <div class="section-title">Location</div>
+          <div class="info-item">
+            <span class="info-label">Address</span>
+            <span class="info-value">
+              {quote.address}
+              {quote.city && `, ${quote.city}`}
+              {quote.state && ` ${quote.state}`}
+              {quote.zip && ` ${quote.zip}`}
+            </span>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        {(quote.estimated_start || quote.estimated_duration) && (
+          <div class="section">
+            <div class="section-title">Timeline</div>
+            <div class="info-grid">
+              {quote.estimated_start && (
+                <div class="info-item">
+                  <span class="info-label">Estimated Start</span>
+                  <span class="info-value">{formatDate(quote.estimated_start)}</span>
+                </div>
+              )}
+              {quote.estimated_duration && (
+                <div class="info-item">
+                  <span class="info-label">Duration</span>
+                  <span class="info-value">{quote.estimated_duration}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <!-- Scopes of Work (v64 / Phase 5). Each scope renders as its own
+             titled block followed by its sections. -->
+        {templateScopes.length > 0 && (
+          <div class="section">
+            <div class="section-title">{templateScopes.length > 1 ? 'Scopes of Work' : 'Scope of Work'}</div>
+            <div class="template-sections" set:html={templateSectionsHtml}></div>
+          </div>
+        )}
+
+        <!-- Pricing -->
+        <div class="section">
+          <div class="section-title">Pricing Details</div>
+          <div class="totals">
+            {scopeSubtotalRows.length > 1 && scopeSubtotalRows.map((row) => (
+              <div class="total-row" style="color:#475569;">
+                <span>{row.title}</span>
+                <span>{formatCurrency(row.amount)}</span>
+              </div>
+            ))}
+            {quote.subtotal && (
+              <div class="total-row">
+                <span>Subtotal</span>
+                <span>{formatCurrency(quote.subtotal)}</span>
+              </div>
+            )}
+            {quote.discount > 0 && (
+              <div class="total-row" style="color: #22c55e;">
+                <span>Discount</span>
+                <span>-{formatCurrency(quote.discount)}</span>
+              </div>
+            )}
+            <div class="total-row grand">
+              <span>Total</span>
+              <span>{formatCurrency(quote.total)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote PDF Attachments -->
+        {attachments.length > 0 && (
+          <div class="section" style="text-align: center;">
+            <div class="section-title">{attachments.length === 1 ? 'Quote Document' : 'Quote Documents'}</div>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">
+              {attachments.length === 1
+                ? 'A detailed quote document has been attached. Please review it before accepting.'
+                : `${attachments.length} quote documents have been attached. Please review them before accepting.`}
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+              {attachments.map(a => (
+                <a href={a.file_url} target="_blank" rel="noopener" class="btn" style="background: linear-gradient(135deg, #ff781d 0%, #e05e00 100%); color: white; padding: 10px 22px; font-size: 14px;">
+                  {a.label} (PDF)
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Action buttons (only if not responded) -->
+        {!responseStatus && (
+          <div class="actions">
+            <a href={`/quote/accept/${token}`} class="btn btn-accept">Accept Quote</a>
+            <a href={`/quote/decline/${token}`} class="btn btn-decline">Decline Quote</a>
+          </div>
+        )}
+
+        <!-- Contact -->
+        {brand.phoneDisplay && (
+        <div class="contact">
+          <p>Questions? Give us a call</p>
+          <a href={`tel:${brand.phoneTel}`}>{brand.phoneDisplay}</a>
+        </div>
+        )}
+      </div>
+    </div>
+  )}
+</body>
+</html>

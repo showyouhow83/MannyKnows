@@ -1,0 +1,287 @@
+---
+// Shared confirm-modal component used across every admin + customer page
+// that needs a confirmation dialog. Replaces the gray native confirm()
+// dialog with the project's styled modal.
+//
+// Usage:
+//   import ConfirmModal from '../components/ConfirmModal.astro';
+//   <ConfirmModal />
+//
+// Then in client JS:
+//   showConfirmModal({
+//     title: 'Delete this contract?',
+//     text: 'This cannot be undone.',
+//     confirmText: 'Delete',
+//     type: 'danger',     // 'danger' | 'warning' | 'info' | 'success' | 'primary'
+//     onConfirm: async () => { ... }
+//   });
+//
+// The component reads <html data-theme> at runtime to swap palette: dark
+// for admin (data-theme=dark) and light for customer pages (default).
+// Same DOM, two themes — keeps the API + behavior identical everywhere.
+---
+<div class="cm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="cm-modal-backdrop"></div>
+  <div class="cm-modal-content" role="document">
+    <div class="cm-modal-icon" id="cmIcon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h3 class="cm-modal-title" id="cmTitle">Are you sure?</h3>
+    <p class="cm-modal-text" id="cmText"></p>
+    <div class="cm-modal-actions">
+      <button type="button" class="cm-btn cm-btn-cancel" id="cmCancel">Cancel</button>
+      <button type="button" class="cm-btn cm-btn-confirm" id="cmConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Confirm modal — dark + light variants via [data-theme=dark] on <html>.
+     Light is the default; admin pages set data-theme=dark so the CSS
+     variables below resolve to the dark palette. */
+  .cm-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    animation: none;
+  }
+  .cm-modal.cm-active { display: flex; }
+  .cm-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+  }
+  .cm-modal-content {
+    position: relative;
+    background: #ffffff;
+    color: #1e293b;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 420px;
+    width: calc(100% - 32px);
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  /* Dark variant — admin pages */
+  [data-theme="dark"] .cm-modal-content {
+    background: #1e1e2e;
+    color: #e2e8f0;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .cm-modal-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cm-modal-icon.danger { background: #fef2f2; color: #dc2626; }
+  .cm-modal-icon.warning { background: #fef3c7; color: #d97706; }
+  .cm-modal-icon.info { background: #eff6ff; color: #2563eb; }
+  .cm-modal-icon.success { background: #f0fdf4; color: #16a34a; }
+  .cm-modal-icon.primary { background: #eff6ff; color: #2563eb; }
+  [data-theme="dark"] .cm-modal-icon.danger { background: rgba(220, 38, 38, 0.15); color: #fca5a5; }
+  [data-theme="dark"] .cm-modal-icon.warning { background: rgba(217, 119, 6, 0.15); color: #fcd34d; }
+  [data-theme="dark"] .cm-modal-icon.info { background: rgba(37, 99, 235, 0.15); color: #93c5fd; }
+  [data-theme="dark"] .cm-modal-icon.success { background: rgba(22, 163, 74, 0.15); color: #86efac; }
+  [data-theme="dark"] .cm-modal-icon.primary { background: rgba(37, 99, 235, 0.15); color: #93c5fd; }
+
+  .cm-modal-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+  .cm-modal-text {
+    font-size: 14px;
+    color: #475569;
+    margin: 0 0 22px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+  [data-theme="dark"] .cm-modal-text { color: #94a3b8; }
+
+  .cm-modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .cm-modal-actions { flex-direction: column-reverse; }
+  }
+  .cm-btn {
+    flex: 1;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .cm-btn:hover { transform: none; }
+  .cm-btn:disabled { opacity: 0.55; cursor: wait; pointer-events: none; transform: none; }
+
+  .cm-btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
+  }
+  .cm-btn-cancel:hover { background: #e2e8f0; }
+  [data-theme="dark"] .cm-btn-cancel {
+    background: rgba(255, 255, 255, 0.04);
+    color: #cbd5e1;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  [data-theme="dark"] .cm-btn-cancel:hover { background: rgba(255, 255, 255, 0.08); }
+
+  .cm-btn-confirm {
+    background: linear-gradient(135deg, #ff781d 0%, #f59e0b 100%);
+    color: #ffffff;
+  }
+  .cm-btn-confirm.danger {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  .cm-btn-confirm.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+  .cm-btn-confirm.success {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  }
+</style>
+
+<script is:inline>
+  /* Global helper: showConfirmModal({ title, text, confirmText, cancelText, type, onConfirm, onCancel })
+   * Returns nothing — the onConfirm/onCancel callbacks fire. Calling code
+   * shouldn't try to await it.
+   *
+   * The modal is single-instance: if a modal is already open, subsequent
+   * showConfirmModal calls overwrite the content + callback. (Matches the
+   * mental model of native confirm where you can't stack dialogs.) */
+  (function () {
+    var pendingCb = null;
+    var pendingCancelCb = null;
+
+    var ICONS = {
+      danger: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
+      warning: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      info: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+      success: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      primary: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    };
+
+    function getEls() {
+      return {
+        modal: document.getElementById('confirmModal'),
+        title: document.getElementById('cmTitle'),
+        text: document.getElementById('cmText'),
+        icon: document.getElementById('cmIcon'),
+        confirm: document.getElementById('cmConfirm'),
+        cancel: document.getElementById('cmCancel'),
+      };
+    }
+
+    // Accepts BOTH shapes so it's a drop-in replacement for the legacy
+    // positional helper that lived in admin/projects.astro:
+    //   showConfirmModal(title, text, confirmText, type, callback)
+    // ...and the new object form (preferred for new code):
+    //   showConfirmModal({ title, text, confirmText, cancelText, type, onConfirm, onCancel })
+    function open(arg1, text, confirmText, type, callback) {
+      var opts = (arg1 && typeof arg1 === 'object' && !Array.isArray(arg1))
+        ? arg1
+        : { title: arg1, text: text, confirmText: confirmText, type: type, onConfirm: callback };
+      var els = getEls();
+      if (!els.modal) {
+        // Component wasn't mounted on this page — degrade to native confirm
+        // so the call still works rather than silently no-op.
+        var ok = window.confirm((opts.title || '') + (opts.text ? '\n\n' + opts.text : ''));
+        if (ok) { try { opts.onConfirm && opts.onConfirm(); } catch (e) { console.error(e); } }
+        else { try { opts.onCancel && opts.onCancel(); } catch (e) { console.error(e); } }
+        return;
+      }
+      type = opts.type || 'info';
+      els.title.textContent = opts.title || 'Are you sure?';
+      els.text.textContent = opts.text || '';
+      els.confirm.textContent = opts.confirmText || 'Confirm';
+      els.cancel.textContent = opts.cancelText || 'Cancel';
+      els.icon.className = 'cm-modal-icon ' + type;
+      els.icon.innerHTML = ICONS[type] || ICONS.info;
+      els.confirm.className = 'cm-btn cm-btn-confirm ' + (type === 'danger' || type === 'warning' || type === 'success' ? type : '');
+      pendingCb = opts.onConfirm || null;
+      pendingCancelCb = opts.onCancel || null;
+      els.modal.classList.add('cm-active');
+      els.modal.setAttribute('aria-hidden', 'false');
+      // Move focus to the confirm button for keyboard users. Defer one tick
+      // so the modal is actually visible first.
+      setTimeout(function () { els.confirm.focus(); }, 30);
+    }
+
+    function close() {
+      var els = getEls();
+      if (!els.modal) return;
+      els.modal.classList.remove('cm-active');
+      els.modal.setAttribute('aria-hidden', 'true');
+      pendingCb = null;
+      pendingCancelCb = null;
+    }
+
+    async function runConfirm() {
+      var els = getEls();
+      var cb = pendingCb;
+      if (!cb) { close(); return; }
+      // Lock the buttons while the callback runs so double-clicks don't
+      // re-fire side-effecty actions.
+      els.confirm.disabled = true;
+      els.cancel.disabled = true;
+      var originalText = els.confirm.textContent;
+      els.confirm.textContent = 'Working…';
+      pendingCb = null;
+      pendingCancelCb = null;
+      try {
+        await cb();
+      } catch (err) {
+        console.error('[confirmModal] callback error:', err);
+      } finally {
+        els.confirm.disabled = false;
+        els.cancel.disabled = false;
+        els.confirm.textContent = originalText;
+        close();
+      }
+    }
+
+    function runCancel() {
+      var cb = pendingCancelCb;
+      pendingCb = null;
+      pendingCancelCb = null;
+      close();
+      if (cb) { try { cb(); } catch (e) { console.error(e); } }
+    }
+
+    // Wire up listeners. Backdrop click + Escape both cancel.
+    document.addEventListener('DOMContentLoaded', function () {
+      var els = getEls();
+      if (!els.modal) return;
+      els.confirm.addEventListener('click', runConfirm);
+      els.cancel.addEventListener('click', runCancel);
+      els.modal.querySelector('.cm-modal-backdrop')?.addEventListener('click', runCancel);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && els.modal.classList.contains('cm-active')) runCancel();
+        if (e.key === 'Enter' && els.modal.classList.contains('cm-active') && document.activeElement !== els.cancel) {
+          e.preventDefault();
+          runConfirm();
+        }
+      });
+    });
+
+    window.showConfirmModal = open;
+    window.closeConfirmModal = close;
+  })();
+</script>

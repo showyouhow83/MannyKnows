@@ -1,0 +1,210 @@
+---
+// AdminPresence — drop once per admin page. Heartbeats the admin's location to
+// /api/admin/presence every 15s and shows a non-blocking banner when another
+// admin is on the SAME record. Pages tell it which record is open via
+// window.setPresenceRecord(type, id) / window.clearPresenceRecord().
+---
+<div id="presenceBanner" class="presence-banner" role="status" aria-live="polite">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+  <span id="presenceBannerText"></span>
+</div>
+
+<style>
+  .presence-banner {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 92vw;
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #b45309;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+  .presence-banner.show { transform: translateX(-50%) translateY(0); }
+  .presence-banner svg { flex-shrink: 0; }
+</style>
+
+<style is:global>
+  /* "Who's online" count chip — injected next to each notification bell. It is
+     created in JS, so the styles must be global (Astro scoped CSS won't reach
+     dynamically-created nodes). A green circle with the live admin count; it
+     pulses when more than one admin is online. Hover shows who + where. */
+  .presence-chip-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #16a34a;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: default;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .presence-chip-nav.has-others {
+    background: rgba(34, 197, 94, 0.2);
+    animation: presencePulse 2s ease-out infinite;
+  }
+  @keyframes presencePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); }
+    70%  { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  }
+</style>
+
+<script>
+  (function () {
+    const HEARTBEAT_MS = 15000;
+    let current: { record_type: string | null; record_id: string | null } = { record_type: null, record_id: null };
+    let timer: number | null = null;
+    let presenceMe = '';
+    const chips: HTMLElement[] = [];
+
+    // Stable per-DEVICE id so two people on the same admin login still count as
+    // two (and the collision banner fires between them). One id per browser.
+    const CLIENT_ID = (function () {
+      try {
+        let id = localStorage.getItem('mk_presence_cid');
+        if (!id) { id = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem('mk_presence_cid', id); }
+        return id;
+      } catch { return 's' + Date.now().toString(36); }
+    })();
+
+    const PAGE_LABELS: Record<string, string> = {
+      '/admin/dashboard': 'Dashboard', '/admin/leads': 'Leads', '/admin/quotes': 'Quotes',
+      '/admin/projects': 'Projects', '/admin/portfolios': 'Portfolios', '/admin/crew': 'Crew',
+      '/admin/calendar': 'Calendar', '/admin/contacts': 'Contacts', '/admin/partners': 'Partners',
+      '/admin/media-pool': 'Media Pool', '/admin/web': 'Web',
+    };
+    function whereLabel(o: any): string {
+      if (o.record_type && o.record_id) return `viewing ${o.record_type} #${o.record_id}`;
+      const p = String(o.page || '').replace(/\/$/, '');
+      return 'on ' + (PAGE_LABELS[p] || (p.split('/').pop() || 'admin'));
+    }
+
+    // Drop a count chip immediately before every notification bell on the page
+    // (desktop + mobile). Both the shared component and the inline bells use the
+    // .notification-bell-wrapper class, so this covers every admin page.
+    function injectChips() {
+      document.querySelectorAll('.notification-bell-wrapper').forEach((bell) => {
+        const el = bell as HTMLElement;
+        if (el.dataset.presenceChip) return;
+        el.dataset.presenceChip = '1';
+        const chip = document.createElement('div');
+        chip.className = 'presence-chip-nav';
+        chip.style.display = 'none';
+        chip.innerHTML = '<span class="pc-num">0</span>';
+        el.parentNode?.insertBefore(chip, el);
+        chips.push(chip);
+      });
+    }
+
+    function updateChips(online: any[]) {
+      const n = online.length;
+      const lines = online.map((o) => `• ${o.admin_name}${o.client_id === presenceMe ? ' (you)' : ''} — ${whereLabel(o)}`).join('\n');
+      const title = n ? `${n} admin${n === 1 ? '' : 's'} online:\n${lines}` : '';
+      chips.forEach((chip) => {
+        chip.style.display = n > 0 ? 'inline-flex' : 'none';
+        chip.title = title;
+        chip.classList.toggle('has-others', n > 1);
+        const num = chip.querySelector('.pc-num');
+        if (num) num.textContent = String(n);
+      });
+    }
+
+    const banner = () => document.getElementById('presenceBanner');
+    const bannerText = () => document.getElementById('presenceBannerText');
+
+    function showBanner(names: string[], recordType: string | null) {
+      const b = banner(), t = bannerText();
+      if (!b || !t) return;
+      if (!names.length) { b.classList.remove('show'); return; }
+      const noun = recordType || 'record';
+      const who = names.length === 1
+        ? `${names[0]} is also viewing this ${noun}`
+        : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} are also viewing this ${noun}`;
+      t.textContent = `${who} — save carefully to avoid overwriting each other.`;
+      b.classList.add('show');
+    }
+
+    async function heartbeat() {
+      try {
+        const res = await fetch('/api/admin/presence/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            client_id: CLIENT_ID,
+            record_type: current.record_type,
+            record_id: current.record_id,
+            page: location.pathname,
+          }),
+        });
+        if (!res.ok) return;
+        const data: any = await res.json().catch(() => null);
+        if (!data || !data.success) return;
+        const others = (data.others || []) as Array<{ admin_name: string }>;
+        if (current.record_type && current.record_id) {
+          showBanner(others.map(o => o.admin_name), current.record_type);
+        } else {
+          showBanner([], null);
+        }
+        // Update the bell-side count chip + expose the list for any listeners.
+        presenceMe = data.me || presenceMe;
+        updateChips(data.online || []);
+        (window as any).__presenceOnline = data.online || [];
+        document.dispatchEvent(new CustomEvent('presence:online', { detail: data.online || [] }));
+      } catch { /* network blip — ignore */ }
+    }
+
+    // Public API for pages to set/clear the open record.
+    (window as any).setPresenceRecord = function (type: string, id: string | number) {
+      current = { record_type: String(type), record_id: String(id) };
+      heartbeat(); // immediate so the banner appears without waiting 15s
+    };
+    (window as any).clearPresenceRecord = function () {
+      current = { record_type: null, record_id: null };
+      showBanner([], null);
+      heartbeat();
+    };
+
+    // Clear presence on the way out (best-effort).
+    window.addEventListener('pagehide', () => {
+      try {
+        fetch('/api/admin/presence/', {
+          method: 'DELETE', credentials: 'include', keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client_id: CLIENT_ID }),
+        });
+      } catch {}
+    });
+
+    // Pause heartbeats while the tab is hidden; resume on focus.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { if (timer) { clearInterval(timer); timer = null; } }
+      else if (!timer) { heartbeat(); timer = window.setInterval(heartbeat, HEARTBEAT_MS); }
+    });
+
+    injectChips();
+    heartbeat();
+    timer = window.setInterval(heartbeat, HEARTBEAT_MS);
+  })();
+</script>
