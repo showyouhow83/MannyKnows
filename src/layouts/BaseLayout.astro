@@ -4,6 +4,7 @@ import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
 import ContactModal from '../components/ui/ContactModal.astro';
 import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
+import ChatBox from '../components/ui/ChatBox.astro';
 
 export interface Props {
 	title: string;
@@ -210,6 +211,10 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 		<!-- Swiper + Carousel Effect Scripts — deferred so they don't block render
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
 		<script is:inline defer src="/swiper-bundle.min.js"></script>
+
+		<!-- Remi chat widget — layout-level so every page gets it exactly once.
+		     Do NOT also render <ChatBox /> in individual pages. -->
+		<ChatBox />
 	</body>
 </html>
 

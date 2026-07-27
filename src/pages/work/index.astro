@@ -9,7 +9,6 @@ import NavBar from '../../components/navigation/NavBar.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
-import ChatBox from '../../components/ui/ChatBox.astro';
 
 const projects = (await getCollection('portfolio'))
   .filter((p) => !p.data.draft)
@@ -102,7 +101,6 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
       </Container>
     </Section>
 
-    <ChatBox />
     <DockMenu />
   </main>
 </BaseLayout>

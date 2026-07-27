@@ -8,7 +8,6 @@ import NavBar from '../../components/navigation/NavBar.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
-import ChatBox from '../../components/ui/ChatBox.astro';
 import { getPostImage } from '../../utils/postImage';
 import { getPostIllustration } from '../../utils/postIllustration';
 import Illustration from '../../components/illustrations/Illustration.astro';
@@ -150,7 +149,6 @@ const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
       </Container>
     </Section>
 
-    <ChatBox />
     <DockMenu />
   </main>
 </BaseLayout>
