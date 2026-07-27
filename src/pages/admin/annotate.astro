@@ -54,23 +54,23 @@ const imgSrc = displaySrc(src);
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; padding: 0; background: #0f172a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overscroll-behavior: none; }
+    html, body { margin: 0; padding: 0; background: #0a0b0d; color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overscroll-behavior: none; }
     .anno-page { display: flex; flex-direction: column; min-height: 100vh; }
     .anno-toolbar {
       display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      padding: 10px 14px; background: #1e293b; border-bottom: 1px solid #334155;
+      padding: 10px 14px; background: #151619; border-bottom: 1px solid #1f2024;
       position: sticky; top: 0; z-index: 10;
     }
     .anno-tool {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1px solid #334155;
-      background: #0f172a; color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer;
+      min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1px solid #1f2024;
+      background: #0a0b0d; color: #f4f4f5; font-size: 14px; font-weight: 600; cursor: pointer;
       touch-action: manipulation;
     }
     .anno-tool.active { border-color: #3b82f6; background: rgba(59,130,246,0.18); color: #fff; }
-    .anno-sep { width: 1px; height: 28px; background: #334155; margin: 0 4px; }
-    .anno-color { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #475569; cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
-    .anno-color.active { border-color: #fff; box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px currentColor; }
+    .anno-sep { width: 1px; height: 28px; background: #1f2024; margin: 0 4px; }
+    .anno-color { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #71717a; cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
+    .anno-color.active { border-color: #fff; box-shadow: 0 0 0 2px #0a0b0d, 0 0 0 4px currentColor; }
     .anno-spacer { flex: 1; min-width: 8px; }
     .anno-tool.primary { background: linear-gradient(135deg, #2563eb, #1e40af); border: none; color: #fff; }
     .anno-tool.ghost { background: transparent; }
@@ -95,25 +95,25 @@ const imgSrc = displaySrc(src);
 
     .anno-legend {
       width: 320px; flex-shrink: 0; overflow-y: auto;
-      background: #1e293b; border-left: 1px solid #334155; padding: 16px 18px;
+      background: #151619; border-left: 1px solid #1f2024; padding: 16px 18px;
     }
-    .anno-legend h3 { margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
+    .anno-legend h3 { margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #a1a1aa; }
     .anno-legend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .anno-legend-num {
       width: 26px; height: 26px; border-radius: 50%; background: #ff0000; color: #fff;
       display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
     }
     .anno-legend-row input {
-      flex: 1; min-width: 0; padding: 9px 11px; border-radius: 8px; border: 1px solid #334155;
-      background: #0f172a; color: #e2e8f0; font-size: 14px;
+      flex: 1; min-width: 0; padding: 9px 11px; border-radius: 8px; border: 1px solid #1f2024;
+      background: #0a0b0d; color: #f4f4f5; font-size: 14px;
     }
     .anno-legend-row input:focus { outline: none; border-color: #3b82f6; }
     @media (max-width: 768px) {
       .anno-body { flex-direction: column; }
-      .anno-legend { width: auto; border-left: none; border-top: 1px solid #334155; max-height: 40vh; }
+      .anno-legend { width: auto; border-left: none; border-top: 1px solid #1f2024; max-height: 40vh; }
     }
-    .anno-hint { font-size: 12px; color: #94a3b8; padding: 4px 16px 0; }
-    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #334155; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100; }
+    .anno-hint { font-size: 12px; color: #a1a1aa; padding: 4px 16px 0; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #151619; border: 1px solid #1f2024; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100; }
     .toast.show { opacity: 1; }
   </style>
 </head>
@@ -230,7 +230,7 @@ const imgSrc = displaySrc(src);
         if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
         var r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
         // relative luminance
-        return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0f172a' : '#ffffff';
+        return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0a0b0d' : '#ffffff';
       }
 
       // Word-wrap text to fit a max pixel width (keeps annotation copy inside
@@ -428,7 +428,7 @@ const imgSrc = displaySrc(src);
               oc.beginPath();
               oc.arc(Math.round(W * 0.02) + fs * 0.4, y + fs * 0.55, fs * 0.4, 0, Math.PI * 2);
               oc.fill();
-              oc.fillStyle = '#0f172a';
+              oc.fillStyle = '#0a0b0d';
               oc.fillText(legendItems[i].text, Math.round(W * 0.02) + fs * 1.1, y);
               y += Math.round(H * 0.04);
             }

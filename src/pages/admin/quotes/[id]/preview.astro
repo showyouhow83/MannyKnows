@@ -245,7 +245,7 @@ function fmtDate(s: string | null | undefined): string {
       }
       body {
         margin: 0;
-        background: #f1f5f9;
+        background: #fafafa;
         color: #1f2937;
         font-family: Georgia, 'Times New Roman', Times, serif;
         font-size: 14px;
@@ -253,7 +253,7 @@ function fmtDate(s: string | null | undefined): string {
       }
       .toolbar {
         position: sticky; top: 0; z-index: 10;
-        background: #0f172a; color: #fff;
+        background: #0a0b0d; color: #fff;
         padding: 10px 18px;
         display: flex; justify-content: space-between; align-items: center;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -277,13 +277,13 @@ function fmtDate(s: string | null | undefined): string {
         margin: 24px auto;
         background: #fff;
         padding: 40px 48px;
-        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+        box-shadow: 0 12px 40px rgba(10, 11, 13, 0.15);
         color: #1f2937;
       }
       .doc-header {
         display: flex; justify-content: space-between; align-items: flex-start;
         gap: 20px;
-        border-bottom: 2px solid #0f172a;
+        border-bottom: 2px solid #0a0b0d;
         padding-bottom: 16px;
         margin-bottom: 20px;
       }
@@ -291,11 +291,11 @@ function fmtDate(s: string | null | undefined): string {
         margin: 0 0 4px 0;
         font-size: 24px;
         font-weight: 700;
-        color: #0f172a;
+        color: #0a0b0d;
         letter-spacing: 0.3px;
       }
       .doc-header .subtitle {
-        font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 1px;
+        font-size: 12px; color: #71717a; text-transform: uppercase; letter-spacing: 1px;
       }
       .contact-block {
         text-align: right;
@@ -305,8 +305,8 @@ function fmtDate(s: string | null | undefined): string {
       }
       .contact-block strong { color: #111827; }
       .info-block {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: #fafafa;
+        border: 1px solid #f4f4f5;
         border-radius: 6px;
         padding: 14px 18px;
         margin-bottom: 24px;
@@ -317,25 +317,25 @@ function fmtDate(s: string | null | undefined): string {
       .info-row .label {
         font-size: 11px; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.5px;
-        color: #475569; padding-top: 2px;
+        color: #71717a; padding-top: 2px;
       }
       .info-row .value { color: #111827; }
 
       .grand-total-row {
         display: flex; justify-content: space-between; align-items: baseline;
         padding: 14px 0;
-        border-top: 2px solid #0f172a;
-        border-bottom: 2px solid #0f172a;
+        border-top: 2px solid #0a0b0d;
+        border-bottom: 2px solid #0a0b0d;
         margin: 24px 0;
         font-size: 16px; font-weight: 700;
       }
       .grand-total-row .amount {
-        font-size: 22px; color: #0f172a;
+        font-size: 22px; color: #0a0b0d;
       }
 
       .warranty-block {
         font-size: 12px;
-        color: #475569;
+        color: #71717a;
         line-height: 1.6;
         font-style: italic;
         margin-top: 28px;
@@ -345,7 +345,7 @@ function fmtDate(s: string | null | undefined): string {
 
       .footnote {
         font-size: 11px;
-        color: #94a3b8;
+        color: #a1a1aa;
         text-align: center;
         margin-top: 30px;
       }
@@ -405,8 +405,8 @@ function fmtDate(s: string | null | undefined): string {
           </div>
           )}
           <div class="subtitle">Quote{scopeFiltered ? ' — ' + scopeTitle : ''}</div>
-          <div style="font-size:12px; color:#475569; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
-          <div style="font-size:12px; color:#475569;">Quote #: <strong style="color:#111827;">{quote.quote_number}</strong>{scopeFiltered ? <span> · Scope: <strong style="color:#111827;">{scopeTitle}</strong></span> : null}</div>
+          <div style="font-size:12px; color:#71717a; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
+          <div style="font-size:12px; color:#71717a;">Quote #: <strong style="color:#111827;">{quote.quote_number}</strong>{scopeFiltered ? <span> · Scope: <strong style="color:#111827;">{scopeTitle}</strong></span> : null}</div>
         </div>
         <div class="contact-block">
           {brand.isPartner ? (
@@ -478,7 +478,7 @@ function fmtDate(s: string | null | undefined): string {
       </div>
 
       {discount > 0 && (
-        <div style="font-size:12px; color:#475569; text-align:right; margin-top:-18px; margin-bottom:18px;">
+        <div style="font-size:12px; color:#71717a; text-align:right; margin-top:-18px; margin-bottom:18px;">
           Subtotal ${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Discount −${discount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </div>
       )}
@@ -504,7 +504,7 @@ function fmtDate(s: string | null | undefined): string {
           the one-click Accept button. Unsigned quotes omit it so the originally
           -sent PDF stays clean. */}
       {customerSig && (
-        <section style="margin: 28px 0 0 0; padding: 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid;">
+        <section style="margin: 28px 0 0 0; padding: 18px; background: #fafafa; border: 1px solid #f4f4f5; border-radius: 8px; page-break-inside: avoid;">
           <h3 style="margin:0 0 14px 0; font-size:15px; font-weight:700; color:#111827; border-bottom:1px solid #cbd5e1; padding-bottom:6px;">Quote Acceptance</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: end;">
             <div>
@@ -519,13 +519,13 @@ function fmtDate(s: string | null | undefined): string {
                     </div>
                   )}
               </div>
-              <div style="margin-top: 6px; font-size: 12px; color: #1e293b;">
+              <div style="margin-top: 6px; font-size: 12px; color: #151619;">
                 <strong>{customerSig.signer_name}</strong>
               </div>
               <div style="font-size: 11px; color: #64748b;">Customer · {fmtDate(customerSig.signed_at)}</div>
             </div>
-            <div style="font-size: 11px; line-height: 1.6; color: #475569;">
-              <div style="font-weight: 700; color: #0f172a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Audit Trail</div>
+            <div style="font-size: 11px; line-height: 1.6; color: #71717a;">
+              <div style="font-weight: 700; color: #0a0b0d; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Audit Trail</div>
               <div style="display: grid; grid-template-columns: 90px 1fr; gap: 2px 8px;">
                 <div>Accepted</div><div>{fmtFullDateTime(customerSig.signed_at)}</div>
                 <div>Method</div><div>{customerSig.signature_data_url ? 'Drawn e-signature' : 'One-click Accept button'}</div>
@@ -538,7 +538,7 @@ function fmtDate(s: string | null | undefined): string {
                   {customerSig.consent_text}
                 </div>
               )}
-              <div style="margin-top: 8px; font-size: 10px; color: #94a3b8;">
+              <div style="margin-top: 8px; font-size: 10px; color: #a1a1aa;">
                 Recorded under the ESIGN Act (15 U.S.C. § 7001 et seq.) and Massachusetts UETA.
               </div>
             </div>

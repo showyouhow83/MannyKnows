@@ -63,7 +63,7 @@ if (!session.isAuthenticated && !tokenAuthorized) {
 if (!row.contract_id) {
   // No contract applied yet — surface a friendly placeholder.
   return new Response(
-    `<!doctype html><html><head><meta charset="utf-8"><title>No contract</title><style>body{font-family:-apple-system,sans-serif;background:#f8fafc;padding:40px;text-align:center;color:#475569;}</style></head><body><h2>No contract applied yet</h2><p>Apply a contract template on the project page first.</p><p><a href="/admin/projects?open=${projectId}">← Back to project</a></p><script is:inline>
+    `<!doctype html><html><head><meta charset="utf-8"><title>No contract</title><style>body{font-family:-apple-system,sans-serif;background:#fafafa;padding:40px;text-align:center;color:#71717a;}</style></head><body><h2>No contract applied yet</h2><p>Apply a contract template on the project page first.</p><p><a href="/admin/projects?open=${projectId}">← Back to project</a></p><script is:inline>
   // cdn-cgi thumbnail fallback: swap to the raw R2 URL when transformations 404.
   document.addEventListener('error', function (e) {
     var img = e.target;
@@ -269,7 +269,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       }
       body {
         margin: 0;
-        background: #f1f5f9;
+        background: #fafafa;
         color: #1f2937;
         font-family: Georgia, 'Times New Roman', Times, serif;
         font-size: 14px;
@@ -277,7 +277,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       }
       .toolbar {
         position: sticky; top: 0; z-index: 10;
-        background: #0f172a; color: #fff;
+        background: #0a0b0d; color: #fff;
         padding: 10px 18px;
         display: flex; justify-content: space-between; align-items: center;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -302,25 +302,25 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
         margin: 24px auto;
         background: #fff;
         padding: 40px 48px;
-        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+        box-shadow: 0 12px 40px rgba(10, 11, 13, 0.15);
         color: #1f2937;
       }
       .doc-header {
         display: flex; justify-content: space-between; align-items: flex-start;
         gap: 20px;
-        border-bottom: 2px solid #0f172a;
+        border-bottom: 2px solid #0a0b0d;
         padding-bottom: 16px;
         margin-bottom: 20px;
       }
       .doc-header .subtitle {
-        font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 1px;
+        font-size: 12px; color: #71717a; text-transform: uppercase; letter-spacing: 1px;
       }
       .contact-block { text-align: right; font-size: 12px; color: #374151; line-height: 1.55; }
       .contact-block strong { color: #111827; }
 
       .info-block {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: #fafafa;
+        border: 1px solid #f4f4f5;
         border-radius: 6px;
         padding: 14px 18px;
         margin-bottom: 24px;
@@ -331,13 +331,13 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       .info-row .label {
         font-size: 11px; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.5px;
-        color: #475569; padding-top: 2px;
+        color: #71717a; padding-top: 2px;
       }
       .info-row .value { color: #111827; }
 
-      h2.section-h { font-size: 16px; font-weight: 700; color: #0f172a; margin: 28px 0 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+      h2.section-h { font-size: 16px; font-weight: 700; color: #0a0b0d; margin: 28px 0 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
       .contract-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px; }
-      .contract-photo { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: #1e293b; border: 1px solid #cbd5e1; }
+      .contract-photo { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: #151619; border: 1px solid #cbd5e1; }
       .contract-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .contract-photo-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; }
 
@@ -351,23 +351,23 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
         text-align: left;
       }
       .pay-table th {
-        background: #f8fafc;
+        background: #fafafa;
         font-size: 11px; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.5px;
-        color: #475569;
+        color: #71717a;
       }
       .pay-table td.amount { text-align: right; font-weight: 700; }
       .pay-table tr.total td {
         background: #fef9c3;
         font-weight: 700;
-        border-top: 2px solid #0f172a;
+        border-top: 2px solid #0a0b0d;
       }
 
       .sig-block {
         margin: 28px 0 16px;
         padding: 16px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: #fafafa;
+        border: 1px solid #f4f4f5;
         border-radius: 6px;
       }
       .sig-row {
@@ -377,16 +377,16 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
         margin-top: 18px;
       }
       .sig-line {
-        border-bottom: 1px solid #94a3b8;
+        border-bottom: 1px solid #a1a1aa;
         height: 28px;
         margin-bottom: 4px;
       }
-      .sig-caption { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+      .sig-caption { font-size: 11px; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; }
 
       .term-block {
         margin: 14px 0;
         padding: 10px 14px;
-        background: #f8fafc;
+        background: #fafafa;
         border-left: 4px solid #cbd5e1;
         font-size: 12px; line-height: 1.6;
       }
@@ -394,18 +394,18 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       .grand-total-row {
         display: flex; justify-content: space-between; align-items: baseline;
         padding: 14px 0;
-        border-top: 2px solid #0f172a;
-        border-bottom: 2px solid #0f172a;
+        border-top: 2px solid #0a0b0d;
+        border-bottom: 2px solid #0a0b0d;
         margin: 24px 0;
         font-size: 16px; font-weight: 700;
       }
       .grand-total-row .amount {
-        font-size: 22px; color: #0f172a;
+        font-size: 22px; color: #0a0b0d;
       }
 
       .footnote {
         font-size: 11px;
-        color: #94a3b8;
+        color: #a1a1aa;
         text-align: center;
         margin-top: 30px;
       }
@@ -441,12 +441,12 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
           {!brand.isPartner && (
           <svg viewBox="0 0 620 240" width="150" height="58" xmlns="http://www.w3.org/2000/svg" style="display:block; margin-bottom:6px;" role="img" aria-label="MannyKnows">
             <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#0071e3" />
-            <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#0f172a" />
+            <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#0a0b0d" />
           </svg>
           )}
           <div class="subtitle">Home Improvement Contract</div>
-          <div style="font-size:12px; color:#475569; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
-          <div style="font-size:12px; color:#475569;">Contract #: <strong style="color:#111827;">{row.project_number}</strong></div>
+          <div style="font-size:12px; color:#71717a; margin-top:8px;">Date: <strong style="color:#111827;">{today}</strong></div>
+          <div style="font-size:12px; color:#71717a;">Contract #: <strong style="color:#111827;">{row.project_number}</strong></div>
         </div>
         <div class="contact-block">
           {brand.isPartner ? (
@@ -522,7 +522,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
         <span class="amount">{fmtMoney(total)}</span>
       </div>
       {discount > 0 && (
-        <div style="font-size:12px; color:#475569; text-align:right; margin-top:-18px; margin-bottom:18px;">
+        <div style="font-size:12px; color:#71717a; text-align:right; margin-top:-18px; margin-bottom:18px;">
           Includes discount of {fmtMoney(discount)}
         </div>
       )}
@@ -547,7 +547,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
                   <td style="text-transform:capitalize;">{c.product_type || '—'}</td>
                   <td style="font-weight:600;">{c.color_value || '—'}</td>
                   <td>{c.finish || '—'}</td>
-                  <td style="font-size:11px; color:#475569;">{c.note || ''}</td>
+                  <td style="font-size:11px; color:#71717a;">{c.note || ''}</td>
                 </tr>
               ))}
             </tbody>
@@ -556,7 +556,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       )}
 
       <h2 class="section-h">Payment Schedule</h2>
-      <p style="font-size:12px; color:#475569; margin:0 0 8px;">
+      <p style="font-size:12px; color:#71717a; margin:0 0 8px;">
         {row.down_payment_percent}% down split into {row.down_payment_count} payment{row.down_payment_count === 1 ? '' : 's'},
         {isMonthlyPlan
           ? ` with the balance divided into ${row.monthly_payment_count} monthly payment${row.monthly_payment_count === 1 ? '' : 's'} starting after job completion.`
@@ -578,24 +578,24 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
             const rec = receiptByRow[r.id];
             return (
             <tr>
-              <td style="text-transform: capitalize; font-size:12px; color:#475569;">{r.kind}</td>
+              <td style="text-transform: capitalize; font-size:12px; color:#71717a;">{r.kind}</td>
               <td>{r.label}</td>
               <td>{fmtDate(r.due_date)}</td>
               <td class="amount">{fmtMoney(r.amount)}</td>
               {rec ? (
-                <td style="font-size:9px; color:#475569;">
+                <td style="font-size:9px; color:#71717a;">
                   <div style="display:flex; gap:10px; align-items:flex-end;">
                     <div style="flex:1; min-width:0;">
                       {rec.customer_signature_data_url && (
                         <img src={rec.customer_signature_data_url} alt="Client signature" style="display:block; max-height:26px; max-width:100%;" />
                       )}
-                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
+                      <div style="border-top:1px solid #a1a1aa; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
                     </div>
                     <div style="flex:1; min-width:0;">
                       {rec.contractor_signature_data_url && (
                         <img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />
                       )}
-                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
+                      <div style="border-top:1px solid #a1a1aa; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
                     </div>
                   </div>
                   <div style="margin-top:2px; color:#16a34a; font-weight:700;">
@@ -603,7 +603,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
                   </div>
                 </td>
               ) : (
-                <td style="font-size:10px; color:#94a3b8;">Client _______ / Contractor _______</td>
+                <td style="font-size:10px; color:#a1a1aa;">Client _______ / Contractor _______</td>
               )}
             </tr>
             );
@@ -620,16 +620,16 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
 
       <div style={`display: grid; grid-template-columns: ${isMonthlyPlan ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 16px; margin: 12px 0 22px;`}>
         <div>
-          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Total down</div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#71717a; font-weight:700;">Total down</div>
           <div style="font-size:18px; font-weight:700;">{fmtMoney(downSum)}</div>
         </div>
         <div>
-          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Balance</div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#71717a; font-weight:700;">Balance</div>
           <div style="font-size:18px; font-weight:700;">{fmtMoney(balanceSum)}</div>
         </div>
         {isMonthlyPlan && (
           <div>
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#475569; font-weight:700;">Each monthly</div>
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#71717a; font-weight:700;">Each monthly</div>
             <div style="font-size:18px; font-weight:700;">{fmtMoney(monthlyAmount)}</div>
           </div>
         )}
@@ -665,7 +665,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
             {customerSig ? (
               <>
                 <img src={customerSig.signature_data_url} alt={`Signature by ${customerSig.signer_name}`} style="display:block; max-height:80px; max-width:100%; margin-bottom: 4px;" />
-                <div class="sig-caption" style="border-top:1px solid #94a3b8; padding-top:4px;">Customer signature &mdash; {customerSig.signer_name}</div>
+                <div class="sig-caption" style="border-top:1px solid #a1a1aa; padding-top:4px;">Customer signature &mdash; {customerSig.signer_name}</div>
               </>
             ) : (
               <>
@@ -678,7 +678,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
             {contractorSig ? (
               <>
                 <img src={contractorSig.signature_data_url} alt={`Signature by ${contractorSig.signer_name}`} style="display:block; max-height:80px; max-width:100%; margin-bottom: 4px;" />
-                <div class="sig-caption" style="border-top:1px solid #94a3b8; padding-top:4px;">Contractor signature &mdash; {contractorSig.signer_name}</div>
+                <div class="sig-caption" style="border-top:1px solid #a1a1aa; padding-top:4px;">Contractor signature &mdash; {contractorSig.signer_name}</div>
               </>
             ) : (
               <>
@@ -691,7 +691,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
         <div class="sig-row" style="margin-top: 14px;">
           <div>
             {customerSig ? (
-              <div class="sig-caption" style="border-bottom:1px solid #94a3b8; padding-bottom:4px;">
+              <div class="sig-caption" style="border-bottom:1px solid #a1a1aa; padding-bottom:4px;">
                 {customerSig.signer_name} &middot; {fmtDate(customerSig.signed_at)}
               </div>
             ) : (
@@ -701,7 +701,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
           </div>
           <div>
             {contractorSig ? (
-              <div class="sig-caption" style="border-bottom:1px solid #94a3b8; padding-bottom:4px;">
+              <div class="sig-caption" style="border-bottom:1px solid #a1a1aa; padding-bottom:4px;">
                 {contractorSig.signer_name} &middot; {fmtDate(contractorSig.signed_at)}
               </div>
             ) : (
@@ -713,24 +713,24 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       </div>
 
       {customerSig && (
-        <div style="margin-top: 22px; padding: 14px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; line-height: 1.6; color: #475569;">
-          <div style="font-weight: 700; color: #0f172a; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Signature Audit Trail</div>
+        <div style="margin-top: 22px; padding: 14px 16px; background: #fafafa; border: 1px solid #f4f4f5; border-radius: 6px; font-size: 11px; line-height: 1.6; color: #71717a;">
+          <div style="font-weight: 700; color: #0a0b0d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Signature Audit Trail</div>
           <div style="display: grid; grid-template-columns: 130px 1fr; gap: 4px 12px;">
-            <div>Signed by</div><div><strong style="color:#0f172a;">{customerSig.signer_name}</strong></div>
+            <div>Signed by</div><div><strong style="color:#0a0b0d;">{customerSig.signer_name}</strong></div>
             <div>Date &amp; time</div><div>{fmtFullDateTime(customerSig.signed_at)}</div>
             {customerSig.ip_address && (<><div>IP address</div><div>{customerSig.ip_address}</div></>)}
             {customerSig.user_agent && (<><div>Device</div><div>{parseUserAgent(customerSig.user_agent)}</div></>)}
             <div>Contract</div><div>#{row.project_number}</div>
             {customerSig.consent_text && (<><div>Consent</div><div style="font-style: italic;">{customerSig.consent_text}</div></>)}
           </div>
-          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 10px; color: #94a3b8;">
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 10px; color: #a1a1aa;">
             Recorded under the ESIGN Act (15 U.S.C. § 7001 et seq.) and Massachusetts UETA.
           </div>
         </div>
       )}
 
       {terms.reference_request?.enabled && (
-        <div style="margin: 24px 0; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px;">
+        <div style="margin: 24px 0; padding: 14px; background: #fafafa; border: 1px solid #f4f4f5; border-radius: 6px; font-size: 13px;">
           {terms.reference_request.text || 'Can we use you as a reference?'}
           {row.use_as_reference == null
             ? (<span style="margin-left: 20px;">YES _____ NO _____</span>)

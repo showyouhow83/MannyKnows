@@ -75,10 +75,10 @@
 :root,
 [data-theme="dark"] {
   --color-surface: #ffffff;
-  --color-background: #0f172a;
-  --color-background-light: #1e293b;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #94a3b8;
+  --color-background: #0a0b0d;
+  --color-background-light: #151619;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
   --color-border: rgba(255, 255, 255, 0.1);
 
   /* Glassmorphism - Dark */
@@ -98,7 +98,7 @@
   --input-bg-focus: rgba(0, 0, 0, 0.3);
 
   /* Modal */
-  --modal-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+  --modal-bg: linear-gradient(135deg, rgba(21, 22, 25, 0.95), rgba(10, 11, 13, 0.98));
   --modal-backdrop: rgba(0, 0, 0, 0.7);
 }
 
@@ -107,10 +107,10 @@
    ============================================ */
 [data-theme="light"] {
   --color-surface: #ffffff;
-  --color-background: #f1f5f9;
-  --color-background-light: #e2e8f0;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
+  --color-background: #fafafa;
+  --color-background-light: #f4f4f5;
+  --color-text-primary: #0a0b0d;
+  --color-text-secondary: #71717a;
   --color-border: rgba(0, 0, 0, 0.1);
 
   /* Glassmorphism - Light */
@@ -352,7 +352,7 @@ body {
   position: relative;
   background: none;
   border: none;
-  color: var(--color-text-secondary, #94a3b8);
+  color: var(--color-text-secondary, #a1a1aa);
   cursor: pointer;
   padding: 6px;
   border-radius: 8px;
@@ -432,7 +432,7 @@ body {
   right: 0;
   margin-top: 8px;
   width: 320px;
-  background: #0f172a;
+  background: #0a0b0d;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -870,7 +870,7 @@ body {
   right: 0;
   bottom: calc(100% + 6px);
   min-width: 190px;
-  background: var(--color-background, #0f172a);
+  background: var(--color-background, #0a0b0d);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -1083,13 +1083,13 @@ select:focus,
 [data-theme="light"] select,
 [data-theme="light"] .form-select {
   background-color: #fff;
-  color: #1e293b;
+  color: #151619;
 }
 
 [data-theme="light"] select option,
 [data-theme="light"] .form-select option {
   background: #fff;
-  color: #1e293b;
+  color: #151619;
 }
 
 /* Search Bar */
@@ -1212,7 +1212,7 @@ select:focus,
 .status-badge.draft,
 .status-badge.needs-crew {
   background: rgba(100, 116, 139, 0.15);
-  color: #94a3b8;
+  color: #a1a1aa;
 }
 .status-badge.draft::before,
 .status-badge.needs-crew::before { background: #64748b; }

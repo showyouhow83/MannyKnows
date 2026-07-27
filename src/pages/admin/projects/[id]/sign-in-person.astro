@@ -145,8 +145,8 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
     html, body {
       margin: 0; padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
+      background: #fafafa;
+      color: #0a0b0d;
       overscroll-behavior-y: none;
     }
     .page {
@@ -161,9 +161,9 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       gap: 12px;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #f4f4f5;
     }
-    .topbar-title { font-size: 18px; font-weight: 700; color: #0f172a; }
+    .topbar-title { font-size: 18px; font-weight: 700; color: #0a0b0d; }
     .topbar-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
     .btn {
       padding: 10px 18px;
@@ -177,7 +177,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       align-items: center;
       gap: 6px;
     }
-    .btn-cancel { background: #fff; border-color: #cbd5e1; color: #475569; }
+    .btn-cancel { background: #fff; border-color: #cbd5e1; color: #71717a; }
     .btn-primary { background: linear-gradient(135deg, #0071e3 0%, #e05f00 100%); color: #fff; border: none; }
     .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn:active { transform: none; }
@@ -191,7 +191,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
 
     .summary {
       background: #fff;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #f4f4f5;
       border-radius: 12px;
       padding: 16px 18px;
       margin-bottom: 16px;
@@ -210,8 +210,8 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       padding: 6px 0;
       font-size: 13px;
     }
-    .summary-row .label { color: #475569; }
-    .summary-row .value { font-weight: 600; color: #0f172a; }
+    .summary-row .label { color: #71717a; }
+    .summary-row .value { font-weight: 600; color: #0a0b0d; }
     .summary-total {
       border-top: 2px solid #cbd5e1;
       margin-top: 8px;
@@ -220,13 +220,13 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       font-weight: 700;
     }
 
-    details.collapsible { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
-    details.collapsible summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; list-style: none; display: flex; align-items: center; gap: 8px; }
-    details.collapsible summary::after { content: '+'; margin-left: auto; font-size: 18px; color: #94a3b8; }
+    details.collapsible { background: #fff; border: 1px solid #f4f4f5; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+    details.collapsible summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; list-style: none; display: flex; align-items: center; gap: 8px; }
+    details.collapsible summary::after { content: '+'; margin-left: auto; font-size: 18px; color: #a1a1aa; }
     details.collapsible[open] summary::after { content: '−'; }
     details.collapsible .collapse-body { padding-top: 10px; }
 
-    .scope-preview { font-size: 13px; line-height: 1.55; color: #334155; }
+    .scope-preview { font-size: 13px; line-height: 1.55; color: #1f2024; }
     .scope-preview h3 { font-size: 14px; margin: 14px 0 6px 0; }
     .scope-preview ul { margin: 4px 0 8px 18px; padding: 0; }
 
@@ -241,7 +241,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
 
     .sig-card {
       background: #fff;
-      border: 2px solid #e2e8f0;
+      border: 2px solid #f4f4f5;
       border-radius: 14px;
       padding: 18px;
     }
@@ -264,7 +264,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 5;
-      background: #f8fafc;
+      background: #fafafa;
       border: 2px dashed #cbd5e1;
       border-radius: 10px;
       overflow: hidden;
@@ -274,7 +274,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       content: 'Sign here with your finger or Apple Pencil';
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      color: #94a3b8; font-size: 13px; font-style: italic;
+      color: #a1a1aa; font-size: 13px; font-style: italic;
       pointer-events: none;
     }
     .sig-pad { width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
@@ -291,7 +291,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
     .btn-clear {
       background: none;
       border: 1px solid #cbd5e1;
-      color: #475569;
+      color: #71717a;
       padding: 6px 14px;
       border-radius: 6px;
       font-size: 12px;
@@ -316,7 +316,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       gap: 10px;
       margin-top: 12px;
       font-size: 12px;
-      color: #475569;
+      color: #71717a;
       line-height: 1.5;
     }
     .consent input { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; }
@@ -324,8 +324,8 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
     .ref-block {
       margin-top: 12px;
       padding: 10px 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: #fafafa;
+      border: 1px solid #f4f4f5;
       border-radius: 8px;
       font-size: 13px;
     }
@@ -335,7 +335,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
     .submit-bar {
       position: sticky;
       bottom: 0;
-      background: linear-gradient(to top, #f8fafc 60%, rgba(248,250,252,0));
+      background: linear-gradient(to top, #fafafa 60%, rgba(248,250,252,0));
       padding: 16px 0 12px 0;
       margin-top: 16px;
     }
@@ -345,19 +345,19 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
       justify-content: space-between;
       gap: 16px;
       background: #fff;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #f4f4f5;
       border-radius: 12px;
       padding: 14px 18px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     }
-    .submit-status { font-size: 13px; color: #475569; }
+    .submit-status { font-size: 13px; color: #71717a; }
     .submit-error { color: #b91c1c; font-weight: 600; }
 
     .iframe-bridge { display: none; }
 
     .done-overlay {
       position: fixed; inset: 0;
-      background: rgba(15, 23, 42, 0.96);
+      background: rgba(10, 11, 13, 0.96);
       color: #fff;
       display: none;
       align-items: center;
@@ -428,9 +428,9 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
             <span class="value">{buildPaymentPlanSummary()}</span>
           </div>
           <div class="summary-row" style="align-items: center; gap: 8px;">
-            <span class="label">Check # <span style="font-weight:400; color:#94a3b8;">(optional)</span></span>
+            <span class="label">Check # <span style="font-weight:400; color:#a1a1aa;">(optional)</span></span>
             <input type="text" id="checkNumber" placeholder="e.g. 1042" autocomplete="off"
-              style="flex:1; padding:4px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:600; color:#0f172a; max-width:160px; text-align:right;" />
+              style="flex:1; padding:4px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:600; color:#0a0b0d; max-width:160px; text-align:right;" />
           </div>
           <div class="summary-row">
             <span class="label">Warranty</span>
@@ -454,7 +454,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
             ) : (
               <div style="display:grid; gap:6px; font-size:13px;">
                 {paymentSchedule.map((row: any) => (
-                  <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #e2e8f0;">
+                  <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #f4f4f5;">
                     <span>{row.label || row.kind || 'Payment'}{row.due_date ? ` · due ${fmtDate(row.due_date)}` : ''}</span>
                     <strong>{fmtMoney(Number(row.amount) || 0)}</strong>
                   </div>
@@ -466,7 +466,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
 
         <details class="collapsible">
           <summary>Key terms</summary>
-          <div class="collapse-body" style="font-size:13px; line-height:1.6; color:#334155;">
+          <div class="collapse-body" style="font-size:13px; line-height:1.6; color:#1f2024;">
             <p><strong>Cancellation:</strong> {contract.cancellation_window_days} day{contract.cancellation_window_days === 1 ? '' : 's'} for a full refund of the deposit. After that, a {fmtMoney(contract.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.</p>
             <p><strong>Late fee:</strong> {fmtMoney(contract.late_fee_amount)} after {contract.late_fee_grace_days}-day grace period.</p>
             <p><strong>Workmanship warranty:</strong> {contract.warranty_months} months from project completion.</p>
@@ -500,7 +500,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
                 <strong style="font-size:12px; display:block; margin-bottom:6px;">{terms.reference_request.text || 'Can we use you as a reference?'}</strong>
                 <label><input type="radio" name="useAsReference" value="yes" /> Yes</label>
                 <label><input type="radio" name="useAsReference" value="no" /> No</label>
-                <span style="font-size:11px; color:#94a3b8;">(optional)</span>
+                <span style="font-size:11px; color:#a1a1aa;">(optional)</span>
               </div>
             )}
           </div>
@@ -573,7 +573,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
           ctx.lineWidth = 2.4;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
-          ctx.strokeStyle = '#0f172a';
+          ctx.strokeStyle = '#0a0b0d';
           if (prev) {
             var img = new Image();
             img.onload = function () { ctx.drawImage(img, 0, 0, w, h); };
