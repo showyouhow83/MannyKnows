@@ -149,7 +149,7 @@ export async function GET({ request, locals }: APIContext) {
           start: startDate.toISOString().split('T')[0],
           end: endDate.toISOString().split('T')[0]
         },
-        totals: { requests: 0, pageViews: 0, uniqueVisitors: 0, bandwidth: 0 },
+        totals: { requests: 0, pageViews: 0, bandwidth: 0, uniqueVisitorsAvg: 0, uniqueVisitorsPeak: 0 },
         daily: [],
         topPages: []
       }), {
@@ -167,13 +167,21 @@ export async function GET({ request, locals }: APIContext) {
       bandwidth: day.sum?.bytes || 0
     })).sort((a, b) => a.date.localeCompare(b.date));
 
-    // Calculate totals
+    // Calculate totals. IMPORTANT: Cloudflare's `uniques` are distinct IPs
+    // *per day* — summing them across days recounts every returning visitor
+    // (someone visiting daily would count 7×), so a 7-day "unique visitors"
+    // sum is inflated fiction. Report the daily average and peak instead.
+    // requests / pageViews / bytes sum correctly.
     const totals = dailyData.reduce((acc, day) => ({
       requests: acc.requests + day.requests,
       pageViews: acc.pageViews + day.pageViews,
-      uniqueVisitors: acc.uniqueVisitors + day.uniqueVisitors,
       bandwidth: acc.bandwidth + day.bandwidth
-    }), { requests: 0, pageViews: 0, uniqueVisitors: 0, bandwidth: 0 });
+    }), { requests: 0, pageViews: 0, bandwidth: 0 });
+    const uniquesSeries = dailyData.map(d => d.uniqueVisitors);
+    const uniqueVisitorsAvg = uniquesSeries.length
+      ? Math.round(uniquesSeries.reduce((a, b) => a + b, 0) / uniquesSeries.length)
+      : 0;
+    const uniqueVisitorsPeak = uniquesSeries.length ? Math.max(...uniquesSeries) : 0;
 
     // Top pages (filter out API, CDN, static files, then aggregate and sort by count)
     const staticExtensions = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|map|json|xml|txt|pdf|webp|mp4|webm|avif)$/i;
@@ -219,7 +227,7 @@ export async function GET({ request, locals }: APIContext) {
         start: startDate.toISOString().split('T')[0],
         end: endDate.toISOString().split('T')[0]
       },
-      totals,
+      totals: { ...totals, uniqueVisitorsAvg, uniqueVisitorsPeak },
       daily: dailyData,
       topPages
     }), {
@@ -239,7 +247,7 @@ export async function GET({ request, locals }: APIContext) {
         start: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0],
         end: new Date().toISOString().split('T')[0]
       },
-      totals: { requests: 0, pageViews: 0, uniqueVisitors: 0, bandwidth: 0 },
+      totals: { requests: 0, pageViews: 0, bandwidth: 0, uniqueVisitorsAvg: 0, uniqueVisitorsPeak: 0 },
       daily: [],
       topPages: []
     }), {
