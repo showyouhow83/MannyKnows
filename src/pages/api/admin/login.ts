@@ -21,9 +21,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // is an ineffective per-isolate counter on Workers.
     const rlOk = await kvRateLimit(env?.MK_KV_SESSIONS as any, `login:${clientIP}`, 5, 15 * 60);
     if (!rlOk || !AdminAuth.checkRateLimit(clientIP)) {
+      // Say WHEN to come back — a bare "try later" sends people into blind
+      // retry loops that burn the next window the moment it opens.
+      let mins = 15;
+      try {
+        const rec = await (env?.MK_KV_SESSIONS as any)?.get(`rl:login:${clientIP}`, 'json');
+        if (rec?.r) mins = Math.max(1, Math.ceil((rec.r - Date.now()) / 60000));
+      } catch {}
       return new Response(JSON.stringify({
         success: false,
-        error: 'Too many login attempts. Please try again later.'
+        error: `Too many login attempts. Try again in about ${mins} minute${mins === 1 ? '' : 's'} — you get 5 tries per window.`
       }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' }
