@@ -12,8 +12,12 @@
     "OWNER_TIMEZONE": "America/New_York",
     // Sender for Resend (use a verified domain)
     "RESEND_FROM": "Manny <mk@mannyknows.com>",
-    // Admin auth — ADMIN_KEY is a Worker secret: `npx wrangler secret put ADMIN_KEY`
-    // (kept out of source so it isn't committed in plaintext)
+    // Worker secrets in use (set via `npx wrangler secret put <NAME>`):
+    // ADMIN_USERNAME / ADMIN_PASSWORD / SESSION_SECRET (admin login),
+    // ADMIN_API_KEY (diagnostics endpoints), OPENAI_API_KEY +
+    // KV_ENCRYPTION_KEY (Remi), GEMINI_API_KEY (admin AI assists),
+    // RESEND_API_KEY (email). The old ADMIN_KEY secret is orphaned —
+    // nothing reads it since the legacy admin was deleted.
     "ADMIN_EMAIL": "mk@mannyknows.com"
   },
 

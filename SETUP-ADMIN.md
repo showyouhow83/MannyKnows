@@ -15,13 +15,18 @@ the admin activates only as you complete the steps below.
 
 Everything below is one-time, in order of what unlocks what.
 
-## 1. Log-in credentials (5 minutes — unlocks the login)
+## 1. Log-in credentials (1 minute — unlocks the login)
+
+`ADMIN_USERNAME` and `ADMIN_PASSWORD` **already exist on the Worker** (set in
+the previous-admin era) and the new login reads the same names — those values
+carry over as-is. The only new secret is the cookie-signing key:
 
 ```bash
-npx wrangler secret put ADMIN_USERNAME     # e.g. manny
-npx wrangler secret put ADMIN_PASSWORD     # long + random
 npx wrangler secret put SESSION_SECRET     # run: openssl rand -base64 32
 ```
+
+(Forgot the old username/password? Overwrite them the same way:
+`npx wrangler secret put ADMIN_PASSWORD`.)
 
 These env credentials are the bootstrap login. Once the database exists you
 can create real users (with viewer/admin roles) in D1 `admin_users`, managed
