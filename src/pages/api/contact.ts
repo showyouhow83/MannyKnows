@@ -205,6 +205,52 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       }
     }
 
+    // Also land the inquiry in the admin CRM as a Lead, so nothing lives only
+    // in KV/email. Best-effort + fully guarded: if the admin database isn't
+    // bound yet (MK_APP_DB), or the insert fails, the contact still succeeded
+    // above — we never fail the visitor's submission over a CRM hiccup.
+    const appDb = env?.MK_APP_DB;
+    if (appDb) {
+      try {
+        const rand = () => {
+          const a = new Uint8Array(4);
+          crypto.getRandomValues(a);
+          return Array.from(a, (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 6).toUpperCase();
+        };
+        const confirmationCode = `MK-${Date.now().toString(36).toUpperCase()}-${rand()}`;
+        const confirmationToken = crypto.randomUUID();
+        const svc = (body.service || '').toString().trim() || 'other';
+        const businessName = (body.business || '').toString().trim() || null;
+        // Prefer the visitor's own words; fall back to the page context.
+        const description = (message || '').toString().slice(0, 4000) || (body.context || null);
+
+        await appDb.prepare(`
+          INSERT INTO leads (
+            confirmation_code, confirmation_token,
+            customer_name, customer_email, customer_phone,
+            address, city, state, zip,
+            service_type, project_description,
+            preferred_date, preferred_time,
+            source, company_name, status
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_confirmation')
+        `).bind(
+          confirmationCode,
+          confirmationToken,
+          contactRecord.name,
+          contactRecord.email,
+          null,
+          '', '', 'MA', null,
+          svc,
+          description,
+          'ASAP', 'Flexible',
+          'website',
+          businessName,
+        ).run();
+      } catch (leadError) {
+        console.error('Contact→Lead insert failed (contact still stored):', leadError);
+      }
+    }
+
     return new Response(JSON.stringify({
       success: true,
       message: 'Your message has been sent successfully! We\'ll get back to you within 24 hours.',

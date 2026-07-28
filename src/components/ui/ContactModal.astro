@@ -3,8 +3,16 @@
 //   • any <a href="#contact"> or element with [data-contact]
 //   • window.openContactModal(context)
 //   • a ?contact=open or ?chat=open URL param (e.g. links from emails)
-// Submits to /api/contact (same endpoint as the footer form).
+// Submits to /api/contact (same endpoint as the footer form) — which stores
+// the message, emails Manny, AND creates a Lead in the admin (MK_APP_DB) so
+// every inquiry lands in /admin/leads.
 // Rendered once in BaseLayout so it's available on every page.
+import { SERVICE_TYPES } from '../../data/serviceTypes';
+// Drop the two free lead-magnets + "other" from the interest picker — the
+// modal's own "What do you need?" box covers anything off-list.
+const interestServices = SERVICE_TYPES.filter(
+  (s) => !['360-photo', 'website-analysis', 'other'].includes(s.value)
+);
 ---
 
 <div id="contactModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
@@ -24,6 +32,11 @@
       <input type="text" name="name" required autocomplete="name" placeholder="Your name" maxlength="100" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
       <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
       <input type="text" name="business" placeholder="Business or website (optional)" maxlength="200" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm" />
+      <select name="service" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm">
+        <option value="">What are you interested in? (optional)</option>
+        {interestServices.map((s) => (<option value={s.value}>{s.label}</option>))}
+        <option value="not-sure">Not sure yet — help me figure it out</option>
+      </select>
       <textarea name="message" required rows="3" placeholder="What do you need help with?" maxlength="2000" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm resize-none"></textarea>
 
       <button type="submit" id="contactModalSubmit" class="w-full bg-gradient-to-r from-primary-blue to-primary-pink text-white py-3 rounded-xl text-sm font-semibold transition-all duration-300 disabled:opacity-60">
@@ -97,9 +110,15 @@
       if (!csrfToken) await getToken();
       const fd = new FormData(form);
       const business = (fd.get('business') || '').toString().trim();
+      const service = (fd.get('service') || '').toString().trim();
+      // Use a clean label in the message — strip the " ($199/mo)" price suffix.
+      // The raw ($ + parens) trips the API's command-injection input filter, and
+      // the price is noise here anyway; the service value is sent separately.
+      const rawLabel = service ? (form.querySelector(`select[name="service"] option[value="${service}"]`)?.textContent || service) : '';
+      const serviceLabel = rawLabel.replace(/\s*\([^)]*\)\s*$/, '').trim();
       const userMsg = (fd.get('message') || '').toString().trim();
       const message =
-        `Interested in: ${context || 'General inquiry'}.\n` +
+        `Interested in: ${serviceLabel || context || 'General inquiry'}.\n` +
         (business ? `Business / site: ${business}.\n` : '') +
         `\n${userMsg}`;
       const subject = context ? `${context} — inquiry via mannyknows.com` : 'New inquiry via mannyknows.com';
@@ -111,7 +130,7 @@
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken || '' },
-          body: JSON.stringify({ name: fd.get('name'), email: fd.get('email'), subject, message, csrf_token: csrfToken, session_id: sessionId }),
+          body: JSON.stringify({ name: fd.get('name'), email: fd.get('email'), business, service, context: context || '', subject, message, csrf_token: csrfToken, session_id: sessionId }),
         });
         const result = await res.json().catch(() => ({}));
         if (res.ok) {

@@ -3444,7 +3444,7 @@ function formatCurrency(amount: number | null): string {
               try {
                 const arr = typeof project.services === 'string' ? JSON.parse(project.services) : project.services;
                 if (!Array.isArray(arr)) return '';
-                const labels = { kitchen_remodel: 'Kitchen', bathroom_remodel: 'Bathroom', interior_painting: 'Painting', flooring: 'Flooring', general_repairs: 'Repairs' };
+                const labels = { 'website-basic': 'Website I', 'website-plus': 'Website II', 'website-smart': 'Website III', 'ecommerce': 'eCommerce', 'business-ads': 'Business Ads', 'multimedia-agency': 'Multimedia', 'ai-team': 'AI Team', 'custom-app': 'Custom App', '360-photo': '360° Photo', 'website-analysis': 'Site Analysis' };
                 const parts = arr.filter(s => (s?.scope || '').trim()).map((s, _i, all) => {
                   const lbl = labels[s.type] || s.type;
                   return all.length > 1 ? lbl + ': ' + s.scope.trim() : s.scope.trim();
