@@ -34,7 +34,7 @@ For a straightforward, well-built small-business site, the going rate around her
 
 Instead of a big upfront bill, you pay monthly and the site is built **and** kept working — fast, found, and up to date every month. Good when you'd rather have it handled than babysit it yourself.
 
-Our **[Smart Website plans](/plans/)** start at [**$249/mo**](/plans/get-found/): a fast, multilingual site, Remi answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance — all included. Want a full multi-page site with Remi booking jobs? That's [**$399/mo**](/plans/get-booked/), and the [fully self-optimizing tier is **$599/mo**](/plans/get-growing/). For comparison, professional SEO *on its own* runs $500–2,000/mo at most agencies, so bundling the site, the AI, and the upkeep from $249 is built to be the affordable option, not the cheap one.
+Our **[Smart Website plans](/plans/)** start at [**$99/mo**](/plans/get-found/): a fast, multilingual 1–3 page site, Remi answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance — all included. Want a full multi-page site with Remi booking jobs? That's [**$249/mo**](/plans/get-booked/), and the [fully self-optimizing tier is **$550/mo**](/plans/get-growing/). For comparison, professional SEO *on its own* runs $500–2,000/mo at most agencies, so bundling the site, the AI, and the upkeep from $99 is built to be the affordable option, not the cheap one.
 
 ## What actually makes a website "expensive"
 
@@ -50,6 +50,6 @@ A few things to watch for when you're comparing quotes:
 
 ## So what should *you* pay?
 
-Enough to get a site that's fast, that Google can find, and that turns visitors into calls — and not a dollar for one that doesn't. For most Western Mass small businesses that's a one-time build from around $1,000, or an Smart Website plan from $249/mo if you'd rather have it all handled.
+Enough to get a site that's fast, that Google can find, and that turns visitors into calls — and not a dollar for one that doesn't. For most Western Mass small businesses that's a one-time build from around $1,000, or a monthly website plan from $99/mo if you'd rather have it all handled.
 
 Not sure which fits? **[Get a free look at your current site](/free-ai-website-analysis/)** — we'll tell you honestly what's working, what's costing you, and what it would take to fix, with no obligation. Or just [tell us what you do](#contact) and we'll scope it with you.

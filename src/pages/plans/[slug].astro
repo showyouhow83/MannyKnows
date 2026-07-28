@@ -16,16 +16,22 @@ import Illustration from '../../components/illustrations/Illustration.astro';
 import StepCards from '../../components/ui/StepCards.astro';
 import SmartWebsiteConcept from '../../components/sections/SmartWebsiteConcept.astro';
 
+// Sell Online lives on its own page (/ecommerce) — selling products is a
+// different decision from getting found, so it isn't one of the website tiers.
+// Its old /plans/sell-online URL 301s there from astro.config.mjs.
 export function getStaticPaths() {
-  return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
+  return plans
+    .filter((p) => p.slug !== 'sell-online')
+    .map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
 }
 
 const { plan } = Astro.props as { plan: Plan };
 
-// The self-improving concept applies to the website/store plans — not to the
-// ads or agency retainers, which aren't websites.
-const isWebsitePlan = ['get-found', 'get-booked', 'get-growing', 'sell-online'].includes(plan.slug);
+// The self-improving concept applies to the website plans — not to the ads or
+// agency retainers, which aren't websites.
+const isWebsitePlan = ['get-found', 'get-booked', 'get-growing', 'get-ahead'].includes(plan.slug);
 const others = plans.filter((p) => p.slug !== plan.slug);
+const planHref = (slug: string) => (slug === 'sell-online' ? '/ecommerce/' : `/plans/${slug}/`);
 
 const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
   'get-growing': 'website',
@@ -107,17 +113,11 @@ const faqSchema = {
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
                   <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
-                  {plan.buildFee && (
-                    <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">+ ${plan.buildFee.toLocaleString('en-US')} one-time build</span>
-                  )}
                 </div>
                 <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
                   <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
-                  {plan.buildFee && (
-                    <span class="block text-xs font-semibold text-primary-blue dark:text-blue-300 mt-1">build fee waived</span>
-                  )}
                 </div>
               </div>
             )}
@@ -300,7 +300,7 @@ const faqSchema = {
         <h2 class="text-lg font-bold text-center mb-8 text-text-light-primary dark:text-text-dark-primary">Not the right fit? The other plans:</h2>
         <div class="grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
           {others.map((p) => (
-            <a href={`/plans/${p.slug}/`} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+            <a href={planHref(p.slug)} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <svg class="w-6 h-6 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
               <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
               <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}/mo</p>

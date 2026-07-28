@@ -85,7 +85,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Holyoke · Western Massachusetts',
     metaTitle: 'Web Design in Holyoke, MA — Bilingual & SEO | MannyKnows',
     metaDescription:
-      'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $249/mo.',
+      'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $99/mo.',
     heroIntro:
       'In the Paper City, your next customer is searching on their phone before they ever call. We build fast, bilingual websites with an AI agent that answers and books around the clock — so Holyoke businesses get found and get the job.',
     angleHeading: 'Holyoke runs in two languages — so should your site',
@@ -104,7 +104,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Chicopee · Western Massachusetts',
     metaTitle: 'Web Design in Chicopee, MA — SEO & AI | MannyKnows',
     metaDescription:
-      'Web design for Chicopee, MA businesses — fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $249/mo.',
+      'Web design for Chicopee, MA businesses — fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $99/mo.',
     heroIntro:
       'Chicopee is built on family businesses — and family businesses win on reputation and word of mouth. We put that reputation online: a fast website, technical SEO that ranks you locally, and an AI agent that answers customers day and night.',
     angleHeading: 'Where Willimansett, Aldenville, and the Falls find you',
@@ -123,7 +123,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Northampton · Western Massachusetts',
     metaTitle: 'Web Design in Northampton, MA — SEO & AI | MannyKnows',
     metaDescription:
-      "Web design for Northampton, MA businesses — beautiful, fast websites with technical SEO and AI booking agents. From $249/mo.",
+      "Web design for Northampton, MA businesses — beautiful, fast websites with technical SEO and AI booking agents. From $99/mo.",
     heroIntro:
       "Northampton sets a high bar for design — your website should meet it. We build beautiful, blazing-fast sites for NoHo's restaurants, shops, and studios, with technical SEO and an AI agent that turns browsers into booked customers.",
     angleHeading: 'A site as considered as Main Street',
