@@ -14,12 +14,17 @@ import { getTestimonial } from '../../data/testimonials';
 import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import StepCards from '../../components/ui/StepCards.astro';
+import SmartWebsiteConcept from '../../components/sections/SmartWebsiteConcept.astro';
 
 export function getStaticPaths() {
   return plans.map((p) => ({ params: { slug: p.slug }, props: { plan: p } }));
 }
 
 const { plan } = Astro.props as { plan: Plan };
+
+// The self-improving concept applies to the website/store plans — not to the
+// ads or agency retainers, which aren't websites.
+const isWebsitePlan = ['basic-website', 'plus-website', 'smart-website', 'online-store'].includes(plan.slug);
 const others = plans.filter((p) => p.slug !== plan.slug);
 
 const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
@@ -212,6 +217,21 @@ const faqSchema = {
         </p>
       </Container>
     </Section>
+
+    <!-- Why a self-improving site beats a normal one (website plans only) -->
+    {isWebsitePlan && (
+      <Section id="plan-concept" variant="alternate">
+        <Container>
+          <SmartWebsiteConcept compact={true} />
+          <p class="text-center mt-10">
+            <a href="/smart-websites/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+              More on how smart websites work
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </p>
+        </Container>
+      </Section>
+    )}
 
     <!-- Proof — testimonial (if any) + the case studies that show this plan working -->
     {proof && (

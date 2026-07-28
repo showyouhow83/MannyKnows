@@ -14,6 +14,7 @@ import { servicePlans } from '../data/plans';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../data/testimonials';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
+import SmartWebsiteConcept from '../components/sections/SmartWebsiteConcept.astro';
 import { team, aiTeamStartingPrice } from '../data/aiTeam';
 
 const aiTeamRoster = [...team].sort((a, b) => a.order - b.order);
@@ -119,7 +120,19 @@ const faqSchema = {
     </Section>
 
     <!-- Beyond the website: Business Ads & Multimedia — services, not website tiers. -->
-    <Section id="plans-services" variant="alternate">
+    <Section id="why-smart" variant="alternate">
+      <Container>
+        <SmartWebsiteConcept />
+        <p class="text-center mt-10">
+          <a href="/smart-websites/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+            What is a smart website? Full explainer
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </p>
+      </Container>
+    </Section>
+
+    <Section id="plans-services" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-10">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">

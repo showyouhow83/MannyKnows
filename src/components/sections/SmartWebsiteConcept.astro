@@ -1,0 +1,141 @@
+---
+// SmartWebsiteConcept.astro — sells the CONCEPT, not the package.
+//
+// Why this exists: a smart website is a new category. Nobody wakes up wanting
+// one, because they don't know it exists. Plan pages used to jump straight from
+// a price to a deliverables list, which reads like every other agency. This
+// section teaches the idea first: a normal site decays, a smart site compounds.
+//
+// Honesty: every capability below is something our sites actually do. How far
+// the autonomy goes varies by plan (light on the entry tier, full on the top),
+// so the copy says "depending on your plan" rather than implying all tiers are
+// identical. Nothing here is aspirational.
+//
+// Renders inner content only — drop it inside a <Section>/<PageSection>.
+export interface Props {
+  /** Heading level for the section title — h2 on plan pages, h2 on /plans. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
+// The daily loop. Concrete and verifiable — no vague "AI magic".
+const dailyChecks = [
+  {
+    title: 'Is anything broken?',
+    body: 'Broken links, images that stopped loading, a page throwing an error, a form that quit sending. Found and fixed before a customer hits it — not months later when you happen to notice.',
+    icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+  },
+  {
+    title: 'Is it fast enough?',
+    body: 'Page speed gets watched, not assumed. Oversized images get compressed, slow-loading pieces get tuned. Speed is the thing Google measures and the thing visitors feel first.',
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+  },
+  {
+    title: 'Can people still find you?',
+    body: "Search rules change constantly. Your titles, descriptions, and structure get adjusted to keep up — and when there's a search your customers make that you don't have an answer for, that becomes an opportunity, not a blind spot.",
+    icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+  },
+  {
+    title: 'What are customers actually asking?',
+    body: 'Remi answers your customers around the clock, so the questions they ask get logged. When people keep asking something your site never answered, that answer gets added — your site learns from real customers, not guesses.',
+    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+  },
+];
+---
+
+<div class="max-w-5xl mx-auto">
+  <div class="text-center mb-12">
+    <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+      A different kind of website
+    </span>
+    <h2 class={`sf-bold apple-headline font-bold mb-5 ${compact ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}`}>
+      <span class="apple-gradient-text" data-colorful-title>Most websites get worse every month. This one gets better.</span>
+    </h2>
+    <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+      A normal website is frozen the day it launches. It only improves if you pay someone to touch it — so most small-business sites quietly rot for years while the owner assumes they're fine. Ours check themselves every single day.
+    </p>
+  </div>
+
+  <!-- The contrast: what you're used to vs what this is -->
+  <div class="grid gap-5 md:grid-cols-2 mb-14">
+    <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6">
+      <h3 class="text-base font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">A normal website</h3>
+      <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Built once, then frozen. Every change costs a call, a quote, and a wait.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Slowly falls behind on speed and search as the rules change around it.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Breaks quietly. You find out when a customer tells you — or never.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Goes silent after hours, exactly when people are browsing.</span></li>
+      </ul>
+    </div>
+    <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5">
+      <h3 class="text-base font-bold text-primary-blue dark:text-blue-300 mb-4 uppercase tracking-wide text-xs">A smart website</h3>
+      <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Checks itself daily and fixes what's safe to fix on its own.</span></li>
+        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Keeps up with search and speed instead of falling behind them.</span></li>
+        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Catches breakage before your customers do.</span></li>
+        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Answers customers 24/7 — and learns from what they ask.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- The daily loop -->
+  <h3 class="sf-bold text-xl md:text-2xl font-bold text-center text-text-light-primary dark:text-text-dark-primary mb-3">
+    What it checks, every day
+  </h3>
+  <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-10">
+    Not once a quarter when someone remembers. Every day, on its own.
+  </p>
+  <div class="grid gap-5 sm:grid-cols-2 mb-14">
+    {dailyChecks.map((c) => (
+      <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d={c.icon} />
+          </svg>
+        </div>
+        <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h4>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
+      </div>
+    ))}
+  </div>
+
+  <!-- The safety boundary — the part that makes "autonomous" trustworthy -->
+  <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.04] to-primary-pink/[0.04] p-7 md:p-9">
+    <h3 class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3 text-center">
+      Autonomous where it's safe. You keep final say on the rest.
+    </h3>
+    <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary text-center max-w-2xl mx-auto mb-7 leading-relaxed">
+      "Self-driving" doesn't mean nobody's holding the wheel. There's a clear line between what your site handles alone and what always comes to you first.
+    </p>
+    <div class="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto">
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">It handles on its own</h4>
+        <ul class="space-y-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li>Compressing a heavy image</li>
+          <li>Fixing a broken link</li>
+          <li>Tightening a page title or description</li>
+          <li>Answering a question customers keep asking</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wide text-text-light-primary dark:text-text-dark-primary mb-3">Always your call</h4>
+        <ul class="space-y-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li>Your prices and what you promise</li>
+          <li>New pages, offers, or services</li>
+          <li>Anything that changes how you sound</li>
+          <li>Anything it isn't sure about</li>
+        </ul>
+      </div>
+    </div>
+    <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-7 max-w-2xl mx-auto">
+      Bigger changes arrive as a private preview of your site — your live site doesn't change until you press publish. And every month you get a plain-English report of what changed and what it did.
+    </p>
+  </div>
+
+  <p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-12 max-w-2xl mx-auto">
+    A normal website is worth a little less every month. Yours is worth a little more.
+  </p>
+  <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-3 max-w-2xl mx-auto">
+    How far the autonomy goes depends on your plan — light on the entry plan, full on the top one.
+  </p>
+</div>
