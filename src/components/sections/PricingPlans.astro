@@ -68,6 +68,7 @@ const includedEverywhere = [
           <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
           <div data-billing-view="monthly" class="whitespace-nowrap leading-none mt-0.5">
             <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+            {p.buildFee && (<span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">+ ${p.buildFee.toLocaleString('en-US')} one-time build — waived on yearly</span>)}
           </div>
           <div data-billing-view="yearly" hidden class="whitespace-nowrap leading-none mt-0.5">
             <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>

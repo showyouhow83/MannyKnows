@@ -43,6 +43,7 @@ export interface Plan {
   name: string;
   icon: string;         // SVG path (the `d` attribute of a 24×24 stroke icon)
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
+  buildFee?: number;    // one-time build/onboarding fee, waived on annual prepay
   tagline: string;      // one-line promise on the card
   builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
   highlights: string[]; // punchy bullets for the card (the additions, for tiers that build on another)
@@ -66,7 +67,8 @@ export const plans: Plan[] = [
     slug: 'get-found',
     name: 'Get Found',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
-    price: 99,
+    price: 249,
+    buildFee: 499,
     tagline: 'An AI-driven site on your own Brand Brain — with Remi answering customers 24/7.',
     highlights: [
       'Built on your Brand Brain — a private AI trained on your business',
@@ -128,7 +130,7 @@ export const plans: Plan[] = [
           'SSL certificate, DDoS protection, and content caching across 330+ cities',
           'Unlimited storage and bandwidth — no metered overages or surprise bills',
           'Unlimited stock photography, video, and logos (via our Envato Elements license)',
-          'Unlimited content updates — send us changes and we handle them',
+          'Four content updates a month — most turned around within one business day',
         ],
       },
     ],
@@ -140,15 +142,17 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
+      { q: 'What is the build fee?', a: 'A one-time $499 charge that covers designing and building your site — work most agencies bill as a $3,000–$8,000 project. It is waived entirely when you start on a yearly plan, since prepaying the year covers it.' },
       { q: 'Can Remi book appointments on this plan?', a: 'On Get Found, Remi answers questions. To have it book jobs and capture leads, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
-      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
+      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. The one-time build fee covers building it, so nothing is owed after you leave. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },
   {
     slug: 'get-booked',
     name: 'Get Booked',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
-    price: 199,
+    price: 399,
+    buildFee: 499,
     tagline: 'Your AI site now books the job — Remi answers, captures leads, and fills your calendar.',
     builtOn: 'Everything in Get Found, plus',
     highlights: [
@@ -186,6 +190,14 @@ export const plans: Plan[] = [
           'Monthly content updates, monitoring, security, and backups',
         ],
       },
+      {
+        title: 'Unlimited content updates',
+        items: [
+          'From this plan up, there is no cap on change requests and no per-change fee',
+          'Send them any way you like — most are turned around within one business day',
+          'Covers your existing pages, copy, images, and products (new features and redesigns are quoted separately)',
+        ],
+      },
     ],
     steps: [
       { title: 'Kickoff', body: 'We learn your business, your services, and what a booked job is worth to you.' },
@@ -203,7 +215,8 @@ export const plans: Plan[] = [
     slug: 'get-growing',
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
-    price: 349,
+    price: 599,
+    buildFee: 499,
     tagline: 'A website that runs itself — writes its own content, tunes its own SEO & speed, and sells with Remi.',
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
@@ -270,6 +283,7 @@ export const plans: Plan[] = [
     name: 'Get Ahead',
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
     price: 999,
+    buildFee: 499,
     tagline: 'The full growth engine — your site, SEO, and ads run for you, with Manny in your corner every month.',
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
@@ -326,7 +340,8 @@ export const plans: Plan[] = [
     slug: 'sell-online',
     name: 'Sell Online',
     icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
-    price: 399,
+    price: 699,
+    buildFee: 699,
     tagline: 'Everything in Get Growing, plus a full online store and an AI shopping assistant.',
     builtOn: 'Everything in Get Growing, plus',
     highlights: [

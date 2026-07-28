@@ -41,6 +41,6 @@ In Western Mass, plenty of your customers are more comfortable in Spanish. The a
 
 ## Where we come in
 
-The AI Sales & Booking Agent is built into our **[Smart Website plans](/plans/)** — a fast, multilingual website with Remi answering around the clock from $99/mo, and [booking appointments from $199/mo](/plans/get-booked/), kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job.
+The AI Sales & Booking Agent is built into our **[Smart Website plans](/plans/)** — a fast, multilingual website with Remi answering around the clock from $249/mo, and [booking appointments from $399/mo](/plans/get-booked/), kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job.
 
 Wondering how many calls you're quietly losing? **[Get a free look at your site](/free-ai-website-analysis/)** — we'll show you where leads slip away and what it takes to catch every one.

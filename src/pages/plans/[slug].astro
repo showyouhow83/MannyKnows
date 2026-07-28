@@ -107,11 +107,17 @@ const faqSchema = {
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
                   <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
+                  {plan.buildFee && (
+                    <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">+ ${plan.buildFee.toLocaleString('en-US')} one-time build</span>
+                  )}
                 </div>
                 <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
                   <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
+                  {plan.buildFee && (
+                    <span class="block text-xs font-semibold text-primary-blue dark:text-blue-300 mt-1">build fee waived</span>
+                  )}
                 </div>
               </div>
             )}
