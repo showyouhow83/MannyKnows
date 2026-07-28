@@ -27,6 +27,9 @@ export default defineConfig({
     // rendered an empty catalogue with no inbound links. Folded into /services,
     // which already covers one-time vs monthly work.
     '/products': '/services/',
+    // Retired: the smart-website explainer was folded into /plans (the page
+    // where those plans are actually sold) rather than floating on its own.
+    '/smart-websites': '/plans/',
   },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which
