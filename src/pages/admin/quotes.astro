@@ -2925,12 +2925,15 @@ function timeAgo(dateStr: string): string {
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">Source *</label>
           <select id="quoteSource" name="source" required class="form-input">
-            <option value="">Select how they contacted us...</option>
-            <option value="phone">Phone Call</option>
-            <option value="angies-list">Angie's List</option>
-            <option value="thumbtack">Thumbtack</option>
-            <option value="google">Google</option>
+            <option value="">Where did this lead come from?</option>
+            <option value="website">Website form</option>
+            <option value="phone">Phone call</option>
             <option value="referral">Referral</option>
+            <option value="google">Google search</option>
+            <option value="social">Social media</option>
+            <option value="door-to-door">Door-to-door (360° photo)</option>
+            <option value="cold-outreach">Cold outreach</option>
+            <option value="email">Email</option>
             <option value="other">Other</option>
           </select>
         </div>
@@ -2941,11 +2944,17 @@ function timeAgo(dateStr: string): string {
           <input type="text" id="quoteReferralSource" name="referral_source" class="form-input" placeholder="Who referred them?">
         </div>
 
-        <!-- Customer Info -->
+        <!-- Business — an agency quotes a business, not a job site. -->
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">Business name</label>
+          <input type="text" id="quoteCompanyName" name="company_name" class="form-input" placeholder="e.g. SL Painting, JK Daycare">
+        </div>
+
+        <!-- Contact Info -->
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Customer Name *</label>
-            <input type="text" id="quoteCustomerName" name="customer_name" required class="form-input" placeholder="Full name">
+            <label class="form-label">Contact name *</label>
+            <input type="text" id="quoteCustomerName" name="customer_name" required class="form-input" placeholder="Who you'll be working with">
           </div>
           <div class="form-group">
             <label class="form-label">Phone *</label>
@@ -2958,26 +2967,9 @@ function timeAgo(dateStr: string): string {
           <input type="email" id="quoteCustomerEmail" name="customer_email" class="form-input" placeholder="email@example.com">
         </div>
 
-        <!-- Address -->
-        <div class="form-group" style="margin-bottom: 16px;">
-          <label class="form-label">Address *</label>
-          <input type="text" id="quoteAddress" name="address" required class="form-input" placeholder="Street address">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">City *</label>
-            <input type="text" id="quoteCity" name="city" required class="form-input" placeholder="City">
-          </div>
-          <div class="form-group">
-            <label class="form-label">ZIP</label>
-            <input type="text" id="quoteZip" name="zip" class="form-input" placeholder="01108">
-          </div>
-        </div>
-
         <!-- Service -->
         <div class="form-group" style="margin-bottom: 16px;">
-          <label class="form-label">Service Type *</label>
+          <label class="form-label">Service *</label>
           <select id="quoteServiceType" name="service_type" required class="form-input" onchange="toggleCustomService(this, 'quoteServiceTypeCustom')">
             <option value="">Select service...</option>
             {SERVICE_TYPES.map((s) => (<option value={s.value}>{s.label}</option>))}
@@ -2987,9 +2979,31 @@ function timeAgo(dateStr: string): string {
 
         <!-- Project Description -->
         <div class="form-group" style="margin-bottom: 16px;">
-          <label class="form-label">Project Notes</label>
-          <textarea id="quoteProjectDescription" name="project_description" class="form-input form-textarea" placeholder="Brief description of the project..."></textarea>
+          <label class="form-label">What do they need?</label>
+          <textarea id="quoteProjectDescription" name="project_description" class="form-input form-textarea" placeholder="A sentence or two — the business, what they're after, anything from the first conversation."></textarea>
         </div>
+
+        <!-- Business address — collapsed by default; digital clients don't need
+             one, but it's handy for the contract/invoice when relevant. -->
+        <details style="margin-bottom: 16px;">
+          <summary style="cursor: pointer; font-size: 13px; color: var(--color-text-secondary); user-select: none;">+ Add a business address (optional — for the contract)</summary>
+          <div style="margin-top: 12px;">
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label">Address</label>
+              <input type="text" id="quoteAddress" name="address" class="form-input" placeholder="Street address">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" id="quoteCity" name="city" class="form-input" placeholder="City">
+              </div>
+              <div class="form-group">
+                <label class="form-label">ZIP</label>
+                <input type="text" id="quoteZip" name="zip" class="form-input" placeholder="01108">
+              </div>
+            </div>
+          </div>
+        </details>
 
         <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
           <button type="button" class="btn btn-secondary" onclick="hideNewQuoteModal()" style="flex: 1;">Cancel</button>
@@ -4123,11 +4137,16 @@ function timeAgo(dateStr: string): string {
       // If there's only one service, use its scope verbatim. Multiple services
       // get prefixed with their type label so the customer can see what's what.
       const serviceTypeLabels: Record<string, string> = {
-        kitchen_remodel: 'Kitchen Remodeling',
-        bathroom_remodel: 'Bathroom Remodeling',
-        interior_painting: 'Interior Painting',
-        flooring: 'Flooring',
-        general_repairs: 'General Repairs',
+        'website-basic': 'AI Smart Website I',
+        'website-plus': 'AI Smart Website II',
+        'website-smart': 'AI Smart Website III',
+        'ecommerce': 'AI Smart eCommerce',
+        'business-ads': 'Business Ads',
+        'multimedia-agency': 'Multimedia Agency',
+        'ai-team': 'AI Team',
+        'custom-app': 'Custom Web App',
+        '360-photo': 'Free 360° Photo',
+        'website-analysis': 'Free AI Website Analysis',
       };
       const derivedScopeParts = services
         .filter(s => (s.scope || '').trim())
@@ -5070,10 +5089,11 @@ function timeAgo(dateStr: string): string {
       const formData = new FormData(newQuoteForm);
       const leadData = {
         customer_name: formData.get('customer_name'),
+        company_name: formData.get('company_name') || undefined,
         customer_email: formData.get('customer_email') || undefined,
         customer_phone: formData.get('customer_phone') || undefined,
-        address: formData.get('address'),
-        city: formData.get('city'),
+        address: formData.get('address') || undefined,
+        city: formData.get('city') || undefined,
         zip: formData.get('zip') || undefined,
         service_type: formData.get('service_type') === 'other'
           ? ((formData.get('service_type_custom') || '').toString().trim() || 'other')

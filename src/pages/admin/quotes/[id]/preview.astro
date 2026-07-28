@@ -418,7 +418,7 @@ function fmtDate(s: string | null | undefined): string {
             </Fragment>
           ) : (
             <Fragment>
-          <div><strong>{COMPANY_HEADER.licenseLabel} #:</strong> {COMPANY_HEADER.licenseNumber}</div>
+          {COMPANY_HEADER.licenseNumber && <div><strong>{COMPANY_HEADER.licenseLabel} #:</strong> {COMPANY_HEADER.licenseNumber}</div>}
           <div><strong>Contact:</strong> {COMPANY_HEADER.contactName}</div>
           <div><strong>Phone:</strong> {COMPANY_HEADER.phone}</div>
           <div><strong>Email:</strong> {COMPANY_HEADER.email}</div>

@@ -2,17 +2,29 @@
 // forms so all three offer the SAME services. `other` lets an admin type a
 // custom service; the custom text is stored as the service_type value itself
 // (display code falls back to the raw value for anything not in this list).
+//
+// This is the MannyKnows catalog: the six monthly plans (src/data/plans.ts is
+// the pricing source of truth — labels here show the starting price for quick
+// reference in dropdowns), the AI Team, custom builds, and the two free lead
+// magnets people actually write in about. Keep values stable once quotes
+// reference them — labels can change freely. Manny is still finalizing the
+// offer list; add/trim entries here and every admin form follows.
 export interface ServiceType {
   value: string;
   label: string;
 }
 
 export const SERVICE_TYPES: ServiceType[] = [
-  { value: 'kitchen_remodel', label: 'Kitchen Remodeling' },
-  { value: 'bathroom_remodel', label: 'Bathroom Remodeling' },
-  { value: 'interior_painting', label: 'Interior Painting' },
-  { value: 'flooring', label: 'Flooring (Hardwood / Tile / LVP)' },
-  { value: 'general_repairs', label: 'General Repairs & Handyman' },
+  { value: 'website-basic', label: 'AI Smart Website I ($99/mo)' },
+  { value: 'website-plus', label: 'AI Smart Website II ($199/mo)' },
+  { value: 'website-smart', label: 'AI Smart Website III ($349/mo)' },
+  { value: 'ecommerce', label: 'AI Smart eCommerce ($399/mo)' },
+  { value: 'business-ads', label: 'Business Ads (from $950/mo)' },
+  { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,800/mo)' },
+  { value: 'ai-team', label: 'AI Team — hire agents (from $99/mo each)' },
+  { value: 'custom-app', label: 'Custom Web App (scoped)' },
+  { value: '360-photo', label: 'Free 360° Photo' },
+  { value: 'website-analysis', label: 'Free AI Website Analysis' },
   { value: 'other', label: 'Other (enter custom)' },
 ];
 

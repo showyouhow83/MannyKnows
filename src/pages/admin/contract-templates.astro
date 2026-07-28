@@ -324,9 +324,10 @@ if (!session.isAuthenticated) {
       mobileNavOverlay?.addEventListener('click', closeMobileNav);
 
       const TYPE_LABEL = {
-        kitchen_remodel: 'Kitchen Remodeling', bathroom_remodel: 'Bathroom Remodeling',
-        interior_painting: 'Interior Painting', flooring: 'Flooring',
-        general_repairs: 'General Repairs & Handyman', other: 'Other',
+        'website-basic': 'AI Smart Website I', 'website-plus': 'AI Smart Website II',
+        'website-smart': 'AI Smart Website III', 'ecommerce': 'AI Smart eCommerce',
+        'business-ads': 'Business Ads', 'multimedia-agency': 'Multimedia Agency',
+        'ai-team': 'AI Team', 'custom-app': 'Custom Web App', other: 'Other',
       };
 
       function showToast(msg, type) {
@@ -354,7 +355,7 @@ if (!session.isAuthenticated) {
             list.innerHTML = '<div class="ct-empty">No contract templates yet. Click <strong>+ New contract template</strong> to create one.</div>';
             return;
           }
-          const order = ['kitchen_remodel', 'bathroom_remodel', 'interior_painting', 'flooring', 'general_repairs', 'other'];
+          const order = ['website-basic', 'website-plus', 'website-smart', 'ecommerce', 'business-ads', 'multimedia-agency', 'ai-team', 'custom-app', 'other'];
           const orderRank = (t) => {
             const k = (t.project_type || 'other').toLowerCase();
             const i = order.indexOf(k);

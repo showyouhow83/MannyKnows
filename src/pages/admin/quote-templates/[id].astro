@@ -387,11 +387,14 @@ if (!templateId || Number.isNaN(templateId)) {
         // Project type list mirrors the services dropdown on the quote form,
         // so a template can exist for any service the admin can pick.
         const PROJECT_TYPES = [
-          ['kitchen_remodel', 'Kitchen Remodeling'],
-          ['bathroom_remodel', 'Bathroom Remodeling'],
-          ['interior_painting', 'Interior Painting'],
-          ['flooring', 'Flooring'],
-          ['general_repairs', 'General Repairs & Handyman'],
+          ['website-basic', 'AI Smart Website I'],
+          ['website-plus', 'AI Smart Website II'],
+          ['website-smart', 'AI Smart Website III'],
+          ['ecommerce', 'AI Smart eCommerce'],
+          ['business-ads', 'Business Ads'],
+          ['multimedia-agency', 'Multimedia Agency'],
+          ['ai-team', 'AI Team'],
+          ['custom-app', 'Custom Web App'],
           ['other', 'Other'],
         ];
         html += `<div class="te-field"><label>Project type</label><select id="tplType">${

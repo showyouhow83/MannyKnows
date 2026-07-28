@@ -8,6 +8,7 @@ import { normName, normEmail, normAddr, normCity, normState, sentenceCase } from
 interface DirectLeadRequest {
   // Customer info
   customer_name: string;
+  company_name?: string;
   customer_email?: string;
   customer_phone?: string;
 
@@ -116,7 +117,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Validate source
-    const validSources = ['walk-in', 'phone', 'referral', 'angies-list', 'thumbtack', 'google', 'other'];
+    const validSources = ['walk-in', 'phone', 'referral', 'angies-list', 'thumbtack', 'google', 'website', 'social', 'door-to-door', 'cold-outreach', 'email', 'other'];
     if (!body.source || !validSources.includes(body.source)) {
       return new Response(JSON.stringify({
         success: false,
@@ -163,8 +164,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         address, city, state, zip,
         service_type, project_description,
         preferred_date, preferred_time,
-        source, partner_id, status, confirmed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', CURRENT_TIMESTAMP)
+        source, partner_id, company_name, status, confirmed_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', CURRENT_TIMESTAMP)
     `).bind(
       confirmationCode,
       confirmationToken,
@@ -180,7 +181,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       preferredDate || 'ASAP',
       preferredTime || 'Flexible',
       sourceString,
-      body.partner_id ? Number(body.partner_id) : null
+      body.partner_id ? Number(body.partner_id) : null,
+      body.company_name ? String(body.company_name).trim() : null
     ).run();
 
     const leadId = result.meta.last_row_id;

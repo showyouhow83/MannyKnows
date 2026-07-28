@@ -226,7 +226,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const result = await db.prepare(`
       INSERT INTO quotes (
         lead_id, quote_number,
-        customer_name, customer_email, customer_phone,
+        customer_name, customer_email, customer_phone, company_name,
         address, city, state, zip,
         services, scope_description,
         year_built, repairs_needed, preferred_brand,
@@ -234,13 +234,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
         project_images,
         partner_id,
         status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')
     `).bind(
       body.lead_id,
       quoteNumber,
       lead.customer_name,
       lead.customer_email,
       lead.customer_phone,
+      lead.company_name || null,
       lead.address,
       lead.city,
       lead.state,
