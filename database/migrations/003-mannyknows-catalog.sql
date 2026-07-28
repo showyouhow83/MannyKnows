@@ -50,7 +50,7 @@ VALUES
 
     ('business-ads', 'Business Ads',
      'Social media, Google and social ads, SEO, and your Google Business Profile — managed to get you seen everywhere. Ad spend goes directly to the platforms; never marked up.',
-     'Marketing', 'month', 950, NULL, 950, 0, 'Ongoing',
+     'Marketing', 'month', 350, NULL, 350, 0, 'Ongoing',
      'google ads, social ads, seo, marketing, google business profile', 1, 80, 1),
 
     ('multimedia-agency', 'Multimedia Agency',
