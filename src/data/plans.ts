@@ -517,9 +517,9 @@ export const plans: Plan[] = [
           'A competitive analysis of the network — who’s winning your market there, and how',
           'A market analysis — your audience on that network: who they are, when they’re active, what they respond to',
           'An individual plan traced for the network — its own media types, formats, and sizes',
-          'Content created, branded, sized, and posted for that network',
-          'Comments and messages answered — engagement watched, not ignored',
-          'A plain-English monthly report per network — add or drop networks as results come in',
+          'Provided content will be branded, sized, and posted for that network',
+          'Comments and messages sorted and answered by Remi, our AI agent',
+          'An AI generated monthly report per network — add or drop networks as results come in',
         ],
       },
       {
@@ -551,9 +551,9 @@ export const plans: Plan[] = [
       {
         title: 'Social media growth',
         items: [
-          'Content created, branded, and posted for you — sized and formatted for each network',
+          'Your content branded, sized, and posted for you — formatted for each network',
           'A consistent presence on the networks that fit your business',
-          'Comments and messages answered — engagement watched, not ignored',
+          'Comments and messages sorted and answered by Remi, our AI agent',
         ],
       },
       {
@@ -576,7 +576,7 @@ export const plans: Plan[] = [
         title: 'The correction loop',
         items: [
           'We watch how your traffic responds — and keep correcting and improving',
-          'A plain-English monthly report: what ran, what it cost, what it brought in',
+          'An AI generated monthly report: what ran, what it cost, what it brought in',
         ],
       },
     ],
