@@ -53,6 +53,6 @@ Here's what a complete local presence can do: **SL Painting** came to us invisib
 
 ## Where we come in
 
-Setting all this up — and keeping it current — takes time most owners don't have. That's baked into our **[AI Smart Website plans](/plans/)** — [from $99/mo](/plans/basic-website/): we create or clean up and verify your Google Business Profile, build a fast multilingual site Google understands, and put Remi on it answering customers 24/7 ([qualifying and booking from $199/mo](/plans/plus-website/), [selling from $349](/plans/smart-website/)) — then keep all of it tuned every month.
+Setting all this up — and keeping it current — takes time most owners don't have. That's baked into our **[Smart Website plans](/plans/)** — [from $99/mo](/plans/get-found/): we create or clean up and verify your Google Business Profile, build a fast multilingual site Google understands, and put Remi on it answering customers 24/7 ([qualifying and booking from $199/mo](/plans/get-booked/), [selling from $349](/plans/get-growing/)) — then keep all of it tuned every month.
 
 Want to show up when your neighbors search? [Tell us what you do.](#contact)

@@ -24,12 +24,12 @@ const { plan } = Astro.props as { plan: Plan };
 
 // The self-improving concept applies to the website/store plans — not to the
 // ads or agency retainers, which aren't websites.
-const isWebsitePlan = ['basic-website', 'plus-website', 'smart-website', 'online-store'].includes(plan.slug);
+const isWebsitePlan = ['get-found', 'get-booked', 'get-growing', 'sell-online'].includes(plan.slug);
 const others = plans.filter((p) => p.slug !== plan.slug);
 
 const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
-  'smart-website': 'website',
-  'online-store': 'store',
+  'get-growing': 'website',
+  'sell-online': 'store',
   'business-ads': 'ads',
   'multimedia-agency': 'multimedia',
 };
@@ -37,8 +37,8 @@ const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
 // Proof map — the testimonial (if one exists) and the case studies that prove
 // this plan. Honest: only clients who actually gave a quote get one shown.
 const proofMap: Record<string, { quote?: string; cases: { slug: string; name: string }[] }> = {
-  'smart-website': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
-  'online-store': { quote: 'Cherry Vibes', cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
+  'get-growing': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
+  'sell-online': { quote: 'Cherry Vibes', cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
   'business-ads': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
   'multimedia-agency': { quote: 'VL Home Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
 };

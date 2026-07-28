@@ -381,7 +381,7 @@ export interface StarterTemplate {
 
 export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
   {
-    name: 'AI Smart Website — Launch',
+    name: 'Smart Website — Launch',
     project_type: 'website-basic',
     is_default: true,
     sections: [
@@ -400,7 +400,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-web-billing',
         title: 'Plan & Billing',
         items: [
-          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['AI Smart Website I — $99/mo', 'AI Smart Website II — $199/mo', 'AI Smart Website III — $349/mo'] },
+          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found — $99/mo', 'Get Booked — $199/mo', 'Get Growing — $349/mo', 'Get Ahead — $999/mo'] },
           { id: 'it-web-bill-2', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-web-bill-3', type: 'subtotal', label: 'Due at start (setup + first month)', amount: 0 },
           { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month — cancel anytime. Prepay the year and get the equivalent of 2 months free.' },
@@ -418,7 +418,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
     ],
   },
   {
-    name: 'AI Smart eCommerce — Launch',
+    name: 'Sell Online — Launch',
     project_type: 'ecommerce',
     is_default: true,
     sections: [
@@ -438,7 +438,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-store-bill-1', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at $399/mo)', amount: 0 },
-          { id: 'it-store-bill-3', type: 'note', text: 'The AI Smart eCommerce plan continues at $399/mo, month-to-month. Shopify bills its own subscription and payment-processing fees directly to you — standard for any store; we never mark those up.' },
+          { id: 'it-store-bill-3', type: 'note', text: 'The Sell Online plan continues at $399/mo, month-to-month. Shopify bills its own subscription and payment-processing fees directly to you — standard for any store; we never mark those up.' },
         ],
       },
       {

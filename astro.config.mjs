@@ -30,6 +30,12 @@ export default defineConfig({
     // Retired: the smart-website explainer was folded into /plans (the page
     // where those plans are actually sold) rather than floating on its own.
     '/smart-websites': '/plans/',
+    // Plan rename (July 2026): outcome names replaced the AI Smart Website I/II/III
+    // family — 301 the old slugs so links and rankings carry.
+    '/plans/basic-website': '/plans/get-found/',
+    '/plans/plus-website': '/plans/get-booked/',
+    '/plans/smart-website': '/plans/get-growing/',
+    '/plans/online-store': '/plans/sell-online/',
   },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which

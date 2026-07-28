@@ -15,10 +15,11 @@ export interface ServiceType {
 }
 
 export const SERVICE_TYPES: ServiceType[] = [
-  { value: 'website-basic', label: 'AI Smart Website I ($99/mo)' },
-  { value: 'website-plus', label: 'AI Smart Website II ($199/mo)' },
-  { value: 'website-smart', label: 'AI Smart Website III ($349/mo)' },
-  { value: 'ecommerce', label: 'AI Smart eCommerce ($399/mo)' },
+  { value: 'website-basic', label: 'Get Found ($99/mo)' },
+  { value: 'website-plus', label: 'Get Booked ($199/mo)' },
+  { value: 'website-smart', label: 'Get Growing ($349/mo)' },
+  { value: 'get-ahead', label: 'Get Ahead ($999/mo)' },
+  { value: 'ecommerce', label: 'Sell Online ($399/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,800/mo)' },
   { value: 'ai-team', label: 'AI Team — hire agents (from $99/mo each)' },

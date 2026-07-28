@@ -25,7 +25,7 @@ Built by MannyKnows — led by Manny, twenty years solving business problems, in
 
 Hire one agent to start, or build a full team as you grow. Every agent starts at **$99/mo**, plus a one-time **$199 setup fee**. Month-to-month. Cancel anytime — no contracts, no catches.
 
-Want the whole package? Our [AI Smart Website](/plans/) plans bundle a multilingual, self-optimizing website with your AI sales & booking agent built right in — from **$99/mo** (up to $349 for the fully self-running version). One system, one bill, real results.
+Want the whole package? Our [Smart Website](/plans/) plans bundle a multilingual, self-optimizing website with your AI sales & booking agent built right in — from **$99/mo** (up to $349 for the fully self-running version). One system, one bill, real results.
 
 ## Proof it works
 

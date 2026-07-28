@@ -14,10 +14,13 @@ import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
 import sql002 from '../../../../database/migrations/002-full-admin.sql?raw';
 // @ts-ignore - Vite raw import
 import sql003 from '../../../../database/migrations/003-mannyknows-catalog.sql?raw';
+// @ts-ignore - Vite raw import
+import sql004 from '../../../../database/migrations/004-plan-rename-get-ahead.sql?raw';
 
 const MIGRATIONS: Record<string, string> = {
   '002-full-admin': sql002 as unknown as string,
   '003-mannyknows-catalog': sql003 as unknown as string,
+  '004-plan-rename-get-ahead': sql004 as unknown as string,
 };
 
 // Split a SQL file into executable statements: strips `--` line comments,
