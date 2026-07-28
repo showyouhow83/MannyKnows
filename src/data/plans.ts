@@ -339,7 +339,7 @@ export const plans: Plan[] = [
     hidden: true,
     tagline: 'The social, ads, and SEO that get you seen — priced per network, built to convert.',
     highlights: [
-      '$350/mo per social network — or up to 10 networks for $950/mo',
+      '$350/mo per social network — or 4 major networks for $950/mo',
       'Every network gets its own competitive analysis and market analysis',
       'An individual plan traced per network — its own media types, formats & sizes',
       'Google Ads & social ads, managed (you fund the ad spend)',
@@ -347,7 +347,7 @@ export const plans: Plan[] = [
     ],
     headline: 'Get seen — by the right people, ready to buy',
     blurb:
-      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time — $350/mo per network, or up to 10 for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it — its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO — watching what the numbers do and correcting.",
+      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time — $350/mo per network, or 4 major networks for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it — its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO — watching what the numbers do and correcting.",
     whoFor:
       'Businesses whose website or store already works — and who now need more of the right people finding it, steadily, not in one lucky spike.',
     tiers: [
@@ -371,11 +371,11 @@ export const plans: Plan[] = [
         name: 'Full Coverage',
         price: 950,
         unit: '/mo',
-        note: 'covers up to 10 networks',
+        note: 'covers 4 major networks',
         featured: true,
-        builtOn: 'Everything in Per Network, on up to 10 networks — plus',
+        builtOn: 'Everything in Per Network, on 4 major networks — plus',
         description:
-          'Run everywhere your customers are. From 3 networks up this is the better deal — 10 networks for less than the price of 3 à la carte.',
+          'Run the 4 networks that matter most for your business — for less than the price of 3 à la carte.',
         features: [
           'One coordinated strategy across every network — each still gets its own individual plan',
           'Cross-network reporting: what each network brings in, compared side by side',
@@ -426,13 +426,13 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth — and which networks make sense to start: one, three, or all ten.' },
+      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth — and which networks make sense to start: one, two, or the full four.' },
       { title: 'Analysis & plan', body: 'For each network: a competitive analysis, a market analysis, and an individual plan traced for it — media types, formats, sizes, and cadence.' },
       { title: 'Launch campaigns', body: 'Tracking and landing pages go in first, then content and ads go live — fitted to each network. The early weeks are about learning fast, not vanity numbers.' },
       { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver — and report it in plain English.' },
     ],
     faq: [
-      { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo — that covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles up to 10 networks under one coordinated strategy — less than the price of 3 à la carte.' },
+      { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo — that covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles 4 major networks under one coordinated strategy — less than the price of 3 à la carte.' },
       { q: 'Why does each network need its own plan?', a: 'Because each one is different — different audience, different media, different formats and sizes. A vertical Reel isn’t a Pin, and a LinkedIn post isn’t a TikTok. We trace an individual plan per network so the content fits where it lives, instead of being cross-posted everywhere and ignored.' },
       { q: 'Is ad spend included in the price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The service covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
