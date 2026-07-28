@@ -24,6 +24,20 @@ export interface PlanSection {
   items: string[];
 }
 
+// Sub-plans inside a service (e.g. Business Ads: per-network vs full coverage).
+// Rendered as pricing cards on the detail page; add features progressively —
+// each string is one check-marked line on the card.
+export interface PlanTier {
+  name: string;
+  price: number;        // monthly $
+  unit: string;         // shown right after the price, e.g. '/mo per network'
+  note: string;         // small line under the price
+  description: string;  // one-liner on the tier card
+  builtOn?: string;     // "Everything in <tier>, plus" lead line
+  features: string[];
+  featured?: boolean;   // "best value"
+}
+
 export interface Plan {
   slug: string;
   name: string;
@@ -34,6 +48,7 @@ export interface Plan {
   highlights: string[]; // punchy bullets for the card (the additions, for tiers that build on another)
   featured?: boolean;   // "most popular"
   hidden?: boolean;     // kept for its detail page + /plans section, but not shown in the pricing grid
+  tiers?: PlanTier[];   // sub-plans (replaces the generic price block on the detail page)
   // Detail page (/plans/<slug>) content:
   headline: string;     // hero headline on the detail page
   blurb: string;        // hero paragraph on the detail page
@@ -320,27 +335,69 @@ export const plans: Plan[] = [
     slug: 'business-ads',
     name: 'Business Ads',
     icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
-    price: 950,
+    price: 350,
     hidden: true,
-    tagline: 'The social, ads, and SEO that get you seen — and traffic built to convert.',
+    tagline: 'The social, ads, and SEO that get you seen — priced per network, built to convert.',
     highlights: [
-      'Social media growth across the platforms that fit — content, posting, branding',
+      '$350/mo per social network — or up to 10 networks for $950/mo',
+      'Every network gets its own competitive analysis and market analysis',
+      'An individual plan traced per network — its own media types, formats & sizes',
       'Google Ads & social ads, managed (you fund the ad spend)',
-      'Promotional banners, videos & interactive widgets that turn traffic into engagement',
-      'SEO content campaigns + landing pages',
-      'We watch how your traffic responds and keep correcting & improving',
+      'Landing pages, banners, videos & SEO campaigns — watched and corrected monthly',
     ],
     headline: 'Get seen — by the right people, ready to buy',
     blurb:
-      "Traffic isn’t the goal; customers are. The Business Ads service runs your visibility end to end — social content, managed Google and social ads, SEO campaigns — and then makes the traffic count with landing pages, banners, videos, and widgets built to convert. We watch what the numbers do and keep correcting.",
+      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time — $350/mo per network, or up to 10 for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it — its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO — watching what the numbers do and correcting.",
     whoFor:
       'Businesses whose website or store already works — and who now need more of the right people finding it, steadily, not in one lucky spike.',
+    tiers: [
+      {
+        name: 'Per Network',
+        price: 350,
+        unit: '/mo per network',
+        note: 'pick 1, 2, or as many as you need',
+        description:
+          'Choose the networks that fit your business — Facebook, Instagram, TikTok, YouTube, LinkedIn, X, Pinterest, and more — and pay only for those.',
+        features: [
+          'A competitive analysis of the network — who’s winning your market there, and how',
+          'A market analysis — your audience on that network: who they are, when they’re active, what they respond to',
+          'An individual plan traced for the network — its own media types, formats, and sizes',
+          'Content created, branded, sized, and posted for that network',
+          'Comments and messages answered — engagement watched, not ignored',
+          'A plain-English monthly report per network — add or drop networks as results come in',
+        ],
+      },
+      {
+        name: 'Full Coverage',
+        price: 950,
+        unit: '/mo',
+        note: 'covers up to 10 networks',
+        featured: true,
+        builtOn: 'Everything in Per Network, on up to 10 networks — plus',
+        description:
+          'Run everywhere your customers are. From 3 networks up this is the better deal — 10 networks for less than the price of 3 à la carte.',
+        features: [
+          'One coordinated strategy across every network — each still gets its own individual plan',
+          'Cross-network reporting: what each network brings in, compared side by side',
+          'Budget shifted to the networks that perform — every month',
+          'Campaigns, promos, and launches rolled out everywhere at once',
+        ],
+      },
+    ],
     deliverables: [
+      {
+        title: 'Per-network strategy',
+        items: [
+          'A competitive analysis for every network you’re on — who’s winning your market there, and how',
+          'A market analysis per network — your audience, their habits, and what they respond to',
+          'An individual plan traced for each network — because each is different: different media, different formats, different sizes',
+        ],
+      },
       {
         title: 'Social media growth',
         items: [
-          'Content created, branded, and posted for you',
-          'A consistent presence on the platforms that fit your business',
+          'Content created, branded, and posted for you — sized and formatted for each network',
+          'A consistent presence on the networks that fit your business',
           'Comments and messages answered — engagement watched, not ignored',
         ],
       },
@@ -369,12 +426,14 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth, and how much ad spend makes sense to start.' },
-      { title: 'Foundations', body: 'Tracking, landing pages, and creative — so from the first dollar of spend we can see what works.' },
-      { title: 'Launch campaigns', body: 'Ads and content go live. The early weeks are about learning fast, not vanity numbers.' },
-      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, and report it in plain English.' },
+      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth — and which networks make sense to start: one, three, or all ten.' },
+      { title: 'Analysis & plan', body: 'For each network: a competitive analysis, a market analysis, and an individual plan traced for it — media types, formats, sizes, and cadence.' },
+      { title: 'Launch campaigns', body: 'Tracking and landing pages go in first, then content and ads go live — fitted to each network. The early weeks are about learning fast, not vanity numbers.' },
+      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver — and report it in plain English.' },
     ],
     faq: [
+      { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo — that covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles up to 10 networks under one coordinated strategy — less than the price of 3 à la carte.' },
+      { q: 'Why does each network need its own plan?', a: 'Because each one is different — different audience, different media, different formats and sizes. A vertical Reel isn’t a Pin, and a LinkedIn post isn’t a TikTok. We trace an individual plan per network so the content fits where it lives, instead of being cross-posted everywhere and ignored.' },
       { q: 'Is ad spend included in the price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The service covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
       { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with a website tier (or pair them), then pour traffic on.' },
