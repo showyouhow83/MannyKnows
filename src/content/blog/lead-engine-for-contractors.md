@@ -32,4 +32,6 @@ A lead engine only fires when someone lands on it — and more and more, that so
 
 Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform — and it's exactly what we built for [SL Painting](/work/sl-painting/), the painting contractor now ranked #1 on Google for "Exterior Painting" in Springfield.
 
-This is a [monthly website plan](/plans/) in action — a site with Remi answering 24/7 from $99/mo, [booking jobs from $249/mo](/plans/get-booked/). Want to see how it would work for your business? [Get in touch](#contact) and tell us what you do.
+This is a [monthly website plan](/plans/) in action — a site with Remi answering 24/7 from $99/mo, [booking jobs from $249/mo](/plans/get-booked/). And once the engine is running, the way to push more through it is [Get Ahead](/plans/get-ahead/): managed ads on two networks bundled with the self-optimizing site, $899/mo against $1,250 if you bought them separately. The order matters, though — ads pointed at a site that doesn't convert just spend faster. Build the engine first, then feed it.
+
+Want to see how it would work for your business? [Get in touch](#contact) and tell us what you do.
