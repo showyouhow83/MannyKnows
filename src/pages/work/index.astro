@@ -55,8 +55,9 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
           <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">Case studies are on the way — check back soon.</p>
         ) : (
           <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 px-2">
-            {projects.map((p) => {
+            {projects.map((p, i) => {
               const d = p.data;
+              const eager = i < 3; // first row is the LCP candidate — don't lazy-load it
               return (
                 <a href={`/work/${p.id}/`} class="group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary-blue/30">
                   <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
@@ -67,7 +68,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
                         <picture>
                           <source type="image/avif" srcset={srcset(d.heroImage, 'avif')} sizes={CARD_SIZES} />
                           <source type="image/webp" srcset={srcset(d.heroImage, 'webp')} sizes={CARD_SIZES} />
-                          <img src={`/works/${d.heroImage}-960.webp`} alt={d.title} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500" />
+                          <img src={`/works/${d.heroImage}-960.webp`} alt={d.title} width="1280" height="720" loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" class="w-full h-full object-cover transition-transform duration-500" />
                         </picture>
                       )
                     ) : (
@@ -118,19 +119,19 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
         <div class="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
             <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Fast enough to rank</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Speed is a ranking factor and a first impression. <a href="/work/sl-painting/" class="text-primary-blue dark:text-blue-300 hover:underline">SL Painting</a> holds a 100 Lighthouse score — and ranks #1 organically for "Exterior Painting" in Springfield on the back of it.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Speed is a ranking factor and a first impression. <a href="/work/sl-painting/" class="text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">SL Painting</a> holds a 100 Lighthouse score — and ranks #1 organically for "Exterior Painting" in Springfield on the back of it.</p>
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
             <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Answered around the clock</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">An agent that answers when the owner can't. <a href="/work/jk-daycare/" class="text-primary-blue dark:text-blue-300 hover:underline">JK Daycare</a> went from kickoff to launch in two weeks — website, AI agent, and a phone IVR, all answering parents' questions from the site's own content.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">An agent that answers when the owner can't. <a href="/work/jk-daycare/" class="text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">JK Daycare</a> went from kickoff to launch in two weeks — website, AI agent, and a phone IVR, all answering parents' questions from the site's own content.</p>
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
             <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">The whole operation, not just the site</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/vl-home-services/" class="text-primary-blue dark:text-blue-300 hover:underline">VL Home Services</a> ran on referrals and manual everything. Now it's a complete digital operation — projects, crew, and an agent that answers customers in any language, and the team's own questions too.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/vl-home-services/" class="text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">VL Home Services</a> ran on referrals and manual everything. Now it's a complete digital operation — projects, crew, and an agent that answers customers in any language, and the team's own questions too.</p>
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
             <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Built for where the business is going</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/cherry-vibes/" class="text-primary-blue dark:text-blue-300 hover:underline">Cherry Vibes</a> moved from the Costa Rican market to the U.S. on a custom Shopify Hydrogen storefront. <a href="/work/springfield-en-victoria/" class="text-primary-blue dark:text-blue-300 hover:underline">Springfield en Victoria</a> reaches its congregation in several languages, with live streaming for the people who can't be in the room.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/cherry-vibes/" class="text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">Cherry Vibes</a> moved from the Costa Rican market to the U.S. on a custom Shopify Hydrogen storefront. <a href="/work/springfield-en-victoria/" class="text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">Springfield en Victoria</a> reaches its congregation in several languages, with live streaming for the people who can't be in the room.</p>
           </div>
         </div>
       </Container>
@@ -145,7 +146,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
               Every number here is real. Where a project has a measurable result — a ranking, a launch date, a Lighthouse score — you'll see it. Where it doesn't, we describe what was built instead of inventing a percentage. No case study is published until the client's story is confirmed in their own words, and nothing in this portfolio is borrowed from work that isn't ours to show.
             </p>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              All of it was designed, built, and maintained by Manny — twenty years of engineering for enterprises and startups, applied to local businesses. One person, a direct line, no account manager. <a href="/about/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Meet who you'd be working with →</a>
+              All of it was designed, built, and maintained by Manny — twenty years of engineering for enterprises and startups, applied to local businesses. One person, a direct line, no account manager. <a href="/about/" class="font-semibold text-primary-blue dark:text-blue-300 underline decoration-dotted underline-offset-2 hover:decoration-solid">Meet who you'd be working with →</a>
             </p>
           </div>
           <div class="text-center mt-12">

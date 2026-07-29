@@ -40,6 +40,12 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
       </div>
     </div>
 
+    {/* Swiper's assets load HERE, not in BaseLayout — this is the only Swiper
+        consumer, and loading globally cost every other page 151 KB of JS.
+        The init below already polls for window.Swiper, so late arrival is fine. */}
+    <link rel="stylesheet" href="/swiper-bundle.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/swiper-bundle.min.css" /></noscript>
+    <script is:inline defer src="/swiper-bundle.min.js"></script>
     <script is:inline>
       (function () {
         function initTestimonials() {
