@@ -1,0 +1,54 @@
+---
+// WaysToWork — the single "how do I engage you" section on /services.
+//
+// This replaced two stacked sections ("Two ways to work with us" and
+// "Software built for your business") that were really one decision cut in
+// half: "Own it outright" was just the one-time model applied to apps, while
+// co-owning via the Idea Launchpad is a genuinely different arrangement. So:
+// one section, three doors. If a fourth engagement model ever exists, it's a
+// fourth card here — not a new section.
+//
+// Copy rules carried over from the old sections: the ~$2,000 custom-app
+// anchor and the revenue-share promise are published commitments — change
+// them only with Manny's sign-off.
+import Section from '../layout/Section.astro';
+import Container from '../layout/Container.astro';
+---
+
+<Section id="ways-to-work" variant="alternate">
+  <Container>
+    <div class="text-center max-w-[1440px] mx-auto mb-4">
+      <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+        <span class="apple-gradient-text" data-colorful-title>Three ways to work with us</span>
+      </h2>
+      <p class="mt-3 max-w-2xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+        Everything we build — sites, stores, marketing, custom software — comes through one of three doors. Pick by how you want to own it.
+      </p>
+    </div>
+    <div class="grid gap-6 lg:grid-cols-3 max-w-6xl mx-auto items-stretch mt-10">
+
+      <div class="flex flex-col rounded-2xl border border-primary-blue/30 bg-primary-blue/[0.04] p-7">
+        <span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-primary-blue/15 text-primary-blue dark:text-blue-300">Monthly · we run it</span>
+        <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Handled long-term</h3>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A flat monthly rate, cancel anytime. With Plans we build and run your site, store, and marketing; with the <a href="/ai-team/" class="text-primary-blue dark:text-blue-300 hover:underline">AI Team</a> we build the agents and you run them on demand. Best when you want it kept working, not just delivered once.</p>
+        <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">See the plans</a>
+      </div>
+
+      <div class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-7">
+        <span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gray-500/10 text-text-light-secondary dark:text-text-dark-secondary">One-time · you own it</span>
+        <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">A specific thing, done once</h3>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A single job with a clear finish line — a website build, an SEO push, an automation. And when an off-the-shelf tool won't do it, a custom app built to your spec: a booking flow, a quoting calculator, a customer dashboard, an integration between the tools you already use — typically from around $2,000 depending on scope. The code and the tool are yours when it's done. Many owners build once, then roll onto a plan to keep it growing.</p>
+        <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">New to this? See <a href="/how-it-works/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">how we turn a process into an app</a>, start to finish.</p>
+        <a href="/contact/" data-contact-context="One-time build — scope it" class="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">Scope a build</a>
+      </div>
+
+      <div class="flex flex-col rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-7">
+        <span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/15 to-primary-pink/15 text-primary-blue dark:text-blue-300">Co-own · nothing upfront</span>
+        <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Your idea, built together</h3>
+        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Got an idea for an app or online product? Bring it to the Idea Launchpad. We design, build, launch, and market it with <strong class="text-text-light-primary dark:text-text-dark-primary">no upfront cost</strong> — we build it together and share what it earns.</p>
+        <a href="/#launchpad" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold transition-all duration-300">Start at the Idea Launchpad</a>
+      </div>
+
+    </div>
+  </Container>
+</Section>
