@@ -162,69 +162,6 @@ export const professions: Profession[] = [
     ],
   },
   {
-    slug: 'law-firms',
-    name: 'Law Firms',
-    metaTitle: 'Websites for Law Firms in Western Mass | MannyKnows',
-    metaDescription:
-      'Authoritative websites for Western Mass law firms — practice-area SEO and an AI intake agent that qualifies and books consultations 24/7. From $99/mo.',
-    badge: 'For law firms & attorneys',
-    h1: 'Websites for law firms that win the intake',
-    heroIntro:
-      "A potential client judges your firm in seconds and calls two others. An authoritative site that ranks for your practice areas — with an AI intake agent that qualifies and books consultations day or night — makes sure the one they retain is you.",
-    illustration: 'audit',
-    painPoints: [
-      {
-        title: 'Credibility is decided in seconds',
-        body: "Someone facing a legal problem is anxious and comparing firms fast. A dated or slow site reads as a dated practice — and they call the firm whose site looks like it can handle their case.",
-      },
-      {
-        title: 'The first firm to answer usually wins',
-        body: "Legal clients call down the list until someone picks up. Miss the call — evenings, weekends, mid-hearing — and the retainer goes to whoever answered. An AI intake agent answers every time.",
-      },
-      {
-        title: 'You’re bidding against everyone for the same ad clicks',
-        body: "Legal keywords are some of the most expensive on Google. Ranking organically for your practice areas in your county brings clients you don’t pay per click to reach.",
-      },
-    ],
-    offer: [
-      {
-        title: 'An authoritative, fast site',
-        body: 'Clean, credible, and quick — your practice areas, your results, your bar credentials and reviews, structured so both clients and Google take you seriously.',
-      },
-      {
-        title: 'Practice-area & local SEO',
-        body: 'Built to rank for the areas you practice, in the towns you serve — the organic results, not just the paid ones.',
-      },
-      {
-        title: 'An AI intake agent, 24/7',
-        body: 'Answers common questions, screens the matter, and books the consultation around the clock — in English or Spanish — then hands you a qualified lead, not a voicemail.',
-      },
-      {
-        title: 'Privacy-conscious contact',
-        body: 'Intake forms and contact flows set up thoughtfully, so a first message reaches you cleanly without being scattered across the web.',
-      },
-    ],
-    // No published law-firm case study yet — no borrowed proof.
-    faqs: [
-      {
-        q: 'How much does a law firm website cost?',
-        a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering 24/7, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi qualifying and booking consultations is $249/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
-      },
-      {
-        q: 'Can the AI agent handle client intake?',
-        a: 'It handles the first step: answering common questions, screening the matter against the criteria you set, and booking a consultation — then handing you the details. It’s not legal advice and never pretends to be; it gets the right prospects onto your calendar.',
-      },
-      {
-        q: 'Will it work for Spanish-speaking clients?',
-        a: 'Yes — multilingual is standard. The site and the intake agent both work in Spanish and English, which matters for much of Western Massachusetts.',
-      },
-      {
-        q: 'Can you rank us for our practice areas?',
-        a: 'We build the technical SEO, structured content, and schema to compete for your practice areas in your county — on Google and in AI answers (ChatGPT, Perplexity, Google’s AI Overviews). Rankings build over time; we report honestly on progress against Google’s own data — no invented numbers.',
-      },
-    ],
-  },
-  {
     slug: 'clinics',
     name: 'Clinics',
     metaTitle: 'Websites for Clinics & Dentists in Western Mass | MannyKnows',
