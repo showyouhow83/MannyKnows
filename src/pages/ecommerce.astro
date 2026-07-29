@@ -1,0 +1,221 @@
+---
+// Online stores — their own page, deliberately not one of the four website
+// tiers on /plans. Getting found and getting booked is one decision; selling
+// products online is a different build with different economics, and mixing
+// them made the plans table read like a store was just "the expensive tier".
+// Driven by the same src/data/plans.ts entry, so pricing never drifts.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import { ecommercePlans, yearlyTotal, yearlyMonthly } from '../data/plans';
+import { BOOKING_URL } from '../data/booking';
+import { getTestimonial } from '../data/testimonials';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import StepCards from '../components/ui/StepCards.astro';
+
+const plan = ecommercePlans[0];
+const proofQuote = getTestimonial('Cherry Vibes');
+
+// The honest comparison: a store isn't a website tier, so we say plainly what
+// it costs relative to the plan it's built on rather than hiding the math.
+const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-optimizing website) with your store built, stocked, and run on top of it.`;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: plan.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Online Store Design & Management for Western Mass Businesses | MannyKnows"
+  description={`Shopify stores built, stocked, and run for Western Mass businesses — custom theme, product pages that sell, email automations, and an AI shopping assistant. From $${plan.price.toLocaleString('en-US')}/mo, month to month.`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Online stores</span></li>
+        </ol>
+      </nav>
+      <div class="pb-12 px-4">
+        <Container>
+          <div class="max-w-3xl mx-auto text-center">
+            <div class="flex justify-center mb-6">
+              <Illustration kind="store" class="w-full max-w-[210px]" />
+            </div>
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <svg class="inline-block w-4 h-4 align-[-0.2em] mr-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={plan.icon} /></svg>Online stores
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+              <span class="apple-gradient-text" data-colorful-title>A store that sells while the shop is closed</span>
+            </h1>
+            <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Setting up a store is easy — anyone can click through a signup. Setting up a store that <em>sells</em> is a job: the right products, photographed and written right, organized the way people shop, with emails that bring them back and a checkout nobody abandons. That's the job we do, and then we keep doing it every month.
+            </p>
+
+            <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-left">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
+                <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
+              </div>
+              <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
+                <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
+              </div>
+            </div>
+
+            <p class="mt-6 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+              <strong class="text-text-light-primary dark:text-text-dark-primary">Built for:</strong> {plan.whoFor}
+            </p>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="#contact" data-contact-context="Sell Online — store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
+                Start your store
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+              <a href="/work/cherry-vibes/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                See a store we built
+              </a>
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                Book a call
+              </a>
+            </div>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month · cancel anytime · no lock-in</p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- Why this isn't one of the website plans -->
+    <Section id="store-vs-site" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
+            <span class="apple-gradient-text" data-colorful-title>A store is a different animal than a website</span>
+          </h2>
+          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Our <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website plans</a> answer one question: when someone in your area needs what you do, do they find you and can they reach you? A store answers a different one: can a stranger decide, trust you, and pay — without talking to anybody. That takes inventory, product photography, shipping rules, taxes, abandoned-cart email, and a catalog that stays current. It's a bigger machine, so it gets its own page and its own price.
+          </p>
+          <p class="mt-5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            {storeMathNote} If you don't sell products online, you don't need this — start with <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Get Found at $99/mo</a> instead.
+          </p>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- What's included -->
+    <Section id="store-included" variant="default">
+      <Container>
+        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>Everything included</span>
+        </h2>
+        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+          {plan.deliverables.map((d) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">{d.title}</h3>
+              <ul class="space-y-2.5">
+                {d.items.map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
+          Plus what every plan includes: your own admin, multilingual as standard, SSL and caching on a global edge network, a domain if you need one, and unlimited storage, bandwidth, content updates, and stock photos, video &amp; logos.
+          <a href="/plans/#included" class="text-primary-blue dark:text-blue-300 font-medium hover:underline whitespace-nowrap">See the full list →</a>
+        </p>
+      </Container>
+    </Section>
+
+    <!-- Proof -->
+    <Section id="store-proof" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          {proofQuote && <QuoteBlock quote={proofQuote} />}
+          <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
+            <a href="/work/cherry-vibes/" class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
+              Cherry Vibes
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- How it works -->
+    <Section id="store-steps" variant="default">
+      <Container>
+        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>How it works</span>
+        </h2>
+        <StepCards steps={plan.steps} class="max-w-5xl mx-auto" />
+      </Container>
+    </Section>
+
+    <!-- FAQ -->
+    <Section id="store-faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
+          </h2>
+          <div class="space-y-4">
+            {plan.faq.map((f) => (
+              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="Sell Online — store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+              Talk to us about your store
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Back to the website plans -->
+    <Section id="store-plans" variant="default">
+      <Container>
+        <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8">
+          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Not selling products online?</h2>
+          <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Then a store is the wrong tool. Our four website plans get you found on Google, answer your customers, and book the work — starting at $99/mo.
+          </p>
+          <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+            See the website plans
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

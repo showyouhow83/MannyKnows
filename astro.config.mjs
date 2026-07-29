@@ -35,7 +35,11 @@ export default defineConfig({
     '/plans/basic-website': '/plans/get-found/',
     '/plans/plus-website': '/plans/get-booked/',
     '/plans/smart-website': '/plans/get-growing/',
-    '/plans/online-store': '/plans/sell-online/',
+    // Online stores moved off /plans onto their own page (July 2026): the four
+    // website tiers answer "get me found and booked"; a store is a different
+    // decision, with its own build and its own economics.
+    '/plans/online-store': '/ecommerce/',
+    '/plans/sell-online': '/ecommerce/',
   },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which

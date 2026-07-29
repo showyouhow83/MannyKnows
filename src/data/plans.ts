@@ -67,19 +67,20 @@ export const plans: Plan[] = [
     name: 'Get Found',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 99,
-    tagline: 'An AI-driven site on your own Brand Brain — with Remi answering customers 24/7.',
+    tagline: "Everything a new business needs to exist online and be found — nothing it doesn't.",
     highlights: [
-      'Built on your Brand Brain — a private AI trained on your business',
-      'Remi, your AI agent, answers customers 24/7 in their language',
-      'A sharp 1–3 page multilingual site that optimizes itself — kept fast, current, and ahead of any basic website',
-      'Found when locals search you on Google + Maps (profile set up for you)',
-      'Your own admin — update the site and manage leads yourself, no waiting on us',
+      'A custom-designed 1–3 page website — plus a logo if you need one',
+      'Hosting, SSL, and speed handled — nothing extra to buy',
+      'Set up to rank on Google & Maps when locals search for you',
+      'A contact form that reaches you the moment someone fills it',
+      'Remi, your AI agent, answering customer questions 24/7',
+      'Linked up to the social accounts you already have',
     ],
-    headline: 'An AI-driven website — not a page that just sits there',
+    headline: 'Get online, get found, start answering customers',
     blurb:
-      "An AI-driven website that works, instead of a page that sits there. We build a sharp 1–3 page site on your own Brand Brain — a private AI trained on your business — and put Remi on it, your AI agent that answers customers 24/7 in any language. It's fast, secure, found on Google, and maintained every month. Ready for it to book jobs or sell too? Move up to Get Booked or III anytime — the work carries forward.",
+      "The simple one. A sharp 1\u20133 page website designed for your business (logo included if you need one), hosted and kept fast, set up to show up when locals search you on Google, with a contact form that reaches you and Remi answering questions around the clock. If you're just getting online \u2014 or what you have is embarrassing \u2014 this is where you start.",
     whoFor:
-      'New or smaller businesses that need a clean, credible website and an agent to field the questions that come in — without a big upfront bill.',
+      "New and small businesses that need a real website, need to be findable, and don't need anything complicated yet.",
     deliverables: [
       {
         title: 'Your Brand Brain',
@@ -128,7 +129,7 @@ export const plans: Plan[] = [
           'SSL certificate, DDoS protection, and content caching across 330+ cities',
           'Unlimited storage and bandwidth — no metered overages or surprise bills',
           'Unlimited stock photography, video, and logos (via our Envato Elements license)',
-          'Unlimited content updates — send us changes and we handle them',
+          'Four content updates a month — most turned around within one business day',
         ],
       },
     ],
@@ -140,15 +141,16 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
+      { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price — the work most agencies bill as a $3,000–$8,000 project up front. You pay $99 the first month and $99 every month after.' },
       { q: 'Can Remi book appointments on this plan?', a: 'On Get Found, Remi answers questions. To have it book jobs and capture leads, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
-      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
+      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. Nothing is owed after you leave. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },
   {
     slug: 'get-booked',
     name: 'Get Booked',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
-    price: 199,
+    price: 249,
     tagline: 'Your AI site now books the job — Remi answers, captures leads, and fills your calendar.',
     builtOn: 'Everything in Get Found, plus',
     highlights: [
@@ -186,6 +188,14 @@ export const plans: Plan[] = [
           'Monthly content updates, monitoring, security, and backups',
         ],
       },
+      {
+        title: 'Unlimited content updates',
+        items: [
+          'From this plan up, there is no cap on change requests and no per-change fee',
+          'Send them any way you like — most are turned around within one business day',
+          'Covers your existing pages, copy, images, and products (new features and redesigns are quoted separately)',
+        ],
+      },
     ],
     steps: [
       { title: 'Kickoff', body: 'We learn your business, your services, and what a booked job is worth to you.' },
@@ -203,12 +213,12 @@ export const plans: Plan[] = [
     slug: 'get-growing',
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
-    price: 349,
+    price: 550,
     tagline: 'A website that runs itself — writes its own content, tunes its own SEO & speed, and sells with Remi.',
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
       'Full self-optimization — like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
-      'Remi sells — steers shoppers to the right product or service, and upsells',
+      'Remi sells — steers customers to the right service and asks for the job',
       'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
@@ -269,21 +279,20 @@ export const plans: Plan[] = [
     slug: 'get-ahead',
     name: 'Get Ahead',
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
-    price: 999,
-    tagline: 'The full growth engine — your site, SEO, and ads run for you, with Manny in your corner every month.',
+    price: 899,
+    tagline: 'Get Growing plus your advertising, run for you — the site brings them in, the ads bring more.',
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
-      'Your ads, run and managed — Google plus one social network, tuned to bring work, not clicks',
-      'Ad budget is separate and goes straight to the platforms — never marked up',
-      'A monthly working session with Manny — numbers, priorities, next moves',
-      'Campaign landing pages built and shipped when you run a promo or push a service',
-      'Priority treatment — your requests jump the queue',
+      'Your ads run and managed on one network (Google or a social platform) — the same Business Ads service, bundled in',
+      'You fund the ad spend directly with the platform; we never mark it up',
+      'Landing pages built for each campaign, so ads land somewhere built to convert',
+      'A monthly working session with Manny — what the numbers say, what changes next',
     ],
     headline: 'For businesses ready to lead their market',
     blurb:
-      "This is the whole engine, handled: the self-optimizing website and Remi from Get Growing, plus your advertising run for you and a standing monthly session where we look at the numbers together and decide what's next. It's built for established businesses — the multi-crew contractor, the busy practice — that are done piecing marketing together. Big agencies charge two to five times this with long contracts and keep your website when you leave. This is month-to-month, and everything is yours.",
+      "This is Get Growing ($550) with our Business Ads service on one network ($350) bundled together \u2014 the two things that actually compound. Your site keeps improving itself and Remi keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
-      'Established businesses ready to own their market — multi-crew contractors, practices, and firms that want the site, the rankings, the ads, and the follow-through handled by one accountable person.',
+      'Established businesses that already get work from their site and want to take ground \u2014 multi-crew contractors, busy practices, shops with real competition.',
     deliverables: [
       {
         title: 'Everything in Get Growing',
@@ -326,7 +335,7 @@ export const plans: Plan[] = [
     slug: 'sell-online',
     name: 'Sell Online',
     icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
-    price: 399,
+    price: 699,
     tagline: 'Everything in Get Growing, plus a full online store and an AI shopping assistant.',
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
@@ -382,6 +391,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Promos, new products, fixes, and optimization — plus everything Get Growing keeps running.' },
     ],
     faq: [
+      { q: 'Why is this more than the website plans?', a: 'Because it contains one. Sell Online is Get Growing ($550/mo — the full self-optimizing website, with Remi selling) plus your store: the storefront build, the product pages, the email automations, and the monthly work of keeping a catalog current. A store is a second machine bolted to the first one, and it needs running, not just launching.' },
       { q: 'Why Shopify?', a: 'It’s the most reliable platform for small-business eCommerce — payments, shipping, and inventory just work, and you never need us just to operate your own store. We customize the theme so it doesn’t look like everyone else’s.' },
       { q: 'Are Shopify’s own fees included?', a: 'No — Shopify charges its own subscription and payment processing fees directly to you (standard for any store). Our plan covers the design, build, optimization, and monthly operation.' },
       { q: 'I already have a store that isn’t selling. Can you fix it?', a: 'Yes — that’s half the work we do. We audit it, fix the theme, products, SEO, and emails, and run it forward under the same plan.' },
@@ -565,6 +575,10 @@ export const plans: Plan[] = [
 
 // Website tiers shown in the pricing grid (Business Ads / Multimedia are their
 // own sections on /plans).
-export const websitePlans = plans.filter((p) => !p.hidden);
+// The four website tiers shown on /plans. The store lives on its own page
+// (/ecommerce) — selling online is a different decision from getting found.
+export const websitePlans = plans.filter((p) => !p.hidden && p.slug !== 'sell-online');
+// Store plans — rendered on /ecommerce.
+export const ecommercePlans = plans.filter((p) => p.slug === 'sell-online');
 // Broader services shown as their own sections below the grid.
 export const servicePlans = plans.filter((p) => p.hidden);

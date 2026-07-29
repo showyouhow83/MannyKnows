@@ -81,7 +81,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a contractor website cost?',
-        a: 'Our website plans start at $99/mo with no big upfront bill — a multilingual site, Remi answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Add a full multi-page site with Remi booking estimates for you from $199/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi booking estimates for you is $249/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'How long until I rank on Google?',
@@ -145,7 +145,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our website plans start at $99/mo with no big upfront bill — a multilingual site, Remi answering parents 24/7, your own admin to track enrollment inquiries and update the site yourself, Google Business Profile, technical SEO, and upkeep included. A full multi-page site with Remi booking tours starts at $199/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin to track enrollment inquiries and update the site yourself, plus Remi booking tours, starts at $249/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can you help us manage enrollment and parents?',
@@ -208,7 +208,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a law firm website cost?',
-        a: 'Our website plans start at $99/mo with no big upfront bill — the site, Remi answering 24/7, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. Add Remi qualifying and booking consultations from $199/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering 24/7, practice-area and local SEO, Google Business Profile, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi qualifying and booking consultations is $249/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can the AI agent handle client intake?',
@@ -271,7 +271,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a clinic or practice website cost?',
-        a: 'Our website plans start at $99/mo with no big upfront bill — the site, Remi answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Add Remi booking appointments from $199/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi booking appointments is $249/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can patients book appointments through the site?',
