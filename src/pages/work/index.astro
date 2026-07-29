@@ -101,6 +101,64 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase();
       </Container>
     </Section>
 
+    {/* Everything below exists because the July 2026 architecture review flagged
+        this page as thin (241 words) — a page people land on ready to act, with
+        nothing to read. Every claim below is pulled from a published case study
+        and links to it; don't add a claim here without a case study behind it. */}
+    <Section id="work-bones" variant="alternate">
+      <Container>
+        <div class="max-w-[1440px] mx-auto text-center mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+            <span class="apple-gradient-text" data-colorful-title>The same bones under every build</span>
+          </h2>
+          <p class="mt-3 max-w-3xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Five different businesses — a painter, a daycare, a home-services company, an online store, a church. The projects look nothing alike, but they're built on the same principles.
+          </p>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Fast enough to rank</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Speed is a ranking factor and a first impression. <a href="/work/sl-painting/" class="text-primary-blue dark:text-blue-300 hover:underline">SL Painting</a> holds a 100 Lighthouse score — and ranks #1 organically for "Exterior Painting" in Springfield on the back of it.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Answered around the clock</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">An agent that answers when the owner can't. <a href="/work/jk-daycare/" class="text-primary-blue dark:text-blue-300 hover:underline">JK Daycare</a> went from kickoff to launch in two weeks — website, AI agent, and a phone IVR, all answering parents' questions from the site's own content.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">The whole operation, not just the site</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/vl-home-services/" class="text-primary-blue dark:text-blue-300 hover:underline">VL Home Services</a> ran on referrals and manual everything. Now it's a complete digital operation — projects, crew, and an agent that answers customers in any language, and the team's own questions too.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Built for where the business is going</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed"><a href="/work/cherry-vibes/" class="text-primary-blue dark:text-blue-300 hover:underline">Cherry Vibes</a> moved from the Costa Rican market to the U.S. on a custom Shopify Hydrogen storefront. <a href="/work/springfield-en-victoria/" class="text-primary-blue dark:text-blue-300 hover:underline">Springfield en Victoria</a> reaches its congregation in several languages, with live streaming for the people who can't be in the room.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="work-honesty" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent border-l-[3px] border-l-primary-pink bg-white dark:bg-dark-secondary p-6 sm:p-8">
+            <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">How these case studies are written</h2>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-3">
+              Every number here is real. Where a project has a measurable result — a ranking, a launch date, a Lighthouse score — you'll see it. Where it doesn't, we describe what was built instead of inventing a percentage. No case study is published until the client's story is confirmed in their own words, and nothing in this portfolio is borrowed from work that isn't ours to show.
+            </p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              All of it was designed, built, and maintained by Manny — twenty years of engineering for enterprises and startups, applied to local businesses. One person, a direct line, no account manager. <a href="/about/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Meet who you'd be working with →</a>
+            </p>
+          </div>
+          <div class="text-center mt-12">
+            <p class="text-base text-text-light-secondary dark:text-text-dark-secondary mb-5">Want to know what a project like yours would look like?</p>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+              <a href="/contact/" data-contact-context="Portfolio — start a project" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">Tell us what you do</a>
+              <a href="/free-ai-website-analysis/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">Get a free look at your current site</a>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
     <DockMenu />
   </main>
 </BaseLayout>
