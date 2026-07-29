@@ -114,6 +114,9 @@ export const localAreas: LocalArea[] = [
     proofBusiness: 'VL Home Services',
     proofHeading: 'Proof from Western Massachusetts',
     marketData: {
+      // "Just over half" is deliberate, not vague. Published Hispanic/Latino
+      // estimates for Holyoke range 51.5%-54.6% depending on vintage and source,
+      // so a single decimal would be false precision. Do not "fix" this to 52.4%.
       heading: 'Holyoke is already ahead on this — it just gets bad information',
       body: "There's a result in the state's 2025 small business survey worth saying out loud in a city where just over half the population is Hispanic or Latino: Latino, Black, and AAPI business owners in Massachusetts reported using AI regularly at higher rates than white-owned businesses — most often for marketing work. The assumption usually runs the other way. The data doesn't. What those owners said they were missing wasn't willingness or interest, it was clear and trusted information about what's actually worth paying for. That's the gap we're built to close, and it's the reason everything here ships in Spanish and English together rather than one first and the other eventually.",
       source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey; U.S. Census Bureau demographic estimates for Holyoke',
