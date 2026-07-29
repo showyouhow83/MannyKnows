@@ -86,8 +86,10 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 		<!-- Swiper + Carousel Effect Slider -->
 		<!-- Swiper now powers only the below-the-fold testimonials slider (the hero is
 		     a vanilla carousel), so load its CSS non-blocking, off the critical path. -->
-		<link rel="stylesheet" href="/swiper-bundle.min.css" media="print" onload="this.media='all'" />
-		<noscript><link rel="stylesheet" href="/swiper-bundle.min.css" /></noscript>
+		{/* Swiper assets moved into Testimonials.astro — the only Swiper consumer.
+		    Loading them here shipped 151 KB of JS + 18 KB of CSS to every page,
+		    slider or not. If a second component ever needs Swiper, load it there
+		    the same way — not globally. */}
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -210,7 +212,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 
 		<!-- Swiper + Carousel Effect Scripts — deferred so they don't block render
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
-		<script is:inline defer src="/swiper-bundle.min.js"></script>
+		{/* swiper-bundle.min.js also moved into Testimonials.astro — see note in <head>. */}
 
 		<!-- Remi chat widget — layout-level so every page gets it exactly once.
 		     Do NOT also render <ChatBox /> in individual pages. -->

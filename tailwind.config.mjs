@@ -1,9 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // PERFORMANCE OPTIMIZATION: More aggressive content scanning
+  // Content globs are a deliberate ALLOWLIST, not src/**. Two whole trees are
+  // excluded on purpose:
+  //  - src/pages/admin, src/pages/partners, and the customer-portal pages
+  //    (quote/, project/, confirm/, my-project) style themselves with
+  //    admin.css / portal.css — NOT Tailwind (see CLAUDE.md). Scanning their
+  //    ~30 ported files generated utilities the public site never loads.
+  //  - public/ held minified vendor JS (swiper-bundle et al.) whose token soup
+  //    the scanner happily turned into CSS. Nothing in public/ uses Tailwind.
+  // Measured effect of this allowlist: the public CSS bundle went from 113 KB
+  // to a fraction of that. If you add a NEW public page directory, add it here
+  // or its classes won't be generated.
   content: [
-    './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
-    './public/**/*.{html,js}'
+    './src/layouts/**/*.astro',
+    './src/components/**/*.{astro,ts,js}',
+    './src/pages/*.astro',
+    './src/pages/{blog,work,plans,preview}/**/*.astro',
+    './src/content/**/*.{md,mdx}',
+    './src/data/**/*.ts',
   ],
   // OPTIMIZED: Reduced safelist for critical classes only
   safelist: [

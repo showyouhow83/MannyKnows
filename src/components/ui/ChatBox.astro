@@ -98,14 +98,13 @@ const { className = '' } = Astro.props;
       }
     } catch {}
     
-    // Defer the session/CSRF fetch off the initial critical path — the chat is
-    // hidden until opened, so fetch on first interaction (or idle), not on load.
+    // The chat widget is hidden site-wide (kept in code on purpose), so the
+    // session/CSRF fetch happens ONLY when the chat is actually opened — see
+    // openChatBox. The old idle/first-interaction warm-up here made a pointless
+    // /api/chat call (and a KV write) on every single pageview for a widget
+    // nobody could see. Don't reintroduce a global warm-up while it's hidden.
     let sessionInit = false;
     const ensureSession = () => { if (sessionInit) return; sessionInit = true; initializeSession(); };
-    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) =>
-      addEventListener(ev, ensureSession, { passive: true, once: true } as any));
-    if ('requestIdleCallback' in window) (window as any).requestIdleCallback(ensureSession, { timeout: 6000 });
-    else setTimeout(ensureSession, 5000);
     let conversationHistory: Array<{role: string, content: string}> = [];
     const MAX_MESSAGES = 20;
 
@@ -125,6 +124,7 @@ const { className = '' } = Astro.props;
     const openChatBox = () => {
       if (isOpen) return;
       isOpen = true;
+      ensureSession();
       chatBox.classList.remove('scale-0', 'opacity-0', 'invisible');
       chatBox.classList.add('scale-100', 'opacity-100', 'visible');
       
