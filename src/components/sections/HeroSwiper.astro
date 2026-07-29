@@ -6,10 +6,15 @@
 // infinite wrap-around. Behavior constants live in the inline <script> below.
 
 export interface Slide {
-  image: string;        // Unsplash photo base URL (no query params)
+  // Either an Unsplash photo base URL (no query params) or a local derivative
+  // base like '/hero/remi-books-the-job' — see the resizing note further down.
+  image: string;
   title: string;        // <= 34 chars
   description?: string; // <= 120 chars
   href?: string;        // click target for the centered slide
+  // Alt text for the photo. Falls back to `title`, which is fine for a stock
+  // photo but not for a real scene — describe what's shown instead.
+  alt?: string;
 }
 
 export interface Props {
@@ -21,27 +26,28 @@ export interface Props {
 // so the wrap-around never has to show one slide in two places).
 const defaultSlides: Slide[] = [
   {
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f',
+    image: '/hero/remi-books-the-job',
+    alt: 'A contractor leaning against his truck, smiling at his phone as Remi confirms a job booked for Tuesday.',
     title: 'Get Found. Get Booked. Get Growing.',
-    description: 'Smart websites that answer customers 24/7, book the work, and improve themselves — month to month, starting at $99.',
+    description: 'Smart websites that answer customers 24/7, book the work, and improve themselves — built, hosted, and maintained for you.',
     href: '/plans/',
   },
   {
     image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828',
-    title: 'Online Store (AI) — from $699/mo',
+    title: 'An online store built to sell',
     description: 'A full online store — designed, themed, and optimized to sell, built on years of eCommerce experience.',
     href: '/ecommerce/',
   },
   {
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71',
-    title: 'Business Ads — from $350/mo',
+    title: 'Business Ads that bring the work',
     description: 'Social media, Google & social ads, SEO, and your Google Business Profile — get seen everywhere.',
     href: '/plans/business-ads/',
   },
   {
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475',
-    title: 'Multimedia Agency — from $1,800/mo',
-    description: 'We design, build, promote, and optimize everything — your full media & tech team.',
+    title: 'Your full media & tech team',
+    description: 'We design, build, promote, and optimize everything — one team for the whole operation.',
     href: '/plans/multimedia-agency/',
   },
   {
@@ -54,7 +60,22 @@ const defaultSlides: Slide[] = [
 
 const { slides = defaultSlides } = Astro.props;
 
-// Cloudflare/Unsplash-style responsive crops: 16:9, desktop 1200×675, mobile 640×360.
+// Two kinds of slide image, and they resize differently.
+//
+// Remote (Unsplash) URLs get their own query-param crops: 16:9, desktop
+// 1200×675, mobile 640×360. Those params only work on Unsplash's CDN.
+//
+// Local images are self-hosted 16:9 derivatives sitting at
+// public/hero/<base>-<width>.{avif,webp} with a -1280.jpg fallback. Self-hosting
+// matters here: the first slide is the LCP element, so a third-party request in
+// front of it costs real Lighthouse points. Regenerate derivatives with sharp
+// (widths below) if you add one — don't drop a multi-megabyte original in
+// public/ and point at it directly.
+const isLocal = (src: string) => src.startsWith('/');
+const LOCAL_WIDTHS = [640, 960, 1280, 1600];
+const localSrcset = (base: string, ext: string) =>
+  LOCAL_WIDTHS.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
+const LOCAL_SIZES = '(min-width: 768px) 1200px, 100vw';
 const desktopSrc = (base: string) => `${base}?w=1200&h=675&fit=crop&crop=entropy&q=62&auto=format`;
 const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q=60&auto=format`;
 ---
@@ -71,10 +92,17 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
           draggable="false"
         >
           <picture>
-            <source media="(min-width: 768px)" srcset={desktopSrc(slide.image)} />
+            {isLocal(slide.image) ? (
+              <>
+                <source type="image/avif" srcset={localSrcset(slide.image, 'avif')} sizes={LOCAL_SIZES} />
+                <source type="image/webp" srcset={localSrcset(slide.image, 'webp')} sizes={LOCAL_SIZES} />
+              </>
+            ) : (
+              <source media="(min-width: 768px)" srcset={desktopSrc(slide.image)} />
+            )}
             <img
-              src={mobileSrc(slide.image)}
-              alt={slide.title}
+              src={isLocal(slide.image) ? `${slide.image}-1280.jpg` : mobileSrc(slide.image)}
+              alt={slide.alt ?? slide.title}
               width="1200"
               height="675"
               draggable="false"
