@@ -9,6 +9,32 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import { BOOKING_URL } from '../data/booking';
+import Faq from '../components/ui/Faq.astro';
+
+// The questions people actually hesitate on before sending a first message.
+// Answers must stay in step with src/data/plans.ts.
+const faqs = [
+  {
+    q: 'What does it cost to get started?',
+    a: 'Website plans start at $99/mo with no setup fee, month to month. Prefer to own it outright? One-time builds are billed at a flat $75/hr and quoted up front. Either way you see the number before you commit to anything.',
+  },
+  {
+    q: 'Do I have to sign a long contract?',
+    a: 'No. Plans run month to month and you can cancel at the end of any billing month. Prepaying a year gets you two months free, but that is your choice, not a condition.',
+  },
+  {
+    q: 'What if I already have a website?',
+    a: 'Very common. We will look at what you have and tell you honestly whether it is worth improving or rebuilding — and sometimes the answer is that the site is fine and the real problem is somewhere else. We would rather say that than sell you a rebuild you do not need.',
+  },
+  {
+    q: 'Who actually does the work?',
+    a: 'Manny leads every project himself. The person you talk to on the first call is the person who designs, builds, and maintains your site — you are not handed off to a junior team afterward.',
+  },
+  {
+    q: 'Do you only work with businesses in Western Mass?',
+    a: 'In person, we cover Springfield and the Pioneer Valley. Remotely we work with businesses anywhere — most of what we do does not require being in the same room.',
+  },
+];
 
 const inputClass =
   'w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm';
@@ -108,6 +134,16 @@ const inputClass =
             </div>
           </div>
         </div>
+      </Container>
+    </Section>
+
+    <!-- Objection-clearing FAQ — the questions people stall on before they write. -->
+    <Section id="contact-faq" variant="alternate">
+      <Container>
+        <Faq faqs={faqs} heading="Before you write" />
+        <p class="max-w-3xl mx-auto mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          Want to know who you'd be working with first? <a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Read Manny's story</a> — twenty years of building for businesses big and small, now here in Western Mass.
+        </p>
       </Container>
     </Section>
 
