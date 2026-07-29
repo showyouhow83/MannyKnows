@@ -140,6 +140,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, monitoring, and tuning — you send changes, we handle them.' },
     ],
     faq: [
+      { q: '$99 a month seems low — what’s the catch?', a: 'There isn’t one, but here is the honest math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is genuinely less work. It is a monthly plan rather than a one-time project, so the build cost is spread across the relationship instead of landing as a bill up front. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $249 — we would rather point you there than stretch this plan past what it is.' },
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price — the work most agencies bill as a $3,000–$8,000 project up front. You pay $99 the first month and $99 every month after.' },
       { q: 'Can Remi book appointments on this plan?', a: 'On Get Found, Remi answers questions. To have it book jobs and capture leads, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
@@ -204,6 +205,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
+      { q: 'What does this add over Get Found at $99?', a: 'Two things worth the difference. The site stops being a few pages and becomes a full multi-page site with your own admin, so you can update it yourself instead of sending every change to us. And Remi stops only answering questions and starts capturing leads and booking work into your calendar — which is the part that pays for the plan. If your customers mostly just need to find you and see that you are real, Get Found is genuinely enough.' },
       { q: 'How does Remi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
       { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Remi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Can I upgrade later?', a: 'Yes — move up to Get Growing to have Remi sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
@@ -283,14 +285,15 @@ export const plans: Plan[] = [
     tagline: 'Get Growing plus your advertising, run for you — the site brings them in, the ads bring more.',
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
-      'Your ads run and managed on one network (Google or a social platform) — the same Business Ads service, bundled in',
+      'Your ads run and managed on two networks (Google and a social platform, or two social) — the same Business Ads service, bundled in',
+      'Priced as a bundle: $1,250/mo of service for $899 — you keep $351 every month',
       'You fund the ad spend directly with the platform; we never mark it up',
       'Landing pages built for each campaign, so ads land somewhere built to convert',
       'A monthly working session with Manny — what the numbers say, what changes next',
     ],
     headline: 'For businesses ready to lead their market',
     blurb:
-      "This is Get Growing ($550) with our Business Ads service on one network ($350) bundled together \u2014 the two things that actually compound. Your site keeps improving itself and Remi keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
+      "This is Get Growing ($550) with our Business Ads service on two networks ($700) bundled together \u2014 $1,250 a month of service for $899, because these are the two things that actually compound. Your site keeps improving itself and Remi keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
       'Established businesses that already get work from their site and want to take ground \u2014 multi-crew contractors, busy practices, shops with real competition.',
     deliverables: [
@@ -305,9 +308,11 @@ export const plans: Plan[] = [
       {
         title: 'Managed advertising',
         items: [
-          'Google Ads plus one social network, set up and managed for you',
+          'Your ads on two networks — Google and a social platform, or two social platforms — set up and managed for you',
+          'Each network gets its own competitive and market analysis, and its own plan — no two run the same way',
           'Campaigns aimed at booked work — calls, quotes, appointments — not vanity clicks',
-          'Your ad budget is separate and paid directly to Google/Meta; we never mark it up or hide it',
+          'Your ad budget is separate and paid directly to the platform; we never mark it up or hide it',
+          'Need more networks? Add them at the Business Ads rate — $350/mo each',
           'Landing pages built for each campaign, so ads land on pages made to convert',
         ],
       },
@@ -326,7 +331,8 @@ export const plans: Plan[] = [
       { title: 'Monthly loop', body: "We meet, read the numbers together, and adjust. What's working gets more; what isn't gets cut." },
     ],
     faq: [
-      { q: 'Is the ad budget included in the $999?', a: 'No — and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to Google and Meta. We never mark it up, and you see exactly what was spent where in your monthly report.' },
+      { q: 'Is the ad budget included in the $899?', a: 'No — and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
+      { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $550 and Business Ads on two networks is $700 — $1,250 a month. Bundled it's $899, so you keep $351. We can do that because the ads and the site stop being two separate projects: the landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
       { q: 'How is this different from a big agency?', a: "Agencies serving contractors and practices typically charge $2,500–$6,000 a month, lock you into 12–24-month contracts, and keep the website if you leave. Get Ahead is month-to-month and everything — the site, the content, the ad accounts — belongs to you." },
       { q: 'Do I need this, or is Get Growing enough?', a: "If your site and Remi keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground — outrank and out-advertise the competition — with someone accountable for the whole engine, not just the website." },
     ],
@@ -567,7 +573,10 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
-      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this — and gives you one skill set. This puts engineering, design, marketing, and AI expertise on one retainer.' },
+      { q: 'How does this compare to hiring?', a: 'One in-house marketing or IT hire — salary plus payroll taxes and benefits — typically runs several times this, and gives you a single person’s skill set with vacation days and a learning curve. This puts engineering, design, marketing, and AI expertise on one retainer, with no hiring risk and no onboarding.' },
+      { q: 'What does a typical month actually look like?', a: 'It starts from the shared roadmap, so you always know what is queued before the month begins. Work ships continuously across web, promotion, and software rather than landing in one drop at the end. Then we sit down for the working session, read the numbers together, and reprioritize the next month. You get a plain-English report of what shipped, what it cost, and what it moved.' },
+      { q: 'What if I don’t need all of it every month?', a: 'Most months you won’t — that’s the point. The mix shifts: a heavy build month, then a promotion month, then a stretch of automation work. You’re buying a team’s capacity against a shared roadmap, not a fixed checklist you have to consume. If the roadmap stays light for long, we’ll tell you a smaller plan fits better.' },
+      { q: 'Am I locked into a contract?', a: 'No. Like every plan, it runs month to month and you can stop at the end of any billing month. Prepaying a year gets you two months free, but it is optional. Everything we build — site, store, ad accounts, software, content — belongs to you and leaves with you.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Get Growing or Sell Online and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },

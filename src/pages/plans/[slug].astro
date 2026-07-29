@@ -42,8 +42,14 @@ const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
 
 // Proof map — the testimonial (if one exists) and the case studies that prove
 // this plan. Honest: only clients who actually gave a quote get one shown.
+// Cases without a quote show "See it working:" only — they demonstrate the
+// capability, they do not claim that client is on this tier. Get Found stays
+// bare on purpose: no published client is on the 1–3 page starter, and
+// borrowing a bigger build to sell it would overstate what the plan is.
 const proofMap: Record<string, { quote?: string; cases: { slug: string; name: string }[] }> = {
+  'get-booked': { cases: [{ slug: 'jk-daycare', name: 'JK Daycare' }] },
   'get-growing': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
+  'get-ahead': { cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
   'sell-online': { quote: 'Cherry Vibes', cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
   'business-ads': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
   'multimedia-agency': { quote: 'VL Home Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
