@@ -21,6 +21,16 @@ export interface LocalArea {
   industries: string; // example-business phrase used in the FAQ
   proofBusiness: string; // testimonials.ts business to feature
   proofHeading: string; // heading above the quote (honest about location)
+  // Cited market context, written per town so these pages stop reading as one
+  // page with the name swapped. HONESTY: every number here must be traceable to
+  // `source`. Where a town has no verifiable local figure (Northampton), argue
+  // from the statewide finding instead of inventing a local one.
+  marketData: {
+    heading: string;
+    body: string;
+    source: string;
+    sourceUrl: string;
+  };
 }
 
 // Shared service value props — about what we deliver, not the town, so they
@@ -78,6 +88,12 @@ export const localAreas: LocalArea[] = [
     industries: 'a contractor in Sixteen Acres, a restaurant downtown, or a medical office on the edge of the city',
     proofBusiness: 'SL Painting',
     proofHeading: 'Proof, right here in Springfield',
+    marketData: {
+      heading: "What the state's own survey says about businesses like yours",
+      body: "In the fall of 2025, 1,049 Massachusetts small business leaders were surveyed about how they actually run and grow. Two findings land hardest in Springfield. First, the businesses started across the state since 2020 are disproportionately owned by Black, Latino, women, and immigrant entrepreneurs — and those owners named strengthening their online presence among their top near-term priorities. Second, the barrier they reported most often wasn't money or ambition; it was not being able to get clear, trustworthy information about what's worth doing. Springfield is the largest and most competitive market in Western Mass, which makes both of those truer here than in any town around it.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey (1,049 respondents, fielded Sept 5–Oct 13, 2025)',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
   },
   {
     slug: 'holyoke',
@@ -97,6 +113,12 @@ export const localAreas: LocalArea[] = [
     industries: 'a family restaurant on High Street, a trade business, or a shop near the Holyoke Mall',
     proofBusiness: 'VL Home Services',
     proofHeading: 'Proof from Western Massachusetts',
+    marketData: {
+      heading: 'Holyoke is already ahead on this — it just gets bad information',
+      body: "There's a result in the state's 2025 small business survey worth saying out loud in a city where just over half the population is Hispanic or Latino: Latino, Black, and AAPI business owners in Massachusetts reported using AI regularly at higher rates than white-owned businesses — most often for marketing work. The assumption usually runs the other way. The data doesn't. What those owners said they were missing wasn't willingness or interest, it was clear and trusted information about what's actually worth paying for. That's the gap we're built to close, and it's the reason everything here ships in Spanish and English together rather than one first and the other eventually.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey; U.S. Census Bureau demographic estimates for Holyoke',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
   },
   {
     slug: 'chicopee',
@@ -116,6 +138,12 @@ export const localAreas: LocalArea[] = [
     industries: 'a family shop in Chicopee Center, a contractor, or a restaurant in the Falls',
     proofBusiness: 'JK Daycare',
     proofHeading: 'Proof from Western Massachusetts',
+    marketData: {
+      heading: 'Why our prices are on the site instead of behind a phone call',
+      body: "When Massachusetts small business owners were surveyed in 2025, the obstacle they named most often wasn't the economy and it wasn't funding — it was being unable to get clear, trusted information about what to do next. In a city like Chicopee, where the median household runs near $67,000 and every monthly bill gets weighed on its own merits, that gap costs real money in one of two directions: you overpay an agency that quotes you in jargon you can't check, or you do nothing and stay invisible while a competitor doesn't. It's why our pricing is published, our plans are month-to-month, and we'll say plainly when the $99 plan is genuinely all your business needs.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey; U.S. Census Bureau median household income for Chicopee (2023)',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
   },
   {
     slug: 'northampton',
@@ -135,6 +163,12 @@ export const localAreas: LocalArea[] = [
     industries: 'a restaurant downtown, a boutique in Florence, or a wellness studio near Smith',
     proofBusiness: 'VL Home Services',
     proofHeading: 'Proof from Western Massachusetts',
+    marketData: {
+      heading: 'The statewide picture — and where Northampton differs',
+      body: "We don't have a Northampton-specific statistic to quote you, and making one up would be precisely the thing we tell clients never to do. What the state's 2025 survey of 1,049 small business owners does show is a real appetite for growth running alongside a persistent inability to get straight answers about which technology is worth buying. Northampton's own wrinkle is that the bar here is visual as much as technical: a business on Main Street can rank perfectly well and still lose the customer, because the site doesn't carry itself the way the storefront does. So we build for both — the ranking and the first impression — and price it where an independent shop can actually carry the bill.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey (1,049 respondents)',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
   },
 ];
 
