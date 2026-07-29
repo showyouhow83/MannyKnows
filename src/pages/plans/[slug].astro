@@ -88,7 +88,7 @@ const faqSchema = {
       </nav>
       <div class="pb-12 px-4">
         <Container>
-          <div class="max-w-3xl mx-auto text-center">
+          <div class="max-w-[1440px] mx-auto text-center">
             {planIll[plan.slug] && (
               <div class="flex justify-center mb-6">
                 <Illustration kind={planIll[plan.slug]} class="w-full max-w-[210px]" />
@@ -100,7 +100,7 @@ const faqSchema = {
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>{plan.headline}</span>
             </h1>
-            <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{plan.blurb}</p>
+            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{plan.blurb}</p>
 
             <!-- Price block — sub-plan tiers when the plan has them, month-to-month/yearly otherwise -->
             {plan.tiers ? (
