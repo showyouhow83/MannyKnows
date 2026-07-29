@@ -267,8 +267,14 @@ export const professions: Profession[] = [
         body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place — thoughtful defaults, not an afterthought.',
       },
     ],
-    // No published clinic case study yet — no borrowed proof.
+    // No published clinic case study — the medical work predates MannyKnows and
+    // belonged to an employer, so it's stated as experience, never shown as a
+    // portfolio piece. Do not add screenshots or links for it.
     faqs: [
+      {
+        q: 'Have you built websites for medical practices before?',
+        a: "Yes. Earlier in my career I built practice websites at Mednet, a medical web company. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. That company has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish — so you won't find them in my portfolio, and I won't pretend otherwise. But medical practices are not new ground for me.",
+      },
       {
         q: 'How much does a clinic or practice website cost?',
         a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi booking appointments is $249/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',

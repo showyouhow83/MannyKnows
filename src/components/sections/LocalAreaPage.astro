@@ -24,6 +24,12 @@ const faqs = [
     a: 'Our website plans start at $99/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering your customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance included. Multilingual is standard at every tier, never an add-on. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. For a full multi-page site with your own admin and Remi booking appointments too, that\'s $249/mo. One-time builds are also available; every plan is scoped to your business.',
   },
   {
+    // Uses area.industries — the per-town phrase that keeps these pages from
+    // reading as the same page with the town name swapped. Keep it town-specific.
+    q: `What kinds of ${area.name} businesses do you work with?`,
+    a: `Local and service-driven, mostly — think ${area.industries}. The shape of the work is the same either way: a fast site that ranks for what people around here actually search, an agent that answers when you can't get to the phone, and someone still maintaining it a year after launch.`,
+  },
+  {
     q: `Do you work with businesses outside ${area.name}?`,
     a: 'Yes — we work across all of Western Massachusetts (Springfield, Chicopee, Holyoke, Northampton, Westfield, Agawam, Amherst, and beyond), and remotely with businesses anywhere.',
   },
