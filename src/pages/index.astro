@@ -19,6 +19,11 @@ import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
+// Offer-catalog prices come from the canonical plan data so structured data can
+// never drift from the published price on a reprice.
+import { plans } from '../data/plans';
+
+const planPrice = (slug: string) => String(plans.find((p) => p.slug === slug)?.price ?? '');
 
 // ========================================
 // LOCAL SEO — structured data (LocalBusiness / Person / WebSite)
@@ -86,13 +91,13 @@ const structuredData = {
           {
             '@type': 'Offer',
             priceCurrency: 'USD',
-            priceSpecification: { '@type': 'UnitPriceSpecification', price: '349', priceCurrency: 'USD', unitText: 'MONTH' },
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: planPrice('get-growing'), priceCurrency: 'USD', unitText: 'MONTH' },
             itemOffered: { '@type': 'Service', name: 'Get Growing (smart bilingual website)', description: 'A multilingual website with a built-in AI agent that answers, books, and sells — and that tunes its own content, SEO, and speed.' },
           },
           {
             '@type': 'Offer',
             priceCurrency: 'USD',
-            priceSpecification: { '@type': 'UnitPriceSpecification', price: '999', priceCurrency: 'USD', unitText: 'MONTH' },
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: planPrice('get-ahead'), priceCurrency: 'USD', unitText: 'MONTH' },
             itemOffered: { '@type': 'Service', name: 'Get Ahead (managed growth plan)', description: 'The full growth engine: smart website, SEO, and managed Google + social advertising with a monthly working session. Month-to-month; the client owns everything.' },
           },
           {
