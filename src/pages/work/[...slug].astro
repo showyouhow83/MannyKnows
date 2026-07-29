@@ -241,6 +241,17 @@ const facts = [
             </div>
           )}
 
+          {/* Credit block — every case study links the person behind the work.
+              This is also deliberate internal linking: /about had zero editorial
+              inlinks in the July 2026 architecture review. */}
+          <aside class="mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.04] via-transparent to-primary-pink/[0.04] p-6 sm:p-7">
+            <p class="text-xs font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">Who did this work</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              This project — like everything in this portfolio — was designed, built, and maintained by Manny: twenty years of engineering for enterprises and startups, applied to a local business. No handoffs, no account manager between you and the person doing the work.
+              <a href="/about/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline whitespace-nowrap">Meet who you'd be working with →</a>
+            </p>
+          </aside>
+
           <div class="mt-14 pt-8 border-t border-light-tertiary dark:border-dark-accent flex items-center justify-between flex-wrap gap-4">
             <a href="/work/" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
               <svg class="w-4 h-4 rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
