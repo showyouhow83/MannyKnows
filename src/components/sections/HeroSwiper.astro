@@ -261,7 +261,11 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     max-width: 1920px;
     margin: 0 auto;
     overflow: hidden;
-    height: clamp(110px, 15.5vw, 283px);
+    /* Slides keep a 350px minimum height (per Manny) — the old
+       clamp(110px, 15.5vw, 283px) rendered a 110px strip on phones. Images are
+       16:9 with object-fit: cover, so taller slides crop the sides on narrow
+       screens; hero art should keep its subject near the center. */
+    height: clamp(350px, 24vw, 460px);
   }
 
   .hero-track {
