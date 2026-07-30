@@ -24,16 +24,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Submit marked TEST contact through production
+        env:
+          SMOKE_KEY: ${{ secrets.SMOKE_KEY }}
         run: |
           set -euo pipefail
-          # workers.dev origin on purpose: the mannyknows.com zone serves a
-          # Cloudflare managed challenge ("Just a moment...") to datacenter
-          # IPs like GitHub runners, before the worker ever runs. The
-          # workers.dev route is the SAME worker with the same secrets and
-          # email path — it just skips the zone-level WAF.
-          BASE="https://mannyknows.showyouhow83.workers.dev"
+          # The mannyknows.com zone serves a Cloudflare managed challenge to
+          # datacenter IPs like GitHub runners. A WAF custom rule (Skip) named
+          # smoke-test-skip lets requests through when the x-smoke-key header
+          # matches the SMOKE_KEY repo secret — same value in both places.
+          # Without the secret set, the header is empty and the challenge
+          # applies as normal (the run fails safe).
+          BASE="https://mannyknows.com"
+          SMOKE="${SMOKE_KEY:-}"
           UA="Mozilla/5.0 (X11; Linux x86_64) MannyKnows-smoke-test"
-          GET=$(curl -sS --compressed -L -w '\n%{http_code}' -H "User-Agent: $UA" -H "Accept: application/json" "$BASE/api/contact")
+          GET=$(curl -sS --compressed -L -w '\n%{http_code}' -H "User-Agent: $UA" -H "Accept: application/json" -H "x-smoke-key: $SMOKE" "$BASE/api/contact")
           GETCODE=$(echo "$GET" | tail -1)
           TOK=$(echo "$GET" | head -n -1)
           echo "GET /api/contact → HTTP $GETCODE"
@@ -53,7 +57,7 @@ jobs:
             session_id: $sess
           }')
           RESP=$(curl -sS --compressed -w '\n%{http_code}' -X POST "$BASE/api/contact" \
-            -H "User-Agent: $UA" \
+            -H "User-Agent: $UA" -H "x-smoke-key: $SMOKE" \
             -H "Content-Type: application/json" -H "x-csrf-token: $CSRF" \
             -d "$BODY")
           CODE=$(echo "$RESP" | tail -1)
