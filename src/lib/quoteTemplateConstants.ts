@@ -437,8 +437,8 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         title: 'Plan & Billing',
         items: [
           { id: 'it-store-bill-1', type: 'subtotal', label: 'One-time setup', amount: 0 },
-          { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at $699/mo)', amount: 0 },
-          { id: 'it-store-bill-3', type: 'note', text: 'The Sell Online plan continues at $699/mo, month-to-month. Shopify bills its own subscription and payment-processing fees directly to you — standard for any store; we never mark those up.' },
+          { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at chosen tier)', amount: 0 },
+          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers — Sell Online $150/mo, Sell More $349/mo, Sell Smarter $699/mo, Sell Everywhere $1,099/mo — and every tier includes your Shopify (Basic) subscription; the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
         ],
       },
       {

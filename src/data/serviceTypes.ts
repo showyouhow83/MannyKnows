@@ -19,7 +19,7 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'website-plus', label: 'Get Booked ($249/mo)' },
   { value: 'website-smart', label: 'Get Growing ($550/mo)' },
   { value: 'get-ahead', label: 'Get Ahead ($899/mo)' },
-  { value: 'ecommerce', label: 'Sell Online ($699/mo)' },
+  { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,800/mo)' },
   { value: 'ai-team', label: 'AI Team — hire agents (from $99/mo each)' },

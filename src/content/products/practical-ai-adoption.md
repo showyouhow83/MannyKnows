@@ -49,7 +49,7 @@ For [SL Painting](/work/sl-painting/), we built a 24/7 AI Sales & Booking Agent 
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-If what you want is an AI Sales & Booking Agent answering customers and booking appointments on your site 24/7, that's already built into our [Smart Website plans](/plans/) — Remi answers from $99/mo and [books appointments from $249/mo](/plans/get-booked/) — and the [Online Store (AI) plan](/ecommerce/) (from $699/mo) adds an AI shopping assistant to your storefront.
+If what you want is an AI Sales & Booking Agent answering customers and booking appointments on your site 24/7, that's already built into our [Smart Website plans](/plans/) — Remi answers from $99/mo and [books appointments from $249/mo](/plans/get-booked/) — and the [Online Store plans](/ecommerce/) (from $150/mo) add an AI shopping assistant to your storefront at the Sell Smarter tier.
 
 **Ready?** [Get a scoped quote](/contact/) or [see the SL Painting case study](/work/sl-painting/).
 
