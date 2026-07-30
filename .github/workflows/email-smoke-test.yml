@@ -26,7 +26,12 @@ jobs:
       - name: Submit marked TEST contact through production
         run: |
           set -euo pipefail
-          BASE="https://mannyknows.com"
+          # workers.dev origin on purpose: the mannyknows.com zone serves a
+          # Cloudflare managed challenge ("Just a moment...") to datacenter
+          # IPs like GitHub runners, before the worker ever runs. The
+          # workers.dev route is the SAME worker with the same secrets and
+          # email path — it just skips the zone-level WAF.
+          BASE="https://mannyknows.showyouhow83.workers.dev"
           UA="Mozilla/5.0 (X11; Linux x86_64) MannyKnows-smoke-test"
           GET=$(curl -sS --compressed -L -w '\n%{http_code}' -H "User-Agent: $UA" -H "Accept: application/json" "$BASE/api/contact")
           GETCODE=$(echo "$GET" | tail -1)
