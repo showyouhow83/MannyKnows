@@ -23,6 +23,11 @@ export default defineConfig({
     '/services/adaptive-layouts': '/services/',
     '/services/conversion-optimization': '/services/',
     '/services/crm-automation': '/services/',
+    // Retired /work index (July 2026): the homepage portfolio section covers the
+    // same ground, so the listing page was redundant. The case studies themselves
+    // stay at /work/<slug> — this redirect is the index only, and the trailing
+    // slash matters (see the note above about redirect chains).
+    '/work': '/#work',
     // Retired /products ("Projects") — every entry was a draft, so the index
     // rendered an empty catalogue with no inbound links. Folded into /services,
     // which already covers one-time vs monthly work.
