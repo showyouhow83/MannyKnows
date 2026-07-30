@@ -224,17 +224,6 @@ const NAVBAR_CONFIG = {
 		</PageSection>
 		*/}
 
-		<!-- Latest Work (real client sites) — portfolio proof, placed right after the hero -->
-		<PageSection
-			id="work"
-			badge="Portfolio"
-			title="Latest projects"
-			subtitle="Sites we've designed and built for real businesses. Click any for the full story."
-			variant="alternate"
-		>
-			<SelectedWork />
-		</PageSection>
-
 		<!-- Who you're working with — condensed founder intro, routes to /about -->
 		<PageSection
 			id="about"
@@ -249,6 +238,18 @@ const NAVBAR_CONFIG = {
 		     renders nothing if that list is ever emptied.
 		     (Replaces the retired ReviewsSection carousel.) -->
 		<Testimonials />
+
+		<!-- Latest Work (real client sites) — portfolio proof, closing the page
+		     right after the testimonials (per Manny: quotes first, then the work). -->
+		<PageSection
+			id="work"
+			badge="Portfolio"
+			title="Latest projects"
+			subtitle="Sites we've designed and built for real businesses. Click any for the full story."
+			variant="alternate"
+		>
+			<SelectedWork />
+		</PageSection>
 
 		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
 		     (kept, not deleted, in case we want it back). The posts still live in the

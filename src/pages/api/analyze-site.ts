@@ -7,7 +7,9 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { analyzeHtml } from '../../lib/site-analyzer';
 
-const MAX_BYTES = 600_000;
+// Generous cap: a chat widget's markup often sits at the very end of the
+// document, and truncating it produced a false 'nothing answers visitors'.
+const MAX_BYTES = 1_500_000;
 const FETCH_TIMEOUT_MS = 12_000;
 const RL_MAX_PER_HOUR = 8;
 const CACHE_TTL_S = 1800;
@@ -34,7 +36,7 @@ function normalizeTarget(raw: string): URL | null {
   return u;
 }
 
-async function fetchCapped(url: string, accept: string): Promise<{ status: number; body: string; finalUrl: string } | null> {
+async function fetchCapped(url: string, accept: string): Promise<{ status: number; body: string; finalUrl: string; truncated: boolean } | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -48,7 +50,7 @@ async function fetchCapped(url: string, accept: string): Promise<{ status: numbe
       },
     });
     const reader = res.body?.getReader();
-    if (!reader) return { status: res.status, body: '', finalUrl: res.url };
+    if (!reader) return { status: res.status, body: '', finalUrl: res.url, truncated: false };
     const chunks: Uint8Array[] = [];
     let total = 0;
     while (total < MAX_BYTES) {
@@ -66,7 +68,7 @@ async function fetchCapped(url: string, accept: string): Promise<{ status: numbe
       off += slice.byteLength;
       if (off >= merged.length) break;
     }
-    return { status: res.status, body: new TextDecoder('utf-8', { fatal: false }).decode(merged), finalUrl: res.url };
+    return { status: res.status, body: new TextDecoder('utf-8', { fatal: false }).decode(merged), finalUrl: res.url, truncated: total >= MAX_BYTES };
   } catch {
     return null;
   } finally {
@@ -97,7 +99,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }
     await kv.put(rlKey, String(used + 1), { expirationTtl: 3600 });
 
-    const cached = await kv.get(`scan_cache:${target.hostname}`);
+    const cached = await kv.get(`scan_cache:v2:${target.hostname}`);
     if (cached) {
       try { return json({ ok: true, cached: true, ...JSON.parse(cached) }); } catch { /* fall through to live scan */ }
     }
@@ -124,7 +126,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const llms = await fetchCapped(target.origin + '/llms.txt', 'text/plain');
   const llmsTxt = !!llms && llms.status === 200 && llms.body.trim().length > 0 && !/<html/i.test(llms.body);
 
-  const analysis = analyzeHtml(page.body, { llmsTxt });
+  const analysis = analyzeHtml(page.body, { llmsTxt, truncated: page.truncated });
   const result = {
     url: page.finalUrl || target.origin,
     host: target.hostname,
@@ -133,7 +135,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   };
 
   if (kv) {
-    await kv.put(`scan_cache:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
+    await kv.put(`scan_cache:v2:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
   }
 
   return json({ ok: true, ...result });

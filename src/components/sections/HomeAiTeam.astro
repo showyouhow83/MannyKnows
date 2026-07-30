@@ -1,13 +1,11 @@
 ---
 // Homepage AI Team teaser — shows the roster avatars and routes to the
 // /ai-team lander. Data from src/data/aiTeam.ts.
-import { team, aiTeamStartingPrice, aiTeamSetupFee } from '../../data/aiTeam';
+import { team } from '../../data/aiTeam';
 import AgentAvatar from '../team/AgentAvatar.astro';
 import Button from '../ui/Button.astro';
 
 const roster = [...team].sort((a, b) => a.order - b.order);
-const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
-const setup = aiTeamSetupFee.toLocaleString('en-US');
 
 // Compact specialty labels for the teaser grid (the full role is on /ai-team).
 const specialty: Record<string, string> = {
@@ -42,7 +40,7 @@ const specialty: Record<string, string> = {
 
   <div class="text-center max-w-2xl mx-auto mt-10">
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      Front desk, research, copywriting, graphics &amp; video, voice, SEO, publishing, paid ads, engagement, and reporting — <strong class="text-text-light-primary dark:text-text-dark-primary">ten specialists, one shared brain, and Manny managing the handoffs</strong>. Hire one like staff, or the whole team. From ${startFrom}/mo per agent, plus a one-time ${setup} setup.
+      Front desk, research, copywriting, graphics &amp; video, voice, SEO, publishing, paid ads, engagement, and reporting — <strong class="text-text-light-primary dark:text-text-dark-primary">ten specialists, one shared brain, and Manny managing the handoffs</strong>. Hire one like staff, or the whole team — and add or drop agents anytime. What each one does, and what hiring them costs, is one click away.
     </p>
     <Button href="/ai-team/" text="Meet & hire the AI Team" variant="cta" arrow={true} />
   </div>

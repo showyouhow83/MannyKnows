@@ -42,13 +42,55 @@ function attr(tag: string, name: string): string | null {
   return m ? (m[2] ?? m[3] ?? m[4] ?? '') : null;
 }
 
-// Chat/agent widget signatures — presence means "something answers visitors".
-const AGENT_SIGNS =
-  /intercom|crisp\.chat|drift\.com|tawk\.to|tidio|chatbase|livechat|hs-script|hubspot.*conversations|botpress|voiceflow|zendesk.*(widget|chat)|fb.*customerchat|chat-?widget|chatbot|api\/chat/i;
+// Chat/agent detection. A vendor allowlist alone is wrong: it misses every
+// custom-built agent, including the ones we build — slpainting.co's "Matti"
+// (class="matti-chat", aria-label="Chat with Matti") scored a false negative
+// on exactly that. Four independent signals now, structural first, and the
+// analyzer reports WHICH one fired so a finding can always be defended.
+const AGENT_VENDORS: Array<[RegExp, string]> = [
+  [/intercom/i, 'Intercom'],
+  [/crisp\.chat/i, 'Crisp'],
+  [/drift\.com|driftt\.com/i, 'Drift'],
+  [/tawk\.to/i, 'Tawk.to'],
+  [/tidio/i, 'Tidio'],
+  [/chatbase/i, 'Chatbase'],
+  [/livechat(inc)?\.com/i, 'LiveChat'],
+  [/hs-script|hubspot[^"']*conversations/i, 'HubSpot'],
+  [/botpress/i, 'Botpress'],
+  [/voiceflow/i, 'Voiceflow'],
+  [/zendesk[^"']*(?:widget|chat)|zopim/i, 'Zendesk'],
+  [/(?:facebook|fb)[^"']*customerchat/i, 'Messenger'],
+  [/smartsupp|olark|freshchat|gorgias|manychat|podium|birdeye|salesiq/i, 'a hosted chat service'],
+];
+
+// Markup whose class/id/aria-label names a chat or assistant element.
+const AGENT_ATTR =
+  /(?:id|class|aria-label|title|data-[\w-]+)\s*=\s*["'][^"']*(?:chat(?!eau)|chatbot|assistant|asistente|messenger|ai-?agent|live-?agent)[^"']*["']/i;
+// A script or stylesheet whose filename ships a chat widget.
+const AGENT_SRC = /(?:src|href)\s*=\s*["'][^"']*(?:chat|chatbot|assistant|messenger)[^"']*\.(?:js|mjs|css)/i;
+// A visible invitation to chat. Deliberately narrow — phrased as an offer to
+// the reader, so ordinary prose ("we chat with customers daily") can't trip it.
+const AGENT_TEXT =
+  /\b(?:chat (?:with (?:us|our|me)\b|now\b)|live chat|ask (?:our|the) (?:ai|assistant|bot)|start a chat|talk to (?:our )?(?:ai|assistant))/i;
+
+// `weak` = the only evidence is page copy, which can't prove a live agent
+// (a "chat with us" line may just be marketing). Structural evidence passes
+// outright; weak evidence warns instead, so the scan never overclaims in
+// either direction.
+function detectAgent(html: string, text: string): { found: boolean; how: string; weak: boolean } {
+  for (const [re, label] of AGENT_VENDORS) {
+    if (re.test(html)) return { found: true, how: label, weak: false };
+  }
+  if (AGENT_ATTR.test(html)) return { found: true, how: 'a chat widget built into the page', weak: false };
+  if (AGENT_SRC.test(html)) return { found: true, how: 'a chat script the page loads', weak: false };
+  // Text signal reads the stripped copy, never script/style bodies.
+  if (AGENT_TEXT.test(text)) return { found: true, how: 'an invitation to chat in the page copy', weak: true };
+  return { found: false, how: '', weak: false };
+}
 
 const BOOKING_SIGNS = /calendly|acuity|squareup\.com\/appointments|booksy|setmore|appointlet|schedulicity|book(ing)?-?(now|online)|appointment/i;
 
-export function analyzeHtml(html: string, opts: { llmsTxt?: boolean } = {}): Analysis {
+export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?: boolean } = {}): Analysis {
   const head = (html.match(/<head[\s\S]*?<\/head>/i) || [''])[0];
   const clean = strip(html);
   const kb = Math.round(html.length / 1024);
@@ -90,12 +132,12 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean } = {}): Ana
   const hasForm = /<form[\s>]/i.test(html);
   const hasBooking = BOOKING_SIGNS.test(html);
   const hasContactPath = /href\s*=\s*["'][^"']*contact/i.test(html) || /href\s*=\s*["']mailto:/i.test(html);
-  const hasAgent = AGENT_SIGNS.test(html);
+  const agent = detectAgent(html, clean);
+  const hasAgent = agent.found;
 
   const PLANS = '/plans/';
   const GET_FOUND = '/plans/get-found/';
   const GET_BOOKED = '/plans/get-booked/';
-  const AI_TEAM = '/ai-team/';
 
   const c = (id: string, label: string, status: CheckStatus, detail: string, fix?: Check['fix']): Check =>
     ({ id, label, status, detail, ...(status === 'pass' ? {} : { fix }) });
@@ -138,7 +180,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean } = {}): Ana
   // ── Fast ───────────────────────────────────────────────────────────────
   const fast: Check[] = [
     c('weight', 'Page weight', kb <= 150 ? 'pass' : kb <= 400 ? 'warn' : 'fail',
-      `Homepage HTML is ${kb} KB${kb > 400 ? ' — heavy pages lose phone visitors before they load.' : kb > 150 ? ' — on the heavy side for mobile.' : ' — lean.'}`,
+      `Homepage HTML is ${opts.truncated ? 'over ' : ''}${kb} KB${kb > 400 ? ' — heavy pages lose phone visitors before they load.' : kb > 150 ? ' — on the heavy side for mobile.' : ' — lean.'}`,
       { text: 'Our builds target 90+ Lighthouse speed scores.', href: PLANS }),
     c('blocking', 'Render-blocking scripts', headScripts.length === 0 ? 'pass' : headScripts.length <= 2 ? 'warn' : 'fail',
       headScripts.length === 0 ? 'No blocking scripts in the head.'
@@ -154,9 +196,12 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean } = {}): Ana
 
   // ── Answers (AI-readiness) ─────────────────────────────────────────────
   const answers: Check[] = [
-    c('agent', 'Something answers your visitors', hasAgent ? 'pass' : 'fail',
-      hasAgent ? 'A chat or agent widget was detected — visitors can get answers.'
-        : 'Nothing answers questions on this site. After hours, customers leave and call the next result.',
+    c('agent', 'Something answers your visitors', hasAgent ? (agent.weak ? 'warn' : 'pass') : 'fail',
+      hasAgent
+        ? (agent.weak
+            ? `Found ${agent.how}, but nothing we can confirm is a live agent — worth checking that it answers after hours, not just during business hours.`
+            : `Detected ${agent.how} — visitors can get answers without waiting for a callback.`)
+        : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code — if you have an agent we missed, the free human review will catch it.)",
       { text: 'Remi answers and books 24/7 — built into every Smart Website plan.', href: GET_BOOKED }),
     c('faq', 'FAQ content AI can quote', hasFaqSchema ? 'pass' : 'warn',
       hasFaqSchema ? 'FAQ structured data found — AI assistants can quote your answers.'
