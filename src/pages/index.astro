@@ -1,4 +1,9 @@
 ---
+// The homepage was the ONLY public page without this — with output:'server'
+// that meant SSR on every hit AND a duplicate ~116K CSS bundle (its chunk
+// graph couldn't share Container.*.css with the 44 prerendered pages).
+export const prerender = true;
+
 // Import the Layout component
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/ui/Button.astro';
