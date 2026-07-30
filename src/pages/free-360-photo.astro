@@ -68,10 +68,16 @@ const STEPS = [
   { n: '03', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit — free.', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
 ];
 
+// Cited numbers only — same honesty rule as everywhere else on the site.
+// The 2x figure is the Ipsos MediaCT research commissioned by Google for
+// Street View; 42%/35% are Google's own Business Profile photo data. Vendor
+// blogs claim bigger numbers (31% bookings, 5-10x view time) but none trace
+// to a named study, so they don't go on the page.
 const WHY = [
-  { stat: '42%', label: 'more direction requests', body: 'Google reports that listings with photos get 42% more requests for directions to their location.' },
-  { stat: '35%', label: 'more clicks to your site', body: 'Photo-rich profiles see 35% more click-throughs to their website, according to Google.' },
-  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers look inside any time of day — building trust before they ever call.' },
+  { stat: '2×', label: 'as likely to generate interest', body: 'Research commissioned by Google found listings with photos and a virtual tour are twice as likely to generate customer interest as listings without.', source: 'Ipsos MediaCT for Google' },
+  { stat: '42%', label: 'more direction requests', body: 'Listings with photos get 42% more requests for driving directions on Google.', source: "Google's Business Profile data" },
+  { stat: '35%', label: 'more clicks to your site', body: 'Photo-rich profiles see 35% more click-throughs to the business website.', source: "Google's Business Profile data" },
+  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers step inside at any hour — the trust is built before they ever call.', source: null },
 ];
 
 const SITE_SECTIONS = [
@@ -226,15 +232,19 @@ const jsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">Why a 360° photo <span class="apple-gradient-text" data-colorful-title>wins customers</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {WHY.map((w) => (
-            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-7 text-center">
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-7 text-center flex flex-col">
               <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
               <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{w.body}</p>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{w.body}</p>
+              {w.source && <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Source: {w.source}</p>}
             </div>
           ))}
         </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+          Numbers above come from research commissioned by Google (Ipsos MediaCT, on Street View virtual tours) and Google's own Business Profile photo data. We only publish figures we can trace to a named source.
+        </p>
       </Container>
     </Section>
 
@@ -275,6 +285,39 @@ const jsonLd = {
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
           Every package is customized and optimized for your business. The free 360° photo covers locations {FREE_TRAVEL} — a little farther out, a small gas/travel fee may apply (always quoted up front). Final pricing depends on your space and goals — get an exact quote in the form below.
         </p>
+
+        <!-- One-time packages vs. monthly plans — the honest decision guide -->
+        <div class="max-w-5xl mx-auto mt-16">
+          <div class="text-center max-w-2xl mx-auto mb-8">
+            <h3 class="sf-bold text-xl md:text-2xl font-bold mb-3">Buy it once, or have it <span class="apple-gradient-text" data-colorful-title>handled monthly?</span></h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Both are real options, and the right one depends on how much you want on your own plate. Here's the honest difference.</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6 items-stretch">
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
+              <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">One-time packages <span class="text-text-light-tertiary dark:text-text-dark-tertiary font-normal">(this page)</span></h4>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">We shoot it, set it up, or build it — once. You own the result and run it yourself from there.</p>
+              <ul class="space-y-2 text-sm text-text-light-primary dark:text-text-dark-primary flex-1">
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>360° photos — our specialty, and the only place to get them (photo pack from $195)</span></li>
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>Google Business Profile created &amp; verified (from $145)</span></li>
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>1-page AI website, yours to keep (from $995)</span></li>
+              </ul>
+              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-4">Best when you need the asset, and you'll handle the photos, posts, and updates yourself.</p>
+            </div>
+            <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-7 flex flex-col">
+              <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Monthly Smart Website plans</h4>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">The profile setup and the website are <em>included</em> — plus Remi answering customers 24/7, technical SEO, and someone keeping all of it ranked, every month.</p>
+              <ul class="space-y-2 text-sm text-text-light-primary dark:text-text-dark-primary flex-1">
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>Google Business Profile setup <strong>included</strong> — and kept active monthly</span></li>
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>Custom multilingual site with Remi answering &amp; booking — <strong>included</strong></span></li>
+                <li class="flex items-start gap-2"><span class="text-primary-blue mt-0.5">→</span><span>Maintained, tuned, and ranking — from $95/mo</span></li>
+              </ul>
+              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-4">If you were going to buy two of the one-time services, the plan usually wins on math alone. Your 360° photos plug right into it.</p>
+              <a href="/plans/" class="mt-4 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5 transition-all">
+                Compare the monthly plans →
+              </a>
+            </div>
+          </div>
+        </div>
       </Container>
     </Section>
 
