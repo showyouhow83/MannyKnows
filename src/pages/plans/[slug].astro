@@ -104,7 +104,7 @@ const faqSchema = {
 
             <!-- Price block — sub-plan tiers when the plan has them, month-to-month/yearly otherwise -->
             {plan.tiers ? (
-              <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-left">
+              <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 {plan.tiers.map((t) => (
                   <div class={`rounded-2xl bg-white dark:bg-dark-secondary px-6 py-4 ${t.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
                     <span class={`block text-[11px] font-semibold uppercase tracking-wide ${t.featured ? 'text-primary-blue dark:text-blue-300' : 'text-text-light-tertiary dark:text-text-dark-tertiary'}`}>{t.name}</span>
@@ -114,7 +114,7 @@ const faqSchema = {
                 ))}
               </div>
             ) : (
-              <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-left">
+              <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
                   <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
                   <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
