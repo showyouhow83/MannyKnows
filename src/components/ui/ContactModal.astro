@@ -111,7 +111,7 @@ const interestServices = SERVICE_TYPES.filter(
       const fd = new FormData(form);
       const business = (fd.get('business') || '').toString().trim();
       const service = (fd.get('service') || '').toString().trim();
-      // Use a clean label in the message — strip the " ($199/mo)" price suffix.
+      // Use a clean label in the message — strip the " ($195/mo)" price suffix.
       // The raw ($ + parens) trips the API's command-injection input filter, and
       // the price is noise here anyway; the service value is sent separately.
       const rawLabel = service ? (form.querySelector(`select[name="service"] option[value="${service}"]`)?.textContent || service) : '';

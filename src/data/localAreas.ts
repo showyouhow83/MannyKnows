@@ -101,7 +101,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Holyoke · Western Massachusetts',
     metaTitle: 'Web Design in Holyoke, MA — Bilingual & SEO | MannyKnows',
     metaDescription:
-      'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $99/mo.',
+      'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $95/mo.',
     heroIntro:
       'In the Paper City, your next customer is searching on their phone before they ever call. We build fast, bilingual websites with an AI agent that answers and books around the clock — so Holyoke businesses get found and get the job.',
     angleHeading: 'Holyoke runs in two languages — so should your site',
@@ -129,7 +129,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Chicopee · Western Massachusetts',
     metaTitle: 'Web Design in Chicopee, MA — SEO & AI | MannyKnows',
     metaDescription:
-      'Web design for Chicopee, MA businesses — fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $99/mo.',
+      'Web design for Chicopee, MA businesses — fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $95/mo.',
     heroIntro:
       'Chicopee is built on family businesses — and family businesses win on reputation and word of mouth. We put that reputation online: a fast website, technical SEO that ranks you locally, and an AI agent that answers customers day and night.',
     angleHeading: 'Where Willimansett, Aldenville, and the Falls find you',
@@ -143,7 +143,7 @@ export const localAreas: LocalArea[] = [
     proofHeading: 'Proof from Western Massachusetts',
     marketData: {
       heading: 'Why our prices are on the site instead of behind a phone call',
-      body: "When Massachusetts small business owners were surveyed in 2025, the obstacle they named most often wasn't the economy and it wasn't funding — it was being unable to get clear, trusted information about what to do next. In a city like Chicopee, where the median household runs near $67,000 and every monthly bill gets weighed on its own merits, that gap costs real money in one of two directions: you overpay an agency that quotes you in jargon you can't check, or you do nothing and stay invisible while a competitor doesn't. It's why our pricing is published, our plans are month-to-month, and we'll say plainly when the $99 plan is genuinely all your business needs.",
+      body: "When Massachusetts small business owners were surveyed in 2025, the obstacle they named most often wasn't the economy and it wasn't funding — it was being unable to get clear, trusted information about what to do next. In a city like Chicopee, where the median household runs near $67,000 and every monthly bill gets weighed on its own merits, that gap costs real money in one of two directions: you overpay an agency that quotes you in jargon you can't check, or you do nothing and stay invisible while a competitor doesn't. It's why our pricing is published, our plans are month-to-month, and we'll say plainly when the $95 plan is genuinely all your business needs.",
       source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey; U.S. Census Bureau median household income for Chicopee (2023)',
       sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
     },
@@ -154,7 +154,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Northampton · Western Massachusetts',
     metaTitle: 'Web Design in Northampton, MA — SEO & AI | MannyKnows',
     metaDescription:
-      "Web design for Northampton, MA businesses — beautiful, fast websites with technical SEO and AI booking agents. From $99/mo.",
+      "Web design for Northampton, MA businesses — beautiful, fast websites with technical SEO and AI booking agents. From $95/mo.",
     heroIntro:
       "Northampton sets a high bar for design — your website should meet it. We build beautiful, blazing-fast sites for NoHo's restaurants, shops, and studios, with technical SEO and an AI agent that turns browsers into booked customers.",
     angleHeading: 'A site as considered as Main Street',

@@ -29,8 +29,8 @@ const faqs = [
     a: "That's what the plans are for — designing and building your site is included, not a separate project. There's no setup fee: you pay the monthly price the first month and the same price every month after. Prefer to pay once for a one-time build instead? We do that too — just ask.",
   },
   {
-    q: 'Why $99? What is the catch?',
-    a: "There isn't one — Get Found is genuinely small. It's a 1–3 page site, hosted, set up to rank locally, with a contact form and Remi answering questions. It does not include your own admin, Remi booking jobs, or the full self-optimizing engine — those start at Get Booked. The $99 exists because a new business shouldn't have to spend $3,000 to have a real website, and because most businesses that start there grow into the next tier.",
+    q: 'Why $95? What is the catch?',
+    a: "There isn't one — Get Found is genuinely small. It's a 1–3 page site, hosted, set up to rank locally, with a contact form and Remi answering questions. It does not include your own admin, Remi booking jobs, or the full self-optimizing engine — those start at Get Booked. The $95 exists because a new business shouldn't have to spend $3,000 to have a real website, and because most businesses that start there grow into the next tier.",
   },
   {
     q: 'Is there a contract?',
@@ -71,7 +71,7 @@ const faqSchema = {
 
 <BaseLayout
   title="Monthly Website & Growth Plans for Western Mass Businesses | MannyKnows"
-  description="Smart website plans for Western Mass businesses — Get Found, Get Booked, Get Growing, Get Ahead. From $99/mo, month to month, no setup fee."
+  description="Smart website plans for Western Mass businesses — Get Found, Get Booked, Get Growing, Get Ahead. From $95/mo, month to month, no setup fee."
 >
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -102,6 +102,14 @@ const faqSchema = {
     <Section id="plans-list" variant="default">
       <Container>
         <!-- Flagship: the AI Team (its own page, sold as a monthly retainer) -->
+        <p class="text-center max-w-3xl mx-auto mb-10 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+          These aren't static websites. <strong class="text-text-light-primary dark:text-text-dark-primary">Every Smart Website runs on your Brand Brain</strong> — a private AI trained on your business — so the site answers customers, writes its own content, and tunes its own speed and SEO. A website that works, not one you maintain.
+        </p>
+        <PricingPlans />
+
+        {/* AI Team banner — moved into the review's old prime spot right under
+            the pricing grid (per Manny): pick a plan, or hire the agents directly. */}
+        <div class="mt-14">
         <a href="/ai-team/" class="group block max-w-6xl mx-auto mb-12 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-[0_16px_50px_rgba(16,209,255,0.18)] transition-all duration-300">
           <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
             <div class="flex flex-wrap justify-center gap-y-1.5 -space-x-1.5 flex-shrink-0 max-w-[280px] lg:max-w-[264px]">
@@ -115,7 +123,7 @@ const faqSchema = {
               <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">Flagship</span>
               <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">The AI Team — built for you, run on demand</h2>
               <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-2xl">
-                Ten AI specialists — front desk, research, copy, graphics &amp; video, voice, SEO, publishing, paid ads, engagement, and reporting — plus Manny, your manager, coordinating them all. Hire them like staff, one at a time or as a team, with a person watching the output. One-time $199 setup.
+                Ten AI specialists — front desk, research, copy, graphics &amp; video, voice, SEO, publishing, paid ads, engagement, and reporting — plus Manny, your manager, coordinating them all. Hire them like staff, one at a time or as a team, with a person watching the output. One-time $195 setup.
               </p>
             </div>
             <div class="flex-shrink-0 text-center">
@@ -128,18 +136,21 @@ const faqSchema = {
             </div>
           </div>
         </a>
-
-        <p class="text-center max-w-3xl mx-auto mb-10 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-          These aren't static websites. <strong class="text-text-light-primary dark:text-text-dark-primary">Every Smart Website runs on your Brand Brain</strong> — a private AI trained on your business — so the site answers customers, writes its own content, and tunes its own speed and SEO. A website that works, not one you maintain.
-        </p>
-        <PricingPlans />
-        <div class="max-w-2xl mx-auto mt-14">
-          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
         </div>
       </Container>
     </Section>
 
     <!-- Beyond the website: Business Ads & Multimedia — services, not website tiers. -->
+    {/* SL Painting review — swapped with the AI Team banner: real proof right
+        before the "different kind of website" pitch. */}
+    <div class="px-4 pt-12">
+      <div class="max-w-2xl mx-auto">
+        <div class="max-w-2xl mx-auto mt-14">
+          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
+        </div>
+      </div>
+    </div>
+
     <Section id="why-smart" variant="alternate">
       <Container>
         <SmartWebsiteConcept />

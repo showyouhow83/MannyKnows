@@ -400,7 +400,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-web-billing',
         title: 'Plan & Billing',
         items: [
-          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found — $99/mo', 'Get Booked — $249/mo', 'Get Growing — $550/mo', 'Get Ahead — $899/mo'] },
+          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found — $95/mo', 'Get Booked — $245/mo', 'Get Growing — $550/mo', 'Get Ahead — $895/mo'] },
           { id: 'it-web-bill-2', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-web-bill-3', type: 'subtotal', label: 'Due at start (setup + first month)', amount: 0 },
           { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month — cancel anytime. Prepay the year and get the equivalent of 2 months free.' },
@@ -438,7 +438,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-store-bill-1', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at chosen tier)', amount: 0 },
-          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers — Sell Online $150/mo, Sell More $349/mo, Sell Smarter $699/mo, Sell Everywhere $1,099/mo — and every tier includes your Shopify subscription (Basic at the first two tiers, Grow at Sell Smarter and above); the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
+          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers — Sell Online $150/mo, Sell More $325/mo, Sell Smarter $650/mo, Sell Everywhere $1,095/mo — and every tier includes your Shopify subscription (Basic at the first two tiers, Grow at Sell Smarter and above); the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
         ],
       },
       {
@@ -463,7 +463,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
           { id: 'it-team-roster-1', type: 'fillable', label: 'Agent 1 (name + role)', value: '' },
           { id: 'it-team-roster-2', type: 'fillable', label: 'Agent 2 (name + role)', value: '' },
           { id: 'it-team-roster-3', type: 'fillable', label: 'Agent 3 (name + role)', value: '' },
-          { id: 'it-team-roster-4', type: 'note', text: 'Agents run $99–$249/mo each (roster and pricing at mannyknows.com/ai-team). Manny, the manager who coordinates the team, is included with any hire.' },
+          { id: 'it-team-roster-4', type: 'note', text: 'Agents run $95–$245/mo each (roster and pricing at mannyknows.com/ai-team). Manny, the manager who coordinates the team, is included with any hire.' },
         ],
       },
       {

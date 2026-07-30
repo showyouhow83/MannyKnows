@@ -15,14 +15,14 @@ export interface ServiceType {
 }
 
 export const SERVICE_TYPES: ServiceType[] = [
-  { value: 'website-basic', label: 'Get Found ($99/mo)' },
-  { value: 'website-plus', label: 'Get Booked ($249/mo)' },
+  { value: 'website-basic', label: 'Get Found ($95/mo)' },
+  { value: 'website-plus', label: 'Get Booked ($245/mo)' },
   { value: 'website-smart', label: 'Get Growing ($550/mo)' },
-  { value: 'get-ahead', label: 'Get Ahead ($899/mo)' },
+  { value: 'get-ahead', label: 'Get Ahead ($895/mo)' },
   { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,800/mo)' },
-  { value: 'ai-team', label: 'AI Team — hire agents (from $99/mo each)' },
+  { value: 'ai-team', label: 'AI Team — hire agents (from $95/mo each)' },
   { value: 'custom-app', label: 'Custom Web App (scoped)' },
   { value: '360-photo', label: 'Free 360° Photo' },
   { value: 'website-analysis', label: 'Free AI Website Analysis' },
