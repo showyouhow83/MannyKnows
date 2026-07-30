@@ -141,16 +141,6 @@ const faqSchema = {
     </Section>
 
     <!-- Beyond the website: Business Ads & Multimedia — services, not website tiers. -->
-    {/* SL Painting review — swapped with the AI Team banner: real proof right
-        before the "different kind of website" pitch. */}
-    <div class="px-4 pt-12">
-      <div class="max-w-2xl mx-auto">
-        <div class="max-w-2xl mx-auto mt-14">
-          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
-        </div>
-      </div>
-    </div>
-
     <Section id="why-smart" variant="alternate">
       <Container>
         <SmartWebsiteConcept />
@@ -195,6 +185,12 @@ const faqSchema = {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* SL Painting review — below the Beyond-your-website content (per Manny):
+            the proof lands right after the bigger-engagement pitch. */}
+        <div class="max-w-2xl mx-auto mt-14">
+          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
         </div>
       </Container>
     </Section>
