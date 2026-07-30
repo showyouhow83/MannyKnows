@@ -1,0 +1,41 @@
+# Manual smoke test for the production email path (Resend).
+#
+# Run it from the Actions tab (or `actions_run_trigger`) after rotating the
+# RESEND_API_KEY secret or changing RESEND_FROM. It submits a clearly-marked
+# TEST inquiry through the live contact endpoint — exactly what the site's
+# contact modal does — so a green run means: endpoint up, CSRF flow working,
+# lead stored. Whether the notification email actually arrived is confirmed
+# in the Resend dashboard (Emails log) and the owner inbox; the API
+# intentionally doesn't expose that to visitors.
+name: Email smoke test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit marked TEST contact through production
+        run: |
+          set -euo pipefail
+          BASE="https://mannyknows.com"
+          TOK=$(curl -sS "$BASE/api/contact")
+          CSRF=$(echo "$TOK" | jq -r '.csrf_token // empty')
+          SESS=$(echo "$TOK" | jq -r '.session_id // empty')
+          if [ -z "$CSRF" ]; then echo "No CSRF token returned: $TOK" >&2; exit 1; fi
+          BODY=$(jq -n --arg sess "$SESS" '{
+            name: "Email smoke test (automated)",
+            email: "mm@mannyknows.com",
+            subject: "TEST — email smoke test",
+            message: "Automated smoke test of the Resend email path (GitHub Actions workflow email-smoke-test). If this appears in the inbox and the Resend log, sending works end-to-end. Safe to delete; the matching admin lead is marked TEST.",
+            session_id: $sess
+          }')
+          RESP=$(curl -sS -w '\n%{http_code}' -X POST "$BASE/api/contact" \
+            -H "Content-Type: application/json" -H "x-csrf-token: $CSRF" \
+            -d "$BODY")
+          CODE=$(echo "$RESP" | tail -1)
+          echo "HTTP $CODE"
+          echo "$RESP" | head -n -1
+          [ "$CODE" = "200" ] || exit 1
+          echo "Submission accepted. Confirm delivery in the Resend dashboard (Emails log) and the owner inbox."

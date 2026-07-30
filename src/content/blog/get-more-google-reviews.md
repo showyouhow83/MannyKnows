@@ -45,6 +45,6 @@ Here's a newer reason the same boring system pays off. A growing share of people
 
 ## Where we come in
 
-A review request built into your follow-up, a direct link and QR code made for you, and a Google Business Profile kept active so those reviews actually lift your ranking — that's part of what our **[Smart Website plans](/plans/)** handle every month ([from $95/mo](/plans/get-found/)). The AI Sales & Booking Agent can even prompt the ask at the right moment, so it never gets forgotten.
+A review request built into your follow-up, a direct link and QR code made for you, and a Google Business Profile kept active so those reviews actually lift your ranking — that's part of what our **[Smart Website plans](/plans/)** handle every month. Remi can even prompt the ask at the right moment, so it never gets forgotten.
 
 Not sure how your reviews stack up against the business ranking above you? **[Get a free look](/free-ai-website-analysis/)** and we'll tell you where you stand and what to fix first.

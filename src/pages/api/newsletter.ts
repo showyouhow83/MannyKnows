@@ -217,7 +217,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'Manny <manny@mannyknows.com>',
+            from: resendFrom,
             to: [sanitizedEmail],
             subject: '✨ Welcome to AI Insights - Your Subscription is Confirmed!',
             html: confirmationHtml
