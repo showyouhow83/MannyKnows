@@ -24,8 +24,8 @@ const checks = [
 ];
 
 const steps = [
-  { n: '01', title: 'Send us your website', body: "Just the URL. If you don't have a site yet, tell us your business and where customers find you now.", icon: 'M12 19l9 2-9-18-9 18 9-2zm0 0v-8' },
-  { n: '02', title: 'We analyze it by hand', body: 'A real person reviews it with the same tools we build with — not a generic automated score. We look at what actually affects your customers and your ranking.', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+  { n: '01', title: 'Scan it right now', body: 'Type your address above and get an instant first pass — how findable, fast, answerable, and bookable your site is, with every gap named.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { n: '02', title: 'Then a person goes deeper', body: 'Request the free human review and Manny checks what no scanner can — your competitors, your rankings, whether the site actually sells. Twenty years of engineering behind the read.', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
   { n: '03', title: 'You get a plain-English report', body: "A short, prioritized list of what's working, what's costing you, and what to fix first — plus a quick call to walk through it if you want. No obligation.", icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
 ];
 
@@ -40,7 +40,7 @@ const faqs = [
   { q: 'Is it really free?', a: 'Yes. The analysis and the walkthrough call cost nothing, and there is no obligation to buy anything. It is how we introduce ourselves and show the kind of work we do.' },
   { q: 'What do you need from me?', a: 'Your website URL is enough to start. If you want the analysis tied to specific goals — more calls, more bookings, more online sales — tell us and we will focus there.' },
   { q: 'Will you just try to sell me a plan?', a: 'No. You get the findings whether or not you ever work with us. If a fix is simple enough to do yourself, we will say so. If the best move is to change nothing right now, we will tell you that too.' },
-  { q: 'How is this different from a free automated score?', a: 'Automated tools give you a number and a wall of jargon. A real person reviews your site here and tells you, in plain English, what actually matters for your business and what to do about it — with twenty years of engineering behind the read.' },
+  { q: 'How is this different from a free automated score?', a: "The instant scan on this page IS automated — that's why it's instant, and it's honest about being a first pass. The difference is what happens next: a real person reviews your site, your competitors, and your rankings, then tells you in plain English what actually matters and what to do about it — with twenty years of engineering behind the read. Most tools stop at the number; we start there." },
   { q: 'How long does it take?', a: 'Most analyses come back within a couple of business days. If you need it faster for a decision you are making, just say so.' },
 ];
 
@@ -68,20 +68,49 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Send us your website and we'll tell you exactly what's holding it back — speed, Google visibility, mobile, and conversions — in plain English, with a prioritized list of fixes. No cost, no obligation.
+            Type your website address and get an instant read on what's holding it back — how findable, fast, answerable, and bookable it is — then let a real person go deeper, free. No cost, no obligation.
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <a href="#contact" data-contact-context="Free AI Website Analysis" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Get my free analysis
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-            <a href="/work/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-              See our portfolio
-            </a>
-          </div>
+
+          <!-- Instant scanner -->
+          <form id="scanForm" class="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-3" novalidate>
+            <label for="scanUrl" class="sr-only">Your website address</label>
+            <input
+              id="scanUrl"
+              name="url"
+              type="text"
+              inputmode="url"
+              autocomplete="url"
+              placeholder="yourbusiness.com"
+              class="flex-1 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
+            />
+            <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 h-12 text-sm font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
+              Scan my site — free
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </button>
+          </form>
+          <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
+          <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+            Instant, automated first pass — no signup. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+          </p>
         </div>
       </div>
     </header>
+
+    <!-- Scan results (rendered by the script below) -->
+    <Section id="scan-results-section" variant="default" className="hidden">
+      <Container>
+        <div id="scanResults" class="max-w-4xl mx-auto"></div>
+        <div class="max-w-4xl mx-auto text-center mt-10">
+          <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 max-w-2xl mx-auto">
+            That's the automated first pass — one page, read by a machine. The free <strong class="text-text-light-primary dark:text-text-dark-primary">human review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
+          </p>
+          <a href="#contact" data-contact-context="Free AI Website Analysis (ran the instant scan)" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+            Get the free human review
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+      </Container>
+    </Section>
 
     <Section id="analysis-checks" variant="default">
       <Container>
@@ -159,3 +188,109 @@ const quote = getTestimonial('SL Painting');
     <DockMenu />
   </main>
 </BaseLayout>
+
+<script>
+  // Instant scanner: POST the URL to /api/analyze-site and render the result.
+  // All markup classes are literal strings so Tailwind's scanner keeps them.
+  (function () {
+    const form = document.getElementById('scanForm');
+    if (!form) return;
+    const input = document.getElementById('scanUrl') as HTMLInputElement | null;
+    const btn = document.getElementById('scanBtn') as HTMLButtonElement | null;
+    const errEl = document.getElementById('scanError');
+    const section = document.getElementById('scan-results-section');
+    const out = document.getElementById('scanResults');
+
+    const esc = (s: string) =>
+      String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch] as string);
+
+    function showError(msg: string) {
+      if (!errEl) return;
+      errEl.textContent = msg;
+      errEl.classList.remove('hidden');
+    }
+
+    const ICONS: Record<string, string> = {
+      pass: '<span class="inline-flex w-5 h-5 rounded-full bg-green-500/15 text-green-500 items-center justify-center text-xs font-bold flex-shrink-0" aria-label="pass">✓</span>',
+      warn: '<span class="inline-flex w-5 h-5 rounded-full bg-amber-500/15 text-amber-500 items-center justify-center text-xs font-bold flex-shrink-0" aria-label="warning">!</span>',
+      fail: '<span class="inline-flex w-5 h-5 rounded-full bg-red-500/15 text-red-500 items-center justify-center text-xs font-bold flex-shrink-0" aria-label="fail">✕</span>',
+    };
+
+    function barColor(score: number) {
+      return score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
+    }
+
+    function render(data: any) {
+      if (!out || !section) return;
+      const fails = data.pillars.flatMap((p: any) => p.checks).filter((c: any) => c.status !== 'pass').length;
+      out.innerHTML = `
+        <div class="text-center mb-10">
+          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">Instant scan · ${esc(data.host)}</p>
+          <div class="inline-flex items-baseline gap-3">
+            <span class="text-6xl font-black apple-gradient-text" data-colorful-title>${data.overall}</span>
+            <span class="text-2xl font-bold text-text-light-tertiary dark:text-text-dark-tertiary">/100</span>
+          </div>
+          <p class="mt-2 text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">${esc(data.grade)}</p>
+          <p class="mt-1 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">${fails === 0 ? 'Nothing flagged on this pass.' : fails + ' finding' + (fails > 1 ? 's' : '') + ' worth your attention below.'}</p>
+        </div>
+        <div class="space-y-5">
+          ${data.pillars.map((p: any) => `
+            <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl px-6 py-5" ${p.score < 100 ? 'open' : ''}>
+              <summary class="flex items-center gap-4 cursor-pointer list-none">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-text-light-primary dark:text-text-dark-primary">${esc(p.name)}</span>
+                    <span class="text-sm font-bold ${p.score >= 80 ? 'text-green-500' : p.score >= 50 ? 'text-amber-500' : 'text-red-500'}">${p.score}</span>
+                  </div>
+                  <div class="h-2 rounded-full bg-light-tertiary dark:bg-dark-accent overflow-hidden">
+                    <div class="h-full rounded-full ${barColor(p.score)} transition-all duration-700" style="width:${p.score}%"></div>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <ul class="mt-4 space-y-3">
+                ${p.checks.map((c: any) => `
+                  <li class="flex items-start gap-3">
+                    ${ICONS[c.status]}
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">${esc(c.label)}</p>
+                      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">${esc(c.detail)}</p>
+                      ${c.fix ? `<a href="${esc(c.fix.href)}" class="text-sm text-primary-blue dark:text-blue-300 font-medium hover:underline">${esc(c.fix.text)} →</a>` : ''}
+                    </div>
+                  </li>`).join('')}
+              </ul>
+            </details>`).join('')}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things a person catches — that's what the free review below is for.</p>
+      `;
+      section.classList.remove('hidden');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!input || !btn) return;
+      errEl && errEl.classList.add('hidden');
+      const url = input.value.trim();
+      if (!url) { showError('Type your website address first — like yourbusiness.com.'); return; }
+      btn.disabled = true;
+      const original = btn.innerHTML;
+      btn.innerHTML = 'Scanning…';
+      try {
+        const res = await fetch('/api/analyze-site', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+        if (data.ok) render(data);
+        else showError(data.error || 'Something went wrong — try again, or request the free human review below.');
+      } catch {
+        showError('Network hiccup — try again in a moment.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    });
+  })();
+</script>
