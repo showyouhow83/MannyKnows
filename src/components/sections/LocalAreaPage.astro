@@ -11,36 +11,22 @@ import Container from '../layout/Container.astro';
 import QuoteBlock from '../ui/QuoteBlock.astro';
 import Faq from '../ui/Faq.astro';
 import { getTestimonial } from '../../data/testimonials';
-import { offers, servedTowns, type LocalArea } from '../../data/localAreas';
+import { servedTowns, type LocalArea } from '../../data/localAreas';
 
 interface Props {
   area: LocalArea;
 }
 const { area } = Astro.props;
 
+// Questions stay parallel across towns on purpose — they're the literal search
+// queries. Every ANSWER comes from the per-town record so no two town pages
+// share body copy (see localAreas.ts header for the why and the fixed facts).
 const faqs = [
-  {
-    q: `How much does a website cost in ${area.name}, MA?`,
-    a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering your customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance included. Multilingual is standard at every tier, never an add-on. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. For a full multi-page site with your own admin and Remi booking appointments too, that\'s $245/mo. One-time builds are also available; every plan is scoped to your business.',
-  },
-  {
-    // Uses area.industries — the per-town phrase that keeps these pages from
-    // reading as the same page with the town name swapped. Keep it town-specific.
-    q: `What kinds of ${area.name} businesses do you work with?`,
-    a: `Local and service-driven, mostly — think ${area.industries}. The shape of the work is the same either way: a fast site that ranks for what people around here actually search, an agent that answers when you can't get to the phone, and someone still maintaining it a year after launch.`,
-  },
-  {
-    q: `Do you work with businesses outside ${area.name}?`,
-    a: 'Yes — we work across all of Western Massachusetts (Springfield, Chicopee, Holyoke, Northampton, Westfield, Agawam, Amherst, and beyond), and remotely with businesses anywhere.',
-  },
-  {
-    q: 'Can you fix or improve the website I already have?',
-    a: "Absolutely. We audit what you have, fix what's slowing it down — speed, technical SEO, mobile issues, conversion problems — and then keep it maintained. You don't have to start over to get a site that performs.",
-  },
-  {
-    q: 'What makes MannyKnows different from a big agency or a DIY builder?',
-    a: "Twenty years of engineering for enterprise and startups — including enterprise eCommerce and consulting at Accenture — applied to local businesses, at local-business prices. You get senior-level work and a direct line to the people doing it, not an account manager.",
-  },
+  { q: `How much does a website cost in ${area.name}, MA?`, a: area.faqPricing },
+  { q: `What kinds of ${area.name} businesses do you work with?`, a: area.faqBusinesses },
+  { q: `Do you work with businesses outside ${area.name}?`, a: area.faqOutside },
+  { q: 'Can you fix or improve the website I already have?', a: area.faqExisting },
+  { q: 'What makes MannyKnows different from a big agency or a DIY builder?', a: area.faqDifferent },
 ];
 
 const localBusinessSchema = {
@@ -96,7 +82,7 @@ const contactContext = `Web design ${area.name}`;
     <Section id="local-offer" variant="default">
       <Container>
         <div class="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
-          {offers.map((o) => (
+          {area.offers.map((o) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
               <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{o.title}</h2>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{o.body}</p>
@@ -106,7 +92,7 @@ const contactContext = `Web design ${area.name}`;
 
         <div class="max-w-3xl mx-auto text-center mt-14">
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Monthly plans start at <strong class="text-text-light-primary dark:text-text-dark-primary">$95/mo</strong> — website, AI agent, SEO, and maintenance included.
+            {area.plansLine}
             <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See all plans →</a>
           </p>
         </div>
@@ -166,7 +152,7 @@ const contactContext = `Web design ${area.name}`;
             <span class="apple-gradient-text" data-colorful-title>Serving all of Western Mass</span>
           </h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Based in Springfield and working with businesses across the region — in person when it helps, remotely when it's faster.
+            {area.servingBlurb}
           </p>
           <ul class="flex flex-wrap items-center justify-center gap-2">
             {servedTowns.map((t) => (
