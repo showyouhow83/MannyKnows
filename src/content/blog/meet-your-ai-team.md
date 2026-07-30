@@ -1,11 +1,11 @@
 ---
 title: "Meet Your AI Team. They Never Clock Out."
-description: "Missed calls, slow replies, and after-hours silence cost Western Mass businesses real money. Your AI Team answers, books, and follows up 24/7 — from $99/mo per agent."
+description: "Missed calls, slow replies, and after-hours silence cost Western Mass businesses real money. Your AI Team answers, books, and follows up 24/7 — from $95/mo per agent."
 pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
 draft: false
-seoDescription: "Missed calls and after-hours silence cost real money. Your AI Team answers, books, and follows up 24/7 — from $99/mo per agent."
+seoDescription: "Missed calls and after-hours silence cost real money. Your AI Team answers, books, and follows up 24/7 — from $95/mo per agent."
 ---
 
 You didn't start your business to babysit a phone.
@@ -23,9 +23,9 @@ Built by MannyKnows — led by Manny, twenty years solving business problems, in
 - **Follow up on leads** before they go cold
 - **Work in English and Spanish** — standard, not an upsell
 
-Hire one agent to start, or build a full team as you grow. Every agent starts at **$99/mo**, plus a one-time **$199 setup fee**. Month-to-month. Cancel anytime — no contracts, no catches.
+Hire one agent to start, or build a full team as you grow. Every agent starts at **$95/mo**, plus a one-time **$195 setup fee**. Month-to-month. Cancel anytime — no contracts, no catches.
 
-Want the whole package? Our [website plans](/plans/) bundle a multilingual website with Remi built right in — from **$99/mo** to be found and answered, **$249/mo** once Remi books the work for you, and **$550/mo** for the fully self-running version. One system, one bill.
+Want the whole package? Our [website plans](/plans/) bundle a multilingual website with Remi built right in — from **$95/mo** to be found and answered, **$245/mo** once Remi books the work for you, and **$550/mo** for the fully self-running version. One system, one bill.
 
 ## Proof it works
 

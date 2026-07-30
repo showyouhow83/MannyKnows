@@ -55,7 +55,7 @@ export const team: Agent[] = [
     does: "Lives on your site and answers customers 24/7 — replies to questions, books appointments, and points shoppers to the right product in your catalog, in their language. Because Remi reads from the same Brand Brain as the rest of the team, the answers customers get match the promises your marketing makes.",
     handoff: 'Feeds the team: every question customers ask becomes intel — Remi logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
-    price: 99,
+    price: 95,
     note: 'included with every Smart Website',
   },
   {
@@ -65,7 +65,7 @@ export const team: Agent[] = [
     does: "Studies your market, your competitors, and what people are searching for, then tells the team what to make and why. Eve also reads Vera's performance reports and Remi's customer-question log, so her plans are built on your real results and your real customers — not generic best practices.",
     handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny (the plan for your approval).',
     order: 2,
-    price: 99,
+    price: 95,
   },
   {
     id: 'elly',
@@ -74,7 +74,7 @@ export const team: Agent[] = [
     does: "Writes it the way you would say it — pages, posts, emails, product descriptions, captions, and full email sequences like welcome series and win-backs. Elly never starts from a blank page: she works from Eve's brief and your Brand Brain, so the facts are right and the voice is yours.",
     handoff: 'Hands off to: Leo (copy for design), Aria (scripts for voice), Nova (pages for search tuning), Piper (finished posts to schedule).',
     order: 3,
-    price: 149,
+    price: 145,
   },
   {
     id: 'eny',
@@ -83,7 +83,7 @@ export const team: Agent[] = [
     does: "Turns Elly's copy into platform-ready graphics and short-form video — sized, tagged, and captioned for each network, so a post is built for Instagram, TikTok, or Facebook, not copy-pasted across all three. Always in your brand's look, pulled from the Brand Brain.",
     handoff: 'Hands off to: Piper (finished assets to publish), Max (creative for ads).',
     order: 4,
-    price: 249,
+    price: 245,
   },
   {
     id: 'mimi',
@@ -92,7 +92,7 @@ export const team: Agent[] = [
     does: "Learns your voice from a short sample, then says whatever Elly writes — voiceovers, reels, phone greetings — in your own voice, so you never have to hit record.",
     handoff: 'Hands off to: Leo (audio for video), Piper (finished audio to publish).',
     order: 5,
-    price: 149,
+    price: 145,
   },
   {
     id: 'essie',
@@ -101,7 +101,7 @@ export const team: Agent[] = [
     does: "Makes sure the work gets found. Nova maps the searches your customers actually type, tunes every page and post Elly writes before it goes live, and keeps your Google Business Profile and local listings accurate and active — often the highest-return channel a local business has.",
     handoff: "Hands off to: Elly (keyword targets for new content), Vera (rankings to track), Manny (what's climbing, what needs work).",
     order: 6,
-    price: 199,
+    price: 195,
   },
   {
     id: 'bap',
@@ -110,7 +110,7 @@ export const team: Agent[] = [
     does: "Puts everything live at the right time, on every channel you use — including your website itself. Site changes arrive as a private preview copy; your live site doesn't change until you press Publish. Every publish is confirmed back to Manny, so your status board is always true.",
     handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
-    price: 149,
+    price: 145,
   },
   {
     id: 'addy',
@@ -119,7 +119,7 @@ export const team: Agent[] = [
     does: "Puts budget behind what's working. Max builds campaigns on Google and Meta from Eve's targeting and Leo's creative, drafts the ad variants, watches spend and pacing daily, pauses the losers, and flags the winners — and never changes your budget without your approval.",
     handoff: 'Hands off to: Vera (spend & results to measure), Manny (budget requests for your sign-off).',
     order: 8,
-    price: 249,
+    price: 245,
   },
   {
     id: 'upie',
@@ -128,7 +128,7 @@ export const team: Agent[] = [
     does: "Answers the reviews, comments, and DMs that come in — in your voice, cloned during setup from how you've replied before — so you're responsive everywhere without living in five inboxes. Finn handles the everyday ones itself and routes anything sensitive — an angry review, a complaint, anything that could affect your reputation — to a dashboard for a human to check before it's answered. It also nudges happy customers to leave reviews and flags recurring issues to Manny, so the team fixes the cause, not just the comment.",
     handoff: 'Hands off to: Eve (what customers are saying), Manny (issues that need a human).',
     order: 9,
-    price: 199,
+    price: 195,
   },
   {
     id: 'ana',
@@ -137,7 +137,7 @@ export const team: Agent[] = [
     does: "Proves it's working. Vera tracks what every piece the team makes actually produced — traffic, calls, bookings, sales — across every channel, and turns it into a plain-English monthly report: what ran, what it cost, what it made, and what to do more of. Her numbers feed Eve's next plan, so the team gets measurably better every month.",
     handoff: 'Hands off to: Eve (what performed), Manny (your report).',
     order: 10,
-    price: 149,
+    price: 145,
   },
 ];
 
@@ -147,7 +147,7 @@ export const paidAgents = team.filter((a) => !a.included);
 // One flat one-time setup builds the Brand Brain and trains the team, however
 // many agents you hire (normal AI usage included; heavy usage metered at cost,
 // quoted first).
-export const aiTeamSetupFee = 199;
+export const aiTeamSetupFee = 195;
 
 // À-la-carte total for a set of agent ids, from the roster (keeps bundles honest).
 const sumFor = (ids: AgentId[]) =>
@@ -159,7 +159,7 @@ export interface Bundle {
   tagline: string;
   agentIds: AgentId[];
   monthly: number;
-  addOn?: boolean;   // priced as an add-on ("add $449/mo")
+  addOn?: boolean;   // priced as an add-on ("add $445/mo")
   best?: boolean;    // best-value flag (the whole team)
   alaCarte: number;  // computed from the roster
   savings: number;   // computed
@@ -178,7 +178,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
     name: 'The Growth Pack',
     tagline: "The team that turns content into customers and proves it: search visibility, paid amplification, and the monthly numbers that show what it's all producing.",
     agentIds: ['essie', 'addy', 'ana'],
-    monthly: 449,
+    monthly: 445,
     addOn: true,
   },
   {
@@ -186,7 +186,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
     name: 'The Whole Team',
     tagline: 'The complete operation: front desk, content, growth, and reporting, running as one coordinated team under Manny.',
     agentIds: ['desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap', 'addy', 'upie', 'ana'],
-    monthly: 1199,
+    monthly: 1195,
     best: true,
   },
 ];
