@@ -8,10 +8,16 @@
 
   "vars": {
     "GA_MEASUREMENT_ID": "G-J0V35RZNZB",
-    "OWNER_EMAIL": "mk@mannyknows.com",
+    // mm@ is the business email per CLAUDE.md (was mk@ — likely a typo; if mk@
+    // is a real mailbox you prefer, flip these back and update CLAUDE.md).
+    "OWNER_EMAIL": "mm@mannyknows.com",
     "OWNER_TIMEZONE": "America/New_York",
-    // Sender for Resend (use a verified domain)
-    "RESEND_FROM": "Manny <mk@mannyknows.com>",
+    // Sender for Resend. The domain must be verified in the SAME Resend account
+    // as the RESEND_API_KEY secret. DNS shows the root-domain record set
+    // (DKIM at resend._domainkey.mannyknows.com + SPF/MX on send.), so any
+    // @mannyknows.com sender is valid once the dashboard shows Verified.
+    // Until then, code falls back to Resend's sandbox sender automatically.
+    "RESEND_FROM": "Manny <mm@mannyknows.com>",
     // Worker secrets in use (set via `npx wrangler secret put <NAME>`):
     // ADMIN_USERNAME / ADMIN_PASSWORD / SESSION_SECRET (admin login),
     // ADMIN_API_KEY (diagnostics endpoints), OPENAI_API_KEY +

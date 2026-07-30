@@ -59,6 +59,6 @@ We did exactly this for **Cherry Vibes** — an online store obsessed with all t
 
 ## What this looks like with us
 
-You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store plans](/ecommerce/)** (four tiers from $150/mo, Shopify subscription included): the store built and run right at the entry tier — with AI-written, human-reviewed SEO product descriptions at every tier, from 100 products at $150 to 5,000 at the top — and, as you move up, store SEO, email flows and campaigns, the AI shopping assistant, and finally your ads managed too. You pick how much of the machine we run.
+You've got a business to run — you don't have time to become a full-time eCommerce operator. That's the whole idea behind our **[Online Store plans](/ecommerce/)**: the store built and run right from the entry tier, with SEO product descriptions written by AI and reviewed by a human at every level. As you move up, we take on more of the machine — store SEO, email flows and campaigns, the AI shopping assistant, and finally your ads managed too. You pick how much of it we run.
 
 If you can sell it in your shop, we can help you sell it online. [Tell us what you make.](#contact)
