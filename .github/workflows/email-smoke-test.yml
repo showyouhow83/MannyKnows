@@ -27,10 +27,19 @@ jobs:
         run: |
           set -euo pipefail
           BASE="https://mannyknows.com"
-          TOK=$(curl -sS "$BASE/api/contact")
+          UA="Mozilla/5.0 (X11; Linux x86_64) MannyKnows-smoke-test"
+          GET=$(curl -sS --compressed -L -w '\n%{http_code}' -H "User-Agent: $UA" -H "Accept: application/json" "$BASE/api/contact")
+          GETCODE=$(echo "$GET" | tail -1)
+          TOK=$(echo "$GET" | head -n -1)
+          echo "GET /api/contact → HTTP $GETCODE"
+          if ! echo "$TOK" | jq -e . > /dev/null 2>&1; then
+            echo "Non-JSON response (likely a Cloudflare challenge for datacenter IPs). First 300 chars:" >&2
+            echo "$TOK" | head -c 300 >&2; echo >&2
+            exit 1
+          fi
           CSRF=$(echo "$TOK" | jq -r '.csrf_token // empty')
           SESS=$(echo "$TOK" | jq -r '.session_id // empty')
-          if [ -z "$CSRF" ]; then echo "No CSRF token returned: $TOK" >&2; exit 1; fi
+          if [ -z "$CSRF" ]; then echo "No CSRF token in JSON: $TOK" >&2; exit 1; fi
           BODY=$(jq -n --arg sess "$SESS" '{
             name: "Email smoke test (automated)",
             email: "mm@mannyknows.com",
@@ -38,7 +47,8 @@ jobs:
             message: "Automated smoke test of the Resend email path (GitHub Actions workflow email-smoke-test). If this appears in the inbox and the Resend log, sending works end-to-end. Safe to delete; the matching admin lead is marked TEST.",
             session_id: $sess
           }')
-          RESP=$(curl -sS -w '\n%{http_code}' -X POST "$BASE/api/contact" \
+          RESP=$(curl -sS --compressed -w '\n%{http_code}' -X POST "$BASE/api/contact" \
+            -H "User-Agent: $UA" \
             -H "Content-Type: application/json" -H "x-csrf-token: $CSRF" \
             -d "$BODY")
           CODE=$(echo "$RESP" | tail -1)
