@@ -9,6 +9,15 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 
+// Every number here is already claimed elsewhere on this page or in a
+// published case study — the honesty rule applies to stat tiles too.
+const stats = [
+  { n: '20+', label: 'years building the web', note: 'from Dreamweaver to AI agents' },
+  { n: '7', label: 'years in enterprise eCommerce', note: 'plus 4 consulting at Accenture' },
+  { n: 'EN·ES', label: 'bilingual, written natively', note: 'never run through a translator' },
+  { n: '#1', label: "a client's organic Google rank", note: '"exterior painting" in Springfield' },
+];
+
 const principles = [
   {
     icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
@@ -78,6 +87,16 @@ const principles = [
 
     <Section id="about-story" variant="default">
       <Container>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
+          {stats.map((s) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
+              <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
+              <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
+              <div class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{s.note}</div>
+            </div>
+          ))}
+        </div>
+
         <div class="max-w-3xl mx-auto space-y-6 text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
           <p>
             <strong class="text-text-light-primary dark:text-text-dark-primary">Starting MannyKnows had been the plan for years.</strong>

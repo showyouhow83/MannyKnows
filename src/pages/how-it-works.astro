@@ -7,7 +7,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import ProcessSectionAlt from '../components/sections/ProcessSectionAlt.astro';
+import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import Faq from '../components/ui/Faq.astro';
+import { getTestimonial } from '../data/testimonials';
 import { BOOKING_URL } from '../data/booking';
+
+const quote = getTestimonial('JK Daycare');
+
+// Answers assembled from copy already established elsewhere on the site —
+// same facts, gathered where a first-time visitor actually asks them.
+const faqs = [
+  { q: 'Do I need to know what I need before I call?', a: "No — that's our job. Bring the bottleneck: the quoting that eats your evenings, the phone nobody can answer, the site nobody can find. We map how the work actually comes in on the first call and recommend the fix, whether that's a plan, a one-time build, or honestly nothing yet." },
+  { q: 'What does it cost?', a: "Monthly website plans start at $95/mo and run month-to-month — site, hosting, Remi answering 24/7, SEO, and maintenance included. One-time builds get a flat written quote up front. Either way, nothing is billed until you've seen the plan and said go." },
+  { q: 'What if I already have a website?', a: "You don't have to start over. We audit what you have, fix what's costing you customers — speed, technical SEO, mobile problems, forms nobody completes — and then keep it maintained so the fixes stick." },
+  { q: 'Who actually does the work?', a: "Manny — twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture — plus the AI team he manages. You get a direct line to the person building, in English or Spanish. No account manager in the middle." },
+  { q: 'What happens after launch?', a: "The work keeps going: the site stays fast, secure, and ranking; every lead lands in your admin; changes arrive as a private preview for your approval first; and you get a plain-English report every month of what changed and what it did." },
+];
 ---
 
 <BaseLayout
@@ -47,6 +62,20 @@ import { BOOKING_URL } from '../data/booking';
             Read the full SL Painting story
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </a>
+        </div>
+
+        {quote && (
+          <div class="max-w-2xl mx-auto mt-14 text-center">
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">In a client's words</p>
+            <QuoteBlock quote={quote} align="center" />
+          </div>
+        )}
+
+        <div class="max-w-3xl mx-auto mt-16">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>Fair questions, straight answers</span>
+          </h2>
+          <Faq faqs={faqs} />
         </div>
 
       </div>
