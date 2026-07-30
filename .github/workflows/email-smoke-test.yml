@@ -9,8 +9,15 @@
 # intentionally doesn't expose that to visitors.
 name: Email smoke test
 
+# Two triggers: manual (Actions tab → Run workflow), or touch the marker file
+# .github/email-smoke-trigger in a commit to main. The marker path exists
+# because API-token workflow_dispatch is not always available; bumping the
+# marker in a PR that changes email code re-runs the smoke test on merge.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/email-smoke-trigger']
 
 jobs:
   smoke:

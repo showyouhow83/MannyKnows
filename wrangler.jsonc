@@ -27,7 +27,9 @@
     // KV_ENCRYPTION_KEY (Remi), GEMINI_API_KEY (admin AI assists),
     // RESEND_API_KEY (email). The old ADMIN_KEY secret is orphaned —
     // nothing reads it since the legacy admin was deleted.
-    "ADMIN_EMAIL": "mk@mannyknows.com"
+    // Not read by any current code (legacy from the admin port) — kept in sync
+    // with OWNER_EMAIL anyway so no config anywhere points at mk@.
+    "ADMIN_EMAIL": "mm@mannyknows.com"
   },
 
   "assets": {
