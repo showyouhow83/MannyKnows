@@ -1756,7 +1756,9 @@ async function executeManageMeeting(functionArgs: any, profile: any, profileMana
         error: 'This meeting has already been cancelled'
       };
     }    const resendKey = getEnvVal('RESEND_API_KEY', environment);
-    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <noreply@mannyknows.com>';
+    // Sandbox default: noreply@mannyknows.com isn't on the verified sending
+    // subdomain and would be rejected when RESEND_FROM is unset.
+    const resendFrom = getEnvVal('RESEND_FROM', environment) || 'MannyKnows <onboarding@resend.dev>';
 
     if (!resendKey) {
       return {

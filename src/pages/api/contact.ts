@@ -156,6 +156,9 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
           body: JSON.stringify({
             from: resendFrom,
             to: [ownerEmail],
+            // Replying to the notification answers the person who wrote in,
+            // not the send-only address.
+            reply_to: contactRecord.email,
             subject,
             html: emailHtml
           })
@@ -196,6 +199,9 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
           body: JSON.stringify({
             from: resendFrom,
             to: [contactRecord.email],
+            // The from is a send-only subdomain address; replies should reach
+            // the real business inbox.
+            reply_to: ownerEmail,
             subject: `✅ Thanks For Your Message - We'll Get Back to You Soon!`,
             html: autoReplyHtml
           })

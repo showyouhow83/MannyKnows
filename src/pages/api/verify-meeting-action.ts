@@ -315,7 +315,10 @@ async function sendOwnerNotification(meeting: any, actionType: string, pendingDa
     // Get environment variables from the passed environment
     const resendApiKey = environment?.RESEND_API_KEY;
     const ownerEmail = environment?.OWNER_EMAIL || 'mm@mannyknows.com';
-    const resendFrom = environment?.RESEND_FROM || 'MannyKnows <noreply@mannyknows.com>';
+    // Default to Resend's sandbox sender: noreply@mannyknows.com is NOT a
+    // verified sending domain (only send.mannyknows.com is) and would be
+    // rejected outright when RESEND_FROM is unset.
+    const resendFrom = environment?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
 
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not available for owner notification');

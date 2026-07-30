@@ -12,12 +12,15 @@
     // is a real mailbox you prefer, flip these back and update CLAUDE.md).
     "OWNER_EMAIL": "mm@mannyknows.com",
     "OWNER_TIMEZONE": "America/New_York",
-    // Sender for Resend. The domain must be verified in the SAME Resend account
-    // as the RESEND_API_KEY secret. DNS shows the root-domain record set
-    // (DKIM at resend._domainkey.mannyknows.com + SPF/MX on send.), so any
-    // @mannyknows.com sender is valid once the dashboard shows Verified.
-    // Until then, code falls back to Resend's sandbox sender automatically.
-    "RESEND_FROM": "Manny <mm@mannyknows.com>",
+    // Sender for Resend. The verified domain is send.mannyknows.com (added as
+    // a subdomain in Manny's Resend account via the Cloudflare integration,
+    // 30 Jul 2026) — senders MUST be @send.mannyknows.com; bare @mannyknows.com
+    // is not authorized. Matches the admin/CRM senders (admin@/quotes@/
+    // projects@send.mannyknows.com in src/lib/brand.ts, quote-emails.ts).
+    // Replies are steered to the real inbox via reply_to = OWNER_EMAIL.
+    // If the domain is ever unverified, code falls back to Resend's sandbox
+    // sender automatically (delivers only to the Resend account's own email).
+    "RESEND_FROM": "Manny <manny@send.mannyknows.com>",
     // Worker secrets in use (set via `npx wrangler secret put <NAME>`):
     // ADMIN_USERNAME / ADMIN_PASSWORD / SESSION_SECRET (admin login),
     // ADMIN_API_KEY (diagnostics endpoints), OPENAI_API_KEY +
