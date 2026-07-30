@@ -44,6 +44,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const kv = env?.MK_KV_CHATBOT;
     const resendKey = env?.RESEND_API_KEY;
     const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
+    // Subscriber-facing emails send from the send-only subdomain; replies
+    // should land in the real business inbox.
+    const ownerEmail = env?.OWNER_EMAIL || 'mm@mannyknows.com';
     
     if (!kv) {
       throw new Error('KV storage not available');
@@ -153,6 +156,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
               body: JSON.stringify({
                 from: resendFrom,
                 to: [sanitizedEmail],
+                reply_to: ownerEmail,
                 subject: '🎉 Welcome Back to AI Insights - You\'re Subscribed Again!',
                 html: resubscriptionHtml
               })
@@ -219,6 +223,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           body: JSON.stringify({
             from: resendFrom,
             to: [sanitizedEmail],
+            reply_to: ownerEmail,
             subject: '✨ Welcome to AI Insights - Your Subscription is Confirmed!',
             html: confirmationHtml
           })
