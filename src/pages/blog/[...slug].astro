@@ -22,6 +22,12 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const heroImage = getPostImage(post);
+// Self-hosted banners ship AVIF/WebP siblings next to the JPG (same base name),
+// so offer them to the browser. Only for local /blog/*.jpg — generated PNG
+// thumbnails and remote URLs have no siblings to point at.
+const heroSiblings = heroImage && /^\/blog\/[^/]+\.jpg$/.test(heroImage) ? heroImage.replace(/\.jpg$/, '') : null;
+const heroAvif = heroSiblings ? `${heroSiblings}.avif` : null;
+const heroWebp = heroSiblings ? `${heroSiblings}.webp` : null;
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
 // "Keep reading" — the three most closely related posts, ranked by how many tags
@@ -70,7 +76,11 @@ const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
             <div class="order-1">
               {heroImage ? (
                 <div class="rounded-xl overflow-hidden border border-light-tertiary dark:border-dark-accent aspect-[16/9]">
-                  <img src={heroImage} alt={post.data.title} loading="eager" class="w-full h-full object-cover" />
+                  <picture>
+                    {heroAvif && <source type="image/avif" srcset={heroAvif} />}
+                    {heroWebp && <source type="image/webp" srcset={heroWebp} />}
+                    <img src={heroImage} alt={post.data.title} loading="eager" class="w-full h-full object-cover" />
+                  </picture>
                 </div>
               ) : (
                 <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.05] via-transparent to-primary-pink/[0.05] px-6 py-8 flex items-center justify-center">
