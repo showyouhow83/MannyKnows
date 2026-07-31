@@ -25,9 +25,11 @@ const heroImage = getPostImage(post);
 // Self-hosted banners ship AVIF/WebP siblings next to the JPG (same base name),
 // so offer them to the browser. Only for local /blog/*.jpg — generated PNG
 // thumbnails and remote URLs have no siblings to point at.
-const heroSiblings = heroImage && /^\/blog\/[^/]+\.jpg$/.test(heroImage) ? heroImage.replace(/\.jpg$/, '') : null;
-const heroAvif = heroSiblings ? `${heroSiblings}.avif` : null;
-const heroWebp = heroSiblings ? `${heroSiblings}.webp` : null;
+const siblings = (img?: string) => {
+  const base = img && /^\/blog\/[^/]+\.jpg$/.test(img) ? img.replace(/\.jpg$/, '') : null;
+  return { avif: base ? `${base}.avif` : null, webp: base ? `${base}.webp` : null };
+};
+const { avif: heroAvif, webp: heroWebp } = siblings(heroImage);
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
 // "Keep reading" — the three most closely related posts, ranked by how many tags
@@ -118,17 +120,32 @@ const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
           <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent">
             <h2 class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-5">Keep reading</h2>
             <ul class="grid gap-4 sm:grid-cols-3 list-none p-0 m-0">
-              {related.map((r) => (
-                <li>
-                  <a
-                    href={`/blog/${r.id}/`}
-                    class="group flex h-full flex-col rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4 no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-lg hover:shadow-primary-blue/10"
-                  >
-                    <span class="text-sm font-semibold leading-snug text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{r.data.title}</span>
-                    <span class="mt-2 text-xs text-text-light-secondary dark:text-text-dark-secondary line-clamp-3">{r.data.description}</span>
-                  </a>
-                </li>
-              ))}
+              {related.map((r) => {
+                const img = getPostImage(r);
+                const sib = siblings(img);
+                return (
+                  <li>
+                    <a
+                      href={`/blog/${r.id}/`}
+                      class="group flex h-full flex-col overflow-hidden rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-lg hover:shadow-primary-blue/10"
+                    >
+                      {img && (
+                        <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
+                          <picture>
+                            {sib.avif && <source type="image/avif" srcset={sib.avif} />}
+                            {sib.webp && <source type="image/webp" srcset={sib.webp} />}
+                            <img src={img} alt="" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                          </picture>
+                        </div>
+                      )}
+                      <div class="flex flex-1 flex-col p-4">
+                        <span class="text-sm font-semibold leading-snug text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{r.data.title}</span>
+                        <span class="mt-2 text-xs text-text-light-secondary dark:text-text-dark-secondary line-clamp-3">{r.data.description}</span>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
