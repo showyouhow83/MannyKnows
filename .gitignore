@@ -41,3 +41,6 @@ Thumbs.db
 
 # jetbrains setting folder
 .idea/
+
+# Generated image masters (pick a take, then only derivatives are committed)
+.blog-image-masters/

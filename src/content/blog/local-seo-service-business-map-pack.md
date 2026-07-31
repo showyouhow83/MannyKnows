@@ -7,6 +7,7 @@ tags: ["Local SEO", "AI Search", "Technical SEO", "Western Massachusetts"]
 draft: false
 seoTitle: "Local SEO: How to Win Google's Map Pack | MannyKnows"
 seoDescription: "How service businesses land in Google's Map Pack — the profile, reviews, and on-site signals that decide who shows up for \"near me\" searches."
+image: "/blog/local-seo-service-business-map-pack.jpg"
 ---
 
 When someone in Western Mass searches "dentist near me," "personal injury lawyer Springfield," or "daycare in Chicopee," Google answers with three businesses pinned on a map — the **Map Pack**. Those three get the calls. Everyone below the fold is fighting for scraps. Getting into that pack is what local SEO is really about, and it's the same playbook whether you fix roofs, teeth, contracts, or care for kids.

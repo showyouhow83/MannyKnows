@@ -6,6 +6,7 @@ author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
 draft: false
 seoDescription: "Meet the eleven AI agents that answer, research, write, design, publish, advertise, and report for your business — trained on your Brand Brain, managed by Manny."
+image: "/blog/meet-your-ai-team.jpg"
 ---
 
 You didn't start your business to babysit a phone, write Instagram captions at midnight, or figure out SEO. But that work decides who gets found and who gets hired — so somebody has to do it.
