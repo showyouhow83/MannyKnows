@@ -7,6 +7,7 @@ tags: ["Reviews", "AI Search", "Reputation", "Local SEO"]
 draft: false
 seoTitle: "How to Get More Google Reviews | MannyKnows"
 seoDescription: "A simple, non-pushy system for collecting Google reviews — when to ask, how to ask, and what to do when you get a bad one."
+image: "/blog/get-more-google-reviews.jpg"
 ---
 
 Two businesses show up side by side in Google. Same distance, same service. One has 12 reviews, the other has 140. Which one gets the call? You already know. Reviews are one of the strongest signals for where you land in local search **and** the first thing a customer reads before they choose. For a clinic or a law firm, that's often the whole ballgame — the vast majority of people check reviews before they'll book a provider or a lawyer.
