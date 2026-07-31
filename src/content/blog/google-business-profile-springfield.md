@@ -7,6 +7,7 @@ tags: ["Local SEO", "AI Search", "Google Business Profile", "Western Massachuset
 draft: false
 seoTitle: "Show Up on Google Maps in Springfield | MannyKnows"
 seoDescription: "How Springfield businesses get found on Google Maps — setting up and tuning your Business Profile so nearby customers see you first."
+image: "/blog/google-business-profile-springfield.jpg"
 ---
 
 Someone in Springfield pulls out their phone and types "painter near me." Google shows a little map with three businesses pinned — star ratings, hours, a "Call" button. If you're not one of those three, you don't exist for that search. That map is powered by one free thing most owners never finish setting up: a **Google Business Profile**.

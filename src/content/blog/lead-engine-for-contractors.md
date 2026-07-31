@@ -4,6 +4,7 @@ description: "Most contractor websites are online brochures. Here's how to make 
 pubDate: 2026-05-20
 author: "Manny"
 tags: ["contractors", "AI Search", "lead generation", "automation"]
+image: "/blog/lead-engine-for-contractors.jpg"
 ---
 
 Most contractor websites do one thing: sit there. They list services, show a phone number, and wait. Meanwhile the work is going to whoever picks up the phone first.
