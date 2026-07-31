@@ -22,6 +22,7 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
+import GoogleProfile from '../components/sections/GoogleProfile.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
@@ -198,6 +199,19 @@ const NAVBAR_CONFIG = {
             </div>
         </header>
 
+		<!-- Google Business Profile — the education section: what it is, what a
+		     maintained one earns, what an abandoned one costs. Every figure is
+		     sourced on the page (see the component's header comment). -->
+		<PageSection
+			id="google-profile"
+			badge="Google Business Profile"
+			title="Your first ranking on Google isn't your website"
+			subtitle="It's the free listing that decides whether locals find you at all — and the one most businesses set up once, then never touch again."
+			variant="default"
+		>
+			<GoogleProfile />
+		</PageSection>
+
 		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
 		<PageSection
 			id="ai-team"
@@ -249,6 +263,21 @@ const NAVBAR_CONFIG = {
 			variant="alternate"
 		>
 			<SelectedWork />
+
+			<!-- Idea launcher, relocated from the nav bulb. Deliberately small and
+			     FYI-sized — a footnote to the portfolio, not a promo banner. -->
+			<div class="mt-10 flex justify-center px-4">
+				<button
+					type="button"
+					data-idea-open
+					class="group inline-flex items-start gap-3 max-w-lg rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70 px-4 py-3 text-left transition-all duration-300 hover:border-amber-400/50 hover:shadow-md"
+				>
+					<svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+					<span class="text-xs sm:text-[13px] leading-relaxed text-text-light-secondary dark:text-text-dark-secondary">
+						<strong class="text-text-light-primary dark:text-text-dark-primary">Got an idea of your own?</strong> Every project here started as one — an app, a tool, a store. <span class="text-primary-blue dark:text-blue-300 font-medium whitespace-nowrap group-hover:underline">See how we build it →</span>
+					</span>
+				</button>
+			</div>
 		</PageSection>
 
 		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
