@@ -49,6 +49,8 @@ export interface Plan {
   featured?: boolean;   // "most popular"
   hidden?: boolean;     // kept for its detail page + /plans section, but not shown in the pricing grid
   tiers?: PlanTier[];   // sub-plans (replaces the generic price block on the detail page)
+  tiersHeading?: string; // heading over the tier cards (defaults to "Pick your plan")
+  tiersIntro?: string;   // paragraph under that heading
   // Detail page (/plans/<slug>) content:
   headline: string;     // hero headline on the detail page
   blurb: string;        // hero paragraph on the detail page
@@ -505,6 +507,9 @@ export const plans: Plan[] = [
       "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time — $350/mo per network, or 4 major networks for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it — its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO — watching what the numbers do and correcting.",
     whoFor:
       'Businesses whose website or store already works — and who now need more of the right people finding it, steadily, not in one lucky spike.',
+    tiersHeading: 'Pick your coverage',
+    tiersIntro:
+      'Start with one network or run them all. Every network you add gets the same treatment: its own competitive analysis, its own market analysis, and its own plan — because each one is a different world of media, formats, and sizes.',
     tiers: [
       {
         name: 'Per Network',
@@ -517,9 +522,9 @@ export const plans: Plan[] = [
           'A competitive analysis of the network — who’s winning your market there, and how',
           'A market analysis — your audience on that network: who they are, when they’re active, what they respond to',
           'An individual plan traced for the network — its own media types, formats, and sizes',
-          'Content created, branded, sized, and posted for that network',
-          'Comments and messages answered — engagement watched, not ignored',
-          'A plain-English monthly report per network — add or drop networks as results come in',
+          'Provided content will be branded, sized, and posted for that network',
+          'Comments and messages sorted and answered by Remi, our AI agent',
+          'An AI generated monthly report per network — add or drop networks as results come in',
         ],
       },
       {
@@ -551,9 +556,9 @@ export const plans: Plan[] = [
       {
         title: 'Social media growth',
         items: [
-          'Content created, branded, and posted for you — sized and formatted for each network',
+          'Your content branded, sized, and posted for you — formatted for each network',
           'A consistent presence on the networks that fit your business',
-          'Comments and messages answered — engagement watched, not ignored',
+          'Comments and messages sorted and answered by Remi, our AI agent',
         ],
       },
       {
@@ -576,7 +581,7 @@ export const plans: Plan[] = [
         title: 'The correction loop',
         items: [
           'We watch how your traffic responds — and keep correcting and improving',
-          'A plain-English monthly report: what ran, what it cost, what it brought in',
+          'An AI generated monthly report: what ran, what it cost, what it brought in',
         ],
       },
     ],
@@ -600,65 +605,112 @@ export const plans: Plan[] = [
     icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
     price: 1800,
     hidden: true,
-    tagline: 'Everything, handled — we design, build, promote, and optimize whatever your business needs.',
+    tagline: 'A developer on demand — plus your full media, design & marketing team, for less than one hire.',
     highlights: [
-      'We build your site — or optimize the one you already have',
-      "Add a full online store whenever you're ready, done for you",
-      'Advertising, promotion & ongoing optimization, all handled',
-      'Custom software, AI automation & data pipelines',
-      'Design, video & content produced for you — your full media & tech team',
+      'A developer on demand — any app, tool, or idea, designed, built & published for you',
+      'Campaign needs an app? Included. Software to organize your operations? Included.',
+      'All media handled: photography, videography, video editing, AI generation & graphic design',
+      'All web & SEO: websites, landing pages, content, and continuous optimization',
+      'It starts with a competitive analysis — then we build whatever it takes to put you ahead',
     ],
     headline: 'Your full media & tech team — without hiring one',
     blurb:
-      "One engagement, everything handled: your website or store built and run, your advertising and promotion managed, and senior engineering on call for custom software, AI automation, and data work. It’s the closest thing to having your own media and technology department — for less than a single hire.",
+      "The biggest advantage in this package: a developer on demand. Any idea that comes to mind — an app for an ad campaign, software to organize your scheduling or inventory, a tool that doesn’t exist yet — we design it, build it, and publish it. Included. Around that developer sits your full media team: photography, videography, video editing, AI generation, graphic design, websites, and SEO. It starts with a competitive analysis — where you stand against your competition — and then we build whatever it takes to put you ahead and rank higher. All of it for less than a single hire.",
     whoFor:
-      'Businesses ready to grow on every front at once — or owners who simply want one accountable team for all of it instead of juggling vendors.',
+      'Businesses that want the upper hand over their competition — and one accountable team with the technical depth to build whatever getting there requires.',
+    tiersHeading: 'Pick how we work',
+    tiersIntro:
+      'The scope is the same on both — everything is included. What you choose is how we work together: fully remote, or with a dedicated day in your office every week.',
+    tiers: [
+      {
+        name: 'Agency',
+        price: 1800,
+        unit: '/mo',
+        note: 'fully remote',
+        description:
+          'The full team — developer, designer, media production, SEO — working your roadmap from our studio, one project at a time, each one finished and published before the next begins.',
+        features: [
+          'Everything is in scope: apps, websites, software, graphic design, video, photography, AI content, SEO',
+          'A developer on demand — if your business can imagine it, we build it',
+          'The competitive analysis and a shared roadmap, reviewed monthly',
+          'Unlimited requests queued on the roadmap — you set the priorities',
+          'Scheduled photo & video shoot days as your projects call for them',
+        ],
+      },
+      {
+        name: 'Agency In-House',
+        price: 3500,
+        unit: '/mo',
+        note: 'in your office 1 day a week',
+        featured: true,
+        builtOn: 'Everything in Agency — plus',
+        description:
+          'Your tech department, physically in the building — a dedicated day in your office, every week.',
+        features: [
+          'A full day in your office, every week — working alongside you and your staff',
+          'Same-day requests handled on the spot',
+          'Photo & video shot on site whenever needed — no scheduling round-trips',
+          'Your team trained on the tools we build, as we build them',
+        ],
+      },
+    ],
     deliverables: [
       {
-        title: 'Web & store',
+        title: 'It starts with analysis',
+        items: [
+          'A competitive analysis of your market — where you rank, what your competitors run, and where they’re beatable',
+          'A plan to outrank them — then we build whatever it takes',
+          'Re-checked as positions shift, so the upper hand stays yours',
+        ],
+      },
+      {
+        title: 'A developer on demand',
+        items: [
+          'Custom apps and software for anything that comes to mind — designed, built, and published',
+          'Ad campaigns that need an app? Built as part of the campaign',
+          'AI automation for the busywork: quoting, scheduling, follow-ups, reporting',
+          'Data pipelines and dashboards so decisions come from numbers, not guesses',
+        ],
+      },
+      {
+        title: 'All media, produced',
+        items: [
+          'Photography and videography — scheduled shoot days for your business, products, and campaigns',
+          'Video editing and AI generation, handled continuously in between',
+          'All graphic design and video design — menus, promos, banners, campaigns',
+          'One brand voice across your site, store, ads, and social',
+        ],
+      },
+      {
+        title: 'Web, store & SEO',
         items: [
           'Your website designed, built, and kept fast — or your existing one rebuilt right',
           'A full online store added whenever you’re ready, done for you',
-          'Everything in the Get Growing and Sell Online plans, under one roof',
+          'All SEO and all the HTML behind it — everything in the Get Growing and Sell Online plans, under one roof',
         ],
       },
       {
         title: 'Promotion',
         items: [
           'Advertising and social handled end to end (you fund the ad spend)',
-          'SEO, content campaigns, and landing pages',
+          'SEO content campaigns and landing pages',
           'Continuous optimization — the correction loop never stops',
-        ],
-      },
-      {
-        title: 'Software & AI',
-        items: [
-          'Custom software when your business needs a tool that doesn’t exist',
-          'AI automation for the busywork: quoting, scheduling, follow-ups, reporting',
-          'Data pipelines and dashboards so decisions come from numbers, not guesses',
-        ],
-      },
-      {
-        title: 'Media & content',
-        items: [
-          'Design, video, and content produced for you — menus, promos, campaigns',
-          'One brand voice across your site, store, ads, and social',
-          'Priority response: you’re a retainer client, not a ticket in a queue',
         ],
       },
     ],
     steps: [
-      { title: 'Deep kickoff', body: 'We map how your business runs — sales, operations, marketing — and agree on what matters most first.' },
-      { title: 'A shared roadmap', body: 'One prioritized plan across web, store, promotion, and software. You always know what we’re building and why.' },
-      { title: 'Build & promote in parallel', body: 'The tech gets built while the promotion runs — each month ships visible progress on both.' },
-      { title: 'Review & reprioritize', body: 'A monthly working session plus the plain-English report. Priorities shift as your business does.' },
+      { title: 'Competitive analysis', body: 'We map your market first — where you rank, what your competitors run, and where they’re beatable. That analysis decides what we build.' },
+      { title: 'A shared roadmap', body: 'One prioritized queue across software, media, web, and promotion. Unlimited requests — you set the order, and you always know what we’re building and why.' },
+      { title: 'Build, shoot & promote', body: 'We work the roadmap one project at a time — each one finished and published before the next begins. On Agency In-House, a day of that happens in your office every week.' },
+      { title: 'Review & reprioritize', body: 'A monthly working session plus the plain-English report. Priorities shift as your business — and your competition — does.' },
     ],
     faq: [
-      { q: 'What exactly does "everything" cover?', a: 'Website, online store, advertising, social, SEO, content, design, video, custom software, AI automation, and data work — scoped each month against a shared roadmap. If your business needs it built or promoted, it’s in scope.' },
-      { q: 'How does this compare to hiring?', a: 'One in-house marketing or IT hire — salary plus payroll taxes and benefits — typically runs several times this, and gives you a single person’s skill set with vacation days and a learning curve. This puts engineering, design, marketing, and AI expertise on one retainer, with no hiring risk and no onboarding.' },
-      { q: 'What does a typical month actually look like?', a: 'It starts from the shared roadmap, so you always know what is queued before the month begins. Work ships continuously across web, promotion, and software rather than landing in one drop at the end. Then we sit down for the working session, read the numbers together, and reprioritize the next month. You get a plain-English report of what shipped, what it cost, and what it moved.' },
-      { q: 'What if I don’t need all of it every month?', a: 'Most months you won’t — that’s the point. The mix shifts: a heavy build month, then a promotion month, then a stretch of automation work. You’re buying a team’s capacity against a shared roadmap, not a fixed checklist you have to consume. If the roadmap stays light for long, we’ll tell you a smaller plan fits better.' },
-      { q: 'Am I locked into a contract?', a: 'No. Like every plan, it runs month to month and you can stop at the end of any billing month. Prepaying a year gets you two months free, but it is optional. Everything we build — site, store, ad accounts, software, content — belongs to you and leaves with you.' },
+      { q: 'What does "a developer on demand" mean?', a: 'If your business can imagine it, it’s in scope. An ad campaign that needs an app? Included. Software to organize scheduling, inventory, or quotes? Included. A tool that doesn’t exist anywhere? We design it, build it, and publish it. That’s the point of having a developer on retainer instead of a vendor per project.' },
+      { q: 'What does "one active project at a time" mean?', a: 'Your requests are unlimited — they queue on the shared roadmap and you set the order. We work them one at a time, finishing and publishing each before the next begins. It’s how the price stays a fraction of what this scope costs anywhere else.' },
+      { q: 'What’s different about Agency In-House?', a: 'The scope is identical — everything is included on both tiers. In-House adds presence: a dedicated day in your office each week, where same-day requests get handled on the spot, photos and video get shot on site, and your team gets trained on the tools we build. It’s the closest thing to having your own tech department in the building.' },
+      { q: 'Are photo and video shoots included?', a: 'Yes — photography and videography are part of the package as scheduled shoot days, planned around your projects and campaigns. Editing, AI generation, and design are handled continuously in between.' },
+      { q: 'What exactly does "everything" cover?', a: 'Websites, online stores, advertising, social, SEO, content, graphic design, photography, videography, video editing, AI generation, custom software, AI automation, and data work — queued on a shared roadmap. If your business needs it built, shot, or promoted, it’s in scope.' },
+      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this — and gives you one skill set. This puts engineering, design, media production, marketing, and AI expertise on one retainer.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes — many clients start with Get Growing or Sell Online and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },
