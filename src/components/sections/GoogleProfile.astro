@@ -1,0 +1,126 @@
+---
+// Homepage "Google Business Profile" explainer — teaches what a GBP is, what a
+// well-run one earns, and what an abandoned one costs. Sits above the AI Team
+// section.
+//
+// HONESTY RULE (same as the rest of the site): every figure below is traceable
+// to a named source, and the source is printed on the page. Two sources only:
+//   • BrightLocal Local Consumer Review Survey 2026 — primary consumer research
+//     https://www.brightlocal.com/research/local-consumer-review-survey/
+//   • Google's own Business Profile documentation, quoted verbatim
+//     https://support.google.com/business/answer/7091   (complete info)
+//     https://support.google.com/business/answer/3038177 (suspension)
+//     https://support.google.com/business/answer/3039617 (suggested edits)
+// The widely-repeated "complete profiles get 7x more clicks / 2.7x more
+// reputable" figures are NOT here on purpose: they're attributed to Google all
+// over the web but appear nowhere in Google's current documentation.
+
+const stats = [
+  { n: '71%', label: 'use Google to find local businesses', note: 'down from 83% a year earlier — the rest are asking AI' },
+  { n: '97%', label: 'read reviews for local businesses', note: '41% now say they always read them' },
+  { n: '47%', label: "won't use a business with under 20 reviews", note: 'only 9% would use one with five or fewer' },
+  { n: '74%', label: 'want reviews from the last three months', note: 'an old profile reads as a closed business' },
+];
+
+// Left column = what a maintained profile does. Right = what an ignored one
+// does. Same six themes, so the two columns read as a before/after.
+const good = [
+  'Shows up in the map pack — the three results above everything else, where the calls come from',
+  'Complete, accurate info: Google says businesses with it "are more likely to show up in local search results"',
+  'The right primary category, so you appear for what you actually sell',
+  'Photos, services, and hours that answer the question before anyone calls',
+  'Reviews asked for on a schedule — and every one answered',
+  'Posts, offers, and updates that keep the profile visibly alive',
+];
+
+const bad = [
+  'Unverified or unclaimed — you cannot fix what you do not control',
+  'Wrong or missing category, so you never enter the searches you should win',
+  'Anyone can "suggest an edit" to a profile they do not own; Google reviews it, not you',
+  'Hours nobody updated: a customer drives over, finds you closed, and leaves a one-star',
+  'No reviews, or reviews nobody answered — 42% say they are unlikely to use a business that never replies',
+  'Guideline violations risk "removal of your business information from Google" — in Google\'s words',
+];
+---
+
+<div class="max-w-6xl mx-auto">
+  <!-- The lesson first: what a GBP actually is -->
+  <div class="max-w-3xl mx-auto text-center mb-12">
+    <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+      Before a website ranks anywhere, your <strong class="text-text-light-primary dark:text-text-dark-primary">Google Business Profile</strong> is what puts you on the map — literally. It's the free listing behind the map pack, the three businesses Google shows above everything else when someone searches "near me." Getting it right is the first ranking you win, and it costs nothing but doing it properly.
+    </p>
+  </div>
+
+  <!-- Cited stats -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    {stats.map((s) => (
+      <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
+        <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
+        <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
+        <div class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1 leading-snug">{s.note}</div>
+      </div>
+    ))}
+  </div>
+  <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mb-12">
+    Source: <a href="https://www.brightlocal.com/research/local-consumer-review-survey/" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">BrightLocal Local Consumer Review Survey 2026</a>. We only publish figures we can trace to a named source.
+  </p>
+
+  <!-- Set up right vs left alone -->
+  <div class="grid md:grid-cols-2 gap-5">
+    <div class="rounded-3xl border border-green-500/30 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10 text-green-500">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </span>
+        <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Set up and maintained</h3>
+      </div>
+      <ul class="space-y-3">
+        {good.map((g) => (
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed" set:html={g}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="rounded-3xl border border-red-500/30 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5.07 19H19a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.27 16A2 2 0 005.07 19z" /></svg>
+        </span>
+        <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Half-set-up, or left alone</h3>
+      </div>
+      <ul class="space-y-3">
+        {bad.map((b) => (
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+            <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed" set:html={b}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-5 max-w-3xl mx-auto">
+    Quoted phrases come from Google's own Business Profile documentation on
+    <a href="https://support.google.com/business/answer/7091" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">complete information</a>,
+    <a href="https://support.google.com/business/answer/3039617" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">suggested edits</a>, and
+    <a href="https://support.google.com/business/answer/3038177" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">its guidelines</a>.
+  </p>
+
+  <div class="text-center mt-10">
+    <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-5">
+      You can absolutely do this yourself — it's free, and the guide is on our blog. The catch is that it's never finished: reviews to answer, hours to update, posts to keep it alive. That's the part we take off your plate.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a href="/plans/get-found/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+        Have us set it up and run it
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="/blog/google-business-profile-springfield/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+        Read the free guide
+      </a>
+    </div>
+  </div>
+</div>
