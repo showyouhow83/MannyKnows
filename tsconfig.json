@@ -1,5 +1,10 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  // Deliberately a relative path, not the documented "astro/tsconfigs/strict".
+  // The bare specifier resolves through astro's package `exports`, which the
+  // VS Code TS server on this machine wouldn't follow — it reported
+  // "File 'astro/tsconfigs/strict' not found" while `tsc` resolved it fine.
+  // A direct path resolves under both. Same file either way.
+  "extends": "./node_modules/astro/tsconfigs/strict.json",
   "compilerOptions": {
     "module": "es2022",
     "moduleResolution": "bundler",
