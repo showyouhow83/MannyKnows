@@ -4,6 +4,7 @@ description: "An AI-assisted site can answer questions, qualify buyers, and book
 pubDate: 2026-04-18
 author: "Manny"
 tags: ["ai", "AI Search", "websites", "conversion"]
+image: "/blog/website-that-works-while-you-sleep.jpg"
 ---
 
 Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait — and waiting is where deals die.

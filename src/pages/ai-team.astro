@@ -11,6 +11,7 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../data/testimonials';
@@ -118,14 +119,17 @@ const faqSchema = {
       <div class="pb-12 px-4">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
+            <div class="flex justify-center mb-6">
+              <Illustration kind="agent" class="w-full max-w-[210px]" />
+            </div>
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
               The AI Team · live now
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>Your AI team — built for you, run by you, managed by Manny</span>
+              <span class="apple-gradient-text" data-colorful-title>Hire AI agents like staff</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Ten AI specialists, one shared brain, one manager. We build every agent around your business, train them all on the same knowledge — your voice, your services, your customers — and fine-tune the team with you until its output earns your approval. Then you get one simple admin, and one point of contact: Manny. Tell him what you need; he puts the right agents on it, in the right order, and brings the finished work back for your sign-off.
+              Ten AI specialists, one shared brain, one manager. Each agent is built around your business and trained on the same knowledge — your voice, your services, your customers — then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny puts the right agents on the job and brings the finished work back for your sign-off.
             </p>
 
             <!-- Mini roster preview -->
