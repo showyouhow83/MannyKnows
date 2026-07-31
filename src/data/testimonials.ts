@@ -22,7 +22,7 @@ export interface Testimonial {
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "We don't even show up on Google yet — and we're already seeing the benefits of working with Manny. Our website looks incredible, and the AI agent is incredible too: it speaks every language, and it's connected to our admin, so we can ask it about our own projects — where each one stands, what's included, whatever we need to know.",
+      'Even before launching fully on Google, working with Manny delivered immediate value. Our new website looks exceptional, and the custom AI agent is a game-changer. It handles multiple languages effortlessly and integrates directly with our backend, allowing us to instantly check project statuses, scope details, and operations on the fly.',
     name: 'Owner',
     business: 'VL Home Services',
     href: '/work/vl-home-services/',
