@@ -1,7 +1,13 @@
 ---
 export interface Props {
   id?: string;
-  variant?: 'default' | 'dark' | 'gradient';
+  // `alternate` is the name PageSection uses for the same gray gradient this
+  // component calls `default`. 21 usages across 20 pages had been passing it
+  // here, where it wasn't a key — `variantClasses[variant]` returned undefined
+  // and those sections shipped `class="... py-16 undefined ..."`, losing their
+  // background entirely. Accepting the alias fixes them all; the fallback below
+  // means a future typo degrades to `default` instead of stripping styling.
+  variant?: 'default' | 'alternate' | 'dark' | 'gradient';
   className?: string;
   hasOverflow?: boolean;
 }
@@ -15,6 +21,7 @@ const {
 
 const variantClasses = {
   default: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
+  alternate: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
   dark: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30',
   gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900'
 };
@@ -24,7 +31,7 @@ const overflowClass = hasOverflow ? 'overflow-hidden' : '';
 
 <section
   id={id}
-  class={`relative py-16 ${variantClasses[variant]} border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${overflowClass} ${className}`}
+  class={`relative py-16 ${variantClasses[variant] ?? variantClasses.default} border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 ${overflowClass} ${className}`}
 >
   <slot />
 </section>
