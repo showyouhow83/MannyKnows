@@ -41,6 +41,10 @@ const headerClass = `${alignmentStyles[headerAlignment]} mb-10`;
 ---
 
 <section id={id} class={sectionClass}>
+  <!-- Optional decorative background layer (e.g. HeroVideoBackground). The
+       section is already relative + overflow-hidden and the content wrapper
+       below is z-10, so anything slotted here sits behind the content. -->
+  <slot name="background" />
   <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     {(title || subtitle || badge) && (
       <div class={headerClass}>

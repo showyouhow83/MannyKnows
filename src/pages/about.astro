@@ -17,10 +17,10 @@ import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // credential in the abstract. The note underneath keeps the human detail that
 // makes each number believable.
 const stats = [
-  { n: '20+', label: 'years of web design & development', note: 'from hand-coded HTML and Dreamweaver to AI agents' },
-  { n: '7', label: 'years building online stores at enterprise scale', note: 'plus 4 consulting at Accenture' },
-  { n: 'EN·ES', label: 'bilingual websites, written natively', note: 'English and Spanish — never run through a translator' },
-  { n: '#1', label: 'local SEO ranking earned for a client', note: 'organic #1 for "exterior painting" in Springfield, MA' },
+  { n: '20+', label: 'years of web design & development' },
+  { n: '7', label: 'years building online stores at enterprise scale' },
+  { n: 'EN·ES', label: 'bilingual websites, written natively' },
+  { n: '#1', label: 'local SEO ranking earned for a client' },
 ];
 
 // These were generic agency lines any competitor could have written. Each one
@@ -102,7 +102,6 @@ const principles = [
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
               <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
               <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
-              <div class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{s.note}</div>
             </div>
           ))}
         </div>

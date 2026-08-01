@@ -24,6 +24,7 @@ import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import GoogleProfile from '../components/sections/GoogleProfile.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
+import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
 // never drift from the published price on a reprice.
@@ -174,11 +175,6 @@ const NAVBAR_CONFIG = {
                 subtitle="A Springfield, Massachusetts agency for small businesses across Western Mass. We set you up with AI agents that answer calls, write, and close sales under your name; a website that turns visitors into customers; ranking on Google and the AI answer engines your customers now ask instead; and custom apps for the work behind the scenes — 24/7."
             />
 
-            <!-- Trust/positioning line under the subhead -->
-            <p class="sf-regular text-sm sm:text-base text-text-light-tertiary dark:text-text-dark-tertiary max-w-3xl mx-auto mt-4 px-4 text-center apple-body-text">
-              Twenty years of enterprise experience, scaled down to Western Mass budgets. No agency bloat, no corporate jargon — just results.
-            </p>
-
             <!-- Hero CTAs + credibility stat band -->
             <div class="max-w-[1440px] mx-auto px-4 mt-8 pb-10 md:pb-16">
               <div class="flex flex-row items-stretch justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
@@ -205,8 +201,8 @@ const NAVBAR_CONFIG = {
 		<PageSection
 			id="google-profile"
 			badge="Google Business Profile"
-			title="Your first ranking on Google isn't your website"
-			subtitle="It's the free listing that decides whether locals find you at all — and the one most businesses set up once, then never touch again."
+			title="Your Google Business Profile is your first ranking on Google"
+			subtitle="It's the free listing behind Google Maps and the map pack — the three businesses locals see first when they search 'near me.' Most owners set it up once and never touch it again. Getting it right is the first ranking you win, and it's free."
 			variant="default"
 		>
 			<GoogleProfile />
@@ -245,6 +241,10 @@ const NAVBAR_CONFIG = {
 			title="Who you're working with"
 			variant="hero"
 		>
+			<!-- Same blue nebula as /about's header. warm = buffered during idle
+			     time after load, so it plays instantly on scroll without ever
+			     competing with the page's own assets. -->
+			<HeroVideoBackground slot="background" name="hero-blue" tone="color" warm />
 			<HomeAbout />
 		</PageSection>
 
