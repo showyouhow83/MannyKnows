@@ -16,12 +16,15 @@
 interface Props {
   /** Base path for /video/<name>.{webm,mp4} and <name>-poster.{avif,webp} */
   name?: string;
+  /** 'mono' for white/grey footage (brand-tinted via blend modes);
+      'color' for footage with its own palette (shown as-is at low opacity). */
+  tone?: 'mono' | 'color';
   class?: string;
 }
-const { name = 'hero-waves', class: className = '' } = Astro.props;
+const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.props;
 ---
 
-<div class={`hero-video-bg ${className}`} aria-hidden="true">
+<div class={`hero-video-bg ${tone === 'color' ? 'hero-video-bg--color' : ''} ${className}`} aria-hidden="true">
   <video
     class="hero-video-bg__media"
     data-hero-video
@@ -112,6 +115,22 @@ const { name = 'hero-waves', class: className = '' } = Astro.props;
   }
   :global(.dark) .hero-video-bg::after {
     --hero-video-fade: rgba(9, 9, 11, 0.85);
+  }
+
+  /* Colour footage carries its own palette: no blend trickery, no brand tint —
+     just low opacity under the same text-protecting scrim. */
+  .hero-video-bg--color .hero-video-bg__media,
+  :global(.dark) .hero-video-bg--color .hero-video-bg__media {
+    mix-blend-mode: normal;
+    filter: none;
+    opacity: 0.22;
+  }
+  :global(.dark) .hero-video-bg--color .hero-video-bg__media {
+    mix-blend-mode: screen;
+    opacity: 0.3;
+  }
+  .hero-video-bg--color .hero-video-bg__tint {
+    display: none;
   }
 
   @media (prefers-reduced-motion: reduce) {

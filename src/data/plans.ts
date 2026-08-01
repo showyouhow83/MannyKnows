@@ -207,7 +207,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
-      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site stops being a few pages and becomes a full multi-page site with your own admin, so you can update it yourself instead of sending every change to us. And Remi stops only answering questions and starts capturing leads and booking work into your calendar — which is the part that pays for the plan. If your customers mostly just need to find you and see that you are real, Get Found is genuinely enough.' },
+      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and Remi stops only answering questions and starts capturing leads and booking work into your calendar — which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
       { q: 'How does Remi book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books — then logs the lead in your admin.' },
       { q: 'I already have a website — do I have to start over?', a: 'No. If it has good bones, we optimize it and add Remi and the SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Can I upgrade later?', a: 'Yes — move up to Get Growing to have Remi sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
@@ -275,7 +275,7 @@ export const plans: Plan[] = [
       { q: 'I already have a website — do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it — same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does Remi know what to say?', a: 'We train it on your business — services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
-      { q: 'What does "updates itself" mean?', a: 'We keep your content and SEO current for you — refreshing pages, adding relevant content, and tightening search signals each month — so the site doesn’t go stale.' },
+      { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously — speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed — ready to review or roll back.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts — details in our terms.' },
     ],
   },

@@ -8,6 +8,7 @@ import NavBar from '../../components/navigation/NavBar.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
+import Faq from '../../components/ui/Faq.astro';
 import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
 import { BOOKING_URL } from '../../data/booking';
 import { getTestimonial } from '../../data/testimonials';
@@ -57,15 +58,6 @@ const proofMap: Record<string, { quote?: string; cases: { slug: string; name: st
 const proof = proofMap[plan.slug];
 const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: plan.faq.map((f) => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
-};
 ---
 
 <BaseLayout
@@ -74,7 +66,6 @@ const faqSchema = {
     ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} — $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
     : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr — 2 months free. Cancel anytime.`}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
@@ -281,17 +272,7 @@ const faqSchema = {
     <Section id="plan-faq" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
-          </h2>
-          <div class="space-y-4">
-            {plan.faq.map((f) => (
-              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
-              </div>
-            ))}
-          </div>
+          <Faq faqs={plan.faq} />
           <div class="text-center mt-12">
             <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
               Talk to us about {plan.name}

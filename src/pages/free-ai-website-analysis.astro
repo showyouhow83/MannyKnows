@@ -11,7 +11,6 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
-import StepCards from '../components/ui/StepCards.astro';
 import { getTestimonial } from '../data/testimonials';
 
 const checks = [
@@ -23,25 +22,20 @@ const checks = [
   { title: 'AI-readiness', body: "Where an AI agent could answer customers and book jobs for you 24/7 — and whether your content is ready to power one.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
 ];
 
-const steps = [
-  { n: '01', title: 'Scan it right now', body: 'Type your address above and get an instant first pass — how findable, fast, answerable, and bookable your site is, with every gap named.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-  { n: '02', title: 'Then a person goes deeper', body: 'Request the free human review and Manny checks what no scanner can — your competitors, your rankings, whether the site actually sells. Twenty years of engineering behind the read.', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
-  { n: '03', title: 'You get a plain-English report', body: "A short, prioritized list of what's working, what's costing you, and what to fix first — plus a quick call to walk through it if you want. No obligation.", icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-];
-
+// One section instead of the old three-step "How it works" + separate
+// walk-away list — same information, half the scroll, none of the filler.
 const walkaway = [
   'A prioritized list of the fixes that matter most — highest impact first.',
-  'A clear read on how you compare to competitors showing up ahead of you.',
-  'An honest answer on whether a refresh, a rebuild, or just maintenance makes sense.',
-  'No pressure. If the smartest move is to change nothing, we will tell you.',
+  'A clear read on how you compare to the competitors showing up ahead of you.',
+  'A straight answer on whether a refresh, a rebuild, or maintenance makes sense.',
+  'And every fix on the list is something we can run for you — website, SEO, AI agent, store — so the list never becomes homework.',
 ];
 
 const faqs = [
-  { q: 'Is it really free?', a: 'Yes. The analysis and the walkthrough call cost nothing, and there is no obligation to buy anything. It is how we introduce ourselves and show the kind of work we do.' },
-  { q: 'What do you need from me?', a: 'Your website URL is enough to start. If you want the analysis tied to specific goals — more calls, more bookings, more online sales — tell us and we will focus there.' },
-  { q: 'Will you just try to sell me a plan?', a: 'No. You get the findings whether or not you ever work with us. If a fix is simple enough to do yourself, we will say so. If the best move is to change nothing right now, we will tell you that too.' },
-  { q: 'How is this different from a free automated score?', a: "The instant scan on this page IS automated — that's why it's instant, and it's honest about being a first pass. The difference is what happens next: a real person reviews your site, your competitors, and your rankings, then tells you in plain English what actually matters and what to do about it — with twenty years of engineering behind the read. Most tools stop at the number; we start there." },
-  { q: 'How long does it take?', a: 'Most analyses come back within a couple of business days. If you need it faster for a decision you are making, just say so.' },
+  { q: 'Is it really free?', a: 'Yes — the instant scan and the human review both. It is how we show the kind of work we do before you spend a dollar.' },
+  { q: 'What do you need from me?', a: 'Your website address and an email where we can reach you about the results. If you have a goal in mind — more calls, more bookings, more online sales — say so and the review focuses there.' },
+  { q: 'How is this different from a free automated score?', a: 'The instant scan is automated — that is why it is instant. The human review is not: Manny checks your competitors, your actual rankings, and whether the site sells, then puts the findings in plain English, prioritized. Most tools stop at a number; we start there.' },
+  { q: 'How long does it take?', a: 'The scan takes seconds. The human review usually comes back within a couple of business days — tell us if you need it sooner.' },
 ];
 
 const quote = getTestimonial('SL Painting');
@@ -68,11 +62,11 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Type your website address and get an instant read on what's holding it back — how findable, fast, answerable, and bookable it is — then let a real person go deeper, free. No cost, no obligation.
+            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named — with the fix next to it. Then a real person goes deeper, free.
           </p>
 
           <!-- Instant scanner -->
-          <form id="scanForm" class="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-3" novalidate>
+          <form id="scanForm" class="mt-8 max-w-2xl mx-auto flex flex-col sm:flex-row gap-3" novalidate>
             <label for="scanUrl" class="sr-only">Your website address</label>
             <input
               id="scanUrl"
@@ -81,7 +75,17 @@ const quote = getTestimonial('SL Painting');
               inputmode="url"
               autocomplete="url"
               placeholder="yourbusiness.com"
-              class="flex-1 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
+              class="flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
+            />
+            <label for="scanEmail" class="sr-only">Your email</label>
+            <input
+              id="scanEmail"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="you@yourbusiness.com"
+              class="flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
             <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 h-12 text-sm font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
               Scan my site — free
@@ -90,7 +94,7 @@ const quote = getTestimonial('SL Painting');
           </form>
           <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            Instant, automated first pass — no signup. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+            Instant and free. Your email is where we follow up on what the scan finds — no spam, no list. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
           </p>
         </div>
       </div>
@@ -133,23 +137,15 @@ const quote = getTestimonial('SL Painting');
       </Container>
     </Section>
 
-    <Section id="analysis-how" variant="alternate">
-      <Container>
-        <div class="max-w-6xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>How it works</span>
-          </h2>
-          <StepCards steps={steps} cols={3} class="" />
-        </div>
-      </Container>
-    </Section>
-
-    <Section id="analysis-walkaway" variant="default">
+    <Section id="analysis-walkaway" variant="alternate">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-8">
-            <span class="apple-gradient-text" data-colorful-title>What you'll walk away with</span>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
+            <span class="apple-gradient-text" data-colorful-title>What you walk away with</span>
           </h2>
+          <p class="text-center text-base text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-8">
+            The scan is instant. The free human review is where it gets serious: Manny checks what a scanner can't — your competitors, your rankings, whether the site actually sells — and sends back a short plan.
+          </p>
           <ul class="grid sm:grid-cols-2 gap-4">
             {walkaway.map((w) => (
               <li class="flex items-start gap-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
@@ -163,7 +159,7 @@ const quote = getTestimonial('SL Painting');
     </Section>
 
     {quote && (
-      <Section id="analysis-proof" variant="alternate">
+      <Section id="analysis-proof" variant="default">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
             <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">The kind of result this leads to</p>
@@ -173,7 +169,7 @@ const quote = getTestimonial('SL Painting');
       </Section>
     )}
 
-    <Section id="analysis-faq" variant="default">
+    <Section id="analysis-faq" variant="alternate">
       <Container>
         <Faq faqs={faqs} />
         <div class="text-center mt-12">
@@ -273,6 +269,13 @@ const quote = getTestimonial('SL Painting');
       errEl && errEl.classList.add('hidden');
       const url = input.value.trim();
       if (!url) { showError('Type your website address first — like yourbusiness.com.'); return; }
+      const emailInput = document.getElementById('scanEmail') as HTMLInputElement | null;
+      const email = emailInput?.value.trim() ?? '';
+      if (!email || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email)) {
+        showError("Add your email too — it's where we follow up on what the scan finds.");
+        emailInput?.focus();
+        return;
+      }
       btn.disabled = true;
       const original = btn.innerHTML;
       btn.innerHTML = 'Scanning…';
@@ -280,7 +283,7 @@ const quote = getTestimonial('SL Painting');
         const res = await fetch('/api/analyze-site', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({ url, email }),
         });
         const data = await res.json();
         if (data.ok) render(data);
