@@ -59,6 +59,17 @@ const prompt = flag('prompt') ?? buildPrompt(slug);
 const model = flag('model', DEFAULT_MODEL);
 const variants = Number(flag('variants', '1')) || 1;
 
+// Sizing economics (gemini-3.1-flash-image, July 2026): 512px $0.045,
+// 1K $0.067, 2K $0.101, 4K $0.151 per image.
+//
+// 2K is the floor for a real banner — we deliver at 1280px wide, so 1K would
+// upscale. Draft sizes are NOT a preview: there is no seed, so a 512px draft
+// and a 2K final from the same prompt are different photographs. Use --size
+// 512px only to test whether a NEW prompt direction behaves (logos creeping
+// in, AI sheen, wrong composition) when several rounds are likely; otherwise
+// generate 2K finals directly and use --variants to pick.
+const size = flag('size', '2K');
+
 if (has('dry-run')) {
   console.log(`model:  ${model}\nslug:   ${slug}\nprompt: ${prompt}`);
   process.exit(0);
@@ -74,7 +85,7 @@ async function generate(n) {
     body: JSON.stringify({
       model,
       input: [{ type: 'text', text: prompt }],
-      response_format: { type: 'image', mime_type: 'image/jpeg', aspect_ratio: '16:9', image_size: '2K' },
+      response_format: { type: 'image', mime_type: 'image/jpeg', aspect_ratio: '16:9', image_size: size },
     }),
   });
   if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 300)}`);

@@ -17,6 +17,45 @@ export const NEGATIVE =
   'no readable text anywhere in the image.';
 
 export const prompts = {
+  // The five posts whose first banners came from the Gemini web UI. Those read
+  // as AI images: rendered interfaces, invented brands, no people. Redone here
+  // in the same photographic system as the rest — and it also retires the one
+  // that carried a real client's branding on a model who isn't the owner.
+  'why-your-website-isnt-bringing-clients':
+    'Shot on a Sony A7 IV with a 35mm lens at f/1.8, lamplight only. A woman in her 30s sits on a couch at night in ' +
+    'a modest living room, phone held low in one hand, thumb hovering, expression flat and unimpressed — the face ' +
+    'of someone about to give up on a page and go back to the search results. Warm lamp on a side table, a mug, a ' +
+    'folded throw blanket, TV dark. Her phone screen is angled away from the camera and out of focus. Real living ' +
+    'room clutter, natural skin texture, no makeup retouching. Shallow depth of field, muted evening color.',
+
+  'automate-these-five-tasks':
+    'Shot on a Canon EOS R6 with a 35mm lens at f/2, available light from a desk lamp. A small-business owner in ' +
+    'his 40s sits at a home-office desk late in the evening, retyping details from a stack of paper invoices into ' +
+    'a laptop, one finger on the paper to keep his place. Sticky notes on the desk edge, a second pile of receipts, ' +
+    'a cold coffee, a phone face-down beside him. Tired but focused, not looking at the camera. The laptop screen ' +
+    'is out of focus with nothing readable. Warm pooled lamplight against a dim room, natural grain.',
+
+  'google-business-profile-springfield':
+    'Shot on a Fujifilm X-T5 with a 23mm lens at f/2.8, overcast daylight. A shop owner in her 40s stands on the ' +
+    'sidewalk directly in front of her small storefront in a New England downtown, arms folded, looking up at her ' +
+    'own sign with a considering expression — as if seeing it the way a stranger would. Red brick facades, a ' +
+    'parking meter, bare street trees, a few passers-by blurred by motion. Her storefront sign is plain and ' +
+    'unlettered. Real texture: worn awning, salt-marked sidewalk, fingerprints on the glass. Documentary framing.',
+
+  'website-that-works-while-you-sleep':
+    'Shot on a Canon EOS R5 with a 35mm lens at f/1.4, near-darkness. A man in his 40s asleep in bed, seen from ' +
+    'the side across a nightstand, face relaxed and turned into the pillow. On the nightstand, a phone lies ' +
+    'face-up, its screen lit with a notification, casting a soft cool glow across a glass of water and a paperback ' +
+    'book. Focus on the glowing phone in the foreground; the sleeping figure softly out of focus behind. Nothing ' +
+    'readable on the screen. Deep shadows, one small light source, natural grain, no other lighting.',
+
+  'lead-engine-for-contractors':
+    'Shot on a Nikon Z6 II with a 35mm lens at f/2, late afternoon light through a windshield. A contractor in his ' +
+    '40s sits in the driver\'s seat of his parked work truck, reading something on his phone with a small ' +
+    'satisfied smile, a clipboard of estimates on the passenger seat beside him. Plain unbranded work shirt, no ' +
+    'logos anywhere on his clothing or the truck. Dusty dashboard, a travel mug in the holder, a tape measure. ' +
+    'Warm low sun raking across his face and the dash. The phone screen is tilted away and out of focus.',
+
   'contractor-leads-without-angi-thumbtack':
     'Shot on a Canon EOS R6 with a 35mm lens at f/2. A painting contractor in his late 40s sits sideways in the ' +
     'open driver\'s door of his work van on a residential street in western Massachusetts, boots on the running ' +
