@@ -11,11 +11,15 @@ import Container from '../components/layout/Container.astro';
 
 // Every number here is already claimed elsewhere on this page or in a
 // published case study — the honesty rule applies to stat tiles too.
+// The labels carry the terms people actually search — "web design", "online
+// stores", "bilingual websites", "local SEO" — instead of describing the
+// credential in the abstract. The note underneath keeps the human detail that
+// makes each number believable.
 const stats = [
-  { n: '20+', label: 'years building the web', note: 'from Dreamweaver to AI agents' },
-  { n: '7', label: 'years in enterprise eCommerce', note: 'plus 4 consulting at Accenture' },
-  { n: 'EN·ES', label: 'bilingual, written natively', note: 'never run through a translator' },
-  { n: '#1', label: "a client's organic Google rank", note: '"exterior painting" in Springfield' },
+  { n: '20+', label: 'years of web design & development', note: 'from hand-coded HTML and Dreamweaver to AI agents' },
+  { n: '7', label: 'years building online stores at enterprise scale', note: 'plus 4 consulting at Accenture' },
+  { n: 'EN·ES', label: 'bilingual websites, written natively', note: 'English and Spanish — never run through a translator' },
+  { n: '#1', label: 'local SEO ranking earned for a client', note: 'organic #1 for "exterior painting" in Springfield, MA' },
 ];
 
 const principles = [
