@@ -31,12 +31,18 @@ const faqSchema = schema && faqs.length > 0
         <span class="apple-gradient-text" data-colorful-title>{heading}</span>
       </h2>
     )}
-    <div class="space-y-4">
+    {/* Native <details> accordion, closed by default: the answers stay in the
+        DOM (so the FAQPage schema above and Google's indexing are unaffected)
+        while the page stops being a wall of open answers. No JS. */}
+    <div class="space-y-3">
       {faqs.map((f) => (
-        <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-          <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
-          <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
-        </div>
+        <details class="group rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary">
+          <summary class="flex items-center justify-between gap-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden p-5 font-semibold text-text-light-primary dark:text-text-dark-primary rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60">
+            {f.q}
+            <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </summary>
+          <p class="px-5 pb-5 -mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+        </details>
       ))}
     </div>
   </div>

@@ -14,6 +14,7 @@ import AgentAvatar from '../components/team/AgentAvatar.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import Faq from '../components/ui/Faq.astro';
 import { getTestimonial } from '../data/testimonials';
 import { team, aiTeamBundles, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq, wholeTeamBundle } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
@@ -89,22 +90,12 @@ const steps = [
   { n: '05', title: 'You run it; we support it', body: 'You tell Manny what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: aiTeamFaq.map((f) => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
-};
 ---
 
 <BaseLayout
   title="The AI Team — 10 AI Agents from $95/mo | MannyKnows"
   description="Hire AI agents like staff — front desk, copy, graphics, voice, SEO, ads and more. Trained on your business, managed by Manny. $195 setup, from $95/mo."
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
@@ -402,17 +393,7 @@ const faqSchema = {
     <Section id="ai-team-faq" variant="alternate">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>Common questions</span>
-          </h2>
-          <div class="space-y-4">
-            {aiTeamFaq.map((f) => (
-              <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-                <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{f.q}</h3>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
-              </div>
-            ))}
-          </div>
+          <Faq faqs={aiTeamFaq} />
           <div class="text-center mt-12">
             <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
               Build my AI team

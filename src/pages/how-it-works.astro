@@ -17,7 +17,7 @@ const quote = getTestimonial('JK Daycare');
 // Answers assembled from copy already established elsewhere on the site —
 // same facts, gathered where a first-time visitor actually asks them.
 const faqs = [
-  { q: 'Do I need to know what I need before I call?', a: "No — that's our job. Bring the bottleneck: the quoting that eats your evenings, the phone nobody can answer, the site nobody can find. We map how the work actually comes in on the first call and recommend the fix, whether that's a plan, a one-time build, or honestly nothing yet." },
+  { q: 'Do I need to know what I need before I call?', a: "No — that's our job. Bring the bottleneck: the quoting that eats your evenings, the phone nobody can answer, the site nobody can find. We map how the work actually comes in on the first call and recommend the fix, whether that's a plan, a one-time build, or the smallest first step that gets you moving." },
   { q: 'What does it cost?', a: "Monthly website plans start at $95/mo and run month-to-month — site, hosting, Remi answering 24/7, SEO, and maintenance included. One-time builds get a flat written quote up front. Either way, nothing is billed until you've seen the plan and said go." },
   { q: 'What if I already have a website?', a: "You don't have to start over. We audit what you have, fix what's costing you customers — speed, technical SEO, mobile problems, forms nobody completes — and then keep it maintained so the fixes stick." },
   { q: 'Who actually does the work?', a: "Manny — twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture — plus the AI team he manages. You get a direct line to the person building, in English or Spanish. No account manager in the middle." },
@@ -72,10 +72,7 @@ const faqs = [
         )}
 
         <div class="max-w-3xl mx-auto mt-16">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>Fair questions, straight answers</span>
-          </h2>
-          <Faq faqs={faqs} />
+          <Faq faqs={faqs} heading="Fair questions, straight answers" />
         </div>
 
       </div>

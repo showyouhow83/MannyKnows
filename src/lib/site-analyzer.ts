@@ -202,7 +202,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
             ? `Found ${agent.how}, but nothing we can confirm is a live agent — worth checking that it answers after hours, not just during business hours.`
             : `Detected ${agent.how} — visitors can get answers without waiting for a callback.`)
         : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code — if you have an agent we missed, the free human review will catch it.)",
-      { text: 'Remi answers and books 24/7 — built into every Smart Website plan.', href: GET_BOOKED }),
+      { text: 'Remi answers 24/7 on every Smart Website plan — and books the job from Get Booked up.', href: GET_BOOKED }),
     c('faq', 'FAQ content AI can quote', hasFaqSchema ? 'pass' : 'warn',
       hasFaqSchema ? 'FAQ structured data found — AI assistants can quote your answers.'
         : 'No FAQ schema — when customers ask ChatGPT or Google AI, competitors with answers get cited.',
