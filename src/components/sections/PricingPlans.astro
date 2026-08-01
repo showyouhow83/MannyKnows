@@ -36,7 +36,7 @@ const includedEverywhere = [
         Monthly
       </button>
       <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
-        Yearly <span class="font-bold text-primary-blue dark:text-blue-300 billing-btn-note text-white">· 2 months free</span>
+        Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
       </button>
     </div>
     <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
@@ -209,11 +209,14 @@ const includedEverywhere = [
     if (!root) return;
     const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
     const caption = root.querySelector('[data-billing-caption]');
+    // Queried once here (not inside setBilling) so TS keeps the null-narrowing
+    // on `root` — and the elements never change anyway.
+    const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
     const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
     const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
 
     function setBilling(mode: 'monthly' | 'yearly') {
-      root.querySelectorAll<HTMLElement>('[data-billing-view]').forEach((el) => {
+      views.forEach((el) => {
         el.hidden = el.dataset.billingView !== mode;
       });
       if (caption) {
@@ -227,7 +230,14 @@ const includedEverywhere = [
         activeCls.forEach((c) => b.classList.toggle(c, active));
         inactiveCls.forEach((c) => b.classList.toggle(c, !active));
         const note = b.querySelector('.billing-btn-note');
-        if (note) note.classList.toggle('text-white', active);
+        if (note) {
+          // White inside the active gradient pill, brand-blue accent otherwise.
+          // (The static markup ships only text-white because yearly is the
+          // default — keeping both color classes there was a CSS conflict.)
+          note.classList.toggle('text-white', active);
+          note.classList.toggle('text-primary-blue', !active);
+          note.classList.toggle('dark:text-blue-300', !active);
+        }
       });
     }
 

@@ -101,9 +101,19 @@ const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.prop
      reached at all. Without this the tint and scrim paint OVER the text:
      they're inside a positioned, z-indexed box, and static page content sits
      below positioned siblings. */
-  :global(.has-hero-video > *:not(.hero-video-bg)) {
+  :global(.has-hero-video > *:not(.hero-video-bg):not(nav)) {
     position: relative;
     z-index: 1;
+  }
+  /* The nav gets position WITHOUT a z-index. Giving it one creates a stacking
+     context that traps its dropdown menus at z-index 1 — the hero copy (also
+     z-index 1, later in the DOM) then paints over the open menu, so hovering
+     into it "leaves" the nav and the menu snaps shut (Manny hit this live).
+     With z-auto the nav still paints above the z-0 video (later sibling), and
+     its dropdowns keep escaping to the page context where their own high
+     z-index works. */
+  :global(.has-hero-video > nav) {
+    position: relative;
   }
 
   /* Fade the bottom out so the section below doesn't start on a hard edge. */
