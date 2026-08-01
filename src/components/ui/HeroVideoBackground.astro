@@ -19,9 +19,13 @@ interface Props {
   /** 'mono' for white/grey footage (brand-tinted via blend modes);
       'color' for footage with its own palette (shown as-is at low opacity). */
   tone?: 'mono' | 'color';
+  /** Warm the video during browser idle time after page load (instead of only
+      when scrolled near) so playback starts instantly. Still after the load
+      event, so it can never compete with the page's own assets. */
+  warm?: boolean;
   class?: string;
 }
-const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.props;
+const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' } = Astro.props;
 ---
 
 <div class={`hero-video-bg ${tone === 'color' ? 'hero-video-bg--color' : ''} ${className}`} aria-hidden="true">
@@ -30,6 +34,7 @@ const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.prop
     data-hero-video
     data-webm={`/video/${name}.webm`}
     data-mp4={`/video/${name}.mp4`}
+    data-warm={warm ? '1' : undefined}
     poster={`/video/${name}-poster.webp`}
     muted
     loop
@@ -150,66 +155,78 @@ const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.prop
 
 <script>
   (function () {
-    const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-    if (!video) return;
+    const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-hero-video]'));
+    if (!videos.length) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const desktop = window.matchMedia('(min-width: 1024px)').matches;
     const conn = (navigator as any).connection;
     const thrifty = !!conn && (conn.saveData || /2g|3g/.test(conn.effectiveType ?? ''));
-    if (reduced || !desktop || thrifty) return; // poster stays; nothing downloads
+    if (reduced || !desktop || thrifty) return; // posters stay; nothing downloads
 
     // Audition override: ?bgvideo=<name> swaps in /video/<name>.webm and
     // treats it as colour footage — lets us compare candidate backgrounds on
     // localhost without rebuilding. Harmless in production: it can only point
     // at files we already host, and unknown names just show the poster.
     const override = new URLSearchParams(location.search).get('bgvideo');
-    if (override && /^[a-z0-9-]{1,40}$/.test(override)) {
-      video.dataset.webm = `/video/${override}.webm`;
-      delete video.dataset.mp4;
-      video.closest('.hero-video-bg')?.classList.add('hero-video-bg--color');
+
+    for (const video of videos) {
+      if (override && /^[a-z0-9-]{1,40}$/.test(override)) {
+        video.dataset.webm = `/video/${override}.webm`;
+        delete video.dataset.mp4;
+        video.closest('.hero-video-bg')?.classList.add('hero-video-bg--color');
+      }
+
+      const attach = () => {
+        if (video.querySelector('source')) return;
+        for (const [type, src] of [['video/webm', video.dataset.webm], ['video/mp4', video.dataset.mp4]] as const) {
+          if (!src) continue;
+          const s = document.createElement('source');
+          s.type = type;
+          s.src = src;
+          video.appendChild(s);
+        }
+        video.load();
+      };
+
+      // Fetch when the section is near the viewport — or, for data-warm
+      // videos, during browser idle time right after load, so playback is
+      // already buffered when the visitor scrolls to it. Both paths run after
+      // the load event, so the page's own assets always win the network.
+      const start = () => {
+        if (video.dataset.warm) {
+          const idle = (window as any).requestIdleCallback ?? ((fn: () => void) => setTimeout(fn, 1500));
+          idle(() => {
+            video.preload = 'auto';
+            attach();
+          });
+        }
+
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            video.dataset.onscreen = e.isIntersecting ? '1' : '';
+            if (e.isIntersecting) {
+              attach();
+              video.play().catch(() => {});
+            } else {
+              video.pause();
+            }
+          }
+        }, { rootMargin: '200px' });
+        io.observe(video);
+      };
+
+      if (document.readyState === 'complete') start();
+      else window.addEventListener('load', start, { once: true });
     }
 
-    const attach = () => {
-      const webm = video.dataset.webm;
-      const mp4 = video.dataset.mp4;
-      if (webm) {
-        const s = document.createElement('source');
-        s.type = 'video/webm';
-        s.src = webm;
-        video.appendChild(s);
-      }
-      if (mp4) {
-        const s = document.createElement('source');
-        s.type = 'video/mp4';
-        s.src = mp4;
-        video.appendChild(s);
-      }
-      video.load();
-    };
-
-    // Only fetch once the header is actually on screen, and only after load so
-    // it never competes with the page's own images.
-    const start = () => {
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            if (!video.querySelector('source')) attach();
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        }
-      }, { rootMargin: '200px' });
-      io.observe(video);
-
-      document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', () => {
+      for (const video of videos) {
         if (document.hidden) video.pause();
-        else if (video.querySelector('source')) video.play().catch(() => {});
-      });
-    };
-
-    if (document.readyState === 'complete') start();
-    else window.addEventListener('load', start, { once: true });
+        // Resume only what the observer had running — not videos it paused
+        // for being off-screen.
+        else if (video.dataset.onscreen && video.querySelector('source')) video.play().catch(() => {});
+      }
+    });
   })();
 </script>

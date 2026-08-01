@@ -342,6 +342,16 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     transition: color 0.3s ease;
   }
 
+  /* Split by viewport (Manny): desktop leads with the description — the title
+     repeats what the imagery already says; mobile gets only the short title.
+     Lives here (not as utility classes on the markup) because these scoped
+     selectors out-specify Tailwind's `hidden`. The mobile half sits in the
+     existing max-width block further down. */
+  @media (min-width: 769px) {
+    .hero-slide-content h2 { display: none; }
+    .hero-slide-content p { margin-top: 0; }
+  }
+
   .hero-slide.is-center:hover .hero-slide-content h2 { color: #10d1ff; }
 
   .hero-slide-content p {
@@ -363,6 +373,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     .hero-carousel { height: 25vw; }
     .hero-slide { width: 85vw; }
     .hero-slide-content { padding: 30px 18px 18px; }
+    .hero-slide-content p { display: none; }
   }
 
   /* Small mobile */
