@@ -149,6 +149,17 @@ const { name = 'hero-waves', tone = 'mono', class: className = '' } = Astro.prop
     const thrifty = !!conn && (conn.saveData || /2g|3g/.test(conn.effectiveType ?? ''));
     if (reduced || !desktop || thrifty) return; // poster stays; nothing downloads
 
+    // Audition override: ?bgvideo=<name> swaps in /video/<name>.webm and
+    // treats it as colour footage — lets us compare candidate backgrounds on
+    // localhost without rebuilding. Harmless in production: it can only point
+    // at files we already host, and unknown names just show the poster.
+    const override = new URLSearchParams(location.search).get('bgvideo');
+    if (override && /^[a-z0-9-]{1,40}$/.test(override)) {
+      video.dataset.webm = `/video/${override}.webm`;
+      delete video.dataset.mp4;
+      video.closest('.hero-video-bg')?.classList.add('hero-video-bg--color');
+    }
+
     const attach = () => {
       const webm = video.dataset.webm;
       const mp4 = video.dataset.mp4;
