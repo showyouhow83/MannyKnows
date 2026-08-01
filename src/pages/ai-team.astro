@@ -116,7 +116,7 @@ const faqSchema = {
         </ol>
       </nav>
 
-      <div class="pb-12 px-4">
+      <div class="pb-12">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
             <div class="flex justify-center mb-6">
@@ -174,7 +174,7 @@ const faqSchema = {
             Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite — AI agents trained on your business, working as one, on everything from your socials to your live website:
           </p>
         </div>
-        <div class="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
           {pillars.map((p) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
               <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{p.title}</h3>
@@ -271,7 +271,7 @@ const faqSchema = {
         </div>
 
         <!-- Manager -->
-        <div class="mb-8 max-w-5xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+        <div class="mb-8 max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
           <div class="w-28 h-28 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
             <AgentAvatar agent={manager.id} class="w-full h-full" />
           </div>
@@ -286,7 +286,7 @@ const faqSchema = {
         </div>
 
         <!-- Agents -->
-        <div class="grid gap-6 sm:grid-cols-2 max-w-5xl mx-auto">
+        <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {agents.map((a) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
@@ -330,7 +330,7 @@ const faqSchema = {
           </p>
         </div>
 
-        <div class="grid gap-6 lg:grid-cols-3 max-w-5xl mx-auto items-stretch">
+        <div class="grid gap-6 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
           {aiTeamBundles.map((b) => (
             <div class={`relative rounded-3xl border p-6 sm:p-7 flex flex-col ${b.best ? 'border-primary-blue/50 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06]' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
               {b.best && (

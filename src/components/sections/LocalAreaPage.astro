@@ -57,7 +57,7 @@ const contactContext = `Web design ${area.name}`;
           <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Web Design {area.name}, MA</span></li>
         </ol>
       </nav>
-      <div class="pb-12 px-4">
+      <div class="pb-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[1440px] mx-auto text-center">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">{area.badge}</span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
@@ -81,7 +81,7 @@ const contactContext = `Web design ${area.name}`;
 
     <Section id="local-offer" variant="default">
       <Container>
-        <div class="grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
+        <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {area.offers.map((o) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
               <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{o.title}</h2>
