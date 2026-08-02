@@ -38,7 +38,10 @@
   </div>
 
   <!-- Floating astronaut below the CTAs (Manny's placement) — 21 KB
-       transparent WebP rendered at 2x from a large Illustrator SVG. -->
+       transparent WebP rendered at 2x from a large Illustrator SVG. Drifts on
+       the same three-desynced-animations trick as the footer's rocket mascot
+       (coprime durations so the motion never quite repeats), tuned slower and
+       wider here: he's in zero-g, not on a launchpad. -->
   <img
     src="/mascot/astronaut-floating.webp"
     alt="An astronaut floating in space"
@@ -46,6 +49,37 @@
     height="858"
     loading="lazy"
     decoding="async"
-    class="mx-auto mt-8 w-full max-w-[150px] h-auto"
+    class="zero-g mx-auto mt-8 w-full max-w-[70px] h-auto"
   />
 </div>
+
+<style>
+  .zero-g {
+    transform-origin: 50% 45%;
+    animation:
+      zeroGDrift 7.3s ease-in-out infinite,
+      zeroGTilt 9.1s ease-in-out infinite,
+      zeroGBob 5.9s ease-in-out infinite;
+    will-change: translate, rotate;
+  }
+  @keyframes zeroGDrift {
+    0%   { translate: 0 0; }
+    30%  { translate: 6px -8px; }
+    55%  { translate: -5px -12px; }
+    80%  { translate: 3px -4px; }
+    100% { translate: 0 0; }
+  }
+  @keyframes zeroGTilt {
+    0%   { rotate: 0deg; }
+    35%  { rotate: -7deg; }
+    70%  { rotate: 5deg; }
+    100% { rotate: 0deg; }
+  }
+  @keyframes zeroGBob {
+    0%, 100% { scale: 1; }
+    50%      { scale: 1.04; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .zero-g { animation: none; }
+  }
+</style>
