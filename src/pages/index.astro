@@ -264,20 +264,23 @@ const NAVBAR_CONFIG = {
 		>
 			<SelectedWork />
 
-			<!-- Idea launcher, relocated from the nav bulb. Deliberately small and
-			     FYI-sized — a footnote to the portfolio, not a promo banner. -->
-			<div class="mt-10 flex justify-center px-4">
-				<button
-					type="button"
-					data-idea-open
-					class="group inline-flex items-start gap-3 max-w-lg rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70 px-4 py-3 text-left transition-all duration-300 hover:border-amber-400/50 hover:shadow-md"
-				>
-					<svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-					<span class="text-xs sm:text-[13px] leading-relaxed text-text-light-secondary dark:text-text-dark-secondary">
-						<strong class="text-text-light-primary dark:text-text-dark-primary">Got an idea of your own?</strong> Every project here started as one — an app, a tool, a store. <span class="text-primary-blue dark:text-blue-300 font-medium whitespace-nowrap group-hover:underline">See how we build it →</span>
-					</span>
-				</button>
-			</div>
+			{/* Idea launcher — hidden from the site per Manny (Aug 2026), together
+			   with the IdeaLaunchpad modal in BaseLayout. Kept in code in case it
+			   comes back.
+      <!-- Idea launcher, relocated from the nav bulb. Deliberately small and
+           FYI-sized — a footnote to the portfolio, not a promo banner. -->
+      <div class="mt-10 flex justify-center px-4">
+        <button
+          type="button"
+          data-idea-open
+          class="group inline-flex items-start gap-3 max-w-lg rounded-xl border border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70 px-4 py-3 text-left transition-all duration-300 hover:border-amber-400/50 hover:shadow-md"
+        >
+          <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+          <span class="text-xs sm:text-[13px] leading-relaxed text-text-light-secondary dark:text-text-dark-secondary">
+            <strong class="text-text-light-primary dark:text-text-dark-primary">Got an idea of your own?</strong> Every project here started as one — an app, a tool, a store. <span class="text-primary-blue dark:text-blue-300 font-medium whitespace-nowrap group-hover:underline">See how we build it →</span>
+          </span>
+        </button>
+      </div> */}
 		</PageSection>
 
 		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request

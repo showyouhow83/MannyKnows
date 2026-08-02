@@ -61,7 +61,7 @@ const searchIndex = [
   { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors — with an AI agent that books estimates 24/7.", url: "/websites-for-contractors/", type: "Page" },
   { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare — parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares/", type: "Page" },
   ...localAreas.map((a) => ({ title: `Web design ${a.name} MA`, description: `Multilingual websites with AI booking agents for ${a.name} & Western Mass businesses.`, url: `/web-design-${a.slug}-ma/`, type: "Page" })),
-  { title: "Launch your app", description: "You bring the idea — we design, build, launch, and market it for you.", url: "/#launchpad", type: "Page" },
+  // "Launch your app" search entry removed with the IdeaLaunchpad modal (Aug 2026) — its /#launchpad anchor no longer exists.
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog/", type: "Page" },
   ...blogPosts.map((p) => ({ title: p.data.title, description: p.data.description, url: `/blog/${p.id}/`, type: "Blog", tags: p.data.tags.join(" ") })),
 ];

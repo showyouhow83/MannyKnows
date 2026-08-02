@@ -3,7 +3,9 @@ import '../styles/global.css';
 import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
 import ContactModal from '../components/ui/ContactModal.astro';
-import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
+// IdeaLaunchpad ("You bring the idea…" modal) hidden per Manny (Aug 2026) —
+// re-enable this import and the tag near the end of <body> to bring it back.
+// import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
 import ChatBox from '../components/ui/ChatBox.astro';
 
 export interface Props {
@@ -208,7 +210,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 
 		<!-- Global "Got an idea?" launcher — floating button + modal, body-level so
 		     the modal clears every page-section stacking context. -->
-		<IdeaLaunchpad />
+		{/* <IdeaLaunchpad /> */}
 
 		<!-- Swiper + Carousel Effect Scripts — deferred so they don't block render
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
