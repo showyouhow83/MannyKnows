@@ -326,7 +326,9 @@ const NAVBAR_CONFIG = {
 		right: 0;
 		transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
 		pointer-events: none;
-		z-index: 0;
+		/* Over the cards, like the telescope astronaut — blocking a corner is
+		   house style now; pointer-events none keeps everything clickable. */
+		z-index: 20;
 	}
 	.gbp-mascot img {
 		height: var(--mascot-height);
@@ -334,8 +336,13 @@ const NAVBAR_CONFIG = {
 		display: block;
 		transform: rotate(var(--mascot-rotate));
 	}
-	/* Decoration only — hidden where it would crowd the stat cards. */
+	/* Tablet: same peek, scaled down so the stat cards keep breathing room.
+	   (Overlap itself is fine — house style since the telescope astronaut.) */
 	@media (max-width: 1279px) {
+		.gbp-mascot { --mascot-height: 320px; --mascot-top: 42%; }
+	}
+	/* Phones only: no empty margin at all — stays hidden. */
+	@media (max-width: 639px) {
 		.gbp-mascot { display: none; }
 	}
 </style>
