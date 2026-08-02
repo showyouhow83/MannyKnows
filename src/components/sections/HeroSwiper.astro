@@ -370,7 +370,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
 
   /* Tablet */
   @media (max-width: 768px) {
-    .hero-carousel { height: 25vw; }
+    .hero-carousel { height: 34vw; } /* +35% per Manny (was 25vw) */
     .hero-slide { width: 85vw; }
     .hero-slide-content { padding: 30px 18px 18px; }
     .hero-slide-content p { display: none; }
@@ -378,7 +378,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
 
   /* Small mobile */
   @media (max-width: 480px) {
-    .hero-carousel { height: 200px; }
+    .hero-carousel { height: 270px; } /* +35% per Manny (was 200px) */
     .hero-slide { width: calc(100% - 16px); }
     .hero-slide-content { padding: 24px 14px 14px; }
     .hero-slide-content h2 { font-size: 1rem; }
