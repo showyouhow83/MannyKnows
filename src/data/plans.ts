@@ -350,11 +350,11 @@ export const plans: Plan[] = [
       'Your Shopify subscription is included in the price — one bill, not two',
       'Remi answers shoppers 24/7 from day one; higher tiers make it sell',
     ],
-    headline: 'A store that sells while the shop is closed',
+    headline: 'Stores that sell while the shop is closed',
     blurb:
       "Setting up a store is easy — anyone can click through a signup. Setting up a store that sells is a job: the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes — from a well-run store at $150/mo to a store with its own ad engine. Every tier includes your Shopify subscription and is run like the enterprise eCommerce operations we spent years building.",
     whoFor:
-      "Shops, makers, restaurants, and brands that want to sell online — whether you're starting from zero, moving off Etsy, Wix, or Square, or your current store isn't selling.",
+      "Shops, makers, restaurants, and brands that want to sell online — starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels: one catalog runs them all, from a store you own.",
     // The four tiers ARE the product — modeled on what ecommerce agencies
     // actually sell as monthly retainers (catalog management, product copy,
     // store SEO, email flows/campaigns, CRO, ads), sized down to local-business
@@ -378,6 +378,7 @@ export const plans: Plan[] = [
           'Products loaded and organized — up to 10 product adds or changes a month',
           'SEO product descriptions for up to 100 products — drafted with AI from your Brand Brain, reviewed, and optimized to rank',
           'Remi answers shopper questions 24/7, in any language',
+          'Your catalog published and synced to Google Shopping, Instagram & Facebook — one catalog, every channel',
           'Discount codes and gift cards set up when you need them',
           'Monitoring, order-email basics, and a plain-English monthly report',
         ],
@@ -394,6 +395,7 @@ export const plans: Plan[] = [
           'Store SEO basics: titles, metas, product schema, collections organized how people shop',
           'Email flows set up and running: welcome, abandoned cart, post-purchase',
           'Reviews collected automatically and shown where they convert',
+          'Marketplace sync: catalog and inventory kept in step on Etsy, Amazon, or Square — sell everywhere without overselling anywhere',
           'Seasonal promos and campaigns set up for you',
           'Up to 30 product adds or changes a month',
         ],
