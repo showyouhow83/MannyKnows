@@ -279,7 +279,7 @@ const steps = [
         <!-- Agents -->
         <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {agents.map((a) => (
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+            <div id={`agent-${a.name.toLowerCase()}`} class="scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-16 h-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
                   <AgentAvatar agent={a.id} class="w-full h-full" />
