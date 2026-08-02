@@ -205,6 +205,11 @@ const NAVBAR_CONFIG = {
 			subtitle="It's the free listing behind Google Maps and the map pack — the three businesses locals see first when they search 'near me.' Most owners set it up once and never touch it again. Getting it right is the cheapest win in local SEO."
 			variant="hero"
 		>
+			<!-- Megaphone astronaut peeking in from the right edge. All the dials
+			     live in the .gbp-mascot CSS block below — tweak and hot-reload. -->
+			<div slot="background" class="gbp-mascot" aria-hidden="true">
+				<img src="/mascot/astronaut-megaphone.svg" alt="" loading="lazy" decoding="async" />
+			</div>
 			<GoogleProfile />
 		</PageSection>
 
@@ -301,6 +306,40 @@ const NAVBAR_CONFIG = {
 		<DockMenu />
 	</main>
 </BaseLayout>
+<style>
+	/* ── Astronaut peeking from the right of the GBP section ──────────────
+	   Manny's dials:
+	     --mascot-height  how big he is
+	     --mascot-peek    how much of him is VISIBLE (px or %) — the rest
+	                      stays cropped off the right edge of the section
+	     --mascot-rotate  counterclockwise tilt (more negative = leans in more)
+	     --mascot-top     vertical position inside the section
+	   ------------------------------------------------------------------- */
+	.gbp-mascot {
+		--mascot-height: 440px;
+		--mascot-peek: 58%;
+		--mascot-rotate: -31deg;
+		--mascot-top: 31.5%;
+
+		position: absolute;
+		top: var(--mascot-top);
+		right: 0;
+		transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
+		pointer-events: none;
+		z-index: 0;
+	}
+	.gbp-mascot img {
+		height: var(--mascot-height);
+		width: auto;
+		display: block;
+		transform: rotate(var(--mascot-rotate));
+	}
+	/* Decoration only — hidden where it would crowd the stat cards. */
+	@media (max-width: 1279px) {
+		.gbp-mascot { display: none; }
+	}
+</style>
+
 
 <script>
   // Handle URL parameters for chat opening and reference tracking
