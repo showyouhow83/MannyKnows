@@ -376,7 +376,8 @@ export const plans: Plan[] = [
           'Shopify store configured properly: theme, payments, shipping, taxes, checkout',
           'Your Shopify (Basic) subscription included — the account is yours, we run it',
           'Products loaded and organized — up to 10 product adds or changes a month',
-          'SEO product descriptions for up to 100 products — drafted with AI from your Brand Brain, reviewed, and optimized to rank',
+          'SEO product descriptions for your whole catalog — drafted with AI from your Brand Brain, reviewed, and optimized to rank',
+          'Store SEO basics: titles, metas, and product schema set up right',
           'Remi answers shopper questions 24/7, in any language',
           'Your catalog published and synced to Google Shopping, Instagram & Facebook — one catalog, every channel',
           'Discount codes and gift cards set up when you need them',
@@ -391,8 +392,7 @@ export const plans: Plan[] = [
         description: 'The store starts pulling its weight — copy, SEO basics, and email doing the selling.',
         builtOn: 'Everything in Sell Online, plus',
         features: [
-          'SEO product descriptions for up to 500 products — written, reviewed, and kept optimized',
-          'Store SEO basics: titles, metas, product schema, collections organized how people shop',
+          'Store SEO on autopilot: titles, metas, schema, and collections tuned continuously by AI',
           'Email flows set up and running: welcome, abandoned cart, post-purchase',
           'Reviews collected automatically and shown where they convert',
           'Marketplace sync: catalog and inventory kept in step on Etsy, Amazon, or Square — sell everywhere without overselling anywhere',
@@ -411,7 +411,6 @@ export const plans: Plan[] = [
         features: [
           'Your included Shopify subscription upgrades to Grow — staff accounts and shipping discounts a store this size needs',
           'Remi becomes a true AI shopping assistant — recommends, answers, and upsells from your Brand Brain',
-          'SEO product descriptions for up to 2,000 products — full-catalog coverage for serious inventories',
           'Full eCommerce SEO program: keyword strategy, collection pages, content that ranks',
           'Email and SMS campaigns every month — not just automated flows',
           'Multilingual storefront as standard',
@@ -428,7 +427,6 @@ export const plans: Plan[] = [
         description: 'The store plus its own ad engine — bought separately this is $1,350/mo of service.',
         builtOn: 'Everything in Sell Smarter, plus',
         features: [
-          'SEO product descriptions for up to 5,000 products — catalogs at retail scale',
           'Your ads run and managed on two networks — Google Shopping and a social platform, or two social',
           'Product feeds synced where buyers browse: Google, Instagram & Facebook Shops',
           'Landing pages built for each campaign, so ads land somewhere built to convert',
@@ -452,7 +450,7 @@ export const plans: Plan[] = [
         title: 'Your products',
         items: [
           'Products loaded, organized into collections, and kept current — monthly change quotas by tier',
-          'SEO product descriptions at every tier: AI drafts them from your product data and Brand Brain, we review and optimize — from 100 products at Sell Online up to 5,000 at Sell Everywhere',
+          'SEO product descriptions at every tier: AI drafts them from your product data and Brand Brain, we review and optimize — your whole catalog, no per-product caps',
           'Your admin covers the store too — products, inventory, orders, and promos in one place',
         ],
       },
@@ -481,7 +479,7 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Is the Shopify subscription really included?', a: "Yes — and it scales with your tier. Sell Online and Sell More include Shopify's Basic plan, which is right for most stores starting out. Sell Smarter and Sell Everywhere include Shopify's Grow plan, because a store running campaigns with thousands of products needs its staff accounts and shipping rates anyway. Either way the account is opened in your name, so the store is yours, not ours. Enterprise operations that need Shopify Advanced or Plus: we run those too — you pay Shopify the difference and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },
-      { q: 'Who actually writes thousands of product descriptions?', a: "AI does the drafting — from your product data, your photos, and your Brand Brain, so every description sounds like your store and is structured to rank. Then it gets reviewed and optimized before it ships; nothing goes live unread. That's the honest reason the quotas reach 5,000 products at prices a human-only agency can't touch: you approve the voice once, and the catalog gets covered." },
+      { q: 'Who actually writes thousands of product descriptions?', a: "AI does the drafting — from your product data, your photos, and your Brand Brain, so every description sounds like your store and is structured to rank. Then it gets reviewed and optimized before it ships; nothing goes live unread. That's the honest reason there are no per-product caps at prices a human-only agency can't touch: you approve the voice once, and your whole catalog gets covered." },
       { q: 'Why is the entry price $150 when agencies charge $1,000+ a month?', a: "Because the entry tier is honest about what it is: a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and Remi answers customers so you don't pay a person to. What costs $1,000+ at an agency is the work in the upper tiers — SEO programs, campaigns, ads, and product copy at real catalog scale — and that's exactly what those tiers add, at prices a local business can carry." },
       { q: 'I already have a store. Do I have to start over?', a: "No. We take over existing stores at any tier — audit what you have, fix what's costing you sales, and run it from there. If you're on Etsy, Wix, Square, or WooCommerce, moving your products to Shopify is part of setup." },
       { q: 'Do I still need one of the website plans?', a: "Usually not — your store is your website. Shopify handles pages and a blog, and from Sell Smarter up we run them with everything Get Growing does for service businesses: self-optimizing content, SEO, and Remi selling. If you also run a service business with its own site, the two plans work side by side." },
