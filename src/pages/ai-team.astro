@@ -117,11 +117,22 @@ const steps = [
               The AI Team · live now
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>Hire AI agents like staff</span>
+              <span class="apple-gradient-text" data-colorful-title>One team. One brain. One boss — you.</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Ten AI specialists, one shared brain, one manager. Each agent is built around your business and trained on the same knowledge — your voice, your services, your customers — then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny puts the right agents on the job and brings the finished work back for your sign-off.
+              Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite: ten AI specialists, one shared brain, one manager — every agent built around your business, trained on your voice, your services, and your customers, then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny puts the right agents on the job and brings the finished work back for your sign-off.
             </p>
+
+            <!-- The three pillars, promoted into the hero (Manny: one stronger
+                 hero instead of hero + separate "One brain" section) -->
+            <div class="mt-10 grid gap-6 md:grid-cols-3 max-w-6xl mx-auto text-left">
+              {pillars.map((pl) => (
+                <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                  <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{pl.title}</h3>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{pl.body}</p>
+                </div>
+              ))}
+            </div>
 
             <!-- Mini roster preview -->
             <div class="mt-8 flex items-center justify-center -space-x-2">
@@ -153,28 +164,6 @@ const steps = [
         </Container>
       </div>
     </header>
-
-    <!-- One brain, one boss -->
-    <Section id="ai-team-brain" variant="default">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-10">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-            <span class="apple-gradient-text" data-colorful-title>One team. One brain. One boss — you.</span>
-          </h2>
-          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite — AI agents trained on your business, working as one, on everything from your socials to your live website:
-          </p>
-        </div>
-        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
-          {pillars.map((p) => (
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{p.title}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.body}</p>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
 
     <!-- What that looks like in practice -->
     <Section id="ai-team-example" variant="alternate">
