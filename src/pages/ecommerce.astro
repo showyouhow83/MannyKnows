@@ -133,35 +133,56 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
         </div>
         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
           {plan.tiers!.map((t) => (
-            <div class={`relative flex flex-col rounded-2xl border p-6 ${t.featured ? 'border-primary-blue/60 ring-1 ring-primary-blue/30 bg-gradient-to-b from-primary-blue/[0.05] to-transparent' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
+            <div class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${t.featured ? 'border-primary-blue/50 shadow-lg shadow-primary-blue/10 ring-1 ring-primary-blue/30 xl:-mt-2 xl:mb-2' : 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'}`}>
               {t.featured && (
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1">Most popular</span>
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">
+                  Most popular
+                </span>
               )}
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
-              <div class="mt-2">
-                <div data-billing-view="monthly" hidden>
-                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span>
-                  <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.unit}</span>
-                </div>
-                <div data-billing-view="yearly">
-                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${Math.round((t.price * 10) / 12).toLocaleString('en-US')}</span>
-                  <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                </div>
+
+              <div class="flex items-center justify-center gap-2">
+                <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{t.name}</h3>
               </div>
-              <p class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1">{t.note}</p>
-              <p data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span></p>
-              <p data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${(t.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span></p>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mt-3">{t.description}</p>
-              {t.builtOn && <p class="mt-4 text-xs font-bold text-primary-blue dark:text-blue-300">{t.builtOn}</p>}
-              <ul class="mt-3 space-y-2 flex-1">
-                {t.features.map((f) => (
-                  <li class="flex gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <a href="#contact" data-contact-context={`Online Store — ${t.name}`} class={`mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>Get started</a>
+
+              <div class="mt-4 text-center">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+                <div data-billing-view="monthly" hidden class="whitespace-nowrap leading-none mt-0.5">
+                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                </div>
+                <div data-billing-view="yearly" class="whitespace-nowrap leading-none mt-0.5">
+                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${Math.round((t.price * 10) / 12).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                </div>
+                <div data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
+                  or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+                </div>
+                <div data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
+                  billed as one payment of ${(t.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+                </div>
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1.5">{t.note}</p>
+              </div>
+
+              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{t.description}</p>
+
+              <div class="mt-4 pt-4 border-t border-light-tertiary dark:border-dark-accent flex-1">
+                {t.builtOn && (
+                  <p class="mb-2.5 text-xs font-bold text-primary-blue dark:text-blue-300">{t.builtOn}</p>
+                )}
+                <ul class="space-y-2.5">
+                  {t.features.map((f) => (
+                    <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                      <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <a href="#contact" data-contact-context={`Online Store — ${t.name}`} class={`mt-4 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>
+                Get started
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
             </div>
           ))}
         </div>
