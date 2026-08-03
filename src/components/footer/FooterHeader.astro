@@ -276,7 +276,6 @@ const townLinks: Record<string, string> = {
           <button
             type="submit"
             class="w-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white py-3 px-6 rounded-xl text-sm font-semibold inline-flex items-center justify-center relative transition-all duration-300 group"
-            disabled
           >
             <span class="relative z-10 flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -400,15 +399,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Trigger on first engagement with either form (you must focus a field to
   // type), with an idle fallback so the submit buttons still enable on their own.
+  // Interaction-only, no idle fallback: the idle fetch put /api/contact and
+  // /api/newsletter (slow cold KV endpoints) into Lighthouse's critical
+  // request chain on every page. Both submit handlers now fetch on demand
+  // if the focusin fetch hasn't happened.
   ['#contactForm', '#newsletterForm'].forEach((sel) => {
     const form = document.querySelector(sel);
     if (form) form.addEventListener('focusin', loadTokens, { once: true });
   });
-  if ('requestIdleCallback' in window) {
-    (window as any).requestIdleCallback(() => loadTokens(), { timeout: 5000 });
-  } else {
-    setTimeout(loadTokens, 4000);
-  }
   
   // Real-time validation setup
   setupRealTimeValidation();
@@ -419,6 +417,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      if (!csrfToken || !sessionId) await loadTokens();
       if (!csrfToken || !sessionId) {
         showError('Security token not available. Please refresh the page.');
         return;
@@ -511,6 +510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     newsletterForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      if (!newsletterCsrfToken || !newsletterSessionId) await loadTokens();
       if (!newsletterCsrfToken || !newsletterSessionId) {
         showNewsletterError('Security token not available. Please refresh the page.');
         return;

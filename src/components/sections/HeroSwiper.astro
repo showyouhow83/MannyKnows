@@ -158,8 +158,9 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
       return o;
     }
 
+    var slideW = 0; // cached: reading offsetWidth in render() forced a reflow per call
     function render() {
-      var w = slides[0].offsetWidth || track.offsetWidth || 1;
+      var w = slideW || (slideW = slides[0].offsetWidth || track.offsetWidth || 1);
       for (var i = 0; i < n; i++) {
         var el = slides[i];
         var o = offsetOf(i);
@@ -242,7 +243,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
       else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
     });
 
-    window.addEventListener('resize', render);
+    window.addEventListener('resize', function () { slideW = 0; render(); });
 
     // first paint without the 0.6s transition so slides don't fly out from center
     track.classList.add('no-anim');

@@ -478,7 +478,7 @@ const jsonLd = {
         sessionId = data.session_id;
       } catch (_) { /* form will surface an error on submit if this failed */ }
     }
-    loadToken();
+    form.addEventListener('focusin', () => loadToken(), { once: true });
 
     function setStatus(msg: string, ok: boolean) {
       if (!statusEl) return;
