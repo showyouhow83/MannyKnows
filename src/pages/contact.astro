@@ -241,7 +241,7 @@ const inputClass =
         if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
       } catch { /* offline — the mailto fallback still works */ }
     }
-    getToken();
+    form.addEventListener('focusin', () => getToken(), { once: true });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
