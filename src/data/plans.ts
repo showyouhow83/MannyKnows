@@ -41,6 +41,7 @@ export interface PlanTier {
 export interface Plan {
   slug: string;
   name: string;
+  metaTitle?: string;   // detail-page <title> override; default is "<name> Plan — from $X/mo | MannyKnows"
   icon: string;         // SVG path (the `d` attribute of a 24×24 stroke icon)
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
   tagline: string;      // one-line promise on the card
@@ -67,6 +68,7 @@ export const plans: Plan[] = [
   {
     slug: 'get-found',
     name: 'Get Found',
+    metaTitle: 'Get Found — Local SEO & Website, Western Mass | MannyKnows',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 95,
     tagline: "Everything a new business needs to exist online and be found — nothing it doesn't.",
@@ -601,6 +603,7 @@ export const plans: Plan[] = [
   },
   {
     slug: 'multimedia-agency',
+    metaTitle: 'Multimedia Agency — Web Development Retainer | MannyKnows',
     name: 'Multimedia Agency',
     icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
     price: 1800,
