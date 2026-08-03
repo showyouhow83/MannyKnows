@@ -147,7 +147,6 @@ const NAVBAR_CONFIG = {
 	title="AI Agents, Web Design, SEO & Apps in Springfield, MA | MannyKnows"
 	description="Web design, AI agents, local SEO & custom apps from $95/mo — built in Springfield, MA for all of Western Mass. Cancel anytime. Call or text (413) 361-8451."
 	footerServices={true}
-	preconnect={['https://opscloud.us']}
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	<main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -297,10 +296,6 @@ const NAVBAR_CONFIG = {
 		     Fabricated testimonials were removed; see ReviewsSection.astro. -->
 		<!-- <ReviewsSection /> -->
 
-
-		<!-- opscloud.us AI agent (Manny) — loads the real widget directly. Both
-		     domains are ours; CSP for opscloud.us lives in BaseLayout. Homepage trial. -->
-		<script is:inline src="https://opscloud.us/widget/loader.js" data-agent-id="agent_manny_mk" async></script>
 
 		<!-- Floating Dock Menu -->
 		<DockMenu />
