@@ -87,11 +87,16 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
               <a href="/work/cherry-vibes/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
                 See a store we built
               </a>
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                Book a call
-              </a>
             </div>
             <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month · cancel anytime · no lock-in</p>
+            <!-- Platforms we service — Shopify is what the plans run on, but the
+                 engineering isn't platform-locked. "Adobe Commerce" is Magento's
+                 current name (renamed 2021; the open-source edition is still
+                 Magento Open Source). -->
+            <p class="mt-6 text-sm text-text-light-tertiary dark:text-text-dark-tertiary max-w-3xl mx-auto">
+              We work across the platforms:
+              <span class="text-text-light-secondary dark:text-text-dark-secondary font-medium">Shopify · WooCommerce · Adobe Commerce (Magento) · BigCommerce · Ecwid · Square Online · Squarespace · Wix</span>
+            </p>
           </div>
         </Container>
       </div>
@@ -110,6 +115,22 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
             Each tier includes everything in the one before it — and your Shopify subscription. Start where your store is; move up when it's earning more.
           </p>
         </div>
+        <!-- Monthly ⇄ Yearly toggle — visually identical to /plans, yearly
+             pre-selected so the cheaper rate is what visitors meet first. -->
+        <div id="storePricing">
+        <div class="flex flex-col items-center gap-2 mb-10">
+          <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
+            <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
+              Monthly
+            </button>
+            <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
+              Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
+            </button>
+          </div>
+          <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
+            One upfront payment for the year — 2 months free
+          </p>
+        </div>
         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
           {plan.tiers!.map((t) => (
             <div class={`relative flex flex-col rounded-2xl border p-6 ${t.featured ? 'border-primary-blue/60 ring-1 ring-primary-blue/30 bg-gradient-to-b from-primary-blue/[0.05] to-transparent' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
@@ -118,11 +139,18 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
               )}
               <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
               <div class="mt-2">
-                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span>
-                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.unit}</span>
+                <div data-billing-view="monthly" hidden>
+                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span>
+                  <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.unit}</span>
+                </div>
+                <div data-billing-view="yearly">
+                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${Math.round((t.price * 10) / 12).toLocaleString('en-US')}</span>
+                  <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                </div>
               </div>
               <p class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1">{t.note}</p>
-              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront — 2 months free</p>
+              <p data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span></p>
+              <p data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${(t.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span></p>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mt-3">{t.description}</p>
               {t.builtOn && <p class="mt-4 text-xs font-bold text-primary-blue dark:text-blue-300">{t.builtOn}</p>}
               <ul class="mt-3 space-y-2 flex-1">
@@ -136,6 +164,7 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
               <a href="#contact" data-contact-context={`Online Store — ${t.name}`} class={`mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>Get started</a>
             </div>
           ))}
+        </div>
         </div>
 
         <div class="mt-14">
@@ -292,3 +321,42 @@ const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-opt
     <DockMenu />
   </main>
 </BaseLayout>
+
+<script>
+  // Monthly ⇄ Yearly toggle for the store tiers — same behavior as /plans.
+  (function () {
+    const root = document.getElementById('storePricing');
+    if (!root) return;
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
+    const caption = root.querySelector('[data-billing-caption]');
+    const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
+    const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
+    const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
+
+    function setBilling(mode: 'monthly' | 'yearly') {
+      views.forEach((el) => { el.hidden = el.dataset.billingView !== mode; });
+      if (caption) {
+        caption.textContent = mode === 'monthly'
+          ? 'Month-to-month · cancel anytime'
+          : 'One upfront payment for the year — 2 months free';
+      }
+      buttons.forEach((b) => {
+        const active = b.dataset.billingBtn === mode;
+        b.setAttribute('aria-pressed', String(active));
+        activeCls.forEach((c) => b.classList.toggle(c, active));
+        inactiveCls.forEach((c) => b.classList.toggle(c, !active));
+        const note = b.querySelector('.billing-btn-note');
+        if (note) {
+          note.classList.toggle('text-white', active);
+          note.classList.toggle('text-primary-blue', !active);
+          note.classList.toggle('dark:text-blue-300', !active);
+        }
+      });
+    }
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
+    );
+  })();
+</script>
+
