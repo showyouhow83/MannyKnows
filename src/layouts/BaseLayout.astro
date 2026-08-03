@@ -56,6 +56,8 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 		-->
 		<meta charset="UTF-8" />
 		{preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
+		<!-- Remi loads on every page (below), so its origin warms up on every page. -->
+		<link rel="preconnect" href="https://opscloud.us" crossorigin />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<meta name="description" content={description} />
 		<meta property="og:title" content={title} />
@@ -216,9 +218,16 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
 		{/* swiper-bundle.min.js also moved into Testimonials.astro — see note in <head>. */}
 
-		<!-- Remi chat widget — layout-level so every page gets it exactly once.
-		     Do NOT also render <ChatBox /> in individual pages. -->
+		<!-- The OLD first-party chat panel — currently unreachable by design (no
+		     trigger elements render; see ChatBox.astro). Kept pending a Remi-era
+		     rebuild or removal. Do NOT also render <ChatBox /> in individual pages. -->
 		<ChatBox />
+
+		<!-- Remi — the real site agent, our own opscloud.us app (agent_manny_mk).
+		     Layout-level so Remi is on EVERY public page (was a homepage-only
+		     trial; promoted per Manny, Aug 2026). CSP for opscloud.us
+		     (script/style/font/connect+wss/frame) lives in the meta tag above. -->
+		<script is:inline src="https://opscloud.us/widget/loader.js" data-agent-id="agent_manny_mk" async></script>
 	</body>
 </html>
 
