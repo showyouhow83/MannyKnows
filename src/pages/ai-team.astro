@@ -33,18 +33,23 @@ const setup = aiTeamSetupFee.toLocaleString('en-US');
 const topSave = wholeTeamBundle.savings.toLocaleString('en-US');
 
 // "One brain, one boss" pillars.
+// Short on purpose, and every phrase earns SEO keep ("AI agents trained on
+// your business", "managed", "AI marketing") — no filler.
 const pillars = [
   {
-    title: 'Every agent shares one Brand Brain.',
-    body: "One knowledge base of your business — services, prices, customers, and brand voice — that every AI agent is trained on. Set it up once; nothing ever goes out off-brand.",
+    icon: 'M9.75 3a3 3 0 00-3 3v.75H6A2.25 2.25 0 003.75 9v9A2.25 2.25 0 006 20.25h12A2.25 2.25 0 0020.25 18V9A2.25 2.25 0 0018 6.75h-.75V6a3 3 0 00-3-3h-4.5zM9 9.75h.008v.008H9V9.75zm6 0h.008v.008H15V9.75zM8.25 14.25h7.5',
+    title: 'One Brand Brain',
+    body: 'AI agents trained on your business — services, prices, and brand voice — so nothing ships off-brand.',
   },
   {
-    title: 'Every job routes through Manny.',
-    body: "You ask once. Manny briefs the right agents, moves the work down the line, and brings the finished result back for your ok — one point of contact, a whole team behind it.",
+    icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
+    title: 'Managed by Manny',
+    body: 'Ask once. Manny briefs the right AI agents, runs the job, and returns finished work for your sign-off.',
   },
   {
-    title: 'Every result feeds the next job.',
-    body: "Research feeds the writing, writing feeds the design, and each month's results sharpen the next. Your marketing compounds instead of starting from scratch.",
+    icon: 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941',
+    title: 'AI marketing that compounds',
+    body: "Research feeds writing, writing feeds design — each month's results sharpen the next.",
   },
 ];
 
@@ -128,6 +133,9 @@ const steps = [
             <div class="mt-10 grid gap-6 md:grid-cols-3 max-w-6xl mx-auto text-left">
               {pillars.map((pl) => (
                 <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-3">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={pl.icon} /></svg>
+                  </div>
                   <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{pl.title}</h3>
                   <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{pl.body}</p>
                 </div>
@@ -144,16 +152,9 @@ const steps = [
             </div>
             <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Ten specialists and a manager, working as one team — and the roster keeps growing.</p>
 
-            <!-- Price anchor: hire agents like staff -->
-            <div class="mt-8">
-              <span class="text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Hire agents from </span>
-              <span class="text-4xl font-black align-middle">${startFrom}</span><span class="text-lg text-text-light-secondary dark:text-text-dark-secondary">/mo each</span>
-              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">one-time ${setup} setup · Manny included with any hire · normal AI usage included · add or drop agents anytime</span>
-            </div>
-
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-                Meet &amp; hire the team
+                Meet the team
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
@@ -228,17 +229,11 @@ const steps = [
           <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
             That was a manager and two AI agents working one real business. Hire AI agents the same way — the ones your business needs, trained on your voice, from $95/mo each.
           </p>
-          <div class="mt-4 text-center">
-            <a href="#ai-team-roster" class="inline-flex items-center gap-2 text-primary-blue dark:text-blue-300 font-semibold hover:underline">
-              Meet — and hire — your team
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
-            </a>
-          </div>
         </div>
       </Container>
     </Section>
 
-    <!-- Meet & hire the team -->
+    <!-- Meet the team (roster) -->
     <Section id="ai-team-roster" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-8">
@@ -246,13 +241,16 @@ const steps = [
             <span class="apple-gradient-text" data-colorful-title>Meet — and hire — your team</span>
           </h2>
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each agent owns one job and does it well. "Hiring" one means we build it around your business, connect it to your Brand Brain, and fine-tune it with you until it's ready. Hire one and it delivers straight to you through Manny. Hire more and Manny coordinates the handoffs automatically. A flat monthly rate per agent, like staff, with normal AI usage included — and every agent can take a name that fits your brand.
+            Each agent owns one job and does it well. "Hiring" one means we build it around your business, connect it to your Brand Brain, and fine-tune it with you until it's ready. Hire one and it delivers straight to you through Manny. Hire more and Manny coordinates the handoffs automatically — and every agent can take a name that fits your brand.
+          </p>
+          <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+            Agents from ${startFrom}/mo each · one-time ${setup} setup · Manny included with any hire · normal AI usage included · add or drop agents anytime
           </p>
         </div>
 
         <!-- Manager -->
         <div class="mb-8 max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
-          <div class="w-28 h-28 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+          <div class="w-36 h-36 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
             <AgentAvatar agent={manager.id} class="w-full h-full" />
           </div>
           <div class="flex-1 text-center sm:text-left">
@@ -270,7 +268,7 @@ const steps = [
           {agents.map((a) => (
             <div id={`agent-${a.name.toLowerCase()}`} class="scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
-                <div class="w-16 h-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
                   <AgentAvatar agent={a.id} class="w-full h-full" />
                 </div>
                 <div class="min-w-0">
