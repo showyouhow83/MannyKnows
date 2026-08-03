@@ -61,7 +61,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 ---
 
 <BaseLayout
-  title={`${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
+  title={plan.metaTitle ?? `${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
   description={plan.tiers
     ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} — $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
     : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr — 2 months free. Cancel anytime.`}
