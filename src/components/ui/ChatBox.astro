@@ -7,6 +7,21 @@ const { className = '' } = Astro.props;
 ---
 
 <!-- Chatting Hub -->
+<!-- Corner launcher — the one persistent way to reach Remi on every page.
+     The script below already listens for #topChatToggle clicks (it toggles),
+     so this element needs no extra wiring. Site copy promises "Remi, in the
+     corner of your screen" — this is that corner. Mobile sits higher
+     (bottom-20) to clear the full-width dock bar. -->
+<button
+  type="button"
+  id="topChatToggle"
+  aria-label="Chat with Remi — answers any hour, English or Spanish"
+  title="Ask Remi"
+  class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/30 transition-shadow duration-300 hover:shadow-xl hover:shadow-primary-blue/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-blue"
+>
+  <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.84L3 20l1.3-3.9A7.36 7.36 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+</button>
+
 <div id="chatBox" class={`chat-hub-container transform scale-0 transition-all duration-300 origin-bottom-center z-40 opacity-0 invisible ${className} chat-glassmorphism`}>
   <div class="flex justify-between items-center p-4 border-b border-white/20 dark:border-white/10">
     <div class="flex items-center gap-3">
