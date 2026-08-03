@@ -24,6 +24,7 @@ const { area } = Astro.props;
 const faqs = [
   { q: `How much does a website cost in ${area.name}, MA?`, a: area.faqPricing },
   { q: `What kinds of ${area.name} businesses do you work with?`, a: area.faqBusinesses },
+  { q: `Can you build AI agents for my ${area.name} business?`, a: area.faqAgents },
   { q: `Do you work with businesses outside ${area.name}?`, a: area.faqOutside },
   { q: 'Can you fix or improve the website I already have?', a: area.faqExisting },
   { q: 'What makes MannyKnows different from a big agency or a DIY builder?', a: area.faqDifferent },
@@ -33,7 +34,7 @@ const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: 'MannyKnows',
-  description: `Web design, technical SEO, and custom software for businesses in ${area.name} and Western Massachusetts.`,
+  description: `Web design, AI agents, technical SEO, online stores, and custom software for businesses in ${area.name} and Western Massachusetts.`,
   url: `https://mannyknows.com/web-design-${area.slug}-ma/`,
   email: 'mm@mannyknows.com',
   telephone: '+1-413-361-8451',
@@ -102,7 +103,7 @@ const contactContext = `Web design ${area.name}`;
     <Section id="local-context" variant="alternate">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4 text-text-light-primary dark:text-text-dark-primary">{area.angleHeading}</h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.angleHeading}</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{area.angleBody}</p>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
             <span class="text-text-light-primary dark:text-text-dark-primary font-medium">Multilingual by default.</span> {area.languageNote}
@@ -117,10 +118,45 @@ const contactContext = `Web design ${area.name}`;
       </Container>
     </Section>
 
+    <Section id="local-now" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.cityNow.heading}</span></h2>
+          {area.cityNow.paragraphs.map((para) => (
+            <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{para}</p>
+          ))}
+          <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed border-l-2 border-light-tertiary dark:border-dark-accent pl-3 mt-5">
+            Sources: {area.cityNow.sources.map((s, i) => (
+              <span>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener noreferrer" class="underline decoration-dotted underline-offset-2 hover:text-primary-blue dark:hover:text-blue-300">{s.label}</a></span>
+            ))}
+          </p>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="local-more" variant="alternate">
+      <Container>
+        <div class="max-w-6xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>{area.beyondWebHeading}</span>
+          </h2>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {area.beyondWeb.map((b) => (
+              <a href={b.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
+                <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{b.title}</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{b.body}</p>
+                <span class="text-sm text-primary-blue dark:text-blue-300 font-medium mt-4 group-hover:underline">{b.linkText} →</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
     <Section id="local-market" variant="default">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4 text-text-light-primary dark:text-text-dark-primary">{area.marketData.heading}</h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.marketData.heading}</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-5">{area.marketData.body}</p>
           <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed border-l-2 border-light-tertiary dark:border-dark-accent pl-3">
             Source: <a
@@ -140,6 +176,12 @@ const contactContext = `Web design ${area.name}`;
           <div class="max-w-2xl mx-auto text-center">
             <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">{area.proofHeading}</p>
             <QuoteBlock quote={quote} align="center" />
+            {area.proofCaseStudy && (
+              <p class="mt-8 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+                {area.proofCaseStudy.line}{' '}
+                <a href={`/work/${area.proofCaseStudy.slug}/`} class="text-primary-blue dark:text-blue-300 font-medium hover:underline whitespace-nowrap">Read the case study →</a>
+              </p>
+            )}
           </div>
         </Container>
       </Section>
