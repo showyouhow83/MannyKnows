@@ -57,7 +57,7 @@ const iconClasses = {
   <div class={`w-full h-full aspect-square sm:w-12 sm:h-12 ${variantClasses[variant]} flex items-center justify-center text-text-light-primary dark:text-text-dark-primary relative overflow-hidden`} style={variantStyles[variant]}>
     
     {variant === 'brand' ? (
-      <span class="text-white font-black text-sm sm:text-lg relative z-10" aria-hidden="true">MK</span>
+      <img src="/art/astronaut-rocket.webp" width="160" height="160" alt="" aria-hidden="true" loading="lazy" decoding="async" class="w-9 h-9 sm:w-10 sm:h-10 object-contain relative z-10 pointer-events-none" />
     ) : variant === 'chat' ? (
       <div class="scale-75 sm:scale-100 text-green-400" aria-hidden="true">
         <Fragment set:html={icon} />
