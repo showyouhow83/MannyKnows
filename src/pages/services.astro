@@ -66,12 +66,41 @@ const services = [
     icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
   },
 ];
+
+// Structured data: umbrella Service + OfferCatalog derived from the `services`
+// array above — the catalog can never drift from the visible cards.
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'MannyKnows Services',
+  serviceType: 'Web design, AI agent development, SEO services, and app development',
+  provider: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+  areaServed: 'Western Massachusetts',
+  description: 'AI agents, web design, SEO services & custom apps for small businesses in Western Massachusetts.',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'What we build',
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.title },
+      url: 'https://mannyknows.com' + (s.href.startsWith('#') ? '/services/' + s.href : s.href),
+    })),
+  },
+};
 ---
 
 <BaseLayout
   title="Services & Pricing — Web Design, AI Agents, SEO | MannyKnows"
   description="AI agents, websites, SEO, online stores, and custom apps for Western Mass businesses. Work with us monthly or one-time. From $95/mo."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

@@ -41,12 +41,39 @@ const proofQuote = getTestimonial('Cherry Vibes');
 // it costs relative to the plan it's built on rather than hiding the math.
 const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-optimizing website) with your store built, stocked, and run on top of it.`;
 
+
+// Structured data: the store service with its real tiers (mapped from
+// plans.ts at build time — cannot drift from the pricing grid).
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Ecommerce Web Design & Development',
+  serviceType: 'Ecommerce website design, development, and store management',
+  provider: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+  areaServed: 'Western Massachusetts',
+  description: 'Online stores built, stocked, and run — Shopify and beyond, with the platform subscription included in every tier.',
+  offers: (plan.tiers ?? []).map((t) => ({
+    '@type': 'Offer',
+    name: t.name,
+    price: String(t.price),
+    priceCurrency: 'USD',
+    description: t.description,
+  })),
+};
 ---
 
 <BaseLayout
   title="Ecommerce Web Design & Development for Western Mass | MannyKnows"
   description={`Ecommerce website development for Western Mass — Shopify stores built, stocked & run: product pages that sell, Remi answering shoppers 24/7. From $${plan.price.toLocaleString('en-US')}/mo.`}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

@@ -49,12 +49,38 @@ const principles = [
     body: "The person who answers is the person who builds it — in English or Spanish. Plans run month to month, so staying is a decision you get to make again every month instead of a contract you're stuck inside.",
   },
 ];
+
+// Structured data: AboutPage + the Person entity (facts match the page copy
+// exactly — no credentials the page doesn't claim).
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About Manny — Web Designer in Springfield, MA',
+  url: 'https://mannyknows.com/about/',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Manny',
+    jobTitle: 'Founder, Web Designer & Developer',
+    worksFor: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+    description: 'Web designer and developer with twenty years of experience — including consulting at Accenture and seven years in enterprise eCommerce — now building websites and AI agents for small businesses across Western Massachusetts.',
+    knowsLanguage: ['English', 'Spanish'],
+    sameAs: ['https://www.linkedin.com/in/mr83/'],
+  },
+};
 ---
 
 <BaseLayout
   title="About Manny — Web Designer in Springfield, MA | MannyKnows"
   description="Manny — web designer & developer in Springfield, MA. Seven years in enterprise eCommerce as the store grew ≈$1B to $4B/yr, now building for Western Mass."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="has-hero-video relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

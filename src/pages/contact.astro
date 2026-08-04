@@ -38,12 +38,37 @@ const faqs = [
 
 const inputClass =
   'w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm';
+
+// Structured data: the business + a bilingual ContactPoint (EN/ES is real —
+// it's the site-wide standard).
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  ...{
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+  email: 'mm@mannyknows.com',
+  priceRange: '$$',
+  areaServed: ['Hampden County, MA', 'Hampshire County, MA'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+1-413-361-8451',
+    email: 'mm@mannyknows.com',
+    contactType: 'customer service',
+    availableLanguage: ['English', 'Spanish'],
+  },
+};
 ---
 
 <BaseLayout
   title="Contact — Talk to Us | MannyKnows, Springfield, MA"
   description="Get in touch with MannyKnows — web, SEO, and software for Western Massachusetts businesses. Send a message, email mm@mannyknows.com, or call (413) 361-8451."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

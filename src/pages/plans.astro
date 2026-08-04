@@ -12,7 +12,7 @@ import Faq from '../components/ui/Faq.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
-import { servicePlans } from '../data/plans';
+import { servicePlans, websitePlans } from '../data/plans';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../data/testimonials';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
@@ -60,12 +60,39 @@ const faqs = [
   },
 ];
 
+
+// Structured data: the plan catalog as Service offers, mapped from plans.ts
+// at build time (only plans shown in the grid; prices cannot drift).
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Website & Growth Plans',
+  serviceType: 'Website design, hosting, SEO, and marketing management',
+  provider: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+  areaServed: 'Western Massachusetts',
+  description: 'Monthly website plans — designed, hosted, maintained, and answering customers 24/7 — plus store, ads, and full-agency tiers.',
+  offers: websitePlans.map((pl) => ({
+    '@type': 'Offer',
+    name: pl.name,
+    price: String(pl.price),
+    priceCurrency: 'USD',
+    description: pl.tagline,
+  })),
+};
 ---
 
 <BaseLayout
   title="Web Design Plans, Western Mass — from $95/mo | MannyKnows"
   description="Web design plans for Western Mass — Get Found, Get Booked, Get Growing, Get Ahead: design, hosting, SEO & maintenance in one price. From $95/mo, no setup fee."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">

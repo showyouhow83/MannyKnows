@@ -17,10 +17,29 @@ const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// Structured data: the blog as a Blog entity (individual posts carry their own
+// Article schema on their pages).
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'AI, Web & SEO Tips for Western Mass',
+  url: 'https://mannyknows.com/blog/',
+  description: 'Practical AI, web, and SEO advice for small businesses in Western Massachusetts — from the people who build and run the sites.',
+  publisher: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+};
 ---
 
 <BaseLayout title="AI, Web & SEO Tips for Western Mass | MannyKnows"
   description="Practical AI, web, and SEO advice for small businesses in Western Massachusetts — from the people who build and run the sites.">
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
