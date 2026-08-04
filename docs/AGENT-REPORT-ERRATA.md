@@ -1,13 +1,17 @@
 # Agent report errata — fabrications, hallucinations & stale claims
 
-Annotations for the three analysis reports Manny received (Aug 3–4, 2026):
-the Googlebot crawl report, the keyword-gaps report, and the schema report.
-Each item: what the report claimed → what's actually true → error class.
+Annotations for the analysis reports Manny received Aug 3–4, 2026: the
+Googlebot crawl report (sent twice), the keyword-gaps report, the schema
+report, the SERP snapshot, and the Monday SEO report. Each item: what the
+report claimed → what's actually true → error class. For each report there's
+also a "worth keeping" list — the genuinely good data — so the fixes don't
+throw those out.
 
 Error classes: **FABRICATED** (invented data), **FALSE** (checkable and wrong),
 **STALE** (was true, wasn't re-checked), **MISSED** (big finding it should have
 caught), **DEAD-END** (recommendation that can't be acted on), **UNGROUNDED**
-(prescribed without checking what exists).
+(prescribed without checking what exists), **PHANTOM** (references findings it
+never shows), **MISDIAGNOSIS** (right data, wrong conclusion).
 
 ---
 
@@ -45,23 +49,67 @@ caught), **DEAD-END** (recommendation that can't be acted on), **UNGROUNDED**
 | 3.8 | "/contact partial (has FAQPage)" etc. | Correct — the FAQPage blocks exist (emitted by the site's Faq component). The *gap* halves of these rows were right. | — |
 | 3.9 | /about, /blog, /services "missing" | Correct — genuinely had zero structured data. Now fixed (with values imported from the data files at build time, so prices can't drift). | — |
 
+## Report 1b — Googlebot crawl, resent verbatim (Aug 4)
+
+The identical report arrived again a day later, unchanged. If it was
+regenerated (not just re-forwarded), that's its own finding: by Aug 4 the www
+DNS record existed and the /contact cause had been identified, yet the report
+repeated both stale findings and re-recommended the Enterprise-only log feed.
+A regenerated report must re-inspect before repeating itself.
+
+## Report 4 — SERP snapshot, "avg 41.4" (Aug 4)
+
+| # | Claim | Reality | Class |
+|---|---|---|---|
+| 4.1 | Best row: `"ai content seo" -site:reddit.com -site:twitter.com …` at position 1.7 | That string is an **operator-laden query** — one user's (or one tool's) filtered search, not a market. Treating it as a rankable query (and letting it headline two separate reports as "best-positioned") is noise promoted to signal. It should be excluded or flagged, not celebrated. | MISDIAGNOSIS |
+| 4.2 | "Weighted average position: 41.4" as the headline metric | Averaged across **6 queries totaling 12 impressions**. At this sample size the number is statistically meaningless and will swing wildly day to day; presenting it as the tracked headline invites reacting to noise. Report the n alongside any average, and don't headline averages under a sane impression floor (e.g. 100). | MISDIAGNOSIS |
+| 4.3 | Positions presented as current standings | Measured before Google recrawled the Aug 3 site-wide title/meta/copy pass — the "before" photo again, unflagged. | STALE |
+| 4.4 | Worth keeping | The table itself is real GSC data and internally consistent with prior reports; "data through Aug 1 — Google's freshest" honestly reflects GSC's ~2-day lag; "deltas start tomorrow" is the right instinct. **"website designer" impressing at all (pos 41) is a genuinely new signal** — the site never contained that term until Aug 3. | — |
+
+## Report 5 — Monday SEO report, week of 2026-07-28 (Aug 4)
+
+| # | Claim | Reality | Class |
+|---|---|---|---|
+| 5.1 | "117 impressions and 0 clicks is a CTR problem, not a visibility problem" → Priority 1: rewrite titles/meta | Backwards. At positions 41–90 (its own table), CTR is ~0 for **any** title — page-5 results don't get read, let alone clicked. 0 clicks at those positions is exactly what visibility-still-building looks like. The fix is rank movement (already in flight), not title surgery. | MISDIAGNOSIS |
+| 5.2 | "Nova drafts new titles/meta this week" | A complete site-wide title/meta pass shipped **Aug 3** (#373), reviewed for stuffing, honesty, and length. Redrafting a day later — without knowing it exists — would overwrite fresh, deliberate work. Same root cause as 2.1: prescribing without fetching. | UNGROUNDED |
+| 5.3 | "Fix the 4 nightly-crawl technical issues… 4 of 4 fixable in code" | **No list of these 4 issues appears in this or any prior report.** Findings referenced but never enumerated are unactionable and unverifiable — and in this series' track record, likely to dissolve on inspection (see 3.1/3.2). Show the list or drop the claim. | PHANTOM |
+| 5.4 | "Add schema to the 4 pages missing it and fix the 1 broken block… blocks ready now, just say go" | Repeats the schema report's **debunked** findings (the "broken block" is valid FAQPage; the ready-made blocks contained five fabricated prices and invented plan names) and adds one-click approval pressure. Re-asserting corrected findings with "just say go" is the most dangerous pattern in the series: it converts hallucination into production changes via a single yes. Also stale: real-data schema shipped Aug 4 (#389). | FALSE |
+| 5.5 | "Nobody booked, called, or filled a form this week" | The report has **no call tracking and no form-event tracking connected** (it says so itself two lines later). It can honestly say "no conversions were *recorded*"; it cannot say nobody called. Certainty must not exceed instrumentation. | MISDIAGNOSIS |
+| 5.6 | "Referral led the week: 48 sessions, only 2 users — likely a few people bouncing back and forth" | 48 sessions from 2 users is the classic shape of **self-referral/tool noise** (own-widget domains, monitoring, the owner's own tools), not visitor behavior. Right instinct to flag it; should have named the likely cause and excluded it from the "led the week" framing. | MISDIAGNOSIS |
+| 5.7 | Worth keeping | **Impressions 8 → 117 week-over-week is the single best datapoint in the whole series** — Google is entering the site into ~14× more auctions, consistent with the town pages + indexing requests landing. Also good: brand query "manny knows" at 6.5 (watch it consolidate to #1 — normal for a young domain, no action), homepage at 64 impressions, direct traffic showing 16 real users, and the honest "missing data" flags on conversions. | — |
+
 ---
 
-## The pattern across all three
+## The pattern across all reports
 
 1. **They never fetch the site before prescribing for it.** Every UNGROUNDED/FALSE
-   item above dies on contact with one HTTP request or one view-source. Rule to
-   give the reporting agent: *no recommendation about a page it hasn't fetched
-   in the same session.*
+   item above dies on contact with one HTTP request or one view-source. Rule:
+   *no recommendation about a page it hasn't fetched in the same session.*
 2. **Prices/names get filled from a stale or imagined "Brand Brain."** Five
    separate fabricated price points across two reports. Rule: *numbers may only
    come from a quoted source (page fetch or data file) — never from memory.*
-3. **No memory of its own prior reports.** Report 2 contradicted Report 1's data.
-   Rule: *diff against the previous report before asserting "zero presence."*
+3. **No memory of its own prior reports — or of what's been fixed.** Report 2
+   contradicted Report 1's data; Report 1 was resent unchanged after its
+   findings were fixed; Report 5 re-asserted Report 3's debunked schema claims.
+   Rule: *diff against the previous report AND the live site before repeating a
+   finding; corrected findings must be marked resolved, not re-recommended.*
 4. **Feasibility unchecked.** Enterprise-only Cloudflare logs recommended on a
    Free-plan zone. Rule: *verify a recommendation is actionable on the current
    plan/stack before making it.*
+5. **Statistics without floors.** Headline averages over 12 impressions;
+   operator-string queries promoted to "best-positioned"; deep-position zero
+   CTR labeled a "CTR problem." Rule: *report n with every aggregate, exclude
+   operator queries, and don't diagnose CTR above position ~20.*
+6. **Certainty beyond instrumentation.** "Nobody booked, called, or filled a
+   form" from a stack with no call or form tracking. Rule: *claims are bounded
+   by what's measured — say "none recorded," never "none happened."*
+7. **Phantom findings + approval pressure.** "4 technical issues" never
+   enumerated anywhere; "blocks ready, just say go" on fabricated data. Rule:
+   *every finding must be shown in full before any approval is requested; no
+   pre-built artifact may be offered for one-click deployment unless its data
+   sources are cited line by line.*
 
-What they consistently do well: honest scope disclaimers, sensible
-prioritization frameworks, and (in Report 2) real competitive intel worth
-acting on. The fix is grounding, not intelligence.
+What the reports consistently do well — keep these: honest tool-scope
+disclaimers, the "missing data" flags, week-over-week framing, sensible
+prioritization structure, and (Reports 2 and 5) real signal worth acting on.
+The fix is grounding and statistical hygiene, not intelligence.
