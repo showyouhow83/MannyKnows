@@ -10,9 +10,24 @@ seoDescription: "How Western Mass contractors get their own leads instead of buy
 image: "/blog/contractor-leads-without-angi-thumbtack.jpg"
 ---
 
-If you're a contractor, you know the pitch: pay Angi, Thumbtack, or HomeAdvisor and the leads roll in. What they don't say out loud is that you're paying $15–$100 for a name they **also** sold to three of your competitors — so now you're racing to call first and underbid the other two. You're not buying a customer. You're renting a coin flip.
+If you're a contractor, you know the pitch: pay Angi, Thumbtack, or HomeAdvisor and the leads roll in. What they don't say out loud is that you're paying $15–$100 for a name they **also** sold to several of your competitors — so now you're racing to call first and underbid the other two. You're not buying a customer. You're renting a coin flip.
 
 There's a better way to spend that money: build a pipeline you actually own. Here's how.
+
+## What leads actually cost in 2026
+
+Nobody publishes an official price list — Angi's own pro FAQ says only that "different sized jobs have different Lead Fees" — so the honest numbers come from contractor reports and industry benchmarks. Here's what they show:
+
+| Channel | Typical cost per lead | Worth knowing |
+|---|---|---|
+| **Angi Leads** | $15–$85, pushing $100 in some markets | Plus roughly $300/yr for access; contractor reports say each lead is sold to **3–8 pros at once** ([Hook Agency](https://hookagency.com/blog/angi-leads-reviews/), [LeadTruffle](https://www.leadtruffle.co/blog/angi-leads-cost-pricing-contractors-2026/)) |
+| **HomeAdvisor** | ~$30–$60, some $100+ | Historically ~$300/yr membership on top ([Sagapixel](https://sagapixel.com/marketing/homeadvisor-contractors-worth-it/)) |
+| **Thumbtack** | $10–$100+, commonly $35–$60 | Pros set budgets, but third-party estimates put ~4–5 pros on a typical project ([7ten Marketing](https://7ten.marketing/how-much-does-thumbtack-charge-for-leads/)) |
+| **Google Local Services Ads** | ~$53 average for home services (Feb 2026); trades $39–$71 | You pay per valid lead and the customer contacted **you**, not a list ([Searchlight Digital](https://searchlightdigital.io/google-local-service-ads-cost-per-lead/)) |
+| **Google Search Ads** | ~$91 average for home services; roofing up to $228 | Traffic you rent by the click ([LocaliQ benchmarks](https://localiq.com/blog/home-services-search-advertising-benchmarks/)) |
+| **SEO / your own site** | HVAC ~$69 organic vs $115 paid; construction ~$174 vs $280 | The only column that gets **cheaper** over time as rankings compound ([First Page Sage](https://firstpagesage.com/reports/average-cost-per-lead-by-industry/)) |
+
+Figures are third-party or contractor-reported ranges — the platforms themselves publish none of it. But the pattern is consistent everywhere you look: **shared-lead marketplaces charge per name and split the name several ways; owned channels cost more up front and then keep paying you back.**
 
 ## The difference between renting leads and owning them
 
