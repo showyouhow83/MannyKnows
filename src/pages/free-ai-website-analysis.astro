@@ -218,7 +218,17 @@ const quote = getTestimonial('SL Painting');
 
     function render(data: any) {
       if (!out || !section) return;
-      const fails = data.pillars.flatMap((p: any) => p.checks).filter((c: any) => c.status !== 'pass').length;
+      // Worst first (Manny, Aug 2026): lowest-scoring pillar leads, and inside
+      // each pillar the failures lead — the visitor's biggest problem is the
+      // first thing they read, not buried under green rows.
+      const CHECK_ORDER: Record<string, number> = { fail: 0, warn: 1, pass: 2 };
+      const pillars = [...data.pillars]
+        .sort((a: any, b: any) => a.score - b.score)
+        .map((p: any) => ({
+          ...p,
+          checks: [...p.checks].sort((a: any, b: any) => (CHECK_ORDER[a.status] ?? 3) - (CHECK_ORDER[b.status] ?? 3)),
+        }));
+      const fails = pillars.flatMap((p: any) => p.checks).filter((c: any) => c.status !== 'pass').length;
       out.innerHTML = `
         <div class="text-center mb-10">
           <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">Instant scan · ${esc(data.host)}</p>
