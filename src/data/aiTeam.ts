@@ -4,8 +4,8 @@
 // on /plans, and the homepage teaser.
 //
 // Ten specialists + one manager, all reading from and writing to one shared
-// "Brand Brain," coordinated by Manny:
-//   Manny=Manager (free), Remi=Front desk, Eve=Research, Elly=Copy,
+// "Brand Brain," coordinated by Manny AI:
+//   Manny AI=Manager (free), Remi=Front desk, Eve=Research, Elly=Copy,
 //   Leo=Graphics & Video, Aria=Voice, Nova=SEO, Piper=Publishing,
 //   Max=Paid ads, Finn=Engagement, Vera=Analytics.
 // The roster is meant to grow as AI learns to do more.
@@ -31,7 +31,7 @@ export interface Agent {
   handoff?: string;   // how the agent connects to the rest of the team
   order: number;      // pipeline order (manager → front desk → research → … → analytics)
   price: number;      // flat monthly rate to "hire" this agent (USD); 0 when included
-  included?: boolean; // true for Manny, who comes free with any hire
+  included?: boolean; // true for Manny AI, who comes free with any hire
   note?: string;      // small qualifier shown next to the price
 }
 
@@ -40,7 +40,7 @@ export interface Agent {
 export const team: Agent[] = [
   {
     id: 'manny',
-    name: 'Manny',
+    name: 'Manny AI',
     role: 'Team manager & your point of contact',
     does: "He's who you talk to: turns plain-English requests into briefs, runs the agents, manages your approvals, and files everything the team learns into your Brand Brain. Free with any hire — a team without a manager is just software.",
     order: 0,
@@ -63,7 +63,7 @@ export const team: Agent[] = [
     name: 'Eve',
     role: 'Research & strategy',
     does: "Studies your market, competitors, and real customer questions, then tells the team what to make and why.",
-    handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny (the plan for your approval).',
+    handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny AI (the plan for your approval).',
     order: 2,
     price: 95,
   },
@@ -99,7 +99,7 @@ export const team: Agent[] = [
     name: 'Nova',
     role: 'SEO & local search',
     does: "Maps what your customers search, tunes every page before it ships, and keeps your Google Business Profile active and accurate.",
-    handoff: "Hands off to: Elly (keyword targets for new content), Vera (rankings to track), Manny (what's climbing, what needs work).",
+    handoff: "Hands off to: Elly (keyword targets for new content), Vera (rankings to track), Manny AI (what's climbing, what needs work).",
     order: 6,
     price: 195,
   },
@@ -117,7 +117,7 @@ export const team: Agent[] = [
     name: 'Max',
     role: 'Paid ads',
     does: "Runs your Google and Meta ads from Eve's targeting and Leo's creative — watching spend daily, never touching budget without your OK.",
-    handoff: 'Hands off to: Vera (spend & results to measure), Manny (budget requests for your sign-off).',
+    handoff: 'Hands off to: Vera (spend & results to measure), Manny AI (budget requests for your sign-off).',
     order: 8,
     price: 245,
   },
@@ -126,7 +126,7 @@ export const team: Agent[] = [
     name: 'Finn',
     role: 'Engagement & reputation',
     does: "Answers reviews, comments, and DMs in your voice, routes anything sensitive to a human first, and nudges happy customers to review.",
-    handoff: 'Hands off to: Eve (what customers are saying), Manny (issues that need a human).',
+    handoff: 'Hands off to: Eve (what customers are saying), Manny AI (issues that need a human).',
     order: 9,
     price: 195,
   },
@@ -135,7 +135,7 @@ export const team: Agent[] = [
     name: 'Vera',
     role: 'Analytics & reporting',
     does: "Tracks what every piece produced — traffic, calls, bookings, sales — and turns it into a plain-English monthly report that feeds Eve's next plan.",
-    handoff: 'Hands off to: Eve (what performed), Manny (your report).',
+    handoff: 'Hands off to: Eve (what performed), Manny AI (your report).',
     order: 10,
     price: 145,
   },
@@ -169,7 +169,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
   {
     id: 'content',
     name: 'The Content Team',
-    tagline: 'The full make-and-publish line: research → writing → graphics & video → voice → publishing → engagement. Everything a consistent presence takes, coordinated by Manny.',
+    tagline: 'The full make-and-publish line: research → writing → graphics & video → voice → publishing → engagement. Everything a consistent presence takes, coordinated by Manny AI.',
     agentIds: ['eve', 'elly', 'eny', 'mimi', 'bap', 'upie'],
     monthly: 749,
   },
@@ -184,7 +184,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
   {
     id: 'whole',
     name: 'The Whole Team',
-    tagline: 'The complete operation: front desk, content, growth, and reporting, running as one coordinated team under Manny.',
+    tagline: 'The complete operation: front desk, content, growth, and reporting, running as one coordinated team under Manny AI.',
     agentIds: ['desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap', 'addy', 'upie', 'ana'],
     monthly: 1195,
     best: true,
@@ -209,7 +209,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'How do the agents work together?',
-    a: "Through Manny. You make one request; Manny turns it into briefs, routes the work agent to agent in the right order, and brings the finished package back for your approval. Agents never work from scratch — each one starts from the last one's output and your shared Brand Brain, so nothing gets lost in handoff and nothing goes out off-brand.",
+    a: "Through Manny AI. You make one request; Manny AI turns it into briefs, routes the work agent to agent in the right order, and brings the finished package back for your approval. Agents never work from scratch — each one starts from the last one's output and your shared Brand Brain, so nothing gets lost in handoff and nothing goes out off-brand.",
   },
   {
     q: 'What is the Brand Brain?',
@@ -221,7 +221,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `You hire agents like staff: a one-time $${aiTeamSetupFee} setup to build your Brand Brain and train your team, then a flat monthly rate per agent — from $${aiTeamStartingPrice}/mo — with normal AI usage included. Manny, your team manager, is included free with any hire. Bundles save you up to $${wholeTeamBundle.savings.toLocaleString('en-US')}/mo. Add or drop agents anytime; if your usage is unusually heavy we'll meter it at cost and tell you before it ever hits a bill.`,
+    a: `You hire agents like staff: a one-time $${aiTeamSetupFee} setup to build your Brand Brain and train your team, then a flat monthly rate per agent — from $${aiTeamStartingPrice}/mo — with normal AI usage included. Manny AI, your team manager, is included free with any hire. Bundles save you up to $${wholeTeamBundle.savings.toLocaleString('en-US')}/mo. Add or drop agents anytime; if your usage is unusually heavy we'll meter it at cost and tell you before it ever hits a bill.`,
   },
   {
     q: 'What does "hiring" an agent actually mean?',
@@ -229,7 +229,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can I hire just one agent?',
-    a: "Yes — every agent works on its own, and Manny comes along free to manage it and deliver its work the way you like: an email summary, a PDF, a shared doc. Hire more agents and Manny coordinates the handoffs automatically, so the team compounds without you playing middleman.",
+    a: "Yes — every agent works on its own, and Manny AI comes along free to manage it and deliver its work the way you like: an email summary, a PDF, a shared doc. Hire more agents and Manny coordinates the handoffs automatically, so the team compounds without you playing middleman.",
   },
   {
     q: "How do I know it's working?",

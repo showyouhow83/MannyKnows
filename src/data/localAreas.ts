@@ -164,7 +164,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI employees, hired like staff',
-        body: 'Remi answers your site around the clock, and ten more agents write, design, post, run ads, and report — one shared brain, managed by Manny, from $95/mo each.',
+        body: 'Remi answers your site around the clock, and ten more agents write, design, post, run ads, and report — one shared brain, managed by Manny AI, from $95/mo each.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -672,7 +672,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents, hired like staff',
-        body: 'Remi answers your site around the clock, and ten more agents write, post, run ads, and report — from $95/mo each, managed by Manny.',
+        body: 'Remi answers your site around the clock, and ten more agents write, post, run ads, and report — from $95/mo each, managed by Manny AI.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },

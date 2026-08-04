@@ -43,8 +43,8 @@ const pillars = [
   },
   {
     icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
-    title: 'Managed by Manny',
-    body: 'Ask once. Manny briefs the right AI agents, runs the job, and returns finished work for your sign-off.',
+    title: 'Managed by Manny AI',
+    body: 'Ask once. Manny AI briefs the right AI agents, runs the job, and returns finished work for your sign-off.',
   },
   {
     icon: 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941',
@@ -92,7 +92,7 @@ const steps = [
   { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions — plus your services, prices, past work, and best content — gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from. This is the step that makes ten agents act like one team.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
   { n: '03', title: 'We build & train your agents', body: "We set up each agent you've hired around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
   { n: '04', title: 'We fine-tune it with you', body: 'We run the team alongside you and adjust until the output is quality and earns your approval — before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { n: '05', title: 'You run it; we support it', body: 'You tell Manny what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+  { n: '05', title: 'You run it; we support it', body: 'You tell Manny AI what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
 
 
@@ -112,14 +112,14 @@ const pageJsonLd = {
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
   areaServed: 'Western Massachusetts',
-  description: 'Ten AI specialists — front desk, research, copywriting, graphics & video, voice, SEO, publishing, paid ads, engagement, and analytics — custom-built for your business and managed by Manny.',
+  description: 'Ten AI specialists — front desk, research, copywriting, graphics & video, voice, SEO, publishing, paid ads, engagement, and analytics — custom-built for your business and managed by Manny AI.',
   offers: [
     {
       '@type': 'Offer',
       name: 'Individual AI agent',
       price: String(aiTeamStartingPrice),
       priceCurrency: 'USD',
-      description: `From $${aiTeamStartingPrice}/mo per agent, one-time $${aiTeamSetupFee} setup. Manny (the manager) is included with any hire.`,
+      description: `From $${aiTeamStartingPrice}/mo per agent, one-time $${aiTeamSetupFee} setup. Manny AI (the manager) is included with any hire.`,
     },
     {
       '@type': 'Offer',
@@ -134,7 +134,7 @@ const pageJsonLd = {
 
 <BaseLayout
   title="AI Agents for Business — 10 Agents from $95/mo | MannyKnows"
-  description="Custom AI agent development — front desk, copy, graphics, voice, SEO & ads. Hired like staff, trained on your business, managed by Manny. $195 setup, from $95/mo."
+  description="Custom AI agent development — front desk, copy, graphics, voice, SEO & ads. Hired like staff, trained on your business, managed by Manny AI. $195 setup, from $95/mo."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -161,7 +161,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>One team. One brain. One boss — you.</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite: ten AI specialists, one shared brain, one manager — every agent built around your business, trained on your voice, your services, and your customers, then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny puts the right agents on the job and brings the finished work back for your sign-off.
+              Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite: ten AI specialists, one shared brain, one manager — every agent built around your business, trained on your voice, your services, and your customers, then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny AI puts the right agents on the job and brings the finished work back for your sign-off.
             </p>
 
             <!-- The three pillars, promoted into the hero (Manny: one stronger
@@ -211,7 +211,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
             </h2>
             <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              You talk to one place — Manny — and the team works in the thread. This is one run, condensed: one line typed, TikTok tapped as the output, one decision at the end.
+              You talk to one place — Manny AI — and the team works in the thread. This is one run, condensed: one line typed, TikTok tapped as the output, one decision at the end.
             </p>
           </div>
 
@@ -227,7 +227,7 @@ const pageJsonLd = {
               </div>
               <div>
                 <div class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Your AI Team</div>
-                <div class="text-[11px] text-green-600 dark:text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span> online · managed by Manny</div>
+                <div class="text-[11px] text-green-600 dark:text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span> online · managed by Manny AI</div>
               </div>
             </div>
             <div class="px-4 py-5 space-y-2.5">
@@ -280,7 +280,7 @@ const pageJsonLd = {
             Each agent owns one job and does it well. "Hiring" one means we build it around your business, connect it to your Brand Brain, and fine-tune it with you until it's ready. Hire one and it delivers straight to you through Manny. Hire more and Manny coordinates the handoffs automatically — and every agent can take a name that fits your brand.
           </p>
           <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-            Agents from ${startFrom}/mo each · one-time ${setup} setup · Manny included with any hire · normal AI usage included · add or drop agents anytime
+            Agents from ${startFrom}/mo each · one-time ${setup} setup · Manny AI included with any hire · normal AI usage included · add or drop agents anytime
           </p>
         </div>
 
@@ -351,7 +351,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Hire one, a squad, or the whole operation</span>
           </h2>
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Any single agent — from ${startFrom}/mo. Every agent works on its own, with Manny included as your manager and delivery channel. Hire only Eve and her research lands in your inbox the way you like to read it.
+            Any single agent — from ${startFrom}/mo. Every agent works on its own, with Manny AI included as your manager and delivery channel. Hire only Eve and her research lands in your inbox the way you like to read it.
           </p>
         </div>
 

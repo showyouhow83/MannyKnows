@@ -1,11 +1,11 @@
 ---
 title: "Meet Your AI Team. They Never Clock Out."
-description: "Eleven agents, one team — front desk, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting — trained on your business and managed by Manny, working around the clock."
+description: "Eleven agents, one team — front desk, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting — trained on your business and managed by Manny AI, working around the clock."
 pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
 draft: false
-seoDescription: "Meet the eleven AI agents that answer, research, write, design, publish, advertise, and report for your business — trained on your Brand Brain, managed by Manny."
+seoDescription: "Meet the eleven AI agents that answer, research, write, design, publish, advertise, and report for your business — trained on your Brand Brain, managed by Manny AI."
 image: "/blog/meet-your-ai-team.jpg"
 ---
 
