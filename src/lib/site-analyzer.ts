@@ -24,11 +24,18 @@ export interface Pillar {
   checks: Check[];
 }
 
+export interface Opportunity {
+  title: string;
+  body: string;
+  href: string;
+}
+
 export interface Analysis {
   overall: number;
   grade: string;
   pillars: Pillar[];
   hasAgent: boolean;
+  opportunities: Opportunity[];
 }
 
 const strip = (html: string) =>
@@ -48,6 +55,9 @@ function attr(tag: string, name: string): string | null {
 // on exactly that. Four independent signals now, structural first, and the
 // analyzer reports WHICH one fired so a finding can always be defended.
 const AGENT_VENDORS: Array<[RegExp, string]> = [
+  // Our own product first — jkdaycare.com's Remi scored a false negative
+  // because loader.js has no chat-ish filename and the agent id is hex.
+  [/opscloud\.us/i, 'an OpsCloud AI agent'],
   [/intercom/i, 'Intercom'],
   [/crisp\.chat/i, 'Crisp'],
   [/drift\.com|driftt\.com/i, 'Drift'],
@@ -68,6 +78,9 @@ const AGENT_ATTR =
   /(?:id|class|aria-label|title|data-[\w-]+)\s*=\s*["'][^"']*(?:chat(?!eau)|chatbot|assistant|asistente|messenger|ai-?agent|live-?agent)[^"']*["']/i;
 // A script or stylesheet whose filename ships a chat widget.
 const AGENT_SRC = /(?:src|href)\s*=\s*["'][^"']*(?:chat|chatbot|assistant|messenger)[^"']*\.(?:js|mjs|css)/i;
+// A script tag that declares which AI agent to mount (the emerging embed
+// convention: <script src=… data-agent-id="…">) — vendor-agnostic.
+const AGENT_DATA = /data-(?:agent|bot|chatbot)(?:-id)?\s*=/i;
 // A visible invitation to chat. Deliberately narrow — phrased as an offer to
 // the reader, so ordinary prose ("we chat with customers daily") can't trip it.
 const AGENT_TEXT =
@@ -83,6 +96,7 @@ function detectAgent(html: string, text: string): { found: boolean; how: string;
   }
   if (AGENT_ATTR.test(html)) return { found: true, how: 'a chat widget built into the page', weak: false };
   if (AGENT_SRC.test(html)) return { found: true, how: 'a chat script the page loads', weak: false };
+  if (AGENT_DATA.test(html)) return { found: true, how: 'an embedded AI agent', weak: false };
   // Text signal reads the stripped copy, never script/style bodies.
   if (AGENT_TEXT.test(text)) return { found: true, how: 'an invitation to chat in the page copy', weak: true };
   return { found: false, how: '', weak: false };
@@ -90,7 +104,34 @@ function detectAgent(html: string, text: string): { found: boolean; how: string;
 
 const BOOKING_SIGNS = /calendly|acuity|squareup\.com\/appointments|booksy|setmore|appointlet|schedulicity|book(ing)?-?(now|online)|appointment/i;
 
-export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?: boolean } = {}): Analysis {
+// AI answer engines' crawlers. Blocking them = invisible when customers ask
+// ChatGPT/Perplexity/Google AI who to hire.
+const AI_BOTS = ['GPTBot', 'ClaudeBot', 'Claude-Web', 'PerplexityBot', 'Google-Extended', 'OAI-SearchBot'];
+
+// Tiny robots.txt reader: which AI crawlers does a group with `Disallow: /`
+// cover, and does the file advertise a sitemap. Group semantics simplified —
+// good enough for a first-pass verdict, and we say so in the check copy.
+export function analyzeRobots(txt: string): { blocksAi: string[]; sitemap: boolean } {
+  const blocksAi: string[] = [];
+  const groups = txt.split(/(?=^\s*user-agent\s*:)/im);
+  for (const g of groups) {
+    const agents = [...g.matchAll(/^\s*user-agent\s*:\s*(\S+)/gim)].map((m) => m[1].toLowerCase());
+    if (!agents.length) continue;
+    const blocksAll = /^\s*disallow\s*:\s*\/\s*$/im.test(g);
+    if (!blocksAll) continue;
+    for (const bot of AI_BOTS) {
+      if (agents.includes(bot.toLowerCase()) && !blocksAi.includes(bot)) blocksAi.push(bot);
+    }
+  }
+  return { blocksAi, sitemap: /^\s*sitemap\s*:/im.test(txt) };
+}
+
+// Analytics/measurement stacks — AI can't optimize what nobody measures.
+const ANALYTICS = /googletagmanager|google-analytics|gtag\(|plausible\.io|usefathom|clarity\.ms|matomo|umami|posthog/i;
+// Store platforms — powers the "AI for your store" opportunity.
+const ECOM = /shopify|woocommerce|bigcommerce|squarespace[^"']*commerce|add-to-cart|cart\.js|\/cart\b|ecwid/i;
+
+export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?: boolean; robots?: { blocksAi: string[]; sitemap: boolean } | null; sitemapOk?: boolean } = {}): Analysis {
   const head = (html.match(/<head[\s\S]*?<\/head>/i) || [''])[0];
   const clean = strip(html);
   const kb = Math.round(html.length / 1024);
@@ -134,6 +175,14 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   const hasContactPath = /href\s*=\s*["'][^"']*contact/i.test(html) || /href\s*=\s*["']mailto:/i.test(html);
   const agent = detectAgent(html, clean);
   const hasAgent = agent.found;
+  const hasAnalytics = ANALYTICS.test(html);
+  const isStore = ECOM.test(html);
+  const hasBlog = /href\s*=\s*["'][^"']*\/blog\b/i.test(html);
+  const questionHeadings = (html.match(/<h[23][^>]*>[^<]{0,90}\?/gi) || []).length;
+  const schemaHasPhone = /"telephone"\s*:/.test(jsonLdAll);
+  const schemaHasAddress = /"address"\s*:/.test(jsonLdAll);
+  const robots = opts.robots ?? null;
+  const sitemapKnown = (robots?.sitemap ?? false) || !!opts.sitemapOk;
 
   const PLANS = '/plans/';
   const GET_FOUND = '/plans/get-found/';
@@ -207,10 +256,38 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
       hasFaqSchema ? 'FAQ structured data found — AI assistants can quote your answers.'
         : 'No FAQ schema — when customers ask ChatGPT or Google AI, competitors with answers get cited.',
       { text: 'We ship FAQ schema on every money page.', href: GET_FOUND }),
+    c('qa', 'Questions your page actually answers', questionHeadings > 0 ? 'pass' : 'warn',
+      questionHeadings > 0
+        ? `${questionHeadings} question-style heading${questionHeadings > 1 ? 's' : ''} found — the format AI assistants quote and featured snippets reward.`
+        : 'No question-and-answer headings — pages that ask and answer real customer questions get quoted by AI and win featured snippets.',
+      { text: 'We structure every money page around what customers actually ask.', href: GET_FOUND }),
+  ];
+
+  // ── AI-ready (can AI find, read, quote, and work for this business) ────
+  const AI_TEAM = '/ai-team/';
+  const aiReady: Check[] = [
+    c('aicrawlers', 'Open to AI answer engines', !robots ? 'pass' : robots.blocksAi.length === 0 ? 'pass' : 'fail',
+      !robots ? 'No robots.txt found — nothing blocking AI crawlers (though a robots.txt is worth having).'
+        : robots.blocksAi.length === 0 ? 'robots.txt does not block AI crawlers — ChatGPT, Claude, and Perplexity can read and recommend you.'
+        : `robots.txt blocks ${robots.blocksAi.join(', ')} — when customers ask AI who to hire, you are invisible by your own instruction.`,
+      { text: 'We tune crawler policy so AI answers can cite you.', href: GET_FOUND }),
     c('llms', 'AI crawler guidance (llms.txt)', opts.llmsTxt ? 'pass' : 'warn',
       opts.llmsTxt ? 'llms.txt found — you are telling AI crawlers what matters.'
         : 'No llms.txt — a new, easy win for showing up in AI answers.',
       { text: 'AI-answer readiness is part of our SEO work.', href: GET_FOUND }),
+    c('nap', 'AI can find your phone & address', jsonLdBlocks.length === 0 ? 'warn' : schemaHasPhone && schemaHasAddress ? 'pass' : 'warn',
+      jsonLdBlocks.length === 0 ? 'No structured data at all — an AI assistant recommending local businesses has no machine-readable contact info for you.'
+        : schemaHasPhone && schemaHasAddress ? 'Structured data carries your phone and address — AI assistants can hand you to a customer.'
+        : `Structured data exists but is missing ${schemaHasPhone ? 'your address' : schemaHasAddress ? 'your phone number' : 'your phone and address'} — AI assistants can't connect a customer to you.`,
+      { text: 'Complete local-business schema ships with every build.', href: GET_FOUND }),
+    c('sitemap', 'Sitemap for crawlers', sitemapKnown ? 'pass' : 'warn',
+      sitemapKnown ? 'Sitemap found — search and AI crawlers get the full map of your site.'
+        : "No sitemap advertised in robots.txt and none at /sitemap.xml — crawlers are left to guess what's on your site.",
+      { text: 'Sitemaps are part of the technical SEO baseline.', href: GET_FOUND }),
+    c('measure', 'Measuring what happens', hasAnalytics ? 'pass' : 'warn',
+      hasAnalytics ? 'Analytics detected — you can see what visitors do.'
+        : "No analytics detected — nobody (human or AI) can improve what isn't measured.",
+      { text: 'Every plan includes plain-English monthly reporting.', href: PLANS }),
   ];
 
   // ── Books (conversion) ─────────────────────────────────────────────────
@@ -252,11 +329,12 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
     { id: 'fast', name: 'Fast on a phone', score: score(fast), checks: fast },
     { id: 'answers', name: 'Answers 24/7', score: score(answers), checks: answers },
     { id: 'books', name: 'Turns visits into calls', score: score(books), checks: books },
+    { id: 'ai', name: 'AI-ready', score: score(aiReady), checks: aiReady },
     { id: 'everyone', name: 'Works for everyone', score: score(everyone), checks: everyone },
   ];
 
   // Weighted overall — being findable and answering are the money-makers.
-  const weights: Record<string, number> = { found: 0.3, fast: 0.2, answers: 0.2, books: 0.2, everyone: 0.1 };
+  const weights: Record<string, number> = { found: 0.25, fast: 0.15, answers: 0.15, books: 0.2, ai: 0.15, everyone: 0.1 };
   const overall = Math.round(pillars.reduce((a, p) => a + p.score * weights[p.id], 0));
   const grade =
     overall >= 90 ? 'Strong — the gaps left are polish'
@@ -264,5 +342,54 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
     : overall >= 50 ? 'Leaking customers'
     : 'Working against you';
 
-  return { overall, grade, pillars, hasAgent };
+  // ── Where AI fits THIS business — personalized from what the scan saw.
+  // Sales-honest: every suggestion maps to something we actually build.
+  const opportunities: Opportunity[] = [];
+  if (!hasAgent) {
+    opportunities.push({
+      title: 'An AI front desk that never closes',
+      body: 'Nothing on this page answers visitors after hours. An AI agent trained on your business answers questions, qualifies the customer, and books the job — in English or Spanish — while you work.',
+      href: '/ai-booking-agent/',
+    });
+  } else if (!hasBooking) {
+    opportunities.push({
+      title: 'From answering to booking',
+      body: 'You already have something answering visitors — the next step is letting it book the appointment end-to-end instead of ending at a conversation.',
+      href: '/ai-booking-agent/',
+    });
+  }
+  if (hasTel) {
+    opportunities.push({
+      title: 'Your phone line, answered every time',
+      body: 'You publish a phone number — an AI phone system can answer every call, give callers what they need, and route the rest to a human. We built exactly this for a Springfield daycare in two weeks.',
+      href: '/ai-booking-agent/',
+    });
+  }
+  if (isStore) {
+    opportunities.push({
+      title: 'AI for your store',
+      body: 'This looks like a store — AI can write and tune product descriptions, answer shoppers 24/7, and recover abandoned carts, with your catalog synced to Google Shopping, Instagram & Facebook.',
+      href: '/ecommerce/',
+    });
+  }
+  opportunities.push(hasBlog
+    ? {
+        title: 'A content engine with your approval',
+        body: 'You publish content — AI agents can research, draft, and schedule it on a steady cadence, with every piece passing your approval before it ships.',
+        href: '/ai-team/',
+      }
+    : {
+        title: 'Content that feeds AI answers',
+        body: "No blog or answer content found — the businesses AI assistants cite are the ones publishing real answers. An AI content team can build that library under your approval.",
+        href: '/ai-team/',
+      });
+  if (!hasAnalytics) {
+    opportunities.push({
+      title: 'Measure first, then automate',
+      body: 'With no analytics, neither you nor any AI can tell what works. Measurement is step one of every plan — reported monthly in plain English.',
+      href: PLANS,
+    });
+  }
+
+  return { overall, grade, pillars, hasAgent, opportunities: opportunities.slice(0, 4) };
 }

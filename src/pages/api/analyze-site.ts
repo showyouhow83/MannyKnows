@@ -5,7 +5,7 @@
 // so we neither get abused nor hammer anyone's site.
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
-import { analyzeHtml } from '../../lib/site-analyzer';
+import { analyzeHtml, analyzeRobots } from '../../lib/site-analyzer';
 
 // Generous cap: a chat widget's markup often sits at the very end of the
 // document, and truncating it produced a false 'nothing answers visitors'.
@@ -93,6 +93,9 @@ async function captureLead(
   try {
     if (kv) await kv.put(`scan_lead:${at}:${host}:${email}`, JSON.stringify({ email, host, url, ip, at, overall: result?.overall ?? null, grade: result?.grade ?? null, note }));
   } catch { /* ignore */ }
+  const pillars: Array<{ name: string; score: number }> = Array.isArray((result as any)?.pillars)
+    ? (result as any).pillars.map((p: any) => ({ name: String(p.name), score: Number(p.score) }))
+    : [];
   try {
     // Without KV there is no rate limit and no dedupe — don't send unlimited
     // notification emails in that degraded mode.
@@ -112,7 +115,27 @@ async function captureLead(
         to,
         reply_to: email,
         subject: `Scanner lead: ${email} scanned ${host}${result?.overall != null ? ` (${result.overall}/100)` : ''}`,
-        html: `<p><strong>${email}</strong> ran the free analysis on <strong><a href="${url}">${host}</a></strong>.</p><p>Result: ${scoreLine}</p><p>Reply to this email to reach them directly.</p>`,
+        html: `
+<div style="max-width: 640px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #ffffff;">
+  <div style="background: linear-gradient(135deg, #0071e3 0%, #8b5cf6 55%, #ff4faa 100%); padding: 28px 24px; text-align: center;">
+    <span style="font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">MannyKnows</span>
+    <div style="margin-top: 6px;"><span style="display: inline-block; background: rgba(255,255,255,0.18); color: #ffffff; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 1px;">SCANNER LEAD</span></div>
+  </div>
+  <div style="padding: 28px 24px;">
+    <p style="margin: 0 0 6px; font-size: 15px; color: #475569;"><a href="mailto:${email}" style="color: #0071e3; font-weight: 700; text-decoration: none;">${email}</a> scanned</p>
+    <p style="margin: 0 0 18px; font-size: 20px; font-weight: 700;"><a href="${url}" style="color: #1e293b; text-decoration: none;">${host}</a></p>
+    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; margin-bottom: 18px;">
+      <p style="margin: 0; font-size: 34px; font-weight: 800; color: #1e293b;">${result?.overall != null ? `${result.overall}<span style=\"font-size:16px; color:#94a3b8;\">/100</span>` : '—'}</p>
+      <p style="margin: 4px 0 0; font-size: 14px; color: #475569;">${scoreLine}</p>
+    </div>
+    ${pillars.length ? `<table style="width: 100%; border-collapse: collapse; margin-bottom: 18px;">${pillars.map((p) => `<tr><td style=\"padding: 6px 0; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;\">${p.name}</td><td style=\"padding: 6px 0; font-size: 13px; font-weight: 700; text-align: right; border-bottom: 1px solid #f1f5f9; color: ${p.score >= 80 ? '#15803d' : p.score >= 50 ? '#b45309' : '#b91c1c'};\">${p.score}</td></tr>`).join('')}</table>` : ''}
+    <a href="mailto:${email}" style="display: inline-block; background: linear-gradient(135deg, #0071e3, #ff4faa); color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none;">Reply to ${email.split('@')[0]}</a>
+    <p style="margin: 14px 0 0; font-size: 12px; color: #94a3b8;">Replying to this email reaches the lead directly (reply-to is set).</p>
+  </div>
+  <div style="background: #0f172a; padding: 16px 24px; text-align: center;">
+    <span style="font-size: 12px; color: rgba(255,255,255,0.65);">mannyknows.com · (413) 361-8451 · scanner lead notification</span>
+  </div>
+</div>`,
       }),
       signal: AbortSignal.timeout(6000),
     }).then((r) => {
@@ -156,7 +179,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     } catch { /* limiter unavailable — let the scan through */ }
 
     try {
-      const cached = await kv.get(`scan_cache:v2:${target.hostname}`);
+      const cached = await kv.get(`scan_cache:v3:${target.hostname}`);
       if (cached) {
         const parsed = JSON.parse(cached);
         await captureLead(kv, email, target.hostname, target.origin, ip, parsed, 'served from cache');
@@ -188,10 +211,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ ok: false, error: "That address didn't return a web page we can read." }, 200);
   }
 
-  const llms = await fetchCapped(target.origin + '/llms.txt', 'text/plain');
+  const [llms, robotsRes] = await Promise.all([
+    fetchCapped(target.origin + '/llms.txt', 'text/plain'),
+    fetchCapped(target.origin + '/robots.txt', 'text/plain'),
+  ]);
   const llmsTxt = !!llms && llms.status === 200 && llms.body.trim().length > 0 && !/<html/i.test(llms.body);
+  const robotsTxt = !!robotsRes && robotsRes.status === 200 && !/<html/i.test(robotsRes.body) ? robotsRes.body : null;
+  const robots = robotsTxt ? analyzeRobots(robotsTxt) : null;
+  let sitemapOk = false;
+  if (!robots?.sitemap) {
+    const sm = await fetchCapped(target.origin + '/sitemap.xml', 'application/xml,text/xml');
+    sitemapOk = !!sm && sm.status === 200 && /<(urlset|sitemapindex)/i.test(sm.body);
+  }
 
-  const analysis = analyzeHtml(page.body, { llmsTxt, truncated: page.truncated });
+  const analysis = analyzeHtml(page.body, { llmsTxt, truncated: page.truncated, robots, sitemapOk });
   const result = {
     url: page.finalUrl || target.origin,
     host: target.hostname,
@@ -200,7 +233,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   };
 
   if (kv) {
-    await kv.put(`scan_cache:v2:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
+    await kv.put(`scan_cache:v3:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
   }
 
   await captureLead(kv, email, target.hostname, target.origin, ip, result, 'live scan');
