@@ -94,7 +94,7 @@ const quote = getTestimonial('SL Painting');
           </form>
           <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            Instant and free. Your email is where we follow up on what the scan finds — no spam, no list. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+            Instant and free. Your email is where we follow up on what the scan finds. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
           </p>
         </div>
       </div>
@@ -260,7 +260,7 @@ const quote = getTestimonial('SL Painting');
         ${Array.isArray(data.opportunities) && data.opportunities.length ? `
         <div class="mt-12">
           <h3 class="sf-bold text-xl md:text-2xl font-bold text-center mb-2"><span class="apple-gradient-text" data-colorful-title>Where AI could work for ${esc(data.host)}</span></h3>
-          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Based on what the scan actually saw on your page — not a generic pitch.</p>
+          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Each card comes from something the scan found on your page — matched to the AI agent, automation, or SEO service that fixes it.</p>
           <div class="grid gap-4 sm:grid-cols-2">
             ${data.opportunities.map((o: any) => `
               <a href="${esc(o.href)}" class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">

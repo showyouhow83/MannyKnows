@@ -123,13 +123,13 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Maintained by your neighbor, not a ticket queue',
-        body: "We're based in Springfield, and we don't disappear after launch. Monthly plans keep your site fast, secure, and ranking — with a plain-English report every month.",
+        body: "We're based in Springfield, and maintenance is the product: monthly plans keep your site fast, secure, and ranking — with a plain-English report every month.",
       },
     ],
     plansLine:
       'All of it starts at $95/mo — website, AI agent, SEO, and maintenance in one plan.',
     faqPricing:
-      "Plans start at $95/mo, and that first tier is complete, not a teaser: a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. It's month-to-month with nothing extra to start — prepay a year and two months are free. Need a full multi-page site with your own admin and Remi booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
+      "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. It's month-to-month with nothing extra to start — prepay a year and two months are free. Need a full multi-page site with your own admin and Remi booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
     faqBusinesses:
       "Springfield's whole range: contractors in Sixteen Acres, restaurants downtown, medical and professional offices, churches, shops. If your customers find you by searching, the work is the same underneath — rank for what Springfield actually types into Google, answer when you can't reach the phone, and keep the site maintained long after launch day.",
     faqAgents:
@@ -139,7 +139,7 @@ export const localAreas: LocalArea[] = [
     faqExisting:
       "Absolutely — you don't have to start over. We audit the site you have, fix what's costing you customers (speed, technical SEO, mobile problems, pages that don't convert), and then take over the maintenance so it stays fixed.",
     faqDifferent:
-      "You get twenty years of engineering for enterprise and startups — including enterprise eCommerce and consulting at Accenture — at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the people doing the work. No account manager, no runaround.",
+      "You get twenty years of engineering for enterprise and startups — including enterprise eCommerce and consulting at Accenture — at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the people doing the work — no account manager in between.",
     servingBlurb:
       "We're based right here in Springfield — in person across the city when it helps, remote when it's faster.",
     proofBusiness: 'SL Painting',
@@ -285,7 +285,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'A free 360° photo of your shop',
-        body: 'Holyoke sits inside our free travel radius: one professional 360° photo for your Google profile, free, no strings — we come to you.',
+        body: 'Holyoke sits inside our free travel radius: one professional 360° photo for your Google profile, free — we come to you.',
         href: '/free-360-photo/',
         linkText: 'Claim the free photo',
       },
@@ -690,7 +690,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'A free 360° photo of your business',
-        body: "Agawam is right across the river — well inside our free travel radius. One professional 360° photo for your Google profile, free, no strings.",
+        body: "Agawam is right across the river — well inside our free travel radius. One professional 360° photo for your Google profile, free — published for you.",
         href: '/free-360-photo/',
         linkText: 'Claim the free photo',
       },

@@ -241,6 +241,6 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes — this is where the team stops being a content tool. Piper works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services), not a roadmap item.",
+    a: "Yes — this is where the team stops being a content tool. Piper works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services).",
   },
 ];
