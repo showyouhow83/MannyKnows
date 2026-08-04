@@ -335,7 +335,12 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── Claim / contact form ───────────────────────── -->
-    <Section id="claim" variant="default">
+    <Section id="claim" variant="default" hasOverflow={true}>
+      <!-- Notepad astronaut peeking in from the left edge — same dial set as
+           the homepage GBP mascot (see the .claim-mascot CSS block below). -->
+      <div class="claim-mascot" aria-hidden="true">
+        <img src="/mascot/astronaut-notes.webp" alt="" width="320" height="600" loading="lazy" decoding="async" />
+      </div>
       <Container>
         <div class="max-w-2xl mx-auto">
           <div class="text-center mb-8">
@@ -346,8 +351,6 @@ const jsonLd = {
           </div>
 
           <form id="claimForm" class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 md:p-8 space-y-4" novalidate>
-            <!-- Notepad astronaut taking down the details — homepage-mascot sizing -->
-            <img src="/mascot/astronaut-notes.webp" alt="" aria-hidden="true" width="320" height="600" loading="lazy" decoding="async" class="mx-auto w-full max-w-[90px] h-auto pointer-events-none" />
             <div>
               <label for="cf-name" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Your name *</label>
               <input id="cf-name" name="name" type="text" required autocomplete="name" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
@@ -399,6 +402,46 @@ const jsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* ── Astronaut peeking from the left of the claim section ─────────────
+     Manny's dials (mirrors the homepage GBP mascot):
+       --mascot-height  how big he is
+       --mascot-peek    how much of him is VISIBLE (px or %) — the rest
+                        stays cropped off the left edge of the section
+       --mascot-rotate  clockwise tilt (more positive = leans in more)
+       --mascot-top     vertical position inside the section
+     ------------------------------------------------------------------- */
+  .claim-mascot {
+    --mascot-height: 440px;
+    --mascot-peek: 58%;
+    --mascot-rotate: 24deg;
+    --mascot-top: 50%;
+
+    position: absolute;
+    top: var(--mascot-top);
+    left: 0;
+    transform: translateY(-50%) translateX(calc(var(--mascot-peek) - 100%));
+    pointer-events: none;
+    /* Over the form card, like the GBP astronaut — blocking a corner is
+       house style; pointer-events none keeps the inputs clickable. */
+    z-index: 20;
+  }
+  .claim-mascot img {
+    height: var(--mascot-height);
+    width: auto;
+    display: block;
+    transform: rotate(var(--mascot-rotate));
+  }
+  /* Tablet: smaller and peeking less so the form keeps breathing room. */
+  @media (max-width: 1279px) {
+    .claim-mascot { --mascot-height: 320px; --mascot-peek: 45%; }
+  }
+  /* Phones only: no empty margin at all — stays hidden. */
+  @media (max-width: 639px) {
+    .claim-mascot { display: none; }
+  }
+</style>
 
 <script>
   // Wire the claim form to the existing CSRF-protected /api/contact endpoint.
