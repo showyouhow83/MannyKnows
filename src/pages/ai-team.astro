@@ -329,6 +329,17 @@ const pageJsonLd = {
             </div>
           ))}
         </div>
+
+        <!-- Human-in-the-loop card — closes the roster per Manny (Aug 2026):
+             meet the team, then hear who stays in charge. -->
+        <div class="max-w-3xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 text-center">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
+            <span class="apple-gradient-text" data-colorful-title>Not fully autonomous — on purpose</span>
+          </h2>
+          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            The agents do the heavy lifting — researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, Max never moves a dollar of budget without your sign-off, and a real person steps in where judgment matters — the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
+          </p>
+        </div>
       </Container>
     </Section>
 
@@ -381,27 +392,6 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- Human in the loop -->
-    <Section id="ai-team-human" variant="default">
-      <Container>
-        <div class="max-w-3xl mx-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 text-center">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-            <span class="apple-gradient-text" data-colorful-title>Not fully autonomous — on purpose</span>
-          </h2>
-          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            The agents do the heavy lifting — researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, Max never moves a dollar of budget without your sign-off, and a real person steps in where judgment matters — the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
-          </p>
-        </div>
-
-        {proofQuote && (
-          <div class="max-w-2xl mx-auto mt-14 text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">A client already running it</p>
-            <QuoteBlock quote={proofQuote} align="center" />
-          </div>
-        )}
-      </Container>
-    </Section>
-
     <!-- How it works -->
     <Section id="ai-team-steps" variant="alternate">
       <Container>
@@ -426,6 +416,18 @@ const pageJsonLd = {
         </div>
       </Container>
     </Section>
+
+    <!-- Client proof — after the questions, the answer per Manny (Aug 2026) -->
+    {proofQuote && (
+      <Section id="ai-team-proof" variant="default">
+        <Container>
+          <div class="max-w-2xl mx-auto text-center">
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">A client already running it</p>
+            <QuoteBlock quote={proofQuote} align="center" />
+          </div>
+        </Container>
+      </Section>
+    )}
 
     <DockMenu />
   </main>
