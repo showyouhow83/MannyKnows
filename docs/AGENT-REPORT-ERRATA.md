@@ -1,7 +1,7 @@
 # Agent report errata — fabrications, hallucinations & stale claims
 
 Annotations for the analysis reports Manny received Aug 3–4, 2026: the
-Googlebot crawl report (sent twice), the keyword-gaps report, the schema
+Googlebot crawl report, the keyword-gaps report, the schema
 report, the SERP snapshot, and the Monday SEO report. Each item: what the
 report claimed → what's actually true → error class. For each report there's
 also a "worth keeping" list — the genuinely good data — so the fixes don't
@@ -49,14 +49,6 @@ never shows), **MISDIAGNOSIS** (right data, wrong conclusion).
 | 3.8 | "/contact partial (has FAQPage)" etc. | Correct — the FAQPage blocks exist (emitted by the site's Faq component). The *gap* halves of these rows were right. | — |
 | 3.9 | /about, /blog, /services "missing" | Correct — genuinely had zero structured data. Now fixed (with values imported from the data files at build time, so prices can't drift). | — |
 
-## Report 1b — Googlebot crawl, resent verbatim (Aug 4)
-
-The identical report arrived again a day later, unchanged. If it was
-regenerated (not just re-forwarded), that's its own finding: by Aug 4 the www
-DNS record existed and the /contact cause had been identified, yet the report
-repeated both stale findings and re-recommended the Enterprise-only log feed.
-A regenerated report must re-inspect before repeating itself.
-
 ## Report 4 — SERP snapshot, "avg 41.4" (Aug 4)
 
 | # | Claim | Reality | Class |
@@ -89,10 +81,10 @@ A regenerated report must re-inspect before repeating itself.
    separate fabricated price points across two reports. Rule: *numbers may only
    come from a quoted source (page fetch or data file) — never from memory.*
 3. **No memory of its own prior reports — or of what's been fixed.** Report 2
-   contradicted Report 1's data; Report 1 was resent unchanged after its
-   findings were fixed; Report 5 re-asserted Report 3's debunked schema claims.
-   Rule: *diff against the previous report AND the live site before repeating a
-   finding; corrected findings must be marked resolved, not re-recommended.*
+   contradicted Report 1's data; Report 5 re-asserted Report 3's debunked
+   schema claims. Rule: *diff against the previous report AND the live site
+   before repeating a finding; corrected findings must be marked resolved, not
+   re-recommended.*
 4. **Feasibility unchecked.** Enterprise-only Cloudflare logs recommended on a
    Free-plan zone. Rule: *verify a recommendation is actionable on the current
    plan/stack before making it.*
