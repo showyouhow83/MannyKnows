@@ -101,7 +101,7 @@ export const localAreas: LocalArea[] = [
     metaDescription:
       'Web design for Springfield, MA businesses — fast multilingual websites with AI booking agents and technical SEO. Enterprise experience, local pricing.',
     heroIntro:
-      "Websites that get found on Google, book jobs while you work, and speak your customers' language — built and maintained right here in Springfield, with twenty years of enterprise engineering behind them.",
+      "Web design and development that gets found on Google, books jobs while you work, and speaks your customers' language — built and maintained right here in Springfield, with twenty years of enterprise engineering behind it.",
     angleHeading: 'Built for how Springfield does business',
     angleBody:
       "Springfield is the biggest city in Western Mass and the most competitive place to get noticed online — from Forest Park and Sixteen Acres to Indian Orchard and downtown. We build sites that win the local search, load fast on the phones your customers actually use, and answer in English or Spanish, because Springfield does business in both.",

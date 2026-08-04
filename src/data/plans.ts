@@ -161,7 +161,7 @@ export const plans: Plan[] = [
     highlights: [
       'A full multi-page site with deeper self-optimization — more content & SEO kept fresh',
       'Remi now books the job & captures the lead — not just answers',
-      'Ranks for more of what customers search — locally and in AI answers',
+      'Local SEO and AI search optimization — rank for what customers search, and get quoted in AI answers',
     ],
     headline: 'A website that answers and books — for you',
     blurb:
