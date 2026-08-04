@@ -335,12 +335,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── Claim / contact form ───────────────────────── -->
-    <Section id="claim" variant="default" hasOverflow={true}>
-      <!-- Notepad astronaut peeking in from the left edge — same dial set as
-           the homepage GBP mascot (see the .claim-mascot CSS block below). -->
-      <div class="claim-mascot" aria-hidden="true">
-        <img src="/mascot/astronaut-notes.webp" alt="" width="320" height="600" loading="lazy" decoding="async" />
-      </div>
+    <Section id="claim" variant="default">
       <Container>
         <div class="max-w-2xl mx-auto">
           <div class="text-center mb-8">
@@ -373,6 +368,9 @@ const jsonLd = {
             <p id="claimStatus" role="status" aria-live="polite" class="text-sm text-center hidden"></p>
             <p class="text-xs text-center text-text-light-tertiary dark:text-text-dark-tertiary">Prefer to talk? Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> or email <a href={`mailto:${EMAIL}`} class="text-primary-blue hover:underline">{EMAIL}</a>.</p>
           </form>
+
+          <!-- Notepad astronaut taking down the details — homepage-mascot sizing -->
+          <img src="/mascot/astronaut-notes.webp" alt="" aria-hidden="true" width="320" height="600" loading="lazy" decoding="async" class="mx-auto my-4 w-full max-w-[80px] h-auto pointer-events-none" />
         </div>
       </Container>
     </Section>
@@ -402,46 +400,6 @@ const jsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
-
-<style>
-  /* ── Astronaut peeking from the left of the claim section ─────────────
-     Manny's dials (mirrors the homepage GBP mascot):
-       --mascot-height  how big he is
-       --mascot-peek    how much of him is VISIBLE (px or %) — the rest
-                        stays cropped off the left edge of the section
-       --mascot-rotate  clockwise tilt (more positive = leans in more)
-       --mascot-top     vertical position inside the section
-     ------------------------------------------------------------------- */
-  .claim-mascot {
-    --mascot-height: 440px;
-    --mascot-peek: 58%;
-    --mascot-rotate: 24deg;
-    --mascot-top: 50%;
-
-    position: absolute;
-    top: var(--mascot-top);
-    left: 0;
-    transform: translateY(-50%) translateX(calc(var(--mascot-peek) - 100%));
-    pointer-events: none;
-    /* Over the form card, like the GBP astronaut — blocking a corner is
-       house style; pointer-events none keeps the inputs clickable. */
-    z-index: 20;
-  }
-  .claim-mascot img {
-    height: var(--mascot-height);
-    width: auto;
-    display: block;
-    transform: rotate(var(--mascot-rotate));
-  }
-  /* Tablet: smaller and peeking less so the form keeps breathing room. */
-  @media (max-width: 1279px) {
-    .claim-mascot { --mascot-height: 320px; --mascot-peek: 45%; }
-  }
-  /* Phones only: no empty margin at all — stays hidden. */
-  @media (max-width: 639px) {
-    .claim-mascot { display: none; }
-  }
-</style>
 
 <script>
   // Wire the claim form to the existing CSRF-protected /api/contact endpoint.
