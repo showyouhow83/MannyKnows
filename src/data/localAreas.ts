@@ -85,8 +85,8 @@ export const servedTowns: { name: string; slug?: string }[] = [
   { name: 'Holyoke', slug: 'holyoke' },
   { name: 'Northampton', slug: 'northampton' },
   { name: 'West Springfield' },
-  { name: 'Westfield' },
-  { name: 'Agawam' },
+  { name: 'Westfield', slug: 'westfield' },
+  { name: 'Agawam', slug: 'agawam' },
   { name: 'Ludlow' },
   { name: 'Amherst' },
   { name: 'Easthampton' },
@@ -505,6 +505,213 @@ export const localAreas: LocalArea[] = [
     marketData: {
       heading: 'The statewide picture — and where Northampton differs',
       body: "We don't have a Northampton-specific statistic to quote you, and making one up would be precisely the thing we tell clients never to do. What the state's 2025 survey of 1,049 small business owners does show is a real appetite for growth running alongside a persistent inability to get straight answers about which technology is worth buying. Northampton's own wrinkle is that the bar here is visual as much as technical: a business on Main Street can rank perfectly well and still lose the customer, because the site doesn't carry itself the way the storefront does. So we build for both — the ranking and the first impression — and price it where an independent shop can actually carry the bill.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey (1,049 respondents)',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
+  },
+  {
+    slug: 'westfield',
+    name: 'Westfield',
+    badge: 'Westfield · Western Massachusetts',
+    metaTitle: 'Web Design in Westfield, MA — SEO & AI Agents | MannyKnows',
+    metaDescription:
+      'Web design for Westfield, MA businesses — fast websites with AI booking agents and local SEO, built for the Whip City. From $95/mo.',
+    heroIntro:
+      "Westfield built one of the best fiber networks in New England — your website should be worth the bandwidth. We build fast sites with AI agents that answer and book around the clock, for the businesses of the Whip City.",
+    angleHeading: 'A working city deserves a working website',
+    angleBody:
+      "Westfield still makes things — manufacturing is the city's third-largest employment sector, in a place whose whip industry once named it. Businesses here don't need a pretty brochure; they need a website that pulls its weight: found when Westfield searches, answering when the shop floor is loud, booking while you finish the job. That's what we build, and Whip City Fiber means your customers will load it instantly.",
+    neighborhoods: ['Downtown / Elm Street', 'Wyben', 'Munger Hill', 'Little River', 'Hampton Ponds', 'Southampton Road corridor'],
+    languageNote:
+      "The Westfield area has one of the region's largest Russian- and Ukrainian-speaking communities, alongside Spanish. English and Spanish come standard on everything we build — and our sites are multilingual by design, so adding the languages your customers actually speak is part of the job, not an upsell.",
+    offers: [
+      {
+        title: 'Found when Westfield searches',
+        body: 'From Elm Street shops to Southampton Road trades: a fast site, built from scratch with local SEO in the foundation, that shows up when your neighbors search for what you do.',
+      },
+      {
+        title: 'Fast enough for Whip City Fiber',
+        body: "Your city runs a municipal fiber network with 2.5-gig service. On connections that fast, a slow website has no excuse — ours are engineered for top Lighthouse scores.",
+      },
+      {
+        title: 'Answered from the shop floor',
+        body: "Manufacturers, trades, and shops can't stop to answer chat. Your site's AI agent takes the questions, qualifies the customer, and books the work — any hour.",
+      },
+      {
+        title: 'Kept working, month after month',
+        body: 'Monthly plans keep the site fast, secure, and ranking — with a plain-English report of what changed and what it did. Built like the things this city builds: to last.',
+      },
+    ],
+    plansLine:
+      'Website, AI agent, SEO, and maintenance together from $95/mo.',
+    faqPricing:
+      "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. Month-to-month, nothing extra to start — prepay a year and two months are free. A full multi-page site with your own admin and Remi booking appointments is $245/mo, and one-time builds get a flat written quote.",
+    faqBusinesses:
+      "The businesses that make Westfield work: manufacturers and machine shops, contractors and tradespeople, the shops and restaurants of downtown and the Southampton Road corridor, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same — rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
+    faqAgents:
+      "Yes — and for a working city they earn their keep fast. Remi comes with every site plan and answers customers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
+    faqOutside:
+      "Yes — Westfield is about twenty minutes from our Springfield base, and we work across the whole valley: West Springfield, Agawam, Holyoke, Chicopee, Northampton, Southwick and the hilltowns. Remote works anywhere.",
+    faqExisting:
+      "Absolutely. We audit the site you have, fix what's costing you customers — speed, technical SEO, mobile problems, forms nobody completes — and then take over the maintenance so the fixes stick.",
+    faqDifferent:
+      "Twenty years of engineering for enterprise and startups — including enterprise eCommerce and consulting at Accenture — at prices scoped for a Westfield business. You talk directly to the person doing the work, no account manager in between.",
+    servingBlurb:
+      'Based in Springfield, twenty minutes east — on site in Westfield when it helps, remote when it\'s faster.',
+    proofBusiness: 'VL Home Services',
+    proofHeading: 'Proof from Western Massachusetts',
+    proofCaseStudy: {
+      slug: 'vl-home-services',
+      line: 'VL Home Services ran on referrals and paper. Now a website brings in work, an admin tracks it, and an AI agent answers customers in any language.',
+    },
+    beyondWebHeading: 'The rest of the toolkit for the Whip City',
+    beyondWeb: [
+      {
+        title: 'AI agents that work your hours',
+        body: 'Agents that answer, qualify, and book while you run the shop — from $95/mo each, with Remi built into every site plan.',
+        href: '/ai-team/',
+        linkText: 'Meet the AI Team',
+      },
+      {
+        title: 'Sell what you make, online',
+        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook — from $150/mo, platform subscription included.',
+        href: '/ecommerce/',
+        linkText: 'See store plans',
+      },
+      {
+        title: 'Own the map when Westfield looks',
+        body: 'Most local picks happen in the map pack. Google Business Profile setup or rescue: $145 one-time, or included in every monthly plan.',
+        href: '/plans/get-found/',
+        linkText: 'Get found on Google',
+      },
+      {
+        title: '360° photos & virtual tours',
+        body: "Google Street View tours and 360° photo packs cover the whole valley. Westfield sits just past the free-photo radius — we quote any small travel fee up front, always.",
+        href: '/free-360-photo/',
+        linkText: 'See 360° packs',
+      },
+    ],
+    cityNow: {
+      heading: 'Westfield right now: fighter jets, fiber, and a city that still makes things',
+      paragraphs: [
+        "Westfield's numbers run stronger than most people guess: 40,378 residents with a median household income of $87,753 — and of its 20,417 employed residents, manufacturing is still the third-largest sector (2,509 people), behind health care and education. The Whip City nickname isn't a museum piece; it's a working identity.",
+        "The anchors are moving, too. The first F-35A Lightning IIs arrived at Barnes Air National Guard Base in June 2026 — initial jets on loan for training as the 104th Fighter Wing converts from F-15s — securing a base a 2019 state study credited with roughly 2,100 jobs and about $236 million in annual economic output. Westfield State University adds 4,588 students to the city's rhythm.",
+        "And the part that matters most for a website: Westfield runs its own municipal fiber network. Whip City Fiber launched 2.5-gig residential service in February 2025 on fiber built out over the last decade. Your customers have some of the fastest home internet in New England — if your website is slow, it's the website.",
+      ],
+      sources: [
+        { label: 'U.S. Census Bureau ACS 2024 (Census Reporter)', url: 'https://censusreporter.org/profiles/16000US2576030-westfield-ma/' },
+        { label: 'Data USA — Westfield employment mix', url: 'https://datausa.io/profile/geo/westfield-ma' },
+        { label: 'WWLP — F-35s arrive at Barnes (Jun 2026)', url: 'https://www.wwlp.com/news/local-news/hampden-county/f-35-fighter-jets-arrive-at-barnes-air-national-guard-base-in-westfield/' },
+        { label: 'Mass.gov — Westfield-Barnes economic impact (2019 study)', url: 'https://www.mass.gov/news/massdot-celebrates-groundbreaking-of-taxiway-b-south-project-at-westfield-barnes-regional-airport' },
+        { label: 'Whip City Fiber — 2.5 Gig launch (Feb 2025)', url: 'https://www.whipcityfiber.com/2025/02/14/2-5-gig-now-available-in-westfield' },
+      ],
+    },
+    marketData: {
+      heading: "What the state's small-business survey means in a manufacturing city",
+      body: "When 1,049 Massachusetts small-business leaders were surveyed in fall 2025, the obstacle they named most often wasn't money — it was not being able to get clear, trustworthy information about which technology is actually worth it. In a city where the third-largest employment sector still makes physical things, that gap shows up as websites treated like a formality while the real work happens on the floor. Our answer is the same one a machine shop would give: published prices, work you can inspect, and tools that either pull their weight or don't ship.",
+      source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey (1,049 respondents)',
+      sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
+    },
+  },
+  {
+    slug: 'agawam',
+    name: 'Agawam',
+    badge: 'Agawam · Western Massachusetts',
+    metaTitle: 'Web Design in Agawam, MA — SEO & AI Agents | MannyKnows',
+    metaDescription:
+      'Web design for Agawam and Feeding Hills businesses — fast websites with AI booking agents and local SEO, right across the river from Springfield. From $95/mo.',
+    heroIntro:
+      "Agawam does business the established way — family names, long memories, customers who come back. We put that reputation online: web design and development that ranks, an AI agent that answers around the clock, and someone across the river keeping it all working.",
+    angleHeading: 'From Agawam Center to Feeding Hills, found first',
+    angleBody:
+      "Agawam is a town of established businesses — the median resident is 47, the farm stand has been in the same family since 1946, and word of mouth still closes most jobs. But the first look now happens on a phone: when someone in Feeding Hills searches for what you do, the business that shows up, loads fast, and answers first usually gets the call. We make sure that's you.",
+    neighborhoods: ['Agawam Center', 'Feeding Hills', 'North Agawam', 'Walnut Street corridor', 'Springfield Street / Route 57'],
+    languageNote:
+      'English and Spanish come standard on everything we build — site, SEO, and AI agent — so every customer gets answered in their own language.',
+    offers: [
+      {
+        title: 'The name they already trust, found first',
+        body: "Agawam businesses run on reputation built over decades. We make the same name win the search: a fast site, built from scratch, ranking for what your neighbors actually type.",
+      },
+      {
+        title: 'Answered while you\'re on the job',
+        body: "Trades, services, family shops — nobody can stop to answer chat. Your site's AI agent takes questions, qualifies the customer, and books the estimate, day or night.",
+      },
+      {
+        title: 'Ready for the seasonal wave',
+        body: "Six Flags pulls crowds through town all season. A sharp Google profile and a fast site turn that passing traffic into customers who stop, order, and come back.",
+      },
+      {
+        title: 'Cared for from across the river',
+        body: 'We\'re minutes away in Springfield. Monthly plans keep the site fast, secure, and ranking — with a plain-English monthly report, and a real person one call away.',
+      },
+    ],
+    plansLine:
+      'Website, AI agent, SEO, and maintenance in one plan — from $95/mo.',
+    faqPricing:
+      "Plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. Month-to-month, nothing extra to start; prepay a year and two months are free. The full multi-page tier with your own admin and Remi booking is $245/mo, and one-time builds get a flat written quote up front.",
+    faqBusinesses:
+      "Agawam's backbone: contractors and tradespeople, family restaurants and shops from Agawam Center to Feeding Hills, farm stands and seasonal businesses, and the services an established town leans on. The work underneath is constant — rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
+    faqAgents:
+      "Yes — and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage hire there is. Remi comes with every site plan and answers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you.",
+    faqOutside:
+      "Of course — Springfield is directly across the river (home base), and the rest of the valley is minutes away: West Springfield, Westfield, Chicopee, Holyoke, up to Northampton. Remote works anywhere.",
+    faqExisting:
+      "Yes, and you keep what you paid for. We audit the existing site, fix what's dragging it down — speed, technical SEO, mobile layout, forms nobody completes — and maintain it going forward so the fixes stick.",
+    faqDifferent:
+      "Enterprise engineering at family-business prices: twenty years building for enterprise and startups, including enterprise eCommerce and consulting at Accenture. When you call, you get the person doing the work — in English or Spanish.",
+    servingBlurb:
+      "Based in Springfield, directly across the river — easy to stop by in person, just as easy to handle remotely.",
+    proofBusiness: 'SL Painting',
+    proofHeading: 'Proof from across the river',
+    proofCaseStudy: {
+      slug: 'sl-painting',
+      line: 'SL Painting had nothing online. Today they rank #1 on Google — organically — for exterior painting in Springfield, with an AI agent qualifying leads around the clock.',
+    },
+    beyondWebHeading: 'More tools for an established business',
+    beyondWeb: [
+      {
+        title: 'AI agents, hired like staff',
+        body: 'Remi answers your site around the clock, and ten more agents write, post, run ads, and report — from $95/mo each, managed by Manny.',
+        href: '/ai-team/',
+        linkText: 'Meet the AI Team',
+      },
+      {
+        title: 'A store for what you grow or make',
+        body: 'From farm stands to family shops: one catalog synced to Google Shopping, Instagram & Facebook — from $150/mo, platform subscription included.',
+        href: '/ecommerce/',
+        linkText: 'See store plans',
+      },
+      {
+        title: 'Win the map from Feeding Hills to the Center',
+        body: 'Most local picks happen in the map pack before a website ever loads. Profile setup or rescue: $145 one-time, or included in every plan.',
+        href: '/plans/get-found/',
+        linkText: 'Get found on Google',
+      },
+      {
+        title: 'A free 360° photo of your business',
+        body: "Agawam is right across the river — well inside our free travel radius. One professional 360° photo for your Google profile, free, no strings.",
+        href: '/free-360-photo/',
+        linkText: 'Claim the free photo',
+      },
+    ],
+    cityNow: {
+      heading: 'Agawam right now: steady numbers, a seasonal engine, and a town reinvesting',
+      paragraphs: [
+        "Agawam — officially still the 'Town of Agawam,' though it's legally a city — holds about 28,500 residents with a median household income around $85,000 and a median age near 47: an established, settled market where reputations run long. The businesses match: E. Cecchi Farms has run its Feeding Hills farm stand in the same family since 1946, now in its third generation.",
+        "The seasonal engine is real: Six Flags New England, the region's largest theme park, announced hiring for more than 2,000 part-time and seasonal positions for its 2025 season — and its newest coaster, Quantum Accelerator, opened in April 2026 after a delayed debut. Every one of those season's visitors passes through Agawam's corridors deciding where to eat and stop, phone in hand.",
+        "And the town is reinvesting where local business lives: in December 2025 Agawam won a $135,000 state community planning grant to revitalize the Walnut Street downtown area. When the street gets its next act, the businesses customers can find online will be the ones that grow with it.",
+      ],
+      sources: [
+        { label: 'U.S. Census Bureau ACS 2024 (Census Reporter)', url: 'http://censusreporter.org/profiles/06000US2501300840-agawam-town-city-hampden-county-ma/' },
+        { label: 'NEPM — E. Cecchi Farms, three generations', url: 'https://connectingpoint.nepm.org/e-cecchi-farms-in-agawam-celebrates-76-years-of-local-food' },
+        { label: 'Amusement Today — Six Flags 2025 seasonal hiring', url: 'https://amusementtoday.com/2025/02/six-flags-new-england-begins-hiring-for-2025-season-with-more-than-2000-positions/' },
+        { label: 'Western Mass News — Walnut Street planning grant (Dec 2025)', url: 'https://www.westernmassnews.com/2025/12/24/agawam-receives-grant-revitalize-neighborhood/' },
+      ],
+    },
+    marketData: {
+      heading: 'Why an established town still needs a first impression',
+      body: "The state's fall-2025 survey of 1,049 small-business owners found the most common barrier to growth wasn't funding — it was getting clear, trustworthy information about what's worth doing online. Agawam feels that gap differently than a college town: here the business is often decades old, the reputation is settled, and the website was an afterthought because word of mouth carried everything. But the next generation of customers — and the wave of visitors Six Flags pulls through town every season — checks the map and the site first. The reputation deserves a first impression that matches it.",
       source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey (1,049 respondents)',
       sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
     },

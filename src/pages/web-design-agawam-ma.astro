@@ -1,0 +1,9 @@
+---
+// Local SEO landing page — /web-design-agawam-ma. Content lives in
+// src/data/localAreas.ts; layout in components/sections/LocalAreaPage.astro.
+export const prerender = true;
+import LocalAreaPage from '../components/sections/LocalAreaPage.astro';
+import { getLocalArea } from '../data/localAreas';
+const area = getLocalArea('agawam')!;
+---
+<LocalAreaPage area={area} />
