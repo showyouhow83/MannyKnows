@@ -91,7 +91,25 @@ const baseCard =
       height="860"
       loading="lazy"
       decoding="async"
-      class="w-full max-w-[110px] h-auto pointer-events-none"
+      class="moon-swing w-full max-w-[110px] h-auto pointer-events-none"
     />
   </div>
 </div>
+
+<style>
+  /* Gentle hanging swing (Manny, Aug 2026): pivot sits well above the image
+     (like a string he's hanging from), so a small rotation reads as a shallow
+     arc. Dials: --swing-angle and the duration. */
+  .moon-swing {
+    --swing-angle: 3.5deg;
+    transform-origin: 50% -120%;
+    animation: moonSwing 6.8s ease-in-out infinite;
+  }
+  @keyframes moonSwing {
+    0%, 100% { rotate: var(--swing-angle); }
+    50%      { rotate: calc(-1 * var(--swing-angle)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .moon-swing { animation: none; }
+  }
+</style>
