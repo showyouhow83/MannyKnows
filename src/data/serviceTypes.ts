@@ -15,6 +15,7 @@ export interface ServiceType {
 }
 
 export const SERVICE_TYPES: ServiceType[] = [
+  { value: 'ai-website', label: 'AI Website — one page ($195 + $40/mo)' },
   { value: 'website-basic', label: 'Get Found ($95/mo)' },
   { value: 'website-plus', label: 'Get Booked ($245/mo)' },
   { value: 'website-smart', label: 'Get Growing ($550/mo)' },
