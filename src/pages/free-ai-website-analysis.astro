@@ -19,7 +19,7 @@ const checks = [
   { title: 'Mobile experience', body: "How the site actually feels on the phones most of your customers use — layout, tap targets, and readability.", icon: 'M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z' },
   { title: 'Conversion & trust', body: "Whether a visitor can quickly see what you do, trust you, and take the next step — call, book, or buy.", icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
   { title: 'Accessibility', body: "Whether everyone can use your site — which is both the right thing to do and a real ranking and legal factor.", icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
-  { title: 'AI-readiness', body: "Where an AI agent could answer customers and book jobs for you 24/7 — and whether your content is ready to power one.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+  { title: 'AI-readiness', body: "Whether AI answer engines can find, read, and recommend you — crawler policy, llms.txt, machine-readable contact info — plus where an AI agent could answer and book for you 24/7.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
 ];
 
 // One section instead of the old three-step "How it works" + separate
@@ -257,6 +257,19 @@ const quote = getTestimonial('SL Painting');
               </ul>
             </details>`).join('')}
         </div>
+        ${Array.isArray(data.opportunities) && data.opportunities.length ? `
+        <div class="mt-12">
+          <h3 class="sf-bold text-xl md:text-2xl font-bold text-center mb-2"><span class="apple-gradient-text" data-colorful-title>Where AI could work for ${esc(data.host)}</span></h3>
+          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Based on what the scan actually saw on your page — not a generic pitch.</p>
+          <div class="grid gap-4 sm:grid-cols-2">
+            ${data.opportunities.map((o: any) => `
+              <a href="${esc(o.href)}" class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+                <p class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1.5">${esc(o.title)}</p>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">${esc(o.body)}</p>
+                <span class="inline-block mt-3 text-sm text-primary-blue dark:text-blue-300 font-medium group-hover:underline">See how →</span>
+              </a>`).join('')}
+          </div>
+        </div>` : ''}
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things a person catches — that's what the free review below is for.</p>
       `;
       section.classList.remove('hidden');
