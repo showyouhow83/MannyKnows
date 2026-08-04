@@ -1,0 +1,213 @@
+---
+// AI Booking Agent lander — targets the "AI booking agent / AI answering
+// service for small business" query cluster, where we have real shipped proof
+// (JK Daycare: site agent + Twilio IVR in two weeks; SL Painting: 24/7
+// qualifying agent) that national SaaS tools can't match locally.
+// Every claim traces to the published case studies or the data files.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Faq from '../components/ui/Faq.astro';
+import { aiTeamStartingPrice, aiTeamSetupFee } from '../data/aiTeam';
+
+const PHONE_DISPLAY = '(413) 361-8451';
+const PHONE_TEL = '+14133618451';
+
+const CAPABILITIES = [
+  {
+    title: 'Answers instantly, any hour',
+    body: "Site visitors get a real answer at 10pm, not a contact form. The agent is trained on your business — services, prices, hours — and replies in English or Spanish, whichever the customer opens with.",
+    icon: 'M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+  },
+  {
+    title: 'Qualifies before it books',
+    body: "It asks the questions you'd ask — what's the job, where, when — so what lands on your calendar is a real appointment with context, not a mystery name.",
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+  },
+  {
+    title: 'Books the appointment',
+    body: 'Estimates, consultations, tours, tables — the agent takes the booking end to end while you work, and every lead is captured with its conversation.',
+    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+  },
+  {
+    title: 'Hands off when a human matters',
+    body: "It knows its limits. Complex jobs, upset customers, anything sensitive — the agent routes to you (or the right person on your team) instead of improvising.",
+    icon: 'M17 8l4 4m0 0l-4 4m4-4H3',
+  },
+];
+
+const FAQS = [
+  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes — English and Spanish are standard on everything we build, not an add-on. The agent answers in whichever language the customer starts with.' },
+  { q: 'Can it answer phone calls, or just website chat?', a: "Both are real, shipped products. Website agents answer and book from your site. For phones, we build custom IVR systems — JK Daycare's phone line answers callers with the information they need and routes them to the right person. Phone systems are custom one-time builds." },
+  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team — you don't need to rebuild anything. If you're on one of our website plans, Remi is already included." },
+  { q: 'How fast can it be live?', a: 'JK Daycare went from kickoff to a live website, a working AI agent, and a phone system that routes every call in two weeks. Most agent-only setups are faster.' },
+  { q: 'What does an AI booking agent cost?', a: `Three honest ways in: it's included in every website plan (from $95/mo, as Remi); it can be hired onto your existing site as an AI Team agent (from $${aiTeamStartingPrice}/mo plus a one-time $${aiTeamSetupFee} setup); or we build custom — phone IVR systems and deep integrations are one-time projects that usually start at $2,500.` },
+];
+
+const META_DESCRIPTION = 'AI booking agents for Western Mass small businesses — answer customers 24/7 in English or Spanish, qualify the lead, and book the job. Built and proven locally, from $95/mo.';
+
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI Booking Agent for Small Businesses',
+  serviceType: 'AI booking agent and AI answering service development',
+  provider: {
+    '@type': 'ProfessionalService',
+    '@id': 'https://mannyknows.com/#business',
+    name: 'MannyKnows',
+    url: 'https://mannyknows.com',
+    telephone: '+1-413-361-8451',
+    address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+  },
+  areaServed: 'Western Massachusetts',
+  description: META_DESCRIPTION,
+  offers: [
+    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering and booking 24/7 — from $95/mo.' },
+    { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have — from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
+  ],
+};
+---
+
+<BaseLayout title="AI Booking Agent for Small Businesses, Western Mass | MannyKnows" description={META_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">AI Booking Agent</span></li>
+        </ol>
+      </nav>
+
+      <div class="pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[1440px] mx-auto text-center">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+            AI Agents · Western Massachusetts
+          </span>
+          <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+            <span class="apple-gradient-text" data-colorful-title>An AI booking agent that answers, qualifies &amp; books — 24/7</span>
+          </h1>
+          <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+            Most jobs are lost to the call nobody could answer. We build AI booking agents for Western Mass small businesses — they answer customer questions in English or Spanish, ask the qualifying questions you would, and book the appointment while you're working. Not a demo: ours are answering for real local businesses right now.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+              Get your booking agent
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <a href="#proof" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+              See it in a real business
+            </a>
+          </div>
+          <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+            English &amp; Spanish standard · From $95/mo · Built in Springfield, MA
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Proof: shipped, named, linked — the thing national SaaS tools can't say -->
+    <Section id="proof" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Built, shipped, and answering customers today</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Not a product tour — these are named local businesses you can look up, with the full builds documented.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Licensed childcare · Springfield</span>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare: website, AI agent &amp; phone system — in two weeks</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later: a site with an AI agent answering parents' questions from the site's own content, and a Twilio IVR phone system that gives callers what they need and routes them to the right person — every call answered.</p>
+            <a href="/work/jk-daycare/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+              Read the JK Daycare case study
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Painting contractor · Springfield</span>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting: leads qualified around the clock</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7 — so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
+            <a href="/work/sl-painting/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+              Read the SL Painting case study
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- What it actually does -->
+    <Section id="what-it-does" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What a booking agent does all day</span></h2>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {CAPABILITIES.map((c) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
+              </div>
+              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Three honest ways in -->
+    <Section id="pricing" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Three ways to get one</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Same agent quality, three doors — pick by what you already have.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-7 flex flex-col">
+            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Included in every website plan</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Every MannyKnows site ships with Remi — the built-in agent answering and booking 24/7. If you need a website anyway, the agent comes with it.</p>
+            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">From $95/mo</p>
+            <a href="/plans/" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5 transition-all">See the plans</a>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
+            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Added to the site you have</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Keep your current website — hire a booking agent onto it from the AI Team, trained on your business and managed by Manny.</p>
+            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">From ${aiTeamStartingPrice}/mo · one-time ${aiTeamSetupFee} setup</p>
+            <a href="/ai-team/" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5 transition-all">Meet the AI Team</a>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
+            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Custom — including your phone line</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Phone IVR systems like JK Daycare's, calendar integrations, anything deeper — scoped together, quoted up front, yours when it ships.</p>
+            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">One-time builds usually start at $2,500</p>
+            <a href="#contact" data-contact-context="Custom AI booking build" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm bg-gradient-to-r from-primary-blue to-primary-pink text-white transition-all">Scope a build</a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- FAQ (Faq component emits FAQPage schema) -->
+    <Section id="faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
+              Talk about your booking agent
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> — English or Spanish.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>
