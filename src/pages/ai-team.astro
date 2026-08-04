@@ -95,12 +95,48 @@ const steps = [
   { n: '05', title: 'You run it; we support it', body: 'You tell Manny what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
 
+
+// Structured data: the AI Team as a Service. Prices come from aiTeam.ts at
+// build time so this block can never drift from the real pricing.
+const pageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'The AI Team — AI Agents for Business',
+  serviceType: 'AI agent development and managed AI business agents',
+  provider: {
+  '@type': 'ProfessionalService',
+  '@id': 'https://mannyknows.com/#business',
+  name: 'MannyKnows',
+  url: 'https://mannyknows.com',
+  telephone: '+1-413-361-8451',
+  address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
+},
+  areaServed: 'Western Massachusetts',
+  description: 'Ten AI specialists — front desk, research, copywriting, graphics & video, voice, SEO, publishing, paid ads, engagement, and analytics — custom-built for your business and managed by Manny.',
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'Individual AI agent',
+      price: String(aiTeamStartingPrice),
+      priceCurrency: 'USD',
+      description: `From $${aiTeamStartingPrice}/mo per agent, one-time $${aiTeamSetupFee} setup. Manny (the manager) is included with any hire.`,
+    },
+    {
+      '@type': 'Offer',
+      name: wholeTeamBundle.name,
+      price: String(wholeTeamBundle.monthly),
+      priceCurrency: 'USD',
+      description: `All ten agents for $${wholeTeamBundle.monthly}/mo — $${wholeTeamBundle.savings}/mo less than hiring them individually.`,
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title="AI Agents for Business — 10 Agents from $95/mo | MannyKnows"
   description="Custom AI agent development — front desk, copy, graphics, voice, SEO & ads. Hired like staff, trained on your business, managed by Manny. $195 setup, from $95/mo."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
