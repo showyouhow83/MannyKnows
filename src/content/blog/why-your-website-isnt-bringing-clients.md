@@ -42,4 +42,4 @@ Notice what these have in common: none of them are about how the site *looks*. T
 
 If your current site is losing clients, we start by finding out exactly which of these five is costing you — that's the **[Free AI Website Analysis](/free-ai-website-analysis/)**: send your URL, get a plain-English rundown of what's working, what's leaking, and what to fix first, with no obligation. From there, we can **[fix the site you want to keep](/services/)**, or a **[Smart Website plan](/plans/)** rebuilds and maintains it — fast, found, and answering around the clock.
 
-Not sure which of the five is your problem? [Send us your site](/free-ai-website-analysis/) and we'll tell you straight.
+Not sure which of the five is your problem? [Send us your site](/free-ai-website-analysis/) and we'll tell you.

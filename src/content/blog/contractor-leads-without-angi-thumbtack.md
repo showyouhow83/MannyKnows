@@ -67,4 +67,4 @@ Building all of this — the profile, the service pages, the reviews system, the
 
 And when the organic side is working and you want to push harder, **[Get Ahead](/plans/get-ahead/)** puts managed advertising on top of that site. Let's be straight about one thing: that is still paid traffic. The difference isn't that it's free — it's who owns what your money bought. On Angi, your fee buys a lead three competitors also bought. Here the click is yours alone, it lands on a page built to convert it, and the site keeps ranking and booking after you pause the ad budget. You're renting the traffic, not the customer relationship.
 
-Tired of paying for the same lead as your competitors? **[Get a free look at your current setup](/free-ai-website-analysis/)** — we'll tell you honestly where your leads are leaking and what it'd take to own the flow instead.
+Tired of paying for the same lead as your competitors? **[Get a free look at your current setup](/free-ai-website-analysis/)** — we'll tell you where your leads are leaking and what it'd take to own the flow instead.
