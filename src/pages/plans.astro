@@ -13,8 +13,6 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import { servicePlans, websitePlans } from '../data/plans';
-import QuoteBlock from '../components/ui/QuoteBlock.astro';
-import { getTestimonial } from '../data/testimonials';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
 import SmartWebsiteConcept from '../components/sections/SmartWebsiteConcept.astro';
 import { team, aiTeamStartingPrice } from '../data/aiTeam';
@@ -209,11 +207,6 @@ const pageJsonLd = {
           ))}
         </div>
 
-        {/* SL Painting review — below the Beyond-your-website content (per Manny):
-            the proof lands right after the bigger-engagement pitch. */}
-        <div class="max-w-2xl mx-auto mt-14">
-          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
-        </div>
       </Container>
     </Section>
 
