@@ -7,6 +7,10 @@ import Button from '../ui/Button.astro';
 
 // Hidden agents (Leo, Aria, Piper, Max) are Manny AI sub-agents — not shown.
 const roster = [...team].filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
+// Manny AI is featured large on the left (he's the hire); the six specialists
+// he staffs sit in a 3×2 grid beside him (layout per Manny, Aug 2026).
+const manager = roster.find((a) => a.included)!;
+const specialists = roster.filter((a) => !a.included);
 
 // Compact specialty labels for the teaser grid (the full role is on /ai-team).
 const specialty: Record<string, string> = {
@@ -27,21 +31,38 @@ const specialty: Record<string, string> = {
 <div class="max-w-7xl mx-auto">
   {/* Each avatar deep-links to its card on /ai-team (anchors are the slugified
       agent name — same rule as the card ids there), so "who's Nova?" lands on
-      Nova's description instead of the top of the page. */}
-  <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4 lg:gap-4 max-w-3xl lg:max-w-7xl mx-auto">
-    {roster.map((a) => (
-      <a
-        href={`/ai-team/#agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`}
-        class="group flex flex-col items-center gap-1 rounded-2xl p-1 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
-        aria-label={`${a.name} — ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Team page.`}
-      >
-        <div class="w-full max-w-[68px] sm:max-w-[76px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
+      Nova's description instead of the top of the page. Manny AI leads large;
+      the specialists he staffs form a 3×2 grid beside him. */}
+  <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-4xl mx-auto">
+    <!-- The hire: Manny AI, featured -->
+    <a
+      href="/ai-team/#agent-manny-ai"
+      class="group flex flex-col items-center gap-2 rounded-3xl p-2 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
+      aria-label={`${manager.name} — ${specialty[manager.id] ?? manager.role}. Read what ${manager.name} does on the AI Team page.`}
+    >
+      <div class="w-40 sm:w-48 aspect-square rounded-3xl bg-gradient-to-br from-primary-blue/[0.10] via-transparent to-primary-pink/[0.10] ring-1 ring-primary-blue/20 group-hover:from-primary-blue/[0.18] group-hover:to-primary-pink/[0.18] transition-colors duration-300">
+        <AgentAvatar agent={manager.id} class="w-full h-full" />
+      </div>
+      <span class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{manager.name}</span>
+      <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[manager.id] ?? manager.role}</span>
+    </a>
+
+    <!-- The specialists Manny staffs: 3×2 -->
+    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+      {specialists.map((a) => (
+        <a
+          href={`/ai-team/#agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`}
+          class="group flex flex-col items-center gap-1 rounded-2xl p-1 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
+          aria-label={`${a.name} — ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Team page.`}
+        >
+          <div class="w-full max-w-[68px] sm:max-w-[84px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
           <AgentAvatar agent={a.id} class="w-full h-full" />
-        </div>
-        <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{a.name}</span>
-        <span class="text-[9px] sm:text-[10px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>
-      </a>
-    ))}
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{a.name}</span>
+          <span class="text-[9px] sm:text-[10px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>
+        </a>
+      ))}
+    </div>
   </div>
 
   <div class="text-center max-w-2xl mx-auto mt-10">
