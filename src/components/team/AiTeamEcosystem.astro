@@ -24,17 +24,15 @@ const shortRole: Record<string, string> = {
   ana: 'Analytics',
 };
 
-// The dashboard rows — one line of each specialist's output, so the diagram
-// ends where the owner actually lives: one place, all of it visible. The first
-// row is from the REAL painter run (7/23/2026) — its details (the "guess the
-// color" lane, the scheduled filming afternoons) are from that run, nothing
-// invented. The rest are the product experience.
-const dashboardRows = [
-  { who: 'elly', label: 'Ten shoot-ready scripts · approved', detail: 'the “guess the color” lane — two filming afternoons on the calendar' },
-  { who: 'eve', label: 'Daily intel brief', detail: 'competitor moves & local trends — 7:00 AM' },
-  { who: 'desi', label: 'New lead captured', detail: 'answered overnight, details in the thread' },
-  { who: 'essie', label: 'Search position', detail: '“exterior painting springfield” · tracking' },
-  { who: 'ana', label: 'Monthly report', detail: 'traffic → calls → booked jobs' },
+// The dashboard rows — the RESULT of the request at the top of the diagram,
+// so the flow reads request → summoned specialists → the work back for
+// approval (Manny, Aug 2026: mixing in generic feed rows broke the story).
+// Every row is from the real painter run (7/23/2026), nothing invented; the
+// day-to-day feed is the caption under the panel instead.
+const dashboardRows: { who: string; label: string; detail: string; status?: string }[] = [
+  { who: 'elly', label: 'Ten shoot-ready scripts', detail: 'captions & hashtags included — the “guess the color” lane', status: 'Approved' },
+  { who: 'eve', label: 'The research behind them', detail: 'what actually converts for painters on TikTok, in the thread' },
+  { who: 'manny', label: 'Two filming afternoons', detail: 'scheduled onto your calendar' },
 ];
 ---
 
@@ -61,9 +59,8 @@ const dashboardRows = [
       <AgentAvatar agent="manny" class="w-full h-full" />
     </div>
     <div class="min-w-0">
-      <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Manny AI — the manager you hire</p>
-      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug mt-1">Briefs the right specialists, runs the handoffs, staffs more sub-agents behind the scenes as the job needs them.</p>
-      <p class="text-[11px] italic text-text-light-tertiary dark:text-text-dark-tertiary leading-snug mt-1.5">That run: Eve dug into what actually converts for painters on TikTok; Elly scripted the batch off her findings.</p>
+      <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Manny AI — the manager</p>
+      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug mt-1">Summons the right specialists for the task, briefs each one, and runs the handoffs so the job gets done the best way it can — staffing more sub-agents behind the scenes as it calls for them.</p>
     </div>
   </div>
 
@@ -94,11 +91,11 @@ const dashboardRows = [
     <svg width="16" height="28" viewBox="0 0 16 28" fill="none"><path d="M8 0v22m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-light-tertiary dark:text-text-dark-tertiary"/></svg>
   </div>
 
-  <!-- Stage 4: one dashboard, your approval -->
+  <!-- Stage 4: the request comes back done, for your approval -->
   <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden shadow-sm">
     <div class="flex items-center justify-between px-4 py-2.5 border-b border-light-tertiary dark:border-dark-accent bg-light-secondary/50 dark:bg-dark-primary/50">
-      <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Your dashboard · today</span>
-      <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-green-600 dark:text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> live</span>
+      <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Your dashboard · the request, back done</span>
+      <span class="text-[11px] font-semibold text-text-light-tertiary dark:text-text-dark-tertiary">one approval</span>
     </div>
     <ul role="list">
       {dashboardRows.map((r, i) => (
@@ -110,6 +107,12 @@ const dashboardRows = [
             <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">{r.label}</p>
             <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug">{r.detail}</p>
           </div>
+          {r.status && (
+            <span class="flex-shrink-0 inline-flex items-center gap-1 rounded-full bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-[11px] font-bold px-2.5 py-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              {r.status}
+            </span>
+          )}
         </li>
       ))}
     </ul>
@@ -117,4 +120,7 @@ const dashboardRows = [
       <p class="text-[11px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400">Nothing ships without your approval</p>
     </div>
   </div>
+  <p class="mt-3 text-center text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
+    Day to day, the same dashboard carries the whole team's output — the daily intel brief, captured leads, search rankings, and the monthly report.
+  </p>
 </div>
