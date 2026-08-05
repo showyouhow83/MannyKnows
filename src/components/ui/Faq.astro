@@ -24,26 +24,13 @@ const faqSchema = schema && faqs.length > 0
 ---
 
 {faqs.length > 0 && (
-  <div class="max-w-3xl mx-auto">
+  <div class="max-w-4xl mx-auto md:flex md:items-center md:gap-10">
+    <div class="flex-1 min-w-0">
     {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
     {heading && (
-      <div class="text-center mb-10">
-        {/* Question-mark astronaut (waist-up crop of astro-faqs, 22 KB webp).
-            Size dial: max-w below. Decorative — heading carries the meaning. */}
-        <img
-          src="/mascot/astro-faqs.webp"
-          alt=""
-          aria-hidden="true"
-          width="360"
-          height="521"
-          loading="lazy"
-          decoding="async"
-          class="mx-auto mb-4 w-full max-w-[110px] h-auto pointer-events-none"
-        />
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-          <span class="apple-gradient-text" data-colorful-title>{heading}</span>
-        </h2>
-      </div>
+      <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+        <span class="apple-gradient-text" data-colorful-title>{heading}</span>
+      </h2>
     )}
     {/* Native <details> accordion, closed by default: the answers stay in the
         DOM (so the FAQPage schema above and Google's indexing are unaffected)
@@ -59,5 +46,20 @@ const faqSchema = schema && faqs.length > 0
         </details>
       ))}
     </div>
+    </div>
+
+    {/* Question-mark astronaut (waist-up crop, 22 KB webp) — right column on
+        desktop, below the FAQs at homepage-mascot size on mobile.
+        Size dials: the two max-w values below. */}
+    <img
+      src="/mascot/astro-faqs.webp"
+      alt=""
+      aria-hidden="true"
+      width="360"
+      height="521"
+      loading="lazy"
+      decoding="async"
+      class="mx-auto mt-8 w-full max-w-[80px] md:mx-0 md:mt-0 md:max-w-[160px] h-auto pointer-events-none flex-shrink-0"
+    />
   </div>
 )}
