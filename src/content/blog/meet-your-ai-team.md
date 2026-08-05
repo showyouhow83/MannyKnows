@@ -5,7 +5,7 @@ pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
 draft: false
-seoDescription: "Meet the eleven AI agents that answer, research, write, design, publish, advertise, and report for your business — trained on your Brand Brain, managed by Manny AI."
+seoDescription: "Meet the AI agents that answer, research, write, design, publish, advertise, and report for your business — trained on your Brand Brain, managed by Manny AI."
 image: "/blog/meet-your-ai-team.jpg"
 ---
 

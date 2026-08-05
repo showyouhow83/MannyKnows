@@ -198,7 +198,7 @@ export const localAreas: LocalArea[] = [
     slug: 'holyoke',
     name: 'Holyoke',
     badge: 'Holyoke · Western Massachusetts',
-    metaTitle: 'Web Design in Holyoke, MA — Bilingual SEO & AI Agents | MannyKnows',
+    metaTitle: 'Web Design in Holyoke, MA — Bilingual SEO & AI | MannyKnows',
     metaDescription:
       'Web design for Holyoke, MA businesses — fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $95/mo.',
     heroIntro:

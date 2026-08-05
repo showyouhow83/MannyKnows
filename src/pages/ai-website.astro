@@ -39,7 +39,8 @@ const PHONE_TEL = '+14133618451';
 const heroSections = aiWebsiteSections.filter((s) => s.hero);
 const restSections = aiWebsiteSections.filter((s) => !s.hero);
 
-const META_DESCRIPTION = `A one-page website with Remi, an AI agent that answers your customers and captures every lead — $${aiWebsiteSetupFee} to build, $${aiWebsiteMonthly}/mo to run. Built in Springfield, MA for Western Mass businesses.`;
+// Title/meta kept under 60/160 chars — search results truncate past that.
+const META_DESCRIPTION = `A one-page website with Remi, an AI agent that answers customers and captures every lead — $${aiWebsiteSetupFee} to build, $${aiWebsiteMonthly}/mo to run. Springfield, MA.`;
 
 const siteUrl = 'https://mannyknows.com';
 const pageJsonLd = {
@@ -79,7 +80,7 @@ const pageJsonLd = {
 };
 ---
 
-<BaseLayout title={`AI Website — One-Page Site With an AI Agent, $${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo | MannyKnows`} description={META_DESCRIPTION}>
+<BaseLayout title="AI Website — One-Page Site with an AI Agent | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
 
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
