@@ -248,7 +248,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `Two numbers. A one-time $${aiTeamSetupFee} setup — us building your Brand Brain and training your team — then a monthly scoped to the operation Manny AI runs for you, quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only flat price is Remi: $${aiTeamStartingPrice}/mo on its own, and included with every Smart Website plan.`,
+    a: `An agent starts at $${aiTeamStartingPrice}/mo — that's Remi, the front desk, which is also included with every Smart Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you — quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only other number: a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
