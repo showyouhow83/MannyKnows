@@ -88,6 +88,25 @@ const chatRole: Record<string, string> = {
   ana: 'Analytics',
 };
 
+// Bottleneck → agent router ("which agents do I need?" is the wrong first
+// question — this maps the leak to the hire). The last two rows are the ones
+// that convert the hardest-to-shop-around visitors: custom agents and the
+// can't-name-it diagnostic.
+const ROUTER: { leak: string; who: string; href: string; sub?: string }[] = [
+  { leak: 'Leads come in and nobody answers fast enough', who: 'Remi', sub: 'front desk', href: '#agent-remi' },
+  { leak: "You're guessing at what to make and for whom", who: 'Eve', sub: 'research & strategy', href: '#agent-eve' },
+  { leak: 'The writing never gets done', who: 'Elly', sub: 'copywriting', href: '#agent-elly' },
+  { leak: 'You look smaller than you are', who: 'Leo', sub: 'graphics & video', href: '#agent-leo' },
+  { leak: "You'd post more if you didn't have to record", who: 'Aria', sub: 'voice & audio', href: '#agent-aria' },
+  { leak: 'Springfield customers search for what you do — and find someone else', who: 'Nova', sub: 'SEO & local search', href: '#agent-nova' },
+  { leak: 'Content exists but never ships on time', who: 'Piper', sub: 'publishing', href: '#agent-piper' },
+  { leak: "You're paying for ads you can't trace to jobs", who: 'Max', sub: 'paid ads', href: '#agent-max' },
+  { leak: 'Reviews and DMs sit unanswered', who: 'Finn', sub: 'engagement & reputation', href: '#agent-finn' },
+  { leak: "You honestly don't know what's working", who: 'Vera', sub: 'analytics', href: '#agent-vera' },
+  { leak: "Your bottleneck isn't on this list", who: 'A custom agent', sub: 'scoped on the diagnostic call', href: '#custom-agent' },
+  { leak: "You can't name one", who: 'The 15-minute diagnostic', sub: "we'll find it together", href: BOOKING_URL },
+];
+
 const steps = [
   { n: '01', title: 'We sit down and find your voice', body: "A series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we've dialed in exactly what you sell, who buys, and how you sound.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
   { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions — plus your services, prices, past work, and best content — gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from. This is the step that makes ten agents act like one team.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
@@ -102,8 +121,8 @@ const steps = [
 const pageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'The AI Team — AI Agents for Business',
-  serviceType: 'AI agent development and managed AI business agents',
+  name: 'The AI Team — AI Agents for Springfield & Western Mass Businesses',
+  serviceType: 'AI agent development',
   provider: {
   '@type': 'ProfessionalService',
   '@id': 'https://mannyknows.com/#business',
@@ -112,7 +131,13 @@ const pageJsonLd = {
   telephone: '+1-413-361-8451',
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
-  areaServed: 'Western Massachusetts',
+  areaServed: [
+    { '@type': 'City', name: 'Springfield, Massachusetts' },
+    { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
+    { '@type': 'AdministrativeArea', name: 'Hampden County, MA' },
+    { '@type': 'AdministrativeArea', name: 'Hampshire County, MA' },
+    { '@type': 'AdministrativeArea', name: 'Franklin County, MA' },
+  ],
   description: 'Ten AI specialists — front desk, research, copywriting, graphics & video, voice, SEO, publishing, paid ads, engagement, and analytics — custom-built for your business and managed by Manny AI.',
   offers: [
     {
@@ -134,8 +159,8 @@ const pageJsonLd = {
 ---
 
 <BaseLayout
-  title="AI Agents for Business — 10 Agents from $95/mo | MannyKnows"
-  description="Custom AI agent development — front desk, copy, graphics, voice, SEO & ads. Hired like staff, trained on your business, managed by Manny AI. $195 setup, from $95/mo."
+  title="Hire AI Agents in Springfield, MA — Built Around Your Business | MannyKnows"
+  description="AI agents for Western Mass small businesses — from $95/mo. We find the bottleneck costing you money, then build the agent that fixes it: front desk, content, SEO, ads & more. Springfield, MA."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -155,14 +180,19 @@ const pageJsonLd = {
             <div class="flex justify-center mb-6">
               <Illustration kind="agent" class="w-full max-w-[210px]" />
             </div>
+            {/* Eyebrow avoids repeating the H1's "hired like staff" — it adds
+                the price fact instead (badge/H1 pairing rule, Aug 2026). */}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-              The AI Team · hire agents like staff
+              The AI Team · from ${startFrom}/mo · Manny AI included
             </span>
-            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>One team. One brain. One boss — you.</span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-4">
+              <span class="apple-gradient-text" data-colorful-title>AI agents for Springfield &amp; Western Mass businesses — hired like staff</span>
             </h1>
+            <p class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss — you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite: ten AI specialists, one shared brain, one manager — every agent built around your business, trained on your voice, your services, and your customers, then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny AI puts the right agents on the job and brings the finished work back for your sign-off.
+              <strong class="text-text-light-primary dark:text-text-dark-primary"> You don't start with ten — you start with the one aimed at whatever's costing you the most. And when the fix your business needs isn't on the roster, we build it: a custom agent designed for your exact problem, sitting on the same Brand Brain as the rest of the team.</strong>
+              Built in Springfield, working for businesses across Western Massachusetts.
             </p>
 
             <!-- The three pillars, promoted into the hero (Manny: one stronger
@@ -195,13 +225,82 @@ const pageJsonLd = {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                Book a call
+                Book the 15-min diagnostic
               </a>
             </div>
           </div>
         </Container>
       </div>
     </header>
+
+    <!-- Before you meet anyone — the two-questions diagnostic + the
+         bottleneck→agent router. Bottleneck-first framing (Manny, Aug 2026):
+         the page sells the ONE right hire, not ten. -->
+    <Section id="find-your-bottleneck" variant="default">
+      <Container>
+        <div class="max-w-3xl mx-auto text-center mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
+            <span class="apple-gradient-text" data-colorful-title>Before you meet anyone</span>
+          </h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Most owners land here asking "which agents do I need?" Wrong first question. Start with these two —
+            most people can answer both in under a minute:
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-10">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
+            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">1</span>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you bad at that keeps costing you money?</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your bottleneck. It's where the leak is.</p>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
+            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">2</span>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you good at that would print revenue if it scaled?</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your lever — and it's what breaks first when volume shows up.</p>
+          </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto text-center mb-12 space-y-4">
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            The answers almost never point to the same place. If leads are the problem, more sales infrastructure
+            won't save you. If your close rate is fine but the process buckles at volume, more leads just make it louder.
+          </p>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            AI isn't the strategy. It's the leverage. Your first agent goes exactly where the leak is — from the
+            roster below if it's a common one, custom-built if it isn't. We've built agents that check project
+            statuses against a contractor's backend and phone systems that answer a daycare's calls in two
+            languages. The roster is where most businesses start; it's not where the possibilities end.
+          </p>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            And because every agent — stock or custom — reads from the same Brand Brain, the first hire is never a
+            throwaway. It's the foundation the second one starts from.
+          </p>
+        </div>
+
+        <!-- The router: leak on the left, hire on the right -->
+        <div class="max-w-3xl mx-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden">
+          <div class="grid grid-cols-[1fr_auto] items-center gap-x-4 px-5 py-3 border-b border-light-tertiary dark:border-dark-accent bg-light-secondary/50 dark:bg-dark-primary/50">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">If this is the leak</span>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary text-right">Start here</span>
+          </div>
+          {ROUTER.map((r, i) => (
+            <a
+              href={r.href}
+              target={r.href.startsWith('http') ? '_blank' : undefined}
+              rel={r.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              class={`grid grid-cols-[1fr_auto] items-center gap-x-4 px-5 py-3.5 transition-colors hover:bg-primary-blue/5 ${i > 0 ? 'border-t border-light-tertiary dark:border-dark-accent' : ''} ${i >= 10 ? 'bg-gradient-to-r from-primary-blue/[0.04] to-primary-pink/[0.04]' : ''}`}
+            >
+              <span class="text-sm text-text-light-primary dark:text-text-dark-primary leading-snug">{r.leak}</span>
+              <span class="text-right">
+                <span class="block text-sm font-bold text-primary-blue dark:text-blue-300">{r.who} →</span>
+                {r.sub && <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary">{r.sub}</span>}
+              </span>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Section>
 
     <!-- What that looks like in practice -->
     <Section id="ai-team-example" variant="alternate">
@@ -270,6 +369,24 @@ const pageJsonLd = {
       </Container>
     </Section>
 
+    <!-- Local proof strip — the page's heaviest geo signal is real Western
+         Mass results with descriptive anchors into the case studies. -->
+    <Section id="ai-team-proof-strip" variant="default">
+      <Container>
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="sf-bold text-xl md:text-2xl font-bold mb-4">
+            <span class="apple-gradient-text" data-colorful-title>Built here, proven here</span>
+          </h2>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            A <a href="/work/sl-painting/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Springfield painting contractor ranking #1 organically for exterior painting</a>.
+            A <a href="/work/jk-daycare/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">local daycare whose AI answers parents in English and Spanish</a>, on the site and on the phone.
+            A <a href="/work/vl-home-services/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">home services company whose custom agent checks project statuses straight from their backend</a>.
+            <a href="/#work" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline whitespace-nowrap">See the work →</a>
+          </p>
+        </div>
+      </Container>
+    </Section>
+
     <!-- Meet the team (roster) -->
     <Section id="ai-team-roster" variant="default">
       <Container>
@@ -308,13 +425,14 @@ const pageJsonLd = {
             <div id={`agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`} class="scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
-                  <AgentAvatar agent={a.id} class="w-full h-full" />
+                  <AgentAvatar agent={a.id} class="w-full h-full" alt={`${a.name}, ${a.role} — AI agent for Springfield & Western Mass small businesses by MannyKnows`} />
                 </div>
                 <div class="min-w-0">
                   <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</h3>
                   <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">{a.role}</span>
                 </div>
               </div>
+              {a.symptom && <p class="text-sm italic text-text-light-primary dark:text-text-dark-primary mb-2">{a.symptom}</p>}
               <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
               <div class="mt-4 pt-1 flex items-end justify-between gap-3">
                 <div class="leading-none">
@@ -331,6 +449,42 @@ const pageJsonLd = {
               </div>
             </div>
           ))}
+
+          <!-- The closer: custom agents, promoted from footnote to roster card
+               (Manny, Aug 2026). Weird problems are the highest-margin,
+               hardest-to-shop-around work — and custom agents that prove
+               useful become roster agents, which is what "the roster keeps
+               growing" actually means. -->
+          <div id="custom-agent" class="scroll-mt-24 rounded-2xl border-2 border-dashed border-primary-blue/40 bg-gradient-to-br from-primary-blue/[0.04] via-transparent to-primary-pink/[0.04] p-6 flex flex-col hover:border-primary-blue/70 transition-all duration-300">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl border-2 border-dashed border-primary-blue/30 flex items-center justify-center">
+                <svg class="w-10 h-10 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+              </div>
+              <div class="min-w-0">
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Your Custom Agent</h3>
+                <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Built for your exact problem</span>
+              </div>
+            </div>
+            <p class="text-sm italic text-text-light-primary dark:text-text-dark-primary mb-2">For when your bottleneck isn't anyone else's.</p>
+            <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              The roster covers what every business needs. Some businesses need something only theirs does — an
+              agent wired into your backend, your phone line, your scheduling, your inventory. We scope it, build
+              it around your Brand Brain, and Manny manages it like any other hire.
+            </p>
+            <div class="mt-4 pt-1 flex items-end justify-between gap-3">
+              <div class="leading-none">
+                <span class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">Scoped &amp; quoted</span>
+                <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">on the diagnostic call</span>
+              </div>
+              <a
+                href="#contact"
+                data-contact-context="AI Team — custom agent"
+                class="flex-shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-4 py-2.5 text-sm font-semibold transition-all duration-300"
+              >
+                Scope my agent
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Human-in-the-loop card — closes the roster per Manny (Aug 2026):
@@ -383,6 +537,10 @@ const pageJsonLd = {
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Any single agent — from ${startFrom}/mo. Every agent works on its own, with Manny AI included as your manager and delivery channel. Hire only Eve and her research lands in your inbox the way you like to read it.
           </p>
+          <p class="mt-3 text-sm text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
+            Most clients shouldn't start here. Bundles make sense when the two questions point at more than one
+            department — otherwise, start with one agent and let the numbers argue for the second.
+          </p>
         </div>
 
         <div class="grid gap-6 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
@@ -392,6 +550,7 @@ const pageJsonLd = {
                 <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full">Best value</span>
               )}
               <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{b.name}</h3>
+              {b.diagnosis && <p class="mt-2 text-sm italic text-text-light-primary dark:text-text-dark-primary leading-snug">{b.diagnosis}</p>}
               <div class="mt-2 leading-none">
                 {b.addOn && <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">add </span>}
                 <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${b.monthly.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
@@ -433,6 +592,27 @@ const pageJsonLd = {
         </Container>
       </Section>
     )}
+
+    <!-- Final CTA — the diagnostic, no pitch (bottleneck-first close) -->
+    <Section id="ai-team-diagnostic" variant="gradient">
+      <Container>
+        <div class="max-w-2xl mx-auto text-center">
+          <h2 class="sf-bold text-2xl md:text-4xl font-bold mb-5">
+            <span class="apple-gradient-text" data-colorful-title>Two questions. Fifteen minutes. No pitch until we know where the leak is.</span>
+          </h2>
+          <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+            Bring your answers — or bring nothing and we'll find them together. You leave the call knowing which
+            department is bleeding and which single agent stops it: one from the roster, or one we scope just for
+            you. If the honest answer is "none yet," we'll tell you that too. Springfield-based, serving all of
+            Western Mass, in English and Spanish.
+          </p>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
+            Book the diagnostic
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+      </Container>
+    </Section>
 
     <DockMenu />
   </main>

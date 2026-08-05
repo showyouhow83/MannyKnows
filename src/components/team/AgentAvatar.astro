@@ -9,8 +9,12 @@ import type { AgentId } from '../../data/aiTeam';
 interface Props {
   agent: AgentId;
   class?: string;
+  /** Optional alt/aria override — used on /ai-team where the avatar is the
+   *  agent's "portrait" (richer, geo-aware alt); everywhere else the default
+   *  short label keeps screen readers noise-free. */
+  alt?: string;
 }
-const { agent, class: className = '' } = Astro.props;
+const { agent, class: className = '', alt } = Astro.props;
 
 // Specialty emblems, drawn centered on the origin (fits within ~r9), placed
 // inside a white badge at the bottom-right of the head.
@@ -46,8 +50,9 @@ const gid = `ag-${agent}-${Math.random().toString(36).slice(2, 9)}`;
 // Use the agent's display name (e.g. "Leo"), not the internal id ("eny"),
 // so alt/aria labels never leak an old or internal handle.
 const label = team.find((m) => m.id === agent)?.name ?? (agent.charAt(0).toUpperCase() + agent.slice(1));
+const a11yLabel = alt ?? `${label}, an AI Team agent`;
 
-const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block" role="img" aria-label="${label}, an AI Team agent">
+const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block" role="img" aria-label="${a11yLabel}">
   <defs>
     <linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0071e3"/><stop offset="1" stop-color="#ff4faa"/>
@@ -80,7 +85,7 @@ const HAS_IMAGE = ['manny', 'desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap'
 ---
 
 {HAS_IMAGE.includes(agent) ? (
-  <img src={`/team/${agent}.webp`} width="256" height="256" alt={`${label}, an AI Team agent`} loading="lazy" decoding="async" class={`object-contain ${className}`} />
+  <img src={`/team/${agent}.webp`} width="256" height="256" alt={a11yLabel} loading="lazy" decoding="async" class={`object-contain ${className}`} />
 ) : (
   <div class={className} set:html={svg} />
 )}

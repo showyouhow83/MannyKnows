@@ -27,6 +27,7 @@ export interface Agent {
   id: AgentId;
   name: string;
   role: string;       // short specialty label
+  symptom?: string;   // bottleneck-first hook: "For when …" (shown atop the card)
   does: string;       // one plain-spoken paragraph: what this agent does for you
   handoff?: string;   // how the agent connects to the rest of the team
   order: number;      // pipeline order (manager → front desk → research → … → analytics)
@@ -52,6 +53,7 @@ export const team: Agent[] = [
     id: 'desi',
     name: 'Remi',
     role: 'Front desk: sales, booking & support',
+    symptom: 'For when leads come in and nobody answers fast enough.',
     does: "Answers customers on your site 24/7 — replies, books appointments, and guides shoppers to the right product, in their language.",
     handoff: 'Feeds the team: every question customers ask becomes intel — Remi logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
@@ -62,6 +64,7 @@ export const team: Agent[] = [
     id: 'eve',
     name: 'Eve',
     role: 'Research & strategy',
+    symptom: 'For when you\'re guessing at what to make, for whom, and why.',
     does: "Studies your market, competitors, and real customer questions, then tells the team what to make and why.",
     handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny AI (the plan for your approval).',
     order: 2,
@@ -71,6 +74,7 @@ export const team: Agent[] = [
     id: 'elly',
     name: 'Elly',
     role: 'Copywriting',
+    symptom: 'For when writing is the thing that never gets done.',
     does: "Writes pages, posts, emails, and full sequences in your voice — from Eve's brief and your Brand Brain, never a blank page.",
     handoff: 'Hands off to: Leo (copy for design), Aria (scripts for voice), Nova (pages for search tuning), Piper (finished posts to schedule).',
     order: 3,
@@ -80,6 +84,7 @@ export const team: Agent[] = [
     id: 'eny',
     name: 'Leo',
     role: 'Graphics & video',
+    symptom: 'For when your work is better than your brand looks.',
     does: "Turns Elly's copy into graphics and short-form video built for each network — always in your brand's look.",
     handoff: 'Hands off to: Piper (finished assets to publish), Max (creative for ads).',
     order: 4,
@@ -89,6 +94,7 @@ export const team: Agent[] = [
     id: 'mimi',
     name: 'Aria',
     role: 'Voice & audio',
+    symptom: 'For when you\'d post more if you never had to hit record.',
     does: "Learns your voice from a short sample, then speaks whatever Elly writes — voiceovers, reels, phone greetings — so you never hit record.",
     handoff: 'Hands off to: Leo (audio for video), Piper (finished audio to publish).',
     order: 5,
@@ -98,6 +104,7 @@ export const team: Agent[] = [
     id: 'essie',
     name: 'Nova',
     role: 'SEO & local search',
+    symptom: 'For when customers searching Springfield for what you do find someone else.',
     does: "Maps what your customers search, tunes every page before it ships, and keeps your Google Business Profile active and accurate.",
     handoff: "Hands off to: Elly (keyword targets for new content), Vera (rankings to track), Manny AI (what's climbing, what needs work).",
     order: 6,
@@ -107,6 +114,7 @@ export const team: Agent[] = [
     id: 'bap',
     name: 'Piper',
     role: 'Publisher & scheduling',
+    symptom: 'For when content exists but never actually ships.',
     does: "Publishes everything at the right time on every channel — your site included, always as a preview until you press Publish.",
     handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
@@ -116,6 +124,7 @@ export const team: Agent[] = [
     id: 'addy',
     name: 'Max',
     role: 'Paid ads',
+    symptom: 'For when ad spend goes out and you can\'t say what came back.',
     does: "Runs your Google and Meta ads from Eve's targeting and Leo's creative — watching spend daily, never touching budget without your OK.",
     handoff: 'Hands off to: Vera (spend & results to measure), Manny AI (budget requests for your sign-off).',
     order: 8,
@@ -125,6 +134,7 @@ export const team: Agent[] = [
     id: 'upie',
     name: 'Finn',
     role: 'Engagement & reputation',
+    symptom: 'For when reviews, comments, and DMs pile up unanswered.',
     does: "Answers reviews, comments, and DMs in your voice, routes anything sensitive to a human first, and nudges happy customers to review.",
     handoff: 'Hands off to: Eve (what customers are saying), Manny AI (issues that need a human).',
     order: 9,
@@ -134,6 +144,7 @@ export const team: Agent[] = [
     id: 'ana',
     name: 'Vera',
     role: 'Analytics & reporting',
+    symptom: 'For when you can\'t say which of it is working.',
     does: "Tracks what every piece produced — traffic, calls, bookings, sales — and turns it into a plain-English monthly report that feeds Eve's next plan.",
     handoff: 'Hands off to: Eve (what performed), Manny AI (your report).',
     order: 10,
@@ -156,6 +167,7 @@ const sumFor = (ids: AgentId[]) =>
 export interface Bundle {
   id: string;
   name: string;
+  diagnosis?: string; // bottleneck-first hook shown atop the card: "For when …"
   tagline: string;
   agentIds: AgentId[];
   monthly: number;
@@ -169,6 +181,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
   {
     id: 'content',
     name: 'The Content Team',
+    diagnosis: 'For when the bottleneck is the whole content operation — nothing gets made, so nothing gets seen.',
     tagline: 'The full make-and-publish line: research → writing → graphics & video → voice → publishing → engagement. Everything a consistent presence takes, coordinated by Manny AI.',
     agentIds: ['eve', 'elly', 'eny', 'mimi', 'bap', 'upie'],
     monthly: 749,
@@ -176,6 +189,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
   {
     id: 'growth',
     name: 'The Growth Pack',
+    diagnosis: "For when content exists but the leak is distribution — nobody searches you up, ads run blind, and you can't prove what's working.",
     tagline: "The team that turns content into customers and proves it: search visibility, paid amplification, and the monthly numbers that show what it's all producing.",
     agentIds: ['essie', 'addy', 'ana'],
     monthly: 445,
@@ -184,6 +198,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
   {
     id: 'whole',
     name: 'The Whole Team',
+    diagnosis: 'For when you answered the two questions and named three departments.',
     tagline: 'The complete operation: front desk, content, growth, and reporting, running as one coordinated team under Manny AI.',
     agentIds: ['desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap', 'addy', 'upie', 'ana'],
     monthly: 1195,
@@ -203,6 +218,11 @@ export const wholeTeamBundle = aiTeamBundles.find((b) => b.id === 'whole')!;
 export const aiTeamStartingPrice = Math.min(...paidAgents.map((a) => a.price));
 
 export const aiTeamFaq = [
+  {
+    // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
+    q: 'Which AI agent should my Springfield business get first?',
+    a: "Whichever one sits on your bottleneck. Ask yourself: what are you bad at that keeps costing you money? The agent aimed at that answer is your first hire — from the roster if it's a common problem, custom-built if it isn't. Not sure? That's what the 15-minute diagnostic is for.",
+  },
   {
     q: "Isn't this just ChatGPT I could use myself?",
     a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time, with no memory of your business. The AI Team is agents we build around your business — trained on one shared Brand Brain, connected to your tools, and coordinated by Manny so the research feeds the writing, the writing feeds the design, it all gets published on schedule, and the results get measured and fed back into next month's plan — with a person reviewing what goes out. You get the results without doing the work.",
@@ -242,5 +262,17 @@ export const aiTeamFaq = [
   {
     q: 'Can the agents change my website itself?',
     a: "Yes — this is where the team stops being a content tool. Piper works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services).",
+  },
+  {
+    q: 'Why not just hire the whole team on day one?',
+    a: "Because one agent creates a number you can point at, and ten create a bill you can't evaluate. Every agent reads from the same Brand Brain, so starting with one costs you nothing later — the second inherits everything the first learned. Start where it hurts; expand where it pays.",
+  },
+  {
+    q: "Can you build an agent that's not on the roster?",
+    a: "Yes — and some of our best work is exactly that. We've built agents that check a contractor's project statuses against their backend and bilingual phone systems for a local daycare. If your bottleneck is specific to your business, the agent should be too. We scope custom agents on the diagnostic call.",
+  },
+  {
+    q: 'Do you only work with businesses in Springfield?',
+    a: "We're based in Springfield and work across Western Massachusetts — Hampden, Hampshire, and Franklin counties. Because the whole engagement runs through one admin and one point of contact, distance has never been the constraint; the working sessions happen wherever you are.",
   },
 ];
