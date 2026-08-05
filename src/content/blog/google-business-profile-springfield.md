@@ -1,6 +1,6 @@
 ---
 title: "How to Show Up on Google Maps for Your Springfield Business"
-description: "A plain-English, step-by-step guide to your Google Business Profile — so your Western Mass business shows up on Google Maps when locals search near me."
+description: "A step-by-step guide to your Google Business Profile — so your Western Mass business shows up on Google Maps when locals search near me."
 pubDate: "2026-07-15"
 author: "Manny"
 tags: ["Local SEO", "AI Search", "Google Business Profile", "Western Massachusetts"]
@@ -12,7 +12,7 @@ image: "/blog/google-business-profile-springfield.jpg"
 
 Someone in Springfield pulls out their phone and types "painter near me." Google shows a little map with three businesses pinned — star ratings, hours, a "Call" button. If you're not one of those three, you don't exist for that search. That map is powered by one free thing most owners never finish setting up: a **Google Business Profile**.
 
-Here's how to get yours working, in plain English.
+Here's how to get yours working, step by step.
 
 ## What a Google Business Profile actually is
 

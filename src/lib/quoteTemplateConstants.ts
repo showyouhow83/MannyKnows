@@ -412,7 +412,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-web-launch-1', type: 'fillable', label: 'Target launch', value: '' },
           { id: 'it-web-launch-2', type: 'bullet', text: 'You review the full site on a private preview link before anything goes live' },
-          { id: 'it-web-launch-3', type: 'bullet', text: 'After launch: the plan keeps the site fast, ranking, and up to date — with a plain-English monthly report' },
+          { id: 'it-web-launch-3', type: 'bullet', text: 'After launch: the plan keeps the site fast, ranking, and up to date — with a clear monthly report' },
         ],
       },
     ],

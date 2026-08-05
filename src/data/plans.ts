@@ -325,7 +325,7 @@ export const plans: Plan[] = [
         title: 'Manny, every month',
         items: [
           'A monthly working session: what the numbers say, what we change next',
-          'A plain-English report of what ran, what it cost, and what it brought in',
+          'A report of what ran, what it cost, and what it brought in',
           'Priority handling — your requests go to the front of the line',
         ],
       },
@@ -384,7 +384,7 @@ export const plans: Plan[] = [
           'Remi answers shopper questions 24/7, in any language',
           'Your catalog published and synced to Google Shopping, Instagram & Facebook — one catalog, every channel',
           'Discount codes and gift cards set up when you need them',
-          'Monitoring, order-email basics, and a plain-English monthly report',
+          'Monitoring, order-email basics, and a clear monthly report',
         ],
       },
       {
@@ -470,7 +470,7 @@ export const plans: Plan[] = [
         items: [
           'New products, promos, and seasonal updates handled for you',
           'Ongoing optimization of pages that underperform',
-          'A plain-English monthly report — what ran, what sold, what changes next',
+          'A monthly report — what ran, what sold, what changes next',
         ],
       },
     ],
@@ -604,7 +604,7 @@ export const plans: Plan[] = [
       { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth — and which networks make sense to start: one, two, or the full four.' },
       { title: 'Analysis & plan', body: 'For each network: a competitive analysis, a market analysis, and an individual plan traced for it — media types, formats, sizes, and cadence.' },
       { title: 'Launch campaigns', body: 'Tracking and landing pages go in first, then content and ads go live — fitted to each network. The early weeks are about learning fast, not vanity numbers.' },
-      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver — and report it in plain English.' },
+      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver — and report it clearly.' },
     ],
     faq: [
       { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo — that covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles 4 major networks under one coordinated strategy — less than the price of 3 à la carte.' },
@@ -718,7 +718,7 @@ export const plans: Plan[] = [
       { title: 'Competitive analysis', body: 'We map your market first — where you rank, what your competitors run, and where they’re beatable. That analysis decides what we build.' },
       { title: 'A shared roadmap', body: 'One prioritized queue across software, media, web, and promotion. Unlimited requests — you set the order, and you always know what we’re building and why.' },
       { title: 'Build, shoot & promote', body: 'We work the roadmap one project at a time — each one finished and published before the next begins. On Agency In-House, a day of that happens in your office every week.' },
-      { title: 'Review & reprioritize', body: 'A monthly working session plus the plain-English report. Priorities shift as your business — and your competition — does.' },
+      { title: 'Review & reprioritize', body: 'A monthly working session plus the monthly report. Priorities shift as your business — and your competition — does.' },
     ],
     faq: [
       { q: 'What does "a developer on demand" mean?', a: 'If your business can imagine it, it’s in scope. An ad campaign that needs an app? Included. Software to organize scheduling, inventory, or quotes? Included. A tool that doesn’t exist anywhere? We design it, build it, and publish it. That’s the point of having a developer on retainer instead of a vendor per project.' },

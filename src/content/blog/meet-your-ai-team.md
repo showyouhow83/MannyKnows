@@ -39,7 +39,7 @@ But answering is just the first job. Every question customers ask Remi becomes i
 
 **Finn — engagement & reputation.** Answers the reviews, comments, and DMs in your voice. Finn handles the everyday ones; anything sensitive — an angry review, a complaint — goes to a human before it's answered. It also nudges happy customers to leave reviews.
 
-**Vera — analytics & reporting.** Proves it's working. Vera tracks what every piece actually produced — traffic, calls, bookings, sales — and turns it into a plain-English monthly report: what ran, what it made, what to do more of. Those numbers feed Eve's next plan, so the team gets better every month.
+**Vera — analytics & reporting.** Proves it's working. Vera tracks what every piece actually produced — traffic, calls, bookings, sales — and turns it into a monthly report: what ran, what it made, what to do more of. Those numbers feed Eve's next plan, so the team gets better every month.
 
 ## And one human: Manny
 

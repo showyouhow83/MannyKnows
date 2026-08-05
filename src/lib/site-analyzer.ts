@@ -287,7 +287,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
     c('measure', 'Measuring what happens', hasAnalytics ? 'pass' : 'warn',
       hasAnalytics ? 'Analytics detected — you can see what visitors do.'
         : "No analytics detected — nobody (human or AI) can improve what isn't measured.",
-      { text: 'Every plan includes plain-English monthly reporting.', href: PLANS }),
+      { text: 'Every plan includes clear monthly reporting.', href: PLANS }),
   ];
 
   // ── Books (conversion) ─────────────────────────────────────────────────
@@ -386,7 +386,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   if (!hasAnalytics) {
     opportunities.push({
       title: 'Measure first, then automate',
-      body: 'With no analytics, neither you nor any AI can tell what works. Measurement is step one of every plan — reported monthly in plain English.',
+      body: 'With no analytics, neither you nor any AI can tell what works. Measurement is step one of every plan — with a clear monthly report.',
       href: PLANS,
     });
   }

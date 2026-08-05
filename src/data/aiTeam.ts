@@ -46,7 +46,7 @@ export const team: Agent[] = [
     id: 'manny',
     name: 'Manny AI',
     role: 'The manager you hire',
-    does: "Manny AI is the hire: one manager that staffs AI specialists on whatever your business needs — like hiring three, five, or seven people, each specialized, without managing any of them. You ask in plain English; Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
+    does: "Manny AI is the hire: one manager that staffs AI specialists on whatever your business needs — like hiring three, five, or seven people, each specialized, without managing any of them. You make the request; Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
     order: 0,
     price: 0,
     included: true,
@@ -152,7 +152,7 @@ export const team: Agent[] = [
     name: 'Vera',
     role: 'Analytics & reporting',
     symptom: 'For when you can\'t say which of it is working.',
-    does: "Tracks what every piece produced — traffic, calls, bookings, sales — and turns it into a plain-English monthly report that feeds Eve's next plan.",
+    does: "Tracks what every piece produced — traffic, calls, bookings, sales — and turns it into a clear monthly report that feeds Eve's next plan.",
     handoff: 'Hands off to: Eve (what performed), Manny AI (your report).',
     order: 10,
     price: 145,
@@ -260,7 +260,7 @@ export const aiTeamFaq = [
   },
   {
     q: "How do I know it's working?",
-    a: "That's Vera's whole job — the analytics specialist on the team. Your dashboard shows the team's work as it lands, and a plain-English monthly report ties it to real outcomes — traffic, calls, bookings, sales — with the next plan built on those numbers. No more posting into the void.",
+    a: "That's Vera's whole job — the analytics specialist on the team. Your dashboard shows the team's work as it lands, and a monthly report ties it to real outcomes — traffic, calls, bookings, sales — with the next plan built on those numbers. No more posting into the void.",
   },
   {
     q: 'Do the agents post without me seeing it first?',

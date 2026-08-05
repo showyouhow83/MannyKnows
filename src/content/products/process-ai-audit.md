@@ -21,7 +21,7 @@ faq:
   - q: "Do I own what you build?"
     a: "Yes — completely. The action plan, the automations, and the tooling are yours, accounts and all. We build with you, never to lock you in."
   - q: "What do I actually walk away with?"
-    a: "A prioritized, plain-English plan — not a 40-page PDF that gathers dust — plus the quick-win fixes we build alongside it. You'll know exactly what to do next and what it's worth."
+    a: "A prioritized, practical plan — not a 40-page PDF that gathers dust — plus the quick-win fixes we build alongside it. You'll know exactly what to do next and what it's worth."
 ---
 
 Most small businesses don't need more software — they need someone to look at how the work actually flows and fix the parts that leak time. That's what this is.

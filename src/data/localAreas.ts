@@ -123,7 +123,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Maintained by your neighbor, not a ticket queue',
-        body: "We're based in Springfield, and maintenance is the product: monthly plans keep your site fast, secure, and ranking — with a plain-English report every month.",
+        body: "We're based in Springfield, and maintenance is the product: monthly plans keep your site fast, secure, and ranking — with a clear report every month.",
       },
     ],
     plansLine:
@@ -539,7 +539,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Kept working, month after month',
-        body: 'Monthly plans keep the site fast, secure, and ranking — with a plain-English report of what changed and what it did. Built like the things this city builds: to last.',
+        body: 'Monthly plans keep the site fast, secure, and ranking — with a monthly report of what changed and what it did. Built like the things this city builds: to last.',
       },
     ],
     plansLine:
@@ -643,7 +643,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Cared for from across the river',
-        body: 'We\'re minutes away in Springfield. Monthly plans keep the site fast, secure, and ranking — with a plain-English monthly report, and a real person one call away.',
+        body: 'We\'re minutes away in Springfield. Monthly plans keep the site fast, secure, and ranking — with a clear monthly report, and a real person one call away.',
       },
     ],
     plansLine:
