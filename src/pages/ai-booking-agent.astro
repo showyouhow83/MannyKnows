@@ -74,7 +74,8 @@ const FAQS = [
   { q: 'What does an AI booking agent cost?', a: `Three ways in: it's included in every website plan (from $95/mo, as Remi); it can be hired onto your existing site as an AI Team agent (from $${aiTeamStartingPrice}/mo plus a one-time $${aiTeamSetupFee} setup); or we build custom — phone IVR systems and deep integrations are one-time projects that usually start at $2,500. On a tight budget with no site at all? The one-page AI Website at mannyknows.com/ai-website comes with the lightest Remi — it answers customers and captures leads (no booking) — for $${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo.` },
 ];
 
-const META_DESCRIPTION = 'Meet Remi — the AI booking agent for Western Mass small businesses. It answers customers 24/7 in English or Spanish, qualifies the lead, and books the job. Built and proven locally, from $95/mo.';
+// Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
+const META_DESCRIPTION = 'Remi answers customers 24/7 in English or Spanish, qualifies the lead, and books the job — the AI booking agent for Western Mass businesses. From $95/mo.';
 
 const pageJsonLd = {
   '@context': 'https://schema.org',
@@ -98,7 +99,7 @@ const pageJsonLd = {
 };
 ---
 
-<BaseLayout title="Remi — AI Booking Agent for Small Businesses, Western Mass | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Remi — AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 

@@ -13,6 +13,10 @@ export default defineConfig({
   // `/path/` form and 307s the bare `/path`, so a slashless target would turn
   // every one of these into a redirect *chain*.
   redirects: {
+    // The real sitemap is @astrojs/sitemap's /sitemap-index.xml (declared in
+    // robots.txt). This alias exists purely for crawlers/tools that probe the
+    // conventional /sitemap.xml path and flag a 404.
+    '/sitemap.xml': '/sitemap-index.xml',
     '/services/ai-agents': '/ai-team/',
     '/services/customer-service-bots': '/ai-team/',
     '/services/appointment-booking-bots': '/ai-team/',
