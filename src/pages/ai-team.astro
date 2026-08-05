@@ -15,16 +15,10 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import StepCards from '../components/ui/StepCards.astro';
-import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
-import { getTestimonial } from '../data/testimonials';
 import AiTeamEcosystem from '../components/team/AiTeamEcosystem.astro';
 import { team, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
-
-// The one client quote that's literally about running an AI agent wired into
-// their admin — the flagship page shouldn't be the only one without proof.
-const proofQuote = getTestimonial('VL Home Services');
 
 // hidden agents (Leo, Aria, Piper, Max) work as Manny AI sub-agents — they
 // appear nowhere on the page (Manny, Aug 2026).
@@ -295,24 +289,6 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- Local proof strip — the page's heaviest geo signal is real Western
-         Mass results with descriptive anchors into the case studies. -->
-    <Section id="ai-team-proof-strip" variant="default">
-      <Container>
-        <div class="max-w-4xl mx-auto text-center">
-          <h2 class="sf-bold text-xl md:text-2xl font-bold mb-4">
-            <span class="apple-gradient-text" data-colorful-title>Built here, proven here</span>
-          </h2>
-          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            A <a href="/work/sl-painting/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Springfield painting contractor ranking #1 organically for exterior painting</a>.
-            A <a href="/work/jk-daycare/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">local daycare whose AI answers parents in English and Spanish</a>, on the site and on the phone.
-            A <a href="/work/vl-home-services/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">home services company whose custom agent checks project statuses straight from their backend</a>.
-            <a href="/#work" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline whitespace-nowrap">See the work →</a>
-          </p>
-        </div>
-      </Container>
-    </Section>
-
     <!-- Meet the team (roster) -->
     <Section id="ai-team-roster" variant="default">
       <Container>
@@ -460,6 +436,14 @@ const pageJsonLd = {
           <span class="apple-gradient-text" data-colorful-title>How it works</span>
         </h2>
         <StepCards steps={steps} cols={5} class="max-w-7xl mx-auto" />
+        {/* The setup promise lives here now (Manny, Aug 2026) — it's the
+            natural last line of "how it works", not its own section. */}
+        <p class="mt-10 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto leading-relaxed">
+          One-time ${setup} setup builds your Brand Brain and trains your team — however many specialists Manny AI
+          staffs — including cleaning up and formatting your data so they answer accurately from day one. Normal AI
+          usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill.
+          Add or drop capabilities anytime.
+        </p>
       </Container>
     </Section>
 
@@ -478,37 +462,13 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- (Bundles removed with the hire-Manny-AI model, Aug 2026: engagements
-         are scoped on the diagnostic; the setup line below keeps its promise.) -->
-    <Section id="ai-team-setup-note" variant="alternate">
-      <Container>
-        <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto leading-relaxed">
-          One-time ${setup} setup builds your Brand Brain and trains your team — however many specialists Manny AI
-          staffs — including cleaning up and formatting your data so they answer accurately from day one. Normal AI
-          usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill.
-          Add or drop capabilities anytime.
-        </p>
-      </Container>
-    </Section>
-
-    <!-- Client proof — after the questions, the answer per Manny (Aug 2026) -->
-    {proofQuote && (
-      <Section id="ai-team-proof" variant="default">
-        <Container>
-          <div class="max-w-2xl mx-auto text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">Clients running Remi AI</p>
-            <QuoteBlock quote={proofQuote} align="center" />
-          </div>
-        </Container>
-      </Section>
-    )}
 
     <!-- Final CTA — the diagnostic, no pitch (bottleneck-first close) -->
     <Section id="ai-team-diagnostic" variant="gradient">
       <Container>
         <div class="max-w-2xl mx-auto text-center">
           <h2 class="sf-bold text-2xl md:text-4xl font-bold mb-5">
-            <span class="apple-gradient-text" data-colorful-title>Two questions. Fifteen minutes. No pitch until we know where the leak is.</span>
+            <span class="apple-gradient-text" data-colorful-title>Two questions. Fifteen minutes. We find the leak.</span>
           </h2>
           <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
             Bring your answers — or bring nothing and we'll find them together. You leave the call knowing which

@@ -48,6 +48,6 @@ This isn't theoretical — it's already running in Springfield:
 
 ## The honest answer to "which one first?"
 
-Whichever one sits on your bottleneck. If you can name it, the map above points at your first hire. If you can't, that's what the 15-minute diagnostic is for: two questions, no pitch until we know where the leak is. You leave knowing which department is bleeding and which single agent stops it — and if the honest answer is "none yet," we'll tell you that too.
+Whichever one sits on your bottleneck. If you can name it, the map above points at your first hire. If you can't, that's what the 15-minute diagnostic is for: two questions, fifteen minutes, and you leave knowing which department is bleeding and which single agent stops it — and if the honest answer is "none yet," we'll tell you that too.
 
 **[Meet the AI Team and book the diagnostic →](/ai-team/)** — built in Springfield, working for businesses across Western Massachusetts, in English and Spanish.
