@@ -73,7 +73,8 @@ export const plans: Plan[] = [
     price: 95,
     tagline: "Everything a new business needs to exist online and be found — nothing it doesn't.",
     highlights: [
-      'A custom-designed 1–3 page website — plus a logo if you need one',
+      'A custom-designed 1–3 page website',
+      'Logo design included',
       'Hosting, SSL, and speed handled — nothing extra to buy',
       'Set up to rank on Google & Maps when locals search for you',
       'A contact form that reaches you the moment someone fills it',
@@ -352,7 +353,7 @@ export const plans: Plan[] = [
       'Your Shopify subscription is included in the price — one bill, not two',
       'Remi answers shoppers 24/7 from day one; higher tiers make it sell',
     ],
-    headline: 'Stores that sell while the shop is closed',
+    headline: 'Online stores that sell while your business is closed',
     blurb:
       "Setting up a store is easy — anyone can click through a signup. Setting up a store that sells is a job: the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes — from a well-run store at $150/mo to a store with its own ad engine. Every tier includes your Shopify subscription and is run like the enterprise eCommerce operations we spent years building.",
     whoFor:
