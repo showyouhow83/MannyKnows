@@ -475,10 +475,10 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Kickoff', body: "We look at what you sell, how you fulfill, and what's worked so far — in your shop or on a call. You pick a tier; we'll tell you if a smaller one fits." },
-      { title: 'Store build', body: 'Theme, product setup, payments, shipping, emails — we build the whole machine and you approve it before launch. Migrating an existing store happens here too.' },
-      { title: 'Launch & learn', body: 'The store goes live with Remi trained on your catalog. Early traffic tells us what to tune first.' },
-      { title: 'Every month after', body: 'Your tier does its job: products kept current, emails going out, SEO compounding — and at Sell Everywhere, ads feeding the whole thing.' },
+      { title: 'Kickoff', body: 'We learn what you sell, how you fulfill, and what a good month looks like — in your shop or on a call — and scope the right tier for it together.' },
+      { title: 'Store build', body: 'Theme, products, payments, shipping, taxes, emails — the whole machine, and you approve it before launch. Existing stores migrate here too.' },
+      { title: 'Launch & learn', body: 'Live, with Remi trained on your catalog. Early traffic shows us what to tune first.' },
+      { title: 'Every month after', body: 'Products stay current, emails keep going out, SEO compounds — and on Sell Everywhere, ads feed the whole engine.' },
     ],
     faq: [
       { q: 'Is the Shopify subscription really included?', a: "Yes — and it scales with your tier. Sell Online and Sell More include Shopify's Basic plan, which is right for most stores starting out. Sell Smarter and Sell Everywhere include Shopify's Grow plan, because a store running campaigns with thousands of products needs its staff accounts and shipping rates anyway. Either way the account is opened in your name, so the store is yours, not ours. Enterprise operations that need Shopify Advanced or Plus: we run those too — you pay Shopify the difference and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },

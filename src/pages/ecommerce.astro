@@ -39,7 +39,6 @@ const proofQuote = getTestimonial('Cherry Vibes');
 
 // The honest comparison: a store isn't a website tier, so we say plainly what
 // it costs relative to the plan it's built on rather than hiding the math.
-const storeMathNote = `Sell Online is Get Growing ($550/mo — the full self-optimizing website) with your store built, stocked, and run on top of it.`;
 
 
 // Structured data: the store service with its real tiers (mapped from
@@ -97,7 +96,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Online stores that sell while your business is closed</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Setting up a store is easy — anyone can click through a signup. Setting up a store that <em>sells</em> is a job: the right products, photographed and written right, organized the way people shop, with emails that bring them back and a checkout nobody abandons. That's the job we do, and then we keep doing it every month — so when the holiday season hits, your store is stocked, tuned, and ready for the rush instead of launching in the middle of it.
+              Anyone can sign up for a store. A store that <em>sells</em> is a job: the right products, written and photographed right, emails that bring people back, a checkout nobody abandons. We do that job every month — so by the holiday rush you're tuned and stocked, not launching.
             </p>
 
             <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
@@ -298,10 +297,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>A store is a different animal than a website</span>
           </h2>
           <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Our <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website plans</a> answer one question: when someone in your area needs what you do, do they find you and can they reach you? A store answers a different one: can a stranger decide, trust you, and pay — without talking to anybody. That takes inventory, product photography, shipping rules, taxes, abandoned-cart email, and a catalog that stays current. It's a bigger machine, so it gets its own page and its own price.
-          </p>
-          <p class="mt-5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            {storeMathNote} If you don't sell products online, you don't need this — start with <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Get Found at $95/mo</a> instead.
+            A <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website</a> gets you found and reached. A store has a harder job: a stranger has to decide, trust you, and pay — without talking to anybody. That's inventory, product photography, shipping, taxes, and cart-recovery email. A bigger machine, with its own price.
           </p>
         </div>
       </Container>
@@ -341,6 +337,9 @@ const pageJsonLd = {
     <Section id="store-proof" variant="alternate">
       <Container>
         <div class="max-w-3xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
+            <span class="apple-gradient-text" data-colorful-title>From a store we built &amp; run</span>
+          </h2>
           {proofQuote && <QuoteBlock quote={proofQuote} />}
           <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
             <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
@@ -382,9 +381,9 @@ const pageJsonLd = {
     <Section id="store-plans" variant="default">
       <Container>
         <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8">
-          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Not selling products online?</h2>
+          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Selling services instead of products?</h2>
           <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Then a store is the wrong tool. Our four website plans get you found on Google, answer your customers, and book the work — starting at $95/mo.
+            Then what you want is a website that gets you found on Google, answers your customers, and books the work — four plans from $95/mo, every one with Remi included. And if you start selling later, your plan has a store twin waiting: switching is a plan change, not a rebuild.
           </p>
           <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
             See the website plans
