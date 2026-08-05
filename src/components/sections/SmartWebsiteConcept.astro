@@ -17,30 +17,8 @@ export interface Props {
   compact?: boolean;
 }
 const { compact = false } = Astro.props;
-
-// The daily loop. Concrete and verifiable — no vague "AI magic".
-const dailyChecks = [
-  {
-    title: 'Is anything broken?',
-    body: 'Broken links, images that stopped loading, a page throwing an error, a form that quit sending. Found and fixed before a customer hits it — not months later when you happen to notice.',
-    icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
-  },
-  {
-    title: 'Is it fast enough?',
-    body: 'Page speed gets watched, not assumed. Oversized images get compressed, slow-loading pieces get tuned. Speed is the thing Google measures and the thing visitors feel first.',
-    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
-  },
-  {
-    title: 'Can people still find you?',
-    body: "Search rules change constantly. Your titles, descriptions, and structure get adjusted to keep up — and when there's a search your customers make that you don't have an answer for, that becomes an opportunity, not a blind spot.",
-    icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
-  },
-  {
-    title: 'What are customers actually asking?',
-    body: 'Remi answers your customers around the clock, so the questions they ask get logged. When people keep asking something your site never answered, that answer gets added — your site learns from real customers, not guesses.',
-    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
-  },
-];
+// ("What it checks, every day" daily-loop grid removed per Manny, Aug 2026 —
+// the contrast columns and the builder objection carry the concept alone.)
 ---
 
 <div class="max-w-6xl mx-auto">
@@ -59,16 +37,16 @@ const dailyChecks = [
   <!-- The contrast: what you're used to vs what this is -->
   <div class="grid gap-5 md:grid-cols-2 mb-14">
     <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6">
-      <h3 class="text-base font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">A normal website</h3>
+      <h3 class="text-base font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">Their regular websites</h3>
       <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Built once, then frozen. Every change costs a call, a quote, and a wait.</span></li>
         <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Slowly falls behind on speed and search as the rules change around it.</span></li>
         <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Breaks quietly. You find out when a customer tells you — or never.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Goes silent after hours, exactly when people are browsing.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Not ready for AI traffic — the answer engines customers now ask can't read it.</span></li>
       </ul>
     </div>
     <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5">
-      <h3 class="text-base font-bold text-primary-blue dark:text-blue-300 mb-4 uppercase tracking-wide text-xs">A smart website</h3>
+      <h3 class="text-base font-bold text-primary-blue dark:text-blue-300 mb-4 uppercase tracking-wide text-xs">Our AI Smart Websites</h3>
       <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Checks itself daily and fixes what's safe to fix on its own.</span></li>
         <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Keeps up with search and speed instead of falling behind them.</span></li>
@@ -76,27 +54,6 @@ const dailyChecks = [
         <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Answers customers 24/7 — and learns from what they ask.</span></li>
       </ul>
     </div>
-  </div>
-
-  <!-- The daily loop -->
-  <h3 class="sf-bold text-xl md:text-2xl font-bold text-center text-text-light-primary dark:text-text-dark-primary mb-3">
-    What it checks, every day
-  </h3>
-  <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-10">
-    Not once a quarter when someone remembers. Every day, on its own.
-  </p>
-  <div class="grid gap-5 sm:grid-cols-2 mb-14">
-    {dailyChecks.map((c) => (
-      <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d={c.icon} />
-          </svg>
-        </div>
-        <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h4>
-        <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
-      </div>
-    ))}
   </div>
 
   <!-- The objection everyone has, answered where they're already reading -->

@@ -193,63 +193,8 @@ const pageJsonLd = {
     </Section>
 
     <!-- ───────────────────────── What's on the page ───────────────────────── -->
-    <Section id="whats-on-it" variant="gradient">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One page, seven jobs</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Everything a customer needs in one scroll — and structured so Google and the AI assistants people now
-            ask can read it, rank it, and recommend you.
-          </p>
-        </div>
-
-        <!-- The two that do the heaviest lifting get the weight -->
-        <div class="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-6">
-          {heroSections.map((s) => (
-            <div class="rounded-2xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-7">
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.name}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-            </div>
-          ))}
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 max-w-6xl mx-auto">
-          {restSections.map((s) => (
-            <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-              <h3 class="text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">{s.name}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-
-    <!-- ───────────────────────── Lighthouse ───────────────────────── -->
-    <Section id="lighthouse" variant="default">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Engineered for the four scores Google grades</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Lighthouse is Google's own audit of a page. We build to near-perfect across all four — and you don't
-            have to take our word for it: run it on this site, or on the one you have now.
-          </p>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-          {aiWebsiteLighthouse.map((l) => (
-            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black mb-3">100</div>
-              <h3 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h3>
-              <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
-            </div>
-          ))}
-        </div>
-        <div class="text-center mt-8">
-          <a href="/free-ai-website-analysis/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-            Get a free analysis of your current site
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
-        </div>
-      </Container>
-    </Section>
+    <!-- ("One page, seven jobs" + Lighthouse moved to the end of the page
+         per Manny, Aug 2026 — the sales sections lead, the anatomy follows.) -->
 
     <!-- ───────────────────────── Pricing ───────────────────────── -->
     <Section id="pricing" variant="gradient">
@@ -344,6 +289,65 @@ const pageJsonLd = {
               Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> — English or Spanish.
             </p>
           </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────── What's on the page (appended per Manny, Aug 2026) ───────────────── -->
+    <Section id="whats-on-it" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One page, seven jobs</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Everything a customer needs in one scroll — and structured so Google and the AI assistants people now
+            ask can read it, rank it, and recommend you.
+          </p>
+        </div>
+
+        <!-- The two that do the heaviest lifting get the weight -->
+        <div class="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-6">
+          {heroSections.map((s) => (
+            <div class="rounded-2xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-7">
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.name}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 max-w-6xl mx-auto">
+          {restSections.map((s) => (
+            <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+              <h3 class="text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">{s.name}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Lighthouse ───────────────────────── -->
+    <Section id="lighthouse" variant="gradient">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Engineered for the four scores Google grades</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Lighthouse is Google's own audit of a page. We build to near-perfect across all four — and you don't
+            have to take our word for it: run it on this site, or on the one you have now.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          {aiWebsiteLighthouse.map((l) => (
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black mb-3">100</div>
+              <h3 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h3>
+              <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-8">
+          <a href="/free-ai-website-analysis/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+            Get a free analysis of your current site
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
         </div>
       </Container>
     </Section>
