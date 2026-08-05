@@ -54,6 +54,31 @@ const byDate = [...allPosts, post].sort((a, b) => b.data.pubDate.getTime() - a.d
 const here = byDate.findIndex((p) => p.id === post.id);
 const newer = here > 0 ? byDate[here - 1] : undefined;
 const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
+
+// BlogPosting structured data, generated from frontmatter for EVERY post —
+// added in the template (Aug 2026 schema pass) so no post ships without it
+// and dates come from pubDate, never scraped off the byline.
+const siteUrl = 'https://mannyknows.com';
+const postUrl = `${siteUrl}/blog/${post.id}/`;
+const postJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.seoDescription ?? post.data.description,
+  datePublished: post.data.pubDate.toISOString().slice(0, 10),
+  author: { '@type': 'Person', name: post.data.author, url: `${siteUrl}/about/` },
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${siteUrl}/#business`,
+    name: 'MannyKnows',
+    url: siteUrl,
+    logo: { '@type': 'ImageObject', url: `${siteUrl}/favicon.svg` },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+  url: postUrl,
+  ...(post.data.tags.length ? { keywords: post.data.tags.join(', ') } : {}),
+  ...(heroImage ? { image: heroImage.startsWith('http') ? heroImage : `${siteUrl}${heroImage}` } : {}),
+};
 ---
 
 <BaseLayout
@@ -61,6 +86,7 @@ const older = here < byDate.length - 1 ? byDate[here + 1] : undefined;
   description={post.data.seoDescription ?? post.data.description}
   image={heroImage}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(postJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
