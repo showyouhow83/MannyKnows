@@ -1,0 +1,111 @@
+---
+// AiTeamEcosystem — the "what hiring Manny AI looks like" diagram that replaced
+// the group-chat mock on /ai-team (Manny, Aug 2026). One request flows to
+// Manny AI (the hire), Manny staffs the specialists, and everything lands in
+// one dashboard for the owner's approval.
+//
+// Only non-hidden agents appear (Leo/Aria/Piper/Max work behind the scenes and
+// are deliberately not shown anywhere). Pure HTML/SVG — no JS, no new assets:
+// the faces are the existing AgentAvatar art.
+import AgentAvatar from './AgentAvatar.astro';
+import { team } from '../../data/aiTeam';
+
+const specialists = [...team]
+  .filter((a) => !a.included && !a.hidden)
+  .sort((a, b) => a.order - b.order);
+
+// Short labels for the diagram nodes (full roles live on the roster cards).
+const shortRole: Record<string, string> = {
+  desi: 'Front desk',
+  eve: 'Intel & strategy',
+  elly: 'Copywriting',
+  essie: 'SEO & local',
+  upie: 'Engagement',
+  ana: 'Analytics',
+};
+
+// The dashboard rows — one line of each specialist's real output, so the
+// diagram ends where the owner actually lives: one place, all of it visible.
+const dashboardRows = [
+  { who: 'eve', label: 'Daily intel brief', detail: 'competitor moves & local trends — 7:00 AM' },
+  { who: 'desi', label: 'New lead captured', detail: 'answered overnight, details in the thread' },
+  { who: 'essie', label: 'Search position', detail: '“exterior painting springfield” · tracking' },
+  { who: 'ana', label: 'Monthly report', detail: 'traffic → calls → booked jobs, plain English' },
+];
+---
+
+<div class="max-w-3xl mx-auto">
+  <!-- Stage 1: the request -->
+  <div class="flex justify-center">
+    <div class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold shadow-lg shadow-primary-blue/20">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      You ask once, in plain English
+    </div>
+  </div>
+
+  <div class="flex justify-center py-2" aria-hidden="true">
+    <svg width="16" height="28" viewBox="0 0 16 28" fill="none"><path d="M8 0v22m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-light-tertiary dark:text-text-dark-tertiary"/></svg>
+  </div>
+
+  <!-- Stage 2: Manny AI, the hire -->
+  <div class="mx-auto max-w-md rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-5 flex items-center gap-4 shadow-lg shadow-primary-blue/10">
+    <div class="w-16 h-16 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+      <AgentAvatar agent="manny" class="w-full h-full" />
+    </div>
+    <div class="min-w-0">
+      <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Manny AI — the manager you hire</p>
+      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug mt-1">Briefs the right specialists, runs the handoffs, staffs more sub-agents behind the scenes as the job needs them.</p>
+    </div>
+  </div>
+
+  <!-- Fan-out connectors -->
+  <div class="flex justify-center py-2" aria-hidden="true">
+    <svg class="w-full max-w-sm" height="30" viewBox="0 0 320 30" fill="none" preserveAspectRatio="none">
+      <path d="M160 0 C160 18 20 10 20 30 M160 0 C160 20 104 12 104 30 M160 0 V30 M160 0 C160 20 216 12 216 30 M160 0 C160 18 300 10 300 30" stroke="currentColor" stroke-width="1.6" class="text-text-light-tertiary dark:text-text-dark-tertiary" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <!-- Stage 3: the specialists Manny staffs -->
+  <ul class="grid grid-cols-3 sm:grid-cols-6 gap-3" role="list">
+    {specialists.map((a) => (
+      <li class="flex flex-col items-center gap-1 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-2.5">
+        <div class="w-full max-w-[52px] aspect-square rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+          <AgentAvatar agent={a.id} class="w-full h-full" />
+        </div>
+        <span class="text-[11px] font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</span>
+        <span class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{shortRole[a.id] ?? a.role}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-2 text-center text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary">
+    …plus the design, video, voice, publishing, and ads sub-agents Manny staffs behind the scenes.
+  </p>
+
+  <div class="flex justify-center py-2" aria-hidden="true">
+    <svg width="16" height="28" viewBox="0 0 16 28" fill="none"><path d="M8 0v22m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-light-tertiary dark:text-text-dark-tertiary"/></svg>
+  </div>
+
+  <!-- Stage 4: one dashboard, your approval -->
+  <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden shadow-sm">
+    <div class="flex items-center justify-between px-4 py-2.5 border-b border-light-tertiary dark:border-dark-accent bg-light-secondary/50 dark:bg-dark-primary/50">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Your dashboard · today</span>
+      <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-green-600 dark:text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> live</span>
+    </div>
+    <ul role="list">
+      {dashboardRows.map((r, i) => (
+        <li class={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-light-tertiary dark:border-dark-accent' : ''}`}>
+          <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden">
+            <AgentAvatar agent={r.who as any} class="w-full h-full" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">{r.label}</p>
+            <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug">{r.detail}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <div class="border-t border-light-tertiary dark:border-dark-accent bg-green-50 dark:bg-green-500/10 px-4 py-2.5 text-center">
+      <p class="text-[11px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400">Nothing ships without your approval</p>
+    </div>
+  </div>
+</div>

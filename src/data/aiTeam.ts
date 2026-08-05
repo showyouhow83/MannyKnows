@@ -32,7 +32,10 @@ export interface Agent {
   handoff?: string;   // how the agent connects to the rest of the team
   order: number;      // pipeline order (manager → front desk → research → … → analytics)
   price: number;      // flat monthly rate to "hire" this agent (USD); 0 when included
-  included?: boolean; // true for Manny AI, who comes free with any hire
+  included?: boolean; // true for Manny AI — the manager you actually hire
+  hidden?: boolean;   // true = works behind the scenes as a Manny AI sub-agent:
+                      // no roster card, no homepage tile, no router row (Manny,
+                      // Aug 2026 — Leo, Aria, Piper, Max)
   note?: string;      // small qualifier shown next to the price
 }
 
@@ -42,12 +45,12 @@ export const team: Agent[] = [
   {
     id: 'manny',
     name: 'Manny AI',
-    role: 'Team manager & your point of contact',
-    does: "He's who you talk to: turns plain-English requests into briefs, runs the agents, manages your approvals, and files everything the team learns into your Brand Brain. Free with any hire — a team without a manager is just software.",
+    role: 'The manager you hire',
+    does: "Manny AI is the hire: one manager that staffs AI specialists on whatever your business needs — like hiring three, five, or seven people, each specialized, without managing any of them. You ask in plain English; Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
     order: 0,
     price: 0,
     included: true,
-    note: 'Included with any hire',
+    note: 'Scoped to your business',
   },
   {
     id: 'desi',
@@ -64,8 +67,8 @@ export const team: Agent[] = [
     id: 'eve',
     name: 'Eve',
     role: 'Research & strategy',
-    symptom: 'For when you\'re guessing at what to make, for whom, and why.',
-    does: "Studies your market, competitors, and real customer questions, then tells the team what to make and why.",
+    symptom: "For when your competitors seem to know something you don't.",
+    does: "Intel they don't have: a daily brief on your market — competitor moves, local trends, the news that matters to your business, customized to what you need watched — delivered to your dashboard, where it sits next to the team's SEO, engagement, and analytics work.",
     handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny AI (the plan for your approval).',
     order: 2,
     price: 95,
@@ -89,6 +92,7 @@ export const team: Agent[] = [
     handoff: 'Hands off to: Piper (finished assets to publish), Max (creative for ads).',
     order: 4,
     price: 245,
+    hidden: true,
   },
   {
     id: 'mimi',
@@ -99,6 +103,7 @@ export const team: Agent[] = [
     handoff: 'Hands off to: Leo (audio for video), Piper (finished audio to publish).',
     order: 5,
     price: 145,
+    hidden: true,
   },
   {
     id: 'essie',
@@ -119,6 +124,7 @@ export const team: Agent[] = [
     handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
     price: 145,
+    hidden: true,
   },
   {
     id: 'addy',
@@ -129,6 +135,7 @@ export const team: Agent[] = [
     handoff: 'Hands off to: Vera (spend & results to measure), Manny AI (budget requests for your sign-off).',
     order: 8,
     price: 245,
+    hidden: true,
   },
   {
     id: 'upie',
@@ -221,7 +228,7 @@ export const aiTeamFaq = [
   {
     // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
     q: 'Which AI agent should my Springfield business get first?',
-    a: "Whichever one sits on your bottleneck. Ask yourself: what are you bad at that keeps costing you money? The agent aimed at that answer is your first hire — from the roster if it's a common problem, custom-built if it isn't. Not sure? That's what the 15-minute diagnostic is for.",
+    a: "Whichever one sits on your bottleneck. Ask yourself: what are you bad at that keeps costing you money? If the answer is unanswered customers, that's Remi — the front desk agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it — stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",
@@ -241,19 +248,19 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `You hire agents like staff: a one-time $${aiTeamSetupFee} setup to build your Brand Brain and train your team, then a flat monthly rate per agent — from $${aiTeamStartingPrice}/mo — with normal AI usage included. Manny AI, your team manager, is included free with any hire. Bundles save you up to $${wholeTeamBundle.savings.toLocaleString('en-US')}/mo. Add or drop agents anytime; if your usage is unusually heavy we'll meter it at cost and tell you before it ever hits a bill.`,
+    a: `You hire Manny AI, and the price follows the operation it runs for you — scoped and quoted on the 15-minute diagnostic, before anything is billed. A one-time $${aiTeamSetupFee} setup builds your Brand Brain and trains your team, and normal AI usage is included; unusually heavy usage is metered at cost and flagged before it ever hits a bill. The one flat price on the roster is Remi: the front desk agent is a product on its own at $${aiTeamStartingPrice}/mo — and it's already included with every Smart Website plan. Add or drop capabilities anytime.`,
   },
   {
-    q: 'What does "hiring" an agent actually mean?',
-    a: "We build and customize the agent around your business — trained on your rules, your voice, and your data — and fine-tune it with you until it's ready. From there it lives in your admin: you ask Manny for what you need, approve what goes out, and we handle the updates and support.",
+    q: 'What does "hiring" Manny AI actually mean?',
+    a: "We build your Brand Brain, then Manny AI staffs the specialists your work calls for — each one trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard: you ask Manny for what you need, approve what goes out, and we handle the updates and support.",
   },
   {
-    q: 'Can I hire just one agent?',
-    a: "Yes — every agent works on its own, and Manny AI comes along free to manage it and deliver its work the way you like: an email summary, a PDF, a shared doc. Hire more agents and Manny coordinates the handoffs automatically, so the team compounds without you playing middleman.",
+    q: 'Do I have to hire a whole team of agents?',
+    a: "No — that's the point of Manny AI. You hire one manager, and it deploys only the specialists your bottleneck calls for — three, five, seven of them as the work demands — coordinating every handoff so you never play middleman. Remi is the exception that works alone: it's a product at $95/mo you can put on your site today.",
   },
   {
     q: "How do I know it's working?",
-    a: "That's Vera's whole job. If you hire her, you get a plain-English monthly report tying the team's work to real outcomes — traffic, calls, bookings, sales — and the team's next plan is built on those numbers. No more posting into the void.",
+    a: "That's Vera's whole job — the analytics specialist on the team. Your dashboard shows the team's work as it lands, and a plain-English monthly report ties it to real outcomes — traffic, calls, bookings, sales — with the next plan built on those numbers. No more posting into the void.",
   },
   {
     q: 'Do the agents post without me seeing it first?',
@@ -261,11 +268,11 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes — this is where the team stops being a content tool. Piper works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services).",
+    a: "Yes — this is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services).",
   },
   {
-    q: 'Why not just hire the whole team on day one?',
-    a: "Because one agent creates a number you can point at, and ten create a bill you can't evaluate. Every agent reads from the same Brand Brain, so starting with one costs you nothing later — the second inherits everything the first learned. Start where it hurts; expand where it pays.",
+    q: 'Why not start with everything on day one?',
+    a: "Because one focused operation creates a number you can point at, and everything at once creates a bill you can't evaluate. Every specialist reads from the same Brand Brain, so starting narrow costs you nothing later — whatever Manny AI staffs next inherits everything the team already learned. Start where it hurts; expand where it pays.",
   },
   {
     q: "Can you build an agent that's not on the roster?",

@@ -1,8 +1,10 @@
 ---
-// The AI Team — our flagship, productized service. Ten AI specialists + one
-// manager (Manny), all reading from one shared "Brand Brain," coordinated so a
-// single request becomes a finished, measured deliverable. Content is driven by
-// src/data/aiTeam.ts.
+// The AI Team — our flagship, productized service. The hire is Manny AI: one
+// manager that staffs AI specialists (visible roster + hidden sub-agents), all
+// reading from one shared "Brand Brain," so a single request becomes a
+// finished, measured deliverable. Only Remi carries a public price ($95/mo —
+// it's a product on its own); everything else is scoped on the diagnostic.
+// Content is driven by src/data/aiTeam.ts.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -16,22 +18,22 @@ import StepCards from '../components/ui/StepCards.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
 import { getTestimonial } from '../data/testimonials';
-import { team, aiTeamBundles, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq, wholeTeamBundle } from '../data/aiTeam';
-import type { AgentId } from '../data/aiTeam';
+import AiTeamEcosystem from '../components/team/AiTeamEcosystem.astro';
+import { team, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
 // The one client quote that's literally about running an AI agent wired into
 // their admin — the flagship page shouldn't be the only one without proof.
 const proofQuote = getTestimonial('VL Home Services');
 
-const roster = [...team].sort((a, b) => a.order - b.order);
+// hidden agents (Leo, Aria, Piper, Max) work as Manny AI sub-agents — they
+// appear nowhere on the page (Manny, Aug 2026).
+const roster = [...team].filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
 const manager = roster.find((a) => a.included)!;
 const agents = roster.filter((a) => !a.included);
-const nameFor = (id: string) => team.find((a) => a.id === id)?.name ?? id;
 
 const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
 const setup = aiTeamSetupFee.toLocaleString('en-US');
-const topSave = wholeTeamBundle.savings.toLocaleString('en-US');
 
 // "One brain, one boss" pillars.
 // Short on purpose, and every phrase earns SEO keep ("AI agents trained on
@@ -54,53 +56,19 @@ const pillars = [
   },
 ];
 
-// A real run, condensed hard. Asked on 7/23/2026: "I need content ideas for a
-// painting company." Manny scoped the brief, Eve researched what's actually
-// working for painters on TikTok, Elly turned it into 10 shoot-ready scripts,
-// and one approval shipped it. Every finding, name, and figure below is from
-// that run — nothing invented. Only the agents that actually worked it appear,
-// one bubble each: fragmenting a specialist's answer across four bubbles read
-// as chatter, not expertise. `from` is an agent id or 'you'.
-// `tag` mirrors the real compose box's Outputs selector — the owner picks
-// where the work should land (or leaves it blank and Manny decides), so the
-// channel never has to be typed into the request itself.
-const conversation: { from: AgentId | 'you'; text: string; tag?: string }[] = [
-  { from: 'you', text: "I need content ideas for a painting company.", tag: 'Output: TikTok' },
-  { from: 'manny', text: "On it. Eve, dig into what’s actually working for painters on TikTok right now. Elly, script the batch off her research." },
-  { from: 'eve', text: "It looks like ASMR rolls and before/afters get likes, not calls. What converts is paint-mixing — “guess the color” videos built Tonester Paints to 2.1M followers. And almost no Western Mass painter is on TikTok. That’s the lane." },
-  { from: 'elly', text: "Off Eve’s research: ten shoot-ready scripts, captions and hashtags included. #1 “Guess the Color”: freeze right before the reveal — “comment your guess.” Every close fits its channel: TikTok asks for a comment, Google Business says call." },
-  { from: 'manny', text: "That’s the batch — half for reach, half to make the phone ring, all filmable in two afternoons. Your call." },
-  { from: 'you', text: "Ship it." },
-  { from: 'manny', text: "Done. When the videos start posting, I’ll flag which ones pull DMs and quote calls, and we’ll build the next batch off those." },
-];
-
-// Compact role labels shown next to each name in the chat (e.g. "Nova (SEO)").
-const chatRole: Record<string, string> = {
-  manny: 'Manager',
-  eve: 'Research',
-  elly: 'Copy',
-  eny: 'Graphics & video',
-  mimi: 'Voice',
-  essie: 'SEO',
-  bap: 'Publishing',
-  addy: 'Ads',
-  upie: 'Engagement',
-  ana: 'Analytics',
-};
-
 // Bottleneck → agent router ("which agents do I need?" is the wrong first
 // question — this maps the leak to the hire). The last two rows are the ones
 // that convert the hardest-to-shop-around visitors: custom agents and the
 // can't-name-it diagnostic.
 const ROUTER: { leak: string; who: string; href: string; sub?: string }[] = [
   { leak: 'Leads come in and nobody answers fast enough', who: 'Remi', sub: 'front desk', href: '#agent-remi' },
-  { leak: "You're guessing at what to make and for whom", who: 'Eve', sub: 'research & strategy', href: '#agent-eve' },
+  { leak: "Your competitors seem to know something you don't", who: 'Eve', sub: 'daily intel & strategy', href: '#agent-eve' },
   { leak: 'The writing never gets done', who: 'Elly', sub: 'copywriting', href: '#agent-elly' },
-  { leak: 'You look smaller than you are', who: 'Leo', sub: 'graphics & video', href: '#agent-leo' },
-  { leak: "You'd post more if you didn't have to record", who: 'Aria', sub: 'voice & audio', href: '#agent-aria' },
+  { leak: 'You look smaller than you are', who: 'Manny AI', sub: 'staffs design & video sub-agents', href: '#agent-manny-ai' },
+  { leak: "You'd post more if you didn't have to record", who: 'Manny AI', sub: 'staffs the voice sub-agent', href: '#agent-manny-ai' },
   { leak: 'Springfield customers search for what you do — and find someone else', who: 'Nova', sub: 'SEO & local search', href: '#agent-nova' },
-  { leak: 'Content exists but never ships on time', who: 'Piper', sub: 'publishing', href: '#agent-piper' },
-  { leak: "You're paying for ads you can't trace to jobs", who: 'Max', sub: 'paid ads', href: '#agent-max' },
+  { leak: 'Content exists but never ships on time', who: 'Manny AI', sub: 'staffs the publishing sub-agent', href: '#agent-manny-ai' },
+  { leak: "You're paying for ads you can't trace to jobs", who: 'Manny AI', sub: 'staffs the ads sub-agent', href: '#agent-manny-ai' },
   { leak: 'Reviews and DMs sit unanswered', who: 'Finn', sub: 'engagement & reputation', href: '#agent-finn' },
   { leak: "You honestly don't know what's working", who: 'Vera', sub: 'analytics', href: '#agent-vera' },
   { leak: "Your bottleneck isn't on this list", who: 'A custom agent', sub: 'scoped on the diagnostic call', href: '#custom-agent' },
@@ -109,8 +77,8 @@ const ROUTER: { leak: string; who: string; href: string; sub?: string }[] = [
 
 const steps = [
   { n: '01', title: 'We sit down and find your voice', body: "A series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we've dialed in exactly what you sell, who buys, and how you sound.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
-  { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions — plus your services, prices, past work, and best content — gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from. This is the step that makes ten agents act like one team.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
-  { n: '03', title: 'We build & train your agents', body: "We set up each agent you've hired around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions — plus your services, prices, past work, and best content — gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from. This is the step that makes a team of specialists act like one employee.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
+  { n: '03', title: 'We build & train your agents', body: "We set up each specialist Manny AI staffs around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
   { n: '04', title: 'We fine-tune it with you', body: 'We run the team alongside you and adjust until the output is quality and earns your approval — before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
   { n: '05', title: 'You run it; we support it', body: 'You tell Manny AI what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
@@ -138,21 +106,19 @@ const pageJsonLd = {
     { '@type': 'AdministrativeArea', name: 'Hampshire County, MA' },
     { '@type': 'AdministrativeArea', name: 'Franklin County, MA' },
   ],
-  description: 'Ten AI specialists — front desk, research, copywriting, graphics & video, voice, SEO, publishing, paid ads, engagement, and analytics — custom-built for your business and managed by Manny AI.',
+  description: 'You hire Manny AI — one manager that staffs AI specialists on your business: front desk, daily intel, copywriting, SEO, engagement, and analytics, with design, video, voice, publishing, and ads sub-agents behind the scenes. Custom-built for your business.',
   offers: [
     {
       '@type': 'Offer',
-      name: 'Individual AI agent',
+      name: 'Remi — AI front desk agent',
       price: String(aiTeamStartingPrice),
       priceCurrency: 'USD',
-      description: `From $${aiTeamStartingPrice}/mo per agent, one-time $${aiTeamSetupFee} setup. Manny AI (the manager) is included with any hire.`,
+      description: `Remi answers, qualifies, and books 24/7 — $${aiTeamStartingPrice}/mo as a standalone product, included with every Smart Website plan.`,
     },
     {
       '@type': 'Offer',
-      name: wholeTeamBundle.name,
-      price: String(wholeTeamBundle.monthly),
-      priceCurrency: 'USD',
-      description: `All ten agents for $${wholeTeamBundle.monthly}/mo — $${wholeTeamBundle.savings}/mo less than hiring them individually.`,
+      name: 'Manny AI — managed AI operation',
+      description: `You hire Manny AI, the manager that staffs AI specialists on your business. Scoped and quoted on a 15-minute diagnostic; one-time $${aiTeamSetupFee} setup.`,
     },
   ],
 };
@@ -183,15 +149,15 @@ const pageJsonLd = {
             {/* Eyebrow avoids repeating the H1's "hired like staff" — it adds
                 the price fact instead (badge/H1 pairing rule, Aug 2026). */}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-              The AI Team · from ${startFrom}/mo · Manny AI included
+              The AI Team · AI staff from ${startFrom}/mo
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-4">
               <span class="apple-gradient-text" data-colorful-title>AI agents for Springfield &amp; Western Mass businesses — hired like staff</span>
             </h1>
             <p class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss — you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Most AI tools are blank chat boxes you prompt from scratch every time. Your AI Team is the opposite: ten AI specialists, one shared brain, one manager — every agent built around your business, trained on your voice, your services, and your customers, then fine-tuned with you until its work earns your approval. You get one simple admin and one point of contact: Manny AI puts the right agents on the job and brings the finished work back for your sign-off.
-              <strong class="text-text-light-primary dark:text-text-dark-primary"> You don't start with ten — you start with the one aimed at whatever's costing you the most. And when the fix your business needs isn't on the roster, we build it: a custom agent designed for your exact problem, sitting on the same Brand Brain as the rest of the team.</strong>
+              Most AI tools are blank chat boxes you prompt from scratch every time. This is the opposite — and the hire is simple: <strong class="text-text-light-primary dark:text-text-dark-primary">you hire Manny AI</strong>, one manager that staffs AI specialists on your business — like hiring three, five, or seven people, each specialized, without managing any of them. Every specialist is trained on your voice, your services, and your customers, fine-tuned with you until its work earns your approval, and everything lands in one dashboard for your sign-off.
+              <strong class="text-text-light-primary dark:text-text-dark-primary"> And when the fix your business needs isn't on the roster, Manny staffs it anyway: a custom agent designed for your exact problem, on the same Brand Brain as the rest of the team.</strong>
               Built in Springfield, working for businesses across Western Massachusetts.
             </p>
 
@@ -217,7 +183,7 @@ const pageJsonLd = {
                 </div>
               ))}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Ten specialists and a manager, working as one team — and the roster keeps growing.</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">The manager you hire and the specialists it staffs — plus the design, video, voice, publishing, and ads sub-agents working behind the scenes. The roster keeps growing.</p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
@@ -243,7 +209,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Before you meet anyone</span>
           </h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Most owners land here asking "which agents do I need?" Wrong first question. Start with these two —
+            Most owners land here asking "which AI agents does my business need?" Wrong first question. Start with these two —
             most people can answer both in under a minute:
           </p>
         </div>
@@ -267,8 +233,8 @@ const pageJsonLd = {
             won't save you. If your close rate is fine but the process buckles at volume, more leads just make it louder.
           </p>
           <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            AI isn't the strategy. It's the leverage. Your first agent goes exactly where the leak is — from the
-            roster below if it's a common one, custom-built if it isn't. We've built agents that check project
+            AI isn't the strategy. It's the leverage. Your first hire goes exactly where the leak is — Manny AI
+            staffs the specialist that fixes it, from the roster below or custom-built. We've built agents that check project
             statuses against a contractor's backend and phone systems that answer a daycare's calls in two
             languages. The roster is where most businesses start; it's not where the possibilities end.
           </p>
@@ -303,68 +269,33 @@ const pageJsonLd = {
     </Section>
 
     <!-- What that looks like in practice -->
+    <!-- The ecosystem — replaced the group-chat mock (Manny, Aug 2026): one
+         request → Manny AI → specialists → one dashboard. The real painter run
+         lives on as the condensed story beneath it. -->
     <Section id="ai-team-example" variant="alternate">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <div class="text-center mb-8">
+          <div class="text-center mb-10">
             <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-              <span class="apple-gradient-text" data-colorful-title>What that looks like in practice</span>
+              <span class="apple-gradient-text" data-colorful-title>One hire, a whole operation</span>
             </h2>
             <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              You talk to one place — Manny AI — and the team works in the thread. This is one run, condensed: one line typed, TikTok tapped as the output, one decision at the end.
+              You talk to one place — Manny AI. It staffs the specialists, runs the handoffs, and everything they
+              produce lands in one dashboard: the daily intel brief, the leads, the rankings, the numbers.
             </p>
           </div>
 
-          <!-- The example, shown as the actual group chat between you, Manny, and the agents. -->
-          <div class="max-w-2xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent bg-light-secondary/40 dark:bg-dark-primary/40 overflow-hidden shadow-sm">
-            <div class="flex items-center gap-3 px-4 py-3 border-b border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70">
-              <div class="flex -space-x-2">
-                {(['manny', 'eve', 'elly'] as const).map((id) => (
-                  <div class="w-7 h-7 rounded-full ring-2 ring-white dark:ring-dark-secondary overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
-                    <AgentAvatar agent={id} class="w-full h-full" />
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Your AI Team</div>
-                <div class="text-[11px] text-green-600 dark:text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span> online · managed by Manny AI</div>
-              </div>
-            </div>
-            <div class="px-4 py-5 space-y-2.5">
-              {conversation.map((m, i) => (
-                m.from === 'you' ? (
-                  <div class="flex flex-col items-end">
-                    <div class="max-w-[82%] rounded-2xl rounded-br-sm bg-gradient-to-r from-primary-blue to-primary-pink text-white px-4 py-2.5 text-sm leading-snug shadow-sm">{m.text}</div>
-                    {m.tag && (
-                      <span class="mt-1 mr-1 text-[11px] px-2 py-0.5 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-tertiary dark:text-text-dark-tertiary bg-white/60 dark:bg-dark-secondary/60">{m.tag}</span>
-                    )}
-                  </div>
-                ) : (
-                  <div class="flex items-end gap-2">
-                    {conversation[i - 1] && conversation[i - 1].from === m.from ? (
-                      <div class="w-8 flex-shrink-0" aria-hidden="true"></div>
-                    ) : (
-                      <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
-                        <AgentAvatar agent={m.from} class="w-full h-full" />
-                      </div>
-                    )}
-                    <div class="max-w-[82%]">
-                      {!(conversation[i - 1] && conversation[i - 1].from === m.from) && (
-                        <span class="block text-[11px] mb-0.5 ml-1">
-                          <span class="font-semibold text-primary-blue dark:text-blue-300">{nameFor(m.from)}</span>
-                          <span class="text-text-light-tertiary dark:text-text-dark-tertiary"> ({chatRole[m.from]})</span>
-                        </span>
-                      )}
-                      <div class="rounded-2xl rounded-bl-sm bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent px-4 py-2.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug shadow-sm">{m.text}</div>
-                    </div>
-                  </div>
-                )
-              ))}
-            </div>
+          <AiTeamEcosystem />
+
+          <!-- A real run, condensed (7/23/2026 — every finding is from it) -->
+          <div class="mt-12 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">A real run · Springfield painting contractor</p>
+            <ol class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              <li class="flex gap-3"><span class="font-black text-primary-blue dark:text-blue-300 flex-shrink-0">1.</span><span>The owner typed one line: <em>"I need content ideas for a painting company"</em> — and tapped TikTok as the output.</span></li>
+              <li class="flex gap-3"><span class="font-black text-primary-blue dark:text-blue-300 flex-shrink-0">2.</span><span>Manny AI staffed it: research found the lane (paint-mixing "guess the color" videos convert — they built Tonester Paints to 2.1M followers — and almost no Western Mass painter is on TikTok), and ten shoot-ready scripts came back in the owner's voice, captions and hashtags included.</span></li>
+              <li class="flex gap-3"><span class="font-black text-primary-blue dark:text-blue-300 flex-shrink-0">3.</span><span>One approval — and the batch landed in the dashboard with the two filming afternoons scheduled onto the calendar. Nothing posts until the owner presses Publish.</span></li>
+            </ol>
           </div>
-          <p class="mt-8 text-center text-base font-semibold text-text-light-primary dark:text-text-dark-primary">
-            That was a manager and two AI agents working for one Springfield painting contractor. Hire AI agents the same way — the ones your business needs, trained on your voice, from $95/mo each.
-          </p>
         </div>
       </Container>
     </Section>
@@ -395,10 +326,10 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Meet — and hire — your team</span>
           </h2>
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each agent owns one job and does it well. "Hiring" one means we build it around your business, connect it to your Brand Brain, and fine-tune it with you until it's ready. Hire one and it delivers straight to you through Manny. Hire more and Manny coordinates the handoffs automatically — and every agent can take a name that fits your brand.
+            Each specialist owns one job and does it well. You hire Manny AI; it staffs the ones your work calls for, builds each around your business on your Brand Brain, and coordinates every handoff — and every agent can take a name that fits your brand. Remi is the one specialist that also works alone, as a product of its own.
           </p>
           <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-            Agents from ${startFrom}/mo each · one-time ${setup} setup · Manny AI included with any hire · normal AI usage included · add or drop agents anytime
+            One-time ${setup} setup · engagements scoped on the 15-minute diagnostic · Remi from ${startFrom}/mo on its own · normal AI usage included · add or drop capabilities anytime
           </p>
         </div>
 
@@ -414,6 +345,16 @@ const pageJsonLd = {
             </div>
             <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{manager.role}</span>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
+            <div class="mt-4 flex flex-col sm:flex-row items-center gap-3">
+              <a
+                href="#contact"
+                data-contact-context="AI Team — hire Manny AI"
+                class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300"
+              >
+                Hire Manny AI
+              </a>
+              <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Scoped &amp; quoted on the 15-minute diagnostic · one-time ${setup} setup</span>
+            </div>
           </div>
         </div>
 
@@ -434,19 +375,35 @@ const pageJsonLd = {
               </div>
               {a.symptom && <p class="text-sm italic text-text-light-primary dark:text-text-dark-primary mb-2">{a.symptom}</p>}
               <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
-              <div class="mt-4 pt-1 flex items-end justify-between gap-3">
-                <div class="leading-none">
-                  <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${a.price}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                  {a.note && <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{a.note}</span>}
+              {/* Remi is the only agent with a public price — it's a product
+                  on its own. Everyone else joins through hiring Manny AI
+                  (scoped on the diagnostic), so no per-agent price tags. */}
+              {a.id === 'desi' ? (
+                <div class="mt-4 pt-1 flex items-end justify-between gap-3">
+                  <div class="leading-none">
+                    <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${a.price}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                    {a.note && <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{a.note}</span>}
+                  </div>
+                  <a
+                    href="#contact"
+                    data-contact-context={`AI Team — hire ${a.name} (${a.role})`}
+                    class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
+                  >
+                    Hire {a.name}
+                  </a>
                 </div>
-                <a
-                  href="#contact"
-                  data-contact-context={`AI Team — hire ${a.name} (${a.role})`}
-                  class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
-                >
-                  Hire {a.name}
-                </a>
-              </div>
+              ) : (
+                <div class="mt-4 pt-1 flex items-end justify-between gap-3">
+                  <span class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug">Joins your team through Manny AI</span>
+                  <a
+                    href="#contact"
+                    data-contact-context={`AI Team — Manny AI with ${a.name} (${a.role})`}
+                    class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
+                  >
+                    Add to my team
+                  </a>
+                </div>
+              )}
             </div>
           ))}
 
@@ -526,57 +483,15 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- Bundles — below the questions per Manny (Aug 2026): once the FAQ has
-         answered how hiring works, this is the "pick your squad" close. -->
-    <Section id="ai-team-bundles" variant="alternate">
+    <!-- (Bundles removed with the hire-Manny-AI model, Aug 2026: engagements
+         are scoped on the diagnostic; the setup line below keeps its promise.) -->
+    <Section id="ai-team-setup-note" variant="alternate">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-10">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-            <span class="apple-gradient-text" data-colorful-title>Hire one, a squad, or the whole operation</span>
-          </h2>
-          <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Any single agent — from ${startFrom}/mo. Every agent works on its own, with Manny AI included as your manager and delivery channel. Hire only Eve and her research lands in your inbox the way you like to read it.
-          </p>
-          <p class="mt-3 text-sm text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-            Most clients shouldn't start here. Bundles make sense when the two questions point at more than one
-            department — otherwise, start with one agent and let the numbers argue for the second.
-          </p>
-        </div>
-
-        <div class="grid gap-6 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
-          {aiTeamBundles.map((b) => (
-            <div class={`relative rounded-3xl border p-6 sm:p-7 flex flex-col ${b.best ? 'border-primary-blue/50 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06]' : 'border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary'}`}>
-              {b.best && (
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full">Best value</span>
-              )}
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{b.name}</h3>
-              {b.diagnosis && <p class="mt-2 text-sm italic text-text-light-primary dark:text-text-dark-primary leading-snug">{b.diagnosis}</p>}
-              <div class="mt-2 leading-none">
-                {b.addOn && <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">add </span>}
-                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${b.monthly.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-              </div>
-              <p class="mt-1 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-                ${b.alaCarte.toLocaleString('en-US')} à la carte · save ${b.savings.toLocaleString('en-US')}/mo
-              </p>
-              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{b.tagline}</p>
-              <ul class="mt-4 flex flex-wrap gap-1.5">
-                {b.agentIds.map((id) => (
-                  <li class="text-[11px] font-medium text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2 py-0.5">{nameFor(id)}</li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                data-contact-context={`AI Team — ${b.name}`}
-                class={`mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-300 ${b.best ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
-              >
-                Hire {b.name.replace('The ', '')}
-              </a>
-            </div>
-          ))}
-        </div>
-
-        <p class="mt-8 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto leading-relaxed">
-          One-time ${setup} setup builds your Brand Brain and trains your team — however many agents you hire — including cleaning up and formatting your data so they answer accurately from day one. Normal AI usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill. Add or drop agents anytime.
+        <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto leading-relaxed">
+          One-time ${setup} setup builds your Brand Brain and trains your team — however many specialists Manny AI
+          staffs — including cleaning up and formatting your data so they answer accurately from day one. Normal AI
+          usage is included; unusually heavy usage is metered at cost and quoted before it ever hits a bill.
+          Add or drop capabilities anytime.
         </p>
       </Container>
     </Section>

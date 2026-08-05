@@ -36,7 +36,7 @@ export interface LocalArea {
   plansLine: string; // the "$95/mo" line under the offer cards (keep the fact, vary the words)
   faqPricing: string; // answer: how much does a website cost here
   faqBusinesses: string; // answer: what kinds of businesses (town business mix + shape of the work)
-  faqAgents: string; // answer: can you build AI agents for my <town> business (facts: Remi in every site plan; roster from $95/mo each, managed)
+  faqAgents: string; // answer: can you build AI agents for my <town> business (facts: Remi in every site plan; AI staff from $95/mo, run by Manny AI)
   faqOutside: string; // answer: do you work outside <town> — real geography from this town's vantage
   faqExisting: string; // answer: can you fix the site I have
   faqDifferent: string; // answer: vs big agency / DIY (credential facts exact)
@@ -48,7 +48,7 @@ export interface LocalArea {
   proofCaseStudy?: { slug: string; line: string };
   // "Beyond the website" cards — the rest of the 2026 catalog (AI Team, stores,
   // GBP, 360°/media), written per town. FACTS that must stay exact:
-  //  - AI agents from $95/mo each; Remi is built into every site plan.
+  //  - AI staff from $95/mo (Remi's price — the only public per-agent price); Remi is built into every site plan.
   //  - Stores from $150/mo, Shopify subscription included, catalog synced to
   //    Google Shopping / Instagram / Facebook.
   //  - GBP setup/rescue: $145 one-time, or included in every monthly plan.
@@ -133,7 +133,7 @@ export const localAreas: LocalArea[] = [
     faqBusinesses:
       "Springfield's whole range: contractors in Sixteen Acres, restaurants downtown, medical and professional offices, churches, shops. If your customers find you by searching, the work is the same underneath — rank for what Springfield actually types into Google, answer when you can't reach the phone, and keep the site maintained long after launch day.",
     faqAgents:
-      "Yes — it's half of what we do. Remi, the agent built into every site plan, answers questions and books work 24/7 in English and Spanish. Beyond Remi there's a whole roster — agents that write, design, post, run ads, and report — hired like staff from $95/mo each and managed for you. A Springfield painting contractor runs one today: it qualifies leads around the clock while the crew is up a ladder.",
+      "Yes — it's half of what we do. Remi, the agent built into every site plan, answers questions and books work 24/7 in English and Spanish. Beyond Remi there's a whole roster — agents that write, design, post, run ads, and report — run for you by Manny AI, the manager you hire — AI staff from $95/mo. A Springfield painting contractor runs one today: it qualifies leads around the clock while the crew is up a ladder.",
     faqOutside:
       "Yes. Springfield is home base, and the rest of Western Mass is our backyard — Chicopee right across the river, Holyoke and Northampton up I-91, Westfield, Agawam, Ludlow, Amherst. We also work remotely with businesses anywhere.",
     faqExisting:
@@ -164,7 +164,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI employees, hired like staff',
-        body: 'Remi answers your site around the clock, and ten more agents write, design, post, run ads, and report — one shared brain, managed by Manny AI, from $95/mo each.',
+        body: 'Remi answers your site around the clock, and ten more agents write, design, post, run ads, and report — one shared brain, run by Manny AI, the manager you hire — AI staff from $95/mo.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -267,7 +267,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that speak Holyoke',
-        body: 'Agents that answer in Spanish or English — whichever the customer opens with — and book the job at 10pm. From $95/mo each, with Remi built into every site plan.',
+        body: 'Agents that answer in Spanish or English — whichever the customer opens with — and book the job at 10pm. AI staff from $95/mo, with Remi built into every site plan.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -374,7 +374,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that answers when you can\'t',
-        body: "An agent on your site that takes the questions and books the estimate while you're mid-job — from $95/mo each, with Remi built into every site plan.",
+        body: "An agent on your site that takes the questions and books the estimate while you're mid-job — AI staff from $95/mo, with Remi built into every site plan.",
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -479,7 +479,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that books while you\'re with a customer',
-        body: 'An agent that answers the questions people ask before committing and fills the calendar — midnight after the show included. From $95/mo each; Remi comes with every site plan.',
+        body: 'An agent that answers the questions people ask before committing and fills the calendar — midnight after the show included. AI staff from $95/mo; Remi comes with every site plan.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -568,7 +568,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that work your hours',
-        body: 'Agents that answer, qualify, and book while you run the shop — from $95/mo each, with Remi built into every site plan.',
+        body: 'Agents that answer, qualify, and book while you run the shop — AI staff from $95/mo, with Remi built into every site plan.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },
@@ -672,7 +672,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents, hired like staff',
-        body: 'Remi answers your site around the clock, and ten more agents write, post, run ads, and report — from $95/mo each, managed by Manny AI.',
+        body: 'Remi answers your site around the clock, and Manny AI — the manager you hire — staffs specialists that research, write, post, run ads, and report. AI staff from $95/mo.',
         href: '/ai-team/',
         linkText: 'Meet the AI Team',
       },

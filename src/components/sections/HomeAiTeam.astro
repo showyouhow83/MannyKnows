@@ -5,7 +5,8 @@ import { team } from '../../data/aiTeam';
 import AgentAvatar from '../team/AgentAvatar.astro';
 import Button from '../ui/Button.astro';
 
-const roster = [...team].sort((a, b) => a.order - b.order);
+// Hidden agents (Leo, Aria, Piper, Max) are Manny AI sub-agents — not shown.
+const roster = [...team].filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
 
 // Compact specialty labels for the teaser grid (the full role is on /ai-team).
 const specialty: Record<string, string> = {
@@ -45,7 +46,7 @@ const specialty: Record<string, string> = {
 
   <div class="text-center max-w-2xl mx-auto mt-10">
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      Start with the one your bottleneck calls for — <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI comes along as manager either way</strong>. Add the rest only when the numbers say so.
+      <strong class="text-text-light-primary dark:text-text-dark-primary">You hire Manny AI</strong> — one manager that staffs the specialists your bottleneck calls for, like hiring three, five, or seven people in one. Add capability only when the numbers say so.
     </p>
     {/* Remi gets a second, verb-led route: the roster avatar above goes to the
         profile card; this goes to the booking-agent explainer page. */}
