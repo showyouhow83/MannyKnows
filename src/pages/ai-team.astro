@@ -17,6 +17,7 @@ import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
 import { getTestimonial } from '../data/testimonials';
 import { team, aiTeamBundles, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq, wholeTeamBundle } from '../data/aiTeam';
+import type { AgentId } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
 // The one client quote that's literally about running an AI agent wired into
@@ -63,7 +64,7 @@ const pillars = [
 // `tag` mirrors the real compose box's Outputs selector — the owner picks
 // where the work should land (or leaves it blank and Manny decides), so the
 // channel never has to be typed into the request itself.
-const conversation: { from: string; text: string; tag?: string }[] = [
+const conversation: { from: AgentId | 'you'; text: string; tag?: string }[] = [
   { from: 'you', text: "I need content ideas for a painting company.", tag: 'Output: TikTok' },
   { from: 'manny', text: "On it. Eve, dig into what’s actually working for painters on TikTok right now. Elly, script the batch off her research." },
   { from: 'eve', text: "It looks like ASMR rolls and before/afters get likes, not calls. What converts is paint-mixing — “guess the color” videos built Tonester Paints to 2.1M followers. And almost no Western Mass painter is on TikTok. That’s the lane." },
@@ -219,7 +220,7 @@ const pageJsonLd = {
           <div class="max-w-2xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent bg-light-secondary/40 dark:bg-dark-primary/40 overflow-hidden shadow-sm">
             <div class="flex items-center gap-3 px-4 py-3 border-b border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70">
               <div class="flex -space-x-2">
-                {['manny', 'eve', 'elly'].map((id) => (
+                {(['manny', 'eve', 'elly'] as const).map((id) => (
                   <div class="w-7 h-7 rounded-full ring-2 ring-white dark:ring-dark-secondary overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
                     <AgentAvatar agent={id} class="w-full h-full" />
                   </div>
@@ -345,7 +346,34 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- Bundles -->
+    <!-- How it works -->
+    <!-- (Bundles section moved below the FAQ per Manny, Aug 2026) -->
+    <Section id="ai-team-steps" variant="alternate">
+      <Container>
+        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
+          <span class="apple-gradient-text" data-colorful-title>How it works</span>
+        </h2>
+        <StepCards steps={steps} cols={5} class="max-w-7xl mx-auto" />
+      </Container>
+    </Section>
+
+    <!-- FAQ -->
+    <Section id="ai-team-faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <Faq faqs={aiTeamFaq} />
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+              Build my AI team
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Bundles — below the questions per Manny (Aug 2026): once the FAQ has
+         answered how hiring works, this is the "pick your squad" close. -->
     <Section id="ai-team-bundles" variant="alternate">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-10">
@@ -394,37 +422,12 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- How it works -->
-    <Section id="ai-team-steps" variant="alternate">
-      <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>How it works</span>
-        </h2>
-        <StepCards steps={steps} cols={5} class="max-w-7xl mx-auto" />
-      </Container>
-    </Section>
-
-    <!-- FAQ -->
-    <Section id="ai-team-faq" variant="alternate">
-      <Container>
-        <div class="max-w-3xl mx-auto">
-          <Faq faqs={aiTeamFaq} />
-          <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Build my AI team
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-          </div>
-        </div>
-      </Container>
-    </Section>
-
     <!-- Client proof — after the questions, the answer per Manny (Aug 2026) -->
     {proofQuote && (
       <Section id="ai-team-proof" variant="default">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">A client already running it</p>
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">Clients running Remi AI</p>
             <QuoteBlock quote={proofQuote} align="center" />
           </div>
         </Container>

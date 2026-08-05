@@ -16,33 +16,53 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Faq from '../components/ui/Faq.astro';
-import Illustration from '../components/illustrations/Illustration.astro';
+import AgentAvatar from '../components/team/AgentAvatar.astro';
 import { aiTeamStartingPrice, aiTeamSetupFee } from '../data/aiTeam';
 import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../data/aiWebsite';
 
 const PHONE_DISPLAY = '(413) 361-8451';
 const PHONE_TEL = '+14133618451';
 
+// Compact capability strip — titles only, the versions grid below carries the
+// selling. (The long-copy 4-card grid was merged away, Manny, Aug 2026.)
 const CAPABILITIES = [
+  { title: 'Answers any hour, EN/ES', icon: 'M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+  { title: 'Qualifies the lead', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+  { title: 'Books the job', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+  { title: 'Hands off to a human', icon: 'M17 8l4 4m0 0l-4 4m4-4H3' },
+];
+
+// The three versions of Remi (Manny, Aug 2026). The Lite one on the 1-page AI
+// Website carries the name but is an answering bot, not an agent — fixed, not
+// configurable. The agent proper is configured & customized per business.
+const VERSIONS = [
   {
-    title: 'Answers instantly, any hour',
-    body: "Site visitors get a real answer at 10pm, not a contact form. Remi is trained on your business — services, prices, hours — and replies in English or Spanish, whichever the customer opens with.",
-    icon: 'M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+    name: 'Remi Lite',
+    tag: 'The answering bot',
+    price: '$40/mo',
+    priceNote: 'with the $195 one-page AI Website',
+    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', 'Fixed setup — no customization'],
+    cta: { label: 'Get the 1-page site', href: '/ai-website/' },
+    featured: false,
   },
   {
-    title: 'Qualifies before it books',
-    body: "It asks the questions you'd ask — what's the job, where, when — so what lands on your calendar is a real appointment with context, not a mystery name.",
-    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+    name: 'Remi',
+    tag: 'The agent',
+    price: 'From $95/mo',
+    priceNote: `in every website plan · or on your existing site + $${aiTeamSetupFee} setup`,
+    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', 'Hands off to you when a human matters'],
+    cta: { label: 'See the website plans', href: '/plans/' },
+    ctaAlt: { label: 'or hire it onto your site', href: '/ai-team/#agent-remi' },
+    featured: true,
   },
   {
-    title: 'Books the appointment',
-    body: 'Estimates, consultations, tours, tables — Remi takes the booking end to end while you work, and every lead is captured with its conversation.',
-    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
-  },
-  {
-    title: 'Hands off when a human matters',
-    body: "Remi knows its limits. Complex jobs, upset customers, anything sensitive — it routes to you (or the right person on your team) instead of improvising.",
-    icon: 'M17 8l4 4m0 0l-4 4m4-4H3',
+    name: 'Remi Custom',
+    tag: 'Built around you',
+    price: 'From $2,500',
+    priceNote: 'one-time, quoted up front',
+    points: ['Answers your phone line (IVR) — like JK Daycare’s', 'Calendar & deep integrations', 'Yours when it ships'],
+    cta: { label: 'Scope a build', href: '#contact', context: 'Custom AI booking build' },
+    featured: false,
   },
 ];
 
@@ -93,17 +113,20 @@ const pageJsonLd = {
 
       <div class="pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[1440px] mx-auto text-center">
+          <!-- Remi himself, not a generic spot illustration (Manny, Aug 2026) -->
           <div class="flex justify-center mb-6">
-            <Illustration kind="agent" class="w-full max-w-[210px]" />
+            <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+              <AgentAvatar agent="desi" class="w-full h-full" />
+            </div>
           </div>
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
             Meet Remi · AI Agents · Western Massachusetts
           </span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-            <span class="apple-gradient-text" data-colorful-title>Remi — the AI booking agent that answers, qualifies &amp; books, 24/7</span>
+            <span class="apple-gradient-text" data-colorful-title>Remi — the AI booking agent that answers,<br /> qualifies &amp; books, 24/7</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Most jobs are lost to the call nobody could answer. Remi is our AI booking agent for Western Mass small businesses — trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're working. Remi is already answering for a Springfield daycare and a painting contractor — both case studies below.
+            Most jobs are lost to the call nobody could answer. Remi is our AI booking agent for Western Mass small businesses — trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
@@ -111,7 +134,7 @@ const pageJsonLd = {
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
             <a href="#proof" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-              See the case studies
+              See it at work — view our case studies
             </a>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
@@ -121,7 +144,80 @@ const pageJsonLd = {
       </div>
     </header>
 
-    <!-- Proof: shipped, named, linked — the thing national SaaS tools can't say -->
+    <!-- What Remi does + the three versions, merged into one section
+         (was two long sections; Manny asked for less copy, Aug 2026). -->
+    <Section id="versions" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One Remi, three sizes</span></h2>
+        </div>
+
+        <!-- Capability strip: what every conversation with Remi is built to do -->
+        <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto mb-12">
+          {CAPABILITIES.map((c) => (
+            <span class="inline-flex items-center gap-2 rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-2 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
+              </span>
+              {c.title}
+            </span>
+          ))}
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
+          {VERSIONS.map((v) => (
+            <div class={`relative rounded-2xl border bg-white dark:bg-dark-secondary p-7 flex flex-col ${v.featured ? 'border-primary-blue/50 ring-1 ring-primary-blue/20 shadow-lg shadow-primary-blue/10 md:-mt-2' : 'border-light-tertiary dark:border-dark-accent'}`}>
+              {v.featured && (
+                <div class="absolute -top-8 right-5 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
+                  <AgentAvatar agent="desi" class="w-full h-full" />
+                </div>
+              )}
+              <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">{v.tag}</span>
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mt-1">{v.name}</h3>
+              <div class="mt-3 mb-1"><span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">{v.price}</span></div>
+              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mb-4">{v.priceNote}</p>
+              <ul class="space-y-2 mb-6 flex-1">
+                {v.points.map((pt) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
+                    <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={v.cta.href}
+                data-contact-context={v.cta.context}
+                class={`inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${v.featured ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
+              >
+                {v.cta.label}
+              </a>
+              {v.ctaAlt && (
+                <a href={v.ctaAlt.href} class="mt-2 text-center text-xs text-primary-blue dark:text-blue-300 hover:underline">{v.ctaAlt.label}</a>
+              )}
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- FAQ (Faq component emits FAQPage schema) -->
+    <Section id="faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
+              Talk about your booking agent
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> — English or Spanish.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Proof closes the page (moved from under the hero, Manny, Aug 2026):
+         shipped, named, linked — the thing national SaaS tools can't say. -->
     <Section id="proof" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
@@ -146,72 +242,6 @@ const pageJsonLd = {
               Read the SL Painting case study
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
-          </div>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- What it actually does -->
-    <Section id="what-it-does" variant="alternate">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What Remi does all day</span></h2>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {CAPABILITIES.map((c) => (
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
-              </div>
-              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-
-    <!-- Three ways in -->
-    <Section id="pricing" variant="default">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Three ways to get one</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Same agent quality, three doors — pick by what you already have.</p>
-        </div>
-        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Included in every website plan</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Every MannyKnows site ships with Remi — the built-in agent answering and booking 24/7. If you need a website anyway, the agent comes with it.</p>
-            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">From $95/mo</p>
-            <a href="/plans/" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5 transition-all">See the plans</a>
-          </div>
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Added to the site you have</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Keep your current website — hire Remi onto it from the AI Team, trained on your business and managed by Manny AI.</p>
-            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">From ${aiTeamStartingPrice}/mo · one-time ${aiTeamSetupFee} setup</p>
-            <a href="/ai-team/#agent-remi" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5 transition-all">Meet Remi on the AI Team</a>
-          </div>
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Custom — including your phone line</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1 mt-2">Phone IVR systems like JK Daycare's, calendar integrations, anything deeper — scoped together, quoted up front, yours when it ships.</p>
-            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mt-4">One-time builds usually start at $2,500</p>
-            <a href="#contact" data-contact-context="Custom AI booking build" class="mt-3 inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm bg-gradient-to-r from-primary-blue to-primary-pink text-white transition-all">Scope a build</a>
-          </div>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- FAQ (Faq component emits FAQPage schema) -->
-    <Section id="faq" variant="alternate">
-      <Container>
-        <div class="max-w-3xl mx-auto">
-          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
-          <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
-              Talk about your booking agent
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> — English or Spanish.</p>
           </div>
         </div>
       </Container>
