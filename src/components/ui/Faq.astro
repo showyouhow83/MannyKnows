@@ -27,9 +27,23 @@ const faqSchema = schema && faqs.length > 0
   <div class="max-w-3xl mx-auto">
     {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
     {heading && (
-      <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-        <span class="apple-gradient-text" data-colorful-title>{heading}</span>
-      </h2>
+      <div class="text-center mb-10">
+        {/* Question-mark astronaut (waist-up crop of astro-faqs, 22 KB webp).
+            Size dial: max-w below. Decorative — heading carries the meaning. */}
+        <img
+          src="/mascot/astro-faqs.webp"
+          alt=""
+          aria-hidden="true"
+          width="360"
+          height="521"
+          loading="lazy"
+          decoding="async"
+          class="mx-auto mb-4 w-full max-w-[110px] h-auto pointer-events-none"
+        />
+        <h2 class="sf-bold text-2xl md:text-3xl font-bold">
+          <span class="apple-gradient-text" data-colorful-title>{heading}</span>
+        </h2>
+      </div>
     )}
     {/* Native <details> accordion, closed by default: the answers stay in the
         DOM (so the FAQPage schema above and Google's indexing are unaffected)
