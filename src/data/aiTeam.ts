@@ -248,7 +248,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `You hire Manny AI, and the price follows the operation it runs for you — scoped and quoted on the 15-minute diagnostic, before anything is billed. A one-time $${aiTeamSetupFee} setup builds your Brand Brain and trains your team, and normal AI usage is included; unusually heavy usage is metered at cost and flagged before it ever hits a bill. The one flat price on the roster is Remi: the front desk agent is a product on its own at $${aiTeamStartingPrice}/mo — and it's already included with every Smart Website plan. Add or drop capabilities anytime.`,
+    a: `Two numbers. A one-time $${aiTeamSetupFee} setup — us building your Brand Brain and training your team — then a monthly scoped to the operation Manny AI runs for you, quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only flat price is Remi: $${aiTeamStartingPrice}/mo on its own, and included with every Smart Website plan.`,
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
@@ -256,23 +256,15 @@ export const aiTeamFaq = [
   },
   {
     q: 'Do I have to hire a whole team of agents?',
-    a: "No — that's the point of Manny AI. You hire one manager, and it deploys only the specialists your bottleneck calls for — three, five, seven of them as the work demands — coordinating every handoff so you never play middleman. Remi is the exception that works alone: it's a product at $95/mo you can put on your site today.",
+    a: "No — that's the point of Manny AI. You hire one manager, and it deploys only the specialists your bottleneck calls for — three, five, seven of them as the work demands — coordinating every handoff so you never play middleman.",
   },
   {
     q: "How do I know it's working?",
     a: "That's Vera's whole job — the analytics specialist on the team. Your dashboard shows the team's work as it lands, and a monthly report ties it to real outcomes — traffic, calls, bookings, sales — with the next plan built on those numbers. No more posting into the void.",
   },
   {
-    q: 'Do the agents post without me seeing it first?',
-    a: "You choose. Most owners start with everything queued for a quick approval, then hand off the routine stuff once they trust the output. Anything customer-facing — a post, a review reply, an ad — can always require your sign-off, and budget changes always do.",
-  },
-  {
     q: 'Can the agents change my website itself?',
     a: "Yes — this is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site — your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background — and it's already running on a client's live site (VL Home Services).",
-  },
-  {
-    q: 'Why not start with everything on day one?',
-    a: "Because one focused operation creates a number you can point at, and everything at once creates a bill you can't evaluate. Every specialist reads from the same Brand Brain, so starting narrow costs you nothing later — whatever Manny AI staffs next inherits everything the team already learned. Start where it hurts; expand where it pays.",
   },
   {
     q: "Can you build an agent that's not on the roster?",
