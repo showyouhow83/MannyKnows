@@ -134,7 +134,7 @@ const pageJsonLd = {
             </h1>
             <p class="sf-bold text-[0.95rem] md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss: you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              When people picture AI, they picture a chat box you have to prompt. This is a hire instead: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong>, one manager that summons AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
+              When people picture AI, they picture a chat box you have to prompt. This is a hire instead: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong>, one manager that staffs AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
             </p>
 
             <!-- The three pillars, promoted into the hero (Manny: one stronger
@@ -164,7 +164,7 @@ const pageJsonLd = {
                 </div>
               ))}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Meet Manny AI and the swarm of specialist AI agents it summons to handle everything behind the scenes.</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Meet Manny AI and the specialist AI agents it puts to work behind the scenes.</p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
@@ -264,11 +264,12 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
             <AgentAvatar agent={manager.id} class="w-full h-full" />
           </div>
           <div class="flex-1 text-center sm:text-left">
-            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{manager.name}</h3>
+            {/* Name on its own line, then the two badges beneath it. */}
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{manager.name}</h3>
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-3">
               <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.note}</span>
+              <span class="inline-block border border-primary-blue/40 text-primary-blue dark:text-blue-300 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.role}</span>
             </div>
-            <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{manager.role}</span>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
             <div class="mt-4">
               <a
@@ -285,7 +286,8 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
         <!-- Agents -->
         {/* Mobile: a snap-scrolling row so the roster doesn't run the page
             long. sm and up: the original two-column grid. No JS. */}
-        <div class="roster-scroll flex snap-x snap-mandatory gap-4 overflow-x-auto -mx-4 px-4 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:gap-6 sm:grid-cols-2 sm:overflow-visible max-w-6xl sm:mx-auto">
+        <div class="relative max-w-6xl mx-auto">
+        <div id="rosterScroll" class="roster-scroll flex snap-x snap-mandatory gap-4 overflow-x-auto -mx-4 px-4 pb-2 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:gap-6 sm:grid-cols-2 sm:overflow-visible">
           <!-- Anchor ids are the slugified agent name so multi-word names
                ("Manny AI") stay valid; single-word agents keep #agent-<name>. -->
           {agents.map((a) => (
@@ -367,15 +369,37 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
           </div>
         </div>
 
+        {/* Subtle prev/next, phones only (the sm+ grid needs no controls). */}
+        <button type="button" data-roster-nav="prev" aria-label="Previous agent"
+          class="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-9 h-9 rounded-full border border-light-tertiary dark:border-dark-accent bg-white/85 dark:bg-dark-secondary/85 backdrop-blur text-text-light-secondary dark:text-text-dark-secondary shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button type="button" data-roster-nav="next" aria-label="Next agent"
+          class="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-9 h-9 rounded-full border border-light-tertiary dark:border-dark-accent bg-white/85 dark:bg-dark-secondary/85 backdrop-blur text-text-light-secondary dark:text-text-dark-secondary shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </button>
+        </div>
+
         <!-- Human-in-the-loop card — closes the roster per Manny (Aug 2026):
              meet the team, then hear who stays in charge. -->
-        <div class="max-w-3xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 text-center">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-            <span class="apple-gradient-text" data-colorful-title>Not fully autonomous: on purpose</span>
-          </h2>
-          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            The agents do the heavy lifting: researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters, the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
-          </p>
+        <div class="max-w-4xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 grid gap-8 items-center md:grid-cols-5">
+          {/* 60/40 on desktop: copy carries three fifths, handshake two. */}
+          <div class="md:col-span-3 text-center md:text-left">
+            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
+              <span class="apple-gradient-text" data-colorful-title>Not fully autonomous: on purpose</span>
+            </h2>
+            <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              The agents do the heavy lifting: researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters, the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
+            </p>
+          </div>
+          <div class="md:col-span-2 flex justify-center">
+            <img
+              src="/mascot/astronaut-robot-handshake.webp"
+              alt="An astronaut shaking hands with a friendly robot: you stay in charge of your AI team"
+              width="900" height="797" loading="lazy" decoding="async"
+              class="w-full max-w-[220px] md:max-w-none h-auto"
+            />
+          </div>
         </div>
       </Container>
     </Section>
@@ -445,6 +469,62 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
     <DockMenu />
   </main>
 </BaseLayout>
+
+<script>
+  // Roster autoplay (phones only). Advances every 4s and loops back to the
+  // first card. Pauses while the user is touching it, while the tab is
+  // hidden, when the section scrolls out of view, and for reduced-motion.
+  (function () {
+    const track = document.getElementById('rosterScroll');
+    if (!track) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const isPhone = () => window.matchMedia('(max-width: 639px)').matches;
+    const cards = () => Array.from(track.children).filter((el) => el.tagName === 'DIV');
+
+    let timer = null, paused = false, visible = true;
+
+    function goTo(i) {
+      const list = cards();
+      if (!list.length) return;
+      const idx = (i + list.length) % list.length;              // wrap around
+      track.scrollTo({ left: list[idx].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
+    function current() {
+      const list = cards();
+      let best = 0, min = Infinity;
+      list.forEach((el, i) => {
+        const d = Math.abs(el.offsetLeft - track.offsetLeft - track.scrollLeft);
+        if (d < min) { min = d; best = i; }
+      });
+      return best;
+    }
+    function tick() { if (!paused && visible && isPhone()) goTo(current() + 1); }
+    function start() {
+      if (timer || reduce.matches) return;
+      timer = window.setInterval(tick, 4000);
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    document.querySelectorAll('[data-roster-nav]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        goTo(current() + (btn.getAttribute('data-roster-nav') === 'next' ? 1 : -1));
+        paused = true; window.setTimeout(() => { paused = false; }, 8000);  // let them browse
+      });
+    });
+
+    track.addEventListener('pointerdown', () => { paused = true; });
+    track.addEventListener('pointerup', () => { window.setTimeout(() => { paused = false; }, 6000); });
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => { e.isIntersecting ? start() : stop(); });
+      }, { threshold: 0.25 }).observe(track);
+    } else {
+      start();
+    }
+  })();
+</script>
 
 <style>
   /* Roster is a swipeable row on phones; the scrollbar would only add noise. */
