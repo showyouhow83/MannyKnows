@@ -126,7 +126,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'How is this different from Wix or Squarespace?',
-    a: `Wix hands you a builder and the work is yours: the design, the writing, the SEO, the upkeep. Here a developer builds the page for you, tunes it to near-perfect scores on Google's own Lighthouse audit: most DIY builder sites don't come close, and “Remi”, an AI agent trained on your business, answers your customers and captures leads while you work. Comparable money, but you get your evenings back and an employee on the page.`,
+    a: `Wix hands you a builder and the work is yours: the design, the writing, the SEO, the upkeep. Here a developer builds the page for you, tunes it to near-perfect scores on Google's own Lighthouse audit (most DIY builder sites don't come close), and “Remi”, an AI agent trained on your business, answers your customers and captures leads while you work. Comparable money, but you get your evenings back and an employee on the page.`,
   },
   {
     q: 'Can “Remi” book appointments on this?',

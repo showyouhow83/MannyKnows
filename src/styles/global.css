@@ -4,3 +4,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* p-8 is the card padding across the site (panels, quote cards, forms). Manny's
+   value: more room at the sides and top than at the bottom, so a card reads as
+   sitting ON its content rather than centred in a box. Declared after the
+   utilities layer so it outranks Tailwind's own .p-8 on source order.
+   NOTE: responsive variants (.sm\:p-8, .md\:p-8) are separate classes and keep
+   Tailwind's even 2rem — see QuoteBlock and plans/[slug]. */
+@layer utilities {
+  .p-8 {
+    padding: 3rem 3rem 2rem 3rem;
+  }
+}
