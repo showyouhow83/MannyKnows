@@ -38,8 +38,18 @@ const shortRole: Record<string, string> = {
 // approval (Manny, Aug 2026: mixing in generic feed rows broke the story).
 // Every row is from the real painter run (7/23/2026), nothing invented; the
 // day-to-day feed is the caption under the panel instead.
-const dashboardRows: { who: string; label: string; detail: string; status?: string }[] = [
-  { who: 'manny', label: 'Two filming afternoons', detail: 'scheduled onto your calendar', status: 'Pending' },
+// The thread's opening move: Manny AI asks what a content creator would ask,
+// and the summoned specialists queue behind the brief (Manny, Aug 2026).
+const dashboardRows: { who: string; label: string; detail: string; waiting?: { who: string; label: string }[] }[] = [
+  {
+    who: 'manny',
+    label: 'Manny AI — scoping the intel brief',
+    detail: "What is our competition doing? What's trending in our field right now? What are our customers' biggest pain points — and which tips do most of them never hear?",
+    waiting: [
+      { who: 'eve', label: "waiting on Manny's brief" },
+      { who: 'elly', label: "waiting on Eve's brief" },
+    ],
+  },
 ];
 ---
 
@@ -124,11 +134,17 @@ const dashboardRows: { who: string; label: string; detail: string; status?: stri
             <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">{r.label}</p>
             <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug">{r.detail}</p>
           </div>
-          {r.status && (
-            <span class="flex-shrink-0 inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[11px] font-bold px-2.5 py-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01"/></svg>
-              {r.status}
-            </span>
+          {r.waiting && (
+            <div class="flex-shrink-0 flex flex-col gap-1.5">
+              {r.waiting.map((w) => (
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-semibold pl-1 pr-2.5 py-0.5">
+                  <span class="w-5 h-5 rounded-full overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
+                    <AgentAvatar agent={w.who as any} class="w-full h-full" />
+                  </span>
+                  {w.label}
+                </span>
+              ))}
+            </div>
           )}
         </li>
       ))}
