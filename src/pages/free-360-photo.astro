@@ -182,6 +182,20 @@ const jsonLd = {
       <div class="pb-14">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
+            {/* The photographer himself, above the eyebrow, same as the
+                /ecommerce and /plans heroes. Eager (it is the top of the page)
+                with width/height declared, so it never shifts the H1. */}
+            <div class="flex justify-center mb-6">
+              <img
+                src="/mascot/astro-360.webp"
+                alt=""
+                aria-hidden="true"
+                width="1072"
+                height="1581"
+                decoding="async"
+                class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
+              />
+            </div>
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
               We come to you · {SERVICE_AREA}
             </span>
@@ -207,18 +221,6 @@ const jsonLd = {
               No cost · No obligation · Live on Google in days
             </p>
 
-            <!-- The photographer himself — astronaut with the 360° camera,
-                 bridging the pitch and the proof. Size dial: max-w below. -->
-            <img
-              src="/mascot/astro-360.webp"
-              alt=""
-              aria-hidden="true"
-              width="1072"
-              height="1581"
-              loading="lazy"
-              decoding="async"
-              class="mx-auto mt-12 w-full max-w-[150px] h-auto pointer-events-none"
-            />
 
             <!-- "Why it wins" lives in the hero (Manny, Aug 2026): pitch and
                  proof are one screen; the standalone section below was removed. -->
@@ -576,3 +578,14 @@ free-photo request, so nobody could ask for a paid package
     });
   })();
 </script>
+
+<style>
+  /* Matches the /plans and /ecommerce heroes: a slow drift, off for
+     reduced-motion users. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+</style>
