@@ -215,7 +215,7 @@ export const localAreas: LocalArea[] = [
         body: "When someone in Holyoke searches for what you do, in English or in Spanish, you should be the answer both times. We build the site and the SEO to rank for how this city actually searches.",
       },
       {
-        title: 'Bilingüe de verdad, not a translate button',
+        title: 'Truly bilingual, not a translate button',
         body: 'Your site, your Google presence, and your AI agent all work in Spanish and English from day one. In a city where that decides who calls you, it comes included, never as an upsell.',
       },
       {
@@ -234,9 +234,9 @@ export const localAreas: LocalArea[] = [
     faqBusinesses:
       "The businesses that make Holyoke run: trades and contractors, medical and dental offices, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine: a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
     faqAgents:
-      "Claro que sí, and here they're bilingual by default, not by upgrade. “Remi” comes with every site plan and answers customers 24/7 in whichever language they open with; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, all managed for you. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
+      "Yes, and here they're bilingual by default, not by upgrade. “Remi” comes with every site plan and answers customers 24/7 in whichever language they open with; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, all managed for you. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
     faqOutside:
-      "Claro: Holyoke is a few exits up I-91 from our Springfield base, and we cover the whole valley: Chicopee, Northampton, Westfield, Agawam, Amherst, Easthampton and beyond. Remote works too, for businesses anywhere.",
+      "Of course. Holyoke is a few exits up I-91 from our Springfield base, and we cover the whole valley: Chicopee, Northampton, Westfield, Agawam, Amherst, Easthampton and beyond. Remote works too, for businesses anywhere.",
     faqExisting:
       "Yes, and it's often the fastest win. We audit your current site, fix the speed, technical SEO, and mobile issues that are quietly costing you calls, add the Spanish side if you're missing half the city, and then keep it all maintained.",
     faqDifferent:
@@ -263,7 +263,7 @@ export const localAreas: LocalArea[] = [
         { label: 'Daily Hampshire Gazette, High Street TDI awards (Feb 2025)', url: 'https://gazettenet.com/2025/02/13/370k-in-state-aid-pours-into-holyoke-s-downtown-59405864/' },
       ],
     },
-    beyondWebHeading: 'Más que websites: the whole toolkit, in both languages',
+    beyondWebHeading: 'More than websites: the whole toolkit, in both languages',
     beyondWeb: [
       {
         title: 'AI agents that speak Holyoke',
