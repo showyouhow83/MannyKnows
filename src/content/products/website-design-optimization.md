@@ -51,7 +51,7 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it winning
 
-The build is a one-time project. To keep it fast, monitored, and improving every month — with Remi answering customers around the clock — roll onto a [monthly website plan](/plans/), from $95/mo; [add appointment booking from $245/mo](/plans/get-booked/).
+The build is a one-time project. To keep it fast, monitored, and improving every month — with “Remi” answering customers around the clock — roll onto a [monthly website plan](/plans/), from $95/mo; [add appointment booking from $245/mo](/plans/get-booked/).
 
 **Ready?** [Get a scoped quote](/contact/) or [see the SL Painting case study](/work/sl-painting/).
 

@@ -33,6 +33,6 @@ A lead engine only fires when someone lands on it — and more and more, that so
 
 Once leads are flowing in, the next problem is managing them: scheduling crews, sharing before/after photos, keeping clients in the loop. That's the rest of the platform — and it's exactly what we built for [SL Painting](/work/sl-painting/), the painting contractor now ranked #1 on Google for "Exterior Painting" in Springfield.
 
-This is a [monthly website plan](/plans/) in action — a site with Remi answering around the clock, and [booking the jobs](/plans/get-booked/) once you're ready for that. And when the engine is running, [Get Ahead](/plans/get-ahead/) feeds it with managed ads. The order matters, though — ads pointed at a site that doesn't convert just spend faster. Build the engine first, then feed it.
+This is a [monthly website plan](/plans/) in action — a site with “Remi” answering around the clock, and [booking the jobs](/plans/get-booked/) once you're ready for that. And when the engine is running, [Get Ahead](/plans/get-ahead/) feeds it with managed ads. The order matters, though — ads pointed at a site that doesn't convert just spend faster. Build the engine first, then feed it.
 
 Want to see how it would work for your business? [Get in touch](#contact) and tell us what you do.

@@ -81,7 +81,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a contractor website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi booking estimates for you is $245/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking estimates for you is $245/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'How long until I rank on Google?',
@@ -145,7 +145,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin to track enrollment inquiries and update the site yourself, plus Remi booking tours, starts at $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin to track enrollment inquiries and update the site yourself, plus “Remi” booking tours, starts at $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can you help us manage enrollment and parents?',
@@ -214,7 +214,7 @@ export const professions: Profession[] = [
       },
       {
         q: 'How much does a clinic or practice website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, Remi answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and Remi booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can patients book appointments through the site?',

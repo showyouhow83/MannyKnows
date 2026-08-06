@@ -58,7 +58,7 @@ export const team: Agent[] = [
     role: 'Front desk: sales, booking & support',
     symptom: 'For when leads come in and nobody answers fast enough.',
     does: "Answers customers on your site 24/7 — replies, books appointments, and guides shoppers to the right product, in their language.",
-    handoff: 'Feeds the team: every question customers ask becomes intel — Remi logs the patterns, and Eve uses them to decide what content to make next.',
+    handoff: 'Feeds the team: every question customers ask becomes intel — “Remi” logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
     price: 95,
     note: 'included with every Smart Website',
@@ -228,7 +228,7 @@ export const aiTeamFaq = [
   {
     // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
     q: 'Which AI agent should my Springfield business get first?',
-    a: "Whichever one sits on your bottleneck. Ask yourself: what are you bad at that keeps costing you money? If the answer is unanswered customers, that's Remi — the front desk agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it — stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
+    a: "Whichever one sits on your bottleneck. Ask yourself: what are you bad at that keeps costing you money? If the answer is unanswered customers, that's “Remi” — the front desk agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it — stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",
@@ -240,7 +240,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What is the Brand Brain?',
-    a: "One knowledge base of your business — your services, prices, customers, past work, and voice — that every agent reads from and adds to. It's built during setup and grows with every job: Eve's research, Vera's results, and Remi's customer questions all get filed there, so the whole team learns from every piece of work any agent does.",
+    a: "One knowledge base of your business — your services, prices, customers, past work, and voice — that every agent reads from and adds to. It's built during setup and grows with every job: Eve's research, Vera's results, and “Remi's” customer questions all get filed there, so the whole team learns from every piece of work any agent does.",
   },
   {
     q: 'Is there a human involved at all?',
@@ -248,7 +248,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `An agent starts at $${aiTeamStartingPrice}/mo — that's Remi, the front desk, which is also included with every Smart Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you — quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only other number: a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
+    a: `An agent starts at $${aiTeamStartingPrice}/mo — that's “Remi”, the front desk, which is also included with every Smart Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you — quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only other number: a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
