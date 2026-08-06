@@ -10,13 +10,13 @@ seoDescription: "What a small business website really costs in Western Massachus
 image: "/blog/small-business-website-cost-western-mass.jpg"
 ---
 
-Ask five web people what a website costs and you'll get five wildly different numbers — $500, $5,000, "let's hop on a call." No wonder owners around here don't know what's fair. So here's the honest version, with real numbers.
+Ask five web people what a website costs and you'll get five wildly different numbers — $500, $5,000, "let's hop on a call." No wonder owners around here don't know what's fair. So here's the breakdown, with the numbers.
 
 ## First: two very different things get called "a website"
 
 Most of the price gap comes from this. There's the **build** — designing and coding the site once — and there's **keeping it working** — hosting, updates, security, SEO, and the fixes a live site always needs. Some people sell you the first and disappear. The trouble is a website is never really "done": it has to keep loading fast, keep ranking, and keep bringing in customers, or it quietly rots.
 
-So there are two honest ways to pay for one.
+So there are two ways to pay for one.
 
 ## Option 1 — a one-time build
 
@@ -46,7 +46,7 @@ And "getting found" isn't only Google anymore. A growing share of customers now 
 A few things to watch for when you're comparing quotes:
 
 - **"Free" or $10/mo builders** — cheap to start, but you do all the work, and they're built to be hard to leave.
-- **Big agencies** — genuinely great work, genuinely $10,000+, priced for companies with a marketing department.
+- **Big agencies** — great work at $10,000+, priced for companies with a marketing department.
 - **Hidden upkeep** — a cheap build with no plan to maintain it is a site that's out of date in six months.
 
 ## So what should *you* pay?

@@ -55,6 +55,6 @@ Nobody starts with all eleven. Most businesses start with the one that hurts —
 
 And if you're wondering whether this works for a business your size: it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/) — the same team already answering for a local daycare, qualifying leads for a Springfield painting contractor, and checking project statuses for a home services company. Built here, trained on your business, managed from one admin.
 
-See it running for real businesses first, if you like: [JK Daycare](/work/jk-daycare/) answers parents around the clock, and [VL Home Services](/work/vl-home-services/) wired their agent into their own admin. Real Western Mass businesses, right down the road.
+See it running first, if you like: [JK Daycare](/work/jk-daycare/) answers parents around the clock, and [VL Home Services](/work/vl-home-services/) wired their agent into their own admin — both right down the road.
 
 Ready to stop being your own front desk? [Tell us where it hurts.](#contact)

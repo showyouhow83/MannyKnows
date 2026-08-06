@@ -51,13 +51,13 @@ Between two roofers in the map pack, the homeowner picks the one with more (and 
 
 ## Homeowners are starting to ask AI, too
 
-More and more, a homeowner's first move isn't a Google search — it's asking ChatGPT, Perplexity, or Google's AI Overview "who's a good roofer in Chicopee?" and acting on the short list it reads back. That's **answer-engine optimization (AEO)**, and here's the honest part: it runs on the exact same assets you just built. The AI leans on your Google Business Profile, your service-and-town pages, and your reviews to decide whose name to give. A shared lead from Angi is gone the second you stop paying; earn your spot in the AI's answer and it keeps sending you jobs, same as the map and the organic results. It isn't one more thing to buy — it's the pipeline you already own, now working in one more place people search.
+More and more, a homeowner's first move isn't a Google search — it's asking ChatGPT, Perplexity, or Google's AI Overview "who's a good roofer in Chicopee?" and acting on the short list it reads back. That's **answer-engine optimization (AEO)**, and here's the useful part: it runs on the exact same assets you just built. The AI leans on your Google Business Profile, your service-and-town pages, and your reviews to decide whose name to give. A shared lead from Angi is gone the second you stop paying; earn your spot in the AI's answer and it keeps sending you jobs, same as the map and the organic results. It isn't one more thing to buy — it's the pipeline you already own, now working in one more place people search.
 
 ## Turn the traffic into booked jobs — even after hours
 
 Here's the leak most contractors never plug: a homeowner finds you at 8 p.m., you're on a job or asleep, the call goes to voicemail, and they call the next guy. The lead you earned for free just walked. An **AI Sales & Booking Agent** on your site answers the questions, qualifies the job, and books the estimate 24/7 — so the leads your Google presence brings in actually turn into appointments instead of missed calls.
 
-## This isn't theory
+## Running in Springfield today
 
 **SL Painting** came to us invisible online — no site, buying no leads because they had nothing to buy them with. Today they rank **#1 organically for "exterior painting" in Springfield**: a fast website, technical SEO, and a dialed-in Google Business Profile, all feeding each other. That's a lead engine they own, not a subscription they rent. [Read the SL Painting case study.](/work/sl-painting/)
 

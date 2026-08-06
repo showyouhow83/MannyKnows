@@ -39,16 +39,16 @@ Here's the part that surprises people: you don't assemble this yourself. You hir
 
 And because every specialist reads from one shared Brand Brain — your services, your prices, your voice — starting small costs you nothing later. Whatever gets staffed next inherits everything the team already learned.
 
-## Proof, not promises
+## Running in Springfield
 
-This isn't theoretical — it's already running in Springfield:
+Three Western Mass businesses, today:
 
 - A [Springfield painting contractor](/work/sl-painting/) whose site ranks #1 organically for exterior painting, with an agent qualifying leads around the clock.
 - A [local daycare](/work/jk-daycare/) whose AI answers parents in English and Spanish — on the site and on the phone.
 - A [home services company](/work/vl-home-services/) whose custom agent checks project statuses straight from their backend.
 
-## The honest answer to "which one first?"
+## So which one first?
 
-Whichever one sits on your bottleneck. If you can name it, the map above points at your first hire. If you can't, that's what the 15-minute diagnostic is for: two questions, fifteen minutes, and you leave knowing which department is bleeding and which single agent stops it — and if the honest answer is "none yet," we'll tell you that too.
+Whichever one sits on your bottleneck. If you can name it, the map above points at your first hire. If you can't, that's what the 15-minute diagnostic is for: two questions, fifteen minutes, and you leave knowing which department is bleeding and which single agent stops it — and if the answer is "none yet," we'll tell you that too.
 
 **[Meet the AI Team and book the diagnostic →](/ai-team/)** — built in Springfield, working for businesses across Western Massachusetts, in English and Spanish.

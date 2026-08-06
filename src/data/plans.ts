@@ -611,7 +611,7 @@ export const plans: Plan[] = [
       { q: 'Why does each network need its own plan?', a: 'Because each one is different — different audience, different media, different formats and sizes. A vertical Reel isn’t a Pin, and a LinkedIn post isn’t a TikTok. We trace an individual plan per network so the content fits where it lives, instead of being cross-posted everywhere and ignored.' },
       { q: 'Is ad spend included in the price?', a: 'No — ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The service covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals — some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
-      { q: 'My website is weak — should I still buy ads?', a: 'Honestly: no. Ads pointed at a weak site burn money. Start with a website tier (or pair them), then pour traffic on.' },
+      { q: 'My website is weak — should I still buy ads?', a: 'No. Ads pointed at a weak site burn money. Start with a website tier (or pair them), then pour traffic on.' },
     ],
   },
   {

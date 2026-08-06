@@ -45,7 +45,7 @@ Google holds "your money or your life" businesses — healthcare, legal, financi
 
 A growing share of "near me" searches now start inside **ChatGPT, Perplexity, Gemini, and Google's own AI Overviews**. Someone asks an assistant for "the best daycare in Chicopee" or "a personal injury lawyer in Springfield" and gets a short, cited shortlist — no ten blue links to scroll. This is **answer-engine optimization (AEO)**, and the good news is it rewards the same fundamentals as the Map Pack: a complete Google Business Profile, consistent name/address/phone, real recent reviews, and clear, well-structured pages — plus clean content and schema an AI can actually read and quote. Nail the six things above and you're not just ranking on Google; you're eligible to be the business an AI recommends. It isn't a separate game — it's the same foundation answering a new kind of search.
 
-## The honest part
+## What to expect
 
 Local SEO — and now AI search — isn't a switch you flip once. It's a profile kept active, reviews that keep coming, and a site kept fast and current. That's exactly why we run it as an ongoing service instead of a one-and-done project. Our **[Smart Website plans](/plans/)** build the fast site and the Google Business Profile and keep both tuned every month — the [top tier](/plans/get-growing/) even writes and tunes on its own. If you mainly need the SEO muscle on a site you already have, we do exactly that too — see **[how we work](/services/)**.
 

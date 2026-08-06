@@ -14,7 +14,7 @@ You can't scroll for ten seconds without someone telling you AI is about to chan
 
 You're not behind. You're just seeing the part the hype skips: **buying AI and running on AI are two very different things.**
 
-The money is real. The excitement is real. But real adoption is slow and uneven. Survey after survey lands on the same uncomfortable number — only a tiny slice of companies, low single digits, have genuinely scaled AI into how they work. Everyone else is still "experimenting." The problem was never the technology. It's that turning AI into real results is much harder than buying a tool.
+The money is real. The excitement is real. But real adoption is slow and uneven. Survey after survey lands on the same uncomfortable number — only a tiny slice of companies, low single digits, have scaled AI into how they work. Everyone else is still "experimenting." The problem was never the technology. It's that turning AI into real results is much harder than buying a tool.
 
 Here's why it keeps stalling — and why a small business can actually skip most of it.
 
@@ -36,7 +36,7 @@ Here's the quiet one. A lot of owners are being told to "adopt AI" when they nev
 
 ## The small-business shortcut
 
-Here's the genuinely good news: you don't have to solve any of that yourself.
+Here's the good news: you don't have to solve any of that yourself.
 
 You don't need an AI department, a data team, or a weekend learning prompts. You need the AI *built into* your business and trained on *your* business — doing real jobs, not waiting for instructions. That's the whole idea behind what we do:
 

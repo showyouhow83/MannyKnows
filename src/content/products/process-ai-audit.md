@@ -32,7 +32,7 @@ We sit with you and trace the day-to-day: where leads come in, how they're handl
 
 ## We find the highest-leverage fixes
 
-You get a short, prioritized plan — quick wins first, bigger builds flagged for later. Where AI genuinely helps, we'll say so; where it's just hype, we'll say that too. Wherever you've been making decisions without the data, we fill that gap.
+You get a short, prioritized plan — quick wins first, bigger builds flagged for later. Where AI helps, we'll say so; where it's hype, we'll say that too. Wherever you've been making decisions without the data, we fill that gap.
 
 ## Then we help you do it
 
@@ -45,7 +45,7 @@ For [VL Home Services](/work/vl-home-services/), we mapped their entire operatio
 ## How it works
 
 1. **A short kickoff call.** We learn how your business actually runs, agree on scope, and send you a fixed quote before anything starts.
-2. **We map and assess.** We trace your workflows end to end, flag where time leaks and data's missing, and pinpoint where automation and AI genuinely pay off.
+2. **We map and assess.** We trace your workflows end to end, flag where time leaks and data's missing, and pinpoint where automation and AI pay off.
 3. **You get the plan — and the fixes.** A prioritized, quick-wins-first action plan, and we stay on to build the highest-leverage pieces with you.
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.

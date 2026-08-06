@@ -36,7 +36,7 @@ The result: the customer gets an answer *right now* instead of a voicemail beep 
 
 In Western Mass, plenty of your customers are more comfortable in Spanish. The agent handles that natively — English, Spanish, or whatever your customers speak — so you're not losing the ones who'd rather not struggle through a second language to reach you.
 
-## Real businesses, real difference
+## Two businesses down the road
 
 **VL Home Services** isn't even fully ranking on Google yet and already sees the benefit — the AI agent answers customers, speaks every language, and is wired into their admin so they can ask it about their own projects. **JK Daycare** pairs their site's agent with a phone system that answers and routes every call, so a parent searching at 9 p.m. gets real answers instead of a dead end. Different businesses, same fix: nobody who reaches out gets dropped.
 

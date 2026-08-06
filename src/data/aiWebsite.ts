@@ -130,7 +130,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'Can Remi book appointments on this?',
-    a: `Not on this version — that's the honest line. This is the lightest Remi: it converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. The Remi that books jobs into your calendar comes with Get Booked ($245/mo); the one that sells comes with Get Growing. Upgrade anytime — Remi's training carries with you.`,
+    a: `Not on this version. This is the lightest Remi: it converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. The Remi that books jobs into your calendar comes with Get Booked ($245/mo); the one that sells comes with Get Growing. Upgrade anytime — Remi's training carries with you.`,
   },
   {
     q: `How is this different from the $95/mo Get Found plan?`,

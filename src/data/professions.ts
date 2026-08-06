@@ -149,7 +149,7 @@ export const professions: Profession[] = [
       },
       {
         q: 'Can you help us manage enrollment and parents?',
-        a: 'Yes — we build an admin to manage your children and communicate with their parents, and it’s designed to be genuinely easy to use. JK Daycare runs on exactly this and told us it’s “so easy to use — and fast.”',
+        a: 'Yes — we build an admin to manage your children and communicate with their parents, and it’s designed to be easy to use. JK Daycare runs on exactly this and told us it’s “so easy to use — and fast.”',
       },
       {
         q: 'Will the site work in Spanish?',

@@ -28,7 +28,7 @@ Multiply that by your whole catalog and you see why "set up a store" is the smal
 
 ## Shoppers are starting to ask an AI what to buy
 
-More people now begin shopping by asking instead of searching: "what's a good gift for a cherry lover?" typed into ChatGPT, Perplexity, or Google's AI Overview, which answers with actual product picks. For a store, that's a brand-new front door, and the honest news is it rewards the exact product work above. The clear titles, the copy that answers real questions, the sizes and materials and structured data behind each listing — that's what an AI reads to decide whether to recommend your product. Half-filled listings don't just lose human shoppers; they're invisible to the assistant doing the recommending. Get the product work right and you're eligible to be the thing the AI suggests.
+More people now begin shopping by asking instead of searching: "what's a good gift for a cherry lover?" typed into ChatGPT, Perplexity, or Google's AI Overview, which answers with actual product picks. For a store, that's a brand-new front door, and the good news is it rewards the exact product work above. The clear titles, the copy that answers real questions, the sizes and materials and structured data behind each listing — that's what an AI reads to decide whether to recommend your product. Half-filled listings don't just lose human shoppers; they're invisible to the assistant doing the recommending. Get the product work right and you're eligible to be the thing the AI suggests.
 
 ## Payments, shipping, and taxes — the unglamorous half
 
