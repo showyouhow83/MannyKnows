@@ -120,6 +120,20 @@ const pageJsonLd = {
       </nav>
       <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
+          {/* Mascot above the eyebrow, same as the /ecommerce, /plans and
+              /free-360-photo heroes. Eager (top of the page) with width and
+              height declared, so it reserves its box and never shifts the H1. */}
+          <div class="flex justify-center mb-6">
+            <img
+              src="/mascot/astro-satellite.webp"
+              alt=""
+              aria-hidden="true"
+              width="760"
+              height="575"
+              decoding="async"
+              class="astro-float w-full max-w-[210px] h-auto pointer-events-none"
+            />
+          </div>
           {/* Eyebrow adds what the H1 doesn't (city + the page's promise)
               instead of repeating the H1's own service list. */}
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Springfield, MA · Every service &amp; starting price, one page</span>
@@ -176,3 +190,14 @@ const pageJsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Matches the /plans and /ecommerce heroes: a slow drift, off for
+     reduced-motion users. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+</style>
