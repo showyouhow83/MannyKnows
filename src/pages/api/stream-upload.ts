@@ -83,7 +83,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           // it obvious at a glance next to other clients' videos.
           creator: 'mannyknows',
           meta: {
-            name: `mk — ${file_name || 'video'}`,
+            name: `mk: ${file_name || 'video'}`,
             site: 'mannyknows',
             portfolio_id: portfolio_id?.toString() || '',
             file_name: file_name || 'video',

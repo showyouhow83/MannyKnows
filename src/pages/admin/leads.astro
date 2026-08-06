@@ -110,7 +110,7 @@ const adminAddress = 'Springfield, MA';
     }
 
     /* Left column - Confirmed leads. Sticky sidebar so the page (and detail
-       card) scroll as one — no second scrollbar on the detail. */
+       card) scroll as one, no second scrollbar on the detail. */
     .leads-list {
       width: 300px;
       min-width: 280px;
@@ -132,7 +132,7 @@ const adminAddress = 'Springfield, MA';
     .lead-detail-panel {
       flex: 1;
       /* Flex child defaults to min-width:auto and won't shrink below its
-         content — wide inner content then pushes the panel past the viewport
+         content: wide inner content then pushes the panel past the viewport
          on mobile. Allow it to shrink to the available width. */
       min-width: 0;
       max-width: 100%;
@@ -918,7 +918,7 @@ const adminAddress = 'Springfield, MA';
       opacity: 0.9;
     }
 
-    /* Touch devices have no hover — always show the promote button (it was
+    /* Touch devices have no hover, always show the promote button (it was
        invisible/unreachable on tablet + phone). */
     @media (hover: none) {
       .btn-card-promote { opacity: 1; }
@@ -1074,7 +1074,7 @@ const adminAddress = 'Springfield, MA';
         height: auto;
         padding: 12px;
         gap: 20px;
-        /* Stretch children to full width — base align-items:flex-start would
+        /* Stretch children to full width: base align-items:flex-start would
            otherwise size the detail card to its content instead of the screen. */
         align-items: stretch;
       }

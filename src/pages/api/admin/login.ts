@@ -30,7 +30,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       } catch {}
       return new Response(JSON.stringify({
         success: false,
-        error: `Too many login attempts. Try again in about ${mins} minute${mins === 1 ? '' : 's'} — you get 5 tries per window.`
+        error: `Too many login attempts. Try again in about ${mins} minute${mins === 1 ? '' : 's'}. You get 5 tries per window.`
       }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' }

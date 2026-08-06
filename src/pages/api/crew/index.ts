@@ -252,7 +252,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         // Feature-flag guard: Twilio env vars absent → skip the send, report
         // it in the response instead of failing crew creation.
         smsError = 'SMS not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)';
-        console.log('[Crew API] SMS invite skipped — Twilio not configured');
+        console.log('[Crew API] SMS invite skipped: Twilio not configured');
       }
     }
 
@@ -407,7 +407,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
         }
       } else if (!accountSid || !authToken || !senderNumber) {
         // Feature-flag guard: Twilio env vars absent → skip, don't fail the update.
-        console.log('[Crew API] Resend SMS skipped — Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
+        console.log('[Crew API] Resend SMS skipped: Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
       }
     }
 

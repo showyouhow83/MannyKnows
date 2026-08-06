@@ -203,14 +203,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
             : null;
           const emailBodyHtml = finalize
             ? `<h1 style="font-size:22px;color:#1e293b;margin:0 0 12px;">Your colors are set, ${escapeHtml(firstName)}!</h1>
-               <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 8px;">Your selections for <strong>${escapeHtml(proj.project_number)}</strong> are now permanently part of your contract. Your original signature covers this update — no re-signing needed.</p>
+               <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 8px;">Your selections for <strong>${escapeHtml(proj.project_number)}</strong> are now permanently part of your contract. Your original signature covers this update, no re-signing needed.</p>
                ${tableHtml}
                <p style="font-size:14px;color:#475569;">Need a change? Contact us and we'll work it out.</p>
                <div style="text-align:center;margin:24px 0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                  ${contractLink ? emailButton(contractLink, 'View updated contract', 'blue') : ''}
                  ${emailButton(link, 'View my project', 'blue')}
                </div>`
-            : `<h1 style="font-size:22px;color:#1e293b;margin:0 0 12px;">Thanks, ${escapeHtml(firstName)} — got your colors!</h1>
+            : `<h1 style="font-size:22px;color:#1e293b;margin:0 0 12px;">Thanks, ${escapeHtml(firstName)}, got your colors!</h1>
                <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 8px;">Here's what we have for <strong>${escapeHtml(proj.project_number)}</strong>.</p>
                ${tableHtml}
                <p style="font-size:14px;color:#475569;">You can update these any time before finalizing.</p>
@@ -219,8 +219,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
             from: 'MannyKnows <projects@send.mannyknows.com>',
             to: proj.customer_email,
             subject: finalize
-              ? `Colors finalized — ${proj.project_number}`
-              : `Color selections saved — ${proj.project_number}`,
+              ? `Colors finalized: ${proj.project_number}`
+              : `Color selections saved, ${proj.project_number}`,
             html: `<!DOCTYPE html><html><body style="margin:0;background:#f1f5f9;"><div style="max-width:600px;margin:0 auto;background:#fff;">
               ${emailHeader('Color selections')}
               <div style="padding:32px 30px;">
@@ -235,9 +235,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
           await resend.emails.send({
             from: 'MannyKnows <projects@send.mannyknows.com>',
             to: adminTo,
-            subject: `Colors submitted — ${proj.project_number} (${proj.customer_name || ''})`,
+            subject: `Colors submitted: ${proj.project_number} (${proj.customer_name || ''})`,
             html: `<div style="font-family:sans-serif;"><h2>Customer submitted colors</h2>
-              <p><strong>${escapeHtml(proj.project_number)}</strong> — ${escapeHtml(proj.customer_name || '')}</p>
+              <p><strong>${escapeHtml(proj.project_number)}</strong>: ${escapeHtml(proj.customer_name || '')}</p>
               ${tableHtml}</div>`,
           });
         }

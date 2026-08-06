@@ -249,7 +249,7 @@ function formatCurrency(amount: number | null): string {
       line-height: 1.5;
     }
 
-    /* Pricing input — match admin glassmorphic style */
+    /* Pricing input: match admin glassmorphic style */
     .pricing-input {
       padding: 8px 12px;
       background: rgba(255,255,255,0.05);
@@ -339,7 +339,7 @@ function formatCurrency(amount: number | null): string {
       gap: 16px;
     }
 
-    /* List collapse toggle — available on desktop + tablet. Selecting a card
+    /* List collapse toggle: available on desktop + tablet. Selecting a card
        auto-collapses the list so the detail panel gets full width; the toggle
        brings the list back. */
     .list-toggle-btn {
@@ -353,7 +353,7 @@ function formatCurrency(amount: number | null): string {
     .admin-main.list-collapsed > .projects-list { display: none; }
 
     /* Left column - Projects list. Sticky sidebar so it stays in view while the
-       page (and the detail card) scroll as one — no second scrollbar on the
+       page (and the detail card) scroll as one, no second scrollbar on the
        detail. The list only scrolls within itself when it's taller than the
        viewport. */
     .projects-list {
@@ -715,7 +715,7 @@ function formatCurrency(amount: number | null): string {
       backdrop-filter: blur(10px);
     }
 
-    /* Customer & Project merged card — 3-column grid on wide screens so
+    /* Customer & Project merged card: 3-column grid on wide screens so
        contact / scope / schedule sit side-by-side. Stacks on narrower
        widths so phones get the natural top-to-bottom reading order. */
     .cust-proj-grid {
@@ -871,10 +871,10 @@ function formatCurrency(amount: number | null): string {
       margin-top: 12px;
     }
 
-    /* Chunked reference media — tiles past the first batch until "Load more" */
+    /* Chunked reference media: tiles past the first batch until "Load more" */
     .image-thumb.ref-hidden { display: none !important; }
 
-    /* Contract action buttons — clean flex row on desktop; uniform 2-col grid
+    /* Contract action buttons: clean flex row on desktop; uniform 2-col grid
        on mobile (was a messy flex-wrap + spacer producing uneven widths). */
     .contract-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 16px; }
     .contract-actions-spacer { flex: 1 1 auto; }
@@ -886,7 +886,7 @@ function formatCurrency(amount: number | null): string {
       .contract-actions > .cmenu-wrap .cmenu-kebab { width: 100%; }
     }
 
-    /* Payment schedule — stack into labeled rows on mobile (was a cramped
+    /* Payment schedule: stack into labeled rows on mobile (was a cramped
        4-column table). !important overrides the inline cell styles. */
     @media (max-width: 600px) {
       .pay-table thead { display: none; }
@@ -898,7 +898,7 @@ function formatCurrency(amount: number | null): string {
       .pay-table td[colspan] { justify-content: flex-start; text-align: left !important; }
     }
 
-    /* Mark-signed-offline modal fields — explicit dark styling so values are
+    /* Mark-signed-offline modal fields: explicit dark styling so values are
        readable (the generic --color-surface/--color-text resolved white-on-white). */
     .so-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
     .so-label { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px; }
@@ -1086,7 +1086,7 @@ function formatCurrency(amount: number | null): string {
       font-size: 13px;
     }
 
-    /* Client / crew token link container — uses the same translucent
+    /* Client / crew token link container: uses the same translucent
        glass surface as form fields so it sits flush with surrounding cards
        in both light and dark themes. */
     .client-link {
@@ -1133,7 +1133,7 @@ function formatCurrency(amount: number | null): string {
       box-shadow: 0 2px 8px rgba(0, 113, 227,0.25);
     }
     .new-project-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(0, 113, 227,0.35); }
-    /* New Project modal form — matched to the New Lead modal styling. */
+    /* New Project modal form: matched to the New Lead modal styling. */
     /* `.modal-content.np-modal` (not just `.np-modal`) so this beats the later
        `.modal-content { max-width: 420px }` rule that was forcing it narrow. */
     .modal-content.np-modal { text-align: left; max-width: 700px; width: calc(100vw - 32px); max-height: 90vh; overflow-y: auto; background: linear-gradient(135deg, rgba(21, 22, 25, 0.98), rgba(10, 11, 13, 0.99)); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
@@ -1785,7 +1785,7 @@ function formatCurrency(amount: number | null): string {
 
     @media (max-width: 768px) {
       /* Phone: stack the list above the detail (full width). NOTE: align-items
-         must be STRETCH here — the desktop base sets flex-start (for the sticky
+         must be STRETCH here: the desktop base sets flex-start (for the sticky
          list), but once the container is column that makes children shrink to
          content width and overflow the viewport. */
       .admin-main { flex-direction: column; height: auto; align-items: stretch; }
@@ -1797,7 +1797,7 @@ function formatCurrency(amount: number | null): string {
       .project-content { width: 100%; min-width: 0; max-width: 100%; }
 
       /* iOS Safari sizes <input type="date"> at its intrinsic content
-         width — including the picker icon area — and ignores parent
+         width, including the picker icon area, and ignores parent
          width unless we explicitly reset its appearance + min-width.
          Without this, Schedule's Start Date / End Date inputs overflow
          narrow cards on phones. */
@@ -2083,7 +2083,7 @@ function formatCurrency(amount: number | null): string {
       /* Tabs scroll horizontally instead of overflowing the panel on mobile. */
       overflow-x: auto;
       overflow-y: hidden;
-      /* Touch swipes pan ONLY horizontally — no vertical drag of the nav. */
+      /* Touch swipes pan ONLY horizontally, no vertical drag of the nav. */
       touch-action: pan-x;
       overscroll-behavior-x: contain;
       -webkit-overflow-scrolling: touch;
@@ -2582,7 +2582,7 @@ function formatCurrency(amount: number | null): string {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
-      <p class="modal-text" style="text-align:left; margin:0 0 14px;">Create an already-won project directly — internal or for a partner. No quote needed.</p>
+      <p class="modal-text" style="text-align:left; margin:0 0 14px;">Create an already-won project directly, internal or for a partner. No quote needed.</p>
       <form id="newProjectForm" onsubmit="return false;">
         <div class="np-field">
           <label>Representing</label>
@@ -3293,7 +3293,7 @@ function formatCurrency(amount: number | null): string {
                 : '';
               // Star = crew-only (shown to crew, hidden from client). Toggleable.
               const starBtn = updateId
-                ? '<button class="image-star-btn' + (starred ? ' active' : '') + '" ontouchstart="event.stopPropagation();" onclick="event.stopPropagation(); toggleProjectStar(' + project.id + ', ' + updateId + ', this)" title="' + (starred ? 'Crew-only (starred) — click to make client-visible' : 'Click to mark crew-only (hidden from client)') + '">' + (starred ? '★' : '☆') + '</button>'
+                ? '<button class="image-star-btn' + (starred ? ' active' : '') + '" ontouchstart="event.stopPropagation();" onclick="event.stopPropagation(); toggleProjectStar(' + project.id + ', ' + updateId + ', this)" title="' + (starred ? 'Crew-only (starred): click to make client-visible' : 'Click to mark crew-only (hidden from client)') + '">' + (starred ? '★' : '☆') + '</button>'
                 : '';
               // Multi-select checkbox (top-left) for bulk delete / move-to-pool.
               const selectBox = updateId
@@ -3435,7 +3435,7 @@ function formatCurrency(amount: number | null): string {
                  - Services + scope description
                  - Schedule (start/end dates)
                Address links to Apple Maps via the universal
-               https://maps.apple.com/?q=... URL — opens the Maps app on
+               https://maps.apple.com/?q=... URL: opens the Maps app on
                iOS/macOS, falls back to the web map elsewhere. -->
           ${(() => {
             const fullAddress = [project.customer_address, project.customer_city, [project.customer_state, project.customer_zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
@@ -3511,7 +3511,7 @@ function formatCurrency(amount: number | null): string {
                     class="form-textarea"
                     rows="4"
                     readonly
-                    placeholder="What does this project include? (crew only — not shown to the customer)"
+                    placeholder="What does this project include? (crew only, not shown to the customer)"
                     oninput="autoResize(this)"
                     style="resize: none; cursor: default; width: 100%;"
                   >${escAttr(initialScope)}</textarea>
@@ -3519,8 +3519,8 @@ function formatCurrency(amount: number | null): string {
 
                 <!-- Quote documents: every PDF the admin saved on the
                      originating quote's PDFs tab, plus the customer-signed
-                     "Estimate — Signed" PDF generated on quote acceptance.
-                     When both an "Estimate" and an "Estimate — Signed"
+                     "Estimate: Signed" PDF generated on quote acceptance.
+                     When both an "Estimate" and an "Estimate: Signed"
                      exist, we surface the signed copy first (with a
                      "Signed" pill) so the admin sees the canonical record
                      of what the customer actually accepted. -->
@@ -3534,7 +3534,7 @@ function formatCurrency(amount: number | null): string {
                   const attachments = Array.isArray(project.quote_attachments) ? project.quote_attachments : [];
                   const isSigned = (lbl) => {
                     const s = String(lbl || '').toLowerCase().replace(/\s+/g, ' ').trim();
-                    return s === 'estimate — signed' || s === 'estimate - signed' || s.endsWith('— signed') || s.endsWith('- signed') || s.endsWith('signed');
+                    return s === 'estimate: signed' || s === 'estimate - signed' || s.endsWith(', signed') || s.endsWith('- signed') || s.endsWith('signed');
                   };
                   const signed = attachments.filter(a => isSigned(a.label));
                   const rest = attachments.filter(a => !isSigned(a.label));
@@ -3611,14 +3611,14 @@ function formatCurrency(amount: number | null): string {
 
           <!-- Internal Notes (whole-project, admin-only). Quote notes flow in
                here on promotion; editable so admins can keep each other in the
-               loop. Never shown to the customer or crew — distinct from the
+               loop. Never shown to the customer or crew: distinct from the
                Crew tab's Crew Notes. -->
           <div class="detail-section">
             <div class="detail-section-title">Internal Notes</div>
             <p style="font-size: 11px; color: var(--color-text-secondary); margin: -4px 0 8px;">
-              Private notes for the whole project, shared across the admin team — <strong>not visible to the customer or crew</strong>. Carried over from the quote on promotion.
+              Private notes for the whole project, shared across the admin team: <strong>not visible to the customer or crew</strong>. Carried over from the quote on promotion.
             </p>
-            <textarea id="internalNotes" class="form-textarea" rows="4" placeholder="e.g., Customer is price-sensitive — don't mention the supplier discount. Gate code is 4821. Follow up about the backsplash tile choice next week.">${escAttr(internalNotesText)}</textarea>
+            <textarea id="internalNotes" class="form-textarea" rows="4" placeholder="e.g., Customer is price-sensitive: don't mention the supplier discount. Gate code is 4821. Follow up about the backsplash tile choice next week.">${escAttr(internalNotesText)}</textarea>
             <div style="display:flex; justify-content:flex-end; margin-top:8px;">
               <button type="button" class="btn-sm btn-primary" onclick="saveInternalNotes(${project.id}, this)">Save Notes</button>
             </div>
@@ -3689,7 +3689,7 @@ function formatCurrency(amount: number | null): string {
                   </select>
                 </div>
                 <p style="font-size: 11px; color: var(--color-text-secondary); margin: -4px 0 8px;">
-                  Need to add a new crew lead? Go to <a href="/admin/crew" style="color: var(--color-primary); text-decoration: none;">Crew</a> — new leads are created there and become available here.
+                  Need to add a new crew lead? Go to <a href="/admin/crew" style="color: var(--color-primary); text-decoration: none;">Crew</a>, new leads are created there and become available here.
                 </p>
                 <div class="form-group">
                   <label>Crew Notes</label>
@@ -3727,7 +3727,7 @@ function formatCurrency(amount: number | null): string {
                 </button>
               </div>
               <p style="font-size:12px; color:var(--color-text-secondary); margin:-2px 0 12px;">
-                PDFs attached to this project — the customer-signed estimate and any quote PDFs carried over on promotion, plus anything you add here (permits, supplier estimates, change orders, etc.).
+                PDFs attached to this project: the customer-signed estimate and any quote PDFs carried over on promotion, plus anything you add here (permits, supplier estimates, change orders, etc.).
               </p>
               <input type="file" id="projDocInput-${project.id}" accept="application/pdf" style="display:none;" onchange="uploadProjectDocument(${project.id}, this)" />
               <div id="projDocsList-${project.id}" data-project-id="${project.id}" data-project-status={project.status} style="display:flex; flex-direction:column; gap:8px;">
@@ -3929,7 +3929,7 @@ function formatCurrency(amount: number | null): string {
         });
         var data = await res.json();
         if (!data.success) { msg.className = 'np-status err'; msg.textContent = data.error || 'Failed to create.'; btn.disabled = false; return; }
-        msg.className = 'np-status ok'; msg.textContent = 'Created ' + (data.project_number || '') + ' — reloading…';
+        msg.className = 'np-status ok'; msg.textContent = 'Created ' + (data.project_number || '') + ': reloading…';
         setTimeout(function(){ window.location.href = '/admin/projects/?open=' + data.project_id; }, 700);
       } catch (e) {
         msg.className = 'np-status err'; msg.textContent = 'Network error. Try again.'; btn.disabled = false;
@@ -3942,7 +3942,7 @@ function formatCurrency(amount: number | null): string {
     // {date, note} to match quotes.notes — one entry replaced per save.
     async function saveInternalNotes(id, btn) {
       const el = document.getElementById('internalNotes');
-      if (!el) { showToast('Notes field not found — refresh the page', 'error'); return; }
+      if (!el) { showToast('Notes field not found: refresh the page', 'error'); return; }
       const text = (el.value || '').trim();
       const payload = text ? JSON.stringify([{ date: new Date().toISOString(), note: text }]) : null;
       if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
@@ -4372,7 +4372,7 @@ function formatCurrency(amount: number | null): string {
         showToast(successCount + ' image' + (successCount > 1 ? 's' : '') + ' uploaded!' + toastSuffix + reasonText, (errorCount > 0 || skippedCount > 0) ? 'warning' : 'success');
         setTimeout(() => window.location.reload(), 2000);
       } else if (skippedCount > 0 && errorCount === 0) {
-        showToast('All ' + skippedCount + ' file(s) over 25MB — nothing uploaded.', 'error');
+        showToast('All ' + skippedCount + ' file(s) over 25MB. Nothing uploaded.', 'error');
         setTimeout(() => { if (progressBar) progressBar.style.display = 'none'; }, 3000);
       } else {
         showToast('Upload failed' + reasonText, 'error');
@@ -4649,7 +4649,7 @@ function formatCurrency(amount: number | null): string {
       // Optimistic update
       btn.classList.toggle('active', makeStarred);
       btn.textContent = makeStarred ? '★' : '☆';
-      btn.title = makeStarred ? 'Crew-only (starred) — click to make client-visible' : 'Click to mark crew-only (hidden from client)';
+      btn.title = makeStarred ? 'Crew-only (starred): click to make client-visible' : 'Click to mark crew-only (hidden from client)';
       if (thumb) thumb.classList.toggle('is-starred', makeStarred);
       try {
         var res = await fetch('/api/projects/' + projectId + '/updates/', {
@@ -4662,7 +4662,7 @@ function formatCurrency(amount: number | null): string {
           // Revert on failure
           btn.classList.toggle('active', !makeStarred);
           btn.textContent = !makeStarred ? '★' : '☆';
-          btn.title = !makeStarred ? 'Crew-only (starred) — click to make client-visible' : 'Click to mark crew-only (hidden from client)';
+          btn.title = !makeStarred ? 'Crew-only (starred): click to make client-visible' : 'Click to mark crew-only (hidden from client)';
           if (thumb) thumb.classList.toggle('is-starred', !makeStarred);
           showToast(data.error || 'Failed to update', 'error');
         }
@@ -4670,7 +4670,7 @@ function formatCurrency(amount: number | null): string {
         // Revert on network error
         btn.classList.toggle('active', !makeStarred);
         btn.textContent = !makeStarred ? '★' : '☆';
-        btn.title = !makeStarred ? 'Crew-only (starred) — click to make client-visible' : 'Click to mark crew-only (hidden from client)';
+        btn.title = !makeStarred ? 'Crew-only (starred): click to make client-visible' : 'Click to mark crew-only (hidden from client)';
         if (thumb) thumb.classList.toggle('is-starred', !makeStarred);
         showToast('Failed to update', 'error');
       }
@@ -5189,7 +5189,7 @@ function formatCurrency(amount: number | null): string {
 
     function isSignedDocLabel(lbl) {
       var s = String(lbl || '').toLowerCase().replace(/\s+/g, ' ').trim();
-      return s.endsWith('— signed') || s.endsWith('- signed') || s.endsWith('signed');
+      return s.endsWith(': signed') || s.endsWith('- signed') || s.endsWith('signed');
     }
 
     // Read-only card for the structured contract (managed on the Contract
@@ -5218,7 +5218,7 @@ function formatCurrency(amount: number | null): string {
       if (completed && contract && !contract.signed) contract = null;
       var contractHtml = contractDocCard(contract);
       if (!docs.length && !contractHtml) {
-        list.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); padding:8px 0;">No documents yet. Add a PDF — or promote a quote / sign a contract.</div>';
+        list.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); padding:8px 0;">No documents yet. Add a PDF, or promote a quote / sign a contract.</div>';
         return;
       }
       // Signed estimate(s) first.
@@ -5278,12 +5278,12 @@ function formatCurrency(amount: number | null): string {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ label: label }),
         });
-      } catch (e) { /* silent — label is non-critical */ }
+      } catch (e) { /* silent: label is non-critical */ }
     }
     window.relabelProjectDocument = relabelProjectDocument;
 
     function deleteProjectDocument(docId, projectId) {
-      showConfirmModal('Remove document?', 'This removes the PDF from this project. Promoted quote PDFs are only unlinked here — the original quote keeps its copy.', 'Remove', 'danger', async function() {
+      showConfirmModal('Remove document?', 'This removes the PDF from this project. Promoted quote PDFs are only unlinked here: the original quote keeps its copy.', 'Remove', 'danger', async function() {
         try {
           var res = await fetch('/api/projects/documents/' + docId + '/', { method: 'DELETE', credentials: 'include' });
           var data = await res.json();
@@ -5543,7 +5543,7 @@ function formatCurrency(amount: number | null): string {
 \
           ' + (sched.length ? '<div style="margin: 14px 0; padding: 10px 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md);"><table class="pay-table" style="width: 100%; border-collapse: collapse;"><thead><tr><th style="text-align: left; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary);">Payment</th><th style="text-align: left; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary);">Due</th><th style="text-align: right; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary);">Amount</th><th style="text-align: right; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary);">Receipt</th></tr></thead><tbody>' + previewSched + overflow + '</tbody></table></div>' : '') + '\
 \
-          ' + (customerSignedAt ? '<div style="margin: 12px 0; padding: 10px 12px; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: var(--radius-md); font-size: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;"><span>Signed by <strong>' + escapeAttr(customerSignedAt.signer_name) + '</strong> on ' + fmtDate(customerSignedAt.signed_at) + '</span>' + (offlineScanLink || (contract.contract_token ? '<a href="' + location.origin + '/project/contract-preview/' + contract.contract_token + '/" target="_blank" rel="noopener" style="color: #86efac; font-size: 12px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;" title="Open the full signed contract — view, print, or save as PDF.">View signed contract <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>' : '<button class="btn-sm" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fcd34d; padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 4px;" onclick="backfillSignedContractPdf(' + projectId + ', this)" title="Regenerate the signed contract PDF (signature already on file).">Regenerate signed PDF</button>')) + '</div>' : '') + '\
+          ' + (customerSignedAt ? '<div style="margin: 12px 0; padding: 10px 12px; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: var(--radius-md); font-size: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;"><span>Signed by <strong>' + escapeAttr(customerSignedAt.signer_name) + '</strong> on ' + fmtDate(customerSignedAt.signed_at) + '</span>' + (offlineScanLink || (contract.contract_token ? '<a href="' + location.origin + '/project/contract-preview/' + contract.contract_token + '/" target="_blank" rel="noopener" style="color: #86efac; font-size: 12px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;" title="Open the full signed contract: view, print, or save as PDF.">View signed contract <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>' : '<button class="btn-sm" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fcd34d; padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 4px;" onclick="backfillSignedContractPdf(' + projectId + ', this)" title="Regenerate the signed contract PDF (signature already on file).">Regenerate signed PDF</button>')) + '</div>' : '') + '\
 \
           ' + (customerLink && showSigningActions ? '<div style="margin: 12px 0; padding: 8px 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md); font-size: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;"><span style="color: var(--color-text-secondary);">Customer signing link</span><a href="' + customerLink + '" target="_blank" rel="noopener" style="color: var(--color-primary); font-size: 11px; word-break: break-all;">' + customerLink + '</a></div>' : '') + '\
 \
@@ -5616,7 +5616,7 @@ function formatCurrency(amount: number | null): string {
           var warn2 = document.getElementById('signedPdfWarn-' + projectId);
           if (warn2) {
             var lead = warn2.querySelector('div');
-            if (lead) lead.innerHTML = '<strong>Signed quote PDF missing.</strong> Auto-generate failed — use the button below.';
+            if (lead) lead.innerHTML = '<strong>Signed quote PDF missing.</strong> Auto-generate failed: use the button below.';
             var btn = warn2.querySelector('button');
             if (btn) btn.style.display = '';
           }
@@ -5745,7 +5745,7 @@ function formatCurrency(amount: number | null): string {
             });
             const data = await res.json();
             if (!data.success) { showToast(data.error || 'Failed to delete', 'error'); return; }
-            showToast('Contract deleted — pick a new template to start over.', 'success');
+            showToast('Contract deleted: pick a new template to start over.', 'success');
             loadContractTab(projectId);
           } catch {
             showToast('Failed to delete contract', 'error');
@@ -5804,7 +5804,7 @@ function formatCurrency(amount: number | null): string {
       const cardEmail = card?.dataset?.customerEmail;
       if (card && cardEmail !== undefined && !cardEmail.trim()) {
         showToast(
-          "This project has no customer email on file — set it on the Details tab before sending, otherwise the email can't be delivered.",
+          "This project has no customer email on file: set it on the Details tab before sending, otherwise the email can't be delivered.",
           'error'
         );
         return;
@@ -5834,7 +5834,7 @@ function formatCurrency(amount: number | null): string {
             if (data.emailSent === false) {
               showToast('Contract marked Sent, but email failed: ' + (data.emailError || 'unknown') + '. Share the signing link manually.', 'error');
             } else {
-              showToast('Contract sent — email is on its way to the customer.', 'success');
+              showToast('Contract sent: email is on its way to the customer.', 'success');
             }
             loadContractTab(projectId);
           } catch {
@@ -6131,7 +6131,7 @@ function formatCurrency(amount: number | null): string {
           if (undoBtn) undoBtn.style.display = '';
           saveMsgDraft(projectId);
         }
-        showToast((pBody || pSubj) ? 'Polished — use Undo polish to revert' : 'Failed to polish', (pBody || pSubj) ? 'success' : 'error');
+        showToast((pBody || pSubj) ? 'Polished: use Undo polish to revert' : 'Failed to polish', (pBody || pSubj) ? 'success' : 'error');
       } catch (err) {
         showToast('Failed to polish message', 'error');
       } finally {

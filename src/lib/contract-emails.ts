@@ -46,7 +46,7 @@ function fmtMoney(n: number | string | null | undefined): string {
   return v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
 function fmtDate(s: string | null | undefined): string {
-  if (!s) return ': ';
+  if (!s) return '—';
   try {
     // Tolerate SQLite CURRENT_TIMESTAMP ('YYYY-MM-DD HH:MM:SS') and plain
     // 'YYYY-MM-DD'. Splitting on space/T isolates the date portion.
@@ -259,7 +259,7 @@ ${emailOpen()}
     <div style="background: #f8fafc; border-radius: 10px; padding: 18px 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
         <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Customer</td><td style="padding: 6px 0; color: #1e293b; font-size: 13px; font-weight: 600; text-align: right;">${ctx.customer_name}</td></tr>
-        <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Signed name</td><td style="padding: 6px 0; color: #1e293b; font-size: 13px; font-weight: 600; text-align: right;">${ctx.signer_name || ', '}</td></tr>
+        <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Signed name</td><td style="padding: 6px 0; color: #1e293b; font-size: 13px; font-weight: 600; text-align: right;">${ctx.signer_name || '—'}</td></tr>
         <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Total</td><td style="padding: 6px 0; color: #1e293b; font-size: 13px; font-weight: 700; text-align: right;">${fmtMoney(ctx.total)}</td></tr>
         <tr><td style="padding: 6px 0; color: #64748b; font-size: 13px;">Start date</td><td style="padding: 6px 0; color: #1e293b; font-size: 13px; font-weight: 600; text-align: right;">${fmtDate(ctx.start_date)}</td></tr>
       </table>

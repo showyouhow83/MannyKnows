@@ -164,7 +164,7 @@ async function processQuoteFollowUps(db: any, resendApiKey: string) {
     }
   }
 
-  console.log(`[FollowUps] Done — expired: ${expired}, followed-up: ${followedUp}, skipped: ${skipped}, errors: ${errors}`);
+  console.log(`[FollowUps] Done: expired: ${expired}, followed-up: ${followedUp}, skipped: ${skipped}, errors: ${errors}`);
   return { total: quotes.length, expired, followedUp, skipped, errors };
 }
 
@@ -197,7 +197,7 @@ async function sendLeadReminders(db: any, resendApiKey: string, notificationEmai
 <p>This is a friendly reminder that your appointment with MannyKnows is tomorrow, ${lead.preferred_date} at ${lead.preferred_time || 'your scheduled time'}.</p>
 <p>If you need to reschedule, please call us at <a href="tel:4133618451">(413) 361-8451</a>.</p>
 <p>We look forward to seeing you!</p>
-<p>— The MannyKnows Team</p>`,
+<p>: The MannyKnows Team</p>`,
       });
 
       await db.prepare('UPDATE leads SET reminder_sent = 1 WHERE id = ?').bind(lead.id).run();
@@ -208,6 +208,6 @@ async function sendLeadReminders(db: any, resendApiKey: string, notificationEmai
     }
   }
 
-  console.log(`[Reminders] Done — sent: ${sent}, errors: ${errors}`);
+  console.log(`[Reminders] Done: sent: ${sent}, errors: ${errors}`);
   return { total: leads.length, sent, errors };
 }

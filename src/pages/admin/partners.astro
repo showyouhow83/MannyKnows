@@ -56,7 +56,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
     .pt-mini { font-size: 12px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04); color: var(--color-text-primary); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .pt-mini.danger { border-color: rgba(239,68,68,0.4); color: #fca5a5; }
     .pt-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); margin: 22px 0 12px; }
-    /* Options (⋯) menu — keeps destructive actions out of one-tap reach. */
+    /* Options (⋯) menu: keeps destructive actions out of one-tap reach. */
     .pt-opt-wrap { position: relative; display: inline-block; }
     .pt-kebab { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04); color: var(--color-text-primary); cursor: pointer; font-size: 18px; line-height: 1; }
     .pt-menu { position: absolute; right: 0; top: calc(100% + 4px); min-width: 160px; background: var(--color-background); border: 1px solid var(--glass-border); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); padding: 6px; z-index: 20; display: none; }
@@ -95,7 +95,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
     <div class="page-header">
       <div>
         <h1 class="page-title">Partners</h1>
-        <p class="page-subtitle">Set up each partner's brand — logo, name, phone, website, address. When you assign a Quote or Project to a partner, every customer-facing message (emails, portal, contract &amp; PDFs) uses their branding instead of MannyKnows's.</p>
+        <p class="page-subtitle">Set up each partner's brand: logo, name, phone, website, address. When you assign a Quote or Project to a partner, every customer-facing message (emails, portal, contract &amp; PDFs) uses their branding instead of MannyKnows's.</p>
       </div>
     </div>
 
@@ -159,7 +159,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
       if(block) block.style.display='block';
       var nameEl=document.getElementById('p_name');
       if(nameEl){nameEl.focus();nameEl.select();}
-      showToast('Partner added — rename it on the right');
+      showToast('Partner added: rename it on the right');
     }
 
     async function selectPartner(id){
@@ -188,7 +188,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
         +'</div>'
         // Branding-purpose callout — this is what the page is FOR.
         +'<div style="margin-top:12px; padding:11px 13px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.28); border-radius:10px; font-size:12.5px; color:var(--color-text-secondary); line-height:1.5;">'
-        +'<strong style="color:var(--color-text);">This is the partner\'s brand.</strong> The logo, name, phone, website &amp; address below are used in <strong>every customer-facing message</strong> — emails, the project portal, contract &amp; PDFs — for any Quote or Project you assign to '+esc(p.name)+'.'
+        +'<strong style="color:var(--color-text);">This is the partner\'s brand.</strong> The logo, name, phone, website &amp; address below are used in <strong>every customer-facing message</strong> (emails, the project portal, contract &amp; PDFs) for any Quote or Project you assign to '+esc(p.name)+'.'
         +'</div>'
         // Editable fields — shown by default so partner setup is discoverable.
         +'<div id="ptEditBlock" style="display:block; margin-top:14px; padding-top:14px; border-top:1px solid var(--glass-border);">'
@@ -200,7 +200,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
         +ptInput('Email','p_email',p.email)
         +ptInput('Website','p_website',p.website)
         +'</div>'
-        +'<div class="pt-section-title" style="margin-top:4px;">White-label branding <span style="font-weight:400; font-size:11px; color:var(--color-text-secondary);">— used on customer emails, portal & PDFs for this partner\'s projects</span></div>'
+        +'<div class="pt-section-title" style="margin-top:4px;">White-label branding <span style="font-weight:400; font-size:11px; color:var(--color-text-secondary);">, used on customer emails, portal & PDFs for this partner\'s projects</span></div>'
         +'<div class="pt-field"><label>Logo <span style="font-weight:400; font-size:11px; color:var(--color-text-secondary);">(white background works best)</span></label>'
         +'<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">'
         +'<input id="p_logo_file" type="file" accept="image/*,.svg,image/svg+xml" style="display:none;" onchange="uploadPartnerLogo('+p.id+', this)">'
@@ -252,7 +252,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
         if(!data.success){ if(st){st.textContent=data.error||'Upload failed'; st.style.color='#dc2626';} return; }
         var inp=document.getElementById('p_logo'); if(inp) inp.value=data.url;
         renderPartnerLogoPreview();
-        if(st){ st.textContent='Uploaded — click Save partner'; st.style.color='#16a34a'; }
+        if(st){ st.textContent='Uploaded: click Save partner'; st.style.color='#16a34a'; }
       }catch(e){ if(st){st.textContent='Upload failed'; st.style.color='#dc2626';} }
     }
     window.uploadPartnerLogo=uploadPartnerLogo;
@@ -323,7 +323,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
         +'<div class="pt-field"><label>End date</label><input id="j_end_'+id+'" type="date" value="'+esc((j.scheduled_end||'').split(/[\\sT]/)[0])+'"></div>'
         +'</div>'
         +'<div class="pt-field"><label>Notes</label><textarea id="j_notes_'+id+'" rows="2">'+esc(j.notes||'')+'</textarea></div>'
-        +'<div class="pt-field"><label>Partner PDF '+(j.pdf_url?'(uploaded: '+esc(j.pdf_name||'PDF')+')':'')+' — admin only, not shown to crew</label><input id="j_pdf_'+id+'" type="file" accept="application/pdf"></div>'
+        +'<div class="pt-field"><label>Partner PDF '+(j.pdf_url?'(uploaded: '+esc(j.pdf_name||'PDF')+')':'')+', admin only, not shown to crew</label><input id="j_pdf_'+id+'" type="file" accept="application/pdf"></div>'
         +'<div style="display:flex; gap:8px;"><button class="btn btn-primary" onclick="saveJob('+id+')">Save job</button>'
         +'<button class="pt-mini" onclick="selectPartner('+selectedId+')">Cancel</button></div>';
     }

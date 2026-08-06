@@ -58,7 +58,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
           : (c.signed_pdf_url || null);
         if (url) {
           contract = {
-            label: signed ? 'Contract — Signed' : 'Contract — Awaiting signature',
+            label: signed ? 'Contract, Signed' : 'Contract, Awaiting signature',
             url,
             status: c.status,
             signed: signed,

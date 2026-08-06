@@ -90,7 +90,7 @@ function parseUserAgent(ua: string | null | undefined): string {
   return `${browser} on ${os}`;
 }
 function fmtFullDateTime(s: string | null | undefined): string {
-  if (!s) return ': ';
+  if (!s) return '—';
   try {
     const trimmed = String(s).replace(' ', 'T') + 'Z';
     const d = new Date(trimmed);

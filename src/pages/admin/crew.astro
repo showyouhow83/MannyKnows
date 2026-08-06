@@ -239,7 +239,7 @@ if (db) {
       margin-bottom: 24px;
     }
 
-    /* Modal overrides — match Leads/Quotes modal width */
+    /* Modal overrides: match Leads/Quotes modal width */
     .modal {
       background: linear-gradient(135deg, rgba(21, 22, 25, 0.98), rgba(10, 11, 13, 0.99));
       border: 1px solid var(--glass-border);
@@ -484,7 +484,7 @@ if (db) {
 
     .crew-rate strong { color: var(--color-primary); }
 
-    /* WhatsApp link — same slim pill shape as the other crew buttons,
+    /* WhatsApp link: same slim pill shape as the other crew buttons,
        keeping the WhatsApp-green tint. */
     .wa-link {
       display: inline-flex;
@@ -681,7 +681,7 @@ if (db) {
       .crew-actions button, .crew-actions a { flex: 1; }
       .crew-contact { flex-direction: column; gap: 4px; }
 
-      /* Timesheet controls — stack vertically */
+      /* Timesheet controls: stack vertically */
       .timesheet-controls {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -1074,7 +1074,7 @@ if (db) {
                       </span>
                     )}
                     {lead.is_driver ? (
-                      <span style="margin-left:12px; font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(99,102,241,0.18); color:#a5b4fc; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;" title="Driver — earns +1h per work day">
+                      <span style="margin-left:12px; font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(99,102,241,0.18); color:#a5b4fc; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;" title="Driver: earns +1h per work day">
                         Driver
                       </span>
                     ) : null}
@@ -1335,8 +1335,8 @@ if (db) {
         <div class="form-group">
           <label for="crewPayModel">Pay Model *</label>
           <select id="crewPayModel" class="form-select" onchange="syncPayModelFields()">
-            <option value="hourly">Hourly — clocks in/out, paid by the hour</option>
-            <option value="salaried_daily">Salaried — fixed daily pay, no clock-in</option>
+            <option value="hourly">Hourly: clocks in/out, paid by the hour</option>
+            <option value="salaried_daily">Salaried: fixed daily pay, no clock-in</option>
           </select>
         </div>
         <div class="form-group" id="hourlyFields">
@@ -1384,7 +1384,7 @@ if (db) {
   <div class="modal-overlay" id="materialsModal">
     <div class="modal" style="max-width: 640px;">
       <div class="modal-header">
-        <h2 class="modal-title">Materials &amp; gear — <span id="materialsCrewName"></span></h2>
+        <h2 class="modal-title">Materials &amp; gear: <span id="materialsCrewName"></span></h2>
       </div>
       <div class="modal-body">
         <input type="hidden" id="materialsCrewId" value="">
@@ -1553,7 +1553,7 @@ if (db) {
             <button type="button" data-value="company_card" class="expPaidWithOpt" style="padding:12px; background:rgba(255,255,255,0.05); color:var(--color-text-primary); border:1px solid var(--glass-border); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">Company card</button>
             <button type="button" data-value="deduction" class="expPaidWithOpt" style="padding:12px; background:rgba(255,255,255,0.05); color:var(--color-text-primary); border:1px solid var(--glass-border); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">Deduct from pay</button>
           </div>
-          <div id="expPaidWithHint" style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">Crew paid out of pocket — adds to their paycheck.</div>
+          <div id="expPaidWithHint" style="margin-top:6px; font-size:11px; color:var(--color-text-secondary);">Crew paid out of pocket, adds to their paycheck.</div>
           <input type="hidden" id="expPaidWithValue" value="crew">
         </div>
         <div class="form-group">
@@ -2583,8 +2583,8 @@ if (db) {
         hint.textContent = v === 'company_card'
           ? 'Already paid by the company. Tracked for finances; no impact on the paycheck.'
           : v === 'deduction'
-            ? 'You bought something on their behalf — this amount is subtracted from their paycheck. Crew sees the description as a note.'
-            : 'Crew paid out of pocket — adds to their paycheck.';
+            ? 'You bought something on their behalf: this amount is subtracted from their paycheck. Crew sees the description as a note.'
+            : 'Crew paid out of pocket, adds to their paycheck.';
       }
       // Receipt is required for reimbursables (crew needs proof) and company-card
       // (for the books), but not for deductions where the admin paid directly.

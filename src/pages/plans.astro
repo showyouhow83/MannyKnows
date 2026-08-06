@@ -118,7 +118,7 @@ const pageJsonLd = {
                 width="560"
                 height="539"
                 decoding="async"
-                class="w-full max-w-[230px] h-auto pointer-events-none"
+                class="astro-float w-full max-w-[230px] h-auto pointer-events-none"
               />
             </div>
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Smart website plans</span>
@@ -126,7 +126,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>A website that works while you do</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Built for Western Massachusetts businesses that get customers by being found: contractors and home services, daycares, salons, clinics, and shops. Start where you are and move up as the work comes in. The numbers below are where each plan starts; we scope the price to your business.
+              Built for Western Massachusetts businesses that get customers by being found: contractors and home services, medical and dental practices, daycares, professional offices, and retailers. Start where you are and move up as the work comes in. The numbers below are where each plan starts; we scope the price to your business.
             </p>
           </div>
         </Container>
@@ -242,3 +242,15 @@ const pageJsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Subtle drift for the flying astronaut. Respects reduced-motion. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .astro-float { animation: none; }
+  }
+</style>

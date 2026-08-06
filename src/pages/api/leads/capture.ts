@@ -265,7 +265,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     try {
       await notifyAdmin(env, {
         subject: 'New lead',
-        body: `${body.name}${city ? ` — ${city}` : ''}${body.phone ? ` — ${body.phone}` : ''}\nService: ${serviceType}`,
+        body: `${body.name}${city ? `: ${city}` : ''}${body.phone ? `, ${body.phone}` : ''}\nService: ${serviceType}`,
         link: `/admin/leads?open=${leadId}`,
       });
     } catch (e) { console.error('[Lead] admin notify failed:', e); }
@@ -356,7 +356,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   </div>
   <div style="background: linear-gradient(135deg, #ff781d 0%, #ff781d 40%, #6366f1 70%, #f263be 100%); padding: 30px; text-align: center;">
     <div style="margin-bottom: 16px;"><span style="font-size: 20px; font-weight: 700; color: #ffffff;">MannyKnows</span></div>
-    <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 13px;">Websites, SEO, AI Agents &amp; Apps — Springfield, MA</p>
+    <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 13px;">Websites, SEO, AI Agents &amp; Apps, Springfield, MA</p>
     <div style="margin: 16px 0;">
       <a href="https://mannyknows.com" style="color: #ffd700; font-size: 14px; text-decoration: none; font-weight: 600;">mannyknows.com</a>
       <span style="color: rgba(255,255,255,0.5); margin: 0 8px;">|</span>
@@ -451,7 +451,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     </div>
     <div style="background: linear-gradient(135deg, #ff781d 0%, #ff781d 40%, #6366f1 70%, #f263be 100%); padding: 30px; text-align: center;">
       <div style="margin-bottom: 16px;"><span style="font-size: 20px; font-weight: 700; color: #ffffff;">MannyKnows</span></div>
-      <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 13px;">Websites, SEO, AI Agents &amp; Apps — Springfield, MA</p>
+      <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 13px;">Websites, SEO, AI Agents &amp; Apps, Springfield, MA</p>
       <div style="margin: 16px 0;">
         <a href="https://mannyknows.com" style="color: #ffd700; font-size: 14px; text-decoration: none; font-weight: 600;">mannyknows.com</a>
         <span style="color: rgba(255,255,255,0.5); margin: 0 8px;">|</span>

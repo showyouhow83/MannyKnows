@@ -38,25 +38,25 @@ const WIKI: WikiArticle[] = [
     id: 'dashboard',
     title: 'Dashboard',
     href: '/admin/dashboard',
-    summary: 'Your admin home — pipeline health and quick numbers at a glance.',
+    summary: 'Your admin home: pipeline health and quick numbers at a glance.',
     sections: [
       { h: 'Pipeline stats', body: 'The stat tiles show live counts across the pipeline (new leads, open quotes, active projects, etc.). On mobile they compress into a tight grid so nothing clips.' },
       { h: 'Notification bell', body: 'The bell (top-right) polls every 30 seconds for new leads, quote responses, and customer replies. A number badge shows unread items; "Mark all read" clears them. The same bell appears on every admin page.' },
-      { h: 'Analytics', body: 'Conversion and traffic figures are pulled from Cloudflare and Google. These are read-only summaries — the numbers refresh on their own.' },
+      { h: 'Analytics', body: 'Conversion and traffic figures are pulled from Cloudflare and Google. These are read-only summaries: the numbers refresh on their own.' },
     ],
   },
   {
     id: 'leads',
     title: 'Leads',
     href: '/admin/leads',
-    summary: 'Every inquiry — from the website forms, the Remi chat, or added by hand.',
+    summary: 'Every inquiry, from the website forms, the Remi chat, or added by hand.',
     sections: [
       { h: 'Confirmed vs Pending sections', body: 'Leads are grouped into "Confirmed" (the customer clicked the confirmation link in their email) and "Pending confirmation" (not yet). Each section is collapsible; on mobile only one opens at a time.' },
-      { h: 'New Lead', body: 'The "New Lead" button (above the search bar) opens a modal to add a lead manually — name, contact, address, and Service Type. The Service Type dropdown is the shared MannyKnows catalog (the Smart Website plans, Sell Online, Business Ads, Multimedia Agency, AI Team, Custom Web App, and the free 360° Photo / AI Website Analysis lead magnets) with an "Other" option that lets you type a custom service.' },
+      { h: 'New Lead', body: 'The "New Lead" button (above the search bar) opens a modal to add a lead manually, name, contact, address, and Service Type. The Service Type dropdown is the shared MannyKnows catalog (the Smart Website plans, Sell Online, Business Ads, Multimedia Agency, AI Team, Custom Web App, and the free 360° Photo / AI Website Analysis lead magnets) with an "Other" option that lets you type a custom service.' },
       { h: 'Lead detail', body: 'Selecting a lead shows Appointment Details: service, best day/time to call, location (with a Get Directions link), and source (website form, Remi chat, or manual). Phone and email are clickable to call/email directly.' },
       { h: 'Lead images', body: 'Photos the customer attached (from the form or chat) appear read-only here. They travel forward automatically when you promote the lead to a quote.' },
       { h: 'Promote to Quote', body: 'The "Promote" button turns a lead into a draft Quote, carrying the customer info and images across. The lead stays linked so you can trace where a quote came from.' },
-      { h: 'Delete', body: 'Removing a lead is confirmed with an in-page dialog (no browser pop-ups). Deleting is for junk/duplicates — promote real inquiries instead.' },
+      { h: 'Delete', body: 'Removing a lead is confirmed with an in-page dialog (no browser pop-ups). Deleting is for junk/duplicates: promote real inquiries instead.' },
     ],
   },
   {
@@ -67,7 +67,7 @@ const WIKI: WikiArticle[] = [
     sections: [
       { h: 'Statuses', body: 'Quotes are grouped by status: Draft (being built), Sent/Pending (with the customer), Accepted, and Declined. The list is grouped and collapsible like Leads.' },
       { h: 'New Quote', body: 'Create a quote from scratch with "New Quote", or promote a Lead. The customer/service fields use the same shared Service Type dropdown with an "Other" custom option.' },
-      { h: 'Service scopes (color cards)', body: 'A quote can contain multiple scopes of work — each is a card with its own service type, scope description, and (where relevant) chosen colors. Add or remove scope rows as needed.' },
+      { h: 'Service scopes (color cards)', body: 'A quote can contain multiple scopes of work, each is a card with its own service type, scope description, and (where relevant) chosen colors. Add or remove scope rows as needed.' },
       { h: 'Materials & labor editor', body: 'Each scope has a materials/labor breakdown that rolls up into the quote total. This detail also feeds the project receipt later.' },
       { h: 'Quote images', body: 'Attach reference photos to the quote (up to a large limit). On promotion to a project these migrate into the project as "before" reference media.' },
       { h: 'Send to customer', body: 'Sending emails the customer a branded quote with a secure link to review, accept, or decline. Accepted/declined responses notify you via the bell and email.' },
@@ -79,17 +79,17 @@ const WIKI: WikiArticle[] = [
     id: 'projects',
     title: 'Projects',
     href: '/admin/projects',
-    summary: 'Manage active work — schedule, crew, contract, media, and invoicing.',
+    summary: 'Manage active work: schedule, crew, contract, media, and invoicing.',
     sections: [
       { h: 'Statuses', body: 'Projects are grouped into Ready (needs crew), In Progress, and Completed. Move a project along as the work progresses.' },
-      { h: 'New Project', body: 'Create a project directly (for already-won or partner work) with "New Project" — internal or tied to a Partner. The modal matches the New Lead/Quote styling and does not close if you click outside it (use the × button), so a half-filled form is not lost.' },
+      { h: 'New Project', body: 'Create a project directly (for already-won or partner work) with "New Project", internal or tied to a Partner. The modal matches the New Lead/Quote styling and does not close if you click outside it (use the × button), so a half-filled form is not lost.' },
       { h: 'Tabs', body: 'A selected project has tabs: Details (customer + scope), Schedule/pricing, Contract, Documents, Crew, Messages, and Management. The tab strip scrolls horizontally on mobile.' },
       { h: 'Schedule & pricing', body: 'Set start/end dates and the agreed price. These dates drive the Calendar and the customer portal timeline. Edit is locked behind an "Edit" toggle per section to prevent accidental changes.' },
       { h: 'Contract', body: 'Generate a contract for the project, send it for e-signature, or mark it signed in person / offline. Once signed, the signed PDF is stored and shown with a green "Signed" badge. Partner projects render the partner\'s branding on the contract.' },
-      { h: 'Reference media', body: 'Photos/videos attached to the project. The section header shows an "X images · Y videos" count. Reference media is de-duplicated by filename — re-adding the same file overwrites its entry instead of piling up duplicates. Videos play via the Cloudflare Stream player.' },
+      { h: 'Reference media', body: 'Photos/videos attached to the project. The section header shows an "X images · Y videos" count. Reference media is de-duplicated by filename: re-adding the same file overwrites its entry instead of piling up duplicates. Videos play via the Cloudflare Stream player.' },
       { h: 'Updates feed', body: 'Crew upload progress photos from the crew portal; admins can add updates too. These appear newest-first and feed the customer portal.' },
       { h: 'Invoicing (Send Invoice)', body: 'The "Send Invoice" button emails the customer a mail-a-check invoice (with the amount, due date, and where to send payment). The button shows "Invoiced {date}" once sent; resending asks you to confirm and warns if you sent very recently.' },
-      { h: 'Client & crew portals', body: 'Each project has a private client portal (status, progress photos, timeline, receipt) and a crew portal (reference images + upload progress photos), both reached by secure token links — no login needed for the customer or crew.' },
+      { h: 'Client & crew portals', body: 'Each project has a private client portal (status, progress photos, timeline, receipt) and a crew portal (reference images + upload progress photos), both reached by secure token links, no login needed for the customer or crew.' },
     ],
   },
   {
@@ -113,7 +113,7 @@ const WIKI: WikiArticle[] = [
     sections: [
       { h: 'Crew directory', body: 'Each crew lead has a card with contact info (with a WhatsApp shortcut) and their pay setup. Add a new crew member with the Add button; a login token/SMS invite can be sent so they can use the crew portal and timeclock.' },
       { h: 'Pay model', body: 'A crew member is Hourly (rate/hr) or Salaried (daily hours × daily rate). A "Driver" flag adds +1 hour per work day. A bonus can accrue from a start date and become claimable later.' },
-      { h: 'Archive & Restore (soft delete)', body: 'Removing a crew member ARCHIVES them (keeps all their time logs) rather than wiping them — it never deletes payroll history. Archived crew disappear from the list and assignment dropdowns. An "Archived crew" section at the bottom lets you Restore anyone with one click; their logs reconnect intact.' },
+      { h: 'Archive & Restore (soft delete)', body: 'Removing a crew member ARCHIVES them (keeps all their time logs) rather than wiping them. It never deletes payroll history. Archived crew disappear from the list and assignment dropdowns. An "Archived crew" section at the bottom lets you Restore anyone with one click; their logs reconnect intact.' },
       { h: 'Timesheets', body: 'The Timesheets tab shows clock-in/out logs, expenses, materials given, and deductions per crew member, exportable for payroll.' },
       { h: 'Assignments', body: 'Crew are assigned to projects (from the project\'s Crew tab). You cannot archive a crew member who is still on an active project until it is reassigned or finished.' },
     ],
@@ -135,7 +135,7 @@ const WIKI: WikiArticle[] = [
     summary: 'The single source-of-truth record for each person or company.',
     sections: [
       { h: 'One row per contact', body: 'Every customer is one contact record (name, company_name, phone, email, address). Leads/Quotes/Projects all link back to it, so updating a contact updates the shared details everywhere.' },
-      { h: 'Linked records', body: 'From a contact you can see the leads, quotes, and projects tied to them — useful for repeat customers.' },
+      { h: 'Linked records', body: 'From a contact you can see the leads, quotes, and projects tied to them, useful for repeat customers.' },
     ],
   },
   {
@@ -144,7 +144,7 @@ const WIKI: WikiArticle[] = [
     href: '/admin/partners',
     summary: 'White-label branding for partner companies.',
     sections: [
-      { h: 'Partner branding', body: 'Each partner has a logo (upload; SVG supported), name, phone, website, and address. Tag a Lead/Quote/Project with a partner and every customer-facing surface — emails, quote, contract, portals, PDFs — shows the partner\'s branding instead of MannyKnows\'. Internal admin chrome always stays MannyKnows.' },
+      { h: 'Partner branding', body: 'Each partner has a logo (upload; SVG supported), name, phone, website, and address. Tag a Lead/Quote/Project with a partner and every customer-facing surface (emails, quote, contract, portals, PDFs) shows the partner\'s branding instead of MannyKnows\'. Internal admin chrome always stays MannyKnows.' },
       { h: 'Assigned projects', body: 'The partner card counts how many projects are assigned to that partner. Partner work is usually created as a direct (already-won) Project.' },
     ],
   },
@@ -155,7 +155,7 @@ const WIKI: WikiArticle[] = [
     summary: 'Staging area for crew-captured photos/videos before they are filed.',
     sections: [
       { h: 'What lands here', body: 'Crew upload media from the timeclock; it collects in the Media Pool for triage rather than going straight to a project.' },
-      { h: 'Triage & assign', body: 'Select one or more items and assign them to a Lead, Quote, Project, or Portfolio — or delete junk. Filter chips (by note/tag) and copy-URL-on-hover help you sort quickly.' },
+      { h: 'Triage & assign', body: 'Select one or more items and assign them to a Lead, Quote, Project, or Portfolio, or delete junk. Filter chips (by note/tag) and copy-URL-on-hover help you sort quickly.' },
       { h: 'Videos', body: 'Video tiles show a lightweight poster; click to play via the Cloudflare Stream player (no heavy download just to preview).' },
     ],
   },
@@ -165,22 +165,22 @@ const WIKI: WikiArticle[] = [
     href: '/admin/web',
     summary: 'Tools that edit the public website content.',
     sections: [
-      { h: 'Hero Slider', body: 'Add, remove, reorder, and show/hide the homepage hero carousel slides. A visible slide is published; hidden is a draft. Each slide has an image (upload or paste a URL, which is cached to the CDN), a link, and title/description with length limits. The public homepage does not render the slider yet — slides managed here go live when it does.' },
+      { h: 'Hero Slider', body: 'Add, remove, reorder, and show/hide the homepage hero carousel slides. A visible slide is published; hidden is a draft. Each slide has an image (upload or paste a URL, which is cached to the CDN), a link, and title/description with length limits. The public homepage does not render the slider yet: slides managed here go live when it does.' },
       { h: 'Wiki', body: 'This guide. Search the box at the top to jump to any page or feature.' },
-      { h: 'Blog', body: 'Planned next — write posts with AI help and publish to the site. Shown as "coming soon" for now.' },
+      { h: 'Blog', body: 'Planned next, write posts with AI help and publish to the site. Shown as "coming soon" for now.' },
     ],
   },
   {
     id: 'concepts',
     title: 'Concepts across the whole admin',
-    summary: 'Ideas that show up on many pages — read these once and the rest makes sense.',
+    summary: 'Ideas that show up on many pages: read these once and the rest makes sense.',
     sections: [
-      { h: 'Roles & access', body: 'There are two roles: admin (full access) and viewer (read-only). A viewer can look but cannot create, edit, or delete — write actions are blocked for them everywhere.' },
+      { h: 'Roles & access', body: 'There are two roles: admin (full access) and viewer (read-only). A viewer can look but cannot create, edit, or delete: write actions are blocked for them everywhere.' },
       { h: 'Notification bell', body: 'The shared bell polls every 30 seconds for new leads, quote accept/declines, and customer replies. It appears on every admin page; "Mark all read" clears it.' },
       { h: 'Image & media lifecycle', body: 'Media follows the pipeline: Lead images → migrate to the Quote → migrate to the Project (as "before" reference) → can be published to a Portfolio. Auto-tags mark timing: (b) before, (d) during, (a) after. iPhone HEIC photos are converted automatically.' },
       { h: 'Star (feature) marks', body: 'Stars flag featured media. On a quote a ★ means "feature in the PDF"; on a project the star is crew-facing vs client-facing depending on context; portfolios use the unstarred set for the public gallery.' },
       { h: 'Contracts & e-signatures', body: 'Projects generate a contract that the customer e-signs via a secure link, or you mark it signed in person/offline. The signed PDF is stored and shown with a green Signed badge. Partner branding is applied automatically for partner projects.' },
-      { h: 'Videos (Cloudflare Stream)', body: 'All project/portfolio/pool videos play through Cloudflare Stream — auto thumbnails, adaptive playback, and cross-browser support. Tiles show a tiny poster image instead of downloading the full video.' },
+      { h: 'Videos (Cloudflare Stream)', body: 'All project/portfolio/pool videos play through Cloudflare Stream, auto thumbnails, adaptive playback, and cross-browser support. Tiles show a tiny poster image instead of downloading the full video.' },
       { h: 'Remi AI chat', body: 'The public site\'s Remi chatbot captures leads directly into this admin (they show up in Leads, source = chat) and can book appointments that create a pending-confirmation lead.' },
       { h: 'Data integrity tools', body: 'Behind the scenes, sync tools keep statuses consistent across Leads/Quotes/Projects and migrate legacy images. Ask the developer to run these if something looks out of sync.' },
     ],
@@ -192,7 +192,7 @@ const WIKI: WikiArticle[] = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wiki — MannyKnows Admin</title>
+    <title>Wiki: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -336,7 +336,7 @@ const WIKI: WikiArticle[] = [
 
       <div class="wiki-search-wrap">
         <svg class="wiki-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="wiki-search" id="wikiSearch" type="search" placeholder="Search the wiki — e.g. invoice, archive crew, before/after, partner logo…" autocomplete="off" />
+        <input class="wiki-search" id="wikiSearch" type="search" placeholder="Search the wiki: e.g. invoice, archive crew, before/after, partner logo…" autocomplete="off" />
       </div>
 
       <div class="wiki-layout">

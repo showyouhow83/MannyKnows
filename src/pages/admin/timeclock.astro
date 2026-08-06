@@ -17,7 +17,7 @@ import '../../styles/admin.css';
     (function() { document.documentElement.setAttribute('data-theme', 'dark'); })();
   </script>
   <style>
-    /* Lock the page to viewport width on every device — iOS Safari otherwise
+    /* Lock the page to viewport width on every device: iOS Safari otherwise
        lets a single off-by-one element (date input, modal backdrop, toast)
        push the body wider than the viewport and force a horizontal scroll.
        overscroll-behavior-x stops the rubber-band horizontal pan that some
@@ -42,7 +42,7 @@ import '../../styles/admin.css';
       font-size: 16px;
     }
     /* iOS Safari renders the native calendar widget so the input visibly
-       overflows its container — neutralise the native chrome so the field
+       overflows its container: neutralise the native chrome so the field
        behaves like the rest of the .form-input controls. */
     .tc-card input[type="date"].form-input {
       -webkit-appearance: none;
@@ -161,7 +161,7 @@ import '../../styles/admin.css';
     }
     .tc-bonus-banner-close:hover { color: var(--color-text-primary); }
 
-    /* Expenses modal — replaces the old tc-card panel in the right column. */
+    /* Expenses modal: replaces the old tc-card panel in the right column. */
     .tc-modal {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.6);
@@ -195,7 +195,7 @@ import '../../styles/admin.css';
   </style>
 
   <style is:global>
-    /* JS-rendered content — must be global to avoid scoped attribute mismatch */
+    /* JS-rendered content: must be global to avoid scoped attribute mismatch */
     .tc-summary-inline { display: flex; gap: 24px; flex-wrap: wrap; }
     .tc-summary-item { display: flex; flex-direction: column; gap: 2px; }
     .tc-summary-item .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); }
@@ -801,7 +801,7 @@ import '../../styles/admin.css';
           html += `<div style="text-align:right; padding:8px 0; font-weight:600; color:var(--color-text-primary);">Reimbursable total: $${reimbTotal.toFixed(2)}</div>`;
         }
         if (deductions.length > 0) {
-          html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Deductions <span style="text-transform:none; letter-spacing:0; opacity:0.7;">(items the company bought for you — subtracted from this paycheck)</span></div>`;
+          html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Deductions <span style="text-transform:none; letter-spacing:0; opacity:0.7;">(items the company bought for you, subtracted from this paycheck)</span></div>`;
           html += deductions.map(e => {
             dedTotal += e.amount;
             return renderRow(e, true);
@@ -1010,7 +1010,7 @@ import '../../styles/admin.css';
         const res = await fetch('/api/crew/media-pool/', { credentials: 'include' });
         const data = await res.json();
         if (!data.success || !data.items || !data.items.length) {
-          recent.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); opacity:0.6;">No uploads yet — your captures will show here.</div>';
+          recent.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); opacity:0.6;">No uploads yet, your captures will show here.</div>';
           return;
         }
         recent.innerHTML = data.items.slice(0, 10).map(it => {
@@ -1126,14 +1126,14 @@ import '../../styles/admin.css';
       </div>
       <div class="tc-modal-body">
         <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:12px; line-height:1.5;">
-          Take photos and videos <strong>before</strong> you start, <strong>while you work</strong>, and <strong>before you leave</strong> each day. Before-photos protect us (and you) if a customer claims something was broken when we arrived. During and after photos build the project's portfolio. Don't worry about which project — admin sorts everything later. Tip: type a note like “Smith house — before” so the whole batch stays grouped.
+          Take photos and videos <strong>before</strong> you start, <strong>while you work</strong>, and <strong>before you leave</strong> each day. Before-photos protect us (and you) if a customer claims something was broken when we arrived. During and after photos build the project's portfolio. Don't worry about which project: admin sorts everything later. Tip: type a note like “Smith house, before” so the whole batch stays grouped.
         </div>
 
         <!-- Note first so crew can label the batch before tapping a capture button. -->
         <div style="margin-bottom:12px;">
-          <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Note <span style="color:#fca5a5;">*</span> <span style="font-weight:500; text-transform:none; letter-spacing:0; opacity:0.8;">(required — tags the whole batch so admin can group it)</span></label>
-          <input type="text" id="mediaPoolNote" class="form-input" required placeholder="e.g. Smith house — before" aria-required="true">
-          <div id="mediaPoolNoteError" style="display:none; font-size:11px; color:#fca5a5; margin-top:4px;">Add a note before uploading — it's what lets admin group your batch.</div>
+          <label style="font-size:10px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px;">Note <span style="color:#fca5a5;">*</span> <span style="font-weight:500; text-transform:none; letter-spacing:0; opacity:0.8;">(required, tags the whole batch so admin can group it)</span></label>
+          <input type="text" id="mediaPoolNote" class="form-input" required placeholder="e.g. Smith house: before" aria-required="true">
+          <div id="mediaPoolNoteError" style="display:none; font-size:11px; color:#fca5a5; margin-top:4px;">Add a note before uploading, it's what lets admin group your batch.</div>
         </div>
 
         <!-- Separate camera + library inputs. Single picker is unreliable on Android. -->

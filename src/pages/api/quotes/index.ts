@@ -458,7 +458,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
       const incoming = body.template_sections === null ? null : JSON.stringify(body.template_sections);
       if (countItems(incoming) === 0 && countItems(quote.template_sections as string | null) > 0) {
         skipScopeWrite = true;
-        console.warn(`[quotes PATCH] Blocked empty template_sections overwrite for quote ${body.quote_id} — kept existing scopes. (allow_empty_scopes:true to force.)`);
+        console.warn(`[quotes PATCH] Blocked empty template_sections overwrite for quote ${body.quote_id}: kept existing scopes. (allow_empty_scopes:true to force.)`);
       }
     }
 

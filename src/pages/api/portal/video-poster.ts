@@ -25,7 +25,7 @@ import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../lib/publicUrl';
 
-const MAX_POSTER_SIZE = 500 * 1024; // 500KB — first-frame JPEGs should be small
+const MAX_POSTER_SIZE = 500 * 1024; // 500KB: first-frame JPEGs should be small
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {

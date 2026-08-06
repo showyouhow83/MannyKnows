@@ -57,7 +57,7 @@ function summariseServices(jsonStr: string | null | undefined): string {
     if (!Array.isArray(arr)) return '';
     return arr.map((s: any) => {
       const type = typeof s === 'string' ? s : (s?.type || s?.service || '');
-      const scope = typeof s === 'object' && s?.scope ? ` — ${s.scope}` : '';
+      const scope = typeof s === 'object' && s?.scope ? `: ${s.scope}` : '';
       return type ? `${type}${scope}` : '';
     }).filter(Boolean).join('; ');
   } catch { return ''; }
@@ -209,7 +209,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const copy = await generatePortfolioCopy(env, contextLines);
     if (!copy) {
-      return new Response(JSON.stringify({ success: false, error: 'AI could not generate copy — try again.' }), {
+      return new Response(JSON.stringify({ success: false, error: 'AI could not generate copy, try again.' }), {
         status: 502, headers: { 'Content-Type': 'application/json' }
       });
     }

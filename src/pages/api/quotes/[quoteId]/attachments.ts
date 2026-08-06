@@ -133,7 +133,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     // optional surrounding whitespace) and add the base label to the
     // replacement set so the unsigned version is dropped alongside the
     // prior signed copy.
-    const signedSuffix = /[\s]*[—-][\s]*signed\s*$/i;
+    const signedSuffix = /[\s]*[: -][\s]*signed\s*$/i;
     if (signedSuffix.test(label)) {
       const base = label.replace(signedSuffix, '').trim();
       if (base) labelsToReplace.add(base);
@@ -168,7 +168,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       console.warn('[QuoteAttachments] replace-by-label cleanup failed (continuing):', replaceErr);
     }
 
-    console.log(`[QuoteAttachments] Quote ${quoteId} +1 attachment "${label}" (${data.byteLength} bytes)${replacedCount ? ` — replaced ${replacedCount} prior` : ''}`);
+    console.log(`[QuoteAttachments] Quote ${quoteId} +1 attachment "${label}" (${data.byteLength} bytes)${replacedCount ? `: replaced ${replacedCount} prior` : ''}`);
 
     // If this quote was already promoted to a project, mirror the attachment
     // into project_documents so the project's Documents tab stays in sync

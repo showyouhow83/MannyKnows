@@ -61,7 +61,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     const contract = await db.prepare(
       'SELECT id, status, total FROM project_contracts WHERE project_id = ?'
     ).bind(projectId).first() as { id: number; status: string; total: number } | null;
-    if (!contract) return json({ success: false, error: 'No contract for this project — apply a template first.' }, 404);
+    if (!contract) return json({ success: false, error: 'No contract for this project, apply a template first.' }, 404);
     if (contract.status === 'void') return json({ success: false, error: 'This contract has been voided.' }, 409);
 
     // Customer signs with a typed-name signature image (no broken <img>); the
@@ -79,7 +79,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       ? body.signed_date
       : new Date().toISOString();
     const adminName = (session as any).username || (session as any).user || 'admin';
-    const baseConsent = `Signed on paper (offline) — recorded by ${adminName} on ${whenIso.split('T')[0]}.`;
+    const baseConsent = `Signed on paper (offline): recorded by ${adminName} on ${whenIso.split('T')[0]}.`;
     const consent = body.note && body.note.trim() ? `${baseConsent} ${body.note.trim()}` : baseConsent;
 
     // Replace any prior signatures for the role(s) we're setting (keeps the

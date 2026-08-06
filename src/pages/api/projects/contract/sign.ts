@@ -58,7 +58,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       'SELECT id, project_id, status FROM project_contracts WHERE contract_token = ?'
     ).bind(token).first() as { id: number; project_id: number; status: string } | null;
 
-    if (!contract) return json({ error: 'Contract not found — check the link in your email.' }, 404);
+    if (!contract) return json({ error: 'Contract not found, check the link in your email.' }, 404);
 
     if (contract.status === 'draft') {
       return json({ error: 'This contract has not been sent yet. Please wait for MannyKnows to send it.' }, 409);

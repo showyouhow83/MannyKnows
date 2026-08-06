@@ -21,7 +21,7 @@ import { publicUrlForR2Path } from '../../../lib/publicUrl';
 
 export const prerender = false;
 
-const MAX_BYTES = 12 * 1024 * 1024; // 12MB — flattened JPEGs are modest
+const MAX_BYTES = 12 * 1024 * 1024; // 12MB: flattened JPEGs are modest
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });

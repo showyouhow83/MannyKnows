@@ -27,7 +27,7 @@ if (!templateId || Number.isNaN(templateId)) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Template — MannyKnows Admin</title>
+    <title>Edit Template: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -407,7 +407,7 @@ if (!templateId || Number.isNaN(templateId)) {
         html += '</div>';
 
         if (!template.sections.length) {
-          html += '<div class="te-empty">No sections yet — add the first one below.</div>';
+          html += '<div class="te-empty">No sections yet: add the first one below.</div>';
         }
         template.sections.forEach((section, sIdx) => {
           html += renderSection(section, sIdx);
@@ -453,7 +453,7 @@ if (!templateId || Number.isNaN(templateId)) {
         html += `<div class="te-add-row">
           <button onclick="addItem('${section.id}', 'bullet')">+ Bullet</button>
           <button onclick="addItem('${section.id}', 'fillable')">+ Color line</button>
-          <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button onclick="addItem('${section.id}', 'subtotal')">+ Subtotal</button>
           <button onclick="addItem('${section.id}', 'note')">+ Note</button>
         </div>`;
@@ -480,7 +480,7 @@ if (!templateId || Number.isNaN(templateId)) {
           const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
           const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
           fields = `<div class="te-item-row">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Wall color — living room)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Wall color: living room)">
             <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Color name or code">
           </div>
           <div class="te-item-row" style="margin-top:6px;">
@@ -504,7 +504,7 @@ if (!templateId || Number.isNaN(templateId)) {
           const optionsStr = opts.join(', ');
           const valueField = opts.length > 0
             ? `<select onchange="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" style="flex:1;">
-                <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+                <option value=""${!item.value ? ' selected' : ''}>, Select, </option>
                 ${opts.map(o => `<option value="${escapeHtml(o)}"${item.value === o ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}
               </select>`
             : `<input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Default value (add options below to make a dropdown)">`;
@@ -526,7 +526,7 @@ if (!templateId || Number.isNaN(templateId)) {
           </div>`;
         } else if (item.type === 'subtotal') {
           fields = `<div class="te-item-row">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Total — labor and materials)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Total: labor and materials)">
             <input class="te-amount-field" type="number" inputmode="decimal" step="0.01" oninput="updateItemField('${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00">
           </div>`;
         }

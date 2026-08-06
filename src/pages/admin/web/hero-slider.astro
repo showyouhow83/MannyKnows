@@ -28,7 +28,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hero Slider — MannyKnows Admin</title>
+    <title>Hero Slider: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -48,7 +48,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
       .web-back { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-secondary); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
       .web-back:hover { color: var(--color-text-primary); }
 
-      /* Section grid — same glass card pattern used elsewhere in admin. */
+      /* Section grid: same glass card pattern used elsewhere in admin. */
       .web-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -179,10 +179,10 @@ const IMAGES_BASE = imagesDeliveryBase(env);
             <div class="hm-modal-body">
               <div class="hm-field">
                 <label class="hm-label">Desktop image</label>
-                <p class="hm-size-hint">Wide <strong>16:9</strong> photo — about <strong>1600&times;900px</strong> (min 1200&times;675). Shows full-width on desktop. JPG/WebP, ideally under ~500&nbsp;KB.</p>
+                <p class="hm-size-hint">Wide <strong>16:9</strong> photo, about <strong>1600&times;900px</strong> (min 1200&times;675). Shows full-width on desktop. JPG/WebP, ideally under ~500&nbsp;KB.</p>
                 <div class="hm-modal-imgwrap">
                   <img id="hmmThumb" class="hm-modal-thumb" alt="" style="display:none" />
-                  <div id="hmmPlaceHolder" class="hm-modal-imgph">No image yet — upload one or paste a URL</div>
+                  <div id="hmmPlaceHolder" class="hm-modal-imgph">No image yet: upload one or paste a URL</div>
                 </div>
                 <div class="hm-media-btns">
                   <button type="button" class="hm-img-btn" data-act="modal-upload">Upload</button>
@@ -195,7 +195,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
               </div>
               <div class="hm-field">
                 <label class="hm-label">Mobile image <span class="hm-opt">(optional)</span></label>
-                <p class="hm-size-hint">Taller <strong>portrait</strong> crop — about <strong>800&times;1000px</strong> (4:5). Leave empty and the desktop image is used on phones.</p>
+                <p class="hm-size-hint">Taller <strong>portrait</strong> crop: about <strong>800&times;1000px</strong> (4:5). Leave empty and the desktop image is used on phones.</p>
                 <div class="hm-modal-imgwrap hm-modal-imgwrap-mobile">
                   <img id="hmmThumbMobile" class="hm-modal-thumb" alt="" style="display:none" />
                   <div id="hmmPlaceHolderMobile" class="hm-modal-imgph">Uses the desktop image unless you add one</div>
@@ -216,7 +216,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
               <div class="hm-field"><div class="hm-label-row"><label class="hm-label">Link</label></div>
                 <input class="hm-input" id="hmmLink" placeholder="/contact/ or https://…" /></div>
               <label class="hm-toggle hm-modal-visible"><input type="checkbox" id="hmmVisible" checked /><span>Visible (published)</span></label>
-              <p class="hm-modal-hint">Leave this off to save a draft — the slide is created but won't appear on the site until you make it visible.</p>
+              <p class="hm-modal-hint">Leave this off to save a draft: the slide is created but won't appear on the site until you make it visible.</p>
             </div>
             <div class="hm-modal-foot">
               <button type="button" class="hm-save hm-cancel" data-act="modal-close">Cancel</button>
@@ -228,7 +228,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
     </main>
 
     <style is:global>
-      /* Hero Slider manager — cards are injected via JS, so styles must be global. */
+      /* Hero Slider manager: cards are injected via JS, so styles must be global. */
       .hm-section { margin-top: 4px; }
       .hm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
       .hm-head-text { flex: 1; min-width: 240px; }
@@ -555,7 +555,7 @@ const IMAGES_BASE = imagesDeliveryBase(env);
               var res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
                 body: JSON.stringify({ image_url: cu.desktop, image_mobile_url: cu.mobile, title: '', description: '', link_url: '#' }) });
               var d = await res.json();
-              if (d.success) { urlInput.value = ''; await load(); toast('Slide added — set its title, link, and visibility', 'ok'); }
+              if (d.success) { urlInput.value = ''; await load(); toast('Slide added: set its title, link, and visibility', 'ok'); }
               else { toast(d.error || 'Create failed', 'err'); }
             }
             urlAddBtn.disabled = false;

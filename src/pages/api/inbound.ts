@@ -230,7 +230,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 			if (result.handled && result.degraded) {
 				// Thread row stored but we couldn't extract body/attachments —
 				// ALSO forward the raw email so nothing is lost while degraded.
-				console.warn("[inbound] threaded reply was empty — forwarding raw email as safety net");
+				console.warn("[inbound] threaded reply was empty: forwarding raw email as safety net");
 			} else {
 				console.warn("[inbound] reply token not matched, falling back to forward:", token);
 			}

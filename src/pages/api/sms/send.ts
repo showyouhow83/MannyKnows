@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const senderNumber = env?.TWILIO_PHONE_NUMBER || env?.TWILIO_FROM_NUMBER;
 
     if (!accountSid || !authToken || !senderNumber) {
-      console.log('[SMS] Send skipped — Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
+      console.log('[SMS] Send skipped: Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
       return new Response(JSON.stringify({
         success: false,
         error: 'SMS service not configured',

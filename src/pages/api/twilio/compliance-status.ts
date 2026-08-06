@@ -85,7 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
         for (const [k, v] of Object.entries(body)) params[k] = String(v);
       }
     } catch {
-      /* empty / unparseable body — we still return 200 below so Twilio stops retrying */
+      /* empty / unparseable body. We still return 200 below so Twilio stops retrying */
     }
   }
 
@@ -103,7 +103,7 @@ export const POST: APIRoute = async ({ request }) => {
       request.headers.get('X-Twilio-Signature'),
     );
     if (!ok) {
-      console.warn('[twilio-compliance] Invalid X-Twilio-Signature — rejecting.');
+      console.warn('[twilio-compliance] Invalid X-Twilio-Signature: rejecting.');
       return new Response(JSON.stringify({ error: 'invalid signature' }), {
         status: 403,
         headers: JSON_HEADERS,
@@ -112,7 +112,7 @@ export const POST: APIRoute = async ({ request }) => {
     authState = 'twilio-signature';
   } else if (sharedSecret) {
     if (!timingSafeEqual(url.searchParams.get('key') || '', sharedSecret)) {
-      console.warn('[twilio-compliance] Missing/incorrect ?key shared secret — rejecting.');
+      console.warn('[twilio-compliance] Missing/incorrect ?key shared secret: rejecting.');
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
         status: 403,
         headers: JSON_HEADERS,

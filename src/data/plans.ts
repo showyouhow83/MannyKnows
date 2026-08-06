@@ -168,7 +168,7 @@ export const plans: Plan[] = [
     blurb:
       "Everything in Get Found, on a full multi-page site, and now “Remi” books the job. Powered by your Brand Brain, “Remi” answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
-      'Service businesses (contractors, salons, clinics, daycares) that need more than answers: they need the appointment captured while the customer is ready.',
+      'Service businesses (contractors, clinics, daycares, professional offices) that need more than answers: they need the appointment captured while the customer is ready.',
     deliverables: [
       {
         title: 'The website',
@@ -233,7 +233,7 @@ export const plans: Plan[] = [
     blurb:
       "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain: writing its own fresh content and tuning its own SEO and speed, so it never goes stale, the closest thing to a full-time web developer on your site. “Remi” goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
     whoFor:
-      'Established service businesses and shops whose customers search Google and call (painters, contractors, daycares, salons, clinics) that want the site and the agent doing the selling.',
+      'Established service businesses and shops whose customers search Google and call (painters, contractors, daycares, clinics, law offices) that want the site and the agent doing the selling.',
     deliverables: [
       {
         title: 'The website',
@@ -357,7 +357,7 @@ export const plans: Plan[] = [
     blurb:
       "Setting up a store is easy: anyone can click through a signup. Setting up a store that sells is a job: the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes, from a well-run store at $150/mo to a store with its own ad engine. Every tier includes your Shopify subscription and is run like the enterprise eCommerce operations we spent years building.",
     whoFor:
-      "Shops, makers, restaurants, and brands that want to sell online, starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels: one catalog runs them all, from a store you own.",
+      "Retailers, dealers, makers, and brands that want to sell online, starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels: one catalog runs them all, from a store you own.",
     // The four tiers ARE the product — modeled on what ecommerce agencies
     // actually sell as monthly retainers (catalog management, product copy,
     // store SEO, email flows/campaigns, CRO, ads), sized down to local-business

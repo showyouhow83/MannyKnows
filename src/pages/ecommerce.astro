@@ -260,18 +260,18 @@ const pageJsonLd = {
                   ['Product adds & changes per month', '10', '30', '100', '100'],
                   ['SEO product descriptions: AI-written & reviewed', 'Unlimited', 'Unlimited', 'Unlimited', 'Unlimited'],
                   ['Store SEO', 'Basics', 'AI-Automated', 'Full program', 'Full program'],
-                  ['Email (flows (cart, welcome, post-purchase)', ') ', '✓', '✓', '✓'],
-                  ['Cart-abandonment optimization', ', ', ', ', '✓', '✓'],
-                  ['Reviews collected & shown', ': ', '✓', '✓', '✓'],
-                  ['AI shopping assistant, recommends & upsells', ', ', ': ', '✓', '✓'],
-                  ['Multilingual storefront', ', ', ', ', '✓', '✓'],
-                  ['Ads run & managed (two networks) + product feeds', ', ', ', ', ': ', '✓'],
-                  ['Monthly working session with Manny', ', ', ', ', ': ', '✓'],
+                  ['Email — flows (cart, welcome, post-purchase)', '—', '✓', '✓', '✓'],
+                  ['Cart-abandonment optimization', '—', '—', '✓', '✓'],
+                  ['Reviews collected & shown', '—', '✓', '✓', '✓'],
+                  ['AI shopping assistant — recommends & upsells', '—', '—', '✓', '✓'],
+                  ['Multilingual storefront', '—', '—', '✓', '✓'],
+                  ['Ads run & managed (two networks) + product feeds', '—', '—', '—', '✓'],
+                  ['Monthly working session with Manny', '—', '—', '—', '✓'],
                 ].map((row) => (
                   <tr class="border-b border-light-tertiary/60 dark:border-dark-accent/60 last:border-0">
                     <td class="p-4">{row[0]}</td>
                     {row.slice(1).map((c) => (
-                      <td class={`p-4 text-center ${c === '✓' ? 'text-green-500 font-bold' : c === ', ' ? 'text-text-light-tertiary dark:text-text-dark-tertiary' : 'font-semibold text-primary-blue dark:text-blue-300'}`}>{c}</td>
+                      <td class={`p-4 text-center ${c === '✓' ? 'text-green-500 font-bold' : c === '—' ? 'text-text-light-tertiary dark:text-text-dark-tertiary' : 'font-semibold text-primary-blue dark:text-blue-300'}`}>{c}</td>
                     ))}
                   </tr>
                 ))}

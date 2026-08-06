@@ -47,7 +47,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contract — {projectRow.project_number} — MannyKnows Admin</title>
+    <title>Contract: {projectRow.project_number}: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -300,7 +300,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         padding: 1px 6px; border-radius: 999px;
       }
 
-      /* Scope cards — reuse the same look as the quote scope editor. */
+      /* Scope cards: reuse the same look as the quote scope editor. */
       .pce-scope {
         background: rgba(255,255,255,0.03);
         border: 1px solid var(--glass-border);
@@ -608,9 +608,9 @@ const contractorDefaultName = savedContractor?.signer_name || '';
       let changedSinceSend = false;
       let signatures = [];
       let scopeTemplates = [];          // Quote Scope template library (for "add from template")
-      let projectTotalFallback = 0;     // project/quote total — used when scopes have no subtotal rows
-      let projectScheduledStart = null; // from project Schedule (Details tab) — drives contract start date
-      let projectScheduledEnd = null;   // from project Schedule — drives balance-on-completion due date
+      let projectTotalFallback = 0;     // project/quote total: used when scopes have no subtotal rows
+      let projectScheduledStart = null; // from project Schedule (Details tab): drives contract start date
+      let projectScheduledEnd = null;   // from project Schedule: drives balance-on-completion due date
       let receipts = [];                // collected per-payment receipts (one per schedule row)
 
       function getReceipt(rowId) { return receipts.find(r => r.row_id === rowId) || null; }
@@ -657,7 +657,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           // On a sent contract, require a saved change before resending.
           if (st === 'sent' && !changedSinceSend) {
             sendBtn.disabled = true;
-            sendBtn.title = 'No changes since the last send — edit and save to resend a new version.';
+            sendBtn.title = 'No changes since the last send: edit and save to resend a new version.';
           } else {
             sendBtn.disabled = false;
             sendBtn.title = '';
@@ -705,7 +705,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           }
           // Total is derived from scope subtotals; fall back to the project /
           // quote total when there are no subtotal rows.
-          recomputeContractTotal(false); // don't reflow on load — only on edits
+          recomputeContractTotal(false); // don't reflow on load, only on edits
           renderStatusBadge();
           render();
           setDirty(false);
@@ -722,7 +722,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         // ── Panel: Schedule (read-only, sourced from the project's
         //    Details → Schedule). Total + discount live with the scopes. ──
         const fmtD = (s) => {
-          if (!s) return '<span style="color:var(--color-text-secondary); font-style:italic;">— set in Details → Schedule</span>';
+          if (!s) return '<span style="color:var(--color-text-secondary); font-style:italic;">, set in Details → Schedule</span>';
           const d = new Date(String(s) + 'T00:00:00');
           return isNaN(d.getTime()) ? s : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         };
@@ -778,7 +778,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
             </tr></thead>
             <tbody id="schedBody">${
               contract.payment_schedule.length === 0
-                ? '<tr><td colspan="7" style="padding:12px; color:var(--color-text-secondary); font-style:italic; text-align:center;">No payment rows yet — set total + counts above, then click Regenerate schedule.</td></tr>'
+                ? '<tr><td colspan="7" style="padding:12px; color:var(--color-text-secondary); font-style:italic; text-align:center;">No payment rows yet, set total + counts above, then click Regenerate schedule.</td></tr>'
                 : contract.payment_schedule.map((r, i) => {
                     const isBal = isBalanceRow(r);
                     const pct = contract.total > 0 ? (Number(r.amount) || 0) / contract.total * 100 : 0;
@@ -792,12 +792,12 @@ const contractorDefaultName = savedContractor?.signer_name || '';
                     </td>
                     <td><input type="text" value="${escapeAttr(r.label || '')}" oninput="updatePayField('${r.id}', 'label', this.value)"${paid ? ' disabled' : ''}></td>
                     <td class="pce-date-col">
-                      <input type="date" value="${escapeAttr(r.due_date || '')}" oninput="updatePayField('${r.id}', 'due_date', this.value)" title="${r.due_source === 'end_date' ? 'Synced to the project end date — editing here unlinks it.' : ''}"${paid ? ' disabled' : ''}>
+                      <input type="date" value="${escapeAttr(r.due_date || '')}" oninput="updatePayField('${r.id}', 'due_date', this.value)" title="${r.due_source === 'end_date' ? 'Synced to the project end date: editing here unlinks it.' : ''}"${paid ? ' disabled' : ''}>
                       ${r.due_source === 'end_date' ? '<span class="pce-sync-badge" title="Stays in sync with the project end date">⟳ end date</span>' : ''}
                     </td>
                     <td class="pce-pct-col">${
                       isBal
-                        ? `<span class="pce-pct-auto" title="Balance row — absorbs whatever is left so the schedule always totals 100%">${pctStr}%</span>`
+                        ? `<span class="pce-pct-auto" title="Balance row: absorbs whatever is left so the schedule always totals 100%">${pctStr}%</span>`
                         : `<input type="number" step="any" min="0" max="100" value="${pctStr}" onchange="updatePayPct('${r.id}', this.value)" title="Editing % recalculates this row's amount; the balance row absorbs the rest."${paid ? ' disabled' : ''}>`
                     }</td>
                     <td class="pce-amt-col"><input type="number" step="any" min="0" value="${r.amount}" onchange="updatePayField('${r.id}', 'amount', this.value)"${paid ? ' disabled' : ''}></td>
@@ -806,7 +806,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
                         ? `<span class="pce-receipt-badge paid" style="cursor:default;" title="Collected ${rec.collected_at ? fmtD(rec.collected_at) : ''}${rec.check_number ? ' · check #' + rec.check_number : ''}. Manage receipts from the Contract tab.">✓ ${escapeHtml(rec.payment_method || 'paid')}${rec.check_number ? ' #' + escapeHtml(rec.check_number) : ''}</span>`
                         : `<span style="font-size:11px; color:var(--color-text-secondary);" title="Record payments from the project's Contract tab → Collect.">—</span>`
                     }</td>
-                    <td class="pce-act-col"><button class="pce-icon-btn danger" onclick="deletePayRow('${r.id}')" title="${paid ? 'Collected rows are locked — undo the receipt first' : 'Remove row'}"${paid ? ' disabled' : ''}>×</button></td>
+                    <td class="pce-act-col"><button class="pce-icon-btn danger" onclick="deletePayRow('${r.id}')" title="${paid ? 'Collected rows are locked: undo the receipt first' : 'Remove row'}"${paid ? ' disabled' : ''}>×</button></td>
                   </tr>
                 `;
                   }).join('')
@@ -854,9 +854,9 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         // ── Panel: Scopes ──
         html += `<div class="pce-panel">
           <h3 class="pce-panel-title">Scopes</h3>
-          <p class="pce-panel-sub">Body of the contract — each scope holds sections of bullets / color lines / subtotals / notes.</p>`;
+          <p class="pce-panel-sub">Body of the contract: each scope holds sections of bullets / color lines / subtotals / notes.</p>`;
         if (!contract.scopes.length) {
-          html += '<div class="pce-empty">No scopes yet — add the first one below.</div>';
+          html += '<div class="pce-empty">No scopes yet: add the first one below.</div>';
         }
         contract.scopes.forEach((scope, sIdx) => {
           html += renderScope(scope, sIdx);
@@ -892,7 +892,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
               <span>Contract total</span>
               <strong id="pceGrandTotal">$${fmtMoney(_grand)}</strong>
             </div>
-            ${_subs === 0 ? '<p class="pce-panel-sub" style="margin:8px 0 0;">No Subtotal rows yet — add a scope and put the price in a <strong>Subtotal</strong> row to itemize, or leave the carried-over total as is.</p>' : ''}
+            ${_subs === 0 ? '<p class="pce-panel-sub" style="margin:8px 0 0;">No Subtotal rows yet, add a scope and put the price in a <strong>Subtotal</strong> row to itemize, or leave the carried-over total as is.</p>' : ''}
           </div>
         </div>`;
 
@@ -935,7 +935,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         html += `<div class="pce-add-row">
           <button onclick="addItem('${scopeId}', '${section.id}', 'bullet')">+ Bullet</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'fillable')">+ Color line</button>
-          <button onclick="addItem('${scopeId}', '${section.id}', 'choice')" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'choice')" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'subtotal')">+ Subtotal</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'note')">+ Note</button>
         </div>`;
@@ -983,7 +983,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           const optionsStr = opts.join(', ');
           const valueField = opts.length > 0
             ? `<select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" style="flex:1;">
-                <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+                <option value=""${!item.value ? ' selected' : ''}>, Select, </option>
                 ${opts.map(o => `<option value="${escapeAttr(o)}"${item.value === o ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}
               </select>`
             : `<input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Value (add options below to make a dropdown)">`;
@@ -1137,7 +1137,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           const k = t.project_type || 'other';
           (grouped[k] = grouped[k] || []).push(t);
         });
-        let opts = '<option value="">— Select scope template —</option>';
+        let opts = '<option value="">, Select scope template, </option>';
         order.forEach(type => {
           if (!grouped[type]) return;
           const label = type.charAt(0).toUpperCase() + type.slice(1);
@@ -1487,7 +1487,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         setDirty(true); render();
       };
       window.deletePayRow = (rowId) => {
-        if (getReceipt(rowId)) { showToast('This payment is collected — undo the receipt first', 'error'); return; }
+        if (getReceipt(rowId)) { showToast('This payment is collected: undo the receipt first', 'error'); return; }
         contract.payment_schedule = contract.payment_schedule.filter(r => r.id !== rowId);
         recalcBalanceRow();
         setDirty(true); render();
@@ -1536,12 +1536,12 @@ const contractorDefaultName = savedContractor?.signer_name || '';
             const data = await res.json();
             if (!data.success) { showToast(data.error || 'Failed to switch plan', 'error'); return; }
             if (data.empty_reason === 'no_total') {
-              showToast('Set a price first — add a scope with a Subtotal row (or it carries from the quote).', 'error');
+              showToast('Set a price first: add a scope with a Subtotal row (or it carries from the quote).', 'error');
               return;
             }
             contract.payment_schedule = data.payment_schedule || [];
             render();
-            setDirty(true); // schedule regenerated — Save to persist total + rows together
+            setDirty(true); // schedule regenerated: Save to persist total + rows together
             showToast(plan === 'end_date' ? 'Switched to balance-on-completion plan' : 'Switched to monthly installments', 'success');
           } catch {
             showToast('Failed to switch plan', 'error');
@@ -1611,7 +1611,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
       window.amendAndResign = function () {
         window.showConfirmModal({
           title: 'Clear signatures and re-send?',
-          text: 'This clears the existing signature(s) + signed PDF and reverts the contract to draft so the customer signs again. Only do this for a major change where you want a fresh signature — normal edits keep the signature and just notify the customer.',
+          text: 'This clears the existing signature(s) + signed PDF and reverts the contract to draft so the customer signs again. Only do this for a major change where you want a fresh signature: normal edits keep the signature and just notify the customer.',
           confirmText: 'Clear signatures & re-send',
           type: 'warning',
           onConfirm: () => doSaveContract({ amend: true }),
@@ -1668,17 +1668,17 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           if (data.amended) {
             if (data.resent) {
               showToast(data.emailSent
-                ? 'Changes saved — contract re-sent to the customer to sign again.'
-                : 'Changes saved — signature cleared. Email didn\'t send; share the signing link manually.', 'success');
+                ? 'Changes saved: contract re-sent to the customer to sign again.'
+                : 'Changes saved, signature cleared. Email didn\'t send; share the signing link manually.', 'success');
             } else {
-              showToast('Signatures cleared — contract is now draft. Use "Send for signature" to resend.', 'success');
+              showToast('Signatures cleared: contract is now draft. Use "Send for signature" to resend.', 'success');
             }
             await loadContract();
             return;
           }
           const n = Array.isArray(data.notifiedChanges) ? data.notifiedChanges.length : 0;
           if (n > 0) {
-            showToast('Saved — signature kept, customer emailed the ' + n + ' change' + (n === 1 ? '' : 's') + '.', 'success');
+            showToast('Saved: signature kept, customer emailed the ' + n + ' change' + (n === 1 ? '' : 's') + '.', 'success');
           } else {
             showToast('Saved', 'success');
           }
@@ -1715,7 +1715,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
               const data = await res.json();
               if (!data.success) { showToast(data.error || 'Failed to send', 'error'); return; }
               contract.status = 'sent';
-              changedSinceSend = false; // sent this version — disable Resend until next change
+              changedSinceSend = false; // sent this version: disable Resend until next change
               renderStatusBadge();
               if (data.emailSent) {
                 showToast('Sent to customer for signature', 'success');
@@ -1746,7 +1746,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
             const data = await res.json();
             if (!data.success) { showToast(data.error || 'Failed', 'error'); return; }
             if (data.empty_reason === 'no_total') {
-              showToast('Set a price first — add a scope with a Subtotal row (or it carries from the quote).', 'error');
+              showToast('Set a price first: add a scope with a Subtotal row (or it carries from the quote).', 'error');
               return;
             }
             contract.payment_schedule = data.payment_schedule || [];

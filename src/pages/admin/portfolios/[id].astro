@@ -57,7 +57,7 @@ const mediaConfig = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{portfolioTitle} — MannyKnows Admin</title>
+    <title>{portfolioTitle}: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -103,13 +103,13 @@ const mediaConfig = {
         max-height: none;
         height: auto;
       }
-      /* Hide the "close" buttons inside the editor — there's no modal to close;
+      /* Hide the "close" buttons inside the editor. There's no modal to close;
          users navigate back via the standard "Back to portfolios" link above. */
       #manualDetailModal .mobile-close-header,
       #manualDetailModal .btn-close-desktop { display: none !important; }
 
       /* Other modals (delete confirm, lightbox) continue to render as overlays
-         — they're triggered from within the editor and are still modal in
+they're triggered from within the editor and are still modal in
          nature. Their default CSS (display:none → .show toggles to flex)
          keeps them hidden until needed. */
     </style>
@@ -199,7 +199,7 @@ const mediaConfig = {
 
     <!-- Pass the portfolio id and a copy of the data to the editor JS. The
          editor's openManualDetail() expects to find this when looking for a
-         card on the list — we expose the same shape here. -->
+         card on the list. We expose the same shape here. -->
     <div id="manualDetailRoot" data-portfolio-id={portfolioId} style="display:none;"
          data-portfolio={JSON.stringify(portfolio)}></div>
 

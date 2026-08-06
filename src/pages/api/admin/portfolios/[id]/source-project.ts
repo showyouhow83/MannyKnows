@@ -96,7 +96,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
       try {
         const t = JSON.parse(contractRow.terms);
         offlineScanUrl = t?.offline_scan_url || null;
-      } catch { /* terms not JSON — ignore */ }
+      } catch { /* terms not JSON: ignore */ }
     }
 
     // Project-owned documents (admin/offline uploads + quote-promotion docs).

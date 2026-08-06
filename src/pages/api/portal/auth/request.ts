@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 ${emailButton(link, 'Open my project', 'blue')}
               </div>
               <p style="font-size:13px;color:#94a3b8;line-height:1.6;text-align:center;">
-                Didn't request this? You can ignore this email — no one can open your project without this link.
+                Didn't request this? You can ignore this email, no one can open your project without this link.
               </p>
             </div>
             ${emailFooter()}
@@ -85,7 +85,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         await resend.emails.send({
           from: 'MannyKnows <projects@send.mannyknows.com>',
           to: email,
-          subject: `Open your project — ${project.project_number}`,
+          subject: `Open your project: ${project.project_number}`,
           html,
         });
       } catch (e) {

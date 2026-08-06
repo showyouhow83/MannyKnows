@@ -82,7 +82,7 @@ async function cronProcessQuoteFollowUps(db, resendKey) {
       }
     }
 
-    console.log('[Cron:FollowUps] Done — expired:', expired, 'followed-up:', followedUp, 'skipped:', skipped, 'errors:', errors);
+    console.log('[Cron:FollowUps] Done, expired:', expired, 'followed-up:', followedUp, 'skipped:', skipped, 'errors:', errors);
   } catch (err) {
     console.error('[Cron:FollowUps] Fatal error:', err);
   }
@@ -108,16 +108,16 @@ async function cronSendFollowUp(q, fuNumber, isRenego, sentAt, expiryDays, resen
 
   let subject, body;
   if (!isRenego && fuNumber === 1) {
-    subject = 'Just checking in on your quote — #' + q.quote_number;
+    subject = 'Just checking in on your quote: #' + q.quote_number;
     body = '<p>Hi ' + firstName + ',</p><p>Just wanted to make sure your quote made it to your inbox! We sent over an estimate for <strong>' + services + '</strong> at ' + addressLine + ' a few days ago and wanted to check in.</p><p>Your quote is valid until <strong>' + expiryStr + '</strong>. If you have any questions, just reply to this email.</p><p style="text-align:center;margin:24px 0"><a href="' + reviewUrl + '" style="background:#007bff;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px">Review & Accept Your Quote</a></p>';
   } else if (!isRenego && fuNumber === 2) {
-    subject = 'Your quote expires in 2 days — #' + q.quote_number;
+    subject = 'Your quote expires in 2 days: #' + q.quote_number;
     body = '<p>Hi ' + firstName + ',</p><p>Your quote for <strong>' + services + '</strong> at ' + addressLine + ' expires in <strong>2 days</strong> on <strong>' + expiryStr + '</strong>.</p><p>We\'d love the opportunity to work on your project. If the timing or pricing isn\'t quite right, just reply and let us know.</p><p style="text-align:center;margin:24px 0"><a href="' + reviewUrl + '" style="background:#10b981;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px">Review & Accept Your Quote</a></p>';
   } else if (isRenego && fuNumber === 1) {
-    subject = 'Following up on your revised quote — #' + q.quote_number;
+    subject = 'Following up on your revised quote: #' + q.quote_number;
     body = '<p>Hi ' + firstName + ',</p><p>Just following up on the revised quote we sent for <strong>' + services + '</strong> at ' + addressLine + '.</p><p>We made updates based on your feedback. If you\'d like to talk through anything, we\'re just a reply away.</p><p style="text-align:center;margin:24px 0"><a href="' + reviewUrl + '" style="background:#7c3aed;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px">Review Your Revised Quote</a></p>';
   } else {
-    subject = 'Your revised quote expires tomorrow — #' + q.quote_number;
+    subject = 'Your revised quote expires tomorrow: #' + q.quote_number;
     body = '<p>Hi ' + firstName + ',</p><p>Your revised quote for <strong>' + services + '</strong> at ' + addressLine + ' expires <strong>tomorrow</strong> on <strong>' + expiryStr + '</strong>.</p><p>If you\'re still interested, this is a great time to lock in your price.</p><p style="text-align:center;margin:24px 0"><a href="' + reviewUrl + '" style="background:#007bff;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px">Review & Accept</a></p>';
   }
 
@@ -180,7 +180,7 @@ async function cronSendLeadReminders(db, resendKey) {
             from: 'MannyKnows <bookings@send.mannyknows.com>',
             to: [lead.customer_email],
             subject: 'Reminder: Your Appointment Tomorrow - ' + lead.confirmation_code,
-            html: '<p>Hi ' + firstName + ',</p><p>This is a friendly reminder that your appointment with MannyKnows is tomorrow, ' + lead.preferred_date + ' at ' + (lead.preferred_time || 'your scheduled time') + '.</p><p>If you need to reschedule, please call us at <a href="tel:4133618451">(413) 361-8451</a>.</p><p>We look forward to seeing you!</p><p>— The MannyKnows Team</p>',
+            html: '<p>Hi ' + firstName + ',</p><p>This is a friendly reminder that your appointment with MannyKnows is tomorrow, ' + lead.preferred_date + ' at ' + (lead.preferred_time || 'your scheduled time') + '.</p><p>If you need to reschedule, please call us at <a href="tel:4133618451">(413) 361-8451</a>.</p><p>We look forward to seeing you!</p><p>, The MannyKnows Team</p>',
             text: 'Hi ' + firstName + ', reminder: your appointment is tomorrow ' + lead.preferred_date + ' at ' + (lead.preferred_time || 'your scheduled time') + '. Call (413) 361-8451 to reschedule.'
           })
         });
@@ -195,7 +195,7 @@ async function cronSendLeadReminders(db, resendKey) {
       }
     }
 
-    console.log('[Cron:Reminders] Done — sent:', sent, 'errors:', errors);
+    console.log('[Cron:Reminders] Done, sent:', sent, 'errors:', errors);
   } catch (err) {
     console.error('[Cron:Reminders] Fatal error:', err);
   }

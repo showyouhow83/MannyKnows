@@ -165,7 +165,7 @@ function timeAgo(dateStr: string): string {
     }
 
     /* Left column - Drafts list. Sticky sidebar so the page (and detail card)
-       scroll as one — no second scrollbar on the detail. */
+       scroll as one, no second scrollbar on the detail. */
     .quotes-list {
       width: 300px;
       min-width: 280px;
@@ -187,7 +187,7 @@ function timeAgo(dateStr: string): string {
     .quote-content {
       flex: 1;
       /* Flex child defaults to min-width:auto and won't shrink below its
-         content — wide inner content then pushes the panel past the viewport
+         content: wide inner content then pushes the panel past the viewport
          on mobile. Allow it to shrink to the available width. */
       min-width: 0;
       max-width: 100%;
@@ -303,7 +303,7 @@ function timeAgo(dateStr: string): string {
       color: #a1a1aa;
     }
 
-    /* Collapsed state (desktop — used for Cold section default) */
+    /* Collapsed state (desktop: used for Cold section default) */
     .section-body.collapsed {
       display: none;
     }
@@ -494,7 +494,7 @@ function timeAgo(dateStr: string): string {
 
     .quote-form.visible {
       display: block;
-      /* Flex child of .admin-main — allow it to shrink to the viewport so wide
+      /* Flex child of .admin-main: allow it to shrink to the viewport so wide
          inner content (tabs, fields) never pushes the whole panel sideways. */
       min-width: 0;
       max-width: 100%;
@@ -511,7 +511,7 @@ function timeAgo(dateStr: string): string {
          and required scrolling left to read it). */
       overflow-x: auto;
       overflow-y: hidden;
-      /* Touch swipes pan ONLY horizontally — no vertical drag of the nav. */
+      /* Touch swipes pan ONLY horizontally, no vertical drag of the nav. */
       touch-action: pan-x;
       overscroll-behavior-x: contain;
       scrollbar-width: none;
@@ -775,7 +775,7 @@ function timeAgo(dateStr: string): string {
       backdrop-filter: blur(10px);
     }
 
-    /* (Scope-editor hover rules moved to the <style is:global> block — they
+    /* (Scope-editor hover rules moved to the <style is:global> block, they
        target JS-rendered elements that don't carry Astro's scope attribute.) */
 
     /* Two-column row of form-sections (Customer Info + Appointment Scheduler).
@@ -827,7 +827,7 @@ function timeAgo(dateStr: string): string {
     }
 
     /* .form-input / .form-input:focus / ::placeholder defined canonically in
-       src/styles/admin.css. Do NOT redefine them here — local overrides cause
+       src/styles/admin.css. Do NOT redefine them here: local overrides cause
        the page-to-page drift the user reported. */
 
     .input-with-action {
@@ -1197,7 +1197,7 @@ function timeAgo(dateStr: string): string {
     @media (min-width: 769px) and (max-width: 1180px) {
       .quotes-list { width: 248px; min-width: 220px; max-width: 268px; }
     }
-    /* Collapsible list — toggle hides it so the detail gets full width. */
+    /* Collapsible list: toggle hides it so the detail gets full width. */
     .list-toggle-btn {
       display: inline-flex; align-items: center; justify-content: center;
       position: fixed; left: 8px; top: 50%; transform: translateY(-50%); z-index: 60;
@@ -1212,7 +1212,7 @@ function timeAgo(dateStr: string): string {
       .admin-main {
         flex-direction: column;
         height: auto;
-        /* Stretch children to full width — base align-items:flex-start would
+        /* Stretch children to full width: base align-items:flex-start would
            otherwise size the detail card to its content instead of the screen. */
         align-items: stretch;
       }
@@ -1337,7 +1337,7 @@ function timeAgo(dateStr: string): string {
          BOTH classes) hide their content when collapsed. Sections whose
          title isn't a direct child of .form-section (e.g. the Scopes &
          Pricing card uses a wrapping flex div around its h3) get skipped
-         by the init and must stay fully visible — without the dual-class
+         by the init and must stay fully visible, without the dual-class
          guard, they'd lose their content too. */
       .form-section.fs-collapsible.fs-collapsed > *:not(.form-section-title) {
         display: none !important;
@@ -1372,7 +1372,7 @@ function timeAgo(dateStr: string): string {
         padding: 8px !important;
       }
 
-      /* Floating Preview PDF FAB — fixed bottom-right while editing. Mirrors
+      /* Floating Preview PDF FAB: fixed bottom-right while editing. Mirrors
          the bottom-action-bar #btnPreviewPdf click. Hidden on desktop where
          the action bar is already in view. */
       .preview-fab {
@@ -1723,7 +1723,7 @@ function timeAgo(dateStr: string): string {
     }
   </style>
   <style is:global>
-    /* Scope editor — section/item action buttons (↑ ↓ ✕, Preview PDF) only
+    /* Scope editor: section/item action buttons (↑ ↓ ✕, Preview PDF) only
        show while the user is actively interacting with the parent. Hover
        alone no longer reveals them (was creating visual noise on the form);
        the user must focus an input or button inside the section/item to
@@ -1738,14 +1738,14 @@ function timeAgo(dateStr: string): string {
     }
     /* Scope-card and section actions live in the FIRST child div of the
        parent (the title row). Using `> div:focus-within > .scope-section-actions`
-       scopes the reveal to focus in THAT title row — not a deeper item. */
+       scopes the reveal to focus in THAT title row, not a deeper item. */
     .scope-section > div:focus-within > .scope-section-actions,
     .scope-item:focus-within .scope-item-actions {
       opacity: 1;
       pointer-events: auto;
     }
     /* Touch devices have no hover and focus-within is unreliable from a tap on
-       a non-input — so always show the actions there (they were untappable). */
+       a non-input, so always show the actions there (they were untappable). */
     @media (hover: none) {
       .scope-section-actions,
       .scope-item-actions {
@@ -1817,7 +1817,7 @@ function timeAgo(dateStr: string): string {
     }
     .image-thumb:hover .image-anno-btn { opacity: 1; }
 
-    /* Star toggle — which reference images appear in the customer PDF. Bottom-
+    /* Star toggle: which reference images appear in the customer PDF. Bottom-
        left so it doesn't collide with annotate (top-left) or delete (top-right).
        Starred state stays visible (not hover-only) so the selection reads at a
        glance, and the thumb gets a gold ring. */
@@ -1843,7 +1843,7 @@ function timeAgo(dateStr: string): string {
     .image-thumb:hover .image-star-btn { opacity: 1; }
     .image-star-btn.active { opacity: 1; background: rgba(202, 138, 4, 0.95); color: #fff; }
     .image-thumb.is-starred { outline: 2px solid #facc15; outline-offset: -2px; }
-    /* Touch devices (iPad/phone) have no hover — keep the image action buttons
+    /* Touch devices (iPad/phone) have no hover: keep the image action buttons
        visible so the Quote team can star/annotate/delete with a tap. */
     @media (hover: none) {
       .image-star-btn, .image-anno-btn, .image-delete-btn { opacity: 1 !important; }
@@ -1880,7 +1880,7 @@ function timeAgo(dateStr: string): string {
       transition: background 0.2s;
     }
 
-    /* Admin messages — right-aligned */
+    /* Admin messages: right-aligned */
     .message-item.admin-msg {
       align-self: flex-end;
       background: rgba(74, 222, 128, 0.1);
@@ -1892,7 +1892,7 @@ function timeAgo(dateStr: string): string {
       background: rgba(74, 222, 128, 0.15);
     }
 
-    /* Customer messages — left-aligned */
+    /* Customer messages: left-aligned */
     .message-item.customer-reply {
       align-self: flex-start;
       background: rgba(59, 130, 246, 0.1);
@@ -2373,7 +2373,7 @@ function timeAgo(dateStr: string): string {
           </div>
           <div class="form-actions-top">
             <span class="quote-status-badge" id="quoteStatusBadge" style="display:none;"></span>
-            <button class="btn btn-success" id="btnReactivate" style="display:none;" title="Reactivate this cold quote — resets follow-up count and sends it back to Pending Approval">
+            <button class="btn btn-success" id="btnReactivate" style="display:none;" title="Reactivate this cold quote: resets follow-up count and sends it back to Pending Approval">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
               Reactivate
             </button>
@@ -2477,7 +2477,7 @@ function timeAgo(dateStr: string): string {
              when they open a quote, with the date/time selector below. -->
         <div class="form-section">
           <h3 class="form-section-title">Interested in Service</h3>
-          <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">What the customer asked for. Add a row per service type — each holds its own scope description.</p>
+          <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">What the customer asked for. Add a row per service type: each holds its own scope description.</p>
           <div id="servicesList"></div>
           <button type="button" class="btn-add-row" id="btnAddService" style="margin-top:8px;">+ Add Service</button>
 
@@ -2736,7 +2736,7 @@ function timeAgo(dateStr: string): string {
             <!-- Promote to Project (manual promotion — customer approved offline) -->
             <div id="promoteSection" style="padding:16px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md);">
               <h4 style="font-size:14px; font-weight:600; color:var(--color-text-primary); margin-bottom:8px;">Promote to Project</h4>
-              <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:12px;">Convert this quote into a project now — use when the customer approved offline (phone, in person, email) instead of accepting online.</p>
+              <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:12px;">Convert this quote into a project now, use when the customer approved offline (phone, in person, email) instead of accepting online.</p>
               <div style="margin-bottom:12px;">
                 <label style="font-size:12px; font-weight:600; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Notes (optional)</label>
                 <textarea id="promoteNotes" class="form-input form-textarea" rows="2" placeholder="e.g., Customer approved over the phone on 6/12; agreed to start next week."></textarea>
@@ -2980,13 +2980,13 @@ function timeAgo(dateStr: string): string {
         <!-- Project Description -->
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">What do they need?</label>
-          <textarea id="quoteProjectDescription" name="project_description" class="form-input form-textarea" placeholder="A sentence or two — the business, what they're after, anything from the first conversation."></textarea>
+          <textarea id="quoteProjectDescription" name="project_description" class="form-input form-textarea" placeholder="A sentence or two: the business, what they're after, anything from the first conversation."></textarea>
         </div>
 
         <!-- Business address — collapsed by default; digital clients don't need
              one, but it's handy for the contract/invoice when relevant. -->
         <details style="margin-bottom: 16px;">
-          <summary style="cursor: pointer; font-size: 13px; color: var(--color-text-secondary); user-select: none;">+ Add a business address (optional — for the contract)</summary>
+          <summary style="cursor: pointer; font-size: 13px; color: var(--color-text-secondary); user-select: none;">+ Add a business address (optional, for the contract)</summary>
           <div style="margin-top: 12px;">
             <div class="form-group" style="margin-bottom: 16px;">
               <label class="form-label">Address</label>
@@ -3368,7 +3368,7 @@ function timeAgo(dateStr: string): string {
         const lines = [];
         if (fuCount >= 1) lines.push(`✉ Follow-up #1 sent${quote.last_follow_up_at && fuCount === 1 ? ' · ' + new Date(quote.last_follow_up_at + 'Z').toLocaleDateString() : ''}`);
         if (fuCount >= 2) lines.push(`✉ Follow-up #2 sent${quote.last_follow_up_at ? ' · ' + new Date(quote.last_follow_up_at + 'Z').toLocaleDateString() : ''}`);
-        if (isCold) lines.push('❄️ No response — quote marked cold');
+        if (isCold) lines.push('❄️ No response: quote marked cold');
         fuContent.innerHTML = lines.join('<br>');
       } else if (fuHistory) {
         fuHistory.style.display = 'none';
@@ -3538,7 +3538,7 @@ function timeAgo(dateStr: string): string {
             <div class="image-thumb${starred ? ' is-starred' : ''}"${quoteSelected.has(url) ? ' style="outline:3px solid #6366f1; outline-offset:-3px;"' : ''}>
               ${selBox}
               <img src="${getThumbnailUrl(url, 200)}" alt="Reference media ${i + 1}" onclick="openLightbox('${safeUrl}')" loading="lazy" />
-              <button type="button" class="image-star-btn${starred ? ' active' : ''}" onclick="event.stopPropagation(); toggleFeatured('${safeUrl}')" title="${starred ? 'Shown in the customer PDF — click to remove' : 'Show this image in the customer PDF'}">${starred ? '★' : '☆'}</button>
+              <button type="button" class="image-star-btn${starred ? ' active' : ''}" onclick="event.stopPropagation(); toggleFeatured('${safeUrl}')" title="${starred ? 'Shown in the customer PDF: click to remove' : 'Show this image in the customer PDF'}">${starred ? '★' : '☆'}</button>
               <a href="${annoUrl}" class="image-anno-btn" title="Annotate (markup, arrows, notes)" onclick="event.stopPropagation();">✎</a>
               <button type="button" class="image-delete-btn" onclick="deleteImage('${safeUrl}')" title="Remove">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -3864,7 +3864,7 @@ function timeAgo(dateStr: string): string {
             </svg>
             <input type="text" value="${escAttr(a.label)}" data-attachment-label="${a.id}"
               style="flex:1; padding:6px 10px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:6px; color:var(--color-text-primary); font-size:13px;" />
-            <button type="button" data-attachment-internal="${a.id}" data-internal="${a.is_internal ? '1' : '0'}" class="btn-sm" title="${a.is_internal ? 'Internal only — hidden from the customer accept page. Click to show to customer.' : 'Shown to the customer on the accept page. Click to make it internal/reference only.'}" style="white-space:nowrap; padding:4px 10px; font-size:11px; cursor:pointer; border-radius:4px; border:1px solid ${a.is_internal ? 'rgba(245,158,11,0.5)' : 'rgba(34,197,94,0.5)'}; background:${a.is_internal ? 'rgba(245,158,11,0.12)' : 'rgba(34,197,94,0.12)'}; color:${a.is_internal ? '#fcd34d' : '#86efac'};">${a.is_internal ? 'Internal' : 'Customer'}</button>
+            <button type="button" data-attachment-internal="${a.id}" data-internal="${a.is_internal ? '1' : '0'}" class="btn-sm" title="${a.is_internal ? 'Internal only: hidden from the customer accept page. Click to show to customer.' : 'Shown to the customer on the accept page. Click to make it internal/reference only.'}" style="white-space:nowrap; padding:4px 10px; font-size:11px; cursor:pointer; border-radius:4px; border:1px solid ${a.is_internal ? 'rgba(245,158,11,0.5)' : 'rgba(34,197,94,0.5)'}; background:${a.is_internal ? 'rgba(245,158,11,0.12)' : 'rgba(34,197,94,0.12)'}; color:${a.is_internal ? '#fcd34d' : '#86efac'};">${a.is_internal ? 'Internal' : 'Customer'}</button>
             <a href="${escAttr(a.file_url)}" target="_blank" rel="noopener" style="color:var(--color-primary); font-size:12px; text-decoration:none; white-space:nowrap;">View PDF</a>
             <button type="button" data-attachment-remove="${a.id}" class="btn-sm" style="background: none; border: 1px solid #dc2626; color: #dc2626; padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 4px;">Remove</button>
           </div>
@@ -4079,7 +4079,7 @@ function timeAgo(dateStr: string): string {
           const att = currentAttachments.find(a => a.id === id);
           if (att) att.is_internal = makeInternal ? 1 : 0;
           renderAttachments();
-          showToast(makeInternal ? 'Marked internal — hidden from the customer' : 'Now shown to the customer', 'success');
+          showToast(makeInternal ? 'Marked internal: hidden from the customer' : 'Now shown to the customer', 'success');
         } else { showToast(data.error || 'Failed to update', 'error'); }
       } catch { showToast('Failed to update', 'error'); }
     }
@@ -4397,7 +4397,7 @@ function timeAgo(dateStr: string): string {
         });
         const data = await res.json() as { success: boolean; error?: string };
         if (data.success) {
-          showToast('Quote reactivated — follow-up sequence reset');
+          showToast('Quote reactivated: follow-up sequence reset');
           setTimeout(() => location.reload(), 1000);
         } else {
           showToast(data.error || 'Failed to reactivate', 'error');
@@ -5450,7 +5450,7 @@ function timeAgo(dateStr: string): string {
         if (pBody || pSubj) {
           const u = document.getElementById('btnUndoPolish'); if (u) (u as HTMLElement).style.display = '';
           saveQuoteMsgDraft();
-          showToast('Polished — use Undo polish to revert');
+          showToast('Polished: use Undo polish to revert');
         } else { showToast('Failed to polish', 'error'); }
       } catch {
         showToast('Failed to polish message', 'error');
@@ -5590,7 +5590,7 @@ function timeAgo(dateStr: string): string {
     //   • the page-level "Add scope from template" select
     //   • per-scope "Replace with template" selects (one per scope card)
     function buildTemplatePickerOptions(selectedId: number | null): string {
-      const opts: string[] = ['<option value="">— Select template —</option>'];
+      const opts: string[] = ['<option value="">, Select template, </option>'];
       const order = ['kitchen_remodel', 'bathroom_remodel', 'interior_painting', 'flooring', 'general_repairs', 'other'];
       const grouped = new Map<string, typeof scopeTemplates>();
       for (const t of scopeTemplates) {
@@ -5647,7 +5647,7 @@ function timeAgo(dateStr: string): string {
       updateSendButtonState();
       const status = document.getElementById('scopeSaveStatus');
       if (status) {
-        status.textContent = d ? 'Unsaved changes — click Save' : '';
+        status.textContent = d ? 'Unsaved changes: click Save' : '';
         status.style.color = d ? '#fbbf24' : 'var(--color-text-secondary)';
       }
       // Cue the single (main) Save button so the admin knows there are
@@ -5746,7 +5746,7 @@ function timeAgo(dateStr: string): string {
         <div style="display:flex; gap:6px; flex-wrap:wrap; padding-top:8px; border-top:1px dashed var(--glass-border); margin-top:8px;">
           <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'bullet')" style="padding:5px 10px; font-size:12px;">+ Bullet</button>
           <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'fillable')" style="padding:5px 10px; font-size:12px;">+ Color line</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'choice')" style="padding:5px 10px; font-size:12px;" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'choice')" style="padding:5px 10px; font-size:12px;" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'subtotal')" style="padding:5px 10px; font-size:12px;">+ Subtotal</button>
           <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'note')" style="padding:5px 10px; font-size:12px;">+ Note</button>
         </div>
@@ -5770,7 +5770,7 @@ function timeAgo(dateStr: string): string {
         const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
         const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
         fields = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. Wall color — living room)" style="flex:1; min-width:140px;">
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. Wall color: living room)" style="flex:1; min-width:140px;">
           <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Color name or code" style="flex:1; min-width:140px;">
         </div>
         <div style="display:flex; gap:6px; margin-top:6px;">
@@ -5795,7 +5795,7 @@ function timeAgo(dateStr: string): string {
         const optionsStr = opts.join(', ');
         const valueField = opts.length > 0
           ? `<select class="form-input" onchange="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" style="flex:1; min-width:140px;">
-              <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+              <option value=""${!item.value ? ' selected' : ''}>, Select, </option>
               ${opts.map(o => `<option value="${scopeEscape(o)}"${item.value === o ? ' selected' : ''}>${scopeEscape(o)}</option>`).join('')}
             </select>`
           : `<input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Value (add options to make this a dropdown)" style="flex:1; min-width:140px;">`;
@@ -5852,7 +5852,7 @@ function timeAgo(dateStr: string): string {
             if (it && it.type === 'subtotal') {
               const amt = Number(it.amount) || 0;
               const label = scopesState.length > 1
-                ? `${sc.title || 'Scope'} — ${it.label || 'Subtotal'}`
+                ? `${sc.title || 'Scope'}: ${it.label || 'Subtotal'}`
                 : (it.label || 'Subtotal');
               rows.push({ label, amount: amt });
             }
@@ -5866,7 +5866,7 @@ function timeAgo(dateStr: string): string {
               <span style="font-weight:600; font-variant-numeric:tabular-nums;">$${r.amount.toFixed(2)}</span>
             </div>
           `).join('')
-        : `<div style="padding:8px 10px; font-size:12px; color:var(--color-text-secondary); font-style:italic;">No Subtotal items yet — add one inside a scope section to set pricing.</div>`;
+        : `<div style="padding:8px 10px; font-size:12px; color:var(--color-text-secondary); font-style:italic;">No Subtotal items yet, add one inside a scope section to set pricing.</div>`;
       const sum = rows.reduce((s, r) => s + r.amount, 0);
       const discountEl = document.getElementById('inputDiscount') as HTMLInputElement | null;
       const discount = discountEl ? (parseFloat(discountEl.value) || 0) : 0;

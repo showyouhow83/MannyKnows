@@ -47,7 +47,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     const contract = await db.prepare(
       'SELECT id FROM project_contracts WHERE project_id = ?'
     ).bind(projectId).first() as { id: number } | null;
-    if (!contract) return json({ error: 'No contract for this project — apply a template first.' }, 404);
+    if (!contract) return json({ error: 'No contract for this project, apply a template first.' }, 404);
 
     const body = await request.json() as {
       row_id?: string;
@@ -139,7 +139,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
           await resend.emails.send({
             from: emailFrom(brand, 'projects'),
             to: proj.customer_email,
-            subject: `Payment received — ${fmtMoney(amount)} · ${proj.project_number}`,
+            subject: `Payment received: ${fmtMoney(amount)} · ${proj.project_number}`,
             html: `<!DOCTYPE html><html><body style="margin:0;background:#f1f5f9;"><div style="max-width:600px;margin:0 auto;background:#fff;">
               ${emailHeader('Payment received', brand)}
               <div style="padding:32px 30px;">
@@ -156,9 +156,9 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
           await resend.emails.send({
             from: 'MannyKnows <projects@send.mannyknows.com>',
             to: adminTo,
-            subject: `Payment collected ${fmtMoney(amount)} — ${proj.project_number}`,
+            subject: `Payment collected ${fmtMoney(amount)}: ${proj.project_number}`,
             html: `<div style="font-family:sans-serif;"><h2>Payment recorded</h2>
-              <p><strong>${escapeHtml(proj.project_number)}</strong> — ${escapeHtml(proj.customer_name || '')}</p>
+              <p><strong>${escapeHtml(proj.project_number)}</strong>: ${escapeHtml(proj.customer_name || '')}</p>
               <p>${escapeHtml(rowLabel || rowKind || 'payment')}: <strong>${fmtMoney(amount)}</strong> · ${escapeHtml(methodLine)}${collectedAt ? ` · ${escapeHtml(collectedAt)}` : ''}</p></div>`,
           });
         }

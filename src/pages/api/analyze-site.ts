@@ -106,7 +106,7 @@ async function captureLead(
     if (!apiKey) return;
     const from = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
     const to = env?.OWNER_EMAIL || 'mm@mannyknows.com';
-    const scoreLine = result?.overall != null ? `${result.overall}/100 — ${result.grade}` : note;
+    const scoreLine = result?.overall != null ? `${result.overall}/100: ${result.grade}` : note;
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -152,7 +152,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const email = (typeof payload?.email === 'string' ? payload.email : '').trim().toLowerCase();
   if (!email || email.length > 254 || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email)) {
-    return json({ ok: false, error: 'Add your email to run the free scan — it takes the same two seconds.' }, 400);
+    return json({ ok: false, error: 'Add your email to run the free scan. It takes the same two seconds.' }, 400);
   }
 
   const target = normalizeTarget(typeof payload?.url === 'string' ? payload.url : '');
@@ -160,7 +160,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   // Don't scan ourselves into a loop.
   if (/(^|\.)mannyknows\.com$/.test(target.hostname)) {
-    return json({ ok: false, error: 'Nice try — we like this site too. Enter your business website.' }, 400);
+    return json({ ok: false, error: 'Nice try. We like this site too. Enter your business website.' }, 400);
   }
 
   const kv = env?.MK_KV_CHATBOT;
@@ -176,7 +176,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         return json({ ok: false, error: "That's a lot of scans in one hour. Give it a rest, or tell us what you're up to at mm@mannyknows.com." }, 429);
       }
       await kv.put(rlKey, String(used + 1), { expirationTtl: 3600 });
-    } catch { /* limiter unavailable — let the scan through */ }
+    } catch { /* limiter unavailable: let the scan through */ }
 
     try {
       const cached = await kv.get(`scan_cache:v3:${target.hostname}`);
@@ -191,7 +191,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const page = await fetchCapped(target.origin + '/', 'text/html,application/xhtml+xml');
   if (!page) {
     await captureLead(kv, email, target.hostname, target.origin, ip, null, 'site unreachable (timeout/refused)');
-    return json({ ok: false, error: "We couldn't reach that site (timeout or connection refused). Double-check the address — or if the site is down, that's finding #1." }, 502);
+    return json({ ok: false, error: "We couldn't reach that site (timeout or connection refused). Double-check the address, or if the site is down, that's finding #1." }, 502);
   }
   if (page.status === 403 || page.status === 503 || /just a moment|cf-chl|challenge-platform/i.test(page.body)) {
     // Still a lead — arguably a warmer one: they wanted the scan and couldn't get it.
@@ -199,7 +199,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({
       ok: false,
       blocked: true,
-      error: "That site's firewall blocks automated visitors, so the instant scan can't see it. A person can — request the free human review below and Manny will do it by hand.",
+      error: "That site's firewall blocks automated visitors, so the instant scan can't see it. A person can: request the free human review below and Manny will do it by hand.",
     }, 200);
   }
   if (page.status >= 400) {

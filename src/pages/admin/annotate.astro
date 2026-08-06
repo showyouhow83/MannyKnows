@@ -49,7 +49,7 @@ const imgSrc = displaySrc(src);
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Annotate image — MannyKnows Admin</title>
+  <title>Annotate image: MannyKnows Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
@@ -137,7 +137,7 @@ const imgSrc = displaySrc(src);
       <button class="anno-tool primary" id="saveBtn">Save annotated copy</button>
     </div>
 
-    <div class="anno-hint" id="annoHint">Pen selected — draw on the image. Switch tools above. Pins drop numbered markers you can label below.</div>
+    <div class="anno-hint" id="annoHint">Pen selected: draw on the image. Switch tools above. Pins drop numbered markers you can label below.</div>
 
     <div class="anno-body">
       <div class="anno-stage-wrap">
@@ -360,7 +360,7 @@ const imgSrc = displaySrc(src);
         b.addEventListener('click', function () {
           tool = b.dataset.tool;
           document.querySelectorAll('[data-tool]').forEach(function (x) { x.classList.toggle('active', x === b); });
-          var hints = { pen: 'Pen — draw freehand on the image.', arrow: 'Arrow — drag from tail to head.', text: 'Text — click where you want the note, then type it.', pin: 'Pin — click to drop a numbered marker, then describe it below.' };
+          var hints = { pen: 'Pen, draw freehand on the image.', arrow: 'Arrow, drag from tail to head.', text: 'Text, click where you want the note, then type it.', pin: 'Pin, click to drop a numbered marker, then describe it below.' };
           hint.textContent = hints[tool] || '';
         });
       });
@@ -437,7 +437,7 @@ const imgSrc = displaySrc(src);
           // Send the flattened image as RAW BINARY (a base64 data_url in JSON
           // tripped Cloudflare's WAF → 403). target/id go in the query string.
           var blob = await new Promise(function (resolve) { out.toBlob(resolve, 'image/jpeg', 0.9); });
-          if (!blob) { showToast('Save failed — could not render image'); btn.disabled = false; btn.textContent = 'Save annotated copy'; return; }
+          if (!blob) { showToast('Save failed: could not render image'); btn.disabled = false; btn.textContent = 'Save annotated copy'; return; }
           var res = await fetch('/api/admin/annotate-save/?target=' + encodeURIComponent(target) + '&id=' + encodeURIComponent(Number(id)), {
             method: 'POST', credentials: 'include',
             headers: { 'Content-Type': blob.type || 'image/jpeg', 'X-Anno-Caption': 'Annotated' },
@@ -445,11 +445,11 @@ const imgSrc = displaySrc(src);
           });
           var data = await res.json();
           if (!data.success) { showToast(data.error || 'Save failed'); btn.disabled = false; btn.textContent = 'Save annotated copy'; return; }
-          showToast('Saved — returning…');
+          showToast('Saved: returning…');
           setTimeout(function () { window.location.href = back; }, 900);
         } catch (err) {
           console.error(err);
-          showToast('Save failed — ' + (err && err.message ? err.message : 'unknown'));
+          showToast('Save failed: ' + (err && err.message ? err.message : 'unknown'));
           btn.disabled = false; btn.textContent = 'Save annotated copy';
         }
       });

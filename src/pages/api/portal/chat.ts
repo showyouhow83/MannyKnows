@@ -144,17 +144,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const hasCrewAssigned = !!(project as any).crew_lead_name;
     const statusDescriptions: Record<string, string> = {
       needs_crew: hasCrewAssigned
-        ? 'Ready to Start — crew has been assigned and the project is confirmed. We will notify you when work begins.'
-        : 'Scheduling — we are preparing your project and assigning a crew. Check back here for updates.',
-      in_progress: 'In Progress — the crew is actively working on your project.',
-      completed: 'Completed — all work is done. Thank you for choosing MannyKnows!',
+        ? 'Ready to Start: crew has been assigned and the project is confirmed. We will notify you when work begins.'
+        : 'Scheduling. We are preparing your project and assigning a crew. Check back here for updates.',
+      in_progress: 'In Progress: the crew is actively working on your project.',
+      completed: 'Completed: all work is done. Thank you for choosing MannyKnows!',
     };
     const statusLabel = statusDescriptions[String(project.status)] || String(project.status);
 
     const contractStatusDescriptions: Record<string, string> = {
-      pending_signature: 'Sent to customer — awaiting their signature.',
-      signed: 'Signed by customer — awaiting contractor countersignature.',
-      countersigned: 'Fully executed — signed by both parties.',
+      pending_signature: 'Sent to customer: awaiting their signature.',
+      signed: 'Signed by customer: awaiting contractor countersignature.',
+      countersigned: 'Fully executed: signed by both parties.',
       voided: 'Voided.',
     };
     const contractStatusLabel = contract
@@ -164,7 +164,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // ── System prompt ────────────────────────────────────────────────────
     const ctx = [
       `Customer: ${project.customer_name} (greet them by first name: ${firstName})`,
-      `Project: ${project.project_number} — status: ${statusLabel}`,
+      `Project: ${project.project_number}, status: ${statusLabel}`,
       projServices ? `Project type / services: ${projServices}` : '',
       projScopeDesc ? `Scope notes: ${projScopeDesc}` : '',
       scopeSummary ? `Scope of work:\n${scopeSummary}` : '',
@@ -179,24 +179,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
       recentUpdates.length ? `Recent progress notes:\n${recentUpdates.map(u => `  [${u.at.slice(0, 10)}] ${u.by}: ${u.note}`).join('\n')}` : '',
       colorItems.length ? `Colors needed:\n${colorItems.map(c => `  - "${c.label}" [item_id=${c.id}] ${c.filled ? `(provided: ${c.value})` : '(NOT provided yet)'}`).join('\n')}` : 'No color choices on this project.',
       choiceItems.length ? `Choices:\n${choiceItems.map(c => `  - "${c.label}" [item_id=${c.id}] options: ${c.options.join(', ')} ${c.value ? `(chosen: ${c.value})` : '(not chosen)'}`).join('\n')}` : '',
-      payRows.length ? `Payments:\n${payRows.map(p => `  - "${p.label}" [row_id=${p.id}] ${fmtMoney(p.amount)} due ${fmtDate(p.due)} — ${p.paid ? 'PAID' : 'pending'}`).join('\n')}` : '',
+      payRows.length ? `Payments:\n${payRows.map(p => `  - "${p.label}" [row_id=${p.id}] ${fmtMoney(p.amount)} due ${fmtDate(p.due)}, ${p.paid ? 'PAID' : 'pending'}`).join('\n')}` : '',
     ].filter(Boolean).join('\n');
 
-    const systemInstruction = `You are Remi, the friendly project concierge for MannyKnows — talking with an EXISTING customer about THEIR specific project. You are NOT a salesperson: never pitch "free estimates", discounts, or promotions, and never try to book a new appointment.
+    const systemInstruction = `You are Remi, the friendly project concierge for MannyKnows: talking with an EXISTING customer about THEIR specific project. You are NOT a salesperson: never pitch "free estimates", discounts, or promotions, and never try to book a new appointment.
 
 Greet ${firstName} warmly by first name on your first reply. Keep replies short (2-3 sentences), warm, and helpful. One question at a time.
 
 You can help them:
-- Answer questions about their scope of work, timeline/start date, and payments using ONLY the project facts below (don't invent details — if unknown, say you'll have the team follow up).
+- Answer questions about their scope of work, timeline/start date, and payments using ONLY the project facts below (don't invent details: if unknown, say you'll have the team follow up).
 - Record the colors they choose: when they tell you a color for a specific surface, call record_color_choice with the matching item_id.
-- Record a preferred meeting time for a payment (we collect first payments in person): call record_payment_time with the matching row_id. The payment DATE is already set in the contract — you only need a TIME, unless they want a different date (alt_date).
+- Record a preferred meeting time for a payment (we collect first payments in person): call record_payment_time with the matching row_id. The payment DATE is already set in the contract. You only need a TIME, unless they want a different date (alt_date).
 - Proactively (but gently) nudge for colors that are NOT provided yet and for a meeting time on the next pending payment.
 
 PROJECT FACTS:
 ${ctx}
 ${(project as any).colors_locked ? '\nNOTE: This customer has FINALIZED and LOCKED their colors into the contract. Do NOT try to record or change colors. If they want a color change, tell them you\'ll have the team reopen their selections.' : ''}
 
-When you record something with a tool, confirm it back in plain language (e.g. "Got it — trim in SW 7008, satin ✓").`;
+When you record something with a tool, confirm it back in plain language (e.g. "Got it: trim in SW 7008, satin ✓").`;
 
     // ── Tools ────────────────────────────────────────────────────────────
     const tools = [{
@@ -253,7 +253,7 @@ When you record something with a tool, confirm it back in plain language (e.g. "
         try {
           if (call.name === 'record_color_choice') {
             const item = colorItems.find(c => c.id === args.item_id);
-            if ((project as any).colors_locked) output = { ok: false, error: 'Colors are finalized and locked — the customer must contact us to change them.' };
+            if ((project as any).colors_locked) output = { ok: false, error: 'Colors are finalized and locked, the customer must contact us to change them.' };
             else if (!item) output = { ok: false, error: 'Unknown item_id' };
             else {
               const pt = args.product_type === 'paint' || args.product_type === 'stain' ? args.product_type : null;
@@ -294,7 +294,7 @@ When you record something with a tool, confirm it back in plain language (e.g. "
       result = await chat.sendMessage(responses as any);
     }
 
-    const reply = (result.response.text() || '').trim() || "I'm here to help with your project — what would you like to know?";
+    const reply = (result.response.text() || '').trim() || "I'm here to help with your project: what would you like to know?";
     return json({ success: true, reply, actions, savedSomething: actions.length > 0 });
   } catch (e) {
     console.error('[portal/chat] error:', e);

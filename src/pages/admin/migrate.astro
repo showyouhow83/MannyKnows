@@ -23,7 +23,7 @@ if (!session.isAuthenticated) return Astro.redirect('/admin');
     <h1 style="font-size:22px;font-weight:700;margin:14px 0 6px;">Database Migrations</h1>
     <p style="color:var(--color-text-secondary);font-size:14px;margin-bottom:22px;">
       Runs the bundled SQL migration files directly against D1. Safe to re-run
-      (statements are IF NOT EXISTS) — except <code>002</code>'s initial
+      (statements are IF NOT EXISTS): except <code>002</code>'s initial
       <code>leads</code> rebuild, which should only run before go-live.
     </p>
 
@@ -75,13 +75,13 @@ if (!session.isAuthenticated) return Astro.redirect('/admin');
         });
         const data = await res.json();
         if (data.success) {
-          log.textContent += `\n✅ SUCCESS — ${data.executed}/${data.total} statements executed.\n\n` +
+          log.textContent += `\n✅ SUCCESS: ${data.executed}/${data.total} statements executed.\n\n` +
             data.results.map(r => `  ✓ [${r.i}] ${r.head}`).join('\n');
         } else {
           log.textContent += `\n❌ FAILED at statement ${data.failedAt} (${data.executed} executed before it)\n` +
             `   Error: ${data.results?.at(-1)?.error || data.error}\n\n` +
             (data.results || []).map(r => `  ${r.ok ? '✓' : '✗'} [${r.i}] ${r.head}${r.error ? '\n      → ' + r.error : ''}`).join('\n') +
-            `\n\nFix the issue, then re-run — completed statements are IF NOT EXISTS and will no-op.`;
+            `\n\nFix the issue, then re-run: completed statements are IF NOT EXISTS and will no-op.`;
         }
       } catch (e) {
         log.textContent += `\n❌ Request failed: ${e.message}`;

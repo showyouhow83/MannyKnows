@@ -227,7 +227,7 @@ function fmtDate(s: string | null | undefined): string {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quote {quote.quote_number}{scopeFiltered ? ` — ${scopeTitle}` : ''} — Preview</title>
+    <title>Quote {quote.quote_number}{scopeFiltered ? `, ${scopeTitle}` : ''}, Preview</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <style>
@@ -473,7 +473,7 @@ function fmtDate(s: string | null | undefined): string {
       <div set:html={bodyHtml}></div>
 
       <div class="grand-total-row">
-        <span>Total cost — labor and materials</span>
+        <span>Total cost: labor and materials</span>
         <span class="amount">${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
       </div>
 
@@ -671,8 +671,8 @@ function fmtDate(s: string | null | undefined): string {
             // replace-on-save uses the label as the dedup key, so the signed
             // version replaces any prior "Estimate — Signed" cleanly.
             const label = signedMode
-              ? 'Estimate — Signed'
-              : (scopeTitle ? 'Estimate — ' + scopeTitle : 'Estimate');
+              ? 'Estimate: Signed'
+              : (scopeTitle ? 'Estimate, ' + scopeTitle : 'Estimate');
             // HTTP headers must be ISO-8859-1 / Latin-1 — em-dashes and
             // other unicode in the label (e.g. "Estimate — Signed" or a
             // per-scope title with accented chars) make fetch throw
@@ -713,7 +713,7 @@ function fmtDate(s: string | null | undefined): string {
               // failure inline on the button itself so admin sees it without
               // a native browser alert dialog.
               var msg = err && err.message ? err.message : 'unknown error';
-              btn.textContent = 'Save failed — see console';
+              btn.textContent = 'Save failed: see console';
               btn.style.background = 'rgba(220, 38, 38, 0.7)';
               console.error('[Save PDF] ' + msg);
               setTimeout(function() {
@@ -750,10 +750,10 @@ function fmtDate(s: string | null | undefined): string {
             if (e.source !== iframe.contentWindow) return;
             const d = e.data; if (!d || typeof d !== 'object') return;
             if (d.type === 'sl-pdf-saved' && d.quoteId === Number(quoteId)) { settled = true; cleanup(); done('Saved ✓', '#16a34a', false); }
-            else if (d.type === 'sl-pdf-failed' && d.quoteId === Number(quoteId)) { settled = true; cleanup(); done('Failed — retry', '', true); }
+            else if (d.type === 'sl-pdf-failed' && d.quoteId === Number(quoteId)) { settled = true; cleanup(); done('Failed: retry', '', true); }
           }
           window.addEventListener('message', onMsg);
-          setTimeout(function() { if (!settled) { cleanup(); done('Timed out — retry', '', true); } }, 60000);
+          setTimeout(function() { if (!settled) { cleanup(); done('Timed out: retry', '', true); } }, 60000);
           document.body.appendChild(iframe);
         }
         btn.addEventListener('click', saveViaIframe);

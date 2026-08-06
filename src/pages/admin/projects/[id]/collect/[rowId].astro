@@ -85,7 +85,7 @@ function todayISO(): string {
   return `${d.getFullYear()}-${m}-${dd}`;
 }
 
-const pageTitle = project ? `Collect — ${project.project_number}` : 'Collect payment';
+const pageTitle = project ? `Collect: ${project.project_number}` : 'Collect payment';
 const prefill = {
   amount: existingReceipt ? Number(existingReceipt.amount) : (row ? Number(row.amount) || 0 : 0),
   date: existingReceipt?.collected_at ? String(existingReceipt.collected_at).split(/[\sT]/)[0] : todayISO(),
@@ -100,7 +100,7 @@ const prefill = {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>{pageTitle} — MannyKnows Admin</title>
+  <title>{pageTitle}: MannyKnows Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
@@ -321,7 +321,7 @@ const prefill = {
       function update() {
         if (locked) {
           saveBtn.disabled = true;
-          statusEl.textContent = 'Already collected — tap “Edit receipt” to change it, or “Undo receipt” to remove it.';
+          statusEl.textContent = 'Already collected: tap “Edit receipt” to change it, or “Undo receipt” to remove it.';
           return;
         }
         var ok = !pads.cust.isEmpty() && !pads.ctr.isEmpty()

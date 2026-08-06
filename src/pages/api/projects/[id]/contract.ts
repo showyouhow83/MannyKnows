@@ -132,7 +132,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
     const existing = await db.prepare(
       'SELECT * FROM project_contracts WHERE project_id = ?'
     ).bind(projectId).first() as any;
-    if (!existing) return json({ error: 'Contract not found — apply a template first' }, 404);
+    if (!existing) return json({ error: 'Contract not found, apply a template first' }, 404);
 
     const body = await request.json() as Record<string, unknown>;
 
@@ -345,7 +345,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
         }
         if (!effectiveStart) {
           return json({
-            error: 'A target start date is required before sending. Set it on the project Details tab (or in the contract editor) — weather variance is already covered by the weather clause.',
+            error: 'A target start date is required before sending. Set it on the project Details tab (or in the contract editor): weather variance is already covered by the weather clause.',
           }, 400);
         }
       }
@@ -409,10 +409,10 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
           await resend.emails.send({
             from: 'MannyKnows <contracts@send.mannyknows.com>',
             to: ctx.customer_email,
-            subject: `Update to your contract — ${ctx.project_number}`,
+            subject: `Update to your contract: ${ctx.project_number}`,
             html: `<div style="font-family:-apple-system,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1e293b;">
               <h2 style="margin:0 0 12px;">We updated your contract</h2>
-              <p style="font-size:15px;color:#475569;line-height:1.6;">Hi ${escHtml(firstName)}, we made the following change(s) to your contract for <strong>${escHtml(ctx.project_number)}</strong>. Your signature stays in place — no need to sign again.</p>
+              <p style="font-size:15px;color:#475569;line-height:1.6;">Hi ${escHtml(firstName)}, we made the following change(s) to your contract for <strong>${escHtml(ctx.project_number)}</strong>. Your signature stays in place, no need to sign again.</p>
               <ul style="font-size:15px;color:#1e293b;line-height:1.6;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 14px 14px 30px;">${list}</ul>
               <p style="font-size:14px;color:#475569;">If anything looks off, just reply to this email or call us.</p>
               <p style="font-size:14px;"><a href="${link}" style="color:#2563eb;">View your contract →</a></p>
@@ -449,7 +449,7 @@ export const PATCH: APIRoute = async ({ request, locals, params }) => {
           WHERE c.id = ?
         `).bind(existing.id).first() as any;
         if (!ctx?.customer_email) {
-          emailError = 'No customer_email on the project — share the signing link manually.';
+          emailError = 'No customer_email on the project: share the signing link manually.';
         } else {
           const resendApiKey = env?.RESEND_API_KEY;
           const notificationEmail = env?.NOTIFICATION_EMAIL;

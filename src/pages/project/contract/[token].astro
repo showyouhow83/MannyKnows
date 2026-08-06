@@ -78,7 +78,7 @@ if (row?.quote_id && !error) {
 const firstName = row?.customer_name?.split(' ')?.[0] || 'there';
 
 function fmtDate(s: string | null | undefined): string {
-  if (!s) return ': ';
+  if (!s) return '—';
   try {
     // Tolerate SQLite CURRENT_TIMESTAMP ('YYYY-MM-DD HH:MM:SS') as well as
     // plain 'YYYY-MM-DD' values. Splitting on space/T isolates the date.
@@ -216,7 +216,7 @@ function parseUserAgent(ua: string | null | undefined): string {
   return `${browser} on ${os}`;
 }
 function fmtFullDateTime(s: string | null | undefined): string {
-  if (!s) return ': ';
+  if (!s) return '—';
   try {
     const trimmed = String(s).replace(' ', 'T') + 'Z';
     const d = new Date(trimmed);

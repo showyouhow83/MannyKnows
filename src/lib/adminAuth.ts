@@ -154,7 +154,7 @@ export async function timingSafeEqual(a: string, b: string): Promise<boolean> {
 }
 
 export class AdminAuth {
-  private static SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours (was 7d — shorter-lived, matches docs)
+  private static SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours (was 7d: shorter-lived, matches docs)
   private static SESSION_KEY = 'mk_admin_session';
 
   // Validate admin session from request

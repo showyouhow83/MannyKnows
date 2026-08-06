@@ -48,12 +48,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const prompt = `You are polishing a single piece of text from a home remodeling and repair company's quote / contract document. The text type is "${kind}".
 
-Rules — follow strictly:
+Rules: follow strictly:
 1. Fix obvious typos and grammar (e.g. "a cording" → "according", missing articles, run-on punctuation).
 2. If the text is in Spanish (in part or in whole), translate it to professional English.
 3. PRESERVE all numbers, dates, color codes, brand names (Sherwin Williams, Benjamin Moore, etc.), and quoted phrases verbatim.
 4. Keep the same meaning and the same level of detail. Do NOT add information that wasn't there. Do NOT shorten or summarize.
-5. Use professional but plain language — no marketing fluff, no greetings, no sign-offs.
+5. Use professional but plain language, no marketing fluff, no greetings, no sign-offs.
 6. Do NOT wrap the output in quotes. Do NOT add commentary, headers, or markdown. Output ONLY the polished text and nothing else.
 7. If the input is already clean English, return it unchanged.
 

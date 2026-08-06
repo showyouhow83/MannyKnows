@@ -433,7 +433,7 @@ function generateAutoReplyEmail(contact: any): string {
           <div class="content">
             <div class="message">
               Hi ${contact.name}! 👋<br><br>
-              Thanks for reaching out to MannyKnows. We've got your message, and we'll get back to you personally — usually within a day.
+              Thanks for reaching out to MannyKnows. We've got your message, and we'll get back to you personally, usually within a day.
             </div>
             
             <div class="details">

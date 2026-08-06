@@ -130,14 +130,14 @@ function fmtDate(s: string | null | undefined): string {
   } catch { return String(s); }
 }
 
-const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Sign in person';
+const pageTitle = project ? `Sign in person: ${project.project_number}` : 'Sign in person';
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>{pageTitle} — MannyKnows Admin</title>
+  <title>{pageTitle}: MannyKnows Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
@@ -512,7 +512,7 @@ const pageTitle = project ? `Sign in person — ${project.project_number}` : 'Si
               <canvas class="sig-pad"></canvas>
             </div>
             <div class="sig-actions">
-              <span>Admin signs fresh — overrides the saved default for this project only.</span>
+              <span>Admin signs fresh: overrides the saved default for this project only.</span>
               <button type="button" class="btn-clear" data-clear="contractor">Clear</button>
             </div>
             <input type="text" class="name-input" data-input="contractor_name" placeholder="Your full legal name" autocomplete="name" value={savedContractor?.signer_name || ''} />

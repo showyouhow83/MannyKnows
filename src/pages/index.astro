@@ -194,6 +194,17 @@ const NAVBAR_CONFIG = {
             </div>
         </header>
 
+		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
+		<PageSection
+			id="ai-team"
+			badge="AI Team"
+			title="Stop hiring AI. Start fixing the bottleneck."
+			subtitle="Something in your Western Mass business is leaking money: missed calls, posts that never go out, reviews nobody answers. Fixing it doesn't take ten AI agents. It takes one hire: Manny AI, who puts the right AI specialist on it. Nothing goes out without your OK."
+			variant="alternate"
+		>
+			<HomeAiTeam />
+		</PageSection>
+
 		<!-- Google Business Profile — the education section: what it is, what a
 		     maintained one earns, what an abandoned one costs. Every figure is
 		     sourced on the page (see the component's header comment). -->
@@ -212,16 +223,6 @@ const NAVBAR_CONFIG = {
 			<GoogleProfile />
 		</PageSection>
 
-		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
-		<PageSection
-			id="ai-team"
-			badge="AI Team"
-			title="Stop hiring AI. Start fixing the bottleneck."
-			subtitle="Something in your Western Mass business is leaking money: missed calls, posts that never go out, reviews nobody answers. Fixing it doesn't take ten AI agents. It takes one hire: Manny AI, who puts the right AI specialist on it. Nothing goes out without your OK."
-			variant="alternate"
-		>
-			<HomeAiTeam />
-		</PageSection>
 
 		<!-- Plans ("Plans that grow with you") — hidden from the homepage per request
 		     (kept, not deleted, in case we want it back). The plans still live on the
@@ -255,10 +256,6 @@ const NAVBAR_CONFIG = {
 		<!-- Testimonials — driven by src/data/testimonials.ts (real quotes only);
 		     renders nothing if that list is ever emptied.
 		     (Replaces the retired ReviewsSection carousel.) -->
-		<Testimonials />
-
-		<!-- Latest Work (real client sites) — portfolio proof, closing the page
-		     right after the testimonials (per Manny: quotes first, then the work). -->
 		<PageSection
 			id="work"
 			badge="Portfolio"
@@ -286,6 +283,11 @@ const NAVBAR_CONFIG = {
         </button>
       </div> */}
 		</PageSection>
+
+		<Testimonials />
+
+		<!-- Latest Work (real client sites) — portfolio proof, closing the page
+		     right after the testimonials (per Manny: quotes first, then the work). -->
 
 		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
 		     (kept, not deleted, in case we want it back). The posts still live in the

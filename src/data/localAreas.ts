@@ -131,7 +131,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. It's month-to-month with nothing extra to start: prepay a year and two months are free. Need a full multi-page site with your own admin and “Remi” booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
     faqBusinesses:
-      "Springfield's whole range: contractors in Sixteen Acres, restaurants downtown, medical and professional offices, churches, shops. If your customers find you by searching, the work is the same underneath: rank for what Springfield actually types into Google, answer when you can't reach the phone, and keep the site maintained long after launch day.",
+      "Springfield's whole range: contractors in Sixteen Acres, medical and dental practices downtown, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath: rank for what Springfield actually types into Google, answer when you can't reach the phone, and keep the site maintained long after launch day.",
     faqAgents:
       "Yes: it's half of what we do. “Remi”, the agent built into every site plan, answers questions and books work 24/7 in English and Spanish. Beyond “Remi” there's a whole roster: agents that write, design, post, run ads, and report, run for you by Manny AI, the manager you hire, AI staff from $95/mo. A Springfield painting contractor runs one today: it qualifies leads around the clock while the crew is up a ladder.",
     faqOutside:
@@ -232,7 +232,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "From $95/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, “Remi” answering customers around the clock, Google Business Profile setup, technical SEO, and ongoing maintenance. Month-to-month, nothing extra up front; prepay a year and you get two months free. A full multi-page site with your own admin and “Remi” booking appointments runs $245/mo, and one-time builds are on the table too: every plan is scoped to the business, not the other way around.",
     faqBusinesses:
-      "The businesses that make Holyoke run: family restaurants on High Street, trades and contractors, shops from downtown to the Mall, services in every neighborhood between. What they get is the same spine: a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
+      "The businesses that make Holyoke run: trades and contractors, medical and dental offices, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine: a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
     faqAgents:
       "Claro que sí, and here they're bilingual by default, not by upgrade. “Remi” comes with every site plan and answers customers 24/7 in whichever language they open with; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, all managed for you. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
     faqOutside:
@@ -338,7 +338,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "It starts at $95/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. Month-to-month with nothing extra to start, and prepaying a year takes two months off. If you need a bigger multi-page site with your own admin and appointment booking, that tier is $245/mo. One-time builds exist too; either way we scope it to your business before you pay anything.",
     faqBusinesses:
-      "Family businesses, mostly: the shops in Chicopee Center, contractors and tradespeople, restaurants in the Falls, services along Memorial Drive. The pattern rarely changes: get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
+      "Family businesses, mostly: contractors and tradespeople, medical and dental offices, the family businesses of Chicopee Center, services along Memorial Drive. The pattern rarely changes: get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
     faqAgents:
       "Yes, and for a family business it's the difference between a missed call and a booked estimate. “Remi” comes with every site plan and answers customers 24/7; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. For a local daycare we paired the site's agent with a phone system that answers and routes every call: the same pattern fits any busy Chicopee shop where nobody can stop to pick up.",
     faqOutside:
@@ -412,10 +412,10 @@ export const localAreas: LocalArea[] = [
     metaDescription:
       "Web design for Northampton, MA businesses: beautiful, fast websites with technical SEO and AI booking agents. From $95/mo.",
     heroIntro:
-      "Northampton sets a high bar for design: your website should meet it. We build beautiful, blazing-fast sites for NoHo's restaurants, shops, and studios, with technical SEO and an AI agent that turns browsers into booked customers.",
+      "Northampton sets a high bar for design: your website should meet it. We build beautiful, blazing-fast sites for NoHo's medical and wellness practices, professional offices, contractors, and independent retailers, with technical SEO and an AI agent that turns browsers into booked customers.",
     angleHeading: 'A site as considered as Main Street',
     angleBody:
-      'Northampton customers notice design, and they expect the businesses they love to look the part online. We build sites as polished as the storefronts on Main Street (fast, accessible, and easy to book from) whether you run a restaurant, a boutique, a wellness practice, or a studio. Then we keep them ranking, so visitors to NoHo find you first.',
+      'Northampton customers notice design, and they expect the businesses they love to look the part online. We build sites as polished as the storefronts on Main Street (fast, accessible, and easy to book from) whether you run a dental practice, a law office, a home-services company, or a furniture showroom. Then we keep them ranking, so visitors to NoHo find you first.',
     neighborhoods: ['Downtown / Main Street', 'Florence', 'Leeds', 'Bay State', 'Smith College area'],
     languageNote:
       'Multilingual by default (English, Spanish, or any language your customers use) across your site, SEO, and AI agent.',
@@ -430,7 +430,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'From browsing to booked',
-        body: 'A studio, a restaurant, a wellness practice. They all live on appointments. “Remi” answers the questions people ask before committing and books them in, including at midnight after the show lets out.',
+        body: 'A dental office, a law practice, a home-services company. They all live on appointments. “Remi” answers the questions people ask before committing and books them in, including at midnight when nobody is at the desk.',
       },
       {
         title: 'Kept as polished as opening day',
@@ -442,9 +442,9 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "From $95/mo. Independent shops ask this first, so here's the whole answer: a custom-designed 1–3 page site (designed, not templated), hosting and SSL, “Remi” answering visitors 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, multilingual included at every tier. Month-to-month with nothing extra up front; a prepaid year earns two months free. A larger multi-page site with your own admin and “Remi” booking appointments is $245/mo, and one-time builds are available when a subscription isn't the right fit. Everything is scoped to your business first.",
     faqBusinesses:
-      "The independents that make Northampton Northampton (restaurants and cafés downtown, boutiques and galleries, wellness practices, studios out in Florence) and the businesses that keep it all running off Main Street: contractors, medical and dental practices, professional offices. Underneath the aesthetics the job is constant: rank for what people search on their way to NoHo, answer and book while you're with a customer, and keep the site tended long after it launches.",
+      "The independents that make Northampton Northampton (clothing boutiques and furniture stores downtown, wellness and dental practices, real estate offices out in Florence) and the businesses that keep it all running off Main Street: contractors, medical practices, professional offices. Underneath the aesthetics the job is constant: rank for what people search on their way to NoHo, answer and book while you're with a customer, and keep the site tended long after it launches.",
     faqAgents:
-      "Yes: appointment businesses get the most out of them, and Northampton runs on appointments. “Remi” comes with every site plan and answers the pre-booking questions 24/7: the table after the show, the studio consult, the wellness intake, then books them in. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
+      "Yes: appointment businesses get the most out of them, and Northampton runs on appointments. “Remi” comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake, then books them in. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
     faqOutside:
       "Yes: we're based in Springfield, a straight shot down I-91, and we work across the valley: Easthampton, Amherst, Holyoke, Chicopee, Westfield and the rest of Western Mass. Remote engagements work anywhere.",
     faqExisting:
@@ -547,7 +547,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. Month-to-month, nothing extra to start: prepay a year and two months are free. A full multi-page site with your own admin and “Remi” booking appointments is $245/mo, and one-time builds get a flat written quote.",
     faqBusinesses:
-      "The businesses that make Westfield work: manufacturers and machine shops, contractors and tradespeople, the shops and restaurants of downtown and the Southampton Road corridor, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same: rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
+      "The businesses that make Westfield work: manufacturers and machine shops, contractors and tradespeople, the medical offices and independent retailers of downtown and the Southampton Road corridor, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same: rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
     faqAgents:
       "Yes, and for a working city they earn their keep fast. “Remi” comes with every site plan and answers customers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
     faqOutside:
@@ -651,7 +651,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. Month-to-month, nothing extra to start; prepay a year and two months are free. The full multi-page tier with your own admin and “Remi” booking is $245/mo, and one-time builds get a flat written quote up front.",
     faqBusinesses:
-      "Agawam's backbone: contractors and tradespeople, family restaurants and shops from Agawam Center to Feeding Hills, farm stands and seasonal businesses, and the services an established town leans on. The work underneath is constant: rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
+      "Agawam's backbone: contractors and tradespeople, family-run dealerships and retailers from Agawam Center to Feeding Hills, medical offices and seasonal businesses, and the services an established town leans on. The work underneath is constant: rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
     faqAgents:
       "Yes, and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage hire there is. “Remi” comes with every site plan and answers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you.",
     faqOutside:

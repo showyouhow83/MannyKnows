@@ -38,7 +38,7 @@ None of this is optional, and getting it wrong quietly kills sales:
 - **Shipping**: real rates, real boxes, real zones. Surprise shipping costs at checkout are the top reason carts get abandoned.
 - **Taxes**: set up correctly for where you sell, so you're not untangling it at tax time.
 
-Restaurants and makers especially trip here: selling a physical product online is a different machine than ringing someone up at the counter.
+Retailers and makers especially trip here: selling a physical product online is a different machine than ringing someone up at the counter.
 
 ## Emails do the selling you're not there for
 

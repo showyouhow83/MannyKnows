@@ -56,7 +56,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           ).all();
       results = (rows.results || []).map((r: any) => ({
         id: r.id,
-        label: `${r.customer_name || 'Unnamed'} — ${r.city || r.address || 'no address'} · ${r.status}`,
+        label: `${r.customer_name || 'Unnamed'}: ${r.city || r.address || 'no address'} · ${r.status}`,
       }));
     } else if (type === 'quote') {
       const excluded = "('project', 'failed')";
@@ -73,7 +73,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           ).all();
       results = (rows.results || []).map((r: any) => ({
         id: r.id,
-        label: `${(r.quote_number || `#${r.id}`)} — ${r.customer_name || 'Unnamed'}${r.total ? ` · $${Number(r.total).toLocaleString()}` : ''} · ${r.status}`,
+        label: `${(r.quote_number || `#${r.id}`)}: ${r.customer_name || 'Unnamed'}${r.total ? ` · $${Number(r.total).toLocaleString()}` : ''} · ${r.status}`,
       }));
     } else if (type === 'project') {
       const excluded = "('portfolio')";
@@ -90,7 +90,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           ).all();
       results = (rows.results || []).map((r: any) => ({
         id: r.id,
-        label: `${r.project_number || `#${r.id}`} — ${r.customer_name || 'Unnamed'} · ${r.customer_city || ''} · ${r.status}`,
+        label: `${r.project_number || `#${r.id}`}: ${r.customer_name || 'Unnamed'} · ${r.customer_city || ''} · ${r.status}`,
       }));
     } else {
       // Many portfolios share a project_name. Pull client_name + client_city

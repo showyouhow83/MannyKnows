@@ -78,7 +78,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       'SELECT id, status FROM project_contracts WHERE project_id = ?'
     ).bind(projectId).first() as { id: number; status: string } | null;
 
-    if (!contract) return json({ error: 'No contract for this project — apply a template first.' }, 404);
+    if (!contract) return json({ error: 'No contract for this project, apply a template first.' }, 404);
     if (contract.status === 'void') return json({ error: 'This contract has been voided.' }, 409);
     if (contract.status === 'countersigned') return json({ error: 'This contract is already fully signed.' }, 409);
 
@@ -123,7 +123,7 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       WHERE id = ?
     `).bind(refValue, refValue, checkNum, checkNum, contract.id).run();
 
-    console.log(`[contract/sign-in-person] Contract ${contract.id} signed in-person — customer:${custName} contractor:${ctrName}`);
+    console.log(`[contract/sign-in-person] Contract ${contract.id} signed in-person: customer:${custName} contractor:${ctrName}`);
 
     // A check number at signing means the DOWN PAYMENT was received in person.
     // Record a receipt for the down-payment row (reusing the signatures we just

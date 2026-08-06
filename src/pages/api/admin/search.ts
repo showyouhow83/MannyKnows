@@ -38,8 +38,8 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
   if (q.length < 2) return json({ results: [] });
 
   const type = (url.searchParams.get('type') || 'all').toLowerCase();
-  const like = `%${q}%`;       // substring — matches anywhere
-  const prefix = `${q}%`;      // starts-with — the strongest signal
+  const like = `%${q}%`;       // substring: matches anywhere
+  const prefix = `${q}%`;      // starts-with: the strongest signal
   const wordPrefix = `% ${q}%`; // a word inside the value starts with the query
 
   try {

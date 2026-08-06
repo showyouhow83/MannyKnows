@@ -197,7 +197,7 @@ if (db) {
       color: var(--color-text-secondary);
     }
 
-    /* Contact cards — match lead-card style */
+    /* Contact cards: match lead-card style */
     .contact-card {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
@@ -631,7 +631,7 @@ if (db) {
   </style>
 
   <style is:global>
-    /* Pipeline history — applied to JS-rendered innerHTML */
+    /* Pipeline history: applied to JS-rendered innerHTML */
     .pipeline-chain {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1099,7 +1099,7 @@ if (db) {
 
         const data = await res.json();
         if (data.success) {
-          showToast('Contact saved — synced to linked records');
+          showToast('Contact saved: synced to linked records');
           // Update the card in the list
           const card = document.querySelector(`.contact-card[data-id="${selectedContactId}"]`);
           if (card && data.contact) {

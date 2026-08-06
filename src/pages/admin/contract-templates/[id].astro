@@ -29,7 +29,7 @@ if (!templateId || Number.isNaN(templateId)) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Contract Template — MannyKnows Admin</title>
+    <title>Edit Contract Template: MannyKnows Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <script>
@@ -509,10 +509,10 @@ if (!templateId || Number.isNaN(templateId)) {
         // ── Panel: Scope sections ──
         html += `<div class="ce-panel">
           <h3 class="ce-panel-title">Scope sections</h3>
-          <p class="ce-panel-sub">Body of the contract — same structure as quote templates (Surface Prep, Painting Process, etc.).</p>
+          <p class="ce-panel-sub">Body of the contract: same structure as quote templates (Surface Prep, Painting Process, etc.).</p>
         `;
         if (!template.sections.length) {
-          html += '<div class="ce-empty">No sections yet — add the first one below.</div>';
+          html += '<div class="ce-empty">No sections yet: add the first one below.</div>';
         }
         template.sections.forEach((section, sIdx) => {
           html += renderSection(section, sIdx);
@@ -589,7 +589,7 @@ if (!templateId || Number.isNaN(templateId)) {
         html += `<div class="ce-add-row">
           <button onclick="addItem('${section.id}', 'bullet')">+ Bullet</button>
           <button onclick="addItem('${section.id}', 'fillable')">+ Color line</button>
-          <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown — admin defines the options">+ Choice</button>
+          <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button onclick="addItem('${section.id}', 'subtotal')">+ Subtotal</button>
           <button onclick="addItem('${section.id}', 'note')">+ Note</button>
         </div>`;
@@ -636,7 +636,7 @@ if (!templateId || Number.isNaN(templateId)) {
           const optionsStr = opts.join(', ');
           const valueField = opts.length > 0
             ? `<select onchange="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" style="flex:1;">
-                <option value=""${!item.value ? ' selected' : ''}>— Select —</option>
+                <option value=""${!item.value ? ' selected' : ''}>, Select, </option>
                 ${opts.map(o => `<option value="${escapeAttr(o)}"${item.value === o ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}
               </select>`
             : `<input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Default value (add options below to make a dropdown)">`;
