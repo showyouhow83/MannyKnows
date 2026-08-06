@@ -71,7 +71,19 @@ const FAQS = [
   { q: 'Can it answer phone calls, or just website chat?', a: "Both. Website agents answer and book from your site. For phones, we build custom IVR systems — the line answers callers with the information they need and routes them to the right person, every time. Phone systems are custom one-time builds." },
   { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team — you don't need to rebuild anything. If you're on one of our website plans, “Remi” is already included." },
   { q: 'How fast can it be live?', a: 'Two weeks — that\'s how long a full build has taken from kickoff to live: website, working AI agent, and a phone system routing every call. Agent-only setups are usually faster.' },
-  { q: 'What does an AI booking agent cost?', a: `Three ways in: it's included in every website plan (from $95/mo, as “Remi”); it can be hired onto your existing site as an AI Team agent (from $${aiTeamStartingPrice}/mo plus a one-time $${aiTeamSetupFee} setup); or we build custom — phone IVR systems and deep integrations are one-time projects that usually start at $2,500. On a tight budget with no site at all? The one-page AI Website at mannyknows.com/ai-website comes with the lightest “Remi” — it answers customers and captures leads (no booking) — for $${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo.` },
+  {
+    q: 'What does an AI booking agent cost?',
+    a: 'Four ways in — pick by what you already have:',
+    table: {
+      head: ['How you get it', 'Price'],
+      rows: [
+        ['Included in every website plan', `From $${aiTeamStartingPrice}/mo`],
+        ['Hired onto the site you already have', `From $${aiTeamStartingPrice}/mo + $${aiTeamSetupFee} setup`],
+        ['On the one-page AI Website (lightest “Remi” — answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
+        ['Custom build — phone IVR, deep integrations', 'From $2,500 one-time'],
+      ],
+    },
+  },
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).

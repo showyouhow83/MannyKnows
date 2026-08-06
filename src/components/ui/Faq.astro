@@ -2,7 +2,12 @@
 // Shared FAQ block — one consistent card style for every FAQ on the site
 // (/plans, /plans/<slug>, and the product detail pages). Pass an array of
 // {q, a}. Emits FAQPage structured data unless schema={false}.
-interface FaqItem { q: string; a: string; }
+// `table` renders a scannable grid under the answer — for answers that are
+// really a price/option matrix (Manny, Aug 2026: those read badly as prose
+// inside a dropdown). Its rows are flattened into the schema answer text so
+// the FAQPage data stays complete.
+interface FaqTable { head: string[]; rows: string[][]; }
+interface FaqItem { q: string; a: string; table?: FaqTable; }
 interface Props {
   faqs: FaqItem[];
   heading?: string;
@@ -17,7 +22,12 @@ const faqSchema = schema && faqs.length > 0
       mainEntity: faqs.map((f) => ({
         '@type': 'Question',
         name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a },
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.table
+            ? `${f.a} ${f.table.rows.map((r) => r.join(': ')).join('. ')}.`
+            : f.a,
+        },
       })),
     }
   : null;
@@ -43,6 +53,28 @@ const faqSchema = schema && faqs.length > 0
             <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
           </summary>
           <p class="px-5 pb-5 -mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+          {f.table && (
+            <div class="px-5 pb-5 -mt-2 overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr>
+                    {f.table.head.map((h, i) => (
+                      <th class={`border-b border-light-tertiary dark:border-dark-accent pb-2 text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary ${i === 0 ? 'text-left' : 'text-right'}`}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {f.table.rows.map((row) => (
+                    <tr>
+                      {row.map((cell, i) => (
+                        <td class={`border-b border-light-tertiary/60 dark:border-dark-accent/60 py-2.5 align-top ${i === 0 ? 'text-left text-text-light-primary dark:text-text-dark-primary pr-4' : 'text-right font-semibold text-text-light-primary dark:text-text-dark-primary whitespace-nowrap'}`}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </details>
       ))}
     </div>
