@@ -23,15 +23,6 @@ import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../data/aiWebsite';
 const PHONE_DISPLAY = '(413) 361-8451';
 const PHONE_TEL = '+14133618451';
 
-// Compact capability strip — titles only, the versions grid below carries the
-// selling. (The long-copy 4-card grid was merged away, Manny, Aug 2026.)
-const CAPABILITIES = [
-  { title: 'Answers any hour, EN/ES', icon: 'M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
-  { title: 'Qualifies the lead', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
-  { title: 'Books the job', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
-  { title: 'Hands off to a human', icon: 'M17 8l4 4m0 0l-4 4m4-4H3' },
-];
-
 // The three versions of Remi (Manny, Aug 2026). The Lite one on the 1-page AI
 // Website carries the name but is an answering bot, not an agent — fixed, not
 // configurable. The agent proper is configured & customized per business.
@@ -161,20 +152,8 @@ const pageJsonLd = {
          (was two long sections; Manny asked for less copy, Aug 2026). -->
     <Section id="versions" variant="alternate">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-8">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One “Remi”, three sizes</span></h2>
-        </div>
-
-        <!-- Capability strip: what every conversation with Remi is built to do -->
-        <div class="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto mb-12">
-          {CAPABILITIES.map((c) => (
-            <span class="inline-flex items-center gap-2 rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-2 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
-              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white">
-                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
-              </span>
-              {c.title}
-            </span>
-          ))}
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>One “Remi”, three sizes</span></h2>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
