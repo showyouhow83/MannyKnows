@@ -49,7 +49,6 @@ export const team: Agent[] = [
     order: 0,
     price: 0,
     included: true,
-    note: 'Scoped to your business',
   },
   {
     id: 'desi',

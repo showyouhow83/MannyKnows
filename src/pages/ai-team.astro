@@ -264,11 +264,10 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
             <AgentAvatar agent={manager.id} class="w-full h-full" />
           </div>
           <div class="flex-1 text-center sm:text-left">
-            {/* Name on its own line, then the two badges beneath it. */}
+            {/* Name on its own line, the role badge beneath it. */}
             <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{manager.name}</h3>
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-3">
-              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.note}</span>
-              <span class="inline-block border border-primary-blue/40 text-primary-blue dark:text-blue-300 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.role}</span>
+              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.role}</span>
             </div>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
             <div class="mt-4">
