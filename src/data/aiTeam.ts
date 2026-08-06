@@ -27,7 +27,6 @@ export interface Agent {
   id: AgentId;
   name: string;
   role: string;       // short specialty label
-  symptom?: string;   // bottleneck-first hook: "For when …" (shown atop the card)
   does: string;       // one plain-spoken paragraph: what this agent does for you
   handoff?: string;   // how the agent connects to the rest of the team
   order: number;      // pipeline order (manager → front desk → research → … → analytics)
@@ -56,7 +55,6 @@ export const team: Agent[] = [
     id: 'desi',
     name: 'Remi',
     role: 'Front desk: sales, booking & support',
-    symptom: 'For when leads come in and nobody answers fast enough.',
     does: "Answers customers on your site 24/7: replies, books appointments, and guides shoppers to the right product, in their language.",
     handoff: 'Feeds the team: every question customers ask becomes intel, “Remi” logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
@@ -67,7 +65,6 @@ export const team: Agent[] = [
     id: 'eve',
     name: 'Eve',
     role: 'Research & strategy',
-    symptom: "For when your competitors seem to know something you don't.",
     does: "Intel they don't have: a daily brief on your market (competitor moves, local trends, the news that matters to your business, customized to what you need watched) delivered to your dashboard, where it sits next to the team's SEO, engagement, and analytics work.",
     handoff: 'Hands off to: Elly (content briefs), Max (audience & offer targeting), Manny AI (the plan for your approval).',
     order: 2,
@@ -77,7 +74,6 @@ export const team: Agent[] = [
     id: 'elly',
     name: 'Elly',
     role: 'Copywriting',
-    symptom: 'For when writing is the thing that never gets done.',
     does: "Writes pages, posts, emails, and full sequences in your voice, from Eve's brief and your Brand Brain, never a blank page.",
     handoff: 'Hands off to: Leo (copy for design), Aria (scripts for voice), Nova (pages for search tuning), Piper (finished posts to schedule).',
     order: 3,
@@ -87,7 +83,6 @@ export const team: Agent[] = [
     id: 'eny',
     name: 'Leo',
     role: 'Graphics & video',
-    symptom: 'For when your work is better than your brand looks.',
     does: "Turns Elly's copy into graphics and short-form video built for each network, always in your brand's look.",
     handoff: 'Hands off to: Piper (finished assets to publish), Max (creative for ads).',
     order: 4,
@@ -98,7 +93,6 @@ export const team: Agent[] = [
     id: 'mimi',
     name: 'Aria',
     role: 'Voice & audio',
-    symptom: 'For when you\'d post more if you never had to hit record.',
     does: "Learns your voice from a short sample, then speaks whatever Elly writes (voiceovers, reels, phone greetings) so you never hit record.",
     handoff: 'Hands off to: Leo (audio for video), Piper (finished audio to publish).',
     order: 5,
@@ -109,7 +103,6 @@ export const team: Agent[] = [
     id: 'essie',
     name: 'Nova',
     role: 'SEO & local search',
-    symptom: 'For when customers searching Springfield for what you do find someone else.',
     does: "Maps what your customers search, tunes every page before it ships, and keeps your Google Business Profile active and accurate.",
     handoff: "Hands off to: Elly (keyword targets for new content), Vera (rankings to track), Manny AI (what's climbing, what needs work).",
     order: 6,
@@ -119,7 +112,6 @@ export const team: Agent[] = [
     id: 'bap',
     name: 'Piper',
     role: 'Publisher & scheduling',
-    symptom: 'For when content exists but never actually ships.',
     does: "Publishes everything at the right time on every channel: your site included, always as a preview until you press Publish.",
     handoff: 'Hands off to: Finn (live posts to watch), Vera (live posts to measure).',
     order: 7,
@@ -130,7 +122,6 @@ export const team: Agent[] = [
     id: 'addy',
     name: 'Max',
     role: 'Paid ads',
-    symptom: 'For when ad spend goes out and you can\'t say what came back.',
     does: "Runs your Google and Meta ads from Eve's targeting and Leo's creative: watching spend daily, never touching budget without your OK.",
     handoff: 'Hands off to: Vera (spend & results to measure), Manny AI (budget requests for your sign-off).',
     order: 8,
@@ -141,7 +132,6 @@ export const team: Agent[] = [
     id: 'upie',
     name: 'Finn',
     role: 'Engagement & reputation',
-    symptom: 'For when reviews, comments, and DMs pile up unanswered.',
     does: "Answers reviews, comments, and DMs in your voice, routes anything sensitive to a human first, and nudges happy customers to review.",
     handoff: 'Hands off to: Eve (what customers are saying), Manny AI (issues that need a human).',
     order: 9,
@@ -151,7 +141,6 @@ export const team: Agent[] = [
     id: 'ana',
     name: 'Vera',
     role: 'Analytics & reporting',
-    symptom: 'For when you can\'t say which of it is working.',
     does: "Tracks what every piece produced (traffic, calls, bookings, sales) and turns it into a clear monthly report that feeds Eve's next plan.",
     handoff: 'Hands off to: Eve (what performed), Manny AI (your report).',
     order: 10,
