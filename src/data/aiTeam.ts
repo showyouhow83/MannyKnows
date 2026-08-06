@@ -46,7 +46,7 @@ export const team: Agent[] = [
     id: 'manny',
     name: 'Manny AI',
     role: 'The manager you hire',
-    does: "Manny AI is the hire: one manager that staffs AI specialists on whatever your business needs, like hiring three, five, or seven people, each specialized, without managing any of them. You make the request; Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
+    does: "Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
     order: 0,
     price: 0,
     included: true,
