@@ -27,7 +27,6 @@ const manager = roster.find((a) => a.included)!;
 const agents = roster.filter((a) => !a.included);
 
 const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
-const setup = aiTeamSetupFee.toLocaleString('en-US');
 
 // "One brain, one boss" pillars.
 // Short on purpose, and every phrase earns SEO keep ("AI agents trained on
@@ -252,9 +251,6 @@ const pageJsonLd = {
           <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Each specialist owns one job and does it well. You hire Manny AI; it staffs the ones your work calls for, builds each around your business on your Brand Brain, and coordinates every handoff — and every agent can take a name that fits your brand.
           </p>
-          <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-            One-time ${setup} setup · engagements scoped on the 15-minute diagnostic · “Remi” from ${startFrom}/mo on its own · normal AI usage included · add or drop capabilities anytime
-          </p>
         </div>
 
         <!-- Manager -->
@@ -269,7 +265,7 @@ const pageJsonLd = {
             </div>
             <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{manager.role}</span>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
-            <div class="mt-4 flex flex-col sm:flex-row items-center gap-3">
+            <div class="mt-4">
               <a
                 href="#contact"
                 data-contact-context="AI Team — hire Manny AI"
@@ -277,7 +273,6 @@ const pageJsonLd = {
               >
                 Hire Manny AI
               </a>
-              <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Scoped &amp; quoted on the 15-minute diagnostic · one-time ${setup} setup</span>
             </div>
           </div>
         </div>
