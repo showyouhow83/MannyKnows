@@ -87,7 +87,15 @@ const pageJsonLd = {
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
             <div class="flex justify-center mb-6">
-              <Illustration kind="store" class="w-full max-w-[210px]" />
+              <img
+                src="/mascot/astro-shopping-cart.webp"
+                alt=""
+                aria-hidden="true"
+                width="460"
+                height="684"
+                decoding="async"
+                class="astro-float w-full max-w-[170px] h-auto pointer-events-none"
+              />
             </div>
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
               <svg class="inline-block w-4 h-4 align-[-0.2em] mr-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={plan.icon} /></svg>Shopify stores · built, stocked &amp; run for you
@@ -396,6 +404,16 @@ const pageJsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Matches the /plans hero: a slow drift, off for reduced-motion users. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+</style>
 
 <style>
   .platform-marquee {
