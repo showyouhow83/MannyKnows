@@ -62,7 +62,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     object-fit: cover;
     display: block;
     /* Light theme: the grey waves darken the pale header just enough to read
-       as texture. Kept low — at 0.5 the pale, busy field dragged the body
+       as texture. Kept low: at 0.5 the pale, busy field dragged the body
        copy's contrast down to where it was genuinely hard to read. */
     mix-blend-mode: multiply;
     opacity: 0.22;
@@ -101,7 +101,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
 
   /* The header's own content must stay above all of this. Astro scopes styles
      per component, so a descendant selector written here would only match
-     elements this component renders — the header's other children (nav,
+     elements this component renders: the header's other children (nav,
      breadcrumb, hero copy) live in the page, so they need :global to be
      reached at all. Without this the tint and scrim paint OVER the text:
      they're inside a positioned, z-indexed box, and static page content sits
@@ -111,7 +111,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     z-index: 1;
   }
   /* The nav gets position WITHOUT a z-index. Giving it one creates a stacking
-     context that traps its dropdown menus at z-index 1 — the hero copy (also
+     context that traps its dropdown menus at z-index 1: the hero copy (also
      z-index 1, later in the DOM) then paints over the open menu, so hovering
      into it "leaves" the nav and the menu snaps shut (Manny hit this live).
      With z-auto the nav still paints above the z-0 video (later sibling), and
@@ -132,7 +132,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     --hero-video-fade: rgba(9, 9, 11, 0.85);
   }
 
-  /* Colour footage carries its own palette: no blend trickery, no brand tint —
+/* Colour footage carries its own palette: no blend trickery, no brand tint
      just low opacity under the same text-protecting scrim. */
   .hero-video-bg--color .hero-video-bg__media,
   :global(.dark) .hero-video-bg--color .hero-video-bg__media {

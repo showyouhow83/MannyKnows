@@ -23,8 +23,8 @@ export const IMAGE_VARIANTS = {
   thumbnail: 'w=400,q=75,f=auto',   // Homepage grid, small previews
   medium: 'w=800,q=75,f=auto',      // Standard display, cards
   large: 'w=1200,q=78,f=auto',      // Homepage hero carousel
-  portfolio: 'w=1600,q=85,f=auto',  // Portfolio detail pages — high quality showcase
-  lightbox: 'w=2048,q=85,f=auto',   // Portfolio lightbox (opened image) — crisp on large/retina screens
+  portfolio: 'w=1600,q=85,f=auto',  // Portfolio detail pages: high quality showcase
+  lightbox: 'w=2048,q=85,f=auto',   // Portfolio lightbox (opened image): crisp on large/retina screens
   hero: 'w=1920,q=75,f=auto',       // Full-width hero images
   public: 'public'                   // Original size (fallback)
 } as const;
@@ -42,7 +42,7 @@ const CDN_CGI_VARIANTS: Record<ImageVariant, string | null> = {
   portfolio: 'width=1600,quality=85,format=auto,fit=scale-down',
   lightbox: 'width=2048,quality=85,format=auto,fit=scale-down',
   hero: 'width=1920,quality=75,format=auto,fit=scale-down',
-  public: null, // no transform — original
+  public: null, // no transform, original
 };
 
 // Public host of the R2 media bucket's custom domain. Overridable via

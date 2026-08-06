@@ -25,7 +25,7 @@ const interestServices = SERVICE_TYPES.filter(
 
     <h2 id="contactModalTitle" class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary pr-6">Let's talk</h2>
     <p id="contactModalSubtitle" class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-1 mb-4">
-      Tell us what you need to fix — we read every message ourselves and reply personally.
+      Tell us what you need to fix. We read every message ourselves and reply personally.
     </p>
 
     <form id="contactModalForm" class="space-y-3">
@@ -35,7 +35,7 @@ const interestServices = SERVICE_TYPES.filter(
       <select name="service" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm">
         <option value="">What are you interested in? (optional)</option>
         {interestServices.map((s) => (<option value={s.value}>{s.label}</option>))}
-        <option value="not-sure">Not sure yet — help me figure it out</option>
+        <option value="not-sure">Not sure yet: help me figure it out</option>
       </select>
       <textarea name="message" required rows="3" placeholder="What do you need help with?" maxlength="2000" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm resize-none"></textarea>
 
@@ -64,15 +64,15 @@ const interestServices = SERVICE_TYPES.filter(
       try {
         const r = await fetch('/api/contact');
         if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
-      } catch { /* offline — the mailto fallback still works */ }
+      } catch { /* offline: the mailto fallback still works */ }
     }
 
     function open(ctx?: string) {
       context = (ctx || '').trim();
       if (subtitle) {
         subtitle.textContent = context
-          ? `About: ${context}. Tell us what you're trying to fix — we read every message ourselves.`
-          : "Tell us what you need to fix — we read every message ourselves and reply personally.";
+          ? `About: ${context}. Tell us what you're trying to fix. We read every message ourselves.`
+          : "Tell us what you need to fix. We read every message ourselves and reply personally.";
       }
       modal!.classList.remove('hidden');
       modal!.classList.add('flex');
@@ -121,7 +121,7 @@ const interestServices = SERVICE_TYPES.filter(
         `Interested in: ${serviceLabel || context || 'General inquiry'}.\n` +
         (business ? `Business / site: ${business}.\n` : '') +
         `\n${userMsg}`;
-      const subject = context ? `${context} — inquiry via mannyknows.com` : 'New inquiry via mannyknows.com';
+      const subject = context ? `${context}: inquiry via mannyknows.com` : 'New inquiry via mannyknows.com';
 
       const orig = submitBtn ? submitBtn.textContent : '';
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
@@ -135,13 +135,13 @@ const interestServices = SERVICE_TYPES.filter(
         const result = await res.json().catch(() => ({}));
         if (res.ok) {
           form.reset();
-          if (statusEl) { statusEl.textContent = "Thanks — we'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          if (statusEl) { statusEl.textContent = "Thanks: we'll get back to you personally, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
           getToken();
         } else {
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
         }
       } catch (err) {
-        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send, please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
         statusEl?.classList.remove('hidden');

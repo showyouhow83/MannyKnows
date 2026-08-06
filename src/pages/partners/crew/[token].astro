@@ -558,11 +558,11 @@ const status = project?.status ? (statusLabels[project.status] || { label: proje
     }
 
     /* Weather card shell. The INNER content (temp/rain/extras) is injected
-       via JS innerHTML and styled with inline styles — Astro's scoped CSS
+       via JS innerHTML and styled with inline styles: Astro's scoped CSS
        can't reach JS-built nodes, so those rules would never apply here. */
     .weather-card { padding: 18px 20px; }
 
-    /* Lightbox — full-screen, prev/next, download */
+    /* Lightbox: full-screen, prev/next, download */
     .cm-lightbox {
       display: none; position: fixed; inset: 0;
       background: rgba(0, 0, 0, 0.94);
@@ -675,7 +675,7 @@ const status = project?.status ? (statusLabels[project.status] || { label: proje
                Open-Meteo (free, no API key). Rain probability is highlighted
                since rain is the main thing that stops outdoor work.
                The geocode candidates + state are computed server-side by
-               normalizeAddress() — handles both structured fields and a
+               normalizeAddress(): handles both structured fields and a
                legacy single-string address. -->
           <div class="card weather-card" id="weatherCard"
                data-zip={addr.zip}
@@ -1311,9 +1311,9 @@ const status = project?.status ? (statusLabels[project.status] || { label: proje
         var bits = [];
         if (rainPct != null) bits.push(rainPct + '% chance');
         if (rainTotal != null && rainTotal > 0) bits.push(rainTotal.toFixed(2) + '" expected');
-        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; font-size:13px; color:#dc2626; font-weight:600;">⚠️ Rain likely today — ' + bits.join(' · ') + '</div>';
+        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; font-size:13px; color:#dc2626; font-weight:600;">⚠️ Rain likely today, ' + bits.join(' · ') + '</div>';
       } else if (rainPct != null) {
-        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); border-radius:10px; font-size:13px; color:#16a34a; font-weight:600;">✓ Low rain risk — ' + rainPct + '% chance of precipitation</div>';
+        banner = '<div style="margin-top:12px; padding:10px 12px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); border-radius:10px; font-size:13px; color:#16a34a; font-weight:600;">✓ Low rain risk, ' + rainPct + '% chance of precipitation</div>';
       }
 
       var extraCell = function (label, value) {

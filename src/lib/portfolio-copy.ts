@@ -55,29 +55,29 @@ Use the project CONTEXT below to generate ONE polished portfolio entry. Output S
 
 TITLE RULES
 - 3–7 words. Title Case.
-- State code MUST be uppercase: "MA", "CT" — never "Ma"/"Ct", never spell out "Massachusetts".
-- Location goes LAST, never first. Format the geo as "<work> in <City>, MA" — e.g. "Galley Kitchen Remodel in Springfield, MA", NOT "Springfield, MA Galley Kitchen Remodel".
+- State code MUST be uppercase: "MA", "CT", never "Ma"/"Ct", never spell out "Massachusetts".
+- Location goes LAST, never first. Format the geo as "<work> in <City>, MA": e.g. "Galley Kitchen Remodel in Springfield, MA", NOT "Springfield, MA Galley Kitchen Remodel".
 - Geo-anchor only when it strengthens the title; don't pad with city if the title already reads well.
-- Lead with the most distinctive detail you can: room, era, material, finish, color, layout change — anything in CONTEXT that sets this project apart.
+- Lead with the most distinctive detail you can: room, era, material, finish, color, layout change, anything in CONTEXT that sets this project apart.
 
 DESCRIPTION RULES
 - 2–4 short sentences. No sign-off, no emojis, no superlatives.
-- BANNED openings — never start with any of these or paraphrases of them:
+- BANNED openings, never start with any of these or paraphrases of them:
   - "MannyKnows completed…"
   - "We refreshed…"
   - "This project transformed…"
   - "Beautiful…", "Stunning…"
   - "We provided…", "We delivered…"
 - Lead with a CONCRETE detail from CONTEXT (material or product name, era of home, specific room or surface, prep or demo step, duration).
-- Each description must contain at least TWO specifics drawn from CONTEXT. If CONTEXT is thin, use whatever specifics are present — don't invent.
+- Each description must contain at least TWO specifics drawn from CONTEXT. If CONTEXT is thin, use whatever specifics are present: don't invent.
 - Plain, factual, craftsman tone. Read like the contractor explaining the work, not a marketing brochure.
 - Never invent square footage, prices, room counts, warranty terms, or details the context does not include.
 - Mention brand names (e.g. Sherwin-Williams, Benjamin Moore, a tile or flooring product line) ONLY when Materials or Preferred brand actually name them.
-- Customer first name is optional — use it sparingly for warmth, never invent a name, never use a last name.
+- Customer first name is optional: use it sparingly for warmth, never invent a name, never use a last name.
 
-GOOD EXAMPLES (style reference — do NOT copy phrases verbatim)
+GOOD EXAMPLES (style reference: do NOT copy phrases verbatim)
 - Title: "Hall Bath Rebuild in Springfield, MA"
-  Description: "Gut-and-rebuild of a 1950s hall bath — new subfloor after the old tub came out, porcelain tile surround, and a single-vanity layout that opened up the doorway. Plumbing rough-in updated while the walls were open. Finished in eight days."
+  Description: "Gut-and-rebuild of a 1950s hall bath: new subfloor after the old tub came out, porcelain tile surround, and a single-vanity layout that opened up the doorway. Plumbing rough-in updated while the walls were open. Finished in eight days."
 - Title: "Oak Floor Refinish & Interior Repaint"
   Description: "Red oak floors sanded back and sealed in a satin finish, then fresh wall and trim paint through the first floor. Stair treads patched where the old runner had worn them down. The homeowners stayed in the house the whole time."
 

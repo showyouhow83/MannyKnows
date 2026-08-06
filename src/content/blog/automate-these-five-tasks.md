@@ -5,11 +5,11 @@ pubDate: 2026-05-06
 author: "Manny"
 tags: ["automation", "AI Search", "small business", "productivity"]
 seoTitle: "5 Tasks Every Business Should Automate First | MannyKnows"
-seoDescription: "You don't need to automate everything. Start with the five repetitive jobs that quietly eat your week — follow-ups, scheduling, quoting, and more."
+seoDescription: "You don't need to automate everything. Start with the five repetitive jobs that quietly eat your week: follow-ups, scheduling, quoting, and more."
 image: "/blog/automate-these-five-tasks.jpg"
 ---
 
-Automation gets oversold. You don't need an AI for everything — you need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.
+Automation gets oversold. You don't need an AI for everything. You need to stop doing the handful of repetitive tasks that quietly burn hours every week. Here are the five we start with.
 
 ## 1. Lead intake
 
@@ -35,6 +35,6 @@ Instead of building the same report by hand each month, have it assembled and wa
 
 If you do it the same way more than a few times a week, it's a candidate. Start with one, get it boringly reliable, then move to the next.
 
-One candidate that's easy to overlook: keeping your business details — hours, services, address, phone — consistent everywhere they live online. It's boring and repetitive, which is exactly why it's worth automating, and it quietly decides whether Google and AI assistants like ChatGPT quote you right when a customer asks them for someone who does what you do.
+One candidate that's easy to overlook: keeping your business details (hours, services, address, phone) consistent everywhere they live online. It's boring and repetitive, which is exactly why it's worth automating, and it quietly decides whether Google and AI assistants like ChatGPT quote you right when a customer asks them for someone who does what you do.
 
-Automating the busywork is exactly what our [Multimedia Agency plan](/plans/multimedia-agency/) handles end to end — custom software, AI, and data pipelines alongside your site. Curious which task would save you the most? [Let's talk it through.](#contact)
+Automating the busywork is exactly what our [Multimedia Agency plan](/plans/multimedia-agency/) handles end to end: custom software, AI, and data pipelines alongside your site. Curious which task would save you the most? [Let's talk it through.](#contact)

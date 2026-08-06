@@ -7,10 +7,10 @@
 // runs it through astro:assets <Picture>, which emits responsive AVIF/WebP.
 export interface WorkItem {
   name: string;
-  url?: string;       // live site — omit for internal/automation projects (card won't link out)
+  url?: string;       // live site, omit for internal/automation projects (card won't link out)
   blurb?: string;     // one factual line: industry + what was built
   tags?: string[];    // short chips (industry / what was built)
-  image?: string;     // screenshot base name — responsive AVIF/WebP variants live at
+  image?: string;     // screenshot base name, responsive AVIF/WebP variants live at
                       // public/works/<base>-<width>.<ext> (run scripts/optimize-work-images.mjs
                       // after dropping a high-res source into src/assets/works). e.g. "slpainting-desktop"
   caseStudy?: string; // slug of a published case study in src/content/portfolio/*.md
@@ -23,7 +23,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'SL Painting',
     url: 'https://slpainting.co',
-    blurb: 'Painting contractor — from invisible on Google to ranking for “exterior painting” across Western Mass: website, admin CRM, a 24/7 AI agent, and AI Painter Lab.',
+    blurb: 'Painting contractor, from invisible on Google to ranking for “exterior painting” across Western Mass: website, admin CRM, a 24/7 AI agent, and AI Painter Lab.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'slpainting-desktop',
     caseStudy: 'sl-painting',
@@ -31,7 +31,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'JK Daycare',
     url: 'https://jkdaycare.com',
-    blurb: "Licensed childcare — a website with an AI agent for parents' questions, plus a Twilio IVR that answers and routes every call. Built in two weeks.",
+    blurb: "Licensed childcare: a website with an AI agent for parents' questions, plus a Twilio IVR that answers and routes every call. Built in two weeks.",
     tags: ['Website AI', 'AI Agent', 'Twilio IVR'],
     caseStudy: 'jk-daycare',
     image: 'jkdaycare-desktop',
@@ -39,7 +39,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'Cherry Vibes',
     url: 'https://cherryvibes.com',
-    blurb: 'An online store obsessed with all things cherry — migrated from Costa Rica to the U.S. market on a custom Shopify Hydrogen storefront.',
+    blurb: 'An online store obsessed with all things cherry: migrated from Costa Rica to the U.S. market on a custom Shopify Hydrogen storefront.',
     tags: ['Online Store (AI)', 'Shopify Hydrogen', 'Migration'],
     image: 'cherry-vibes-d',
     caseStudy: 'cherry-vibes',
@@ -47,7 +47,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
-    blurb: 'Home improvement company — a complete digital operation: website, admin dashboard, AI agent, and local SEO.',
+    blurb: 'Home improvement company: a complete digital operation: website, admin dashboard, AI agent, and local SEO.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'vl-d',
     caseStudy: 'vl-home-services',
@@ -55,7 +55,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'Springfield en Victoria',
     url: 'https://springfieldenvictoria.com',
-    blurb: "A church community's online home — programs, sermons, podcasts & live streaming, with AI translation into several languages.",
+    blurb: "A church community's online home: programs, sermons, podcasts & live streaming, with AI translation into several languages.",
     tags: ['Website AI', 'Multimedia', 'AI Translations'],
     image: 'enVictoria-d',
     caseStudy: 'springfield-en-victoria',

@@ -41,7 +41,7 @@ const VERSIONS = [
     tag: 'The answering bot',
     price: '$40/mo',
     priceNote: 'with the $195 one-page AI Website',
-    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', '“Remi” is the starting name — pick your own', 'Fixed setup beyond that — no customization'],
+    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', '“Remi” is the starting name, pick your own', 'Fixed setup beyond that, no customization'],
     cta: { label: 'Get the 1-page site', href: '/ai-website/' },
     featured: false,
   },
@@ -50,7 +50,7 @@ const VERSIONS = [
     tag: 'The agent',
     price: 'From $95/mo',
     priceNote: `in every website plan · or on your existing site + $${aiTeamSetupFee} setup`,
-    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', '“Remi” is the starting name — rename her to fit your brand', 'Hands off to you when a human matters'],
+    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', '“Remi” is the starting name, rename her to fit your brand', 'Hands off to you when a human matters'],
     cta: { label: 'See the website plans', href: '/plans/' },
     ctaAlt: { label: 'or hire it onto your site', href: '/ai-team/#agent-remi' },
     featured: true,
@@ -67,32 +67,32 @@ const VERSIONS = [
 ];
 
 const FAQS = [
-  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes — English and Spanish are standard on everything we build, not an add-on. “Remi” answers in whichever language the customer starts with.' },
-  { q: 'Can it answer phone calls, or just website chat?', a: "Both. Website agents answer and book from your site. For phones, we build custom IVR systems — the line answers callers with the information they need and routes them to the right person, every time. Phone systems are custom one-time builds." },
-  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team — you don't need to rebuild anything. If you're on one of our website plans, “Remi” is already included." },
-  { q: 'How fast can it be live?', a: 'Two weeks — that\'s how long a full build has taken from kickoff to live: website, working AI agent, and a phone system routing every call. Agent-only setups are usually faster.' },
+  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. “Remi” answers in whichever language the customer starts with.' },
+  { q: 'Can it answer phone calls, or just website chat?', a: "Both. Website agents answer and book from your site. For phones, we build custom IVR systems: the line answers callers with the information they need and routes them to the right person, every time. Phone systems are custom one-time builds." },
+  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team. You don't need to rebuild anything. If you're on one of our website plans, “Remi” is already included." },
+  { q: 'How fast can it be live?', a: 'Two weeks, that\'s how long a full build has taken from kickoff to live: website, working AI agent, and a phone system routing every call. Agent-only setups are usually faster.' },
   {
     q: 'What does an AI booking agent cost?',
-    a: 'Four ways in — pick by what you already have:',
+    a: 'Four ways in: pick by what you already have:',
     table: {
       head: ['How you get it', 'Price'],
       rows: [
         ['Included in every website plan', `From $${aiTeamStartingPrice}/mo`],
         ['Hired onto the site you already have', `From $${aiTeamStartingPrice}/mo + $${aiTeamSetupFee} setup`],
-        ['On the one-page AI Website (lightest “Remi” — answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
-        ['Custom build — phone IVR, deep integrations', 'From $2,500 one-time'],
+        ['On the one-page AI Website (lightest “Remi”: answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
+        ['Custom build: phone IVR, deep integrations', 'From $2,500 one-time'],
       ],
     },
   },
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
-const META_DESCRIPTION = 'Remi answers customers 24/7 in English or Spanish, qualifies the lead, and books the job — the AI booking agent for Western Mass businesses. From $95/mo.';
+const META_DESCRIPTION = 'Remi answers customers 24/7 in English or Spanish, qualifies the lead, and books the job: the AI booking agent for Western Mass businesses. From $95/mo.';
 
 const pageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Remi — AI Booking Agent for Small Businesses',
+  name: 'Remi: AI Booking Agent for Small Businesses',
   serviceType: 'AI booking agent and AI answering service development',
   provider: {
     '@type': 'ProfessionalService',
@@ -105,13 +105,13 @@ const pageJsonLd = {
   areaServed: 'Western Massachusetts',
   description: META_DESCRIPTION,
   offers: [
-    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering and booking 24/7 — from $95/mo.' },
-    { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have — from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
+    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering and booking 24/7, from $95/mo.' },
+    { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have, from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
   ],
 };
 ---
 
-<BaseLayout title="Remi — AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Remi: AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -136,10 +136,10 @@ const pageJsonLd = {
             Your AI front desk · Western Massachusetts
           </span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-            <span class="apple-gradient-text" data-colorful-title>“Remi” — the AI booking agent that answers,<br /> qualifies &amp; books, 24/7</span>
+            <span class="apple-gradient-text" data-colorful-title>“Remi”: the AI booking agent that answers,<br /> qualifies &amp; books, 24/7</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Most jobs are lost to the call nobody could answer. “Remi” is our AI booking agent for Western Mass small businesses — trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
+            Most jobs are lost to the call nobody could answer. “Remi” is our AI booking agent for Western Mass small businesses, trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
@@ -147,7 +147,7 @@ const pageJsonLd = {
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
             <a href="#proof" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-              See it at work — view our case studies
+              See it at work: view our case studies
             </a>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
@@ -223,25 +223,25 @@ const pageJsonLd = {
               Talk about your booking agent
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
-            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> — English or Spanish.</p>
+            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
           </div>
         </div>
       </Container>
     </Section>
 
     <!-- Proof closes the page (moved from under the hero, Manny, Aug 2026):
-         shipped, named, linked — the thing national SaaS tools can't say. -->
+         shipped, named, linked: the thing national SaaS tools can't say. -->
     <Section id="proof" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Answering Springfield customers today</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A daycare and a painting contractor — both case studies below.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A daycare and a painting contractor, both case studies below.</p>
         </div>
         <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Licensed childcare · Springfield</span>
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare: website, AI agent &amp; phone system — in two weeks</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later: a site with an AI agent answering parents' questions from the site's own content, and a Twilio IVR phone system that gives callers what they need and routes them to the right person — every call answered.</p>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare: website, AI agent &amp; phone system, in two weeks</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later: a site with an AI agent answering parents' questions from the site's own content, and a Twilio IVR phone system that gives callers what they need and routes them to the right person, every call answered.</p>
             <a href="/work/jk-daycare/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
               Read the JK Daycare case study
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
@@ -250,7 +250,7 @@ const pageJsonLd = {
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Painting contractor · Springfield</span>
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting: leads qualified around the clock</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7 — so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7, so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
             <a href="/work/sl-painting/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
               Read the SL Painting case study
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>

@@ -40,7 +40,7 @@ const includedEverywhere = [
       </button>
     </div>
     <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-      One upfront payment for the year — 2 months free
+      One upfront payment for the year: 2 months free
     </p>
   </div>
 
@@ -73,7 +73,7 @@ const includedEverywhere = [
             <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
           </div>
           <div data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-            or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+            or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront: <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
           </div>
           <div data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
             billed as one payment of ${yearlyTotal(p).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
@@ -138,15 +138,15 @@ const includedEverywhere = [
         <tbody class="text-text-light-secondary dark:text-text-dark-secondary">
           {[
             ['Custom-designed website (logo included if you need one)', '1–3 pages', 'Multi-page', 'Multi-page', 'Multi-page'],
-            ['Hosting, SSL & speed — handled', true, true, true, true],
+            ['Hosting, SSL & speed: handled', true, true, true, true],
             ['Set up to rank on Google & Maps', true, true, true, true],
             ['Contact form straight to you', true, true, true, true],
             ['“Remi” answers customers 24/7, in any language', true, true, true, true],
             ['Your social accounts linked up', true, true, true, true],
-            ['Your own admin — leads, contacts, content', false, true, true, true],
+            ['Your own admin: leads, contacts, content', false, true, true, true],
             ['“Remi” books the job & captures the lead', false, true, true, true],
             ['Self-optimizing (speed, SEO, content)', 'Basic', 'More', 'Full', 'Full'],
-            ['“Remi” sells — steers people to the right service', false, false, true, true],
+            ['“Remi” sells: steers people to the right service', false, false, true, true],
             ['Your ads run & managed (two networks)', false, false, false, true],
             ['Monthly working session with Manny', false, false, false, true],
           ].map((row) => (
@@ -159,7 +159,7 @@ const includedEverywhere = [
                   ) : cell ? (
                     <svg class="w-4 h-4 inline text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-label="included"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   ) : (
-                    <span class="text-text-light-tertiary/50 dark:text-text-dark-tertiary/50" aria-label="not included">—</span>
+                    <span class="text-text-light-tertiary/50 dark:text-text-dark-tertiary/50" aria-label="not included">, </span>
                   )}
                 </td>
               ))}
@@ -175,18 +175,18 @@ const includedEverywhere = [
         </tbody>
       </table>
     </div>
-    <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Each tier includes everything in the one before it — start where you are and move up as you grow.</p>
-    <p class="mt-2 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Selling products online? That's a different build — see <a href="/ecommerce/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">online stores</a>.</p>
+    <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Each tier includes everything in the one before it, start where you are and move up as you grow.</p>
+    <p class="mt-2 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Selling products online? That's a different build, see <a href="/ecommerce/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">online stores</a>.</p>
     {/* Two distinct destinations on purpose (Manny, Aug 2026): the name goes
         to “Remi's” profile card on the AI Team roster; the action link goes to
         the booking-agent explainer page. */}
-    <p class="mt-2 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary"><a href="/ai-team/#agent-remi" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Remi</a> is your site's built-in AI agent — chat, sales &amp; booking. <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 hover:underline">See what Remi does</a>.</p>
+    <p class="mt-2 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary"><a href="/ai-team/#agent-remi" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">Remi</a> is your site's built-in AI agent, chat, sales &amp; booking. <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 hover:underline">See what Remi does</a>.</p>
   </div>
 
   <!-- What the monthly price covers — shown once for all plans -->
   <div id="included" class="mt-10 max-w-3xl mx-auto pt-6 border-t border-gray-500/[0.27] scroll-mt-24">
     <h3 class="text-center text-sm font-bold text-text-light-primary dark:text-text-dark-primary">Included with every plan</h3>
-    <p class="mt-1.5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Fast, secure, and stocked — at every tier, not just the top one.</p>
+    <p class="mt-1.5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Fast, secure, and stocked, at every tier, not just the top one.</p>
     <ul class="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
       {includedEverywhere.map((item) => (
         <li class="flex items-start gap-2">
@@ -196,10 +196,10 @@ const includedEverywhere = [
       ))}
     </ul>
     <p class="mt-6 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-      Your site runs on Cloudflare's global edge network. Graphic design, stock media, and logo templates come from our Envato Elements license — used as-is or reworked with AI into content that's uniquely yours. What each "unlimited" above covers is spelled out in our <a href="/terms/#unlimited" class="underline hover:text-primary-blue">terms</a>. The prices above are starting points: we tailor the scope and the cost to what your business actually needs, so you only pay for what moves the needle. <a href="#contact" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Build your plan →</a>
+      Your site runs on Cloudflare's global edge network. Graphic design, stock media, and logo templates come from our Envato Elements license: used as-is or reworked with AI into content that's uniquely yours. What each "unlimited" above covers is spelled out in our <a href="/terms/#unlimited" class="underline hover:text-primary-blue">terms</a>. The prices above are starting points: we tailor the scope and the cost to what your business actually needs, so you only pay for what moves the needle. <a href="#contact" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Build your plan →</a>
     </p>
     <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-      Yearly pricing is one upfront payment for 12 months of service — pay for 10 months, get 12 (2 months free). Details in our <a href="/terms/" class="underline hover:text-primary-blue">terms</a>.
+      Yearly pricing is one upfront payment for 12 months of service: pay for 10 months, get 12 (2 months free). Details in our <a href="/terms/" class="underline hover:text-primary-blue">terms</a>.
     </p>
   </div>
 </div>
@@ -225,7 +225,7 @@ const includedEverywhere = [
       if (caption) {
         caption.textContent = mode === 'monthly'
           ? 'Month-to-month · cancel anytime'
-          : 'One upfront payment for the year — 2 months free';
+          : 'One upfront payment for the year, 2 months free';
       }
       buttons.forEach((b) => {
         const active = b.dataset.billingBtn === mode;

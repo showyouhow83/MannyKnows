@@ -14,36 +14,36 @@ import Faq from '../components/ui/Faq.astro';
 import { getTestimonial } from '../data/testimonials';
 
 const checks = [
-  { title: 'Speed & Core Web Vitals', body: "How fast your site loads on a real phone — the single biggest thing that costs you visitors and Google ranking.", icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-  { title: 'Google & technical SEO', body: "Whether Google can find, read, and rank your pages — titles, structure, sitemaps, schema, and the technical basics most sites get wrong.", icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
-  { title: 'Mobile experience', body: "How the site actually feels on the phones most of your customers use — layout, tap targets, and readability.", icon: 'M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z' },
-  { title: 'Conversion & trust', body: "Whether a visitor can quickly see what you do, trust you, and take the next step — call, book, or buy.", icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { title: 'Accessibility', body: "Whether everyone can use your site — which is both the right thing to do and a real ranking and legal factor.", icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
-  { title: 'AI-readiness', body: "Whether AI answer engines can find, read, and recommend you — crawler policy, llms.txt, machine-readable contact info — plus where an AI agent could answer and book for you 24/7.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+  { title: 'Speed & Core Web Vitals', body: "How fast your site loads on a real phone: the single biggest thing that costs you visitors and Google ranking.", icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { title: 'Google & technical SEO', body: "Whether Google can find, read, and rank your pages: titles, structure, sitemaps, schema, and the technical basics most sites get wrong.", icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
+  { title: 'Mobile experience', body: "How the site actually feels on the phones most of your customers use: layout, tap targets, and readability.", icon: 'M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z' },
+  { title: 'Conversion & trust', body: "Whether a visitor can quickly see what you do, trust you, and take the next step: call, book, or buy.", icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { title: 'Accessibility', body: "Whether everyone can use your site: which is both the right thing to do and a real ranking and legal factor.", icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
+  { title: 'AI-readiness', body: "Whether AI answer engines can find, read, and recommend you: crawler policy, llms.txt, machine-readable contact info: plus where an AI agent could answer and book for you 24/7.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
 ];
 
 // One section instead of the old three-step "How it works" + separate
 // walk-away list — same information, half the scroll, none of the filler.
 const walkaway = [
-  'A prioritized list of the fixes that matter most — highest impact first.',
+  'A prioritized list of the fixes that matter most: highest impact first.',
   'A clear read on how you compare to the competitors showing up ahead of you.',
   'A straight answer on whether a refresh, a rebuild, or maintenance makes sense.',
-  'And every fix on the list is something we can run for you — website, SEO, AI agent, store — so the list never becomes homework.',
+  'And every fix on the list is something we can run for you (website, SEO, AI agent, store) so the list never becomes homework.',
 ];
 
 const faqs = [
-  { q: 'Is it really free?', a: 'Yes — the instant scan and the human review both. It is how we show the kind of work we do before you spend a dollar.' },
-  { q: 'What do you need from me?', a: 'Your website address and an email where we can reach you about the results. If you have a goal in mind — more calls, more bookings, more online sales — say so and the review focuses there.' },
-  { q: 'How is this different from a free automated score?', a: 'The instant scan is automated — that is why it is instant. The human review is not: Manny checks your competitors, your actual rankings, and whether the site sells, then puts the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
-  { q: 'How long does it take?', a: 'The scan takes seconds. The human review usually comes back within a couple of business days — tell us if you need it sooner.' },
+  { q: 'Is it really free?', a: 'Yes, the instant scan and the human review both. It is how we show the kind of work we do before you spend a dollar.' },
+  { q: 'What do you need from me?', a: 'Your website address and an email where we can reach you about the results. If you have a goal in mind (more calls, more bookings, more online sales) say so and the review focuses there.' },
+  { q: 'How is this different from a free automated score?', a: 'The instant scan is automated, that is why it is instant. The human review is not: Manny checks your competitors, your actual rankings, and whether the site sells, then puts the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
+  { q: 'How long does it take?', a: 'The scan takes seconds. The human review usually comes back within a couple of business days: tell us if you need it sooner.' },
 ];
 
 const quote = getTestimonial('SL Painting');
 ---
 
 <BaseLayout
-  title="Free AI Website Analysis — Speed & SEO | MannyKnows"
-  description="Get a free review of your website — speed, Google visibility, mobile, and conversions — with a prioritized list of fixes."
+  title="Free AI Website Analysis: Speed & SEO | MannyKnows"
+  description="Get a free review of your website (speed, Google visibility, mobile, and conversions) with a prioritized list of fixes."
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -62,7 +62,7 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named — with the fix next to it. Then a real person goes deeper, free.
+            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named, with the fix next to it. Then a real person goes deeper, free.
           </p>
 
           <!-- Instant scanner -->
@@ -88,7 +88,7 @@ const quote = getTestimonial('SL Painting');
               class="flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
             <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 h-12 text-sm font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
-              Scan my site — free
+              Scan my site: free
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </button>
           </form>
@@ -106,7 +106,7 @@ const quote = getTestimonial('SL Painting');
         <div id="scanResults" class="max-w-6xl mx-auto"></div>
         <div class="max-w-4xl mx-auto text-center mt-10">
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 max-w-2xl mx-auto">
-            That's the automated first pass — one page, read by a machine. The free <strong class="text-text-light-primary dark:text-text-dark-primary">human review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
+            That's the automated first pass: one page, read by a machine. The free <strong class="text-text-light-primary dark:text-text-dark-primary">human review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
           </p>
           <a href="#contact" data-contact-context="Free AI Website Analysis (ran the instant scan)" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
             Get the free human review
@@ -144,7 +144,7 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>What you walk away with</span>
           </h2>
           <p class="text-center text-base text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-8">
-            The scan is instant. The free human review is where it gets serious: Manny checks what a scanner can't — your competitors, your rankings, whether the site actually sells — and sends back a short plan.
+            The scan is instant. The free human review is where it gets serious: Manny checks what a scanner can't (your competitors, your rankings, whether the site actually sells) and sends back a short plan.
           </p>
           <ul class="grid sm:grid-cols-2 gap-4">
             {walkaway.map((w) => (
@@ -270,7 +270,7 @@ const quote = getTestimonial('SL Painting');
         ${Array.isArray(data.opportunities) && data.opportunities.length ? `
         <div class="mt-12">
           <h3 class="sf-bold text-xl md:text-2xl font-bold text-center mb-2"><span class="apple-gradient-text" data-colorful-title>Where AI could work for ${esc(data.host)}</span></h3>
-          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Each card comes from something the scan found on your page — matched to the AI agent, automation, or SEO service that fixes it.</p>
+          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Each card comes from something the scan found on your page, matched to the AI agent, automation, or SEO service that fixes it.</p>
           <div class="grid gap-4 sm:grid-cols-2">
             ${data.opportunities.map((o: any) => `
               <a href="${esc(o.href)}" class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
@@ -280,7 +280,7 @@ const quote = getTestimonial('SL Painting');
               </a>`).join('')}
           </div>
         </div>` : ''}
-        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things a person catches — that's what the free review below is for.</p>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things a person catches. That's what the free review below is for.</p>
       `;
       section.classList.remove('hidden');
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -291,11 +291,11 @@ const quote = getTestimonial('SL Painting');
       if (!input || !btn) return;
       errEl && errEl.classList.add('hidden');
       const url = input.value.trim();
-      if (!url) { showError('Type your website address first — like yourbusiness.com.'); return; }
+      if (!url) { showError('Type your website address first: like yourbusiness.com.'); return; }
       const emailInput = document.getElementById('scanEmail') as HTMLInputElement | null;
       const email = emailInput?.value.trim() ?? '';
       if (!email || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email)) {
-        showError("Add your email too — it's where we follow up on what the scan finds.");
+        showError("Add your email too: it's where we follow up on what the scan finds.");
         emailInput?.focus();
         return;
       }
@@ -310,9 +310,9 @@ const quote = getTestimonial('SL Painting');
         });
         const data = await res.json();
         if (data.ok) render(data);
-        else showError(data.error || 'Something went wrong — try again, or request the free human review below.');
+        else showError(data.error || 'Something went wrong: try again, or request the free human review below.');
       } catch {
-        showError('Network hiccup — try again in a moment.');
+        showError('Network hiccup: try again in a moment.');
       } finally {
         btn.disabled = false;
         btn.innerHTML = original;

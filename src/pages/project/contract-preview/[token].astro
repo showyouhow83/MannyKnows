@@ -90,7 +90,7 @@ function parseUserAgent(ua: string | null | undefined): string {
   return `${browser} on ${os}`;
 }
 function fmtFullDateTime(s: string | null | undefined): string {
-  if (!s) return '—';
+  if (!s) return ': ';
   try {
     const trimmed = String(s).replace(' ', 'T') + 'Z';
     const d = new Date(trimmed);
@@ -210,7 +210,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contract — {row.project_number} — {brand.name}</title>
+    <title>Contract: {row.project_number}: {brand.name}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="robots" content="noindex, nofollow" />
     <style>
@@ -379,7 +379,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
       )}
 
       <div class="grand-total-row">
-        <span>Total — labor and materials</span>
+        <span>Total: labor and materials</span>
         <span class="amount">{fmtMoney(total)}</span>
       </div>
       {discount > 0 && (
@@ -422,7 +422,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
                       {rec.customer_signature_data_url && (
                         <img src={rec.customer_signature_data_url} alt="Client signature" style="display:block; max-height:26px; max-width:100%;" />
                       )}
-                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
+                      <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? `, ${rec.customer_name}` : ''}</div>
                     </div>
                     <div style="flex:1; min-width:0;">
                       {rec.contractor_signature_data_url && (

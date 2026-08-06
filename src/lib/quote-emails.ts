@@ -32,7 +32,7 @@ export interface Quote {
   estimated_duration?: string;
   contract_url?: string;            // legacy single-PDF field
   attachments?: QuoteAttachmentInfo[]; // multi-PDF list (preferred)
-  template_sections?: string;       // v64 — JSON array of QuoteScope
+  template_sections?: string;       // v64, JSON array of QuoteScope
 }
 
 // Customer-facing scope block. quoteToScopes() returns either the real scoped
@@ -53,7 +53,7 @@ function buildTemplateSectionsHtml(quote: Quote): string {
   if (total > 0) {
     const rows = disc > 0
       ? `<tr>
-           <td style="padding:8px 0; text-align:left; color:#475569;">Total cost — labor and materials</td>
+           <td style="padding:8px 0; text-align:left; color:#475569;">Total cost, labor and materials</td>
            <td style="padding:8px 0; text-align:right; font-weight:600; color:#1e293b; white-space:nowrap;">${formatCurrency(sub || total)}</td>
          </tr>
          <tr>
@@ -65,7 +65,7 @@ function buildTemplateSectionsHtml(quote: Quote): string {
            <td style="padding:12px 0 0; text-align:right; font-size:20px; font-weight:700; color:#ff781d; white-space:nowrap; border-top:1px solid #cbd5e1;">${formatCurrency(total)}</td>
          </tr>`
       : `<tr>
-           <td style="padding:8px 0; text-align:left; font-size:17px; font-weight:700; color:#1e293b;">Total cost — labor and materials</td>
+           <td style="padding:8px 0; text-align:left; font-size:17px; font-weight:700; color:#1e293b;">Total cost, labor and materials</td>
            <td style="padding:8px 0; text-align:right; font-size:20px; font-weight:700; color:#ff781d; white-space:nowrap;">${formatCurrency(total)}</td>
          </tr>`;
     totalBlock = `
@@ -572,7 +572,7 @@ ${emailOpen()}
     <!-- Talk it through -->
     <div style="background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%); border: 1px solid #fed7aa; border-radius: 12px; padding: 20px; margin: 0 0 30px 0; text-align: center;">
       <div style="font-size: 15px; font-weight: 700; color: #9a3412; margin-bottom: 6px;">Want to talk through the numbers?</div>
-      <div style="font-size: 14px; color: #9a3412; line-height: 1.6;">Give us a call at <a href="tel:4133618451" style="color: #9a3412; font-weight: 700; text-decoration: none;">(413) 361-8451</a> — we're happy to walk through the quote together.</div>
+      <div style="font-size: 14px; color: #9a3412; line-height: 1.6;">Give us a call at <a href="tel:4133618451" style="color: #9a3412; font-weight: 700; text-decoration: none;">(413) 361-8451</a>, we're happy to walk through the quote together.</div>
     </div>
 
     <!-- CTA Buttons -->
@@ -757,7 +757,7 @@ ${emailClose()}
       from: emailFrom(brand, 'quotes'),
       replyTo: 'mm@mannyknows.com',
       to: quote.customer_email,
-      subject: `We received your acceptance — Quote #${quote.quote_number}`,
+      subject: `We received your acceptance: Quote #${quote.quote_number}`,
       html,
       text,
     });
@@ -1134,10 +1134,10 @@ ${emailOpen()}
     <!-- Info Note -->
     <div style="background: linear-gradient(135deg, #fff7ed 0%, #f8fafc 100%); border-left: 4px solid #ff781d; padding: 16px 20px; margin: 30px 0; border-radius: 0 8px 8px 0;">
       <p style="margin: 0 0 8px; font-size: 14px; color: #9a3412;">
-        <strong>Your project portal is ready.</strong> It's your home base for this project — track progress photos, view your documents, and make your selections right from the page.
+        <strong>Your project portal is ready.</strong> It's your home base for this project: track progress photos, view your documents, and make your selections right from the page.
       </p>
       <p style="margin: 0; font-size: 13px; color: #475569;">
-        For your privacy, the first time you open it we'll ask you to confirm this email address — no password to remember.
+        For your privacy, the first time you open it we'll ask you to confirm this email address, no password to remember.
       </p>
     </div>
 
@@ -1644,7 +1644,7 @@ const CALL_US_BLURB = `
   <p style="font-size: 14px; color: #64748b; line-height: 1.7; margin: 0; text-align: center;">
     Questions about the price or the scope? Call us at
     <a href="tel:4133618451" style="color: #ff781d; font-weight: 700; text-decoration: none;">(413) 361-8451</a>
-    — we're happy to walk through it with you.
+we're happy to walk through it with you.
   </p>`;
 
 export async function sendQuoteFollowUp(
@@ -1669,7 +1669,7 @@ export async function sendQuoteFollowUp(
   let bodyHtml: string;
 
   if (!data.is_renegotiation && data.follow_up_number === 1) {
-    subject = `Just checking in on your quote — #${data.quote_number}`;
+    subject = `Just checking in on your quote: #${data.quote_number}`;
     heading = 'Just checking in!';
     bodyHtml = `
       <p style="font-size: 16px; color: #1e293b; line-height: 1.6; margin: 0 0 20px 0;">Hi ${firstName},</p>
@@ -1679,7 +1679,7 @@ export async function sendQuoteFollowUp(
       </p>
       <p style="font-size: 15px; color: #475569; line-height: 1.7; margin: 0 0 24px 0;">
         Your quote is valid until <strong>${data.expiry_date}</strong>. If you have any questions or want to
-        adjust anything, just reply to this email — we're happy to help.
+        adjust anything, just reply to this email: we're happy to help.
       </p>
       <div style="text-align: center; margin: 32px 0;">
         ${emailButton(reviewUrl, 'Review & Accept Your Quote', 'blue')}
@@ -1687,7 +1687,7 @@ export async function sendQuoteFollowUp(
       ${CALL_US_BLURB}`;
 
   } else if (!data.is_renegotiation && data.follow_up_number === 2) {
-    subject = `Your quote expires in 2 days — #${data.quote_number}`;
+    subject = `Your quote expires in 2 days: #${data.quote_number}`;
     heading = 'Your quote expires soon';
     bodyHtml = `
       <p style="font-size: 16px; color: #1e293b; line-height: 1.6; margin: 0 0 20px 0;">Hi ${firstName},</p>
@@ -1697,18 +1697,18 @@ export async function sendQuoteFollowUp(
       </p>
       <p style="font-size: 15px; color: #475569; line-height: 1.7; margin: 0 0 20px 0;">
         We'd love the opportunity to work on your project. If the timing or pricing isn't quite right,
-        just reply and let us know — we can work with you.
+        just reply and let us know. We can work with you.
       </p>
       <div style="text-align: center; margin: 32px 0;">
         ${emailButton(reviewUrl, 'Review & Accept Your Quote', 'green')}
       </div>
       ${CALL_US_BLURB}
       <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 24px 0 0; text-align: center; font-style: italic;">
-        If you've decided to go in a different direction, no hard feelings at all — just let us know so we can close things out on our end.
+        If you've decided to go in a different direction, no hard feelings at all, just let us know so we can close things out on our end.
       </p>`;
 
   } else if (data.is_renegotiation && data.follow_up_number === 1) {
-    subject = `Following up on your revised quote — #${data.quote_number}`;
+    subject = `Following up on your revised quote: #${data.quote_number}`;
     heading = 'Following up on your revised quote';
     bodyHtml = `
       <p style="font-size: 16px; color: #1e293b; line-height: 1.6; margin: 0 0 20px 0;">Hi ${firstName},</p>
@@ -1725,12 +1725,12 @@ export async function sendQuoteFollowUp(
       ${CALL_US_BLURB}`;
 
   } else {
-    subject = `Your revised quote expires tomorrow — #${data.quote_number}`;
+    subject = `Your revised quote expires tomorrow: #${data.quote_number}`;
     heading = 'Last chance on your revised quote';
     bodyHtml = `
       <p style="font-size: 16px; color: #1e293b; line-height: 1.6; margin: 0 0 20px 0;">Hi ${firstName},</p>
       <p style="font-size: 15px; color: #475569; line-height: 1.7; margin: 0 0 16px 0;">
-        Quick note — your revised quote for <strong>${servicesText}</strong> at ${addressLine}
+        Quick note: your revised quote for <strong>${servicesText}</strong> at ${addressLine}
         expires <strong>tomorrow</strong> on <strong>${data.expiry_date}</strong>.
       </p>
       <p style="font-size: 15px; color: #475569; line-height: 1.7; margin: 0 0 20px 0;">
@@ -1863,7 +1863,7 @@ ${emailClose()}
 It was a pleasure transforming your space. Your finished project${data.project_number ? ` (#${data.project_number})` : ''} is now featured in our portfolio:
 ${portfolioUrl}
 ${GOOGLE_REVIEW_URL ? `
-Loved the work? A quick Google review helps a local family business like ours — and helps your neighbors find a contractor they can trust:
+Loved the work? A quick Google review helps a local family business like ours, and helps your neighbors find a contractor they can trust:
 ${GOOGLE_REVIEW_URL}
 ` : ''}
 Questions or need a touch-up? Call ${brand.phoneDisplay}.
@@ -1874,7 +1874,7 @@ ${brand.name} | ${brand.websiteLabel}`.trim();
     await resend.emails.send({
       from: emailFrom(brand, 'projects'),
       to: isLocalhost ? ['delivered@resend.dev'] : [data.customer_email],
-      subject: `Your project is featured — and a quick favor, ${firstName}?`,
+      subject: `Your project is featured, and a quick favor, ${firstName}?`,
       html,
       text,
     });
@@ -1943,7 +1943,7 @@ ${emailOpen()}
       Hi ${escapeHtml(firstName)},
     </h1>
     <p style="font-size: 15px; font-weight: 400; color: #475569; line-height: 1.7; margin: 0 0 26px 0; text-align: center;">
-      Thank you for trusting ${escapeHtml(brand.name)} with your project — it's been a pleasure working with you, and we truly appreciate your business. Below is your invoice for ${escapeHtml(data.label)}${data.project_number ? ` (Project #${escapeHtml(data.project_number)})` : ''}. Thank you in advance for your payment.
+      Thank you for trusting ${escapeHtml(brand.name)} with your project: it's been a pleasure working with you, and we truly appreciate your business. Below is your invoice for ${escapeHtml(data.label)}${data.project_number ? ` (Project #${escapeHtml(data.project_number)})` : ''}. Thank you in advance for your payment.
     </p>
 
     <!-- Amount due -->
@@ -1987,7 +1987,7 @@ ${emailClose()}
 
   const text = `Hi ${firstName},
 
-Thank you for trusting ${brand.name} with your project — we truly appreciate your business. Below is your invoice for ${data.label}${data.project_number ? ` (Project #${data.project_number})` : ''}. Thank you in advance for your payment.
+Thank you for trusting ${brand.name} with your project. We truly appreciate your business. Below is your invoice for ${data.label}${data.project_number ? ` (Project #${data.project_number})` : ''}. Thank you in advance for your payment.
 
 Amount due: ${amountStr}${dueStr ? ` (due ${dueStr})` : ''}${lateNote ? `\n${lateNote}` : ''}
 
@@ -2007,7 +2007,7 @@ ${brand.name} | ${brand.websiteLabel}`.trim();
     await resend.emails.send({
       from: emailFrom(brand, 'projects'),
       to: isLocalhost ? ['delivered@resend.dev'] : [data.customer_email],
-      subject: `Invoice — ${amountStr} due${data.project_number ? ` · #${data.project_number}` : ''}`,
+      subject: `Invoice: ${amountStr} due${data.project_number ? ` · #${data.project_number}` : ''}`,
       html,
       text,
     });

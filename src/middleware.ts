@@ -165,11 +165,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
       if (isAdminApi) {
         return new Response(JSON.stringify({
           success: false,
-          error: 'Admin database not configured yet — create the MK_APP_DB D1 binding (see SETUP-ADMIN.md).',
+          error: 'Admin database not configured yet: create the MK_APP_DB D1 binding (see SETUP-ADMIN.md).',
         }), { status: 503, headers: { 'Content-Type': 'application/json' } });
       }
       return new Response(
-        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin not configured</title><style>body{font:16px/1.6 system-ui,sans-serif;max-width:560px;margin:12vh auto;padding:0 20px;color:#1c1d22}code{background:#f2f3f7;border-radius:6px;padding:2px 6px;font-size:14px}h1{font-size:22px}</style></head><body><h1>You're logged in — the admin database isn't created yet</h1><p>The admin code is deployed, but its D1 database binding (<code>MK_APP_DB</code>) doesn't exist on this Worker.</p><p>Run the steps in <code>SETUP-ADMIN.md</code> (create the D1 database, paste its id into <code>wrangler.jsonc</code>, deploy, then run migrations at <code>/admin/migrate/</code>).</p></body></html>`,
+        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin not configured</title><style>body{font:16px/1.6 system-ui,sans-serif;max-width:560px;margin:12vh auto;padding:0 20px;color:#1c1d22}code{background:#f2f3f7;border-radius:6px;padding:2px 6px;font-size:14px}h1{font-size:22px}</style></head><body><h1>You're logged in: the admin database isn't created yet</h1><p>The admin code is deployed, but its D1 database binding (<code>MK_APP_DB</code>) doesn't exist on this Worker.</p><p>Run the steps in <code>SETUP-ADMIN.md</code> (create the D1 database, paste its id into <code>wrangler.jsonc</code>, deploy, then run migrations at <code>/admin/migrate/</code>).</p></body></html>`,
         { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex' } },
       );
     }
@@ -180,7 +180,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       session.role === 'viewer' &&
       (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH' || request.method === 'DELETE')
     ) {
-      return new Response(JSON.stringify({ success: false, error: 'View-only access — contact an admin to make changes.' }), {
+      return new Response(JSON.stringify({ success: false, error: 'View-only access, contact an admin to make changes.' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -200,7 +200,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   ) {
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (session.isAuthenticated && session.role === 'viewer') {
-      return new Response(JSON.stringify({ success: false, error: 'View-only access — contact an admin to make changes.' }), {
+      return new Response(JSON.stringify({ success: false, error: 'View-only access, contact an admin to make changes.' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
       });

@@ -38,7 +38,7 @@
 </style>
 
 <style is:global>
-  /* "Who's online" count chip — injected next to each notification bell. It is
+  /* "Who's online" count chip: injected next to each notification bell. It is
      created in JS, so the styles must be global (Astro scoped CSS won't reach
      dynamically-created nodes). A green circle with the live admin count; it
      pulses when more than one admin is online. Hover shows who + where. */
@@ -119,7 +119,7 @@
 
     function updateChips(online: any[]) {
       const n = online.length;
-      const lines = online.map((o) => `• ${o.admin_name}${o.client_id === presenceMe ? ' (you)' : ''} — ${whereLabel(o)}`).join('\n');
+      const lines = online.map((o) => `• ${o.admin_name}${o.client_id === presenceMe ? ' (you)' : ''}, ${whereLabel(o)}`).join('\n');
       const title = n ? `${n} admin${n === 1 ? '' : 's'} online:\n${lines}` : '';
       chips.forEach((chip) => {
         chip.style.display = n > 0 ? 'inline-flex' : 'none';
@@ -141,7 +141,7 @@
       const who = names.length === 1
         ? `${names[0]} is also viewing this ${noun}`
         : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} are also viewing this ${noun}`;
-      t.textContent = `${who} — save carefully to avoid overwriting each other.`;
+      t.textContent = `${who}: save carefully to avoid overwriting each other.`;
       b.classList.add('show');
     }
 
@@ -172,7 +172,7 @@
         updateChips(data.online || []);
         (window as any).__presenceOnline = data.online || [];
         document.dispatchEvent(new CustomEvent('presence:online', { detail: data.online || [] }));
-      } catch { /* network blip — ignore */ }
+      } catch { /* network blip: ignore */ }
     }
 
     // Public API for pages to set/clear the open record.

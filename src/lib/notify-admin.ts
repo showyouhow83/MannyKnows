@@ -54,11 +54,11 @@ async function sendSMS(env: any, text: string): Promise<void> {
   const dest = env?.NOTIFICATION_PHONE || DEFAULT_ALERT_PHONE;
   if (!sid || !token || !from) {
     // Feature-flag guard: Twilio not configured → skip quietly but visibly.
-    console.log('[notifyAdmin] SMS skipped — Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
+    console.log('[notifyAdmin] SMS skipped: Twilio not configured (need TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)');
     return;
   }
   if (!dest) {
-    console.log('[notifyAdmin] SMS skipped — no recipient (set the NOTIFICATION_PHONE secret)');
+    console.log('[notifyAdmin] SMS skipped, no recipient (set the NOTIFICATION_PHONE secret)');
     return;
   }
 
@@ -109,7 +109,7 @@ export async function notifyAdmin(env: any, opts: NotifyOpts): Promise<void> {
     const link = opts.link ? (opts.link.startsWith('http') ? opts.link : SITE + opts.link) : '';
 
     if (channels.includes('sms')) {
-      const smsText = `MannyKnows — ${opts.subject}\n${opts.body}${link ? `\n${link}` : ''}`;
+      const smsText = `MannyKnows: ${opts.subject}\n${opts.body}${link ? `\n${link}` : ''}`;
       await sendSMS(env, smsText);
     }
     if (channels.includes('email')) {

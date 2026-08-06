@@ -47,7 +47,7 @@ export function todayStringEt(): string {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-/** Pretty-formatted ET date — "Monday, May 4, 2026". */
+/** Pretty-formatted ET date: "Monday, May 4, 2026". */
 export function todayLongStringEt(): string {
   return new Date().toLocaleDateString('en-US', {
     timeZone: ET_TIMEZONE,

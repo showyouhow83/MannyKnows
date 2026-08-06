@@ -57,7 +57,7 @@ const pageJsonLd = {
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
   areaServed: 'Western Massachusetts',
-  description: 'Online stores built, stocked, and run — Shopify and beyond, with the platform subscription included in every tier.',
+  description: 'Online stores built, stocked, and run: Shopify and beyond, with the platform subscription included in every tier.',
   offers: (plan.tiers ?? []).map((t) => ({
     '@type': 'Offer',
     name: t.name,
@@ -70,7 +70,7 @@ const pageJsonLd = {
 
 <BaseLayout
   title="Ecommerce Web Design for Western Mass | MannyKnows"
-  description={`Ecommerce website development for Western Mass — Shopify stores built, stocked & run: product pages that sell, Remi answering shoppers 24/7. From $${plan.price.toLocaleString('en-US')}/mo.`}
+  description={`Ecommerce website development for Western Mass: Shopify stores built, stocked & run: product pages that sell, Remi answering shoppers 24/7. From $${plan.price.toLocaleString('en-US')}/mo.`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -96,7 +96,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Online stores that sell while your business is closed</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Anyone can sign up for a store. A store that <em>sells</em> is a job: the right products, written and photographed right, emails that bring people back, a checkout nobody abandons. We do that job every month — so by the holiday rush you're tuned and stocked, not launching.
+              Anyone can sign up for a store. A store that <em>sells</em> is a job: the right products, written and photographed right, emails that bring people back, a checkout nobody abandons. We do that job every month, so by the holiday rush you're tuned and stocked, not launching.
             </p>
 
             <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
@@ -113,7 +113,7 @@ const pageJsonLd = {
             </div>
 
             <p class="mt-3 text-sm font-medium text-text-light-primary dark:text-text-dark-primary">
-              Every tier includes your Shopify subscription — one bill, not two.
+              Every tier includes your Shopify subscription: one bill, not two.
             </p>
 
             <p class="mt-6 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -121,7 +121,7 @@ const pageJsonLd = {
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#contact" data-contact-context="Sell Online — store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
+              <a href="#contact" data-contact-context="Sell Online: store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
                 Start your store
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
@@ -166,7 +166,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Four sizes of store</span>
           </h2>
           <p class="mt-3 max-w-3xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each tier includes everything in the one before it — and your Shopify subscription. Start where your store is; move up when it's earning more.
+            Each tier includes everything in the one before it, and your Shopify subscription. Start where your store is; move up when it's earning more.
           </p>
         </div>
         <!-- Monthly ⇄ Yearly toggle — visually identical to /plans, yearly
@@ -182,7 +182,7 @@ const pageJsonLd = {
             </button>
           </div>
           <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-            One upfront payment for the year — 2 months free
+            One upfront payment for the year: 2 months free
           </p>
         </div>
         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
@@ -207,7 +207,7 @@ const pageJsonLd = {
                   <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${Math.round((t.price * 10) / 12).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                 </div>
                 <div data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-                  or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront — <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
+                  or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront: <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
                 </div>
                 <div data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
                   billed as one payment of ${(t.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
@@ -233,7 +233,7 @@ const pageJsonLd = {
                 </ul>
               </div>
 
-              <a href="#contact" data-contact-context={`Online Store — ${t.name}`} class={`mt-4 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>
+              <a href="#contact" data-contact-context={`Online Store: ${t.name}`} class={`mt-4 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>
                 Get started
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
@@ -255,23 +255,23 @@ const pageJsonLd = {
               <tbody class="text-text-light-secondary dark:text-text-dark-secondary">
                 {[
                   ['Shopify subscription included', 'Basic', 'Basic', 'Grow', 'Grow'],
-                  ['Store built & configured — theme, payments, shipping, taxes', '✓', '✓', '✓', '✓'],
+                  ['Store built & configured: theme, payments, shipping, taxes', '✓', '✓', '✓', '✓'],
                   ['“Remi” answers shoppers 24/7, any language', '✓', '✓', '✓', '✓'],
                   ['Product adds & changes per month', '10', '30', '100', '100'],
-                  ['SEO product descriptions — AI-written & reviewed', 'Unlimited', 'Unlimited', 'Unlimited', 'Unlimited'],
+                  ['SEO product descriptions: AI-written & reviewed', 'Unlimited', 'Unlimited', 'Unlimited', 'Unlimited'],
                   ['Store SEO', 'Basics', 'AI-Automated', 'Full program', 'Full program'],
-                  ['Email — flows (cart, welcome, post-purchase)', '—', '✓', '✓', '✓'],
-                  ['Cart-abandonment optimization', '—', '—', '✓', '✓'],
-                  ['Reviews collected & shown', '—', '✓', '✓', '✓'],
-                  ['AI shopping assistant — recommends & upsells', '—', '—', '✓', '✓'],
-                  ['Multilingual storefront', '—', '—', '✓', '✓'],
-                  ['Ads run & managed (two networks) + product feeds', '—', '—', '—', '✓'],
-                  ['Monthly working session with Manny', '—', '—', '—', '✓'],
+                  ['Email (flows (cart, welcome, post-purchase)', ') ', '✓', '✓', '✓'],
+                  ['Cart-abandonment optimization', ', ', ', ', '✓', '✓'],
+                  ['Reviews collected & shown', ': ', '✓', '✓', '✓'],
+                  ['AI shopping assistant, recommends & upsells', ', ', ': ', '✓', '✓'],
+                  ['Multilingual storefront', ', ', ', ', '✓', '✓'],
+                  ['Ads run & managed (two networks) + product feeds', ', ', ', ', ': ', '✓'],
+                  ['Monthly working session with Manny', ', ', ', ', ': ', '✓'],
                 ].map((row) => (
                   <tr class="border-b border-light-tertiary/60 dark:border-dark-accent/60 last:border-0">
                     <td class="p-4">{row[0]}</td>
                     {row.slice(1).map((c) => (
-                      <td class={`p-4 text-center ${c === '✓' ? 'text-green-500 font-bold' : c === '—' ? 'text-text-light-tertiary dark:text-text-dark-tertiary' : 'font-semibold text-primary-blue dark:text-blue-300'}`}>{c}</td>
+                      <td class={`p-4 text-center ${c === '✓' ? 'text-green-500 font-bold' : c === ', ' ? 'text-text-light-tertiary dark:text-text-dark-tertiary' : 'font-semibold text-primary-blue dark:text-blue-300'}`}>{c}</td>
                     ))}
                   </tr>
                 ))}
@@ -283,7 +283,7 @@ const pageJsonLd = {
             </table>
           </div>
           <p class="mt-4 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto">
-            No markups, no hidden fees: your platform's own payment-processing rates apply, whatever runs your store — Shopify, WooCommerce, or any of the systems we work with. Bigger store needing an enterprise tier? We run those too.
+            No markups, no hidden fees: your platform's own payment-processing rates apply, whatever runs your store, Shopify, WooCommerce, or any of the systems we work with. Bigger store needing an enterprise tier? We run those too.
           </p>
         </div>
       </Container>
@@ -297,7 +297,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>A store is a different animal than a website</span>
           </h2>
           <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            A <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website</a> gets you found and reached. A store has a harder job: a stranger has to decide, trust you, and pay — without talking to anybody. That's inventory, product photography, shipping, taxes, and cart-recovery email. A bigger machine, with its own price.
+            A <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website</a> gets you found and reached. A store has a harder job: a stranger has to decide, trust you, and pay, without talking to anybody. That's inventory, product photography, shipping, taxes, and cart-recovery email. A bigger machine, with its own price.
           </p>
         </div>
       </Container>
@@ -368,7 +368,7 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <Faq faqs={plan.faq} />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="Sell Online — store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+            <a href="#contact" data-contact-context="Sell Online: store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
               Talk to us about your store
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
@@ -383,7 +383,7 @@ const pageJsonLd = {
         <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8">
           <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Selling services instead of products?</h2>
           <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Then what you want is a website that gets you found on Google, answers your customers, and books the work — four plans from $95/mo, every one with “Remi” included. And if you start selling later, your plan has a store twin waiting: switching is a plan change, not a rebuild.
+            Then what you want is a website that gets you found on Google, answers your customers, and books the work: four plans from $95/mo, every one with “Remi” included. And if you start selling later, your plan has a store twin waiting: switching is a plan change, not a rebuild.
           </p>
           <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
             See the website plans
@@ -440,7 +440,7 @@ const pageJsonLd = {
       if (caption) {
         caption.textContent = mode === 'monthly'
           ? 'Month-to-month · cancel anytime'
-          : 'One upfront payment for the year — 2 months free';
+          : 'One upfront payment for the year, 2 months free';
       }
       buttons.forEach((b) => {
         const active = b.dataset.billingBtn === mode;

@@ -2,7 +2,7 @@
 export interface Props {
   title: string;
   highlightedText: string;
-  /** Text rendered after the highlighted span (e.g. ", less busywork — for Western Mass contractors."). */
+  /** Text rendered after the highlighted span (e.g. ", less busywork, for Western Mass contractors."). */
   titleAfter?: string;
   subtitle: string;
   /** Optional small pill shown above the headline (e.g. a location / niche tag). */
@@ -17,7 +17,7 @@ const { title, highlightedText, titleAfter = "", subtitle, badge, className = ""
   <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
     {/* This div's old `max-w-16xl` class was never defined in Tailwind, so the
         title has always wrapped at the outer 1440px container. That 1440px is
-        the site-wide hero-title width — interior page heroes match it. */}
+        the site-wide hero-title width: interior page heroes match it. */}
     <div class="mx-auto">
       {badge && (
         <span class="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-gray-200/40 dark:border-white/15 bg-white/50 dark:bg-white/5 backdrop-blur-md text-sm sf-medium text-text-light-secondary dark:text-text-dark-secondary">

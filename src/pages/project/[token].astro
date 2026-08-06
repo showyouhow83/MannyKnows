@@ -490,7 +490,7 @@ const status = project?.status ? statusInfo[project.status] : null;
       box-sizing: border-box;
     }
 
-    /* Form controls default to the browser's monospace/system font — force the
+    /* Form controls default to the browser's monospace/system font: force the
        site font so textareas + inputs match everything else. */
     input, textarea, select, button { font-family: inherit; }
 
@@ -1414,7 +1414,7 @@ const status = project?.status ? statusInfo[project.status] : null;
 
     /* Date inputs overflow their container on iOS unless min-width is dropped.
        We keep the NATIVE appearance (so the iOS calendar control is visible +
-       tappable — stripping appearance hid it, which read as "no calendar"),
+       tappable: stripping appearance hid it, which read as "no calendar"),
        and constrain width to stop the overflow. */
     input[type="date"], input[type="time"], input[type="datetime-local"] {
       min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box;
@@ -1425,7 +1425,7 @@ const status = project?.status ? statusInfo[project.status] : null;
     }
 </style>
 <style is:global>
-  /* Color picker — JS-rendered elements don't carry Astro scope hash */
+  /* Color picker: JS-rendered elements don't carry Astro scope hash */
   .swcp-fam { display:flex; align-items:center; gap:5px; padding:5px 11px; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; color:#475569; transition:all 0.12s; }
   .swcp-fam.active { background:#1e293b; border-color:#1e293b; color:#fff; }
   .swcp-fam-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; display:inline-block; }
@@ -1465,7 +1465,7 @@ const status = project?.status ? statusInfo[project.status] : null;
       <div class="card" style="max-width:460px;margin:88px auto 40px;padding:32px 28px;text-align:center;">
         <h1 style="font-size:22px;color:#1e293b;margin:0 0 8px;">Open your project</h1>
         <p style="font-size:14px;color:#64748b;line-height:1.6;margin:0 0 22px;">
-          For your privacy, confirm the email on your project. We'll send you a secure link — no password needed.
+          For your privacy, confirm the email on your project. We'll send you a secure link, no password needed.
         </p>
         <form id="portalGateForm" style="display:flex;flex-direction:column;gap:12px;text-align:left;">
           <input type="email" id="gateEmail" placeholder="you@email.com" autocomplete="email" required
@@ -1533,7 +1533,7 @@ const status = project?.status ? statusInfo[project.status] : null;
                 {docSteps.map((s) => (
                   <div class={`doc-step ${s.done ? 'done' : ''}`}>
                     <span class="doc-step-mark">{s.done ? '✓' : ''}</span>
-                    <span class="doc-step-label">{s.label}{s.hint ? <span class="doc-step-hint"> — {s.hint}</span> : null}</span>
+                    <span class="doc-step-label">{s.label}{s.hint ? <span class="doc-step-hint">: {s.hint}</span> : null}</span>
                   </div>
                 ))}
               </div>
@@ -1620,7 +1620,7 @@ const status = project?.status ? statusInfo[project.status] : null;
               ) : (
                 <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
                   Pick your colors below. Enter a code (e.g. <strong>SW 7008</strong> or <strong>BM OC-17</strong>), or just tell us
-                  <em>"same as current"</em> and we'll color-match. You can update these any time before we start — when you're sure, <strong>finalize</strong> to lock them in.
+                  <em>"same as current"</em> and we'll color-match. You can update these any time before we start: when you're sure, <strong>finalize</strong> to lock them in.
                 </p>
               )}
               <div class="colors-form colors-collapse-body">
@@ -1650,7 +1650,7 @@ const status = project?.status ? statusInfo[project.status] : null;
                         )}
                       </div>
                       {/* Color value + hidden hex */}
-                      <input type="text" class="color-field color-value" placeholder="Color name or code — e.g. SW 7008, BM OC-17, same as current" value={pf.color_value} disabled={colorsLocked} />
+                      <input type="text" class="color-field color-value" placeholder="Color name or code: e.g. SW 7008, BM OC-17, same as current" value={pf.color_value} disabled={colorsLocked} />
                       <input type="hidden" class="color-hex" value={pf.color_hex} />
                       {/* Product type pills */}
                       {!colorsLocked ? (
@@ -1681,7 +1681,7 @@ const status = project?.status ? statusInfo[project.status] : null;
                         <input type="hidden" class="color-finish" value={pf.finish} />
                       )}
                       {/* Notes */}
-                      <input type="text" class="color-field color-note" placeholder="Notes (optional) — e.g. accent wall only, trim only" value={pf.note} disabled={colorsLocked} />
+                      <input type="text" class="color-field color-note" placeholder="Notes (optional): e.g. accent wall only, trim only" value={pf.note} disabled={colorsLocked} />
                       {/* Paint card photo */}
                       {!colorsLocked && (
                         <div class="cr-photo-row">
@@ -1730,7 +1730,7 @@ const status = project?.status ? statusInfo[project.status] : null;
                 </p>
               ) : (
                 <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">
-                  A few choices for your project — let us know what you'd like. You can update these any time before we start.
+                  A few choices for your project: let us know what you'd like. You can update these any time before we start.
                 </p>
               )}
               <div class="choices-form colors-collapse-body">
@@ -1738,7 +1738,7 @@ const status = project?.status ? statusInfo[project.status] : null;
                   <div class="choice-row" data-item-id={ci.id} data-label={ci.label}>
                     <div class="choice-row-label">{ci.label}</div>
                     <select class="choice-field" disabled={colorsLocked}>
-                      <option value="" selected={!ci.value}>— Select —</option>
+                      <option value="" selected={!ci.value}>, Select, </option>
                       {ci.options.map((o) => (
                         <option value={o} selected={ci.value === o}>{o}</option>
                       ))}
@@ -2047,8 +2047,8 @@ const status = project?.status ? statusInfo[project.status] : null;
           }
           statusEl.className = 'colors-status ok';
           statusEl.textContent = finalize
-            ? '✓ Finalized — your colors are locked into your contract.'
-            : '✓ Saved — thank you! We’ll use these colors for your project.';
+            ? '✓ Finalized: your colors are locked into your contract.'
+            : '✓ Saved, thank you! We’ll use these colors for your project.';
           // Refresh so the "Colors selected" timeline milestone (+ progress
           // count + schedule gate + locked state) reflect the save immediately.
           setTimeout(function () { window.location.reload(); }, 1000);
@@ -2084,7 +2084,7 @@ const status = project?.status ? statusInfo[project.status] : null;
 
     /* ── Custom choices ("Your Selections"): save the customer's picks ──
        Stored in project_colors (color_value = the chosen option) so the admin
-       sees what was selected. No reload — choices don't gate the timeline. */
+       sees what was selected. No reload: choices don't gate the timeline. */
     (function () {
       var saveBtn = document.getElementById('choicesSaveBtn');
       if (!saveBtn) return;
@@ -2116,7 +2116,7 @@ const status = project?.status ? statusInfo[project.status] : null;
             return;
           }
           statusEl.className = 'colors-status ok';
-          statusEl.textContent = '✓ Saved — thank you!';
+          statusEl.textContent = '✓ Saved: thank you!';
           saveBtn.disabled = false;
         } catch (e) {
           statusEl.className = 'colors-status err';
@@ -2182,7 +2182,7 @@ const status = project?.status ? statusInfo[project.status] : null;
             return;
           }
           statusEl.className = 'colors-status ok';
-          statusEl.textContent = '✓ Saved — thanks! We’ll keep your availability in mind.';
+          statusEl.textContent = '✓ Saved: thanks! We’ll keep your availability in mind.';
           saveBtn.disabled = false;
         } catch (e) {
           statusEl.className = 'colors-status err';
@@ -2247,7 +2247,7 @@ const status = project?.status ? statusInfo[project.status] : null;
           var data = await res.json();
           if (!data.success) throw new Error(data.error || 'failed');
           statusEl.className = 'colors-status ok';
-          statusEl.textContent = '✓ Sent — thanks! The team can see it now.';
+          statusEl.textContent = '✓ Sent: thanks! The team can see it now.';
           noteEl.value = ''; fileEl.value = ''; fileNameEl.textContent = '';
           setTimeout(function () { window.location.reload(); }, 900);
         } catch (e) {
@@ -2526,11 +2526,11 @@ const status = project?.status ? statusInfo[project.status] : null;
                 }
                 btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Change photo';
               } else {
-                btn.textContent = 'Upload failed — try again';
+                btn.textContent = 'Upload failed: try again';
                 setTimeout(function(){ btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Add paint card photo'; }, 3000);
               }
             })
-            .catch(function() { btn.textContent = 'Upload failed — try again'; })
+            .catch(function() { btn.textContent = 'Upload failed: try again'; })
             .finally(function() { btn.disabled = false; });
         });
       });

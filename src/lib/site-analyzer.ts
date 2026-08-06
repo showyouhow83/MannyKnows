@@ -194,52 +194,52 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   // ── Found ──────────────────────────────────────────────────────────────
   const found: Check[] = [
     c('title', 'Page title', !title ? 'fail' : title.length > 65 || title.length < 10 ? 'warn' : 'pass',
-      !title ? 'No <title> — Google has nothing to show for you.'
+      !title ? 'No <title>: Google has nothing to show for you.'
         : title.length > 65 ? `Title is ${title.length} characters; Google cuts it off around 60.`
         : title.length < 10 ? 'Title is too short to say what you do or where.'
         : 'Title present and a sensible length.',
       { text: 'Technical SEO is built into every Smart Website plan.', href: GET_FOUND }),
     c('description', 'Meta description', desc === null ? 'fail' : (desc.length < 50 || desc.length > 165) ? 'warn' : 'pass',
-      desc === null ? "No meta description — Google writes its own, and it won't sell you."
+      desc === null ? "No meta description: Google writes its own, and it won't sell you."
         : desc.length < 50 ? 'Description is thin; this is your free ad in the results.'
         : desc.length > 165 ? `Description is ${desc.length} characters; it gets truncated.`
         : 'Description present and a sensible length.',
       { text: 'We write and tune these on every page, every month.', href: GET_FOUND }),
     c('h1', 'Main heading (H1)', h1s === 1 ? 'pass' : h1s === 0 ? 'fail' : 'warn',
-      h1s === 1 ? 'Exactly one H1 — what Google expects.'
-        : h1s === 0 ? 'No H1 heading — the page never says plainly what it is.'
+      h1s === 1 ? 'Exactly one H1: what Google expects.'
+        : h1s === 0 ? 'No H1 heading, the page never says plainly what it is.'
         : `${h1s} H1 headings compete with each other.`,
       { text: 'Page structure is part of the technical SEO in every plan.', href: GET_FOUND }),
     c('schema', 'Structured data (how AI reads you)', jsonLdBlocks.length === 0 ? 'fail' : hasLocalSchema ? 'pass' : 'warn',
-      jsonLdBlocks.length === 0 ? 'No structured data — Google and AI assistants are guessing who you are.'
-        : hasLocalSchema ? 'Local-business structured data found — Google and AI assistants can read you.'
+      jsonLdBlocks.length === 0 ? 'No structured data: Google and AI assistants are guessing who you are.'
+        : hasLocalSchema ? 'Local-business structured data found, Google and AI assistants can read you.'
         : 'Some structured data, but nothing marking you as a local business.',
       { text: 'Every site we build ships with local-business schema AI can quote.', href: GET_FOUND }),
     c('noindex', 'Visible to Google', robotsMeta.includes('noindex') ? 'fail' : 'pass',
       robotsMeta.includes('noindex') ? 'This page tells Google NOT to index it. Customers cannot find it.' : 'Not blocking Google.',
-      { text: 'This is a five-minute fix with big consequences — ask us.', href: '/contact/' }),
+      { text: 'This is a five-minute fix with big consequences, ask us.', href: '/contact/' }),
     c('og', 'Social/share preview', ogTitle ? 'pass' : 'warn',
-      ogTitle ? 'Open Graph tags found — links to you look right when shared.' : 'No Open Graph tags — shared links show up bare.',
+      ogTitle ? 'Open Graph tags found: links to you look right when shared.' : 'No Open Graph tags, shared links show up bare.',
       { text: 'Share previews come standard on our builds.', href: GET_FOUND }),
     c('canonical', 'Canonical URL', canonical ? 'pass' : 'warn',
-      canonical ? 'Canonical tag present.' : 'No canonical tag — duplicate URLs can split your ranking.',
+      canonical ? 'Canonical tag present.' : 'No canonical tag, duplicate URLs can split your ranking.',
       { text: 'Part of the technical SEO baseline.', href: GET_FOUND }),
   ];
 
   // ── Fast ───────────────────────────────────────────────────────────────
   const fast: Check[] = [
     c('weight', 'Page weight', kb <= 150 ? 'pass' : kb <= 400 ? 'warn' : 'fail',
-      `Homepage HTML is ${opts.truncated ? 'over ' : ''}${kb} KB${kb > 400 ? ' — heavy pages lose phone visitors before they load.' : kb > 150 ? ' — on the heavy side for mobile.' : ' — lean.'}`,
+      `Homepage HTML is ${opts.truncated ? 'over ' : ''}${kb} KB${kb > 400 ? ', heavy pages lose phone visitors before they load.' : kb > 150 ? ', on the heavy side for mobile.' : ', lean.'}`,
       { text: 'Our builds target 90+ Lighthouse speed scores.', href: PLANS }),
     c('blocking', 'Render-blocking scripts', headScripts.length === 0 ? 'pass' : headScripts.length <= 2 ? 'warn' : 'fail',
       headScripts.length === 0 ? 'No blocking scripts in the head.'
         : `${headScripts.length} script${headScripts.length > 1 ? 's' : ''} block the page from painting until they load.`,
       { text: 'Speed engineering is the first thing we fix on rebuilds.', href: PLANS }),
     c('viewport', 'Mobile-ready viewport', viewport ? 'pass' : 'fail',
-      viewport ? 'Mobile viewport is set.' : 'No viewport meta — the site renders as a shrunken desktop page on phones.',
+      viewport ? 'Mobile viewport is set.' : 'No viewport meta, the site renders as a shrunken desktop page on phones.',
       { text: 'Every plan is mobile-first; most of your visitors are.', href: PLANS }),
     c('lazy', 'Image loading', imgs.length === 0 ? 'pass' : imgsNoLazy / imgs.length <= 0.4 ? 'pass' : imgsNoLazy / imgs.length <= 0.8 ? 'warn' : 'fail',
-      imgs.length === 0 ? 'No images to defer.' : `${imgsNoLazy} of ${imgs.length} images load eagerly — below-the-fold images should lazy-load.`,
+      imgs.length === 0 ? 'No images to defer.' : `${imgsNoLazy} of ${imgs.length} images load eagerly, below-the-fold images should lazy-load.`,
       { text: 'Image pipelines (AVIF/WebP, lazy loading) are standard on our builds.', href: PLANS }),
   ];
 
@@ -248,18 +248,18 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
     c('agent', 'Something answers your visitors', hasAgent ? (agent.weak ? 'warn' : 'pass') : 'fail',
       hasAgent
         ? (agent.weak
-            ? `Found ${agent.how}, but nothing we can confirm is a live agent — worth checking that it answers after hours, not just during business hours.`
-            : `Detected ${agent.how} — visitors can get answers without waiting for a callback.`)
-        : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code — if you have an agent we missed, the free human review will catch it.)",
-      { text: 'Remi answers 24/7 on every Smart Website plan — and books the job from Get Booked up.', href: GET_BOOKED }),
+            ? `Found ${agent.how}, but nothing we can confirm is a live agent: worth checking that it answers after hours, not just during business hours.`
+            : `Detected ${agent.how}, visitors can get answers without waiting for a callback.`)
+        : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code: if you have an agent we missed, the free human review will catch it.)",
+      { text: 'Remi answers 24/7 on every Smart Website plan, and books the job from Get Booked up.', href: GET_BOOKED }),
     c('faq', 'FAQ content AI can quote', hasFaqSchema ? 'pass' : 'warn',
-      hasFaqSchema ? 'FAQ structured data found — AI assistants can quote your answers.'
-        : 'No FAQ schema — when customers ask ChatGPT or Google AI, competitors with answers get cited.',
+      hasFaqSchema ? 'FAQ structured data found: AI assistants can quote your answers.'
+        : 'No FAQ schema, when customers ask ChatGPT or Google AI, competitors with answers get cited.',
       { text: 'We ship FAQ schema on every money page.', href: GET_FOUND }),
     c('qa', 'Questions your page actually answers', questionHeadings > 0 ? 'pass' : 'warn',
       questionHeadings > 0
-        ? `${questionHeadings} question-style heading${questionHeadings > 1 ? 's' : ''} found — the format AI assistants quote and featured snippets reward.`
-        : 'No question-and-answer headings — pages that ask and answer real customer questions get quoted by AI and win featured snippets.',
+        ? `${questionHeadings} question-style heading${questionHeadings > 1 ? 's' : ''} found, the format AI assistants quote and featured snippets reward.`
+        : 'No question-and-answer headings, pages that ask and answer real customer questions get quoted by AI and win featured snippets.',
       { text: 'We structure every money page around what customers actually ask.', href: GET_FOUND }),
   ];
 
@@ -267,37 +267,37 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   const AI_TEAM = '/ai-team/';
   const aiReady: Check[] = [
     c('aicrawlers', 'Open to AI answer engines', !robots ? 'pass' : robots.blocksAi.length === 0 ? 'pass' : 'fail',
-      !robots ? 'No robots.txt found — nothing blocking AI crawlers (though a robots.txt is worth having).'
-        : robots.blocksAi.length === 0 ? 'robots.txt does not block AI crawlers — ChatGPT, Claude, and Perplexity can read and recommend you.'
-        : `robots.txt blocks ${robots.blocksAi.join(', ')} — when customers ask AI who to hire, you are invisible by your own instruction.`,
+      !robots ? 'No robots.txt found. Nothing blocking AI crawlers (though a robots.txt is worth having).'
+        : robots.blocksAi.length === 0 ? 'robots.txt does not block AI crawlers, ChatGPT, Claude, and Perplexity can read and recommend you.'
+        : `robots.txt blocks ${robots.blocksAi.join(', ')}, when customers ask AI who to hire, you are invisible by your own instruction.`,
       { text: 'We tune crawler policy so AI answers can cite you.', href: GET_FOUND }),
     c('llms', 'AI crawler guidance (llms.txt)', opts.llmsTxt ? 'pass' : 'warn',
-      opts.llmsTxt ? 'llms.txt found — you are telling AI crawlers what matters.'
-        : 'No llms.txt — a new, easy win for showing up in AI answers.',
+      opts.llmsTxt ? 'llms.txt found. You are telling AI crawlers what matters.'
+        : 'No llms.txt, a new, easy win for showing up in AI answers.',
       { text: 'AI-answer readiness is part of our SEO work.', href: GET_FOUND }),
     c('nap', 'AI can find your phone & address', jsonLdBlocks.length === 0 ? 'warn' : schemaHasPhone && schemaHasAddress ? 'pass' : 'warn',
-      jsonLdBlocks.length === 0 ? 'No structured data at all — an AI assistant recommending local businesses has no machine-readable contact info for you.'
-        : schemaHasPhone && schemaHasAddress ? 'Structured data carries your phone and address — AI assistants can hand you to a customer.'
-        : `Structured data exists but is missing ${schemaHasPhone ? 'your address' : schemaHasAddress ? 'your phone number' : 'your phone and address'} — AI assistants can't connect a customer to you.`,
+      jsonLdBlocks.length === 0 ? 'No structured data at all: an AI assistant recommending local businesses has no machine-readable contact info for you.'
+        : schemaHasPhone && schemaHasAddress ? 'Structured data carries your phone and address, AI assistants can hand you to a customer.'
+        : `Structured data exists but is missing ${schemaHasPhone ? 'your address' : schemaHasAddress ? 'your phone number' : 'your phone and address'}, AI assistants can't connect a customer to you.`,
       { text: 'Complete local-business schema ships with every build.', href: GET_FOUND }),
     c('sitemap', 'Sitemap for crawlers', sitemapKnown ? 'pass' : 'warn',
-      sitemapKnown ? 'Sitemap found — search and AI crawlers get the full map of your site.'
-        : "No sitemap advertised in robots.txt and none at /sitemap.xml — crawlers are left to guess what's on your site.",
+      sitemapKnown ? 'Sitemap found: search and AI crawlers get the full map of your site.'
+        : "No sitemap advertised in robots.txt and none at /sitemap.xml, crawlers are left to guess what's on your site.",
       { text: 'Sitemaps are part of the technical SEO baseline.', href: GET_FOUND }),
     c('measure', 'Measuring what happens', hasAnalytics ? 'pass' : 'warn',
-      hasAnalytics ? 'Analytics detected — you can see what visitors do.'
-        : "No analytics detected — nobody (human or AI) can improve what isn't measured.",
+      hasAnalytics ? 'Analytics detected. You can see what visitors do.'
+        : "No analytics detected: nobody (human or AI) can improve what isn't measured.",
       { text: 'Every plan includes clear monthly reporting.', href: PLANS }),
   ];
 
   // ── Books (conversion) ─────────────────────────────────────────────────
   const books: Check[] = [
     c('tel', 'Tap-to-call', hasTel ? 'pass' : 'fail',
-      hasTel ? 'Phone number is tappable.' : 'No tap-to-call link — on a phone, calling you should be one touch.',
+      hasTel ? 'Phone number is tappable.' : 'No tap-to-call link, on a phone, calling you should be one touch.',
       { text: 'Conversion basics are step one of any rebuild.', href: GET_BOOKED }),
     c('capture', 'A way to capture the lead', hasForm || hasBooking ? 'pass' : 'fail',
       hasForm || hasBooking ? (hasBooking ? 'Booking flow detected.' : 'Contact form present.')
-        : 'No form and no booking link — interested visitors have no next step.',
+        : 'No form and no booking link, interested visitors have no next step.',
       { text: 'Remi captures and books the lead even after hours.', href: GET_BOOKED }),
     c('contact', 'Easy contact path', hasContactPath ? 'pass' : 'warn',
       hasContactPath ? 'Contact page or email link found.' : 'No obvious contact page or email link.',
@@ -307,7 +307,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   // ── Everyone (multilingual + basics) ───────────────────────────────────
   const everyone: Check[] = [
     c('lang', 'Language declared', langAttr ? 'pass' : 'warn',
-      langAttr ? `Page declares its language (${langAttr}).` : 'No lang attribute — screen readers and search engines have to guess.',
+      langAttr ? `Page declares its language (${langAttr}).` : 'No lang attribute, screen readers and search engines have to guess.',
       { text: 'Accessibility basics are baked into our builds.', href: PLANS }),
     c('spanish', 'Reaches Spanish speakers', hreflang || spanishHint ? 'pass' : 'warn',
       hreflang || spanishHint ? 'Multilingual signals found.'
@@ -315,7 +315,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
       { text: 'English and Spanish come standard on everything we build.', href: PLANS }),
     c('alt', 'Image descriptions (alt text)', imgs.length === 0 ? 'pass' : imgsNoAlt === 0 ? 'pass' : imgsNoAlt / imgs.length <= 0.3 ? 'warn' : 'fail',
       imgs.length === 0 ? 'No images to describe.' : imgsNoAlt === 0 ? 'All images have alt text.'
-        : `${imgsNoAlt} of ${imgs.length} images have no alt text — invisible to screen readers and image search.`,
+        : `${imgsNoAlt} of ${imgs.length} images have no alt text, invisible to screen readers and image search.`,
       { text: 'Accessibility is a ranking factor; we treat it as a feature.', href: PLANS }),
   ];
 
@@ -337,7 +337,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   const weights: Record<string, number> = { found: 0.25, fast: 0.15, answers: 0.15, books: 0.2, ai: 0.15, everyone: 0.1 };
   const overall = Math.round(pillars.reduce((a, p) => a + p.score * weights[p.id], 0));
   const grade =
-    overall >= 90 ? 'Strong — the gaps left are polish'
+    overall >= 90 ? 'Strong: the gaps left are polish'
     : overall >= 70 ? 'Solid, but leaving customers on the table'
     : overall >= 50 ? 'Leaking customers'
     : 'Working against you';
@@ -348,45 +348,45 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   if (!hasAgent) {
     opportunities.push({
       title: 'An AI front desk that never closes',
-      body: 'Nothing on this page answers visitors after hours. An AI agent trained on your business answers questions, qualifies the customer, and books the job — in English or Spanish — while you work.',
+      body: 'Nothing on this page answers visitors after hours. An AI agent trained on your business answers questions, qualifies the customer, and books the job, in English or Spanish, while you work.',
       href: '/ai-booking-agent/',
     });
   } else if (!hasBooking) {
     opportunities.push({
       title: 'From answering to booking',
-      body: 'You already have something answering visitors — the next step is letting it book the appointment end-to-end instead of ending at a conversation.',
+      body: 'You already have something answering visitors: the next step is letting it book the appointment end-to-end instead of ending at a conversation.',
       href: '/ai-booking-agent/',
     });
   }
   if (hasTel) {
     opportunities.push({
       title: 'Your phone line, answered every time',
-      body: 'You publish a phone number — an AI phone system can answer every call, give callers what they need, and route the rest to a human. We built exactly this for a Springfield daycare in two weeks.',
+      body: 'You publish a phone number: an AI phone system can answer every call, give callers what they need, and route the rest to a human. We built exactly this for a Springfield daycare in two weeks.',
       href: '/ai-booking-agent/',
     });
   }
   if (isStore) {
     opportunities.push({
       title: 'AI for your store',
-      body: 'This looks like a store — AI can write and tune product descriptions, answer shoppers 24/7, and recover abandoned carts, with your catalog synced to Google Shopping, Instagram & Facebook.',
+      body: 'This looks like a store: AI can write and tune product descriptions, answer shoppers 24/7, and recover abandoned carts, with your catalog synced to Google Shopping, Instagram & Facebook.',
       href: '/ecommerce/',
     });
   }
   opportunities.push(hasBlog
     ? {
         title: 'A content engine with your approval',
-        body: 'You publish content — AI agents can research, draft, and schedule it on a steady cadence, with every piece passing your approval before it ships.',
+        body: 'You publish content: AI agents can research, draft, and schedule it on a steady cadence, with every piece passing your approval before it ships.',
         href: '/ai-team/',
       }
     : {
         title: 'Content that feeds AI answers',
-        body: "No blog or answer content found — the businesses AI assistants cite are the ones publishing real answers. An AI content team can build that library under your approval.",
+        body: "No blog or answer content found: the businesses AI assistants cite are the ones publishing real answers. An AI content team can build that library under your approval.",
         href: '/ai-team/',
       });
   if (!hasAnalytics) {
     opportunities.push({
       title: 'Measure first, then automate',
-      body: 'With no analytics, neither you nor any AI can tell what works. Measurement is step one of every plan — with a clear monthly report.',
+      body: 'With no analytics, neither you nor any AI can tell what works. Measurement is step one of every plan, with a clear monthly report.',
       href: PLANS,
     });
   }

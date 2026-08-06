@@ -47,7 +47,7 @@ if (!db) {
   `).bind(token).first() as any;
 
   if (row) brand = await getBrand(db, row.partner_id);
-  if (!row) error = 'Contract not found — please check the link in your email.';
+  if (!row) error = 'Contract not found: please check the link in your email.';
   else if (row.status === 'void') error = `This contract has been voided. Please contact ${brand.name}.`;
   else if (row.status === 'draft') error = `This contract has not been sent yet. Please wait for the email from ${brand.name}.`;
 }
@@ -78,7 +78,7 @@ if (row?.quote_id && !error) {
 const firstName = row?.customer_name?.split(' ')?.[0] || 'there';
 
 function fmtDate(s: string | null | undefined): string {
-  if (!s) return '—';
+  if (!s) return ': ';
   try {
     // Tolerate SQLite CURRENT_TIMESTAMP ('YYYY-MM-DD HH:MM:SS') as well as
     // plain 'YYYY-MM-DD' values. Splitting on space/T isolates the date.
@@ -216,7 +216,7 @@ function parseUserAgent(ua: string | null | undefined): string {
   return `${browser} on ${os}`;
 }
 function fmtFullDateTime(s: string | null | undefined): string {
-  if (!s) return '—';
+  if (!s) return ': ';
   try {
     const trimmed = String(s).replace(' ', 'T') + 'Z';
     const d = new Date(trimmed);
@@ -234,7 +234,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>{row ? `Contract ${row.project_number}` : 'Contract'} — {brand.name}</title>
+  <title>{row ? `Contract ${row.project_number}` : 'Contract'}: {brand.name}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -382,7 +382,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
           </h2>
           <p class="message" style="text-align:center;">
             {justSigned
-              ? `You're all set, ${firstName} — your signed contract is locked in. ${brand.name} will reach out as the start date approaches. The full contract is below for your records.`
+              ? `You're all set, ${firstName}: your signed contract is locked in. ${brand.name} will reach out as the start date approaches. The full contract is below for your records.`
               : `Hi ${firstName}, your contract was signed on ${fmtDate(row.signed_at)}. Below is the full contract for your records.`}
           </p>
 
@@ -438,7 +438,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
                           <div style="display:flex; gap:10px; align-items:flex-end;">
                             <div style="flex:1; min-width:0;">
                               {rec.customer_signature_data_url && (<img src={rec.customer_signature_data_url} alt="Client signature" style="display:block; max-height:26px; max-width:100%;" />)}
-                              <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
+                              <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? `, ${rec.customer_name}` : ''}</div>
                             </div>
                             <div style="flex:1; min-width:0;">
                               {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />)}
@@ -552,7 +552,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
         <div class="card-body">
           <h2>Review &amp; Sign Your Contract</h2>
           <p class="message">
-            Hi {firstName}! Please review the full contract below — scope of work, payment schedule, and terms — then sign at the bottom to authorize {brand.name} to begin your project.
+            Hi {firstName}! Please review the full contract below (scope of work, payment schedule, and terms) then sign at the bottom to authorize {brand.name} to begin your project.
           </p>
 
           <div class="summary">
@@ -611,7 +611,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
                       <div style="display:flex; gap:10px; align-items:flex-end;">
                         <div style="flex:1; min-width:0;">
                           {rec.customer_signature_data_url && (<img src={rec.customer_signature_data_url} alt="Client signature" style="display:block; max-height:26px; max-width:100%;" />)}
-                          <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? ` — ${rec.customer_name}` : ''}</div>
+                          <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? `, ${rec.customer_name}` : ''}</div>
                         </div>
                         <div style="flex:1; min-width:0;">
                           {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />)}
@@ -746,7 +746,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
           ? <img src={brand.logoUrl} alt={brand.name} class="footer-logo partner-logo" />
           : <span class="header-logo-name" style="font-size:20px;">{brand.name}</span>}
     </a>
-    {!brand.isPartner && <p>Remodeling, Painting &amp; Home Repairs — Springfield, MA</p>}
+    {!brand.isPartner && <p>Remodeling, Painting &amp; Home Repairs: Springfield, MA</p>}
     <div class="footer-links">
       {brand.websiteLabel && <a href={brand.websiteUrl}>{brand.websiteLabel}</a>}
       {brand.websiteLabel && brand.phoneDisplay && <span>|</span>}

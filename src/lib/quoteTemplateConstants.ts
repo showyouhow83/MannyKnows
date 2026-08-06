@@ -381,7 +381,7 @@ export interface StarterTemplate {
 
 export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
   {
-    name: 'Smart Website — Launch',
+    name: 'Smart Website: Launch',
     project_type: 'website-basic',
     is_default: true,
     sections: [
@@ -389,21 +389,21 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-web-build',
         title: 'What We Build',
         items: [
-          { id: 'it-web-build-1', type: 'bullet', text: 'Design and build your full multi-page website — layout, copy, and photos included' },
-          { id: 'it-web-build-2', type: 'bullet', text: 'Train Remi, your AI agent, on your business — services, prices, hours, and how you talk — to answer customers 24/7' },
+          { id: 'it-web-build-1', type: 'bullet', text: 'Design and build your full multi-page website, layout, copy, and photos included' },
+          { id: 'it-web-build-2', type: 'bullet', text: 'Train Remi, your AI agent, on your business (services, prices, hours, and how you talk) to answer customers 24/7' },
           { id: 'it-web-build-3', type: 'bullet', text: 'Set up your own admin: leads, contacts, and content you can manage yourself' },
-          { id: 'it-web-build-4', type: 'bullet', text: 'English + Spanish as standard — written, not machine-translated' },
-          { id: 'it-web-build-5', type: 'bullet', text: 'SSL, caching, hosting, and a domain if you need one — included in the plan' },
+          { id: 'it-web-build-4', type: 'bullet', text: 'English + Spanish as standard, written, not machine-translated' },
+          { id: 'it-web-build-5', type: 'bullet', text: 'SSL, caching, hosting, and a domain if you need one, included in the plan' },
         ],
       },
       {
         id: 'sec-web-billing',
         title: 'Plan & Billing',
         items: [
-          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found — $95/mo', 'Get Booked — $245/mo', 'Get Growing — $550/mo', 'Get Ahead — $895/mo'] },
+          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found, $95/mo', 'Get Booked, $245/mo', 'Get Growing, $550/mo', 'Get Ahead, $895/mo'] },
           { id: 'it-web-bill-2', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-web-bill-3', type: 'subtotal', label: 'Due at start (setup + first month)', amount: 0 },
-          { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month — cancel anytime. Prepay the year and get the equivalent of 2 months free.' },
+          { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month, cancel anytime. Prepay the year and get the equivalent of 2 months free.' },
         ],
       },
       {
@@ -412,13 +412,13 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-web-launch-1', type: 'fillable', label: 'Target launch', value: '' },
           { id: 'it-web-launch-2', type: 'bullet', text: 'You review the full site on a private preview link before anything goes live' },
-          { id: 'it-web-launch-3', type: 'bullet', text: 'After launch: the plan keeps the site fast, ranking, and up to date — with a clear monthly report' },
+          { id: 'it-web-launch-3', type: 'bullet', text: 'After launch: the plan keeps the site fast, ranking, and up to date, with a clear monthly report' },
         ],
       },
     ],
   },
   {
-    name: 'Sell Online — Launch',
+    name: 'Sell Online: Launch',
     project_type: 'ecommerce',
     is_default: true,
     sections: [
@@ -426,9 +426,9 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-store-build',
         title: 'What We Build',
         items: [
-          { id: 'it-store-build-1', type: 'bullet', text: 'Design and build your online store — theme, branding, and checkout, built to sell' },
+          { id: 'it-store-build-1', type: 'bullet', text: 'Design and build your online store, theme, branding, and checkout, built to sell' },
           { id: 'it-store-build-2', type: 'bullet', text: 'Load your starting catalog: products, photos, descriptions, and prices' },
-          { id: 'it-store-build-3', type: 'bullet', text: 'Train Remi to sell — answer shoppers, steer them to the right product, and hand you the hard questions' },
+          { id: 'it-store-build-3', type: 'bullet', text: 'Train Remi to sell, answer shoppers, steer them to the right product, and hand you the hard questions' },
           { id: 'it-store-build-4', type: 'bullet', text: 'Your admin covers the store too: products, inventory, orders, and promos in one place' },
         ],
       },
@@ -438,7 +438,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-store-bill-1', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at chosen tier)', amount: 0 },
-          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers — Sell Online $150/mo, Sell More $325/mo, Sell Smarter $650/mo, Sell Everywhere $1,095/mo — and every tier includes your Shopify subscription (Basic at the first two tiers, Grow at Sell Smarter and above); the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
+          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers (Sell Online $150/mo, Sell More $325/mo, Sell Smarter $650/mo, Sell Everywhere $1,095/mo) and every tier includes your Shopify subscription (Basic at the first two tiers, Grow at Sell Smarter and above); the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
         ],
       },
       {
@@ -452,7 +452,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
     ],
   },
   {
-    name: 'AI Team — Hire Agents',
+    name: 'AI Team: Hire Agents',
     project_type: 'ai-team',
     is_default: true,
     sections: [
@@ -471,7 +471,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         title: 'One-Time Setup',
         items: [
           { id: 'it-team-setup-1', type: 'bullet', text: 'Working sessions to capture your voice, services, prices, and customers' },
-          { id: 'it-team-setup-2', type: 'bullet', text: 'Build your Brand Brain — the shared knowledge base every agent reads from' },
+          { id: 'it-team-setup-2', type: 'bullet', text: 'Build your Brand Brain, the shared knowledge base every agent reads from' },
           { id: 'it-team-setup-3', type: 'bullet', text: 'Set up each hired agent and wire its handoffs through Manny' },
           { id: 'it-team-setup-4', type: 'bullet', text: 'Run it alongside you and fine-tune until the output earns your approval' },
           { id: 'it-team-setup-5', type: 'subtotal', label: 'One-time setup', amount: 199 },
@@ -482,13 +482,13 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         title: 'Monthly',
         items: [
           { id: 'it-team-monthly-1', type: 'subtotal', label: 'Monthly total (agents hired)', amount: 0 },
-          { id: 'it-team-monthly-2', type: 'note', text: 'Month-to-month — add or remove agents anytime. Nothing publishes without your approval.' },
+          { id: 'it-team-monthly-2', type: 'note', text: 'Month-to-month, add or remove agents anytime. Nothing publishes without your approval.' },
         ],
       },
     ],
   },
   {
-    name: 'Custom Web App — Scoped Build',
+    name: 'Custom Web App, Scoped Build',
     project_type: 'custom-app',
     is_default: true,
     sections: [
@@ -496,7 +496,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-app-discovery',
         title: 'Discovery & Design',
         items: [
-          { id: 'it-app-disc-1', type: 'bullet', text: 'Map the process the app replaces — how the work actually flows today' },
+          { id: 'it-app-disc-1', type: 'bullet', text: 'Map the process the app replaces, how the work actually flows today' },
           { id: 'it-app-disc-2', type: 'bullet', text: 'Spec and wireframes for your approval before any build starts' },
         ],
       },
@@ -504,7 +504,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-app-build',
         title: 'Build & Launch',
         items: [
-          { id: 'it-app-build-1', type: 'bullet', text: 'Build the app around how you work — not the other way around' },
+          { id: 'it-app-build-1', type: 'bullet', text: 'Build the app around how you work, not the other way around' },
           { id: 'it-app-build-2', type: 'bullet', text: 'Test together with real data before anything goes live' },
           { id: 'it-app-build-3', type: 'bullet', text: 'Launch, plus hands-on training for you and your team' },
         ],

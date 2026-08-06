@@ -7,7 +7,7 @@ tags: ["ai", "AI Search", "websites", "conversion"]
 image: "/blog/website-that-works-while-you-sleep.jpg"
 ---
 
-Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait — and waiting is where deals die.
+Your business hours are not your customers' hours. People research and decide at night, on weekends, on their phone in a parking lot. If your site can only hand them a contact form, you're asking them to wait, and waiting is where deals die.
 
 ## From brochure to assistant
 
@@ -19,7 +19,7 @@ A modern site doesn't just display information; it has a conversation. An AI ass
 
 ## It's not about replacing you
 
-The point isn't to remove the human touch — it's to protect your time for the conversations that matter. Let the site handle "do you service my area?" so you can focus on closing the job.
+The point isn't to remove the human touch: it's to protect your time for the conversations that matter. Let the site handle "do you service my area?" so you can focus on closing the job.
 
 ## Start small, measure, expand
 
@@ -27,6 +27,6 @@ You don't rebuild everything overnight. Add an assistant, watch what people ask,
 
 ## The other thing happening at 2am
 
-While your site is busy answering questions, something else is going on at that hour: people are asking ChatGPT, Perplexity, or Google's AI Overview to just tell them who to call. More and more, the search itself happens inside an AI. The same qualities that make your site a good assistant — clear, well-structured content a machine can actually read — are what make an AI comfortable naming you in its answer. So a site built right works while you sleep twice over: it answers the visitors who show up, and it helps you be the business the AI sends them to in the first place.
+While your site is busy answering questions, something else is going on at that hour: people are asking ChatGPT, Perplexity, or Google's AI Overview to just tell them who to call. More and more, the search itself happens inside an AI. The same qualities that make your site a good assistant: clear, well-structured content a machine can actually read, are what make an AI comfortable naming you in its answer. So a site built right works while you sleep twice over: it answers the visitors who show up, and it helps you be the business the AI sends them to in the first place.
 
 Want a site that earns its keep around the clock? That's exactly what our [Smart Website plan](/plans/get-growing/) is built for. [Start a conversation.](#contact)

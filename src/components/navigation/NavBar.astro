@@ -27,7 +27,7 @@ const {
 // the top bar uncluttered; everything else stays flat.
 const offerings = [
   { href: "/services/", label: "Overview", desc: "How it all fits together" },
-  { href: "/plans/", label: "Monthly Plans", desc: "We run it — from $95/mo" },
+  { href: "/plans/", label: "Monthly Plans", desc: "We run it, from $95/mo" },
   { href: "/ecommerce/", label: "Online Stores", desc: "Built, stocked & run for you" },
   { href: "/ai-team/", label: "AI Team", desc: "Hire AI agents like staff" },
 ];
@@ -42,26 +42,26 @@ const primaryLinks = [
 const blogPosts = (await getCollection('blog')).filter((p) => !p.data.draft);
 const searchIndex = [
   { title: "Home", description: "Websites, SEO, and software for Western Massachusetts businesses.", url: "/", type: "Page" },
-  { title: "Services", description: "Everything we do, in one place — the two ways to work with us: monthly (we run it) or one-time projects (you own it).", url: "/services/", type: "Page" },
-  { title: "How it works", description: "From the first call to working software — our process, from friction to a finished app.", url: "/how-it-works/", type: "Page" },
-  { title: "AI Booking Agent", description: "An AI agent that answers customers 24/7 in English or Spanish, qualifies the lead, and books the job — answering for a Springfield daycare and a painting contractor.", url: "/ai-booking-agent/", type: "Page" },
-  { title: "AI Website (one-page)", description: "A fast one-page site with Remi answering customers and capturing leads — plus your 360° tour on your own domain. $195 to build, $40/mo to run.", url: "/ai-website/", type: "Page" },
+  { title: "Services", description: "Everything we do, in one place: the two ways to work with us: monthly (we run it) or one-time projects (you own it).", url: "/services/", type: "Page" },
+  { title: "How it works", description: "From the first call to working software: our process, from friction to a finished app.", url: "/how-it-works/", type: "Page" },
+  { title: "AI Booking Agent", description: "An AI agent that answers customers 24/7 in English or Spanish, qualifies the lead, and books the job: answering for a Springfield daycare and a painting contractor.", url: "/ai-booking-agent/", type: "Page" },
+  { title: "AI Website (one-page)", description: "A fast one-page site with Remi answering customers and capturing leads: plus your 360° tour on your own domain. $195 to build, $40/mo to run.", url: "/ai-website/", type: "Page" },
   { title: "Websites that improve themselves", description: "Why a site that checks itself daily, fixes what's safe on its own, and answers customers 24/7 beats a normal site that sits frozen. Included with every monthly plan.", url: "/plans/#why-smart", type: "Page" },
-  { title: "Plans & pricing", description: "Four multilingual website plans from $95/mo — Get Found, Get Booked, Get Growing & Get Ahead, plus ads & full-agency services.", url: "/plans/", type: "Page" },
-  { title: "Get Found plan", description: "The starter tier — a custom-designed 1–3 page site, hosting, local ranking, a contact form, and Remi answering customers 24/7. $95/mo.", url: "/plans/get-found/", type: "Page" },
+  { title: "Plans & pricing", description: "Four multilingual website plans from $95/mo: Get Found, Get Booked, Get Growing & Get Ahead, plus ads & full-agency services.", url: "/plans/", type: "Page" },
+  { title: "Get Found plan", description: "The starter tier: a custom-designed 1–3 page site, hosting, local ranking, a contact form, and Remi answering customers 24/7. $95/mo.", url: "/plans/get-found/", type: "Page" },
   { title: "Get Booked plan", description: "Remi books the job and captures the lead, plus your own admin to run the site yourself. $245/mo.", url: "/plans/get-booked/", type: "Page" },
-  { title: "Get Growing plan", description: "The fully self-optimizing tier — Remi sells and steers people to the right service, content and SEO tuned continuously. $550/mo.", url: "/plans/get-growing/", type: "Page" },
-  { title: "Get Ahead plan", description: "Get Growing plus your ads run and managed on two networks, and a monthly working session with Manny. $895/mo — $1,250 of service.", url: "/plans/get-ahead/", type: "Page" },
-  { title: "Online stores", description: "A Shopify store built, stocked, and run for you — four tiers from $150/mo, Shopify subscription included. AI shopping assistant at the top tiers.", url: "/ecommerce/", type: "Page" },
-  { title: "Business Ads plan", description: "Social growth, managed Google & social ads, SEO campaigns — $350/mo per network, or 4 major networks for $950/mo.", url: "/plans/business-ads/", type: "Page" },
-  { title: "Multimedia Agency plan", description: "A developer on demand plus your full media team — photo, video, design, SEO, apps & software. From $1,800/mo remote, or in your office 1 day a week for $3,500/mo.", url: "/plans/multimedia-agency/", type: "Page" },
-  { title: "The AI Team", description: "Hire Manny AI — one manager that staffs AI specialists on your business: front desk (Remi), daily intel (Eve), copy (Elly), SEO (Nova), engagement (Finn) & reporting (Vera), plus sub-agents behind the scenes. $195 setup, AI staff from $95/mo.", url: "/ai-team/", type: "Page" },
-  { title: "Portfolio", description: "Real sites we've designed and built for Western Mass businesses — case studies included.", url: "/#work", type: "Page" },
-  { title: "About", description: "Who's behind MannyKnows — twenty years of enterprise engineering, based in Springfield.", url: "/about/", type: "Page" },
+  { title: "Get Growing plan", description: "The fully self-optimizing tier: Remi sells and steers people to the right service, content and SEO tuned continuously. $550/mo.", url: "/plans/get-growing/", type: "Page" },
+  { title: "Get Ahead plan", description: "Get Growing plus your ads run and managed on two networks, and a monthly working session with Manny. $895/mo: $1,250 of service.", url: "/plans/get-ahead/", type: "Page" },
+  { title: "Online stores", description: "A Shopify store built, stocked, and run for you: four tiers from $150/mo, Shopify subscription included. AI shopping assistant at the top tiers.", url: "/ecommerce/", type: "Page" },
+  { title: "Business Ads plan", description: "Social growth, managed Google & social ads, SEO campaigns: $350/mo per network, or 4 major networks for $950/mo.", url: "/plans/business-ads/", type: "Page" },
+  { title: "Multimedia Agency plan", description: "A developer on demand plus your full media team: photo, video, design, SEO, apps & software. From $1,800/mo remote, or in your office 1 day a week for $3,500/mo.", url: "/plans/multimedia-agency/", type: "Page" },
+  { title: "The AI Team", description: "Hire Manny AI: one manager that staffs AI specialists on your business: front desk (Remi), daily intel (Eve), copy (Elly), SEO (Nova), engagement (Finn) & reporting (Vera), plus sub-agents behind the scenes. $195 setup, AI staff from $95/mo.", url: "/ai-team/", type: "Page" },
+  { title: "Portfolio", description: "Real sites we've designed and built for Western Mass businesses: case studies included.", url: "/#work", type: "Page" },
+  { title: "About", description: "Who's behind MannyKnows: twenty years of enterprise engineering, based in Springfield.", url: "/about/", type: "Page" },
   { title: "Contact", description: "Send a message, email mm@mannyknows.com, or call (413) 361-8451.", url: "/contact/", type: "Page" },
-  { title: "Free AI Website Analysis", description: "Send your site, get a clear report — speed, SEO, mobile, conversions & AI-readiness. Free, no obligation.", url: "/free-ai-website-analysis/", type: "Page" },
-  { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors — with an AI agent that books estimates 24/7.", url: "/websites-for-contractors/", type: "Page" },
-  { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare — parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares/", type: "Page" },
+  { title: "Free AI Website Analysis", description: "Send your site, get a clear report: speed, SEO, mobile, conversions & AI-readiness. Free, no obligation.", url: "/free-ai-website-analysis/", type: "Page" },
+  { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors: with an AI agent that books estimates 24/7.", url: "/websites-for-contractors/", type: "Page" },
+  { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare: parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares/", type: "Page" },
   ...localAreas.map((a) => ({ title: `Web design ${a.name} MA`, description: `Multilingual websites with AI booking agents for ${a.name} & Western Mass businesses.`, url: `/web-design-${a.slug}-ma/`, type: "Page" })),
   // "Launch your app" search entry removed with the IdeaLaunchpad modal (Aug 2026) — its /#launchpad anchor no longer exists.
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog/", type: "Page" },
@@ -75,7 +75,7 @@ const searchIndex = [
     <div class="hidden xl:flex justify-between items-center w-full">
       <!-- Logo -->
       <div class="text-5xl font-black m-0" style="font-size: 3rem;">
-        <a href="/" aria-label="MannyKnows — home" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden inline-flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
+        <a href="/" aria-label="MannyKnows: home" class="logo-gradient text-text-light-primary dark:text-text-dark-primary font-black transition-all duration-500 no-underline relative overflow-hidden inline-flex items-center gap-2 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/6 before:to-transparent before:-translate-x-full before:animate-subtle-shimmer before:pointer-events-none">
           <span>MK</span>
           <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="MannyKnows astronaut mascot" decoding="async" class="h-11 w-11 object-contain shrink-0 -ml-5 nav-astro" />
         </a>
@@ -217,7 +217,7 @@ const searchIndex = [
     <div class="relative h-full w-[95%] ml-auto flex flex-col bg-white/90 dark:bg-gray-900/85 backdrop-blur-xl border-l border-gray-300/30 dark:border-white/20 shadow-xl">
       <!-- Header with Close Button -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-        <a href="/" aria-label="MannyKnows — home" class="logo-gradient inline-flex items-center gap-2 text-2xl font-black text-text-light-primary dark:text-text-dark-primary no-underline">
+        <a href="/" aria-label="MannyKnows: home" class="logo-gradient inline-flex items-center gap-2 text-2xl font-black text-text-light-primary dark:text-text-dark-primary no-underline">
           MK
           <img src="/art/astronaut-rocket.webp" width="256" height="256" alt="MannyKnows astronaut mascot" decoding="async" class="h-9 w-9 object-contain shrink-0 -ml-4 nav-astro" />
         </a>
@@ -497,7 +497,7 @@ const searchIndex = [
     animation: apple-gradient-flow 2s ease-in-out infinite;
   }
 
-  /* Logo: inverted — animated gradient by default, solid (theme color) on hover. */
+  /* Logo: inverted, animated gradient by default, solid (theme color) on hover. */
   .logo-gradient {
     background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
     background-size: 200% 200%;

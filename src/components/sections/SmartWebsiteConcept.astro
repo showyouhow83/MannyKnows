@@ -13,7 +13,7 @@
 //
 // Renders inner content only — drop it inside a <Section>/<PageSection>.
 export interface Props {
-  /** Heading level for the section title — h2 on plan pages, h2 on /plans. */
+  /** Heading level for the section title: h2 on plan pages, h2 on /plans. */
   compact?: boolean;
 }
 const { compact = false } = Astro.props;
@@ -30,7 +30,7 @@ const { compact = false } = Astro.props;
       <span class="apple-gradient-text" data-colorful-title>Most websites get worse every month. This one gets better.</span>
     </h2>
     <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
-      A normal website is frozen the day it launches. It only improves if you pay someone to touch it — so most small-business sites quietly rot for years while the owner assumes they're fine. Ours check themselves every single day.
+      A normal website is frozen the day it launches. It only improves if you pay someone to touch it, so most small-business sites quietly rot for years while the owner assumes they're fine. Ours check themselves every single day.
     </p>
   </div>
 
@@ -39,10 +39,10 @@ const { compact = false } = Astro.props;
     <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6">
       <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">Their regular websites</h3>
       <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Built once, then frozen. Every change costs a call, a quote, and a wait.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Slowly falls behind on speed and search as the rules change around it.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Breaks quietly. You find out when a customer tells you — or never.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Not ready for AI traffic — the answer engines customers now ask can't read it.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">, </span><span>Built once, then frozen. Every change costs a call, a quote, and a wait.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">, </span><span>Slowly falls behind on speed and search as the rules change around it.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">, </span><span>Breaks quietly. You find out when a customer tells you, or never.</span></li>
+        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">, </span><span>Not ready for AI traffic, the answer engines customers now ask can't read it.</span></li>
       </ul>
     </div>
     <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5">
@@ -65,10 +65,10 @@ const { compact = false } = Astro.props;
       "Isn't this just a website builder?"
     </h3>
     <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">
-      No — and the difference is the whole point. A website builder is a tool <em>you</em> operate: it makes a decent-looking site in minutes, and then everything after that is yours. The speed. The rankings. The updates. The customer question at 9 p.m. The thing that broke in March that you'll notice in August.
+      No, and the difference is the whole point. A website builder is a tool <em>you</em> operate: it makes a decent-looking site in minutes, and then everything after that is yours. The speed. The rankings. The updates. The customer question at 9 p.m. The thing that broke in March that you'll notice in August.
     </p>
     <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-      A plan is a service that's accountable for the outcome — the site keeps working on itself, and a person is on the hook for whether it's actually bringing in work. The builder sells you a starting line. This is the part after it. That's also why it's monthly instead of one big check: a website isn't something you buy once, it's something that either keeps up or falls behind.
+      A plan is a service that's accountable for the outcome: the site keeps working on itself, and a person is on the hook for whether it's actually bringing in work. The builder sells you a starting line. This is the part after it. That's also why it's monthly instead of one big check: a website isn't something you buy once, it's something that either keeps up or falls behind.
     </p>
   </div>
 
@@ -76,6 +76,6 @@ const { compact = false } = Astro.props;
     A normal website is worth a little less every month. Yours is worth a little more.
   </p>
   <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-3 max-w-2xl mx-auto">
-    How far the autonomy goes depends on your plan — light on the entry plan, full on the top one.
+    How far the autonomy goes depends on your plan: light on the entry plan, full on the top one.
   </p>
 </div>

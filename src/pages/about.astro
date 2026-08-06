@@ -31,22 +31,22 @@ const principles = [
   {
     icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
     title: 'You see it before anyone else does',
-    body: "Every build goes up on a private preview link first. You click through it, ask for changes, and it goes live only when you say so. After launch nothing changes that way either — updates arrive as a preview, never as a surprise on your live site.",
+    body: "Every build goes up on a private preview link first. You click through it, ask for changes, and it goes live only when you say so. After launch nothing changes that way either: updates arrive as a preview, never as a surprise on your live site.",
   },
   {
     icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     title: 'Every number on this site has a source',
-    body: "Check for yourself: the research on our own pages names who published it, and links to it. Case studies carry only what the client can confirm — no invented metrics, no borrowed screenshots. If we won't publish a claim about ourselves without proof, you know what we'll publish about you.",
+    body: "Check for yourself: the research on our own pages names who published it, and links to it. Case studies carry only what the client can confirm, no invented metrics, no borrowed screenshots. If we won't publish a claim about ourselves without proof, you know what we'll publish about you.",
   },
   {
     icon: 'M13 10V3L4 14h7v7l9-11h-7z',
     title: 'Fast is a feature, not a launch-day trick',
-    body: "This site scores a perfect 100 on desktop Lighthouse. Images ship as AVIF and WebP at four sizes, and there isn't a single third-party script in front of the homepage hero. Your site gets the same engineering — and monthly maintenance so it still measures that way next year.",
+    body: "This site scores a perfect 100 on desktop Lighthouse. Images ship as AVIF and WebP at four sizes, and there isn't a single third-party script in front of the homepage hero. Your site gets the same engineering, and monthly maintenance so it still measures that way next year.",
   },
   {
     icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
     title: 'You call Manny, not an account manager',
-    body: "The person who answers is the person who builds it — in English or Spanish. Plans run month to month, so staying is a decision you get to make again every month instead of a contract you're stuck inside.",
+    body: "The person who answers is the person who builds it: in English or Spanish. Plans run month to month, so staying is a decision you get to make again every month instead of a contract you're stuck inside.",
   },
 ];
 
@@ -55,7 +55,7 @@ const principles = [
 const pageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
-  name: 'About Manny — Web Designer in Springfield, MA',
+  name: 'About Manny: Web Designer in Springfield, MA',
   url: 'https://mannyknows.com/about/',
   mainEntity: {
     '@type': 'Person',
@@ -69,7 +69,7 @@ const pageJsonLd = {
   telephone: '+1-413-361-8451',
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
-    description: 'Web designer and developer with twenty years of experience — including consulting at Accenture and seven years in enterprise eCommerce — now building websites and AI agents for small businesses across Western Massachusetts.',
+    description: 'Web designer and developer with twenty years of experience, including consulting at Accenture and seven years in enterprise eCommerce: now building websites and AI agents for small businesses across Western Massachusetts.',
     knowsLanguage: ['English', 'Spanish'],
     sameAs: ['https://www.linkedin.com/in/mr83/'],
   },
@@ -77,8 +77,8 @@ const pageJsonLd = {
 ---
 
 <BaseLayout
-  title="About Manny — Web Designer in Springfield, MA | MannyKnows"
-  description="Manny — web designer & developer in Springfield, MA. Seven years in enterprise eCommerce as the store grew ≈$1B to $4B/yr, now building for Western Mass."
+  title="About Manny: Web Designer in Springfield, MA | MannyKnows"
+  description="Manny: web designer & developer in Springfield, MA. Seven years in enterprise eCommerce as the store grew ≈$1B to $4B/yr, now building for Western Mass."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -109,7 +109,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Who you're working with</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            MannyKnows is a multimedia agency led by Manny — web designer and developer, twenty years solving business problems for companies big and small, now building websites and AI agents that work for the businesses of Western Massachusetts.
+            MannyKnows is a multimedia agency led by Manny: web designer and developer, twenty years solving business problems for companies big and small, now building websites and AI agents that work for the businesses of Western Massachusetts.
           </p>
           <div class="mt-6 flex items-center justify-center gap-4 text-sm">
             <a href="https://www.linkedin.com/in/mr83/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-primary-blue dark:text-blue-300 font-medium hover:underline">
@@ -135,30 +135,30 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto space-y-6 text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
           <p>
             <strong class="text-text-light-primary dark:text-text-dark-primary">Starting MannyKnows had been the plan for years.</strong>
-            What made 2026 the moment was AI: after seven years in enterprise eCommerce — and four years earlier at Accenture — I could finally take everything I'd learned and put it into AI agents that actually work <em>for</em> a business.
+            What made 2026 the moment was AI: after seven years in enterprise eCommerce, and four years earlier at Accenture, I could finally take everything I'd learned and put it into AI agents that actually work <em>for</em> a business.
           </p>
           <p>
-            My role sat between several departments — the person who turned data into decisions. I'd spot a problem in <strong class="text-text-light-primary dark:text-text-dark-primary">Quantum Metric</strong>, dig into the cause, take the fix through the dev cycle in <strong class="text-text-light-primary dark:text-text-dark-primary">Jira</strong>, then A/B test it in <strong class="text-text-light-primary dark:text-text-dark-primary">AB Tasty</strong> to prove it worked. Changes as small as moving an image higher or swapping a GIF for a crisp SVG could add <strong class="text-text-light-primary dark:text-text-dark-primary">thousands of dollars</strong> in sales. The store grew from roughly <strong class="text-text-light-primary dark:text-text-dark-primary">$1B to $4B a year</strong> while I was there — a whole team's work, and I owned my piece of it: turning data into fixes that made the site faster, clearer, and better at converting. You learn what really makes a website grow when a clumsy layout or a slow page costs that kind of money — not in theory, at scale.
+            My role sat between several departments: the person who turned data into decisions. I'd spot a problem in <strong class="text-text-light-primary dark:text-text-dark-primary">Quantum Metric</strong>, dig into the cause, take the fix through the dev cycle in <strong class="text-text-light-primary dark:text-text-dark-primary">Jira</strong>, then A/B test it in <strong class="text-text-light-primary dark:text-text-dark-primary">AB Tasty</strong> to prove it worked. Changes as small as moving an image higher or swapping a GIF for a crisp SVG could add <strong class="text-text-light-primary dark:text-text-dark-primary">thousands of dollars</strong> in sales. The store grew from roughly <strong class="text-text-light-primary dark:text-text-dark-primary">$1B to $4B a year</strong> while I was there, a whole team's work, and I owned my piece of it: turning data into fixes that made the site faster, clearer, and better at converting. You learn what really makes a website grow when a clumsy layout or a slow page costs that kind of money, not in theory, at scale.
           </p>
           <p>
-            Long before any of that, I was building websites by hand. At <strong class="text-text-light-primary dark:text-text-dark-primary">Mednet</strong> — a medical web company that has since been acquired and folded into another business — I'd call the doctors myself and interview them about their practice, then design the site, slice it up in Photoshop, rebuild it in Dreamweaver, and write the JavaScript that brought it to life. Flash animations too, back when that's what the web ran on. Then I'd launch it, work with the SEO team on the copy, and keep it updated long after. Different tools, same job I do today: understand the business, build the thing, and keep it alive once it's out there.
+            Long before any of that, I was building websites by hand. At <strong class="text-text-light-primary dark:text-text-dark-primary">Mednet</strong>, a medical web company that has since been acquired and folded into another business, I'd call the doctors myself and interview them about their practice, then design the site, slice it up in Photoshop, rebuild it in Dreamweaver, and write the JavaScript that brought it to life. Flash animations too, back when that's what the web ran on. Then I'd launch it, work with the SEO team on the copy, and keep it updated long after. Different tools, same job I do today: understand the business, build the thing, and keep it alive once it's out there.
           </p>
           <figure class="border-l-[3px] border-transparent pl-5" style="border-image: linear-gradient(180deg,#0071e3,#ff4faa) 1;">
             <p class="text-2xl md:text-[1.7rem] font-semibold leading-snug text-text-light-primary dark:text-text-dark-primary">
-              Nothing excites me more than seeing a business that had no presence online take the first spots on Google — and get quoted by the AIs themselves.
+              Nothing excites me more than seeing a business that had no presence online take the first spots on Google, and get quoted by the AIs themselves.
             </p>
           </figure>
           <p>
-            Western Mass is full of great businesses nobody can find — no website, or one nobody's touched in years — while their customers have moved twice: first to Google, now to asking AI. Closing that gap is the whole point of MannyKnows. We've watched a client climb from invisible to the top of Google for the searches that bring in work, and every site we ship is built for the next shift too: showing up not just in the results, but in the answers.
+            Western Mass is full of great businesses nobody can find (no website, or one nobody's touched in years) while their customers have moved twice: first to Google, now to asking AI. Closing that gap is the whole point of MannyKnows. We've watched a client climb from invisible to the top of Google for the searches that bring in work, and every site we ship is built for the next shift too: showing up not just in the results, but in the answers.
           </p>
           <p>
-            Now that experience works for small businesses across Western Massachusetts. The painter, the daycare, the shop that wants to sell online — they get the same problem-solving, the same relentless testing, and a team of AI agents that answer customers, create content, and book the work around the clock. The same nationwide-caliber standards a big brand pays six figures for, scoped and priced for a local business.
+            Now that experience works for small businesses across Western Massachusetts. The painter, the daycare, the shop that wants to sell online. They get the same problem-solving, the same relentless testing, and a team of AI agents that answer customers, create content, and book the work around the clock. The same nationwide-caliber standards a big brand pays six figures for, scoped and priced for a local business.
           </p>
           <p>
-            So much of Western Mass lives in Spanish — I do too. The sites we build speak it natively, because I write them in it, not run them through a translator after the fact. When a family searches <em>"pintor cerca de mí"</em> — or asks an AI in Spanish who to call — my clients can be the answer in that language too. Bilingual is standard on every plan, never an add-on.
+            So much of Western Mass lives in Spanish. I do too. The sites we build speak it natively, because I write them in it, not run them through a translator after the fact. When a family searches <em>"pintor cerca de mí"</em>, or asks an AI in Spanish who to call: my clients can be the answer in that language too. Bilingual is standard on every plan, never an add-on.
           </p>
           <p>
-            Most of all: <strong class="text-text-light-primary dark:text-text-dark-primary">a website is never finished.</strong> It isn't something you buy once — it has to keep working, keep ranking, and keep converting, however people search next. That's why the plans are monthly, and why my clients' sites don't quietly rot after launch.
+            Most of all: <strong class="text-text-light-primary dark:text-text-dark-primary">a website is never finished.</strong> It isn't something you buy once. It has to keep working, keep ranking, and keep converting, however people search next. That's why the plans are monthly, and why my clients' sites don't quietly rot after launch.
           </p>
         </div>
       </Container>
@@ -185,7 +185,7 @@ const pageJsonLd = {
 
         <div class="text-center mt-14 space-y-4">
           <p class="text-text-light-secondary dark:text-text-dark-secondary max-w-xl mx-auto">
-            The proof is in the work — the websites, online stores, and AI agents running for Western Mass businesses today.
+            The proof is in the work: the websites, online stores, and AI agents running for Western Mass businesses today.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-4">
             <a href="/#work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">

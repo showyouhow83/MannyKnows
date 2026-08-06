@@ -43,7 +43,7 @@ const PACKAGES = [
     highlight: true,
     badge: 'Start here',
     blurb: 'One professional 360° photo of your business, published straight to your Google Business Profile.',
-    features: ['1 immersive 360° photo', `We come to you — free ${FREE_TRAVEL}`, 'Published to your Google listing', 'Free — this is how we introduce our work'],
+    features: ['1 immersive 360° photo', `We come to you (free ${FREE_TRAVEL}`, 'Published to your Google listing', 'Free), this is how we introduce our work'],
     cta: { label: 'Claim it free', href: '#claim' },
   },
   {
@@ -52,7 +52,7 @@ const PACKAGES = [
     price: 'from $195',
     cadence: 'one-time',
     blurb: 'Five 360° photos that turn your listing into a mini “see inside” tour customers can walk through on Google.',
-    features: ['5 professional 360° photos', 'Mini virtual tour on Google', 'Optimized & published for you', 'Unbranded files — delivered to you, yours to keep', 'Perfect for shops, salons, clinics, restaurants'],
+    features: ['5 professional 360° photos', 'Mini virtual tour on Google', 'Optimized & published for you', 'Unbranded files, delivered to you, yours to keep', 'Perfect for shops, salons, clinics, restaurants'],
     cta: { label: 'Get a quote', href: '#claim' },
   },
   {
@@ -69,16 +69,16 @@ const PACKAGES = [
     name: 'AI Website (1-page)',
     price: `$${aiWebsiteSetupFee}`,
     cadence: `one-time + $${aiWebsiteMonthly}/mo`,
-    blurb: 'A fast one-page site with “Remi”, an AI agent trained on your business and voice — and your 360° photos embedded as a tour on your own domain.',
+    blurb: 'A fast one-page site with “Remi”, an AI agent trained on your business and voice, and your 360° photos embedded as a tour on your own domain.',
     features: ['“Remi”, an AI agent, answering customers 24/7', 'Every lead captured & emailed to you', 'Your 360° tour on your own site', 'Hero, Blog, Services, Reviews, FAQs, Contact', 'Near-perfect Google Lighthouse scores'],
     cta: { label: 'See what’s included', href: '#ai-website' },
   },
 ];
 
 const STEPS = [
-  { n: '01', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule — it only takes a minute.', icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z' },
+  { n: '01', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule: it only takes a minute.', icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z' },
   { n: '02', title: 'We come to you', body: 'We show up at your business and capture a crisp, professional 360° photo. Most shoots take under 30 minutes.', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
-  { n: '03', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit — free.', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
+  { n: '03', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit: free.', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
 ];
 
 // Cited numbers only — same honesty rule as everywhere else on the site.
@@ -90,7 +90,7 @@ const WHY = [
   { stat: '2×', label: 'as likely to generate interest', body: 'Research commissioned by Google found listings with photos and a virtual tour are twice as likely to generate customer interest as listings without.', source: 'Ipsos MediaCT for Google' },
   { stat: '42%', label: 'more direction requests', body: 'Listings with photos get 42% more requests for driving directions on Google.', source: "Google's Business Profile data" },
   { stat: '35%', label: 'more clicks to your site', body: 'Photo-rich profiles see 35% more click-throughs to the business website.', source: "Google's Business Profile data" },
-  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers step inside at any hour — the trust is built before they ever call.', source: null },
+  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers step inside at any hour, the trust is built before they ever call.', source: null },
 ];
 
 // The page anatomy comes from the shared product data. The tour and the blog
@@ -101,11 +101,11 @@ const otherSections = aiWebsiteSections.filter((s) => s.name !== 'Virtual tour')
 
 const FAQS = [
   { q: 'Is the 360° photo really free?', a: "Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost, with no obligation. It's how we introduce our work." },
-  { q: 'What is a Google Business Profile and do I need one?', a: "It's your free listing on Google Search and Maps — where customers find your hours, photos, reviews, and directions. Don't have one yet? Our Profile Setup + Verification service (from $145) creates it, fills it out properly, and handles Google's verification so you show up in local search." },
-  { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack is five professional 360° photos, so customers can virtually walk through your space — a mini “see inside” tour on Google. Pack photos are delivered to you as unbranded files — yours to keep.' },
+  { q: 'What is a Google Business Profile and do I need one?', a: "It's your free listing on Google Search and Maps, where customers find your hours, photos, reviews, and directions. Don't have one yet? Our Profile Setup + Verification service (from $145) creates it, fills it out properly, and handles Google's verification so you show up in local search." },
+  { q: 'How is the paid pack different from the free photo?', a: 'The free offer is a single 360° photo. The 360° Photo Pack is five professional 360° photos, so customers can virtually walk through your space: a mini “see inside” tour on Google. Pack photos are delivered to you as unbranded files: yours to keep.' },
   { q: 'How soon does it go live?', a: 'Most 360° photos are published within a few days of the shoot, once processing and Google publishing are complete.' },
   { q: 'Do you serve my area?', a: "We're based in Springfield, MA, and shoot on-site across the Pioneer Valley. The free 360° photo covers locations within about 10 miles of Springfield; a little farther out we may add a small gas/travel fee, always quoted up front before we book. Profile setup and the AI website can be done from anywhere." },
-  { q: 'What is the AI website?', a: `A fast one-page site with “Remi” — an AI agent trained on your business and voice. It answers customer questions around the clock, in English or Spanish, and captures every lead to your inbox, with your 360° photos embedded as a tour on your own domain. $${aiWebsiteSetupFee} one-time to build, then $${aiWebsiteMonthly}/mo to keep it hosted, secure, and answering. Full details at mannyknows.com/ai-website.` },
+  { q: 'What is the AI website?', a: `A fast one-page site with “Remi”, an AI agent trained on your business and voice. It answers customer questions around the clock, in English or Spanish, and captures every lead to your inbox, with your 360° photos embedded as a tour on your own domain. $${aiWebsiteSetupFee} one-time to build, then $${aiWebsiteMonthly}/mo to keep it hosted, secure, and answering. Full details at mannyknows.com/ai-website.` },
 ];
 
 const META_DESCRIPTION = `Claim a free 360° photo for your Google Business Profile. We come to your business in ${SERVICE_AREA} and publish it to Google.`;
@@ -189,7 +189,7 @@ const jsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Claim a free 360° photo for your<br />Google Business Profile</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-              Call or book a time — we come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
+              Call or book a time. We come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a href="#claim" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
@@ -279,7 +279,7 @@ const jsonLd = {
           ))}
         </div>
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Every package is customized and optimized for your business. The free 360° photo covers locations {FREE_TRAVEL} — a little farther out, a small gas/travel fee may apply (always quoted up front). Final pricing depends on your space and goals — get an exact quote in the form below.
+          Every package is customized and optimized for your business. The free 360° photo covers locations {FREE_TRAVEL}: a little farther out, a small gas/travel fee may apply (always quoted up front). Final pricing depends on your space and goals: get an exact quote in the form below.
         </p>
 
       </Container>
@@ -298,7 +298,7 @@ const jsonLd = {
 
     <!-- ───────────────────────── AI Website ─────────────────────────
          Rebuilt Aug 2026. The old version was seven identical feature cards
-         and four green "100" tiles with no price, no proof and no CTA — it
+         and four green "100" tiles with no price, no proof and no CTA: it
          ended by pointing readers at the $95/mo plans instead of selling this.
          Now: the tour is the hook (it's the reason a 360° customer wants a
          site at all), the agent is proven with the shared demo, the price is
@@ -310,7 +310,7 @@ const jsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Your 360° tour, on a site that answers customers</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Photos on your Google profile live on Google's property. The same tour on your own one-page site is
-            yours — working for your rankings, with “Remi”, an AI agent trained on your business, beside it
+            yours: working for your rankings, with “Remi”, an AI agent trained on your business, beside it
             answering questions and capturing leads while you're closed.
           </p>
         </div>
@@ -326,7 +326,7 @@ const jsonLd = {
                 {aiWebsiteAgent.map((c) => (
                   <li class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm text-text-light-primary dark:text-text-dark-primary"><strong class="font-semibold">{c.title}</strong> — {c.body}</span>
+                    <span class="text-sm text-text-light-primary dark:text-text-dark-primary"><strong class="font-semibold">{c.title}</strong>, {c.body}</span>
                   </li>
                 ))}
               </ul>
@@ -368,7 +368,7 @@ const jsonLd = {
             ))}
           </div>
           <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto leading-relaxed">
-            Every page is tuned to near-perfect scores across Google's four Lighthouse categories — performance,
+            Every page is tuned to near-perfect scores across Google's four Lighthouse categories: performance,
             accessibility, best practices, and SEO.
             <a href="/ai-website/#lighthouse" class="text-primary-blue dark:text-blue-300 hover:underline">See how that's built</a>,
             or if you'd rather we design, run, and update a multilingual multi-page site every month, that's a
@@ -385,21 +385,21 @@ const jsonLd = {
           <div class="text-center mb-8">
             <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Claim your free 360° photo</span></h2>
             <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below — we'll reach out to set up your free shoot. Want the photo pack, your profile set up, or the AI website instead? Say so in the first field.
+              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below, we'll reach out to set up your free shoot. Want the photo pack, your profile set up, or the AI website instead? Say so in the first field.
             </p>
           </div>
 
           <form id="claimForm" class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 md:p-8 space-y-4" novalidate>
             <!-- Added Aug 2026: without this every submission emailed Manny as a
-                 free-photo request, so nobody could ask for a paid package —
+free-photo request, so nobody could ask for a paid package
                  including the AI website the section above now sells. -->
             <div>
               <label for="cf-interest" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">What are you after? *</label>
               <select id="cf-interest" name="interest" class="w-full h-11 px-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition">
                 {PACKAGES.map((p) => (
-                  <option value={p.id} data-label={p.name}>{p.name}{p.price === 'Free' ? '' : ` — ${p.price} ${p.cadence}`}</option>
+                  <option value={p.id} data-label={p.name}>{p.name}{p.price === 'Free' ? '' : `, ${p.price} ${p.cadence}`}</option>
                 ))}
-                <option value="not-sure" data-label="Not sure yet">Not sure yet — help me figure it out</option>
+                <option value="not-sure" data-label="Not sure yet">Not sure yet: help me figure it out</option>
               </select>
             </div>
             <div>
@@ -496,9 +496,9 @@ const jsonLd = {
     // What each choice asks for, in the words Manny will read in his inbox.
     const REQUESTS: Record<string, string> = {
       'free-360': 'I would like to claim my free 360 photo for my Google Business Profile.',
-      'photo-pack': 'I am interested in the 360 Photo Pack — five professional 360 photos for my Google listing.',
-      'profile-setup': 'I am interested in Profile Setup + Verification — creating and verifying my Google Business Profile.',
-      'ai-website': 'I am interested in the one-page AI Website — the site with “Remi” answering customers and my 360 tour embedded on my own domain.',
+      'photo-pack': 'I am interested in the 360 Photo Pack, five professional 360 photos for my Google listing.',
+      'profile-setup': 'I am interested in Profile Setup + Verification, creating and verifying my Google Business Profile.',
+      'ai-website': 'I am interested in the one-page AI Website, the site with “Remi” answering customers and my 360 tour embedded on my own domain.',
       'not-sure': 'I am not sure yet which of these fits my business. I would like help figuring it out.',
     };
 
@@ -535,7 +535,7 @@ const jsonLd = {
       }
       if (!csrfToken) { await loadToken(); }
 
-      const subject = clean(`${interestLabel} request — ${business || name}`);
+      const subject = clean(`${interestLabel} request: ${business || name}`);
       const message = clean(
         `Interested in: ${interestLabel}.\n` +
         `Business: ${business || 'not provided'}\n` +
@@ -558,8 +558,8 @@ const jsonLd = {
         if (res.ok && data.success) {
           setStatus(
             interest === 'free-360'
-              ? 'Thanks! Your request is in — we’ll reach out shortly to set up your free shoot.'
-              : 'Thanks! Your request is in — we’ll reach out shortly with the details.',
+              ? 'Thanks! Your request is in: we’ll reach out shortly to set up your free shoot.'
+              : 'Thanks! Your request is in, we’ll reach out shortly with the details.',
             true
           );
           form.reset();

@@ -30,7 +30,7 @@ const specialty: Record<string, string> = {
 
 <div class="max-w-7xl mx-auto">
   {/* Each avatar deep-links to its card on /ai-team (anchors are the slugified
-      agent name — same rule as the card ids there), so "who's Nova?" lands on
+      agent name: same rule as the card ids there), so "who's Nova?" lands on
       Nova's description instead of the top of the page. Manny AI leads large;
       the specialists he staffs form a 3×2 grid beside him. */}
   <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-4xl mx-auto">
@@ -38,7 +38,7 @@ const specialty: Record<string, string> = {
     <a
       href="/ai-team/#agent-manny-ai"
       class="group flex flex-col items-center gap-2 rounded-3xl p-2 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
-      aria-label={`${manager.name} — ${specialty[manager.id] ?? manager.role}. Read what ${manager.name} does on the AI Team page.`}
+      aria-label={`${manager.name}: ${specialty[manager.id] ?? manager.role}. Read what ${manager.name} does on the AI Team page.`}
     >
       <div class="w-40 sm:w-48 aspect-square rounded-3xl bg-gradient-to-br from-primary-blue/[0.10] via-transparent to-primary-pink/[0.10] ring-1 ring-primary-blue/20 group-hover:from-primary-blue/[0.18] group-hover:to-primary-pink/[0.18] transition-colors duration-300">
         <AgentAvatar agent={manager.id} class="w-full h-full" />
@@ -53,7 +53,7 @@ const specialty: Record<string, string> = {
         <a
           href={`/ai-team/#agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`}
           class="group flex flex-col items-center gap-1 rounded-2xl p-1 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
-          aria-label={`${a.name} — ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Team page.`}
+          aria-label={`${a.name}: ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Team page.`}
         >
           <div class="w-full max-w-[68px] sm:max-w-[84px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
           <AgentAvatar agent={a.id} class="w-full h-full" />
@@ -67,7 +67,7 @@ const specialty: Record<string, string> = {
 
   <div class="text-center max-w-2xl mx-auto mt-10">
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      <strong class="text-text-light-primary dark:text-text-dark-primary">You hire Manny AI</strong> — one manager that summons specialized AI sub-agents for whatever the job requires, briefs each one, and runs the handoffs so the work gets done the best way it can. Like hiring three, five, or seven people in one — adding capability only when the numbers say so.
+      <strong class="text-text-light-primary dark:text-text-dark-primary">You hire Manny AI</strong>, one manager that summons specialized AI sub-agents for whatever the job requires, briefs each one, and runs the handoffs so the work gets done the best way it can. Like hiring three, five, or seven people in one: adding capability only when the numbers say so.
     </p>
     {/* Remi gets a second, verb-led route: the roster avatar above goes to the
         profile card; this goes to the booking-agent explainer page. */}
@@ -78,7 +78,7 @@ const specialty: Record<string, string> = {
     {/* Handshake illustration hidden per Manny (Aug 2026) — kept for reuse.
     <img
       src="/mascot/astronaut-robot-handshake.webp"
-      alt="An astronaut shaking hands with a friendly robot — you and your AI team"
+      alt="An astronaut shaking hands with a friendly robot: you and your AI team"
       width="866" height="752" loading="lazy" decoding="async"
       class="mx-auto mt-10 w-full max-w-[150px] h-auto"
     /> */}

@@ -48,7 +48,7 @@ const structuredData = {
       '@id': `${siteUrl}/#business`,
       name: 'MannyKnows',
       description:
-        'Custom apps, websites, and AI automation for established small businesses across Springfield and Western Massachusetts. Manny turns the manual processes that slow a business down into software that runs them — from ecommerce stores and lead-to-job systems to data pipelines and API integrations.',
+        'Custom apps, websites, and AI automation for established small businesses across Springfield and Western Massachusetts. Manny turns the manual processes that slow a business down into software that runs them, from ecommerce stores and lead-to-job systems to data pipelines and API integrations.',
       url: siteUrl,
       email: EMAIL,
       telephone: PHONE_TEL,
@@ -99,7 +99,7 @@ const structuredData = {
             '@type': 'Offer',
             priceCurrency: 'USD',
             priceSpecification: { '@type': 'UnitPriceSpecification', price: planPrice('get-growing'), priceCurrency: 'USD', unitText: 'MONTH' },
-            itemOffered: { '@type': 'Service', name: 'Get Growing (smart bilingual website)', description: 'A multilingual website with a built-in AI agent that answers, books, and sells — and that tunes its own content, SEO, and speed.' },
+            itemOffered: { '@type': 'Service', name: 'Get Growing (smart bilingual website)', description: 'A multilingual website with a built-in AI agent that answers, books, and sells, and that tunes its own content, SEO, and speed.' },
           },
           {
             '@type': 'Offer',
@@ -111,7 +111,7 @@ const structuredData = {
             '@type': 'Offer',
             priceCurrency: 'USD',
             priceSpecification: { '@type': 'UnitPriceSpecification', price: '95', priceCurrency: 'USD', unitText: 'MONTH' },
-            itemOffered: { '@type': 'Service', name: 'AI Team (AI agents)', description: 'AI agents hired per role — sales & booking, research, copy, graphics, voice, SEO, publishing, ads, engagement, and reporting.' },
+            itemOffered: { '@type': 'Service', name: 'AI Team (AI agents)', description: 'AI agents hired per role, sales & booking, research, copy, graphics, voice, SEO, publishing, ads, engagement, and reporting.' },
           },
           {
             '@type': 'Offer',
@@ -145,7 +145,7 @@ const NAVBAR_CONFIG = {
 
 <BaseLayout
 	title="AI Agents, Web Design & SEO in Springfield, MA | MannyKnows"
-	description="Web design, AI agents, local SEO & custom apps from $95/mo — built in Springfield, MA for all of Western Mass. Cancel anytime. Call or text (413) 361-8451."
+	description="Web design, AI agents, local SEO & custom apps from $95/mo, built in Springfield, MA for all of Western Mass. Cancel anytime. Call or text (413) 361-8451."
 	footerServices={true}
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
@@ -171,7 +171,7 @@ const NAVBAR_CONFIG = {
                 title=""
                 highlightedText="AI Agents, Websites, SEO & Apps"
                 titleAfter=""
-                subtitle="A Springfield, Massachusetts web design & AI agency for small businesses across Western Mass. We set you up with AI agents that answer calls, write, and close sales under your name; a custom-designed website that turns visitors into customers; SEO that gets you ranking on Google and the AI answer engines your customers now ask instead; and custom web apps for the work behind the scenes — 24/7."
+                subtitle="A Springfield, Massachusetts web design & AI agency for small businesses across Western Mass. We set you up with AI agents that answer calls, write, and close sales under your name; a custom-designed website that turns visitors into customers; SEO that gets you ranking on Google and the AI answer engines your customers now ask instead; and custom web apps for the work behind the scenes: 24/7."
             />
 
             <!-- Hero CTAs + credibility stat band -->
@@ -201,11 +201,11 @@ const NAVBAR_CONFIG = {
 			id="google-profile"
 			badge="Google Business Profile"
 			title="Your Google Business Profile <br />is your first ranking"
-			subtitle="It's the free listing behind Google Maps and the map pack — the three businesses locals see first when they search 'near me.' Most owners set it up once and never touch it again. Getting it right is the cheapest win in local SEO."
+			subtitle="It's the free listing behind Google Maps and the map pack: the three businesses locals see first when they search 'near me.' Most owners set it up once and never touch it again. Getting it right is the cheapest win in local SEO."
 			variant="hero"
 		>
 			<!-- Megaphone astronaut peeking in from the right edge. All the dials
-			     live in the .gbp-mascot CSS block below — tweak and hot-reload. -->
+			     live in the .gbp-mascot CSS block below: tweak and hot-reload. -->
 			<div slot="background" class="gbp-mascot" aria-hidden="true">
 				<img src="/mascot/astronaut-megaphone.svg" alt="" loading="lazy" decoding="async" />
 			</div>
@@ -217,7 +217,7 @@ const NAVBAR_CONFIG = {
 			id="ai-team"
 			badge="AI Team"
 			title="Stop hiring AI. Start fixing the bottleneck."
-			subtitle="Something in your Western Mass business is leaking money — missed calls, posts that never go out, reviews nobody answers. Fixing it doesn't take ten AI agents. It takes one hire: Manny AI, who puts the right AI specialist on it. Nothing goes out without your OK."
+			subtitle="Something in your Western Mass business is leaking money: missed calls, posts that never go out, reviews nobody answers. Fixing it doesn't take ten AI agents. It takes one hire: Manny AI, who puts the right AI specialist on it. Nothing goes out without your OK."
 			variant="alternate"
 		>
 			<HomeAiTeam />
@@ -231,7 +231,7 @@ const NAVBAR_CONFIG = {
 			id="plans"
 			badge="Monthly plans"
 			title="Plans that grow with you"
-			subtitle="Monthly plans, scoped to your business. Start with what you need — a website, an online store, marketing, or a full tech team — and adjust anytime."
+			subtitle="Monthly plans, scoped to your business. Start with what you need (a website, an online store, marketing, or a full tech team) and adjust anytime."
 			variant="alternate"
 		>
 			<PricingPlans />
@@ -263,7 +263,7 @@ const NAVBAR_CONFIG = {
 			id="work"
 			badge="Portfolio"
 			title="Our web design portfolio"
-			subtitle="The latest sites, stores, and apps we've designed and built — like the Springfield painter who now ranks #1 on Google for exterior painting, and the daycare that got a website, AI agent, and phone system in two weeks. Click any project for the full story."
+			subtitle="The latest sites, stores, and apps we've designed and built: like the Springfield painter who now ranks #1 on Google for exterior painting, and the daycare that got a website, AI agent, and phone system in two weeks. Click any project for the full story."
 			variant="alternate"
 		>
 			<SelectedWork />
@@ -272,7 +272,7 @@ const NAVBAR_CONFIG = {
 			   with the IdeaLaunchpad modal in BaseLayout. Kept in code in case it
 			   comes back.
       <!-- Idea launcher, relocated from the nav bulb. Deliberately small and
-           FYI-sized — a footnote to the portfolio, not a promo banner. -->
+           FYI-sized: a footnote to the portfolio, not a promo banner. -->
       <div class="mt-10 flex justify-center px-4">
         <button
           type="button"
@@ -281,7 +281,7 @@ const NAVBAR_CONFIG = {
         >
           <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
           <span class="text-xs sm:text-[13px] leading-relaxed text-text-light-secondary dark:text-text-dark-secondary">
-            <strong class="text-text-light-primary dark:text-text-dark-primary">Got an idea of your own?</strong> Every project here started as one — an app, a tool, a store. <span class="text-primary-blue dark:text-blue-300 font-medium whitespace-nowrap group-hover:underline">See how we build it →</span>
+            <strong class="text-text-light-primary dark:text-text-dark-primary">Got an idea of your own?</strong> Every project here started as one, an app, a tool, a store. <span class="text-primary-blue dark:text-blue-300 font-medium whitespace-nowrap group-hover:underline">See how we build it →</span>
           </span>
         </button>
       </div> */}
@@ -305,7 +305,7 @@ const NAVBAR_CONFIG = {
 	/* ── Astronaut peeking from the right of the GBP section ──────────────
 	   Manny's dials:
 	     --mascot-height  how big he is
-	     --mascot-peek    how much of him is VISIBLE (px or %) — the rest
+	     --mascot-peek    how much of him is VISIBLE (px or %): the rest
 	                      stays cropped off the right edge of the section
 	     --mascot-rotate  counterclockwise tilt (more negative = leans in more)
 	     --mascot-top     vertical position inside the section
@@ -321,7 +321,7 @@ const NAVBAR_CONFIG = {
 		right: 0;
 		transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
 		pointer-events: none;
-		/* Over the cards, like the telescope astronaut — blocking a corner is
+		/* Over the cards, like the telescope astronaut: blocking a corner is
 		   house style now; pointer-events none keeps everything clickable. */
 		z-index: 20;
 	}
@@ -332,11 +332,11 @@ const NAVBAR_CONFIG = {
 		transform: rotate(var(--mascot-rotate));
 	}
 	/* Tablet: same peek, scaled down so the stat cards keep breathing room.
-	   (Overlap itself is fine — house style since the telescope astronaut.) */
+	   (Overlap itself is fine: house style since the telescope astronaut.) */
 	@media (max-width: 1279px) {
 		.gbp-mascot { --mascot-height: 320px; --mascot-top: 42%; }
 	}
-	/* Phones only: no empty margin at all — stays hidden. */
+	/* Phones only: no empty margin at all, stays hidden. */
 	@media (max-width: 639px) {
 		.gbp-mascot { display: none; }
 	}

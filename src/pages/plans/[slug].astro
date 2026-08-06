@@ -61,10 +61,10 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 ---
 
 <BaseLayout
-  title={plan.metaTitle ?? `${plan.name} Plan — from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
+  title={plan.metaTitle ?? `${plan.name} Plan: from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
   description={plan.tiers
-    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} — $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
-    : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr — 2 months free. Cancel anytime.`}
+    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name}: $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
+    : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr, 2 months free. Cancel anytime.`}
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -180,7 +180,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
                 </ul>
                 <a
                   href="#contact"
-                  data-contact-context={`${plan.name} — ${t.name}`}
+                  data-contact-context={`${plan.name}: ${t.name}`}
                   class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
                 >
                   Start with {t.name}

@@ -40,17 +40,11 @@ const shortRole: Record<string, string> = {
 // day-to-day feed is the caption under the panel instead.
 // The thread's opening move: Manny AI asks what a content creator would ask,
 // and the summoned specialists queue behind the brief (Manny, Aug 2026).
-const dashboardRows: { who: string; label: string; detail: string; waiting?: { who: string; label: string }[] }[] = [
-  {
-    who: 'manny',
-    label: 'Manny AI — scoping the brief',
-    detail: "Who books interior painting in January — homeowners, landlords, offices? What's converting on painting TikTok right now? Which winter objection do we answer first: mess, fumes, or drying time? And what makes the offer worth booking before March?",
-    waiting: [
-      { who: 'eve', label: 'researching the answers' },
-      { who: 'ana', label: 'pulling what performed before' },
-      { who: 'elly', label: "waiting on Eve's findings" },
-    ],
-  },
+const dashboardRows: { who: string; name: string; label: string; status?: string }[] = [
+  { who: 'manny', name: 'Manny AI', label: 'Scoping the brief: who books interior painting in January, what converts on painting TikTok, which winter objection to answer first, and what makes the offer worth booking before March.' },
+  { who: 'eve', name: 'Eve', label: 'Researching the answers', status: 'In progress' },
+  { who: 'ana', name: 'Vera', label: 'Pulling what performed before', status: 'In progress' },
+  { who: 'elly', name: 'Elly', label: "Waiting on Eve's findings", status: 'Queued' },
 ];
 ---
 
@@ -61,8 +55,7 @@ const dashboardRows: { who: string; label: string; detail: string; waiting?: { w
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
     </span>
     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary text-left">
-      <em>“We want to run a TikTok promo for indoor painting this winter — the offer runs January through March. Produce the content for it.”</em>
-      <span class="block mt-1 text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary">A request from a Springfield painting contractor</span>
+      <em>“Produce a TikTok promo for our winter indoor painting offer (January–March).”</em>
     </p>
   </div>
 
@@ -76,8 +69,8 @@ const dashboardRows: { who: string; label: string; detail: string; waiting?: { w
       <AgentAvatar agent="manny" class="w-full h-full" />
     </div>
     <div class="min-w-0">
-      <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Manny AI — the manager</p>
-      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug mt-1">Summons the right specialists for the task, briefs each one, and runs the handoffs so the task is completed the way you expect — staffing more sub-agents behind the scenes as it calls for them.</p>
+      <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Manny AI, the manager</p>
+      <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug mt-1">Briefs each specialist, runs the handoffs, and brings the work back the way you expect it.</p>
     </div>
   </div>
 
@@ -112,7 +105,7 @@ const dashboardRows: { who: string; label: string; detail: string; waiting?: { w
     ))}
   </ul>
   <p class="mt-2 text-center text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary">
-    For this request Manny summoned Eve, Elly, and Vera — the rest stay on the bench until a job calls for them.
+    For this request Manny summoned Eve, Elly, and Vera: the rest stay on the bench until a job calls for them.
   </p>
 
   <div class="flex justify-center py-2" aria-hidden="true">
@@ -126,25 +119,18 @@ const dashboardRows: { who: string; label: string; detail: string; waiting?: { w
     </div>
     <ul role="list">
       {dashboardRows.map((r, i) => (
-        <li class={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-light-tertiary dark:border-dark-accent' : ''}`}>
+        <li class={`flex items-start gap-3 px-4 py-3 ${i > 0 ? 'border-t border-light-tertiary dark:border-dark-accent' : ''}`}>
           <div class="w-8 h-8 flex-shrink-0 rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden">
             <AgentAvatar agent={r.who as any} class="w-full h-full" />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">{r.label}</p>
-            <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug">{r.detail}</p>
+            <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-tight">{r.name}</p>
+            <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-snug mt-0.5">{r.label}</p>
           </div>
-          {r.waiting && (
-            <div class="flex-shrink-0 flex flex-col gap-1.5">
-              {r.waiting.map((w) => (
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-semibold pl-1 pr-2.5 py-0.5">
-                  <span class="w-5 h-5 rounded-full overflow-hidden bg-gradient-to-br from-primary-blue/10 to-primary-pink/10">
-                    <AgentAvatar agent={w.who as any} class="w-full h-full" />
-                  </span>
-                  {w.label}
-                </span>
-              ))}
-            </div>
+          {r.status && (
+            <span class="flex-shrink-0 inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-bold px-2 py-1">
+              {r.status}
+            </span>
           )}
         </li>
       ))}
@@ -152,6 +138,5 @@ const dashboardRows: { who: string; label: string; detail: string; waiting?: { w
   </div>
 
   <p class="mt-3 text-center text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-    Day to day, the same dashboard carries the whole team's output — the daily intel brief, captured leads, search rankings, and the monthly report.
-  </p>
+    Day to day, the same dashboard carries everything the team produces.</p>
 </div>

@@ -41,7 +41,7 @@ export interface NormalizedAddress {
   city: string;
   /** 2-letter state code when resolvable, else the raw value. */
   state: string;
-  /** Full state name (e.g. "Massachusetts") — used to disambiguate geocoding. */
+  /** Full state name (e.g. "Massachusetts"): used to disambiguate geocoding. */
   stateName: string;
   /** 5-digit zip (structured if present, else parsed from address). */
   zip: string;

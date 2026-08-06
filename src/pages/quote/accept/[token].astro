@@ -257,7 +257,7 @@ function sameOriginPdfUrl(fileUrl: string): string {
     }
 
     /* Inline PDF preview. Smaller default height (480px) so the section
-       feels integrated rather than dominating the page — the customer's
+       feels integrated rather than dominating the page: the customer's
        primary action is the signature above; this is a reference. iframe
        renders the PDF inline on every desktop browser; on iOS Safari it
        shows a tap-to-open thumbnail of the first page rather than a blank
@@ -674,7 +674,7 @@ function sameOriginPdfUrl(fileUrl: string): string {
           <div class="success-icon">&#10003;</div>
           <h2>Quote Already Accepted!</h2>
           <p class="message">
-            You've already accepted this quote. Below are your quote documents — open or save them for your records.
+            You've already accepted this quote. Below are your quote documents: open or save them for your records.
           </p>
 
           {attachments.length > 0 && (
@@ -806,7 +806,7 @@ function sameOriginPdfUrl(fileUrl: string): string {
 
             <div class="btn-row">
               <button type="submit" class="btn btn-primary" id="acceptBtn" disabled={requireSig}>
-                <span class="btn-text">{requireSig ? 'Confirm — Accept Quote' : 'Accept Quote'}</span>
+                <span class="btn-text">{requireSig ? 'Confirm: Accept Quote' : 'Accept Quote'}</span>
                 <span class="loading">
                   <span class="spinner"></span>
                   Processing…

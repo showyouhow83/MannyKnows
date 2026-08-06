@@ -34,7 +34,7 @@ export interface Brand {
   addressLines: string[];
   /** Short tagline under the logo. '' to hide. */
   tagline: string;
-  /** Certifications line (MK only — never claim these for a partner).
+  /** Certifications line (MK only, never claim these for a partner).
    *  Empty until Manny provides real, verifiable credentials — never fabricate. */
   certifications: string;
   /** Show the Manny assistant block (MK only). */
@@ -127,7 +127,7 @@ export function brandFromPartner(p: PartnerRow): Brand {
   };
 }
 
-/** Resolve the brand for a record's partner_id. Always safe — any failure or
+/** Resolve the brand for a record's partner_id. Always safe: any failure or
  *  a missing/archived partner falls back to MK_BRAND. */
 export async function getBrand(db: any, partnerId: number | null | undefined): Promise<Brand> {
   if (!db || !partnerId) return MK_BRAND;

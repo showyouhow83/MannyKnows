@@ -38,16 +38,16 @@ export const professions: Profession[] = [
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
     metaDescription:
-      'Websites that rank on Google and book jobs for Western Mass contractors — with an AI agent that answers and books estimates 24/7. From $95/mo.',
+      'Websites that rank on Google and book jobs for Western Mass contractors, with an AI agent that answers and books estimates 24/7. From $95/mo.',
     badge: 'For contractors & home services',
     h1: 'Websites for contractors that actually book jobs',
     heroIntro:
-      "Stop renting leads from Angi and Thumbtack. A fast, findable site that ranks in your town, shows off your work, and lets an AI agent answer questions and book estimates around the clock — so the jobs come to you.",
+      "Stop renting leads from Angi and Thumbtack. A fast, findable site that ranks in your town, shows off your work, and lets an AI agent answer questions and book estimates around the clock, so the jobs come to you.",
     illustration: 'website',
     painPoints: [
       {
         title: 'You’re paying for leads you should own',
-        body: "Angi and Thumbtack rent you the same lead they sold three competitors. A site that ranks for your trade in your town brings you leads nobody else is bidding on — and you stop paying per click for them.",
+        body: "Angi and Thumbtack rent you the same lead they sold three competitors. A site that ranks for your trade in your town brings you leads nobody else is bidding on, and you stop paying per click for them.",
       },
       {
         title: 'Homeowners check you out before they call',
@@ -55,25 +55,25 @@ export const professions: Profession[] = [
       },
       {
         title: 'Missed calls are missed jobs',
-        body: "You’re on a ladder, not by the phone. An AI agent answers instantly — day, night, weekend — qualifies the job, and books the estimate before the homeowner calls the next name on the list.",
+        body: "You’re on a ladder, not by the phone. An AI agent answers instantly (day, night, weekend) qualifies the job, and books the estimate before the homeowner calls the next name on the list.",
       },
     ],
     offer: [
       {
         title: 'Rank in your town, organically',
-        body: 'We build the site and the technical SEO so you show up for “<your trade> near me” — on Google and when homeowners ask an AI like ChatGPT or Google’s AI Overview. The free, top-of-page result, not an ad you keep paying for.',
+        body: 'We build the site and the technical SEO so you show up for “<your trade> near me”: on Google and when homeowners ask an AI like ChatGPT or Google’s AI Overview. The free, top-of-page result, not an ad you keep paying for.',
       },
       {
         title: 'Show the work',
-        body: 'Fast photo and 360° galleries of your projects, before-and-afters, and reviews — structured so Google understands them and homeowners trust them.',
+        body: 'Fast photo and 360° galleries of your projects, before-and-afters, and reviews: structured so Google understands them and homeowners trust them.',
       },
       {
         title: 'An AI agent that books estimates 24/7',
-        body: 'Answers common questions, qualifies the lead, and books the appointment right there — in English or Spanish — then hands you the details.',
+        body: 'Answers common questions, qualifies the lead, and books the appointment right there, in English or Spanish, then hands you the details.',
       },
       {
         title: 'Google Business Profile, done right',
-        body: 'Set up, verified, and optimized so you own the map pack for your service area — where ready-to-hire homeowners actually look.',
+        body: 'Set up, verified, and optimized so you own the map pack for your service area: where ready-to-hire homeowners actually look.',
       },
     ],
     proofBusiness: 'SL Painting',
@@ -81,19 +81,19 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a contractor website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking estimates for you is $245/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking estimates for you is $245/mo. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'How long until I rank on Google?',
-        a: 'The technical foundation goes in at launch; local ranking builds over weeks to a few months depending on your town and competition. We built SL Painting a site that today ranks #1 organically for “Exterior Painting” in Springfield — real, not promised.',
+        a: 'The technical foundation goes in at launch; local ranking builds over weeks to a few months depending on your town and competition. We built SL Painting a site that today ranks #1 organically for “Exterior Painting” in Springfield: real, not promised.',
       },
       {
         q: 'Do I have to stop using Angi or Thumbtack?',
-        a: 'No — keep them while your own site ramps up. Most contractors lean on them less over time as their site brings in leads they don’t have to pay per click for.',
+        a: 'No: keep them while your own site ramps up. Most contractors lean on them less over time as their site brings in leads they don’t have to pay per click for.',
       },
       {
         q: 'Can the AI agent really book estimates?',
-        a: 'Yes. It’s trained on your services, service area, and how you work — it answers questions, qualifies the job, and books the appointment, then sends you the details. You review how it responds before it ever talks to a customer.',
+        a: 'Yes. It’s trained on your services, service area, and how you work. It answers questions, qualifies the job, and books the appointment, then sends you the details. You review how it responds before it ever talks to a customer.',
       },
     ],
   },
@@ -102,34 +102,34 @@ export const professions: Profession[] = [
     name: 'Daycares',
     metaTitle: 'Websites for Daycares in Western Mass | MannyKnows',
     metaDescription:
-      'Warm, fast websites for Western Mass daycares — parent and enrollment questions answered 24/7 by an AI agent, in English and Spanish. From $95/mo.',
+      'Warm, fast websites for Western Mass daycares: parent and enrollment questions answered 24/7 by an AI agent, in English and Spanish. From $95/mo.',
     badge: 'For daycares & childcare',
     h1: 'Websites for daycares that fill your waitlist',
     heroIntro:
-      "Parents choose with their hearts and their research. A warm, fast, trustworthy site — with an admin to manage your children and families, and an AI agent that answers enrollment questions any hour — turns quiet website visits into booked tours.",
+      "Parents choose with their hearts and their research. A warm, fast, trustworthy site (with an admin to manage your children and families, and an AI agent that answers enrollment questions any hour) turns quiet website visits into booked tours.",
     illustration: 'agent',
     painPoints: [
       {
         title: 'Parents research long before they call',
-        body: "A parent decides how they feel about your center from your website — photos, safety, hours, warmth — often at 10 p.m. after the kids are asleep. If the site doesn’t reassure them, they never call.",
+        body: "A parent decides how they feel about your center from your website (photos, safety, hours, warmth) often at 10 p.m. after the kids are asleep. If the site doesn’t reassure them, they never call.",
       },
       {
         title: 'You’re answering the same questions all day',
-        body: "Ages, hours, rates, openings, what to bring — the same handful of questions, over and over, pulling you away from the children. An AI agent answers them instantly so you don’t have to.",
+        body: "Ages, hours, rates, openings, what to bring: the same handful of questions, over and over, pulling you away from the children. An AI agent answers them instantly so you don’t have to.",
       },
       {
         title: 'Families speak more than one language',
-        body: "In Western Mass, many parents are more comfortable in Spanish. A site and an agent that speak their language — not a bolted-on translation — is the difference between a tour booked and a tab closed.",
+        body: "In Western Mass, many parents are more comfortable in Spanish. A site and an agent that speak their language, not a bolted-on translation, is the difference between a tour booked and a tab closed.",
       },
     ],
     offer: [
       {
         title: 'A site parents trust in seconds',
-        body: 'Bright, fast, and reassuring — your program, your staff, your space, your safety, and real reviews, laid out the way a searching parent reads them.',
+        body: 'Bright, fast, and reassuring: your program, your staff, your space, your safety, and real reviews, laid out the way a searching parent reads them.',
       },
       {
         title: 'Manage children & families',
-        body: 'An admin to keep your enrollment, your children, and parent communication in one place — easy enough to actually use, fast enough to not get in the way.',
+        body: 'An admin to keep your enrollment, your children, and parent communication in one place: easy enough to actually use, fast enough to not get in the way.',
       },
       {
         title: 'Enrollment questions answered 24/7',
@@ -137,7 +137,7 @@ export const professions: Profession[] = [
       },
       {
         title: 'Found on Google & the map',
-        body: 'Technical SEO and a verified Google Business Profile so local parents find you first — on Google and when they ask an AI assistant for a “daycare near me.”',
+        body: 'Technical SEO and a verified Google Business Profile so local parents find you first: on Google and when they ask an AI assistant for a “daycare near me.”',
       },
     ],
     proofBusiness: 'JK Daycare',
@@ -145,19 +145,19 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin to track enrollment inquiries and update the site yourself, plus “Remi” booking tours, starts at $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin to track enrollment inquiries and update the site yourself, plus “Remi” booking tours, starts at $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can you help us manage enrollment and parents?',
-        a: 'Yes — we build an admin to manage your children and communicate with their parents, and it’s designed to be easy to use. JK Daycare runs on exactly this and told us it’s “so easy to use — and fast.”',
+        a: 'Yes. We build an admin to manage your children and communicate with their parents, and it’s designed to be easy to use. JK Daycare runs on exactly this and told us it’s “so easy to use, and fast.”',
       },
       {
         q: 'Will the site work in Spanish?',
         a: 'Yes, multilingual is standard, not an add-on. The site and the AI agent both work in Spanish and English, written for Spanish-speaking families rather than run through a translator.',
       },
       {
-        q: 'We’re brand new online — is that a problem?',
-        a: 'Not at all — that’s the best time to start. JK Daycare had only been live a week when they started seeing their traffic grow day by day. We build the foundation right so it compounds from here.',
+        q: 'We’re brand new online: is that a problem?',
+        a: 'Not at all: that’s the best time to start. JK Daycare had only been live a week when they started seeing their traffic grow day by day. We build the foundation right so it compounds from here.',
       },
     ],
   },
@@ -166,7 +166,7 @@ export const professions: Profession[] = [
     name: 'Clinics',
     metaTitle: 'Websites for Clinics & Dentists in Western Mass | MannyKnows',
     metaDescription:
-      'Fast, trustworthy websites for clinics and dental practices in Western Mass — local SEO and an AI agent that books appointments 24/7. From $95/mo.',
+      'Fast, trustworthy websites for clinics and dental practices in Western Mass: local SEO and an AI agent that books appointments 24/7. From $95/mo.',
     badge: 'For clinics & practices',
     h1: 'Websites for clinics that keep the schedule full',
     heroIntro:
@@ -179,7 +179,7 @@ export const professions: Profession[] = [
       },
       {
         title: 'Your front desk is buried in the phone',
-        body: "Hours, insurance, new-patient questions, rescheduling — the same calls all day, pulling staff away from patients in the room. An AI agent handles the repeat questions and books appointments so your team can breathe.",
+        body: "Hours, insurance, new-patient questions, rescheduling: the same calls all day, pulling staff away from patients in the room. An AI agent handles the repeat questions and books appointments so your team can breathe.",
       },
       {
         title: 'Many patients are more comfortable in Spanish',
@@ -189,11 +189,11 @@ export const professions: Profession[] = [
     offer: [
       {
         title: 'A clean, trustworthy site',
-        body: 'Calm, fast, and reassuring — your services, your providers, your hours and locations, and real reviews, laid out the way a patient actually reads them.',
+        body: 'Calm, fast, and reassuring: your services, your providers, your hours and locations, and real reviews, laid out the way a patient actually reads them.',
       },
       {
         title: '“Near me” local SEO',
-        body: 'Technical SEO and a verified Google Business Profile so patients find you at the top of the map — on Google and when they ask an AI like ChatGPT for a “dentist near me.”',
+        body: 'Technical SEO and a verified Google Business Profile so patients find you at the top of the map: on Google and when they ask an AI like ChatGPT for a “dentist near me.”',
       },
       {
         title: 'An AI agent that books appointments 24/7',
@@ -201,7 +201,7 @@ export const professions: Profession[] = [
       },
       {
         title: 'Privacy-conscious by design',
-        body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place — thoughtful defaults, not an afterthought.',
+        body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place: thoughtful defaults, not an afterthought.',
       },
     ],
     // No published clinic case study — the medical work predates MannyKnows and
@@ -210,19 +210,19 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'Have you built websites for medical practices before?',
-        a: "Yes. Earlier in my career I built practice websites at Mednet, a medical web company. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. That company has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish — so you won't find them in my portfolio, and I won't pretend otherwise. But medical practices are not new ground for me.",
+        a: "Yes. Earlier in my career I built practice websites at Mednet, a medical web company. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. That company has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But medical practices are not new ground for me.",
       },
       {
         q: 'How much does a clinic or practice website cost?',
-        a: 'Our website plans start at $95/mo — a custom-designed 1–3 page site, hosting and SSL, “Remi” answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, “Remi” answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. Month-to-month, nothing extra to start; prepay the year and you get 2 months free. A full multi-page site with your own admin and “Remi” booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
       },
       {
         q: 'Can patients book appointments through the site?',
-        a: 'Yes — the AI agent answers common questions and books appointments 24/7, then hands the details to your front desk. We scope it to how your practice schedules so it fits your workflow, not the other way around.',
+        a: 'Yes: the AI agent answers common questions and books appointments 24/7, then hands the details to your front desk. We scope it to how your practice schedules so it fits your workflow, not the other way around.',
       },
       {
         q: 'Is this HIPAA-safe?',
-        a: 'We build privacy-conscious contact and booking flows and avoid collecting sensitive medical detail where it doesn’t belong. For anything that touches protected health information, we scope the tools and agreements with you up front so the setup fits your obligations — we’ll never hand-wave a compliance question.',
+        a: 'We build privacy-conscious contact and booking flows and avoid collecting sensitive medical detail where it doesn’t belong. For anything that touches protected health information, we scope the tools and agreements with you up front so the setup fits your obligations: we’ll never hand-wave a compliance question.',
       },
       {
         q: 'Will it work in Spanish?',

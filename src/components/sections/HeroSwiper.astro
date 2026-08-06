@@ -27,37 +27,37 @@ export interface Props {
 const defaultSlides: Slide[] = [
   {
     image: '/hero/your-full-media-tech-team',
-    alt: 'A busy studio floor — a manager reviewing work on a tablet while the team designs, edits, and ships around him, wall screens tracking the front desk, analytics, and strategy in real time.',
+    alt: 'A busy studio floor: a manager reviewing work on a tablet while the team designs, edits, and ships around him, wall screens tracking the front desk, analytics, and strategy in real time.',
     title: 'Your full media & tech team',
-    description: 'A developer on demand plus your full media team — photo, video, design, SEO, apps & software.',
+    description: 'A developer on demand plus your full media team: photo, video, design, SEO, apps & software.',
     href: '/plans/multimedia-agency/',
   },
   {
     image: '/hero/remi-books-the-job',
     alt: 'A contractor leaning against a work truck, phone in hand, as notifications confirm Remi booked a job for Tuesday, captured a new lead, and tuned the site’s speed and SEO.',
     title: 'Get Found. Get Booked. Get Growing.',
-    description: 'Smart websites that answer customers 24/7, book the work, and improve themselves — built, hosted, and maintained for you.',
+    description: 'Smart websites that answer customers 24/7, book the work, and improve themselves, built, hosted, and maintained for you.',
     href: '/plans/',
   },
   {
     image: '/hero/online-store-built-to-sell',
-    alt: 'A maker’s table of products — mugs, folded shirts, a cap — with a storefront interface floating above it, the scene shifting from daylight to night as orders, shipping, and sales reports keep running.',
+    alt: 'A maker’s table of products (mugs, folded shirts, a cap) with a storefront interface floating above it, the scene shifting from daylight to night as orders, shipping, and sales reports keep running.',
     title: 'An online store built to sell',
-    description: 'A full online store — designed, themed, and optimized to sell, built on years of eCommerce experience.',
+    description: 'A full online store, designed, themed, and optimized to sell, built on years of eCommerce experience.',
     href: '/ecommerce/',
   },
   {
     image: '/hero/business-ads-that-bring-the-work',
-    alt: 'A laptop screen showing an ad-campaign dashboard — revenue and conversion charts climbing across the month, with traffic and session panels below.',
+    alt: 'A laptop screen showing an ad-campaign dashboard: revenue and conversion charts climbing across the month, with traffic and session panels below.',
     title: 'Business Ads that bring the work',
-    description: 'Social media, Google & social ads, SEO, and your Google Business Profile — get seen everywhere.',
+    description: 'Social media, Google & social ads, SEO, and your Google Business Profile: get seen everywhere.',
     href: '/plans/business-ads/',
   },
   {
     image: '/hero/your-ai-team-ready-to-hire',
-    alt: 'One job moving down the AI Team assembly line — a product handed in at intake, routed by Manny to research, copywriting, and video editing, and coming out the other end as a finished post ready to publish.',
+    alt: 'One job moving down the AI Team assembly line: a product handed in at intake, routed by Manny to research, copywriting, and video editing, and coming out the other end as a finished post ready to publish.',
     title: 'Your AI team, ready to hire',
-    description: 'Sales, research, copy, graphics, voice — AI agents built around your business, run on demand.',
+    description: 'Sales, research, copy, graphics, voice: AI agents built around your business, run on demand.',
     href: '/ai-team/',
   },
 ];
@@ -266,7 +266,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     max-width: 1920px;
     margin: 0 auto;
     overflow: hidden;
-    /* Slides keep a 350px minimum height (per Manny) — the old
+    /* Slides keep a 350px minimum height (per Manny): the old
        clamp(110px, 15.5vw, 283px) rendered a 110px strip on phones. Images are
        16:9 with object-fit: cover, so taller slides crop the sides on narrow
        screens; hero art should keep its subject near the center. */
@@ -343,7 +343,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     transition: color 0.3s ease;
   }
 
-  /* Split by viewport (Manny): desktop leads with the description — the title
+  /* Split by viewport (Manny): desktop leads with the description, the title
      repeats what the imagery already says; mobile gets only the short title.
      Lives here (not as utility classes on the markup) because these scoped
      selectors out-specify Tailwind's `hidden`. The mobile half sits in the

@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: 'What if I already have a website?',
-    a: 'Very common. We look at what you have and tell you whether it is worth improving or rebuilding — then fix what is costing you customers either way: speed, technical SEO, mobile, forms nobody completes. You do not start over unless starting over is the cheaper path.',
+    a: 'Very common. We look at what you have and tell you whether it is worth improving or rebuilding, then fix what is costing you customers either way: speed, technical SEO, mobile, forms nobody completes. You do not start over unless starting over is the cheaper path.',
   },
   {
     q: 'Who actually does the work?',
@@ -32,7 +32,7 @@ const faqs = [
   },
   {
     q: 'Do you only work with businesses in Western Mass?',
-    a: 'In person, we cover Springfield and the Pioneer Valley. Remotely we work with businesses anywhere — most of what we do does not require being in the same room.',
+    a: 'In person, we cover Springfield and the Pioneer Valley. Remotely we work with businesses anywhere: most of what we do does not require being in the same room.',
   },
 ];
 
@@ -65,8 +65,8 @@ const pageJsonLd = {
 ---
 
 <BaseLayout
-  title="Contact — Talk to Us | MannyKnows, Springfield, MA"
-  description="Get in touch with MannyKnows — web, SEO, and software for Western Massachusetts businesses. Send a message, email mm@mannyknows.com, or call (413) 361-8451."
+  title="Contact: Talk to Us | MannyKnows, Springfield, MA"
+  description="Get in touch with MannyKnows: web, SEO, and software for Western Massachusetts businesses. Send a message, email mm@mannyknows.com, or call (413) 361-8451."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -86,7 +86,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Let's talk</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Tell us what you're trying to fix — a slow site, no leads, too much busywork, or an idea you want built. We read every message ourselves and reply personally, usually within a day.
+            Tell us what you're trying to fix: a slow site, no leads, too much busywork, or an idea you want built. We read every message ourselves and reply personally, usually within a day.
           </p>
         </div>
       </div>
@@ -99,7 +99,7 @@ const pageJsonLd = {
           <div class="lg:col-span-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 md:p-8">
             <div id="contactPageFormWrap">
             <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Send a message</h2>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">A sentence or two is plenty — we'll take it from there.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">A sentence or two is plenty, we'll take it from there.</p>
             <form id="contactPageForm" class="space-y-4">
               <input type="text" name="name" required autocomplete="name" placeholder="Your name" maxlength="100" class={inputClass} />
               <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class={inputClass} />
@@ -117,13 +117,13 @@ const pageJsonLd = {
                 <span class="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/15 text-green-600 dark:text-green-400">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5" /></svg>
                 </span>
-                <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Thanks — your message is in.</h2>
+                <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Thanks, your message is in.</h2>
               </div>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-6">Here's exactly what happens next.</p>
               <div class="grid gap-4 sm:grid-cols-3">
                 <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
                   <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black mb-3">1</span>
-                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We read your message ourselves and reply personally — usually within a day.</p>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We read your message ourselves and reply personally, usually within a day.</p>
                 </div>
                 <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
                   <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black mb-3">2</span>
@@ -154,7 +154,7 @@ const pageJsonLd = {
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
               <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Service area</span>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-                Based in Springfield, Massachusetts — working with businesses across Western Mass, and remotely anywhere.
+                Based in Springfield, Massachusetts: working with businesses across Western Mass, and remotely anywhere.
               </p>
             </div>
           </div>
@@ -167,7 +167,7 @@ const pageJsonLd = {
       <Container>
         <Faq faqs={faqs} heading="Before you write" />
         <p class="max-w-3xl mx-auto mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          Want to know who you'd be working with first? <a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Read Manny's story</a> — twenty years of building for businesses big and small, now here in Western Mass.
+          Want to know who you'd be working with first? <a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Read Manny's story</a>, twenty years of building for businesses big and small, now here in Western Mass.
         </p>
       </Container>
     </Section>
@@ -182,7 +182,7 @@ const pageJsonLd = {
             Serving Springfield &amp; Western Massachusetts
           </h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Based in Springfield, we work in person across the Pioneer Valley — and remotely with businesses anywhere.
+            Based in Springfield, we work in person across the Pioneer Valley, and remotely with businesses anywhere.
           </p>
         </div>
 
@@ -194,9 +194,9 @@ const pageJsonLd = {
           data-lat="42.1015"
           data-lon="-72.5898"
           data-city="Springfield, MA"
-          data-tagline="Websites · SEO · AI — Western Mass"
+          data-tagline="Websites · SEO · AI: Western Mass"
           role="img"
-          aria-label="Map of Springfield, Massachusetts — MannyKnows service area across Western Mass"
+          aria-label="Map of Springfield, Massachusetts: MannyKnows service area across Western Mass"
         ></div>
 
         <ul class="max-w-6xl mx-auto mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -264,7 +264,7 @@ const pageJsonLd = {
       try {
         const r = await fetch('/api/contact');
         if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
-      } catch { /* offline — the mailto fallback still works */ }
+      } catch { /* offline: the mailto fallback still works */ }
     }
     form.addEventListener('focusin', () => getToken(), { once: true });
 
@@ -297,7 +297,7 @@ const pageJsonLd = {
           throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
         }
       } catch (err) {
-        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send — please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send, please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = orig; }
         statusEl?.classList.remove('hidden');

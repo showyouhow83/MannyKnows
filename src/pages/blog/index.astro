@@ -25,7 +25,7 @@ const pageJsonLd = {
   '@type': 'Blog',
   name: 'AI, Web & SEO Tips for Western Mass',
   url: 'https://mannyknows.com/blog/',
-  description: 'Practical AI, web, and SEO advice for small businesses in Western Massachusetts — from the people who build and run the sites.',
+  description: 'Practical AI, web, and SEO advice for small businesses in Western Massachusetts, from the people who build and run the sites.',
   publisher: {
   '@type': 'ProfessionalService',
   '@id': 'https://mannyknows.com/#business',
@@ -38,7 +38,7 @@ const pageJsonLd = {
 ---
 
 <BaseLayout title="AI, Web & SEO Tips for Western Mass | MannyKnows"
-  description="Practical AI, web, and SEO advice for small businesses in Western Massachusetts — from the people who build and run the sites.">
+  description="Practical AI, web, and SEO advice for small businesses in Western Massachusetts, from the people who build and run the sites.">
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -58,7 +58,7 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Ideas that put your business to work</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Practical notes on custom apps, automation, and AI — turning the processes that slow established small businesses down into software that runs them.
+              Practical notes on custom apps, automation, and AI: turning the processes that slow established small businesses down into software that runs them.
             </p>
           </div>
         </Container>
@@ -68,7 +68,7 @@ const pageJsonLd = {
     <Section id="posts" variant="default">
       <Container>
         {posts.length === 0 ? (
-          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">No posts yet — check back soon.</p>
+          <p class="text-center text-text-light-secondary dark:text-text-dark-secondary">No posts yet, check back soon.</p>
         ) : (
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => { const img = getPostImage(post); return (

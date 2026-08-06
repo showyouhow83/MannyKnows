@@ -18,7 +18,7 @@ export interface Props {
 
 const {
 	title,
-	description = "Springfield, MA web design & AI agency — blazing-fast websites that get found, AI agents, online stores & tools that turn visitors into customers. From $95/mo.",
+	description = "Springfield, MA web design & AI agency: blazing-fast websites that get found, AI agents, online stores & tools that turn visitors into customers. From $95/mo.",
 	image,
 	noindex = false,
 	footerServices = false,
@@ -41,17 +41,17 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 <html lang="en">
 	<head>
 		<!--
-			Hey, nice — you're viewing source. Respect.
+			Hey, nice: you're viewing source. Respect.
 
 			MannyKnows hand-optimizes the HTML, CSS, and JS on every page so it
 			loads fast and scores as close to a perfect 100 on Lighthouse as
 			possible. Clean markup, no bloat, no shortcuts.
 
-			If you like what you see and want the same for your project —
-			or you're just curious how it's built — I'm happy to help.
+			If you like what you see and want the same for your project
+			or you're just curious how it's built: I'm happy to help.
 			Reach out: https://mannyknows.com  •  mm@mannyknows.com
 
-			— Manny
+Manny
 		-->
 		<meta charset="UTF-8" />
 		{preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
@@ -78,7 +78,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 				<meta property="og:image:width" content="1200" />
 				<meta property="og:image:height" content="630" />
 				<meta property="og:image:type" content="image/jpeg" />
-				<meta property="og:image:alt" content="MannyKnows — AI agents, web design, SEO, and apps in Springfield, Massachusetts." />
+				<meta property="og:image:alt" content="MannyKnows, AI agents, web design, SEO, and apps in Springfield, Massachusetts." />
 			</>
 		)}
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -94,7 +94,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 		{/* Swiper assets moved into Testimonials.astro — the only Swiper consumer.
 		    Loading them here shipped 151 KB of JS + 18 KB of CSS to every page,
 		    slider or not. If a second component ever needs Swiper, load it there
-		    the same way — not globally. */}
+		    the same way, not globally. */}
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
 		<meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -228,7 +228,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 </html>
 
 <style is:global>
-	/* Mobile: keep breadcrumbs on one line — shrink the font and clip the
+	/* Mobile: keep breadcrumbs on one line, shrink the font and clip the
 	   current-page crumb with an ellipsis instead of wrapping to a second row. */
 	@media (max-width: 640px) {
 		nav[aria-label="breadcrumb"] > ol {
@@ -412,7 +412,7 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 
 	/* Tighter title line-heights site-wide. The [class] selector (specificity
 	   0,1,1) beats Tailwind's text-* line-heights (0,1,0) without !important.
-	   h1 is left alone — the hero headline sets its own tight leading. */
+	   h1 is left alone: the hero headline sets its own tight leading. */
 	h2[class], h3[class], h4[class], h5[class], h6[class] {
 		line-height: 1.2;
 	}
