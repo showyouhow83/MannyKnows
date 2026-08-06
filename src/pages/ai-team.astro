@@ -39,13 +39,14 @@ const pillars = [
   },
   {
     icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
-    title: 'Managed by Manny AI',
-    body: 'Ask once. Manny AI briefs the right AI agents, runs the job, and returns finished work for your sign-off.',
+    title: 'One AI agent',
+    body: 'To rule them all. Manny AI is your everything partner: ask for what you need and it reads the request, then puts the right specialists on the job.',
+    avatar: 'manny',
   },
   {
     icon: 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941',
-    title: 'AI marketing that compounds',
-    body: "Research feeds writing, writing feeds design — each month's results sharpen the next.",
+    title: 'A swarm of AI agents',
+    body: 'Configured to do the best possible job — and to sharpen the process every time they run it, so the same work comes back faster and better each month.',
   },
 ];
 
@@ -133,14 +134,19 @@ const pageJsonLd = {
             </h1>
             <p class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss — you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Most AI tools are blank chat boxes. This is a hire: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong> — one manager that staffs AI specialists on your business, like three, five, or seven people in one. Each is trained on your voice and services; nothing ships without your approval. Need something that isn't on the roster? Manny staffs a custom agent on the same Brand Brain. Built in Springfield for Western Massachusetts businesses.
+              When people picture AI, they picture a chat box you have to prompt. This is a hire instead: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong> — one manager that summons AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each is trained on your voice and services; nothing ships without your approval. Built in Springfield for Western Massachusetts businesses.
             </p>
 
             <!-- The three pillars, promoted into the hero (Manny: one stronger
                  hero instead of hero + separate "One brain" section) -->
             <div class="mt-10 grid gap-6 md:grid-cols-3 max-w-6xl mx-auto text-left">
               {pillars.map((pl) => (
-                <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                <div class="relative rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                  {pl.avatar && (
+                    <div class="absolute -top-7 right-4 w-16 h-16 pointer-events-none">
+                      <AgentAvatar agent={pl.avatar} class="w-full h-full" />
+                    </div>
+                  )}
                   <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-3">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={pl.icon} /></svg>
                   </div>
@@ -158,7 +164,7 @@ const pageJsonLd = {
                 </div>
               ))}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Meet Manny AI and the specialists it puts on your work — with design, video, voice, publishing, and ads handled behind the scenes.</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Meet Manny AI and the swarm of specialist AI agents it summons to handle everything behind the scenes.</p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
@@ -166,7 +172,7 @@ const pageJsonLd = {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                Book the 15-min diagnostic
+                Get a free quote
               </a>
             </div>
           </div>
