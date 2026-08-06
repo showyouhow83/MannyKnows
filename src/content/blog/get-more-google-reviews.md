@@ -28,7 +28,7 @@ Don't rely on remembering. Wire the ask into your routine: the text that confirm
 
 ## Reply to every one: good and bad
 
-Replying matters more than owners think. For good reviews, a quick, specific thank-you shows you're paying attention. For bad ones, a calm, professional reply is **for the next customer**, not the angry one: because everyone reading sees how you handle a problem. A thoughtful response to a one-star review earns more trust than the review costs you.
+Replying matters more than owners think. For good reviews, a quick, specific thank-you shows you're paying attention. For bad ones, a calm, professional reply is **for the next customer**, not the angry one, because everyone reading sees how you handle a problem. A thoughtful response to a one-star review earns more trust than the review costs you.
 
 ## The rules you can't break
 

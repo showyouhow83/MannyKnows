@@ -15,7 +15,7 @@ Here's who.
 
 ## The one you may have already met: “Remi”
 
-“Remi” is the front desk: living on your website, answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), “Remi” is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
+“Remi” is the front desk, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), “Remi” is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
 
 But answering is just the first job. Every question customers ask “Remi” becomes intel for the rest of the team.
 
@@ -47,7 +47,7 @@ Every team needs a manager, and this one's not an AI. Manny: twenty years solvin
 
 ## How they actually work together
 
-It runs like an assembly line built around one shared memory: your **Brand Brain**: your services, your story, your voice, your rules. “Remi” logs what customers ask. Eve turns the patterns into a plan. Elly writes, Leo and Aria produce, Nova tunes it for search, Piper publishes it, Finn works the responses, Max amplifies what earns it, and Vera measures everything and reports back: to Eve, and to you. One team, one memory, no hand-off dropped.
+It runs like an assembly line built around one shared memory: your **Brand Brain**: your services, your story, your voice, your rules. “Remi” logs what customers ask. Eve turns the patterns into a plan. Elly writes, Leo and Aria produce, Nova tunes it for search, Piper publishes it, Finn works the responses, Max amplifies what earns it, and Vera measures everything and reports back, to Eve and to you. One team, one memory, no hand-off dropped.
 
 ## Hire one, or hire the crew
 

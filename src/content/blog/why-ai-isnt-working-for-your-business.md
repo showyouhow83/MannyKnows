@@ -41,7 +41,7 @@ Here's the good news: you don't have to solve any of that yourself.
 You don't need an AI department, a data team, or a weekend learning prompts. You need the AI *built into* your business and trained on *your* business: doing real jobs, not waiting for instructions. That's the whole idea behind what we do:
 
 - **[Your AI Team](/ai-team/)** (agents trained on your business (your services, prices, and voice), we call it your Brand Brain) that answer customers, book jobs, write your content, and follow up. Hired like staff, one at a time or as a crew.
-- **[The Smart Website](/plans/)**: a website that runs on that same brain: it answers visitors, writes its own content, and keeps its own SEO and speed tuned. A site that works, instead of one you maintain.
+- **[The Smart Website](/plans/)**: a website that runs on that same brain, answering visitors, writes its own content, and keeps its own SEO and speed tuned. A site that works, instead of one you maintain.
 
 We handle the hard, unglamorous part: the "transformation layer" the big-company articles keep talking about, so you get the results without running an AI project.
 

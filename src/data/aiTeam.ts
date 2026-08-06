@@ -224,7 +224,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'How do the agents work together?',
-    a: "Through Manny AI. You make one request; Manny AI turns it into briefs, routes the work agent to agent in the right order, and checks the quality of what comes back at every handoff: if a draft is thin, off-voice, or missing information, Manny sends it back to the specialist for another pass before it moves on. Agents never work from scratch: each one starts from the last one's output and your shared Brand Brain, so what reaches you is the finished package, not a pile of drafts, and nothing goes out off-brand.",
+    a: "Through Manny AI. You make one request; Manny AI turns it into briefs, routes the work agent to agent in the right order, and checks the quality of what comes back at every handoff. If a draft is thin, off-voice, or missing information, Manny sends it back to the specialist for another pass before it moves on. Agents never work from scratch: each one starts from the last one's output and your shared Brand Brain, so what reaches you is the finished package, not a pile of drafts, and nothing goes out off-brand.",
   },
   {
     q: 'What is the Brand Brain?',

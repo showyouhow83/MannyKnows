@@ -44,7 +44,7 @@ And because every specialist reads from one shared Brand Brain (your services, y
 Three Western Mass businesses, today:
 
 - A [Springfield painting contractor](/work/sl-painting/) whose site ranks #1 organically for exterior painting, with an agent qualifying leads around the clock.
-- A [local daycare](/work/jk-daycare/) whose AI answers parents in English and Spanish: on the site and on the phone.
+- A [local daycare](/work/jk-daycare/) whose AI answers parents in English and Spanish, on the site and on the phone.
 - A [home services company](/work/vl-home-services/) whose custom agent checks project statuses straight from their backend.
 
 ## So which one first?

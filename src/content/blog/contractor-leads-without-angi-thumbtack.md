@@ -43,7 +43,7 @@ Get it working: claim and verify it, pick the most accurate primary category ("R
 
 Most contractor sites have one "Services" page listing everything. That's a mistake. A dedicated page for **"Bathroom Remodeling in Chicopee"** ranks far better than a generic list, because it matches exactly what someone searched. One page per service (and, where it makes sense, per town) is how you show up for the specific jobs you actually want.
 
-Those pages also need to load fast on a phone: because that's where "near me" searches happen, and a slow page loses the click before it ever becomes a call.
+Those pages also need to load fast on a phone, because that's where "near me" searches happen, and a slow page loses the click before it ever becomes a call.
 
 ## Reviews are the tiebreaker
 

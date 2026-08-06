@@ -39,7 +39,7 @@ seoDescription: "How Cherry Vibes moved from Costa Rica to the U.S. market on a 
 
 ## The challenge
 
-Cherry Vibes had a store people loved: in Costa Rica. Moving an online store to the U.S. market is more than changing the currency: payments, shipping, taxes, catalog, and storefront all have to be rebuilt for how American customers shop. And a brand this distinctive deserved better than a stock theme.
+Cherry Vibes had a store people loved. In Costa Rica. Moving an online store to the U.S. market is more than changing the currency: payments, shipping, taxes, catalog, and storefront all have to be rebuilt for how American customers shop. And a brand this distinctive deserved better than a stock theme.
 
 ## What we built
 

@@ -122,7 +122,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'Do I own the site?',
-    a: 'Yes. The domain, the content, and the page are yours. The monthly covers running and maintaining it, not renting it to you: if you ever leave, the site goes with you.',
+    a: 'Yes. The domain, the content, and the page are yours. The monthly covers running and maintaining it, not renting it to you. If you ever leave, the site goes with you.',
   },
   {
     q: 'How is this different from Wix or Squarespace?',

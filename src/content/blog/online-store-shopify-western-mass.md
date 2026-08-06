@@ -42,7 +42,7 @@ Retailers and makers especially trip here: selling a physical product online is 
 
 ## Emails do the selling you're not there for
 
-Most people don't buy on the first visit. Email automations bring them back: automatically:
+Most people don't buy on the first visit. Email automations bring them back, automatically:
 
 - a **welcome series** for new subscribers,
 - an **abandoned-cart** nudge for the ones who almost bought,

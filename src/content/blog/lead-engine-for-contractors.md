@@ -1,6 +1,6 @@
 ---
 title: "Turn Your Website Into a Lead Engine"
-description: "Most contractor websites are online brochures. Here's how to make yours capture, qualify, and route real jobs: automatically."
+description: "Most contractor websites are online brochures. Here's how to make yours capture, qualify, and route real jobs, automatically."
 pubDate: 2026-05-20
 author: "Manny"
 tags: ["contractors", "AI Search", "lead generation", "automation"]
@@ -27,7 +27,7 @@ That's why the website hands off instantly, no copy-pasting from email into a sp
 
 ## Where those leads increasingly come from
 
-A lead engine only fires when someone lands on it, and more and more, that someone got to you by asking an AI. People now ask ChatGPT, Perplexity, or Google's AI Overview "who does kitchen remodels near me?" and act on the short list it hands back. Getting named in that list: answer-engine optimization, runs on the same fundamentals as a good site: fast, clearly structured, easy for a machine to read and quote, backed by a solid Google profile and real reviews. Build the engine right and you don't just convert traffic better: you're likelier to be the contractor the AI puts in front of the homeowner in the first place.
+A lead engine only fires when someone lands on it, and more and more, that someone got to you by asking an AI. People now ask ChatGPT, Perplexity, or Google's AI Overview "who does kitchen remodels near me?" and act on the short list it hands back. Getting named in that list (answer-engine optimization) runs on the same fundamentals as a good site: fast, clearly structured, easy for a machine to read and quote, backed by a solid Google profile and real reviews. Build the engine right and you don't just convert traffic better: you're likelier to be the contractor the AI puts in front of the homeowner in the first place.
 
 ## Where it goes from here
 

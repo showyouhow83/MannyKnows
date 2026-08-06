@@ -47,7 +47,7 @@ export const selectedWork: WorkItem[] = [
   {
     name: 'VL Home Services',
     url: 'https://vlhomeservices.com',
-    blurb: 'Home improvement company: a complete digital operation: website, admin dashboard, AI agent, and local SEO.',
+    blurb: 'Home improvement company: a complete digital operation with a website, admin dashboard, AI agent, and local SEO.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'vl-d',
     caseStudy: 'vl-home-services',

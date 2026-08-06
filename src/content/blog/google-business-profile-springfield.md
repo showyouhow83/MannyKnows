@@ -20,7 +20,7 @@ It's the free listing that puts you on Google Maps and in that little pin-map (t
 
 ## Claim it and verify it: first
 
-Search your business name on Google. A profile may already exist (Google often auto-creates them): if so, claim it. If not, create one. Either way you'll **verify** that you own it, usually by video, phone, or a mailed postcard with a code. Verification is the step most people stall on, and an unverified profile barely shows up. Finish it.
+Search your business name on Google. A profile may already exist (Google often auto-creates them). If so, claim it. If not, create one. Either way you'll **verify** that you own it, usually by video, phone, or a mailed postcard with a code. Verification is the step most people stall on, and an unverified profile barely shows up. Finish it.
 
 ## Pick the right categories
 

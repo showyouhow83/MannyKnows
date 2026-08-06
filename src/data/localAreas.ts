@@ -139,7 +139,7 @@ export const localAreas: LocalArea[] = [
     faqExisting:
       "Absolutely. You don't have to start over. We audit the site you have, fix what's costing you customers (speed, technical SEO, mobile problems, pages that don't convert), and then take over the maintenance so it stays fixed.",
     faqDifferent:
-      "You get twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture: at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the people doing the work, no account manager in between.",
+      "You get twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture, at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the people doing the work, no account manager in between.",
     servingBlurb:
       "We're based right here in Springfield: in person across the city when it helps, remote when it's faster.",
     proofBusiness: 'SL Painting',
@@ -326,7 +326,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Estimates booked from the job site',
-        body: "Trades can't answer phones from a ladder. “Remi” takes the questions, qualifies the customer, and books the estimate: at lunch, after close, whenever they actually call.",
+        body: "Trades can't answer phones from a ladder. “Remi” takes the questions, qualifies the customer, and books the estimate, at lunch, after close, whenever they actually call.",
       },
       {
         title: 'No surprises, month to month',
@@ -342,7 +342,7 @@ export const localAreas: LocalArea[] = [
     faqAgents:
       "Yes, and for a family business it's the difference between a missed call and a booked estimate. “Remi” comes with every site plan and answers customers 24/7; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. For a local daycare we paired the site's agent with a phone system that answers and routes every call: the same pattern fits any busy Chicopee shop where nobody can stop to pick up.",
     faqOutside:
-      "Of course: Springfield is literally across the river from us (home base is there), and the rest of the valley is minutes away: Holyoke, Westfield, Ludlow, Agawam, up to Northampton and Amherst. Businesses further out we handle remotely, which works just as well.",
+      "Of course. Springfield is literally across the river from us (home base is there), and the rest of the valley is minutes away: Holyoke, Westfield, Ludlow, Agawam, up to Northampton and Amherst. Businesses further out we handle remotely, which works just as well.",
     faqExisting:
       "Yes, and you keep what you paid for. We start with an audit of the existing site, repair what's dragging it down (load speed, technical SEO, mobile layout, forms nobody completes) and then maintain it going forward so the fixes stick.",
     faqDifferent:
@@ -446,7 +446,7 @@ export const localAreas: LocalArea[] = [
     faqAgents:
       "Yes: appointment businesses get the most out of them, and Northampton runs on appointments. “Remi” comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake, then books them in. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
     faqOutside:
-      "Yes: we're based in Springfield, a straight shot down I-91, and we work across the valley: Easthampton, Amherst, Holyoke, Chicopee, Westfield and the rest of Western Mass. Remote engagements work anywhere.",
+      "Yes. We're based in Springfield, a straight shot down I-91, and we work across the valley: Easthampton, Amherst, Holyoke, Chicopee, Westfield and the rest of Western Mass. Remote engagements work anywhere.",
     faqExisting:
       "Definitely. Plenty of Northampton sites are lovely and slow, or fast and invisible. We audit yours, fix what's underperforming (speed, technical SEO, mobile experience, booking flow) without throwing away the design equity you've built, then maintain it from there.",
     faqDifferent:
@@ -535,7 +535,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Answered from the shop floor',
-        body: "Manufacturers, trades, and shops can't stop to answer chat. Your site's AI agent takes the questions, qualifies the customer, and books the work: any hour.",
+        body: "Manufacturers, trades, and shops can't stop to answer chat. Your site's AI agent takes the questions, qualifies the customer, and books the work, any hour.",
       },
       {
         title: 'Kept working, month after month',
@@ -551,11 +551,11 @@ export const localAreas: LocalArea[] = [
     faqAgents:
       "Yes, and for a working city they earn their keep fast. “Remi” comes with every site plan and answers customers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
     faqOutside:
-      "Yes: Westfield is about twenty minutes from our Springfield base, and we work across the whole valley: West Springfield, Agawam, Holyoke, Chicopee, Northampton, Southwick and the hilltowns. Remote works anywhere.",
+      "Yes. Westfield is about twenty minutes from our Springfield base, and we work across the whole valley: West Springfield, Agawam, Holyoke, Chicopee, Northampton, Southwick and the hilltowns. Remote works anywhere.",
     faqExisting:
       "Absolutely. We audit the site you have, fix what's costing you customers (speed, technical SEO, mobile problems, forms nobody completes) and then take over the maintenance so the fixes stick.",
     faqDifferent:
-      "Twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture: at prices scoped for a Westfield business. You talk directly to the person doing the work, no account manager in between.",
+      "Twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture, at prices scoped for a Westfield business. You talk directly to the person doing the work, no account manager in between.",
     servingBlurb:
       'Based in Springfield, twenty minutes east: on site in Westfield when it helps, remote when it\'s faster.',
     proofBusiness: 'VL Home Services',
@@ -596,7 +596,7 @@ export const localAreas: LocalArea[] = [
       paragraphs: [
         "Westfield's numbers run stronger than most people guess: 40,378 residents with a median household income of $87,753, and of its 20,417 employed residents, manufacturing is still the third-largest sector (2,509 people), behind health care and education. The Whip City nickname isn't a museum piece; it's a working identity.",
         "The anchors are moving, too. The first F-35A Lightning IIs arrived at Barnes Air National Guard Base in June 2026: initial jets on loan for training as the 104th Fighter Wing converts from F-15s, securing a base a 2019 state study credited with roughly 2,100 jobs and about $236 million in annual economic output. Westfield State University adds 4,588 students to the city's rhythm.",
-        "And the part that matters most for a website: Westfield runs its own municipal fiber network. Whip City Fiber launched 2.5-gig residential service in February 2025 on fiber built out over the last decade. Your customers have some of the fastest home internet in New England: if your website is slow, it's the website.",
+        "And the part that matters most for a website: Westfield runs its own municipal fiber network. Whip City Fiber launched 2.5-gig residential service in February 2025 on fiber built out over the last decade. Your customers have some of the fastest home internet in New England. If your website is slow, it's the website.",
       ],
       sources: [
         { label: 'U.S. Census Bureau ACS 2024 (Census Reporter)', url: 'https://censusreporter.org/profiles/16000US2576030-westfield-ma/' },
@@ -655,11 +655,11 @@ export const localAreas: LocalArea[] = [
     faqAgents:
       "Yes, and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage hire there is. “Remi” comes with every site plan and answers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you.",
     faqOutside:
-      "Of course: Springfield is directly across the river (home base), and the rest of the valley is minutes away: West Springfield, Westfield, Chicopee, Holyoke, up to Northampton. Remote works anywhere.",
+      "Of course. Springfield is directly across the river (home base), and the rest of the valley is minutes away: West Springfield, Westfield, Chicopee, Holyoke, up to Northampton. Remote works anywhere.",
     faqExisting:
       "Yes, and you keep what you paid for. We audit the existing site, fix what's dragging it down (speed, technical SEO, mobile layout, forms nobody completes) and maintain it going forward so the fixes stick.",
     faqDifferent:
-      "Enterprise engineering at family-business prices: twenty years building for enterprise and startups, including enterprise eCommerce and consulting at Accenture. When you call, you get the person doing the work: in English or Spanish.",
+      "Enterprise engineering at family-business prices: twenty years building for enterprise and startups, including enterprise eCommerce and consulting at Accenture. When you call, you get the person doing the work, in English or Spanish.",
     servingBlurb:
       "Based in Springfield, directly across the river: easy to stop by in person, just as easy to handle remotely.",
     proofBusiness: 'SL Painting',
@@ -698,7 +698,7 @@ export const localAreas: LocalArea[] = [
     cityNow: {
       heading: 'Agawam right now: steady numbers, a seasonal engine, and a town reinvesting',
       paragraphs: [
-        "Agawam: officially still the 'Town of Agawam,' though it's legally a city, holds about 28,500 residents with a median household income around $85,000 and a median age near 47: an established, settled market where reputations run long. The businesses match: E. Cecchi Farms has run its Feeding Hills farm stand in the same family since 1946, now in its third generation.",
+        "Agawam, officially still the 'Town of Agawam' though it's legally a city, holds about 28,500 residents with a median household income around $85,000 and a median age near 47: an established, settled market where reputations run long. The businesses match: E. Cecchi Farms has run its Feeding Hills farm stand in the same family since 1946, now in its third generation.",
         "The seasonal engine is real: Six Flags New England, the region's largest theme park, announced hiring for more than 2,000 part-time and seasonal positions for its 2025 season, and its newest coaster, Quantum Accelerator, opened in April 2026 after a delayed debut. Every one of those season's visitors passes through Agawam's corridors deciding where to eat and stop, phone in hand.",
         "And the town is reinvesting where local business lives: in December 2025 Agawam won a $135,000 state community planning grant to revitalize the Walnut Street downtown area. When the street gets its next act, the businesses customers can find online will be the ones that grow with it.",
       ],

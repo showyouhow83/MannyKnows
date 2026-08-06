@@ -229,7 +229,7 @@ export const plans: Plan[] = [
       'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
-    headline: 'A website that writes, optimizes, and sells: on its own',
+    headline: 'A website that writes, optimizes, and sells on its own',
     blurb:
       "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain: writing its own fresh content and tuning its own SEO and speed, so it never goes stale, the closest thing to a full-time web developer on your site. “Remi” goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
     whoFor:
@@ -271,8 +271,8 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We take the time to really understand your business: what you sell, who buys, how you sound, and what a good month looks like.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
-      { title: '“Remi” learns to sell', body: 'We train the agent on your catalog, prices, and rules: then test it hard before it ever talks to a customer.' },
-      { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning: plus the site keeping itself fresh.' },
+      { title: '“Remi” learns to sell', body: 'We train the agent on your catalog, prices, and rules, then test it hard before it ever talks to a customer.' },
+      { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning, plus the site keeping itself fresh.' },
     ],
     faq: [
       { q: 'I already have a website, do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
@@ -517,9 +517,9 @@ export const plans: Plan[] = [
       'Google Ads & social ads, managed (you fund the ad spend)',
       'Landing pages, banners, videos & SEO campaigns: watched and corrected monthly',
     ],
-    headline: 'Get seen: by the right people, ready to buy',
+    headline: 'Get seen by the right people, ready to buy',
     blurb:
-      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time: $350/mo per network, or 4 major networks for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it, its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO: watching what the numbers do and correcting.",
+      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time: $350/mo per network, or 4 major networks for $950/mo. No two networks are alike, so no two get the same plan: each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it, its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO, watching what the numbers do and correcting.",
     whoFor:
       'Businesses whose website or store already works, and who now need more of the right people finding it, steadily, not in one lucky spike.',
     tiersHeading: 'Pick your coverage',
@@ -535,7 +535,7 @@ export const plans: Plan[] = [
           'Choose the networks that fit your business (Facebook, Instagram, TikTok, YouTube, LinkedIn, X, Pinterest, and more) and pay only for those.',
         features: [
           'A competitive analysis of the network: who’s winning your market there, and how',
-          'A market analysis: your audience on that network: who they are, when they’re active, what they respond to',
+          'A market analysis of your audience on that network: who they are, when they’re active, what they respond to',
           'An individual plan traced for the network: its own media types, formats, and sizes',
           'Provided content will be branded, sized, and posted for that network',
           'Comments and messages sorted and answered by “Remi”, our AI agent',
@@ -565,13 +565,13 @@ export const plans: Plan[] = [
         items: [
           'A competitive analysis for every network you’re on: who’s winning your market there, and how',
           'A market analysis per network: your audience, their habits, and what they respond to',
-          'An individual plan traced for each network: because each is different: different media, different formats, different sizes',
+          'An individual plan traced for each network, because no two are alike: different media, formats, and sizes',
         ],
       },
       {
         title: 'Social media growth',
         items: [
-          'Your content branded, sized, and posted for you: formatted for each network',
+          'Your content branded, sized, and posted for you, formatted for each network',
           'A consistent presence on the networks that fit your business',
           'Comments and messages sorted and answered by “Remi”, our AI agent',
         ],
@@ -601,10 +601,10 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth: and which networks make sense to start: one, two, or the full four.' },
-      { title: 'Analysis & plan', body: 'For each network: a competitive analysis, a market analysis, and an individual plan traced for it: media types, formats, sizes, and cadence.' },
+      { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth, and which networks make sense to start with: one, two, or the full four.' },
+      { title: 'Analysis & plan', body: 'For each network: a competitive analysis, a market analysis, and an individual plan traced for it, covering media types, formats, sizes, and cadence.' },
       { title: 'Launch campaigns', body: 'Tracking and landing pages go in first, then content and ads go live: fitted to each network. The early weeks are about learning fast, not vanity numbers.' },
-      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver: and report it clearly.' },
+      { title: 'Correct & compound', body: 'Every month: cut what underperforms, scale what works, shift budget to the networks that deliver, and report it clearly.' },
     ],
     faq: [
       { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo, that covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles 4 major networks under one coordinated strategy: less than the price of 3 à la carte.' },
