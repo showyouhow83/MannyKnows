@@ -381,7 +381,7 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
 
         <!-- Human-in-the-loop card — closes the roster per Manny (Aug 2026):
              meet the team, then hear who stays in charge. -->
-        <div class="max-w-4xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8 grid gap-8 items-center md:grid-cols-5">
+        <div class="max-w-4xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden p-8 grid gap-8 items-center md:grid-cols-5">
           {/* 60/40 on desktop: copy carries three fifths, handshake two. */}
           <div class="md:col-span-3 text-center md:text-left">
             <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
@@ -391,12 +391,15 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
               The agents do the heavy lifting: researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters, the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. You get the speed of automation without handing your brand to a robot.
             </p>
           </div>
-          <div class="md:col-span-2 flex justify-center">
+          {/* self-end + -mb-8 cancels the card's own bottom padding, and the
+              artwork's feet are flush with its bottom edge, so the pair stands
+              on the card floor instead of hovering above it. */}
+          <div class="md:col-span-2 flex justify-center self-end -mb-8">
             <img
               src="/mascot/astronaut-robot-handshake.webp"
               alt="An astronaut shaking hands with a friendly robot: you stay in charge of your AI team"
-              width="900" height="797" loading="lazy" decoding="async"
-              class="w-full max-w-[220px] md:max-w-none h-auto"
+              width="760" height="639" loading="lazy" decoding="async"
+              class="w-full max-w-[240px] md:max-w-none h-auto"
             />
           </div>
         </div>
