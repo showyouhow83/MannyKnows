@@ -6,6 +6,12 @@ set -e
 echo "🚀 Building..."
 npm run build
 
+# This repo lives on an exFAT volume, so macOS writes AppleDouble "._*" sidecar
+# files next to real ones. Wrangler globs them into the bundle and Cloudflare
+# rejects the upload with "Uncaught SyntaxError" on ._entry.mjs. Strip them.
+echo "🧹 Removing macOS ._* files from dist..."
+find dist -name '._*' -delete
+
 echo "☁️  Deploying to Cloudflare Workers (production)..."
 # Unset conflicting tokens from the shell and deploy default env defined in wrangler.jsonc
 
