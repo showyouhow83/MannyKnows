@@ -270,11 +270,13 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
               <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.role}</span>
             </div>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
-            <div class="mt-4">
+            {/* Bottom-right, the same corner the roster cards below park their
+                CTA in. Stays centred on mobile, where the rest of this column is. */}
+            <div class="mt-4 pt-1 flex items-end justify-center sm:justify-end">
               <a
                 href="#contact"
                 data-contact-context="AI Team: hire Manny AI"
-                class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300"
+                class="flex-shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 Hire Manny AI
               </a>
