@@ -44,7 +44,17 @@ export interface Plan {
   metaTitle?: string;   // detail-page <title> override; default is "<name> Plan: from $X/mo | MannyKnows"
   icon: string;         // SVG path (the `d` attribute of a 24×24 stroke icon)
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
+  priceUnit?: string;   // overrides the "/mo" after `price` (e.g. '/wk' for weekly retainers)
   tagline: string;      // one-line promise on the card
+  // Detail-page CTA overrides. Defaults: "Get started with <name>", "See it in our portfolio",
+  // and a "Book a call" button. Set per plan when the sales motion differs.
+  ctaLabel?: string;
+  portfolioLabel?: string;
+  hideBooking?: boolean;
+  // Replaces the generic `planIll` line illustration in the detail-page hero.
+  heroMascot?: { src: string; width: number; height: number };
+  // Overrides the "Month-to-month · cancel anytime · …" line under the CTAs.
+  terms?: string;
   builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
   highlights: string[]; // punchy bullets for the card (the additions, for tiers that build on another)
   featured?: boolean;   // "most popular"
@@ -619,43 +629,48 @@ export const plans: Plan[] = [
     metaTitle: 'Multimedia Agency: Web Development Retainer | MannyKnows',
     name: 'Multimedia Agency',
     icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
-    price: 1800,
+    price: 1350,
+    priceUnit: '/wk',
     hidden: true,
-    tagline: 'A developer on demand, plus your full media, design & marketing team, for less than one hire.',
+    ctaLabel: 'Request more information',
+    portfolioLabel: 'See it in action',
+    hideBooking: true,
+    heroMascot: { src: '/mascot/astro-multimedia.webp', width: 760, height: 814 },
+    terms: 'Billed weekly on Agency · your domain and content stay yours',
+    tagline: 'Hire the whole team by the week and direct what gets built.',
     highlights: [
       'A developer on demand: any app, tool, or idea, designed, built & published for you',
       'Campaign needs an app? Included. Software to organize your operations? Included.',
       'All media handled: photography, videography, video editing, AI generation & graphic design',
       'All web & SEO: websites, landing pages, content, and continuous optimization',
-      'It starts with a competitive analysis, then we build whatever it takes to put you ahead',
     ],
-    headline: 'Your full media & tech team, without hiring one',
+    headline: 'A full media and tech team, on demand and ready to execute',
     blurb:
-      "The biggest advantage in this package: a developer on demand. Any idea that comes to mind (an app for an ad campaign, software to organize your scheduling or inventory, a tool that doesn’t exist yet), we design it, build it, and publish it. Included. Around that developer sits your full media team: photography, videography, video editing, AI generation, graphic design, websites, and SEO. It starts with a competitive analysis, where you stand against your competition, and then we build whatever it takes to put you ahead and rank higher. All of it for less than a single hire.",
+      "You’re buying the team’s time, not a package. A developer, designer, media crew, and SEO build whatever you point them at (even the tool that doesn’t exist yet) while you watch and redirect.",
     whoFor:
-      'Businesses that want the upper hand over their competition, and one accountable team with the technical depth to build whatever getting there requires.',
+      'Owners who’d rather sit in on the build than wait for a status update.',
     tiersHeading: 'Pick how we work',
     tiersIntro:
-      'The scope is the same on both. Everything is included. What you choose is how we work together: fully remote, or with a dedicated day in your office every week.',
+      'Same team, same scope either way. Agency is remote and billed weekly. Agency In-House is billed monthly and puts us in your office one day a week.',
     tiers: [
       {
         name: 'Agency',
-        price: 1800,
-        unit: '/mo',
+        price: 1350,
+        unit: '/wk',
         note: 'fully remote',
         description:
-          'The full team (developer, designer, media production, SEO) working your roadmap from our studio, one project at a time, each one finished and published before the next begins.',
+          'The full team (developer, designer, media production, SEO) working from our studio on whatever you point them at, one project at a time, each one finished and published before the next begins.',
         features: [
-          'Everything is in scope: apps, websites, software, graphic design, video, photography, AI content, SEO',
+          'Everything is in scope: apps, websites, software, AI automation, management systems, design, video, photo, SEO',
           'A developer on demand: if your business can imagine it, we build it',
-          'The competitive analysis and a shared roadmap, reviewed monthly',
+          'You direct the work and review it as it is built, not after',
           'Unlimited requests queued on the roadmap: you set the priorities',
           'Scheduled photo & video shoot days as your projects call for them',
         ],
       },
       {
         name: 'Agency In-House',
-        price: 3500,
+        price: 4600,
         unit: '/mo',
         note: 'in your office 1 day a week',
         featured: true,
@@ -671,14 +686,6 @@ export const plans: Plan[] = [
       },
     ],
     deliverables: [
-      {
-        title: 'It starts with analysis',
-        items: [
-          'A competitive analysis of your market: where you rank, what your competitors run, and where they’re beatable',
-          'A plan to outrank them, then we build whatever it takes',
-          'Re-checked as positions shift, so the upper hand stays yours',
-        ],
-      },
       {
         title: 'A developer on demand',
         items: [
@@ -722,11 +729,10 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'What does "a developer on demand" mean?', a: 'If your business can imagine it, it’s in scope. An ad campaign that needs an app? Included. Software to organize scheduling, inventory, or quotes? Included. A tool that doesn’t exist anywhere? We design it, build it, and publish it. That’s the point of having a developer on retainer instead of a vendor per project.' },
-      { q: 'What does "one active project at a time" mean?', a: 'Your requests are unlimited. They queue on the shared roadmap and you set the order. We work them one at a time, finishing and publishing each before the next begins. It’s how the price stays a fraction of what this scope costs anywhere else.' },
+      { q: 'What does "one active project at a time" mean?', a: 'Your requests are unlimited. They queue on the shared roadmap and you set the order. We work them one at a time, finishing and publishing each before the next begins.' },
       { q: 'What’s different about Agency In-House?', a: 'The scope is identical. Everything is included on both tiers. In-House adds presence: a dedicated day in your office each week, where same-day requests get handled on the spot, photos and video get shot on site, and your team gets trained on the tools we build. It’s the closest thing to having your own tech department in the building.' },
       { q: 'Are photo and video shoots included?', a: 'Yes, photography and videography are part of the package as scheduled shoot days, planned around your projects and campaigns. Editing, AI generation, and design are handled continuously in between.' },
       { q: 'What exactly does "everything" cover?', a: 'Websites, online stores, advertising, social, SEO, content, graphic design, photography, videography, video editing, AI generation, custom software, AI automation, and data work, queued on a shared roadmap. If your business needs it built, shot, or promoted, it’s in scope.' },
-      { q: 'How does this compare to hiring?', a: 'A single junior marketing or IT hire costs several times this, and gives you one skill set. This puts engineering, design, media production, marketing, and AI expertise on one retainer.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes, many clients start with Get Growing or Sell Online and move up when they’re ready for the full team. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },

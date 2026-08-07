@@ -137,8 +137,12 @@ const pageJsonLd = {
               Get your booking agent
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
-            <a href="#proof" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-              See it at work: view our case studies
+            <!-- Launches the live site agent (our opscloud.us app, agent_manny_mk).
+                 The widget opens on a hash matching its own configured name, which is
+                 "Astro" on our account, so #astro is the trigger (#chat also works).
+                 Name it Astro here, not Remi, because Astro is who greets the visitor. -->
+            <a href="/#astro" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+              Test Astro, our own AI agent
             </a>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">

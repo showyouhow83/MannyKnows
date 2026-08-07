@@ -63,7 +63,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 <BaseLayout
   title={plan.metaTitle ?? `${plan.name} Plan: from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
   description={plan.tiers
-    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name}: $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
+    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
     : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr, 2 months free. Cancel anytime.`}
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -80,11 +80,26 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
       <div class="pb-12">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
-            {planIll[plan.slug] && (
+            {plan.heroMascot ? (
+              /* Photo mascot wins over the generic line illustration. Eager (top of
+                 the page) with width/height declared, so it reserves its box and
+                 never shifts the H1 — same treatment as /services and /ecommerce. */
+              <div class="flex justify-center mb-6">
+                <img
+                  src={plan.heroMascot.src}
+                  alt=""
+                  aria-hidden="true"
+                  width={plan.heroMascot.width}
+                  height={plan.heroMascot.height}
+                  decoding="async"
+                  class="astro-float w-full max-w-[190px] h-auto pointer-events-none"
+                />
+              </div>
+            ) : planIll[plan.slug] ? (
               <div class="flex justify-center mb-6">
                 <Illustration kind={planIll[plan.slug]} class="w-full max-w-[210px]" />
               </div>
-            )}
+            ) : null}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
               <svg class="inline-block w-4 h-4 align-[-0.2em] mr-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={plan.icon} /></svg>{plan.name}
             </span>
@@ -125,17 +140,19 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-                Get started with {plan.name}
+                {plan.ctaLabel ?? `Get started with ${plan.name}`}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
               <a href="/#work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                See it in our portfolio
+                {plan.portfolioLabel ?? 'See it in our portfolio'}
               </a>
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                Book a call
-              </a>
+              {!plan.hideBooking && (
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
+                  Book a call
+                </a>
+              )}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month · cancel anytime · your domain and content stay yours</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{plan.terms ?? 'Month-to-month · cancel anytime · your domain and content stay yours'}</p>
           </div>
         </Container>
       </div>
@@ -292,7 +309,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
             <a href={planHref(p.slug)} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <svg class="w-6 h-6 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
               <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
-              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}/mo</p>
+              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}{p.priceUnit ?? '/mo'}</p>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-2 leading-snug">{p.tagline}</p>
             </a>
           ))}
@@ -303,3 +320,14 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Matches the /services, /ecommerce and /free-360-photo heroes: a slow drift,
+     off for reduced-motion users. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+</style>
