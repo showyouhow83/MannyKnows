@@ -400,7 +400,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         id: 'sec-web-billing',
         title: 'Plan & Billing',
         items: [
-          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found, $95/mo', 'Get Booked, $245/mo', 'Get Growing, $550/mo', 'Get Ahead, $895/mo'] },
+          { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found, $95/mo', 'Get Booked, $245/mo', 'Get Growing, $545/mo', 'Get Ahead, $895/mo'] },
           { id: 'it-web-bill-2', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-web-bill-3', type: 'subtotal', label: 'Due at start (setup + first month)', amount: 0 },
           { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month, cancel anytime. Prepay the year and get the equivalent of 2 months free.' },

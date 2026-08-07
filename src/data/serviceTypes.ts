@@ -18,7 +18,7 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'ai-website', label: 'AI Website, one page ($195 + $40/mo)' },
   { value: 'website-basic', label: 'Get Found ($95/mo)' },
   { value: 'website-plus', label: 'Get Booked ($245/mo)' },
-  { value: 'website-smart', label: 'Get Growing ($550/mo)' },
+  { value: 'website-smart', label: 'Get Growing ($545/mo)' },
   { value: 'get-ahead', label: 'Get Ahead ($895/mo)' },
   { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },

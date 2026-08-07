@@ -230,7 +230,7 @@ export const plans: Plan[] = [
     slug: 'get-growing',
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
-    price: 550,
+    price: 545,
     tagline: 'A website that runs itself: writes its own content, tunes its own SEO & speed, and sells with “Remi”.',
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
@@ -301,14 +301,14 @@ export const plans: Plan[] = [
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
       'Your ads run and managed on two networks (Google and a social platform, or two social): the same Business Ads service, bundled in',
-      'Priced as a bundle: $1,250/mo of service for $895. You keep $355 every month',
+      'Priced as a bundle: $1,245/mo of service for $895. You keep $350 every month',
       'You fund the ad spend directly with the platform; we never mark it up',
       'Landing pages built for each campaign, so ads land somewhere built to convert',
       'A monthly working session with Manny: what the numbers say, what changes next',
     ],
     headline: 'For businesses ready to lead their market',
     blurb:
-      "This is Get Growing ($550) with our Business Ads service on two networks ($700) bundled together \u2014 $1,250 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and “Remi” keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
+      "This is Get Growing ($545) with our Business Ads service on two networks ($700) bundled together \u2014 $1,245 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and “Remi” keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
       'Established businesses that already get work from their site and want to take ground \u2014 multi-crew contractors, busy practices, shops with real competition.',
     deliverables: [
@@ -347,7 +347,7 @@ export const plans: Plan[] = [
     ],
     faq: [
       { q: 'Is the ad budget included in the $895?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
-      { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $550 and Business Ads on two networks is $700: $1,250 a month. Bundled it's $895, so you keep $355. We can do that because the ads and the site stop being two separate projects: the landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
+      { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $545 and Business Ads on two networks is $700: $1,245 a month. Bundled it's $895, so you keep $350. We can do that because the ads and the site stop being two separate projects: the landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
       { q: 'How is this different from a big agency?', a: "Agencies serving contractors and practices typically charge $2,500–$6,000 a month, lock you into 12–24-month contracts, and keep the website if you leave. Get Ahead is month-to-month and everything (the site, the content, the ad accounts) belongs to you." },
       { q: 'Do I need this, or is Get Growing enough?', a: "If your site and “Remi” keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground, outrank and out-advertise the competition, with someone accountable for the whole engine, not just the website." },
     ],
