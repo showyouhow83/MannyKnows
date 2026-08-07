@@ -722,7 +722,7 @@ export const plans: Plan[] = [
       },
     ],
     steps: [
-      { title: 'Competitive analysis', body: 'We map your market first: where you rank, what your competitors run, and where they’re beatable. That analysis decides what we build.' },
+      { title: 'Tell us what you need built', body: 'A kickoff to hear the idea, the constraints, and what winning looks like. You point, we scope it, and it goes on the roadmap.' },
       { title: 'A shared roadmap', body: 'One prioritized queue across software, media, web, and promotion. Unlimited requests: you set the order, and you always know what we’re building and why.' },
       { title: 'Build, shoot & promote', body: 'We work the roadmap one project at a time: each one finished and published before the next begins. On Agency In-House, a day of that happens in your office every week.' },
       { title: 'Review & reprioritize', body: 'A monthly working session plus the monthly report. Priorities shift as your business, and your competition, does.' },
