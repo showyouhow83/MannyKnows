@@ -1,15 +1,23 @@
 ---
-// AiWebsiteAgentDemo — the phone-framed conversation that proves what the AI
-// Website's agent does. Shared by /ai-website and the #ai-website section on
-// /free-360-photo so the demo can't drift between them.
+// AiWebsiteAgentDemo — the hero visual for /ai-website.
 //
-// Static markup on purpose: this sits above the fold on a page whose whole
-// pitch is speed, so it ships no JS and no layout shift. The transcript lives
-// in src/data/aiWebsite.ts.
+// Rebuilt Aug 2026 (Manny). The old version framed a phone whose chrome read
+// "yourbusiness.com" but whose entire viewport was a chat transcript: a reader
+// buying a ONE-PAGE WEBSITE never actually saw a website. It then closed on a
+// green "Sent to your inbox" strip that asserted an email existed without
+// showing one — a claim standing in for a demonstration.
+//
+// Now the frame shows the page you're buying (hero, services, reviews, FAQ,
+// contact) with “Remi” docked on it the way it really ships, and the lead is
+// drawn as the email it actually becomes.
+//
+// Still static markup on purpose: this sits above the fold on a page whose
+// whole pitch is speed, so it ships no JS and no layout shift. The transcript
+// lives in src/data/aiWebsite.ts.
 import { aiWebsiteChat } from '../../data/aiWebsite';
 
 interface Props {
-  /** Label under the phone frame. */
+  /** Label under the frame. */
   caption?: string;
   class?: string;
 }
@@ -17,43 +25,128 @@ const {
   caption = 'A visitor at 10:47pm. Nobody had to be awake for this.',
   class: className = '',
 } = Astro.props;
+
+// The widget shows the tail of the conversation — the turn where it stops
+// answering and starts capturing. The full transcript is on the page below.
+const widgetChat = aiWebsiteChat.slice(-3);
+
+// Placeholder page content. Deliberately generic ("Your Business", a 555
+// number): this is a template of the reader's own site, not a mock-up of some
+// other company's.
+const services = ['Repairs', 'Installs', 'Maintenance'];
+const faqs = ['Do you offer free estimates?', 'What areas do you cover?'];
 ---
 
-<div class={`mx-auto w-full max-w-[320px] ${className}`}>
-  <div class="rounded-[2rem] border-[6px] border-gray-900 dark:border-gray-700 bg-white dark:bg-dark-primary shadow-2xl overflow-hidden">
-    <!-- Status bar / site chrome -->
-    <div class="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-dark-secondary border-b border-light-tertiary dark:border-dark-accent">
-      <span class="text-[10px] font-semibold text-text-light-tertiary dark:text-text-dark-tertiary">yourbusiness.com</span>
-      <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-green-600 dark:text-green-400">
-        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-        Online
+<div class={`mx-auto w-full max-w-[400px] ${className}`}>
+  <!-- ── The page itself, with the agent on it ── -->
+  <div class="rounded-[1.75rem] border-[6px] border-gray-900 dark:border-gray-700 bg-white dark:bg-dark-primary shadow-2xl overflow-hidden">
+    <!-- Browser chrome -->
+    <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-dark-secondary border-b border-light-tertiary dark:border-dark-accent">
+      <span class="flex gap-1" aria-hidden="true">
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
       </span>
+      <span class="flex-1 text-center text-[10px] font-semibold text-text-light-tertiary dark:text-text-dark-tertiary">yourbusiness.com</span>
+      <span class="w-[18px]" aria-hidden="true"></span>
     </div>
 
-    <ul class="p-3 space-y-2" role="list">
-      {aiWebsiteChat.map((m) => (
-        <li class={`flex ${m.from === 'them' ? 'justify-end' : 'justify-start'}`}>
-          <p
-            class:list={[
-              'text-[11px] leading-snug px-3 py-2 max-w-[85%] rounded-2xl',
-              m.from === 'them'
-                ? 'bg-blue-500 text-white rounded-br-sm'
-                : 'bg-gray-100 dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary rounded-bl-sm',
-            ]}
-          >
-            <span class="sr-only">{m.from === 'them' ? 'Customer: ' : 'Remi: '}</span>
-            {m.text}
-          </p>
-        </li>
-      ))}
-    </ul>
+    <!-- The one page, top to bottom -->
+    <div class="relative">
+      <!-- Hero -->
+      <div class="px-4 pt-5 pb-6 bg-gradient-to-br from-primary-blue/10 via-purple-500/5 to-primary-pink/10">
+        <p class="text-[14px] font-black text-text-light-primary dark:text-text-dark-primary leading-tight">Your Business</p>
+        <p class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary mt-0.5">Springfield · Western Massachusetts</p>
+        <div class="mt-3 flex gap-1.5">
+          <span class="px-2.5 py-1 rounded-full bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[9px] font-bold">Call now</span>
+          <span class="px-2.5 py-1 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 text-[9px] font-semibold">Get a quote</span>
+        </div>
+      </div>
 
-    <!-- Where it ends up. Lead capture, NOT a booking — this Remi doesn't
-         book (see the honesty guard on aiWebsiteChat in aiWebsite.ts). -->
-    <div class="border-t border-light-tertiary dark:border-dark-accent bg-green-50 dark:bg-green-500/10 px-3 py-2.5">
-      <p class="text-[10px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400">Sent to your inbox</p>
-      <p class="text-[11px] text-text-light-secondary dark:text-text-dark-secondary mt-0.5 leading-snug">
-        New lead · Carla · (413) 555-0182 · weekend job, quoted $450–$650 range
+      <!-- Services -->
+      <div class="px-4 py-3 border-t border-light-tertiary dark:border-dark-accent">
+        <p class="text-[8px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1.5">Services</p>
+        <div class="grid grid-cols-3 gap-1.5">
+          {services.map((s) => (
+            <div class="rounded-md bg-gray-50 dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent px-1.5 py-2 text-center">
+              <span class="text-[8.5px] font-semibold text-text-light-primary dark:text-text-dark-primary">{s}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="px-4 py-2.5 border-t border-light-tertiary dark:border-dark-accent flex items-center gap-1.5">
+        <span class="text-[10px] text-amber-500 tracking-tight" aria-hidden="true">★★★★★</span>
+        <span class="text-[8.5px] text-text-light-secondary dark:text-text-dark-secondary">4.9 · 87 Google reviews</span>
+      </div>
+
+      <!-- FAQ -->
+      <div class="px-4 py-3 border-t border-light-tertiary dark:border-dark-accent">
+        <p class="text-[8px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1.5">FAQ</p>
+        {faqs.map((q) => (
+          <div class="flex items-center justify-between py-1 border-b border-light-tertiary/60 dark:border-dark-accent/60 last:border-0">
+            <span class="text-[8.5px] text-text-light-secondary dark:text-text-dark-secondary">{q}</span>
+            <span class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary" aria-hidden="true">+</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Contact -->
+      <div class="px-4 py-2.5 border-t border-light-tertiary dark:border-dark-accent bg-gray-50 dark:bg-dark-secondary/60">
+        <span class="text-[8.5px] font-semibold text-text-light-primary dark:text-text-dark-primary">(413) 555-0100</span>
+        <span class="text-[8.5px] text-text-light-tertiary dark:text-text-dark-tertiary"> · Mon–Sat, 7am–6pm</span>
+      </div>
+
+      <!-- Spacer so the docked widget never covers the contact bar -->
+      <div class="h-[164px]" aria-hidden="true"></div>
+
+      <!-- “Remi”, docked on the page exactly as it ships -->
+      <div class="absolute left-3 right-3 bottom-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary shadow-xl overflow-hidden">
+        <div class="flex items-center justify-between px-2.5 py-1.5 bg-gray-50 dark:bg-dark-primary border-b border-light-tertiary dark:border-dark-accent">
+          <span class="text-[9px] font-bold text-text-light-primary dark:text-text-dark-primary">“Remi”</span>
+          <span class="inline-flex items-center gap-1 text-[8px] font-semibold text-green-600 dark:text-green-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            Online
+          </span>
+        </div>
+        <ul class="p-2 space-y-1.5" role="list">
+          {widgetChat.map((m) => (
+            <li class={`flex ${m.from === 'them' ? 'justify-end' : 'justify-start'}`}>
+              <p
+                class:list={[
+                  'text-[9px] leading-snug px-2 py-1.5 max-w-[88%] rounded-xl',
+                  m.from === 'them'
+                    ? 'bg-blue-500 text-white rounded-br-sm'
+                    : 'bg-gray-100 dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary rounded-bl-sm',
+                ]}
+              >
+                <span class="sr-only">{m.from === 'them' ? 'Customer: ' : 'Remi: '}</span>
+                {m.text}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Where the lead lands: the actual email, not a claim that one exists ── -->
+  <div class="mt-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary shadow-lg overflow-hidden">
+    <div class="flex items-center justify-between px-3 py-1.5 bg-gray-50 dark:bg-dark-primary border-b border-light-tertiary dark:border-dark-accent">
+      <span class="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        Your inbox
+      </span>
+      <span class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary">10:47 PM</span>
+    </div>
+    <div class="px-3 py-2.5">
+      <p class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary">“Remi” · yourbusiness.com</p>
+      <p class="text-[11px] font-bold text-text-light-primary dark:text-text-dark-primary mt-0.5 leading-snug">
+        New lead — Carla · (413) 555-0182
+      </p>
+      <p class="text-[10px] text-text-light-secondary dark:text-text-dark-secondary mt-1 leading-snug">
+        Weekend job, quoted the $450–$650 range. Afternoons are best. Full conversation below.
       </p>
     </div>
   </div>

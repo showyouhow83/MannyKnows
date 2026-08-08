@@ -25,7 +25,13 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,350/wk)' },
   { value: 'ai-team', label: 'AI Team, hire agents (from $95/mo each)' },
   { value: 'custom-app', label: 'Custom Web App (scoped)' },
+  // 360° / Google Business Profile packages — these are the cards on
+  // /free-360-photo, and the quote form has to be able to offer every one of
+  // them or a visitor clicking "Set mine up" lands on a dropdown that can't
+  // describe what they just clicked.
   { value: '360-photo', label: 'Free 360° Photo' },
+  { value: '360-photo-pack', label: '360° Photo Pack (from $195)' },
+  { value: 'gbp-setup', label: 'Google Profile Setup + Verification (from $145)' },
   { value: 'website-analysis', label: 'Free AI Website Analysis' },
   { value: 'other', label: 'Other (enter custom)' },
 ];

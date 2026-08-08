@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import SettingsModal from '../components/SettingsModal.astro';
 import FooterMain from '../components/footer/FooterMain.astro';
-import ContactModal from '../components/ui/ContactModal.astro';
+import QuoteFormModal from '../components/ui/QuoteFormModal.astro';
 // IdeaLaunchpad ("You bring the idea…" modal) hidden per Manny (Aug 2026) —
 // re-enable this import and the tag near the end of <body> to bring it back.
 // import IdeaLaunchpad from '../components/sections/IdeaLaunchpad.astro';
@@ -54,6 +54,13 @@ const ogImage = new URL(image ?? DEFAULT_OG_IMAGE, Astro.site ?? 'https://mannyk
 Manny
 		-->
 		<meta charset="UTF-8" />
+		<!-- Build stamp. deploy.sh polls the live site for this exact value before
+		     it reports success: `wrangler deploy` returns as soon as the upload
+		     finishes, but Workers static assets take a beat to reach every edge,
+		     so "upload complete" is NOT "live". Without this there's no way to
+		     tell "still propagating" from "the change never shipped".
+		     Set by deploy.sh and CI as PUBLIC_BUILD_ID; "dev" when unset. -->
+		<meta name="build-id" content={import.meta.env.PUBLIC_BUILD_ID ?? 'dev'} />
 		{preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
 		<!-- Remi loads on every page (below), so its origin warms up on every
 		     page. NO crossorigin: loader.js is a classic script (no-cors), and a
@@ -209,7 +216,12 @@ Manny
 		<FooterMain showServices={footerServices} />
 
 		<!-- Global contact modal (opened by [data-contact] / a[href="#contact"] / ?contact=open) -->
-		<ContactModal />
+		{/* One modal for quotes AND contact (Manny, Aug 2026): it answers
+		    #quote, #contact, [data-quote] and [data-contact], so the ~75 existing
+		    "talk to us" triggers across the site now open this form too. The old
+		    ContactModal was retired rather than left listening to the same
+		    clicks — two modals on one click opens two modals. */}
+		<QuoteFormModal />
 
 		<!-- Global "Got an idea?" launcher — floating button + modal, body-level so
 		     the modal clears every page-section stacking context. -->

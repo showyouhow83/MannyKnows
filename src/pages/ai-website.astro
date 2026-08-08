@@ -171,8 +171,17 @@ const pageJsonLd = {
           ))}
         </div>
 
-        <!-- Proof it isn't theoretical -->
-        <div class="max-w-4xl mx-auto mt-12 grid md:grid-cols-2 gap-6">
+        <!-- Proof it isn't theoretical. The cards used to start cold — two
+             bordered boxes with no label, so a reader hit "Painting contractor
+             · Springfield" with no idea why it was there. This says what they
+             are before they're read. -->
+        <div class="max-w-4xl mx-auto mt-14 text-center mb-6">
+          <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Two businesses running this today</h3>
+          <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-xl mx-auto">
+            Both in Springfield, both built by us, both with the agent answering right now.
+          </p>
+        </div>
+        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
           <a href="/work/sl-painting/" class="group rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Painting contractor · Springfield</span>
             <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
@@ -270,9 +279,9 @@ const pageJsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>From one conversation to a page that works</span></h2>
         </div>
         <StepCards steps={aiWebsiteSteps} cols={4} class="max-w-6xl mx-auto" />
-        <div class="max-w-2xl mx-auto mt-14">
-          <QuoteBlock quote={getTestimonial('SL Painting')} align="center" />
-        </div>
+        {/* SL Painting pull-quote removed per Manny (Aug 2026): the proof cards
+            above already name SL Painting and link the case study, so the quote
+            was the third time the same client carried the page. */}
       </Container>
     </Section>
 
@@ -294,18 +303,27 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────────── What's on the page (appended per Manny, Aug 2026) ───────────────── -->
+    <!-- ─────────── The anatomy: what's on the page + what's under it ───────────
+         Merged Aug 2026 (Manny) from two back-to-back sections, "One page,
+         seven jobs" and "Engineered for the four scores Google grades". They
+         were making one argument in two halves: the seven sections are how the
+         page is STRUCTURED so people and machines can read it; Lighthouse is
+         the ENGINEERING that decides whether they bother. Split apart, the
+         reader met two headings and had to connect them. Together the claim is
+         whole — and the Lighthouse block keeps its own #lighthouse anchor so
+         existing deep links still land. -->
     <Section id="whats-on-it" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One page, seven jobs</span></h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What's on the page, and what's under it</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Everything a customer needs in one scroll, and structured so Google and the AI assistants people now
-            ask can read it, rank it, and recommend you.
+            Seven jobs in one scroll, structured so Google and the AI assistants people now ask can read it, rank
+            it, and recommend you — on a page engineered to load fast enough that they actually do.
           </p>
         </div>
 
-        <!-- The two that do the heaviest lifting get the weight -->
+        <!-- Part one: the seven jobs. The two that do the heaviest lifting get the weight -->
+        <p class="text-center text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-6">The seven jobs</p>
         <div class="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-6">
           {heroSections.map((s) => (
             <div class="rounded-2xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-7">
@@ -322,32 +340,32 @@ const pageJsonLd = {
             </div>
           ))}
         </div>
-      </Container>
-    </Section>
 
-    <!-- ───────────────────────── Lighthouse ───────────────────────── -->
-    <Section id="lighthouse" variant="gradient">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Engineered for the four scores Google grades</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Lighthouse is Google's own audit of a page. We build to near-perfect across all four: run it on this site, or on the one you have now.
-          </p>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-          {aiWebsiteLighthouse.map((l) => (
-            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black mb-3">100</div>
-              <h3 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h3>
-              <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
-            </div>
-          ))}
-        </div>
-        <div class="text-center mt-8">
-          <a href="/free-ai-website-analysis/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-            Get a free analysis of your current site
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+        <!-- Part two: the engineering underneath. Same argument, other half. -->
+        <div id="lighthouse" class="max-w-6xl mx-auto mt-16 pt-12 border-t border-light-tertiary dark:border-dark-accent scroll-mt-24">
+          <div class="text-center max-w-2xl mx-auto mb-10">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">The four scores Google grades</p>
+            <h3 class="text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Structure only counts if the page loads</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Lighthouse is Google's own audit of a page. Every section above is built against it, and we build to
+              near-perfect on all four — run it on this site, or on the one you have now.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {aiWebsiteLighthouse.map((l) => (
+              <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black mb-3">100</div>
+                <h4 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h4>
+                <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
+              </div>
+            ))}
+          </div>
+          <div class="text-center mt-8">
+            <a href="/free-ai-website-analysis/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+              Get a free analysis of your current site
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
         </div>
       </Container>
     </Section>

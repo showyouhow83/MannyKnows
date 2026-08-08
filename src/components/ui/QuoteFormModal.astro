@@ -1,0 +1,339 @@
+---
+// QuoteFormModal — the site-wide "Get Your Quote" modal, modelled on the
+// SLPainting quote form (Manny, Aug 2026).
+//
+// Differences from that reference, on purpose:
+//   • no "Flexible Payment" toggle and no "Ask Matti" panel — those are
+//     SLPainting-specific and don't exist here.
+//   • photos are behind a LINK rather than an always-open drop zone, so the
+//     form reads as five short fields instead of a wall with a big empty box.
+//
+// Opens from any `a[href="#quote"]` or `[data-quote]` trigger; the trigger's
+// `data-quote-context` preselects a service and labels the email subject.
+// The lead posts to the same CSRF-protected /api/contact as ContactModal.
+// Photos go separately to R2 via /api/quote-upload, and their object keys ride
+// along in the message body — never as base64 through /api/contact, whose
+// command-injection filter rejects it.
+import { SERVICE_TYPES } from '../../data/serviceTypes';
+
+const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm–8pm)'];
+---
+
+<div id="quoteModal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle">
+  <div id="quoteModalBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+  <div class="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl bg-white dark:bg-dark-secondary shadow-2xl">
+    <!-- Gradient header -->
+    <div class="relative bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink px-6 py-8 text-center">
+      <button type="button" id="quoteModalClose" aria-label="Close"
+        class="absolute top-4 right-4 w-9 h-9 inline-flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+      <span id="quoteModalBadge" class="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-3">Free quote</span>
+      <h2 id="quoteModalTitle" class="text-3xl md:text-4xl font-black text-white">Get Your Quote</h2>
+      <p id="quoteModalSubtitle" class="text-white/90 mt-2 text-sm md:text-base">Fill out the form and we'll get back to you within 24 hours</p>
+    </div>
+
+    <form id="quoteModalForm" class="p-6 md:p-8 space-y-5" novalidate>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="qf-name" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Full Name *</label>
+          <input id="qf-name" name="name" type="text" required autocomplete="name" placeholder="John Smith" maxlength="100"
+            class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm placeholder-text-light-tertiary dark:placeholder-text-dark-tertiary focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+        </div>
+        <div>
+          <label for="qf-phone" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Phone *</label>
+          <input id="qf-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(413) 555-1234" maxlength="30"
+            class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm placeholder-text-light-tertiary dark:placeholder-text-dark-tertiary focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+        </div>
+        <div>
+          <label for="qf-email" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Email *</label>
+          <input id="qf-email" name="email" type="email" required autocomplete="email" placeholder="john@example.com" maxlength="255"
+            class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm placeholder-text-light-tertiary dark:placeholder-text-dark-tertiary focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="qf-service" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Service *</label>
+          <select id="qf-service" name="service"
+            class="w-full h-11 px-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition">
+            <option value="">Select…</option>
+            {SERVICE_TYPES.filter((s) => s.value !== 'other').map((s) => (
+              <option value={s.value}>{s.label}</option>
+            ))}
+            <option value="not-sure">Not sure yet — help me figure it out</option>
+          </select>
+        </div>
+        <div>
+          <label for="qf-day" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Best Day to Call</label>
+          <input id="qf-day" name="bestDay" type="date"
+            class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
+        </div>
+        <div>
+          <label for="qf-time" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Preferred Time</label>
+          <select id="qf-time" name="preferredTime"
+            class="w-full h-11 px-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition">
+            <option value="">Select time</option>
+            {TIMES.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="qf-details" class="block text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">Project Details</label>
+        <textarea id="qf-details" name="message" rows="4" placeholder="Tell us about your project…" maxlength="2000"
+          class="w-full px-3.5 py-2.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm placeholder-text-light-tertiary dark:placeholder-text-dark-tertiary focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition resize-y"></textarea>
+      </div>
+
+      <!-- Photos behind a link (Manny): the reference form's always-open drop
+           zone made a five-field form look like a chore. Revealed on click. -->
+      <div>
+        <button type="button" id="quotePhotoToggle"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Add photos (optional)
+        </button>
+        <div id="quotePhotoArea" class="hidden mt-3">
+          <input id="qf-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple
+            class="block w-full text-sm text-text-light-secondary dark:text-text-dark-secondary file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-blue/10 file:text-primary-blue hover:file:bg-primary-blue/20 cursor-pointer" />
+          <p class="mt-1.5 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Up to 5 images, 3MB each. JPG, PNG, WEBP or HEIC.</p>
+          <p id="quotePhotoList" class="mt-1.5 text-xs text-text-light-secondary dark:text-text-dark-secondary"></p>
+        </div>
+      </div>
+
+      <button type="submit" id="quoteModalSubmit"
+        class="w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+        Submit
+      </button>
+      <p id="quoteModalStatus" role="status" aria-live="polite" class="text-sm text-center hidden"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('quoteModal');
+    if (!modal) return;
+    const form = document.getElementById('quoteModalForm') as HTMLFormElement | null;
+    const statusEl = document.getElementById('quoteModalStatus');
+    const subtitle = document.getElementById('quoteModalSubtitle');
+    const titleEl = document.getElementById('quoteModalTitle');
+    const badgeEl = document.getElementById('quoteModalBadge');
+    const submitBtn = document.getElementById('quoteModalSubmit') as HTMLButtonElement | null;
+    const photoToggle = document.getElementById('quotePhotoToggle');
+    const photoArea = document.getElementById('quotePhotoArea');
+    const photoInput = document.getElementById('qf-photos') as HTMLInputElement | null;
+    const photoList = document.getElementById('quotePhotoList');
+    const serviceSel = document.getElementById('qf-service') as HTMLSelectElement | null;
+
+    const MAX_FILES = 5;
+    const MAX_FILE_BYTES = 3 * 1024 * 1024;
+
+    let csrfToken: string | null = null;
+    let sessionId: string | null = null;
+    let context = '';
+
+    async function getToken() {
+      try {
+        const r = await fetch('/api/contact');
+        if (r.ok) { const d = await r.json(); csrfToken = d.csrf_token; sessionId = d.session_id; }
+      } catch { /* offline: the phone/email fallbacks on the page still work */ }
+    }
+
+    /**
+     * Preselect the service so the visitor never has to hunt the dropdown for
+     * the thing they just clicked. Matches on the exact service value first
+     * (what a trigger should send), then falls back to a label match so a
+     * human-readable context like "AI Website" still lands.
+     */
+    function preselectService(ctx: string) {
+      if (!ctx || !serviceSel) return;
+      const needle = ctx.toLowerCase();
+      const opts = Array.from(serviceSel.options);
+      const exact = opts.find((o) => o.value.toLowerCase() === needle);
+      const byLabel = exact || opts.find((o) => (o.textContent || '').toLowerCase().includes(needle));
+      if (byLabel) serviceSel.value = byLabel.value;
+    }
+
+    /**
+     * The modal wears the label of whatever was clicked, so "Claim it free"
+     * doesn't open a box shouting GET YOUR QUOTE at someone being offered
+     * something free. Explicit data-quote-title wins; otherwise the trigger's
+     * own text becomes the heading.
+     */
+    function open(opts: { ctx?: string; title?: string; badge?: string; contactMode?: boolean } = {}) {
+      context = (opts.ctx || '').trim();
+      const contactMode = !!opts.contactMode;
+
+      if (titleEl) titleEl.textContent = opts.title || (contactMode ? "Let's talk" : 'Get Your Quote');
+      if (badgeEl) badgeEl.textContent = opts.badge || (contactMode ? 'Get in touch' : 'Free quote');
+      if (subtitle) {
+        subtitle.textContent = context
+          ? `About: ${context}. We'll get back to you within 24 hours.`
+          : "Fill out the form and we'll get back to you within 24 hours";
+      }
+      preselectService(context);
+
+      modal!.classList.remove('hidden');
+      modal!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      if (!csrfToken) getToken();
+      setTimeout(() => (document.getElementById('qf-name') as HTMLInputElement | null)?.focus(), 60);
+    }
+    function close() {
+      modal!.classList.add('hidden');
+      modal!.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+    // Back-compat: both old entry points still work.
+    (window as any).openQuoteModal = (ctx?: string) => open({ ctx });
+    (window as any).openContactModal = (ctx?: string) => open({ ctx, contactMode: true });
+
+    /** A trigger's own visible text, if it reads like a label. */
+    function textOf(el: Element): string {
+      const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      return t.length >= 3 && t.length <= 48 ? t : '';
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      // One modal serves both entry points (Manny, Aug 2026): #quote from the
+      // pricing CTAs and #contact from the 75-odd "Talk to us" buttons across
+      // the site. Merging here beats rewriting every trigger.
+      const trigger = target.closest(
+        'a[href="#quote"], [data-quote], a[href="#contact"], [data-contact]'
+      );
+      if (trigger) {
+        e.preventDefault();
+        const contactMode = trigger.matches('a[href="#contact"], [data-contact]');
+        open({
+          ctx: trigger.getAttribute('data-quote-context')
+            || trigger.getAttribute('data-contact-context')
+            || '',
+          title: trigger.getAttribute('data-quote-title') || textOf(trigger),
+          badge: trigger.getAttribute('data-quote-badge') || undefined,
+          contactMode,
+        });
+        return;
+      }
+      if (target.id === 'quoteModalClose' || target.closest('#quoteModalClose') || target.id === 'quoteModalBackdrop') close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal!.classList.contains('hidden')) close(); });
+
+    photoToggle?.addEventListener('click', () => {
+      photoArea?.classList.toggle('hidden');
+      if (!photoArea?.classList.contains('hidden')) photoInput?.click();
+    });
+
+    photoInput?.addEventListener('change', () => {
+      if (!photoList || !photoInput.files) return;
+      const files = Array.from(photoInput.files);
+      const tooBig = files.filter((f) => f.size > MAX_FILE_BYTES).map((f) => f.name);
+      const kept = files.slice(0, MAX_FILES);
+      photoList.textContent = tooBig.length
+        ? `Too large (skipped): ${tooBig.join(', ')}`
+        : kept.length
+          ? `${kept.length} photo${kept.length > 1 ? 's' : ''} attached: ${kept.map((f) => f.name).join(', ')}`
+          : '';
+    });
+
+    /**
+     * /api/contact runs InputValidator, whose command-injection rule rejects
+     * ; & | ` $ ( ) { } [ ] anywhere in name, subject or message.
+     *
+     * That is not a hypothetical: phone numbers are written "(413) 555-0182",
+     * our own Preferred Time options read "Morning (8am–12pm)", and plenty of
+     * real businesses are named "X & Sons". Without this every submission
+     * bounces with an opaque 400 — which is exactly what shipped. Strip the
+     * characters rather than lose the lead.
+     */
+    const clean = (s: unknown) =>
+      String(s ?? '').replace(/[;&|`$(){}[\]]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    /**
+     * Photos go to R2 via /api/quote-upload, not into the email. Returns the
+     * stored object keys, or [] on any failure — a photo problem must never
+     * cost the lead, so the caller sends the message either way.
+     */
+    async function uploadPhotos(files: File[]): Promise<string[]> {
+      if (!files.length) return [];
+      try {
+        const fd = new FormData();
+        files.forEach((f) => fd.append('photos', f));
+        const res = await fetch('/api/quote-upload', { method: 'POST', body: fd });
+        if (!res.ok) return [];
+        const data = await res.json().catch(() => ({}));
+        return Array.isArray(data.keys) ? data.keys : [];
+      } catch {
+        return [];
+      }
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!csrfToken) await getToken();
+      const fd = new FormData(form);
+
+      const service = (fd.get('service') || '').toString().trim();
+      // Strip the " ($195 + $40/mo)" suffix: the raw $ and parens trip the
+      // API's command-injection filter, and the price is noise in the body.
+      const rawLabel = service
+        ? (form.querySelector(`select[name="service"] option[value="${service}"]`)?.textContent || service)
+        : '';
+      const serviceLabel = rawLabel.replace(/\s*\([^)]*\)\s*$/, '').trim();
+      const phone = (fd.get('phone') || '').toString().trim();
+      const bestDay = (fd.get('bestDay') || '').toString().trim();
+      const preferredTime = (fd.get('preferredTime') || '').toString().trim();
+      const details = (fd.get('message') || '').toString().trim();
+
+      const orig = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+      // Photos first, so their keys can ride along in the message body.
+      const files = Array.from(photoInput?.files || []).filter((f) => f.size <= MAX_FILE_BYTES).slice(0, MAX_FILES);
+      if (files.length && submitBtn) submitBtn.textContent = 'Uploading photos…';
+      const photoKeys = await uploadPhotos(files);
+
+      const message = clean(
+        `Quote request: ${serviceLabel || context || 'General inquiry'}.\n` +
+        `Phone: ${phone}.\n` +
+        (bestDay ? `Best day to call: ${bestDay}.\n` : '') +
+        (preferredTime ? `Preferred time: ${preferredTime}.\n` : '') +
+        (photoKeys.length ? `Photos uploaded: ${photoKeys.join(', ')}\n` : '') +
+        (files.length && !photoKeys.length ? `Note: customer attached ${files.length} photo(s) but the upload failed.\n` : '') +
+        `\n${details || 'No additional details provided.'}`
+      );
+      const subject = clean(`Quote request: ${serviceLabel || context || 'general'}`);
+
+      statusEl?.classList.add('hidden');
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken || '' },
+          body: JSON.stringify({
+            name: clean(fd.get('name')), email: fd.get('email'), subject, message,
+            service, context: context || '',
+            csrf_token: csrfToken, session_id: sessionId,
+          }),
+        });
+        const result = await res.json().catch(() => ({}));
+        if (res.ok) {
+          form.reset();
+          if (photoList) photoList.textContent = '';
+          photoArea?.classList.add('hidden');
+          if (statusEl) { statusEl.textContent = "Thanks — we'll get back to you, usually within a day."; statusEl.className = 'text-sm text-center text-green-600 dark:text-green-400'; }
+          getToken();
+        } else {
+          throw new Error(result.error || (Array.isArray(result.details) ? result.details.join('. ') : '') || 'Something went wrong.');
+        }
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = (err instanceof Error ? err.message : '') || 'Could not send, please email mm@mannyknows.com'; statusEl.className = 'text-sm text-center text-red-600 dark:text-red-400'; }
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = orig; }
+        statusEl?.classList.remove('hidden');
+      }
+    });
+  })();
+</script>

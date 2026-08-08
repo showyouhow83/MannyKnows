@@ -33,6 +33,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Stamped into <meta name="build-id"> by BaseLayout, then polled by the
+          # verify step below. Without it CI builds stamp "dev" and a deploy that
+          # never reached the edge is indistinguishable from a successful one.
+          PUBLIC_BUILD_ID: ${{ github.sha }}
 
       - name: Deploy to Cloudflare Workers
         # Astro 7 / @astrojs/cloudflare v14 emits a self-contained deploy config
@@ -44,6 +49,22 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # Optional — only needed if your API token can see more than one account
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Verify the deploy is actually live
+        # `wrangler deploy` returns when the upload finishes; Workers static
+        # assets take a beat to reach every edge. Poll for this build's stamp so
+        # a green check means "live", not "uploaded". Fails the job if the new
+        # build never shows up — which is a real signal worth seeing.
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sL --max-time 10 https://mannyknows.com/ | grep -q "${{ github.sha }}"; then
+              echo "✅ Verified live after $((i * 5))s."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "⚠️  Uploaded OK, but the site is still not serving ${{ github.sha }} after 5 minutes."
+          exit 1
 
       - name: Ping IndexNow
         # Tells Bing, Yandex, Seznam, Naver and Yep to re-crawl. Google does not

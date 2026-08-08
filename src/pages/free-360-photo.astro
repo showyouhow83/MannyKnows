@@ -10,12 +10,9 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
-import AiWebsiteAgentDemo from '../components/sections/AiWebsiteAgentDemo.astro';
 import {
   aiWebsiteSetupFee,
   aiWebsiteMonthly,
-  aiWebsiteAgent,
-  aiWebsiteSections,
 } from '../data/aiWebsite';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -44,7 +41,7 @@ const PACKAGES = [
     badge: 'Start here',
     blurb: 'One professional 360° photo of your business, published straight to your Google Business Profile.',
     features: ['1 immersive 360° photo', `We come to you (free ${FREE_TRAVEL}`, 'Published to your Google listing', 'Free), this is how we introduce our work'],
-    cta: { label: 'Claim it free', href: '#claim' },
+    cta: { label: 'Claim it free', href: '#quote', service: '360-photo' },
   },
   {
     id: 'photo-pack',
@@ -53,7 +50,7 @@ const PACKAGES = [
     cadence: 'one-time',
     blurb: 'Five 360° photos that turn your listing into a mini “see inside” tour customers can walk through on Google.',
     features: ['5 professional 360° photos', 'Mini virtual tour on Google', 'Optimized & published for you', 'Unbranded files, delivered to you, yours to keep', 'Perfect for clinics, dealerships, showrooms, and retail floors'],
-    cta: { label: 'Get a quote', href: '#claim' },
+    cta: { label: 'Get a quote', href: '#quote', service: '360-photo-pack' },
   },
   {
     id: 'profile-setup',
@@ -62,7 +59,7 @@ const PACKAGES = [
     cadence: 'one-time',
     blurb: 'No Google Business Profile yet? We create it, fill it out the right way, and get you verified.',
     features: ['Profile created & optimized', 'Categories, hours, services, photos', 'Verification handled end-to-end', 'Ready to show up in local search'],
-    cta: { label: 'Set mine up', href: '#claim' },
+    cta: { label: 'Set mine up', href: '#quote', service: 'gbp-setup' },
   },
   {
     id: 'ai-website',
@@ -71,7 +68,7 @@ const PACKAGES = [
     cadence: `one-time + $${aiWebsiteMonthly}/mo`,
     blurb: 'A fast one-page site with “Remi”, an AI agent trained on your business and voice, and your 360° photos embedded as a tour on your own domain.',
     features: ['“Remi”, an AI agent, answering customers 24/7', 'Every lead captured & emailed to you', 'Your 360° tour on your own site', 'Hero, Blog, Services, Reviews, FAQs, Contact', 'Near-perfect Google Lighthouse scores'],
-    cta: { label: 'See what’s included', href: '#ai-website' },
+    cta: { label: 'See what’s included', href: '/ai-website/' },
   },
 ];
 
@@ -96,8 +93,6 @@ const WHY = [
 // The page anatomy comes from the shared product data. The tour and the blog
 // carry `hero: true` — on this page the tour is the whole reason a 360°
 // customer would want a site of their own, so it leads.
-const tourSection = aiWebsiteSections.find((s) => s.name === 'Virtual tour')!;
-const otherSections = aiWebsiteSections.filter((s) => s.name !== 'Virtual tour');
 
 const FAQS = [
   { q: 'Is the 360° photo really free?', a: "Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost, with no obligation. It's how we introduce our work." },
@@ -206,7 +201,7 @@ const jsonLd = {
               Call or book a time. We come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="#claim" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+              <a href="#quote" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
                 Claim 360° photo
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
@@ -246,6 +241,40 @@ const jsonLd = {
       </div>
     </header>
 
+
+    <!-- ───────────────────────── How it works ───────────────────────── -->
+    <Section id="how-it-works" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How the free shoot works</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three simple steps from a phone call to a live, immersive photo on your Google listing.</p>
+        </div>
+        <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── FAQ ───────────────────────── -->
+    <Section id="faq" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Questions, answered</span></h2>
+          </div>
+          <div class="space-y-3">
+            {FAQS.map((f) => (
+              <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">
+                <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {f.q}
+                  <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
     <!-- ───────────────────────── Packages / pricing ───────────────────────── -->
     <Section id="packages" variant="default">
       <Container>
@@ -274,7 +303,7 @@ const jsonLd = {
                   </li>
                 ))}
               </ul>
-              <a href={p.cta.href} class={`mt-auto inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${p.highlight ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white' : 'border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue/40'}`}>
+              <a href={p.cta.href} data-quote-context={p.cta.service} data-quote-title={p.cta.label} class={`mt-auto inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${p.highlight ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white' : 'border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary hover:border-primary-blue/40'}`}>
                 {p.cta.label}
               </a>
             </div>
@@ -287,305 +316,6 @@ const jsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────────────────── How it works ───────────────────────── -->
-    <Section id="how-it-works" variant="alternate">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How the free shoot works</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three simple steps from a phone call to a live, immersive photo on your Google listing.</p>
-        </div>
-        <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
-      </Container>
-    </Section>
-
-    <!-- ───────────────────────── AI Website ─────────────────────────
-         Rebuilt Aug 2026. The old version was seven identical feature cards
-         and four green "100" tiles with no price, no proof and no CTA: it
-         ended by pointing readers at the $95/mo plans instead of selling this.
-         Now: the tour is the hook (it's the reason a 360° customer wants a
-         site at all), the agent is proven with the shared demo, the price is
-         on the page, and both CTAs go somewhere. Full pitch: /ai-website. -->
-    <Section id="ai-website" variant="gradient">
-      <Container>
-        <div class="max-w-3xl mx-auto text-center mb-12">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The next step</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Your 360° tour, on a site that answers customers</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Photos on your Google profile live on Google's property. The same tour on your own one-page site is
-            yours: working for your rankings, with “Remi”, an AI agent trained on your business, beside it
-            answering questions and capturing leads while you're closed.
-          </p>
-        </div>
-
-        <!-- The hook: tour + agent proof, side by side -->
-        <div class="max-w-6xl mx-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 md:p-10 mb-10">
-          <div class="flex flex-col lg:flex-row items-center gap-10">
-            <div class="flex-1 w-full">
-              <h3 class="text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">{tourSection.name}</h3>
-              <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{tourSection.body}</p>
-
-              <ul class="space-y-3 mb-7">
-                {aiWebsiteAgent.map((c) => (
-                  <li class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm text-text-light-primary dark:text-text-dark-primary"><strong class="font-semibold">{c.title}</strong>, {c.body}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl border border-primary-blue/30 bg-light-primary dark:bg-dark-primary px-4 py-3 mb-6">
-                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteSetupFee}</span>
-                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">to build</span>
-                <span class="text-text-light-tertiary dark:text-text-dark-tertiary">·</span>
-                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteMonthly}<span class="text-base font-bold">/mo</span></span>
-                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">hosted &amp; answering</span>
-              </div>
-
-              <div class="flex flex-col sm:flex-row gap-3">
-                <a href="#claim" data-claim-interest="ai-website" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-                  Ask about the AI website
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                </a>
-                <a href="/ai-website/" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                  See the full breakdown
-                </a>
-              </div>
-            </div>
-
-            <div class="flex-1 w-full">
-              <AiWebsiteAgentDemo caption="What “Remi” does while your shop is closed." />
-            </div>
-          </div>
-        </div>
-
-        <!-- The rest of the page, supporting detail -->
-        <div class="max-w-6xl mx-auto">
-          <h3 class="text-center text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-6">What else is on the page</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {otherSections.map((s) => (
-              <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5">
-                <h4 class="text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">{s.name}</h4>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
-              </div>
-            ))}
-          </div>
-          <p class="text-center text-sm text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto leading-relaxed">
-            Every page is tuned to near-perfect scores across Google's four Lighthouse categories: performance,
-            accessibility, best practices, and SEO.
-            <a href="/ai-website/#lighthouse" class="text-primary-blue dark:text-blue-300 hover:underline">See how that's built</a>,
-            or if you'd rather we design, run, and update a multilingual multi-page site every month, that's a
-            <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 hover:underline">monthly plan from $95/mo</a>.
-          </p>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- ───────────────────────── Claim / contact form ───────────────────────── -->
-    <Section id="claim" variant="default">
-      <Container>
-        <div class="max-w-2xl mx-auto">
-          <div class="text-center mb-8">
-            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Claim your free 360° photo</span></h2>
-            <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue font-semibold hover:underline">{PHONE_DISPLAY}</a> or send the short form below, we'll reach out to set up your free shoot. Want the photo pack, your profile set up, or the AI website instead? Say so in the first field.
-            </p>
-          </div>
-
-          <form id="claimForm" class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 md:p-8 space-y-4" novalidate>
-            <!-- Added Aug 2026: without this every submission emailed Manny as a
-free-photo request, so nobody could ask for a paid package
-                 including the AI website the section above now sells. -->
-            <div>
-              <label for="cf-interest" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">What are you after? *</label>
-              <select id="cf-interest" name="interest" class="w-full h-11 px-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition">
-                {PACKAGES.map((p) => (
-                  <option value={p.id} data-label={p.name}>{p.name}{p.price === 'Free' ? '' : `, ${p.price} ${p.cadence}`}</option>
-                ))}
-                <option value="not-sure" data-label="Not sure yet">Not sure yet: help me figure it out</option>
-              </select>
-            </div>
-            <div>
-              <label for="cf-name" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Your name *</label>
-              <input id="cf-name" name="name" type="text" required autocomplete="name" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
-            </div>
-            <div>
-              <label for="cf-business" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Business name</label>
-              <input id="cf-business" name="business" type="text" autocomplete="organization" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
-            </div>
-            <div>
-              <label for="cf-email" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Email *</label>
-              <input id="cf-email" name="email" type="email" required autocomplete="email" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
-            </div>
-            <div>
-              <label for="cf-phone" class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-1.5">Phone</label>
-              <input id="cf-phone" name="phone" type="tel" autocomplete="tel" class="w-full h-11 px-3.5 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition" />
-            </div>
-            <button id="claimSubmit" type="submit" class="w-full h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed">
-              Claim 360° photo
-            </button>
-            <p id="claimStatus" role="status" aria-live="polite" class="text-sm text-center hidden"></p>
-            <p class="text-xs text-center text-text-light-tertiary dark:text-text-dark-tertiary">Prefer to talk? Call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a> or email <a href={`mailto:${EMAIL}`} class="text-primary-blue hover:underline">{EMAIL}</a>.</p>
-          </form>
-
-          <!-- Notepad astronaut taking down the details — homepage-mascot sizing -->
-          <img src="/mascot/astronaut-notes.webp" alt="" aria-hidden="true" width="320" height="600" loading="lazy" decoding="async" class="mx-auto my-4 w-full max-w-[80px] h-auto pointer-events-none" />
-        </div>
-      </Container>
-    </Section>
-
-    <!-- ───────────────────────── FAQ ───────────────────────── -->
-    <Section id="faq" variant="gradient">
-      <Container>
-        <div class="max-w-3xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Questions, answered</span></h2>
-          </div>
-          <div class="space-y-3">
-            {FAQS.map((f) => (
-              <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">
-                <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-text-light-primary dark:text-text-dark-primary">
-                  {f.q}
-                  <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </summary>
-                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </Container>
-    </Section>
-
     <DockMenu />
   </main>
 </BaseLayout>
-
-<script>
-  // Wire the claim form to the existing CSRF-protected /api/contact endpoint.
-  (function () {
-    const form = document.getElementById('claimForm') as HTMLFormElement | null;
-    const submitBtn = document.getElementById('claimSubmit') as HTMLButtonElement | null;
-    const statusEl = document.getElementById('claimStatus');
-    if (!form || !submitBtn) return;
-    let csrfToken: string | null = null;
-    let sessionId: string | null = null;
-
-    async function loadToken() {
-      try {
-        const res = await fetch('/api/contact');
-        const data = await res.json();
-        csrfToken = data.csrf_token;
-        sessionId = data.session_id;
-      } catch (_) { /* form will surface an error on submit if this failed */ }
-    }
-    form.addEventListener('focusin', () => loadToken(), { once: true });
-
-    function setStatus(msg: string, ok: boolean) {
-      if (!statusEl) return;
-      statusEl.textContent = msg;
-      statusEl.classList.remove('hidden');
-      statusEl.classList.toggle('text-green-600', ok);
-      statusEl.classList.toggle('text-red-500', !ok);
-    }
-
-    // /api/contact runs InputValidator, whose command-injection rule rejects
-    // ; & | ` $ ( ) { } [ ] anywhere in the subject or message. Package labels
-    // carry "(1-page)" and "$195", and plenty of real businesses are named
-    // "X & Sons" — so strip those characters before they reach the API rather
-    // than letting a legitimate lead bounce with an opaque error.
-    const clean = (s: string) =>
-      s.replace(/&/g, 'and').replace(/[;|`$(){}[\]]/g, '').replace(/[^\S\n]+/g, ' ').trim();
-
-    // What each choice asks for, in the words Manny will read in his inbox.
-    const REQUESTS: Record<string, string> = {
-      'free-360': 'I would like to claim my free 360 photo for my Google Business Profile.',
-      'photo-pack': 'I am interested in the 360 Photo Pack, five professional 360 photos for my Google listing.',
-      'profile-setup': 'I am interested in Profile Setup + Verification, creating and verifying my Google Business Profile.',
-      'ai-website': 'I am interested in the one-page AI Website, the site with “Remi” answering customers and my 360 tour embedded on my own domain.',
-      'not-sure': 'I am not sure yet which of these fits my business. I would like help figuring it out.',
-    };
-
-    // Deep links from the pricing cards and the AI-website section preselect
-    // the right option, so the reader never has to re-state what they clicked.
-    const interestEl = document.getElementById('cf-interest') as HTMLSelectElement | null;
-    function syncSubmitLabel() {
-      const v = interestEl?.value || 'free-360';
-      submitBtn!.textContent = v === 'free-360' ? 'Claim 360° photo' : 'Send my request';
-    }
-    interestEl?.addEventListener('change', syncSubmitLabel);
-    document.addEventListener('click', (e) => {
-      const trigger = (e.target as HTMLElement).closest('[data-claim-interest]');
-      if (!trigger || !interestEl) return;
-      interestEl.value = trigger.getAttribute('data-claim-interest') || 'free-360';
-      syncSubmitLabel();
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const get = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
-      const name = get('cf-name').trim();
-      const business = get('cf-business').trim();
-      const email = get('cf-email').trim();
-      const phone = get('cf-phone').trim();
-      const interest = interestEl?.value || 'free-360';
-      const interestLabel = clean(
-        interestEl?.selectedOptions?.[0]?.getAttribute('data-label') || 'Free 360° Photo'
-      );
-
-      if (name.length < 2 || !/.+@.+\..+/.test(email)) {
-        setStatus('Please add your name and a valid email.', false);
-        return;
-      }
-      if (!csrfToken) { await loadToken(); }
-
-      const subject = clean(`${interestLabel} request: ${business || name}`);
-      const message = clean(
-        `Interested in: ${interestLabel}.\n` +
-        `Business: ${business || 'not provided'}\n` +
-        `Phone: ${phone || 'not provided'}\n\n` +
-        (REQUESTS[interest] || REQUESTS['free-360'])
-      );
-
-      submitBtn.disabled = true;
-      const original = submitBtn.textContent;
-      submitBtn.textContent = 'Sending…';
-      statusEl?.classList.add('hidden');
-
-      try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, subject, message, session_id: sessionId, csrf_token: csrfToken }),
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          setStatus(
-            interest === 'free-360'
-              ? 'Thanks! Your request is in: we’ll reach out shortly to set up your free shoot.'
-              : 'Thanks! Your request is in, we’ll reach out shortly with the details.',
-            true
-          );
-          form.reset();
-          loadToken(); // refresh token for any follow-up submission
-        } else {
-          setStatus(data.error || 'Something went wrong. Please call or email instead.', false);
-        }
-      } catch (_) {
-        setStatus('Network error. Please call or email instead.', false);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = original;
-      }
-    });
-  })();
-</script>
-
-<style>
-  /* Matches the /plans and /ecommerce heroes: a slow drift, off for
-     reduced-motion users. */
-  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
-  @keyframes astro-float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-10px) rotate(-1.5deg); }
-  }
-  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
-</style>

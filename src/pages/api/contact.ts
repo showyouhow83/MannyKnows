@@ -20,13 +20,13 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
   try {
     // Parse request body
     const body = await request.json();
-    const { 
-      name, 
-      email, 
-      subject, 
-      message, 
-      session_id, 
-      csrf_token 
+    const {
+      name,
+      email,
+      subject,
+      message,
+      session_id,
+      csrf_token
     } = body;
 
     // Domain validation
