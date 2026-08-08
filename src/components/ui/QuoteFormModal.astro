@@ -142,19 +142,89 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
       } catch { /* offline: the phone/email fallbacks on the page still work */ }
     }
 
-    /**
-     * Preselect the service so the visitor never has to hunt the dropdown for
-     * the thing they just clicked. Matches on the exact service value first
-     * (what a trigger should send), then falls back to a label match so a
-     * human-readable context like "AI Website" still lands.
-     */
+    // ── Service preselection ────────────────────────────────────────────────
+    // The ~75 #contact triggers across the site predate this modal and send
+    // free-text contexts ("AI Website (one-page)", "Get Found plan", "Sell
+    // Online: store plan") rather than service values. A plain substring test
+    // misses nearly all of them — "AI Website, one page ($195 + $40/mo)" does
+    // not contain "ai website (one-page)" — so we score word overlap instead
+    // and only accept a confident match.
+
+    /** Contexts that carry no word in common with their service's label. */
+    const CONTEXT_OVERRIDES: Record<string, string> = {
+      'ai booking agent': 'website-plus',        // booking starts at Get Booked
+      'idea launchpad': 'custom-app',
+      'idea launchpad: co-own an app': 'custom-app',
+      'one-time build: scope it': 'custom-app',
+    };
+
+    /** When there's no usable context, the page itself is a strong hint. */
+    const PATH_HINTS: Array<[string, string]> = [
+      ['/plans/get-found', 'website-basic'],
+      ['/plans/get-booked', 'website-plus'],
+      ['/plans/get-growing', 'website-smart'],
+      ['/plans/get-ahead', 'get-ahead'],
+      ['/plans/sell-online', 'ecommerce'],
+      ['/plans/business-ads', 'business-ads'],
+      ['/plans/multimedia-agency', 'multimedia-agency'],
+      ['/free-ai-website-analysis', 'website-analysis'],
+      ['/ai-booking-agent', 'website-plus'],
+      ['/free-360-photo', '360-photo'],
+      ['/ai-website', 'ai-website'],
+      ['/ai-team', 'ai-team'],
+      ['/ecommerce', 'ecommerce'],
+    ];
+
+    // Words that carry no signal — without "page" here, "About page" would
+    // match "AI Website, one page" on that word alone.
+    //
+    // "get", "hire" and "one" are deliberately NOT stopped: the plan names ARE
+    // "Get Found" / "Get Booked" / "Get Growing", so dropping "get" would take
+    // every plan-page context below the match threshold.
+    const STOP = new Set(['plan', 'plans', 'the', 'and', 'for', 'with', 'your',
+      'from', 'each', 'page', 'mo', 'our', 'new']);
+
+    function tokens(s: string): Set<string> {
+      return new Set(
+        s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/)
+          .filter((w) => w.length > 1 && !STOP.has(w) && !/^\d+$/.test(w))
+      );
+    }
+
     function preselectService(ctx: string) {
-      if (!ctx || !serviceSel) return;
-      const needle = ctx.toLowerCase();
-      const opts = Array.from(serviceSel.options);
+      if (!serviceSel) return;
+      const opts = Array.from(serviceSel.options).filter((o) => o.value && o.value !== 'not-sure');
+      const needle = (ctx || '').trim().toLowerCase();
+
+      // 1. An exact service value — what a well-formed trigger sends.
       const exact = opts.find((o) => o.value.toLowerCase() === needle);
-      const byLabel = exact || opts.find((o) => (o.textContent || '').toLowerCase().includes(needle));
-      if (byLabel) serviceSel.value = byLabel.value;
+      if (exact) { serviceSel.value = exact.value; return; }
+
+      // 2. A known context with no lexical overlap.
+      if (CONTEXT_OVERRIDES[needle] && opts.some((o) => o.value === CONTEXT_OVERRIDES[needle])) {
+        serviceSel.value = CONTEXT_OVERRIDES[needle];
+        return;
+      }
+
+      // 3. Best word overlap against the option labels. Two matching words is
+      //    the floor: one is noise ("About page" must select nothing).
+      const want = tokens(needle);
+      if (want.size) {
+        let best: HTMLOptionElement | null = null;
+        let bestScore = 0;
+        for (const o of opts) {
+          const have = tokens(o.textContent || '');
+          let score = 0;
+          want.forEach((w) => { if (have.has(w)) score++; });
+          if (score > bestScore) { bestScore = score; best = o; }
+        }
+        if (best && bestScore >= 2) { serviceSel.value = best.value; return; }
+      }
+
+      // 4. Nothing usable in the context — fall back to the page we're on.
+      const path = location.pathname.toLowerCase();
+      const hit = PATH_HINTS.find(([p]) => path.startsWith(p));
+      if (hit && opts.some((o) => o.value === hit[1])) serviceSel.value = hit[1];
     }
 
     /**

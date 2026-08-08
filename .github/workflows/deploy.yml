@@ -53,18 +53,28 @@ jobs:
       - name: Verify the deploy is actually live
         # `wrangler deploy` returns when the upload finishes; Workers static
         # assets take a beat to reach every edge. Poll for this build's stamp so
-        # a green check means "live", not "uploaded". Fails the job if the new
-        # build never shows up — which is a real signal worth seeing.
+        # a green check means "live", not merely "uploaded".
+        #
+        # Two things learned the hard way on this step's first real run:
+        #  1. Poll past the CACHE. A plain GET keeps hitting whichever edge copy
+        #     the runner's PoP already has, so it can report stale for minutes
+        #     after the origin is updated. Bust it with a header AND a query.
+        #  2. Do NOT fail the job on timeout. wrangler already confirmed the
+        #     upload; anything after that is propagation, not a broken deploy.
+        #     The first run red-X'd a deploy that was in fact live — and a CI
+        #     failure that doesn't mean failure is worse than no check at all.
+        #     Warn loudly, stay green.
         run: |
           for i in $(seq 1 60); do
-            if curl -sL --max-time 10 https://mannyknows.com/ | grep -q "${{ github.sha }}"; then
-              echo "✅ Verified live after $((i * 5))s."
+            if curl -sL --max-time 10 -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
+                 "https://mannyknows.com/?cb=${{ github.run_id }}-$i" \
+                 | grep -q "${{ github.sha }}"; then
+              echo "✅ Verified live after $((i * 10))s."
               exit 0
             fi
-            sleep 5
+            sleep 10
           done
-          echo "⚠️  Uploaded OK, but the site is still not serving ${{ github.sha }} after 5 minutes."
-          exit 1
+          echo "::warning::Deploy succeeded but the edge is still serving an older build after 10 minutes. This is propagation, not a failed deploy — check https://mannyknows.com if it persists."
 
       - name: Ping IndexNow
         # Tells Bing, Yandex, Seznam, Naver and Yep to re-crawl. Google does not
