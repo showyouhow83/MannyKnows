@@ -204,26 +204,6 @@ const NAVBAR_CONFIG = {
 			<HomeAiTeam />
 		</PageSection>
 
-		<!-- Google Business Profile — the "why a 360° photo wins" proof tiles
-		     (swapped in from /free-360-photo/, Aug 2026; the BrightLocal stats
-		     went the other way). Every figure is sourced on the page (see the
-		     component's header comment). -->
-		<PageSection
-			id="google-profile"
-			badge="Google Business Profile"
-			title="Why a 360° photo <br />wins customers"
-			subtitle="People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock."
-			variant="hero"
-		>
-			<!-- Megaphone astronaut peeking in from the right edge. All the dials
-			     live in the .gbp-mascot CSS block below: tweak and hot-reload. -->
-			<div slot="background" class="gbp-mascot" aria-hidden="true">
-				<img src="/mascot/astro-360-peek.webp" alt="" width="598" height="880" loading="lazy" decoding="async" />
-			</div>
-			<GoogleProfile />
-		</PageSection>
-
-
 		<!-- Smart Website plans — a compact promo for /plans (the full grid,
 		     comparison table, and FAQ live there). Cards pull from
 		     src/data/plans.ts so prices and copy never drift from the page
@@ -271,6 +251,25 @@ const NAVBAR_CONFIG = {
 					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Pay yearly and get 2 months free · every plan is tailored to your business</p>
 				</div>
 			</div>
+		</PageSection>
+
+		<!-- Google Business Profile — the "why a 360° photo wins" proof tiles
+		     (swapped in from /free-360-photo/, Aug 2026; the BrightLocal stats
+		     went the other way). Every figure is sourced on the page (see the
+		     component's header comment). -->
+		<PageSection
+			id="google-profile"
+			badge="Google Business Profile"
+			title="Why a 360° photo <br />wins customers"
+			subtitle="People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock."
+			variant="hero"
+		>
+			<!-- 360-camera astronaut peeking in from the right edge. All the dials
+			     live in the .gbp-mascot CSS block below: tweak and hot-reload. -->
+			<div slot="background" class="gbp-mascot" aria-hidden="true">
+				<img src="/mascot/astro-360-peek.webp" alt="" width="598" height="880" loading="lazy" decoding="async" />
+			</div>
+			<GoogleProfile />
 		</PageSection>
 
 		<!-- Who you're working with — condensed founder intro, routes to /about -->
