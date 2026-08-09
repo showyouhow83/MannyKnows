@@ -27,7 +27,9 @@ const { title, highlightedText, titleAfter = "", subtitle, badge, className = ""
       <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 apple-headline" style="font-size: clamp(1.7rem, 6vw, 4.5rem);">
         <!-- Whole heading is gradient — house rule (Manny, Aug 2026): no more
              white/gradient splits inside titles. -->
-        <span class="apple-gradient-text" data-colorful-title>{title && <>{title} </>}{highlightedText}{titleAfter}</span>
+        <!-- highlightedText is trusted site copy rendered as HTML so it can
+             carry responsive breaks like <br class="sm:hidden" />. -->
+        <span class="apple-gradient-text" data-colorful-title>{title && <>{title} </>}<span set:html={highlightedText} />{titleAfter}</span>
       </h1>
       <p class="sf-regular text-base sm:text-xl mb-0 text-text-light-secondary dark:text-text-dark-secondary apple-body-text max-w-3xl mx-auto">
         {subtitle}
