@@ -1,6 +1,6 @@
 ---
 title: "Meet Your AI Team. They Never Clock Out."
-description: "Eleven agents, one team (front desk, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting) trained on your business and managed by Manny AI, working around the clock."
+description: "One AI team (front desk, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting) trained on your business and managed by Manny AI, working around the clock."
 pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
@@ -51,7 +51,7 @@ It runs like an assembly line built around one shared memory: your **Brand Brain
 
 ## Hire one, or hire the crew
 
-Nobody starts with all eleven. Most businesses start with the one that hurts, usually “Remi”, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Team page](/ai-team/)**.
+Nobody starts with the whole roster. Most businesses start with the one that hurts, usually “Remi”, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Team page](/ai-team/)**.
 
 And if you're wondering whether this works for a business your size: it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/): the same team already answering for a local daycare, qualifying leads for a Springfield painting contractor, and checking project statuses for a home services company. Built here, trained on your business, managed from one admin.
 

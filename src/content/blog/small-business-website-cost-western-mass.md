@@ -35,7 +35,7 @@ For a straightforward, well-built small-business site, the going rate around her
 
 Instead of a big upfront bill, you pay monthly and the site is built **and** kept working: fast, found, and up to date every month. Good when you'd rather have it handled than babysit it yourself.
 
-Our **[Smart Website plans](/plans/)** start at [**$95/mo**](/plans/get-found/): a fast, multilingual 1–3 page site, “Remi” answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance, all included. Want a full multi-page site with “Remi” booking jobs? That's [**$245/mo**](/plans/get-booked/), and the [fully self-optimizing tier is **$545/mo**](/plans/get-growing/). For comparison, professional SEO *on its own* runs $500–2,000/mo at most agencies, so bundling the site, the AI, and the upkeep from $95 is built to be the affordable option, not the cheap one.
+Our **[Smart Website plans](/plans/)** start at [**$95/mo**](/plans/get-found/): a fast, multilingual 1–3 page site, “Remi” answering customers 24/7, your Google Business Profile set up, technical SEO, hosting, and monthly maintenance, all included. Want a full multi-page site with “Remi” booking jobs? That's [**$245/mo**](/plans/get-booked/), and the [fully self-optimizing tier is **$545/mo**](/plans/get-growing/). For comparison, professional local SEO *on its own* runs $500–$3,000/mo at most agencies (per [Semrush's local SEO pricing data](https://www.semrush.com/blog/local-seo-pricing/)), so bundling the site, the AI, and the upkeep from $95 is built to be the affordable option, not the cheap one.
 
 ## What actually makes a website "expensive"
 
