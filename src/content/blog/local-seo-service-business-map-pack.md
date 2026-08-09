@@ -16,7 +16,7 @@ Here's what moves the needle.
 
 ## 1. A complete, active Google Business Profile
 
-The Map Pack is built almost entirely from Google Business Profiles, so this is step one, not an afterthought. Claim it, verify it, and fill in **everything**: the right primary category, services, hours, service area, and real photos. Then keep it alive: a post or fresh photo every week or two tells Google you're open and working, and Google favors businesses that look active over ones that set it and forgot it. If you want a head start on the photo side, we'll shoot and publish a [free 360° photo](/free-360-photo/) for your profile.
+The Map Pack is built almost entirely from Google Business Profiles, so this is step one, not an afterthought. Claim it, verify it, and fill in **everything**: the right primary category, services, hours, service area, and real photos. Then keep it alive: a post or fresh photo every week or two tells Google you're open and working, and Google favors businesses that look active over ones that set it and forgot it. If you want a head start on the photo side, we'll shoot and publish a [free 360° photo](/local-seo/#free-360-photo) for your profile.
 
 ## 2. Reviews: the strongest lever you control
 

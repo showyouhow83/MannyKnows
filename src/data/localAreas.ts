@@ -183,7 +183,7 @@ export const localAreas: LocalArea[] = [
       {
         title: 'A free 360° photo of your business',
         body: "We photograph businesses for their Google profiles, and the first professional 360° photo is free: Springfield is our home city, so you're squarely in the radius.",
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'Claim the free photo',
       },
     ],
@@ -286,7 +286,7 @@ export const localAreas: LocalArea[] = [
       {
         title: 'A free 360° photo of your shop',
         body: 'Holyoke sits inside our free travel radius: one professional 360° photo for your Google profile, free. We come to you.',
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'Claim the free photo',
       },
     ],
@@ -393,7 +393,7 @@ export const localAreas: LocalArea[] = [
       {
         title: 'A free 360° photo, right across the river',
         body: 'Chicopee is minutes from our Springfield base: well inside the free radius. One professional 360° photo for your Google profile, free.',
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'Claim the free photo',
       },
     ],
@@ -498,7 +498,7 @@ export const localAreas: LocalArea[] = [
       {
         title: 'Photo, video & 360° virtual tours',
         body: "Interiors like Northampton's deserve better than a phone pano. 360° photo packs and Google Street View tours cover the whole valley: Hamp included.",
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'See 360° packs',
       },
     ],
@@ -587,7 +587,7 @@ export const localAreas: LocalArea[] = [
       {
         title: '360° photos & virtual tours',
         body: "Google Street View tours and 360° photo packs cover the whole valley. Westfield sits just past the free-photo radius. We quote any small travel fee up front, always.",
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'See 360° packs',
       },
     ],
@@ -691,7 +691,7 @@ export const localAreas: LocalArea[] = [
       {
         title: 'A free 360° photo of your business',
         body: "Agawam is right across the river: well inside our free travel radius. One professional 360° photo for your Google profile, free: published for you.",
-        href: '/free-360-photo/',
+        href: '/local-seo/#free-360-photo',
         linkText: 'Claim the free photo',
       },
     ],

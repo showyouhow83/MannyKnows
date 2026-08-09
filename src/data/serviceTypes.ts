@@ -32,6 +32,10 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: '360-photo', label: 'Free 360° Photo' },
   { value: '360-photo-pack', label: '360° Photo Pack (from $195)' },
   { value: 'gbp-setup', label: 'Google Profile Setup + Verification (from $145)' },
+  // Local SEO packages — the cards on /local-seo/ (Aug 2026): monthly GBP +
+  // 360° media + reviews bundles.
+  { value: 'seo-on-the-map', label: 'On the Map: Local SEO + 360° media ($245/mo)' },
+  { value: 'seo-own-the-map', label: 'Own the Map: Local SEO + virtual tour ($495/mo)' },
   { value: 'website-analysis', label: 'Free AI Website Analysis' },
   { value: 'other', label: 'Other (enter custom)' },
 ];

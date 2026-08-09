@@ -1,15 +1,21 @@
 ---
-// Local SEO landing page — the destination for "SEO" across the site (Services
-// dropdown, footer "SEO & Marketing" column, /services card). SEO is SOLD
-// through the Smart Website plans and the GBP services; this page is the map:
-// what local SEO covers here, which plan carries which depth, and the two free
-// ways to start. The 360° lead magnet stays on /free-360-photo/ — the pages
-// cross-link, they don't compete.
+// Local SEO — THE page for getting found on Google, merged with the former
+// /free-360-photo/ page (Aug 2026 per Manny): one funnel instead of two
+// overlapping pages. /free-360-photo/ now 301s to #free-360-photo here, so
+// every old button, share, and print link still lands.
 //
-// HONESTY RULE: every claim on this page traces to an existing offer or a
-// cited figure (BrightLocal tiles live in GbpStats.astro; the comparison's
-// Google citations live in GbpComparison.astro). No invented timelines or
-// ranking guarantees.
+// The offer structure (blessed by Manny, Aug 9 2026):
+//   • Free 360° photo — the lead magnet, unchanged.
+//   • Two monthly SEO packages that ABSORB the old one-time products and add
+//     recurring media: "On the Map" $245/mo and "Own the Map" $495/mo
+//     (fresh photos monthly, reviews collected & answered, virtual tour on
+//     the big tier). One-time pack/setup remain quotable in the footnote.
+//   • The AI-powered website plans as the other path — every site we build
+//     ships with SEO included. That's the unified language: sites include
+//     SEO; these packages bring the same human + AI pipeline to any site.
+//
+// HONESTY RULE: every figure traces to a printed source (GbpStats /
+// GbpComparison carry theirs). No invented timelines or ranking guarantees.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -21,63 +27,83 @@ import StepCards from '../components/ui/StepCards.astro';
 import GbpStats from '../components/sections/GbpStats.astro';
 import GbpComparison from '../components/sections/GbpComparison.astro';
 import { plans } from '../data/plans';
+import { BOOKING_URL } from '../data/booking';
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
 const EMAIL = 'mm@mannyknows.com';
+const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
+const FREE_TRAVEL = 'within ~10 miles of Springfield'; // free-shoot radius; beyond it a small gas/travel fee may apply
 
 // Prices come from the canonical plan data so a reprice can never strand this
 // page on old numbers.
 const price = (slug: string) => plans.find((p) => p.slug === slug)?.price ?? 0;
 
-// What "local SEO" covers here — each item maps to a real deliverable that
-// already exists in a plan or service (plans.ts, /free-360-photo packages).
+// The two monthly SEO packages. `service` values exist in serviceTypes.ts so
+// the quote modal can name what the visitor clicked.
+const PACKAGES = [
+  {
+    name: 'On the Map',
+    price: 245,
+    note: 'month-to-month · cancel anytime',
+    service: 'seo-on-the-map',
+    description: 'Everything a local profile needs to rank and stay ranked, done for you every month: and it starts with a real shoot at your business.',
+    features: [
+      'Your Google Business Profile claimed, verified, and set up right: category, services, hours, info',
+      'Launch shoot: five 360° photos published as a mini "see inside" tour on your listing',
+      'Fresh photos every month, a mix of 360° and standard shots, so your profile never goes stale',
+      'Reviews collected and answered: a review link & QR for your counter, asks on a schedule, every review replied to',
+      'Monthly Google posts, plus on-page SEO fixes on your existing website',
+      'A monthly report: what moved, what changes next',
+    ],
+  },
+  {
+    name: 'Own the Map',
+    price: 495,
+    note: 'month-to-month · cancel anytime',
+    service: 'seo-own-the-map',
+    featured: true,
+    builtOn: 'Everything in On the Map, plus',
+    description: 'The full presence: a virtual tour customers can walk through, content that compounds, and a site structured for AI answers.',
+    features: [
+      'A full virtual tour built from 360° images and video, embedded on your site and your profile',
+      "AI search optimization: structured so ChatGPT and Google's AI can read, quote, and recommend you",
+      'Monthly content written in your voice, for the searches your customers actually make',
+      'A local landing page when a campaign calls for one',
+    ],
+  },
+];
+
+// What "local SEO" covers here — each item maps to a deliverable in the
+// packages or plans above.
 const INCLUDED = [
   { title: 'Google Business Profile, run right', body: 'Claimed, verified, and maintained: the right primary category, complete info, photos, hours, and posts that keep the profile visibly alive.', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
   { title: 'On-page & technical SEO', body: 'Fast pages, clean structure, and all the HTML behind it: the foundation Google reads before it ranks anyone.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
   { title: 'AI search optimization', body: "Customers now ask ChatGPT and Google's AI. Your site gets structured so answer engines can read, quote, and recommend you.", icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0013.5 19.5h-3a3.374 3.374 0 00-2.494-1.01l-.548-.547z' },
-  { title: 'Content that stays fresh', body: 'Pages and posts written in your voice, kept current: on the self-optimizing plans, continuously.', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
-  { title: 'Reviews, asked and answered', body: 'Reviews asked for on a schedule, and every one answered: the signal customers check before they call.', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
-  { title: '360° photos & media on your listing', body: 'Immersive 360° photos published to your profile, so customers step inside before they visit: start with one free.', icon: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z' },
+  { title: '360° photos & tours, refreshed monthly', body: 'A real shoot at your business, then new photos every month: 360° and standard, published to your profile so it always looks active.', icon: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z' },
+  { title: 'Reviews, asked and answered', body: 'A review link and QR for your counter, asks on a schedule, and every review answered: the signal customers check before they call.', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
+  { title: 'Content that stays fresh', body: 'Pages and posts written in your voice, kept current: on the bigger package and the self-optimizing plans, continuously.', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
 ];
 
-// Where the SEO lives — the three plan depths. Copy comes from the plans'
-// own bullets (plans.ts) so this page never promises what a plan doesn't.
-const SEO_PLANS = [
-  {
-    slug: 'get-found',
-    name: 'Get Found',
-    body: 'Set up to rank on Google & Maps when locals search for you, with hosting, SSL, and speed handled.',
-  },
-  {
-    slug: 'get-booked',
-    name: 'Get Booked',
-    body: 'Adds local SEO and AI search optimization: rank for what customers search, and get quoted in AI answers.',
-  },
-  {
-    slug: 'get-growing',
-    name: 'Get Growing',
-    featured: true,
-    body: 'Full self-optimization: content written and SEO & speed tuned continuously, like a web developer on your site 24/7.',
-  },
-];
-
-const STEPS = [
-  { n: '01', title: 'Start with the free audit', body: 'Send your site: the free AI Website Analysis reports on speed, SEO, mobile, conversions, and AI-readiness, so you know what is broken before you spend anything.', icon: 'M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z' },
-  { n: '02', title: 'Fix the foundations', body: 'Your Google Business Profile claimed, verified, and set up right, and the on-page problems fixed: category, structure, speed, and the pages Google reads first.', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
-  { n: '03', title: 'Build, then keep tuning', body: 'Content, photos, and reviews built up on a schedule. On the self-optimizing plans your site checks itself every day: the correction loop never stops.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+// The free shoot, ported from the old /free-360-photo/ page.
+const SHOOT_STEPS = [
+  { n: '01', title: 'Call or book a time', body: 'Tap to call or send the short form below. We pick a time that fits your schedule: it only takes a minute.', icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z' },
+  { n: '02', title: 'We come to you', body: 'We show up at your business and capture a crisp, professional 360° photo. Most shoots take under 30 minutes.', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '03', title: 'It goes live on Google', body: 'We publish your 360° photo to your Google Business Profile so customers can step inside before they visit: free.', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
 ];
 
 const FAQS = [
-  { q: 'Is SEO included in the website plans?', a: 'Yes. Every Smart Website plan is set up to rank on Google & Maps from day one. Get Booked adds local SEO and AI search optimization, and Get Growing tunes content, SEO, and speed continuously. You pick the depth; the plan carries it.' },
-  { q: 'I already have a website. Can you do SEO on it?', a: "Yes: SEO is also available as a one-time project (audit, fixes, and content). The free AI Website Analysis is the right first step either way: it shows what's holding your site back before you spend anything." },
-  { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there: that's why profile setup, photos, and reviews are part of the work." },
-  { q: 'What is AI search optimization?', a: "More customers ask ChatGPT or Google's AI instead of scrolling results. Those answer engines can only recommend what they can read, so your site gets structured for them: clean data, real answers on the page, and 360° galleries built to get picked." },
+  { q: 'Is the 360° photo really free?', a: "Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost, with no obligation. It's how we introduce our work." },
+  { q: 'What does "fresh photos every month" mean?', a: 'On the SEO packages we keep shooting: new photos every month, some 360° and some standard, published to your profile. An active profile with recent photos reads as an open, working business, to Google and to customers.' },
+  { q: 'How does the review collection work?', a: "You get a review link and a QR code for the counter, asks go out on a schedule, and every review gets answered: 42% of consumers say they're unlikely to use a business that never replies to reviews." },
+  { q: 'Is SEO included in the website plans?', a: 'Yes. Every AI-powered website we build ships with SEO included, from day one. The packages on this page exist for businesses keeping a site we didn\'t build: same human + AI pipeline, plus the photo and review work no website can do for you.' },
+  { q: 'I already have a website. Can you do SEO on it?', a: "That's exactly what these packages are for: they work on any site. The free AI Website Analysis is a good first step either way; it shows what's holding your site back before you spend anything." },
+  { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there: that's why profile work, photos, and reviews carry the packages." },
   { q: 'How long until results?', a: "Honestly: it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
-  { q: 'Should I just buy ads instead?', a: 'Ads pointed at a weak site burn money. Get the site and profile ranking-ready first, then pour traffic on: that’s what the Business Ads plan is for, and Get Ahead bundles both.' },
+  { q: 'Do you serve my area?', a: `We're based in Springfield, MA, and shoot on-site across the Pioneer Valley. Free shoots cover locations ${FREE_TRAVEL}; a little farther out we may add a small gas/travel fee, always quoted up front. The SEO work itself can be done from anywhere.` },
 ];
 
-const META_DESCRIPTION = 'Local SEO for Springfield & Western Mass businesses: Google Business Profile, map pack rankings, and AI search optimization. Built into plans from $95/mo.';
+const META_DESCRIPTION = 'Local SEO packages for Springfield & Western Mass: Google Business Profile, monthly 360° photos, reviews collected & answered, and AI search optimization. From $245/mo, or start with a free 360° photo.';
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
 const jsonLd = {
@@ -87,7 +113,7 @@ const jsonLd = {
       '@type': 'Service',
       '@id': `${siteUrl}/local-seo#service`,
       name: 'Local SEO',
-      serviceType: 'Local SEO, Google Business Profile & AI search optimization',
+      serviceType: 'Local SEO, Google Business Profile, 360° photography & AI search optimization',
       description: META_DESCRIPTION,
       areaServed: [
         { '@type': 'City', name: 'Springfield, Massachusetts' },
@@ -108,16 +134,27 @@ const jsonLd = {
         },
         image: `${siteUrl}/favicon.svg`,
         priceRange: '$$',
-        areaServed: 'Springfield, MA & Western Massachusetts',
+        areaServed: SERVICE_AREA,
       },
-      offers: SEO_PLANS.map((p) => ({
-        '@type': 'Offer',
-        name: `${p.name} (Smart Website plan)`,
-        description: p.body,
-        priceCurrency: 'USD',
-        priceSpecification: { '@type': 'UnitPriceSpecification', price: String(price(p.slug)), priceCurrency: 'USD', unitText: 'MONTH' },
-        url: `${siteUrl}/plans/${p.slug}/`,
-      })),
+      offers: [
+        {
+          '@type': 'Offer',
+          name: 'Free 360° Photo',
+          description: 'One professional 360° photo of your business, published to your Google Business Profile at no cost.',
+          price: '0',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: `${siteUrl}/local-seo/#free-360-photo`,
+        },
+        ...PACKAGES.map((p) => ({
+          '@type': 'Offer',
+          name: `${p.name} (Local SEO package)`,
+          description: p.description,
+          priceCurrency: 'USD',
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: String(p.price), priceCurrency: 'USD', unitText: 'MONTH' },
+          url: `${siteUrl}/local-seo/#packages`,
+        })),
+      ],
     },
     {
       '@type': 'FAQPage',
@@ -132,7 +169,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title="Local SEO Springfield, MA: Google & AI Search | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Local SEO Springfield, MA: Google, 360° & AI Search | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -152,11 +189,11 @@ const jsonLd = {
           <div class="max-w-[1440px] mx-auto text-center">
             <div class="flex justify-center mb-6">
               <img
-                src="/mascot/astronaut-megaphone.svg"
+                src="/mascot/astro-360.webp"
                 alt=""
                 aria-hidden="true"
-                width="150"
-                height="150"
+                width="1072"
+                height="1581"
                 decoding="async"
                 class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
               />
@@ -168,15 +205,15 @@ const jsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Local SEO that gets you found<br />on Google, and quoted by AI</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-              For Western Mass businesses that get customers by being found: the map pack, page one, and the AI answers customers now ask. SEO is built into every Smart Website plan, from ${price('get-found')}/mo, so the work never depends on you remembering to order it.
+              Every AI-powered website we build ships with SEO included. These packages bring the same human + AI pipeline to any site, with what no other SEO vendor does: 360° photos, virtual tours, and reviews, refreshed every month. From ${PACKAGES[0].price}/mo, or start with a free 360° photo.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="#quote" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+              <a href="#quote" data-quote-context="seo-on-the-map" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
                 Start ranking today
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
-              <a href="/free-ai-website-analysis/" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                Free AI website analysis
+              <a href="#free-360-photo" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                Claim the free 360° photo
               </a>
             </div>
             <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
@@ -187,12 +224,38 @@ const jsonLd = {
       </div>
     </header>
 
+    <!-- ───────────────────────── Free 360° photo (the lead magnet) ─────────────────────────
+         Anchor target for the old /free-360-photo/ URL (301s land here). -->
+    <Section id="free-360-photo" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">We come to you · {SERVICE_AREA}</span>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Start with a free 360° photo</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation: it's how we introduce our work.</p>
+        </div>
+        <StepCards steps={SHOOT_STEPS} cols={3} class="max-w-6xl mx-auto" />
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
+          <a href="#quote" data-quote-context="360-photo" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+            Claim 360° photo
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+          {BOOKING_URL && (
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Book a time
+            </a>
+          )}
+        </div>
+        <p class="text-center mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">No cost · No obligation · Live on Google in days</p>
+      </Container>
+    </Section>
+
     <!-- ───────────────────────── What's included ───────────────────────── -->
-    <Section id="included" variant="alternate">
+    <Section id="included" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What local SEO covers here</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Not a report and a retainer: the work itself, done for you across your profile, your site, and your content.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Not a report and a retainer: the work itself, done for you across your profile, your site, your photos, and your reviews.</p>
         </div>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {INCLUDED.map((item) => (
@@ -208,26 +271,69 @@ const jsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────────────────── How it works ───────────────────────── -->
-    <Section id="how-it-works" variant="default">
+    <!-- ───────────────────────── The SEO packages ───────────────────────── -->
+    <Section id="packages" variant="alternate">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How it works</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a free audit to a site that keeps tuning itself.</p>
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">SEO packages</span>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Get on the map. Then own it.</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">For any website, including ones we didn't build: a human + AI pipeline with real photography behind it. Prices are starting points, tailored to your business.</p>
         </div>
-        <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
+        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto items-stretch">
+          {PACKAGES.map((p) => (
+            <div class={`relative flex flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 ${p.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
+              {p.featured && (
+                <span class="self-start inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3">Best value</span>
+              )}
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
+              <div class="mt-2 mb-3">
+                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{p.note}</span>
+              </div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{p.description}</p>
+              {p.builtOn && (
+                <p class="text-xs font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{p.builtOn}:</p>
+              )}
+              <ul class="space-y-2.5 flex-1">
+                {p.features.map((f) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#quote"
+                data-quote-context={p.service}
+                class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${p.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
+              >
+                Start with {p.name}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+          Just want the photos or the profile? The 360° Photo Pack (from $195) and Profile Setup + Verification (from $145) are available one-time: <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">ask for a quote</a>. Bigger SEO campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>.
+        </p>
       </Container>
     </Section>
 
-    <!-- ───────────────────────── SEO in the plans ───────────────────────── -->
-    <Section id="plans" variant="alternate">
+    <!-- ───────────────────────── The other path: sites with SEO included ───────────────────────── -->
+    <Section id="plans" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick your depth</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">SEO isn't sold separately here: it ships inside the Smart Website plans, so the site and the ranking work are never out of sync. Each tier includes everything in the one before it.</p>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Every AI-powered website includes SEO</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Rather have the site do the work? Every website we build ships with SEO included, so the site and the ranking work are never out of sync. Each tier includes everything in the one before it.</p>
         </div>
         <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
-          {SEO_PLANS.map((p) => (
+          {[
+            { slug: 'get-found', name: 'Get Found', body: 'Set up to rank on Google & Maps when locals search for you, with hosting, SSL, and speed handled.' },
+            { slug: 'get-booked', name: 'Get Booked', body: 'Adds local SEO and AI search optimization: rank for what customers search, and get quoted in AI answers.' },
+            { slug: 'get-growing', name: 'Get Growing', featured: true, body: 'Full self-optimization: content written and SEO & speed tuned continuously, like a web developer on your site 24/7.' },
+          ].map((p) => (
             <a
               href={`/plans/${p.slug}/`}
               class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
@@ -252,14 +358,11 @@ const jsonLd = {
             </a>
           ))}
         </div>
-        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Already have a site you're keeping? Profile Setup + Verification is available on its own (from $145), SEO campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>, and one-time SEO projects can be scoped: <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">ask for a quote</a>.
-        </p>
       </Container>
     </Section>
 
     <!-- ───────────────────────── GBP: stats + comparison ───────────────────────── -->
-    <Section id="gbp" variant="default">
+    <Section id="gbp" variant="alternate">
       <Container>
         <div class="text-center max-w-2xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>It starts with your Google Business Profile</span></h2>
@@ -274,23 +377,15 @@ const jsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────────────────── Free ways to start ───────────────────────── -->
-    <Section id="free-starts" variant="alternate">
+    <!-- ───────────────────────── Free analysis strip ───────────────────────── -->
+    <Section id="analysis" variant="default">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Two free ways to start</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Both stand on their own. Neither obligates you to anything.</p>
-        </div>
-        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
-          <a href="/free-ai-website-analysis/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Free AI Website Analysis</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Send your site, get a clear report: speed, SEO, mobile, conversions, and AI-readiness.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Analyze my site <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
-          </a>
-          <a href="/free-360-photo/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Free 360° Photo</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">We come to your business, shoot one immersive 360° photo, and publish it to your Google listing.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Claim the photo <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Not sure where you stand?</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">Send your site and get a clear report: speed, SEO, mobile, conversions, and AI-readiness. Free, no obligation.</p>
+          <a href="/free-ai-website-analysis/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
+            Get the free AI website analysis
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </a>
         </div>
       </Container>
