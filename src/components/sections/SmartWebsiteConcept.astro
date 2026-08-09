@@ -15,24 +15,29 @@
 export interface Props {
   /** Heading level for the section title: h2 on plan pages, h2 on /plans. */
   compact?: boolean;
+  /** false = contrast columns + closing line only (the homepage promo brings
+      its own PageSection title/subtitle). */
+  showHeader?: boolean;
 }
-const { compact = false } = Astro.props;
+const { compact = false, showHeader = true } = Astro.props;
 // ("What it checks, every day" daily-loop grid removed per Manny, Aug 2026 —
 // the contrast columns and the builder objection carry the concept alone.)
 ---
 
 <div class="max-w-6xl mx-auto">
-  <div class="text-center mb-12">
-    <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-      A different kind of website
-    </span>
-    <h2 class={`sf-bold apple-headline font-bold mb-5 ${compact ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}`}>
-      <span class="apple-gradient-text" data-colorful-title>Most websites get worse every month. This one gets better.</span>
-    </h2>
-    <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
-      A normal website is frozen the day it launches. It only improves if you pay someone to touch it, so most small-business sites quietly rot for years while the owner assumes they're fine. Ours check themselves every single day.
-    </p>
-  </div>
+  {showHeader && (
+    <div class="text-center mb-12">
+      <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+        A different kind of website
+      </span>
+      <h2 class={`sf-bold apple-headline font-bold mb-5 ${compact ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}`}>
+        <span class="apple-gradient-text" data-colorful-title>Most websites get worse every month. This one gets better.</span>
+      </h2>
+      <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
+        A normal website is frozen the day it launches. It only improves if you pay someone to touch it, so most small-business sites quietly rot for years while the owner assumes they're fine. Ours check themselves every single day.
+      </p>
+    </div>
+  )}
 
   <!-- The contrast: what you're used to vs what this is -->
   <div class="grid gap-5 md:grid-cols-2 mb-14">

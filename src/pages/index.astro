@@ -23,11 +23,12 @@ import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import GoogleProfile from '../components/sections/GoogleProfile.astro';
+import SmartWebsiteConcept from '../components/sections/SmartWebsiteConcept.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
 // never drift from the published price on a reprice.
-import { plans, websitePlans } from '../data/plans';
+import { plans } from '../data/plans';
 
 const planPrice = (slug: string) => String(plans.find((p) => p.slug === slug)?.price ?? '');
 
@@ -204,51 +205,25 @@ const NAVBAR_CONFIG = {
 			<HomeAiTeam />
 		</PageSection>
 
-		<!-- Smart Website plans — a compact promo for /plans (the full grid,
-		     comparison table, and FAQ live there). Cards pull from
-		     src/data/plans.ts so prices and copy never drift from the page
-		     they promote. Replaces the full PricingPlans grid that was hidden
-		     from the homepage earlier (still on /plans). -->
+		<!-- AI-Powered Websites — promo for /plans that sells the CONCEPT, not
+		     the price list (pricing cards live only on /plans, per Manny).
+		     The contrast columns come from SmartWebsiteConcept (shared with
+		     /plans) so the copy can never drift. -->
 		<PageSection
 			id="plans"
 			badge="AI-Powered Websites"
 			title="Websites that help you run <br />your business efficiently"
-			subtitle="Four AI-powered website plans: multilingual, capturing leads, managing clients, and getting you found on Google, from day one. Each tier includes everything in the one before it."
+			subtitle="A normal website is frozen the day it launches: it only improves if you pay someone to touch it. Ours check themselves every single day: multilingual, capturing leads, and getting you found on Google."
 			variant="alternate"
 		>
 			<div class="max-w-6xl mx-auto">
-				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
-					{websitePlans.map((p) => (
-						<a
-							href={`/plans/${p.slug}/`}
-							class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
-								p.featured
-									? 'border-primary-blue/50 ring-1 ring-primary-blue/30 shadow-lg shadow-primary-blue/10'
-									: 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
-							}`}
-						>
-							{p.featured && (
-								<span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">Most popular</span>
-							)}
-							<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
-							<div class="mt-1 mb-3">
-								<span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-								<span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-							</div>
-							<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{p.tagline}</p>
-							<span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
-								What's included
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-							</span>
-						</a>
-					))}
-				</div>
+				<SmartWebsiteConcept showHeader={false} />
 				<div class="text-center mt-10">
 					<a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-						Compare all plans &amp; pricing
+						Compare the plans
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
 					</a>
-					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Pay yearly and get 2 months free · every plan is tailored to your business</p>
+					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Every plan is tailored to your business</p>
 				</div>
 			</div>
 		</PageSection>
@@ -283,40 +258,29 @@ const NAVBAR_CONFIG = {
 			variant="alternate"
 		>
 			<div class="max-w-6xl mx-auto">
-				<div class="grid gap-6 md:grid-cols-3 items-stretch">
-					{[
-						{ kind: 'Disconnected', name: 'Scripts & Tools', price: 300, body: 'Standalone helpers that do one job well: Apps Script, scheduled reports, spreadsheets that become tools.' },
-						{ kind: 'Connected', name: 'Connected Apps', price: 600, featured: true, body: 'Your tools wired together: APIs, webhooks, Twilio phone & SMS, and MCP servers your AI can work through.' },
-						{ kind: 'Custom', name: 'Business Apps', price: 2500, body: 'Dashboards, booking and quoting systems, client portals: own it outright, or co-own it with nothing upfront.' },
-					].map((t) => (
-						<a
-							href="/apps/"
-							class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
-								t.featured
-									? 'border-primary-blue/50 ring-1 ring-primary-blue/30 shadow-lg shadow-primary-blue/10'
-									: 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
-							}`}
-						>
-							<span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">{t.kind}</span>
-							<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
-							<div class="mt-1 mb-3">
-								<span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-								<span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary"> one-time</span>
-							</div>
-							<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{t.body}</p>
-							<span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
-								What's included
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-							</span>
-						</a>
-					))}
+				<!-- Copy mirrors the #concept cards on /apps/ (the source of
+				     truth) — no prices on the homepage, per Manny. -->
+				<div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
+					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
+						<span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">Disconnected</span>
+						<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Scripts &amp; tools</h3>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that files what you used to do by hand.</p>
+					</div>
+					<div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+						<span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">Connected</span>
+						<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Integrations &amp; MCP</h3>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Your tools wired together so data stops being re-typed: APIs and webhooks, Twilio phone &amp; SMS, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+					</div>
 				</div>
-				<div class="text-center mt-10">
+				<p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-10 max-w-2xl mx-auto">
+					The fastest way to get hours back is to stop doing the work a machine can do.
+				</p>
+				<div class="text-center mt-8">
 					<a href="/apps/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
 						Explore Business Apps
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
 					</a>
-					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Flat $75/hr, quoted up front · most projects live in 2–4 weeks</p>
+					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Quoted up front · most projects live in 2–4 weeks · you own everything we build</p>
 				</div>
 			</div>
 		</PageSection>
