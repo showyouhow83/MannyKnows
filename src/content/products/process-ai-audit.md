@@ -50,7 +50,7 @@ For [VL Home Services](/work/vl-home-services/), we mapped their entire operatio
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-This is a one-time project. If you'd rather have everything handled going forward (site, store, software, and promotion) the [Multimedia Agency plan](/plans/multimedia-agency/) (from $2,350/wk) makes us your full media and tech team.
+This is a one-time project. If you'd rather have everything handled going forward (site, store, software, and promotion) the [Multimedia Agency plan](/plans/multimedia-agency/) (from $2,350/wk) puts everything on one retainer, with one person accountable for all of it.
 
 **Ready to find the leaks?** [Get a scoped quote](/contact/) or [see how we did it for VL Home Services](/work/vl-home-services/).
 
