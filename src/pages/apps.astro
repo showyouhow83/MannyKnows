@@ -1,0 +1,312 @@
+---
+// Business Apps — the fourth pillar page (hero promise: "AI Agents, Websites,
+// SEO & Apps"). Built Aug 2026 per Manny by merging the two parked product
+// drafts (automation-integration + practical-ai-adoption) into ONE page.
+//
+// Positioning (Manny's words): NOT regular app development — apps for
+// businesses: Apps Script, APIs, MCP servers, scripts. "Disconnected and
+// connected apps" is the organizing idea. Three tiers, all with prices that
+// already existed in site copy: Scripts & Tools from $300, Connected Apps
+// from $600, Business Apps from $2,500 (or co-owned, nothing upfront).
+// Flat $75/hr, quoted up front — same one-time model as the profession pages.
+//
+// HONESTY RULE: proof is the real portfolio (VL Home Services, SL Painting);
+// no invented metrics.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import StepCards from '../components/ui/StepCards.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+
+const siteUrl = 'https://mannyknows.com';
+const PHONE_TEL = '+14133618451';
+const EMAIL = 'mm@mannyknows.com';
+
+// The three tiers. `service` values exist in serviceTypes.ts so the quote
+// modal can name what the visitor clicked.
+const TIERS = [
+  {
+    name: 'Scripts & Tools',
+    kind: 'Disconnected',
+    price: 300,
+    service: 'app-scripts',
+    description: 'Standalone helpers that do one job well: the spreadsheet that becomes a tool, the script that runs on schedule, the utility that kills an hour of weekly busywork.',
+    features: [
+      'Google Apps Script: your Sheets, Docs, and Gmail doing the work themselves',
+      'Scheduled scripts: reports, reminders, and cleanups that run without you',
+      'One-job tools built around how you already work',
+    ],
+  },
+  {
+    name: 'Connected Apps',
+    kind: 'Connected',
+    price: 600,
+    service: 'app-integration',
+    featured: true,
+    description: 'Your tools wired together so data stops being re-typed: website, inbox, CRM, calendar, phone, and accounting moving information on their own.',
+    features: [
+      'API & webhook integration: if a tool has an API, we can wire it in',
+      'Twilio phone & SMS: call routing, business-hours logic, A2P registration handled',
+      'Make.com & Zapier flows, documented so they keep running without babysitting',
+      'MCP servers: plug your business tools into AI, so your assistants can actually use them',
+    ],
+  },
+  {
+    name: 'Business Apps',
+    kind: 'Custom',
+    price: 2500,
+    service: 'custom-app',
+    description: 'The systems your business runs on: admin dashboards, booking and quoting engines, client portals: designed, built, and published for you.',
+    features: [
+      'Dashboards and admin panels that put your whole operation on one screen',
+      'Booking, quoting, and lead-to-job systems like the one VL Home Services runs on',
+      'AI assistants grounded in your own content, with a human approving what matters',
+      'Own it outright, or co-own it with nothing upfront',
+    ],
+  },
+];
+
+const STEPS = [
+  { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote: flat $75/hr, total known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
+  { n: '02', title: 'Build & connect', body: 'Apps Script, APIs, webhooks, Twilio, MCP servers, or a full custom build: whatever the job calls for, wired into the tools you already run on.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+  { n: '03', title: 'Document & hand off', body: 'Every flow documented, every account yours. Most projects run 2–4 weeks from kickoff to live, and it keeps working without you babysitting it.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+];
+
+const FAQS = [
+  { q: 'Is this app development like an app-store app?', a: "No: we build apps for how a business runs, not consumer apps for a store. Scripts, integrations, dashboards, and internal systems: the software that removes busywork and keeps your operation in one place." },
+  { q: 'How much does an app cost?', a: 'Scripts and tools start at $300, connected apps and integrations at $600, and full business apps at $2,500. Everything is billed at a flat $75/hr and quoted up front after a short call, so you know the total before we start.' },
+  { q: 'What is an MCP server, and why would my business want one?', a: "MCP (Model Context Protocol) is the open standard that lets AI assistants plug into business tools securely. Wire your calendar, CRM, or inventory into an MCP server once, and the AI you use can actually work with them: check availability, look up a customer, update a record: instead of just talking about it." },
+  { q: 'Will it work with the tools I already use?', a: "Almost always. We connect what you've got (website, inbox, CRM, calendar, phone, accounting) rather than making you switch. If something can't connect cleanly, we'll tell you up front." },
+  { q: 'Will the AI parts make things up?', a: 'AI assistants we build are grounded in your own content and data, with clear review checkpoints: AI does the heavy lifting, and a human keeps control of what actually goes out the door.' },
+  { q: 'Do I own what you build?', a: 'Yes: completely. The code, the flows, the accounts, and the documentation are yours; we build with you, never to lock you in. Bigger builds can also be co-owned: we fund the build, you bring the business, nothing upfront.' },
+  { q: 'How long does a project take?', a: 'Most projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote.' },
+  { q: 'Who maintains it after launch?', a: "Everything is documented for handoff, so you can run it yourself. If you'd rather have it monitored and maintained, it rolls into a monthly plan from $95/mo: optional, never required." },
+];
+
+const META_DESCRIPTION = 'Apps for how your business runs: Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $300, quoted up front. You own everything.';
+
+// Structured data for SEO + AI answer engines (Service + FAQ)
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${siteUrl}/apps#service`,
+      name: 'Business Apps & Integrations',
+      serviceType: 'Business app development, workflow automation, API integration & MCP servers',
+      description: META_DESCRIPTION,
+      areaServed: [
+        { '@type': 'City', name: 'Springfield, Massachusetts' },
+        { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
+      ],
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'MannyKnows',
+        email: EMAIL,
+        telephone: PHONE_TEL,
+        url: siteUrl,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Springfield',
+          addressRegion: 'MA',
+          addressCountry: 'US',
+        },
+        image: `${siteUrl}/favicon.svg`,
+        priceRange: '$$',
+        areaServed: 'Springfield, MA & Western Massachusetts',
+      },
+      offers: TIERS.map((t) => ({
+        '@type': 'Offer',
+        name: `${t.name} (${t.kind})`,
+        description: t.description,
+        price: String(t.price),
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: `${siteUrl}/apps/#tiers`,
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/apps#faq`,
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Business Apps, Integrations & MCP Servers | MannyKnows" description={META_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+
+    <!-- ───────────────────────── Hero ───────────────────────── -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Business Apps</span></li>
+        </ol>
+      </nav>
+
+      <div class="pb-14">
+        <Container>
+          <div class="max-w-[1440px] mx-auto text-center">
+            <div class="flex justify-center mb-6">
+              <Illustration kind="automation" class="w-full max-w-[210px]" />
+            </div>
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+              Business Apps · Springfield, MA &amp; Western Massachusetts
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+              <span class="apple-gradient-text" data-colorful-title>Apps for how your<br />business runs</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+              Not app-store apps: the software that removes your busywork. Standalone scripts and tools, integrations that connect everything you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and full custom systems. From $300, quoted up front: you own all of it.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="#quote" data-quote-context="custom-app" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+                Scope my app
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+              <a href="/how-it-works/" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                See the process
+              </a>
+            </div>
+            <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+              Flat $75/hr · quoted up front · most projects live in 2–4 weeks
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- ───────────────────────── Disconnected / Connected ───────────────────────── -->
+    <Section id="concept" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Apps that stand alone. Apps that connect everything.</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do: data moving between your website, inbox, CRM, calendar, and accounting on its own, no more copying the same thing into five places.</p>
+        </div>
+        <div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
+          <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Disconnected: scripts &amp; tools</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that renames, sorts, or files what you used to do by hand.</p>
+          </div>
+          <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Connected: integrations &amp; MCP</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">If a tool has an API, we can wire it in: webhooks, Twilio call routing and SMS with business-hours logic and A2P registration handled, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Tiers ───────────────────────── -->
+    <Section id="tiers" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Every project is quoted up front at a flat $75/hr: prices below are honest starting points, and you always know the total before we start.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
+          {TIERS.map((t) => (
+            <div class={`relative flex flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 ${t.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
+              <span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">{t.kind}</span>
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
+              <div class="mt-2 mb-3">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary"> one-time</span>
+              </div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{t.description}</p>
+              <ul class="space-y-2.5 flex-1">
+                {t.features.map((f) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#quote"
+                data-quote-context={t.service}
+                class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
+              >
+                Get a quote
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+          Got an idea bigger than a build? Some apps we co-own: we fund the build, you bring the business, nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
+        </p>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Proof ───────────────────────── -->
+    <Section id="proof" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>We've wired this up before</span></h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
+          <a href="/work/vl-home-services/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system: a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent: every inquiry captured and tracked, customers answered around the clock in any language.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+          <a href="/work/sl-painting/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock: grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── How it works ───────────────────────── -->
+    <Section id="how-it-works" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How it works</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="underline decoration-dotted hover:text-primary-blue">how it works</a>.</p>
+        </div>
+        <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── FAQ ───────────────────────── -->
+    <Section id="faq" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Questions, answered</span></h2>
+          </div>
+          <div class="space-y-3">
+            {FAQS.map((f) => (
+              <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">
+                <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {f.q}
+                  <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

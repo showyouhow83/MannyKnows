@@ -24,7 +24,10 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $2,350/wk)' },
   { value: 'ai-team', label: 'AI Team, hire agents (from $95/mo each)' },
-  { value: 'custom-app', label: 'Custom Web App (scoped)' },
+  { value: 'custom-app', label: 'Business App: custom build (from $2,500)' },
+  // Business Apps tiers — the cards on /apps/ (Aug 2026).
+  { value: 'app-scripts', label: 'Scripts & Tools (from $300)' },
+  { value: 'app-integration', label: 'Connected Apps: integrations & MCP (from $600)' },
   // 360° / Google Business Profile packages — these are the cards on
   // /free-360-photo, and the quote form has to be able to offer every one of
   // them or a visitor clicking "Set mine up" lands on a dropdown that can't
