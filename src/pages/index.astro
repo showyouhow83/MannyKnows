@@ -25,10 +25,9 @@ import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import GoogleProfile from '../components/sections/GoogleProfile.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
-import PricingPlans from '../components/sections/PricingPlans.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
 // never drift from the published price on a reprice.
-import { plans } from '../data/plans';
+import { plans, websitePlans } from '../data/plans';
 
 const planPrice = (slug: string) => String(plans.find((p) => p.slug === slug)?.price ?? '');
 
@@ -225,20 +224,54 @@ const NAVBAR_CONFIG = {
 		</PageSection>
 
 
-		<!-- Plans ("Plans that grow with you") — hidden from the homepage per request
-		     (kept, not deleted, in case we want it back). The plans still live on the
-		     dedicated /plans page. -->
-		{/*
+		<!-- Smart Website plans — a compact promo for /plans (the full grid,
+		     comparison table, and FAQ live there). Cards pull from
+		     src/data/plans.ts so prices and copy never drift from the page
+		     they promote. Replaces the full PricingPlans grid that was hidden
+		     from the homepage earlier (still on /plans). -->
 		<PageSection
 			id="plans"
-			badge="Monthly plans"
-			title="Plans that grow with you"
-			subtitle="Monthly plans, scoped to your business. Start with what you need (a website, an online store, marketing, or the whole agency) and adjust anytime."
+			badge="Smart Website Plans"
+			title="A website that works <br />while you do"
+			subtitle="Four AI-powered Smart Website plans: multilingual, capturing leads, managing clients, and getting you found on Google, from day one. Each tier includes everything in the one before it."
 			variant="alternate"
 		>
-			<PricingPlans />
+			<div class="max-w-6xl mx-auto">
+				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
+					{websitePlans.map((p) => (
+						<a
+							href={`/plans/${p.slug}/`}
+							class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
+								p.featured
+									? 'border-primary-blue/50 ring-1 ring-primary-blue/30 shadow-lg shadow-primary-blue/10'
+									: 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
+							}`}
+						>
+							{p.featured && (
+								<span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">Most popular</span>
+							)}
+							<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
+							<div class="mt-1 mb-3">
+								<span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+								<span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+							</div>
+							<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{p.tagline}</p>
+							<span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
+								What's included
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+							</span>
+						</a>
+					))}
+				</div>
+				<div class="text-center mt-10">
+					<a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
+						Compare all plans &amp; pricing
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+					</a>
+					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Pay yearly and get 2 months free · every plan is tailored to your business</p>
+				</div>
+			</div>
 		</PageSection>
-		*/}
 
 		<!-- Who you're working with — condensed founder intro, routes to /about -->
 		<PageSection
