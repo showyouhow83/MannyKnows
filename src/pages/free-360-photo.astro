@@ -80,15 +80,15 @@ const STEPS = [
 ];
 
 // Cited numbers only — same honesty rule as everywhere else on the site.
-// The 2x figure is the Ipsos MediaCT research commissioned by Google for
-// Street View; 42%/35% are Google's own Business Profile photo data. Vendor
-// blogs claim bigger numbers (31% bookings, 5-10x view time) but none trace
-// to a named study, so they don't go on the page.
-const WHY = [
-  { stat: '2×', label: 'as likely to generate interest', body: 'Research commissioned by Google found listings with photos and a virtual tour are twice as likely to generate customer interest as listings without.', source: 'Ipsos MediaCT for Google' },
-  { stat: '42%', label: 'more direction requests', body: 'Listings with photos get 42% more requests for driving directions on Google.', source: "Google's Business Profile data" },
-  { stat: '35%', label: 'more clicks to your site', body: 'Photo-rich profiles see 35% more click-throughs to the business website.', source: "Google's Business Profile data" },
-  { stat: '24/7', label: 'storefront on Google', body: 'A 360° photo lets customers step inside at any hour, the trust is built before they ever call.', source: null },
+// BrightLocal Local Consumer Review Survey 2026, swapped in from the homepage
+// (Aug 2026 per Manny; the "why a 360° wins" tiles went the other way). They
+// teach why the profile itself matters, right above the set-up-vs-left-alone
+// comparison.
+const GBP_STATS: { n: string; label: string }[] = [
+  { n: '71%', label: 'use Google to find local businesses' },
+  { n: '97%', label: 'read reviews for local businesses, 41% always do' },
+  { n: '47%', label: "won't use a business with under 20 reviews" },
+  { n: '74%', label: 'want reviews from the last three months' },
 ];
 
 // The page anatomy comes from the shared product data. The tour and the blog
@@ -296,29 +296,27 @@ const jsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────── Why it wins + your profile, compared ─────────────
-         Moved below the pricing grid (Manny, Aug 2026): the "why" proof used
-         to live in the hero, and the two-column GBP comparison came from the
-         homepage. Together they close the case after the reader has seen the
-         packages. -->
-    <Section id="why-it-wins" variant="alternate">
+    <!-- ───────────── Your GBP, taught + compared ─────────────
+         Below the pricing grid (Manny, Aug 2026): the BrightLocal consumer
+         stats from the homepage teach why the profile matters, and the
+         two-column comparison (also ex-homepage) shows what maintaining it
+         earns. The "why a 360° wins" tiles moved to the homepage in the swap. -->
+    <Section id="gbp" variant="alternate">
       <Container>
         <div class="text-center max-w-2xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>Why a 360° photo wins customers</span></h2>
-          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock.</p>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>Your GBP is what ranks you on Maps</span></h2>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">It's the free listing behind Google Maps and the map pack. Most owners set it up once and never touch it again. Getting it right is the cheapest win in local SEO.</p>
         </div>
-        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
-          {WHY.map((w) => (
-            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 text-center flex flex-col">
-              <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
-              <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{w.body}</p>
-              {w.source && <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Source: {w.source}</p>}
+        <div class="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          {GBP_STATS.map((s) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
+              <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
+              <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
             </div>
           ))}
         </div>
-        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6 max-w-2xl mx-auto">
-          Numbers above come from research commissioned by Google (Ipsos MediaCT, on Street View virtual tours) and Google's own Business Profile photo data.
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">
+          Source: <a href="https://www.brightlocal.com/research/local-consumer-review-survey/" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">BrightLocal Local Consumer Review Survey 2026</a>
         </p>
 
         <div class="mt-16">
