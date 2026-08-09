@@ -13,11 +13,11 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
-import Illustration from '../components/illustrations/Illustration.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
 import AiTeamEcosystem from '../components/team/AiTeamEcosystem.astro';
 import { team, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
+import type { AgentId } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
 // hidden agents (Leo, Aria, Piper, Max) work as Manny AI sub-agents — they
@@ -31,7 +31,8 @@ const startFrom = aiTeamStartingPrice.toLocaleString('en-US');
 // "One brain, one boss" pillars.
 // Short on purpose, and every phrase earns SEO keep ("AI agents trained on
 // your business", "managed", "AI marketing") — no filler.
-const pillars = [
+// Typed so `avatar` is an AgentId, not string — AgentAvatar rejects the latter.
+const pillars: { icon: string; title: string; body: string; avatar?: AgentId }[] = [
   {
     icon: 'M9.75 3a3 3 0 00-3 3v.75H6A2.25 2.25 0 003.75 9v9A2.25 2.25 0 006 20.25h12A2.25 2.25 0 0020.25 18V9A2.25 2.25 0 0018 6.75h-.75V6a3 3 0 00-3-3h-4.5zM9 9.75h.008v.008H9V9.75zm6 0h.008v.008H15V9.75zM8.25 14.25h7.5',
     title: 'One Brand Brain',
@@ -39,14 +40,14 @@ const pillars = [
   },
   {
     icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
-    title: 'One AI agent',
-    body: 'To rule them all. Manny AI is your everything partner: ask for what you need and it reads the request, then puts the right specialists on the job.',
+    title: 'One agent you talk to',
+    body: 'Manny AI is your everything partner: ask for what you need, it scopes the work and sends the plan back for your approval, then puts the right specialists on the job.',
     avatar: 'manny',
   },
   {
     icon: 'M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941',
-    title: 'A swarm of AI agents',
-    body: 'Configured to do the best possible job, and to sharpen the process every time they run it, so the same work comes back faster and better each month.',
+    title: 'A swarm of AI agents behind it',
+    body: 'The specialists Manny AI puts to work, each configured to do the best possible job and to sharpen the process every time they run it, so the same work comes back faster and better each month.',
   },
 ];
 
@@ -190,8 +191,8 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Before you meet anyone</span>
           </h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-Most owners land here asking "which AI agents does my business need?" Wrong first question. Start with these two. Most
-            people can answer both in under a minute:
+Most owners land here asking "which AI agents does my business need?" That's the right destination, and two
+            questions get you there faster. Most people can answer both in under a minute:
           </p>
         </div>
 
@@ -212,7 +213,9 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
           <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             The answers rarely point to the same place, and AI isn't the strategy, it's the leverage. Your first
             hire goes where the leak is: Manny AI staffs the specialist that fixes it, stock or custom-built.
-            Every AI agent reads from your Brand Brain, which is what keeps them aligned and working toward your goals.
+            Every AI agent reads from your Brand Brain, and the Brand Brain is yours to set. Change your services,
+            your prices, or the way you want things said, and every agent works from the new version on its next
+            run. That is the control: you edit one source, and the whole team moves with it.
           </p>
         </div>
 
@@ -481,23 +484,27 @@ Most owners land here asking "which AI agents does my business need?" Wrong firs
   (function () {
     const track = document.getElementById('rosterScroll');
     if (!track) return;
+    // Narrowed once here: TS re-widens `track` to possibly-null inside the
+    // closures below, and children are Element (no offsetLeft) until cast.
+    const rail: HTMLElement = track;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const isPhone = () => window.matchMedia('(max-width: 639px)').matches;
-    const cards = () => Array.from(track.children).filter((el) => el.tagName === 'DIV');
+    const cards = (): HTMLElement[] =>
+      Array.from(rail.children).filter((el): el is HTMLElement => el.tagName === 'DIV');
 
-    let timer = null, paused = false, visible = true;
+    let timer: number | null = null, paused = false, visible = true;
 
-    function goTo(i) {
+    function goTo(i: number) {
       const list = cards();
       if (!list.length) return;
       const idx = (i + list.length) % list.length;              // wrap around
-      track.scrollTo({ left: list[idx].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+      rail.scrollTo({ left: list[idx].offsetLeft - rail.offsetLeft, behavior: 'smooth' });
     }
     function current() {
       const list = cards();
       let best = 0, min = Infinity;
       list.forEach((el, i) => {
-        const d = Math.abs(el.offsetLeft - track.offsetLeft - track.scrollLeft);
+        const d = Math.abs(el.offsetLeft - rail.offsetLeft - rail.scrollLeft);
         if (d < min) { min = d; best = i; }
       });
       return best;

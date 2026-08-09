@@ -10,7 +10,7 @@ image: "/blog/what-ai-agent-should-a-springfield-business-get-first.jpg"
 
 Every week an owner somewhere in Western Mass asks us some version of the same question: *"which AI agents does my business need?"*
 
-Wrong first question. The right ones are these two, and most people can answer both in under a minute.
+That's the right destination. Two questions get you there faster, and most people can answer both in under a minute.
 
 ## The two questions
 
