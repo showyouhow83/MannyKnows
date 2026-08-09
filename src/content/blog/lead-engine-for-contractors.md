@@ -17,7 +17,7 @@ When we built a lead-to-job platform for a local painting contractor, the goal w
 
 - **Capture**: quote forms, click-to-chat, and callback requests on every page, not just a buried contact form.
 - **Qualify**: a few smart questions up front (project type, timeline, location) so you know which leads are worth a same-day call.
-- **Route**: new leads drop straight into an admin pipeline, not an inbox that gets buried by 4 p.m..
+- **Route**: new leads drop straight into an admin pipeline, not an inbox that gets buried by 4 p.m.
 
 ## Speed is the whole game
 

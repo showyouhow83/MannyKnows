@@ -155,10 +155,10 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, monitoring, and tuning: you send changes, we handle them.' },
     ],
     faq: [
-      { q: '$95 a month seems low, what’s the catch?', a: 'There isn’t one. Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. It is a monthly plan rather than a one-time project, so the build cost is spread across the relationship instead of landing as a bill up front. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
+      { q: '$95 a month seems low. How?', a: 'Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. It is a monthly plan rather than a one-time project, so the build cost is spread across the relationship instead of landing as a bill up front. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price: the work most agencies bill as a $3,000–$8,000 project up front. You pay $95 the first month and $95 every month after.' },
-      { q: 'Can “Remi” book appointments on this plan?', a: 'On Get Found, “Remi” answers questions. To have it book jobs and capture leads, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
+      { q: 'Can “Remi” book appointments on this plan?', a: 'On Get Found, “Remi” answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
       { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. Nothing is owed after you leave. Prepaid annual terms aren’t refundable once the year starts: details in our terms.' },
     ],
   },
@@ -171,7 +171,7 @@ export const plans: Plan[] = [
     builtOn: 'Everything in Get Found, plus',
     highlights: [
       'A full multi-page site with deeper self-optimization: more content & SEO kept fresh',
-      '“Remi” now books the job & captures the lead, not just answers',
+      '“Remi” now books the job into your calendar, not just answers',
       'Local SEO and AI search optimization: rank for what customers search, and get quoted in AI answers',
     ],
     headline: 'A website that answers and books, for you',
@@ -220,7 +220,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
-      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and “Remi” stops only answering questions and starts capturing leads and booking work into your calendar: which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
+      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and “Remi” stops only answering questions and starts booking work into your calendar: which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
       { q: 'How does “Remi” book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books, then logs the lead in your admin.' },
       { q: 'I already have a website, do I have to start over?', a: 'No. If it has good bones, we optimize it and add “Remi” and the SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
       { q: 'Can I upgrade later?', a: 'Yes, move up to Get Growing to have “Remi” sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
@@ -288,7 +288,7 @@ export const plans: Plan[] = [
       { q: 'I already have a website, do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does “Remi” know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
-      { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously, speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
+      { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts: details in our terms.' },
     ],
   },
@@ -549,7 +549,7 @@ export const plans: Plan[] = [
           'An individual plan traced for the network: its own media types, formats, and sizes',
           'Provided content will be branded, sized, and posted for that network',
           'Comments and messages sorted and answered by “Remi”, our AI agent',
-          'An AI generated monthly report per network: add or drop networks as results come in',
+          'An AI-generated monthly report per network: add or drop networks as results come in',
         ],
       },
       {
@@ -606,7 +606,7 @@ export const plans: Plan[] = [
         title: 'The correction loop',
         items: [
           'We watch how your traffic responds, and keep correcting and improving',
-          'An AI generated monthly report: what ran, what it cost, what it brought in',
+          'An AI-generated monthly report: what ran, what it cost, what it brought in',
         ],
       },
     ],

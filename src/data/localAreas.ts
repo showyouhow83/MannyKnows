@@ -133,7 +133,7 @@ export const localAreas: LocalArea[] = [
     faqBusinesses:
       "Springfield's whole range: contractors in Sixteen Acres, medical and dental practices downtown, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath: rank for what Springfield actually types into Google, answer when you can't reach the phone, and keep the site maintained long after launch day.",
     faqAgents:
-      "Yes: it's half of what we do. “Remi”, the agent built into every site plan, answers questions and books work 24/7 in English and Spanish. Beyond “Remi” there's a whole roster: agents that write, design, post, run ads, and report, run for you by Manny AI, the manager you hire, AI staff from $95/mo. A Springfield painting contractor runs one today: it qualifies leads around the clock while the crew is up a ladder.",
+      "Yes: it's half of what we do. “Remi”, the agent built into every site plan, answers questions 24/7 in English and Spanish, and on Get Booked and up it books the work too. Beyond “Remi” there's a whole roster: agents that write, design, post, run ads, and report, run for you by Manny AI, the manager you hire, AI staff from $95/mo. A Springfield painting contractor runs one today: it qualifies leads around the clock while the crew is up a ladder.",
     faqOutside:
       "Yes. Springfield is home base, and the rest of Western Mass is our backyard: Chicopee right across the river, Holyoke and Northampton up I-91, Westfield, Agawam, Ludlow, Amherst. We also work remotely with businesses anywhere.",
     faqExisting:
@@ -224,7 +224,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Built to last, kept to last',
-        body: "The Paper City built things that outlived their builders. Your site should hold the same standard: monthly maintenance keeps it fast, secure, and ranking, with a report in plain words, not jargon.",
+        body: "The Paper City built things that outlived their builders. Your site should hold the same standard: monthly maintenance keeps it fast, secure, and ranking, with a clear monthly report, no jargon.",
       },
     ],
     plansLine:
@@ -444,7 +444,7 @@ export const localAreas: LocalArea[] = [
     faqBusinesses:
       "The independents that make Northampton Northampton (clothing boutiques and furniture stores downtown, wellness and dental practices, real estate offices out in Florence) and the businesses that keep it all running off Main Street: contractors, medical practices, professional offices. Underneath the aesthetics the job is constant: rank for what people search on their way to NoHo, answer and book while you're with a customer, and keep the site tended long after it launches.",
     faqAgents:
-      "Yes: appointment businesses get the most out of them, and Northampton runs on appointments. “Remi” comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake, then books them in. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
+      "Yes: appointment businesses get the most out of them, and Northampton runs on appointments. “Remi” comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake. On Get Booked and up, it books them in too. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
     faqOutside:
       "Yes. We're based in Springfield, a straight shot down I-91, and we work across the valley: Easthampton, Amherst, Holyoke, Chicopee, Westfield and the rest of Western Mass. Remote engagements work anywhere.",
     faqExisting:

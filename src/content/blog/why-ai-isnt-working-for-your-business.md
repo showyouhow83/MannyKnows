@@ -14,7 +14,7 @@ You can't scroll for ten seconds without someone telling you AI is about to chan
 
 You're not behind. You're just seeing the part the hype skips: **buying AI and running on AI are two very different things.**
 
-The money is real. The excitement is real. But real adoption is slow and uneven. Survey after survey lands on the same uncomfortable number, only a tiny slice of companies, low single digits, have scaled AI into how they work. Everyone else is still "experimenting." The problem was never the technology. It's that turning AI into real results is much harder than buying a tool.
+The money is real. The excitement is real. But real adoption is slow and uneven. Survey after survey lands on the same uncomfortable conclusion: only a small minority of companies have scaled AI into how they actually work. Everyone else is still "experimenting." The problem was never the technology. It's that turning AI into real results is much harder than buying a tool.
 
 Here's why it keeps stalling, and why a small business can actually skip most of it.
 
@@ -40,8 +40,8 @@ Here's the good news: you don't have to solve any of that yourself.
 
 You don't need an AI department, a data team, or a weekend learning prompts. You need the AI *built into* your business and trained on *your* business: doing real jobs, not waiting for instructions. That's the whole idea behind what we do:
 
-- **[Your AI Team](/ai-team/)** (agents trained on your business (your services, prices, and voice), we call it your Brand Brain) that answer customers, book jobs, write your content, and follow up. Hired like staff, one at a time or as a crew.
-- **[The Smart Website](/plans/)**: a website that runs on that same brain, answering visitors, writes its own content, and keeps its own SEO and speed tuned. A site that works, instead of one you maintain.
+- **[Your AI Team](/ai-team/)**: agents trained on your business — your services, prices, and voice, what we call your Brand Brain — that answer customers, book jobs, write your content, and follow up. Hired like staff, one at a time or as a crew.
+- **[The Smart Website](/plans/)**: a website that runs on that same brain: it answers visitors, writes its own content, and keeps its own SEO and speed tuned. A site that works, instead of one you maintain.
 
 We handle the hard, unglamorous part: the "transformation layer" the big-company articles keep talking about, so you get the results without running an AI project.
 

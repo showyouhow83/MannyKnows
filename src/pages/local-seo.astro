@@ -99,11 +99,11 @@ const FAQS = [
   { q: 'Is SEO included in the website plans?', a: 'Yes. Every AI-powered website we build ships with SEO included, from day one. The packages on this page exist for businesses keeping a site we didn\'t build: same human + AI pipeline, plus the photo and review work no website can do for you.' },
   { q: 'I already have a website. Can you do SEO on it?', a: "That's exactly what these packages are for: they work on any site. The free AI Website Analysis is a good first step either way; it shows what's holding your site back before you spend anything." },
   { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there: that's why profile work, photos, and reviews carry the packages." },
-  { q: 'How long until results?', a: "Honestly: it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
+  { q: 'How long until results?', a: "The straight answer: it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
   { q: 'Do you serve my area?', a: `We're based in Springfield, MA, and shoot on-site across the Pioneer Valley. Free shoots cover locations ${FREE_TRAVEL}; a little farther out we may add a small gas/travel fee, always quoted up front. The SEO work itself can be done from anywhere.` },
 ];
 
-const META_DESCRIPTION = 'Local SEO packages for Springfield & Western Mass: Google Business Profile, monthly 360° photos, reviews collected & answered, and AI search optimization. From $245/mo, or start with a free 360° photo.';
+const META_DESCRIPTION = 'Local SEO for Springfield & Western Mass: Google Business Profile, monthly 360° photos, reviews, and AI search optimization. From $245/mo.';
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
 const jsonLd = {
@@ -169,7 +169,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title="Local SEO Springfield, MA: Google, 360° & AI Search | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Local SEO Springfield, MA: Google, 360° & AI | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">

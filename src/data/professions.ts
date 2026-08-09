@@ -38,7 +38,7 @@ export const professions: Profession[] = [
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
     metaDescription:
-      'Websites that rank on Google and book jobs for Western Mass contractors, with an AI agent that answers and books estimates 24/7. From $95/mo.',
+      'Websites that rank on Google and book jobs for Western Mass contractors: an AI agent answers homeowners 24/7, and books estimates on higher plans. From $95/mo.',
     badge: 'For contractors & home services',
     h1: 'Websites for contractors that actually book jobs',
     heroIntro:
@@ -166,7 +166,7 @@ export const professions: Profession[] = [
     name: 'Clinics',
     metaTitle: 'Websites for Clinics & Dentists in Western Mass | MannyKnows',
     metaDescription:
-      'Fast, trustworthy websites for clinics and dental practices in Western Mass: local SEO and an AI agent that books appointments 24/7. From $95/mo.',
+      'Fast, trustworthy websites for clinics and dental practices in Western Mass: local SEO and an AI agent answering patients 24/7. From $95/mo.',
     badge: 'For clinics & practices',
     h1: 'Websites for clinics that keep the schedule full',
     heroIntro:

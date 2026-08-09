@@ -45,7 +45,7 @@ export const team: Agent[] = [
     id: 'manny',
     name: 'Manny AI',
     role: 'AI Agents Manager',
-    does: "Manny briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
+    does: "Manny AI briefs the right agents, runs the job, files what the team learns into your Brand Brain, and brings the finished work back for your sign-off.",
     order: 0,
     price: 0,
     included: true,
@@ -58,7 +58,7 @@ export const team: Agent[] = [
     handoff: 'Feeds the team: every question customers ask becomes intel, “Remi” logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
     price: 95,
-    note: 'included with every Smart Website',
+    note: 'included with every Smart Website · books from Get Booked, sells from Get Growing',
   },
   {
     id: 'eve',
@@ -220,11 +220,11 @@ export const aiTeamFaq = [
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",
-    a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time, with no memory of your business. The AI Team is agents we build around your business, trained on one shared Brand Brain, connected to your tools, and coordinated by Manny so the research feeds the writing, the writing feeds the design, it all gets published on schedule, and the results get measured and fed back into next month's plan, with a person reviewing what goes out. You get the results without doing the work.",
+    a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time, with no memory of your business. The AI Team is agents we build around your business, trained on one shared Brand Brain, connected to your tools, and coordinated by Manny AI so the research feeds the writing, the writing feeds the design, it all gets published on schedule, and the results get measured and fed back into next month's plan, with a person reviewing what goes out. You get the results without doing the work.",
   },
   {
     q: 'How do the agents work together?',
-    a: "Through Manny AI. You make one request; Manny AI turns it into briefs, routes the work agent to agent in the right order, and checks the quality of what comes back at every handoff. If a draft is thin, off-voice, or missing information, Manny sends it back to the specialist for another pass before it moves on. Agents never work from scratch: each one starts from the last one's output and your shared Brand Brain, so what reaches you is the finished package, not a pile of drafts, and nothing goes out off-brand.",
+    a: "Through Manny AI. You make one request; Manny AI turns it into briefs, routes the work agent to agent in the right order, and checks the quality of what comes back at every handoff. If a draft is thin, off-voice, or missing information, Manny AI sends it back to the specialist for another pass before it moves on. Agents never work from scratch: each one starts from the last one's output and your shared Brand Brain, so what reaches you is the finished package, not a pile of drafts, and nothing goes out off-brand.",
   },
   {
     q: 'What is the Brand Brain?',
@@ -240,7 +240,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
-    a: "We build your Brand Brain, then Manny AI staffs the specialists your work calls for: each one trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard: you ask Manny for what you need, approve what goes out, and we handle the updates and support.",
+    a: "We build your Brand Brain, then Manny AI staffs the specialists your work calls for: each one trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard: you ask Manny AI for what you need, approve what goes out, and we handle the updates and support.",
   },
   {
     q: 'Do I have to hire a whole team of agents?',
@@ -252,7 +252,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes. This is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site: your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an Smart Website plan where the site tunes itself in the background, and it's already running on a client's live site (VL Home Services).",
+    a: "Yes. This is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site: your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to a Smart Website plan where the site tunes itself in the background, and it's already running on a client's live site (VL Home Services).",
   },
   {
     q: "Can you build an agent that's not on the roster?",

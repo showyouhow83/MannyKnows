@@ -17,7 +17,7 @@ faq:
   - q: "How much does this cost?"
     a: "It starts at $500 and is billed at a flat $75/hr, quoted up front after a short call, so you know the total before we start, with no surprises. Many clients then roll onto a monthly plan (from $95/mo) to keep SEO, AI-search readiness, and speed maintained, but that's optional."
   - q: "What is AI search, and can you get me into ChatGPT's answers?"
-    a: "More people now ask ChatGPT, Perplexity, Gemini, and Google's AI Overviews instead of scrolling ten blue links, and those tools answer by reading and citing websites they trust. We can't guarantee any single AI cites you (nobody honestly can), but we structure your site the way those engines prefer: clean content, schema, and clear answers, so you're eligible to be the source they quote. It's the same discipline as SEO, aimed at a new front door."
+    a: "More people now ask ChatGPT, Perplexity, Gemini, and Google's AI Overviews instead of scrolling ten blue links, and those tools answer by reading and citing websites they trust. We can't guarantee any single AI cites you (nobody can promise that), but we structure your site the way those engines prefer: clean content, schema, and clear answers, so you're eligible to be the source they quote. It's the same discipline as SEO, aimed at a new front door."
   - q: "How long does it take?"
     a: "The technical work is usually 2–4 weeks from kickoff; search and AI-answer visibility then build over the following weeks and months. You get a firm timeline with the quote."
   - q: "Do I own what you build?"

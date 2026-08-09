@@ -43,7 +43,7 @@ But answering is just the first job. Every question customers ask “Remi” bec
 
 ## And one human: Manny
 
-Every team needs a manager, and this one's not an AI. Manny: twenty years solving business problems, including seven in enterprise eCommerce, reviews the work, approves the plans, and is your direct line. When you call, you get him, not a ticket queue.
+The day-to-day manager is Manny AI, but the judgment is human. Manny: twenty years solving business problems, including seven in enterprise eCommerce, reviews the work, approves the plans, and is your direct line. When you call, you get a person, not a ticket queue.
 
 ## How they actually work together
 

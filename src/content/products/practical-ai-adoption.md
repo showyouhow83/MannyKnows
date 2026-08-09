@@ -25,7 +25,7 @@ faq:
 
 AI is worth it in specific places and a distraction in others. We help you tell the difference, then build the parts that earn their keep.
 
-## The right model, honestly
+## The right model for the job
 
 We've run head-to-head evaluations of the major models (Claude, GPT, Gemini): cost, quality, and fit. We'll tell you which one to use, and where AI isn't the answer at all.
 

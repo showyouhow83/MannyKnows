@@ -41,7 +41,7 @@ const VERSIONS = [
     tag: 'The agent',
     price: 'From $95/mo',
     priceNote: `in every website plan · or on your existing site + $${aiTeamSetupFee} setup`,
-    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', '“Remi” is the starting name, rename her to fit your brand', 'Hands off to you when a human matters'],
+    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', '“Remi” is the starting name, rename it to fit your brand', 'Hands off to you when a human matters'],
     cta: { label: 'See the website plans', href: '/plans/' },
     ctaAlt: { label: 'or hire it onto your site', href: '/ai-team/#agent-remi' },
     featured: true,
@@ -96,7 +96,7 @@ const pageJsonLd = {
   areaServed: 'Western Massachusetts',
   description: META_DESCRIPTION,
   offers: [
-    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering and booking 24/7, from $95/mo.' },
+    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering 24/7 from $95/mo; it books the job from Get Booked at $245/mo.' },
     { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have, from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
   ],
 };
@@ -130,7 +130,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>AI booking agents that answer,<br /> qualify &amp; book, 24/7</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Most jobs are lost to the call nobody could answer. “Remi” is our AI booking agent for Western Mass small businesses, trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
+            Most jobs are lost to the call nobody could answer. “Remi” is our AI booking agent for Western Mass small businesses. Trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">

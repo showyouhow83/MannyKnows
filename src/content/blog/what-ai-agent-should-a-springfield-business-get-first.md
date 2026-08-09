@@ -35,7 +35,7 @@ Your first agent goes exactly where the leak is: nowhere else. Here's how the an
 
 ## You don't hire ten agents. You hire one manager.
 
-Here's the part that surprises people: you don't assemble this yourself. You hire **Manny AI**: one manager that staffs AI specialists on your business, like hiring three, five, or seven people, each specialized, without managing any of them. You ask for what you need; Manny briefs the right specialists, runs the handoffs, and brings the finished work back for your approval. Nothing ships until you say so.
+Here's the part that surprises people: you don't assemble this yourself. You hire **Manny AI**: one manager that staffs AI specialists on your business, like hiring three, five, or seven people, each specialized, without managing any of them. You ask for what you need; Manny AI briefs the right specialists, runs the handoffs, and brings the finished work back for your approval. Nothing ships until you say so.
 
 And because every specialist reads from one shared Brand Brain (your services, your prices, your voice) starting small costs you nothing later. Whatever gets staffed next inherits everything the team already learned.
 
