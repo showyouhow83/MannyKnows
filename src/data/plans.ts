@@ -642,7 +642,7 @@ export const plans: Plan[] = [
       'A developer on demand: any app, tool, or idea, designed, built & published for you',
       'All media handled: photography, videography, video editing, AI generation & graphic design',
       'All web & SEO: websites, landing pages, content, and continuous optimization',
-      'A day in your office every week, constant contact the rest: same-day answers either way',
+      'In constant contact through the workday: every request gets a same-day answer',
     ],
     headline: 'A whole agency’s output. One person doing the work.',
     blurb:
@@ -651,7 +651,7 @@ export const plans: Plan[] = [
       'Owners who’d rather sit in on the build than wait for a status update.',
     tiersHeading: 'Pick how you pay',
     tiersIntro:
-      'One service, everything included either way: a day in your office each week, remote the rest, in constant contact through the workday. The only difference is the invoice.',
+      'One service, everything included either way, in constant contact through the workday. The only difference is the invoice.',
     tiers: [
       {
         name: 'Agency Weekly',
@@ -662,8 +662,8 @@ export const plans: Plan[] = [
           'The full scope, billed week to week: one project at a time, each one finished and published before the next begins.',
         features: [
           'Everything is in scope: apps, websites, software, AI automation, management systems, design, video, photo, SEO',
-          'A day in your office every week: same-day requests handled on the spot, photo & video shot on site',
-          'Remote the rest of the week, in constant contact: every request gets a same-day answer, done that day or scheduled onto the roadmap',
+          'In constant contact through the workday: every request gets a same-day answer, done that day or scheduled onto the roadmap',
+          'Scheduled photo & video shoot days on site, as your projects call for them',
           'You direct the work and review it as it is built, not after',
           'Unlimited requests queued on the roadmap: you set the priorities',
         ],
@@ -723,15 +723,15 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Tell us what you need built', body: 'A kickoff to hear the idea, the constraints, and what winning looks like. You point, we scope it, and it goes on the roadmap.' },
       { title: 'A shared roadmap', body: 'One prioritized queue across software, media, web, and promotion. Unlimited requests: you set the order, and you always know what we’re building and why.' },
-      { title: 'Build, shoot & promote', body: 'The roadmap gets worked one project at a time: each one finished and published before the next begins. A day of that happens in your office every week; the rest runs remotely, in constant contact through the workday.' },
+      { title: 'Build, shoot & promote', body: 'The roadmap gets worked one project at a time: each one finished and published before the next begins. Shoot days happen on site as projects call for them; everything else runs remotely, in constant contact through the workday.' },
       { title: 'Review & reprioritize', body: 'A monthly working session plus the monthly report. Priorities shift as your business, and your competition, does.' },
     ],
     faq: [
       { q: 'What does "a developer on demand" mean?', a: 'If your business can imagine it, it’s in scope. An ad campaign that needs an app? Included. Software to organize scheduling, inventory, or quotes? Included. A tool that doesn’t exist anywhere? We design it, build it, and publish it. That’s the point of having a developer on retainer instead of a vendor per project.' },
       { q: 'What does "one active project at a time" mean?', a: 'Your requests are unlimited. They queue on the shared roadmap and you set the order. We work them one at a time, finishing and publishing each before the next begins.' },
       { q: 'Who actually does the work?', a: 'Manny. One senior builder covers development, design, SEO, and automation, with AI multiplying the output, and shoots the photography and video in person. You’re always talking to the person doing the work, not an account manager.' },
-      { q: 'How does the weekly rhythm work?', a: 'One day a week in your office, working alongside you and your staff: same-day requests handled on the spot, photo and video shot on site, your team trained on the tools as they’re built. The rest of the week runs remotely, in constant contact through the workday: every request gets a same-day answer, either done that day or scheduled onto the roadmap with a date.' },
-      { q: 'What’s the difference between weekly and monthly billing?', a: 'Only the invoice. Same scope, same in-office day, same communication. Monthly works out to about 15% less than paying week to week.' },
+      { q: 'How does the weekly rhythm work?', a: 'Everything runs remotely, in constant contact through the workday: every request gets a same-day answer, either done that day or scheduled onto the roadmap with a date. Photo and video are the exception: those get shot on site, as shoot days planned around your projects and campaigns.' },
+      { q: 'What’s the difference between weekly and monthly billing?', a: 'Only the invoice. Same scope, same communication. Monthly works out to about 15% less than paying week to week.' },
       { q: 'Are photo and video shoots included?', a: 'Yes, photography and videography are part of the package as scheduled shoot days, planned around your projects and campaigns. Editing, AI generation, and design are handled continuously in between.' },
       { q: 'What exactly does "everything" cover?', a: 'Websites, online stores, advertising, social, SEO, content, graphic design, photography, videography, video editing, AI generation, custom software, AI automation, and data work, queued on a shared roadmap. If your business needs it built, shot, or promoted, it’s in scope.' },
       { q: 'Can we start smaller and upgrade?', a: 'Yes, many clients start with Get Growing or Sell Online and move up when they’re ready for the full agency plan. The work carries forward when you upgrade, so nothing is wasted.' },
