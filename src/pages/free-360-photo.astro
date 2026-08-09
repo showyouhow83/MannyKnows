@@ -7,6 +7,7 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import Section from '../components/layout/Section.astro';
+import GbpComparison from '../components/sections/GbpComparison.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
@@ -215,27 +216,6 @@ const jsonLd = {
             <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
               No cost · No obligation · Live on Google in days
             </p>
-
-
-            <!-- "Why it wins" lives in the hero (Manny, Aug 2026): pitch and
-                 proof are one screen; the standalone section below was removed. -->
-            <div class="mt-12 max-w-2xl mx-auto">
-              <h2 class="sf-bold text-xl md:text-2xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>Why a 360° photo wins customers</span></h2>
-              <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock.</p>
-            </div>
-            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
-              {WHY.map((w) => (
-                <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 text-center flex flex-col">
-                  <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
-                  <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
-                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{w.body}</p>
-                  {w.source && <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Source: {w.source}</p>}
-                </div>
-              ))}
-            </div>
-            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6 max-w-2xl mx-auto">
-              Numbers above come from research commissioned by Google (Ipsos MediaCT, on Street View virtual tours) and Google's own Business Profile photo data.
-            </p>
           </div>
         </Container>
       </div>
@@ -313,6 +293,37 @@ const jsonLd = {
           Every package is customized and optimized for your business. The free 360° photo covers locations {FREE_TRAVEL}: a little farther out, a small gas/travel fee may apply (always quoted up front). Final pricing depends on your space and goals: get an exact quote in the form below.
         </p>
 
+      </Container>
+    </Section>
+
+    <!-- ───────────── Why it wins + your profile, compared ─────────────
+         Moved below the pricing grid (Manny, Aug 2026): the "why" proof used
+         to live in the hero, and the two-column GBP comparison came from the
+         homepage. Together they close the case after the reader has seen the
+         packages. -->
+    <Section id="why-it-wins" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>Why a 360° photo wins customers</span></h2>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock.</p>
+        </div>
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+          {WHY.map((w) => (
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 text-center flex flex-col">
+              <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
+              <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{w.body}</p>
+              {w.source && <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Source: {w.source}</p>}
+            </div>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6 max-w-2xl mx-auto">
+          Numbers above come from research commissioned by Google (Ipsos MediaCT, on Street View virtual tours) and Google's own Business Profile photo data.
+        </p>
+
+        <div class="mt-16">
+          <GbpComparison />
+        </div>
       </Container>
     </Section>
 
