@@ -635,7 +635,7 @@ export const plans: Plan[] = [
     ctaLabel: 'Request more information',
     portfolioLabel: 'See it in action',
     hideBooking: true,
-    heroMascot: { src: '/mascot/astro-multimedia.webp', width: 760, height: 814 },
+    heroMascot: { src: '/mascot/astro-multimedia.webp', width: 380, height: 407 },
     terms: 'Billed weekly or monthly · your domain and content stay yours',
     tagline: 'Hire Manny by the week and direct what gets built.',
     highlights: [
