@@ -1,0 +1,323 @@
+---
+// Local SEO landing page — the destination for "SEO" across the site (Services
+// dropdown, footer "SEO & Marketing" column, /services card). SEO is SOLD
+// through the Smart Website plans and the GBP services; this page is the map:
+// what local SEO covers here, which plan carries which depth, and the two free
+// ways to start. The 360° lead magnet stays on /free-360-photo/ — the pages
+// cross-link, they don't compete.
+//
+// HONESTY RULE: every claim on this page traces to an existing offer or a
+// cited figure (BrightLocal tiles live in GbpStats.astro; the comparison's
+// Google citations live in GbpComparison.astro). No invented timelines or
+// ranking guarantees.
+export const prerender = true;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import StepCards from '../components/ui/StepCards.astro';
+import GbpStats from '../components/sections/GbpStats.astro';
+import GbpComparison from '../components/sections/GbpComparison.astro';
+import { plans } from '../data/plans';
+
+const siteUrl = 'https://mannyknows.com';
+const PHONE_TEL = '+14133618451';
+const EMAIL = 'mm@mannyknows.com';
+
+// Prices come from the canonical plan data so a reprice can never strand this
+// page on old numbers.
+const price = (slug: string) => plans.find((p) => p.slug === slug)?.price ?? 0;
+
+// What "local SEO" covers here — each item maps to a real deliverable that
+// already exists in a plan or service (plans.ts, /free-360-photo packages).
+const INCLUDED = [
+  { title: 'Google Business Profile, run right', body: 'Claimed, verified, and maintained: the right primary category, complete info, photos, hours, and posts that keep the profile visibly alive.', icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
+  { title: 'On-page & technical SEO', body: 'Fast pages, clean structure, and all the HTML behind it: the foundation Google reads before it ranks anyone.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+  { title: 'AI search optimization', body: "Customers now ask ChatGPT and Google's AI. Your site gets structured so answer engines can read, quote, and recommend you.", icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0013.5 19.5h-3a3.374 3.374 0 00-2.494-1.01l-.548-.547z' },
+  { title: 'Content that stays fresh', body: 'Pages and posts written in your voice, kept current: on the self-optimizing plans, continuously.', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
+  { title: 'Reviews, asked and answered', body: 'Reviews asked for on a schedule, and every one answered: the signal customers check before they call.', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
+  { title: '360° photos & media on your listing', body: 'Immersive 360° photos published to your profile, so customers step inside before they visit: start with one free.', icon: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z' },
+];
+
+// Where the SEO lives — the three plan depths. Copy comes from the plans'
+// own bullets (plans.ts) so this page never promises what a plan doesn't.
+const SEO_PLANS = [
+  {
+    slug: 'get-found',
+    name: 'Get Found',
+    body: 'Set up to rank on Google & Maps when locals search for you, with hosting, SSL, and speed handled.',
+  },
+  {
+    slug: 'get-booked',
+    name: 'Get Booked',
+    body: 'Adds local SEO and AI search optimization: rank for what customers search, and get quoted in AI answers.',
+  },
+  {
+    slug: 'get-growing',
+    name: 'Get Growing',
+    featured: true,
+    body: 'Full self-optimization: content written and SEO & speed tuned continuously, like a web developer on your site 24/7.',
+  },
+];
+
+const STEPS = [
+  { n: '01', title: 'Start with the free audit', body: 'Send your site: the free AI Website Analysis reports on speed, SEO, mobile, conversions, and AI-readiness, so you know what is broken before you spend anything.', icon: 'M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z' },
+  { n: '02', title: 'Fix the foundations', body: 'Your Google Business Profile claimed, verified, and set up right, and the on-page problems fixed: category, structure, speed, and the pages Google reads first.', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
+  { n: '03', title: 'Build, then keep tuning', body: 'Content, photos, and reviews built up on a schedule. On the self-optimizing plans your site checks itself every day: the correction loop never stops.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+];
+
+const FAQS = [
+  { q: 'Is SEO included in the website plans?', a: 'Yes. Every Smart Website plan is set up to rank on Google & Maps from day one. Get Booked adds local SEO and AI search optimization, and Get Growing tunes content, SEO, and speed continuously. You pick the depth; the plan carries it.' },
+  { q: 'I already have a website. Can you do SEO on it?', a: "Yes: SEO is also available as a one-time project (audit, fixes, and content). The free AI Website Analysis is the right first step either way: it shows what's holding your site back before you spend anything." },
+  { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there: that's why profile setup, photos, and reviews are part of the work." },
+  { q: 'What is AI search optimization?', a: "More customers ask ChatGPT or Google's AI instead of scrolling results. Those answer engines can only recommend what they can read, so your site gets structured for them: clean data, real answers on the page, and 360° galleries built to get picked." },
+  { q: 'How long until results?', a: "Honestly: it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
+  { q: 'Should I just buy ads instead?', a: 'Ads pointed at a weak site burn money. Get the site and profile ranking-ready first, then pour traffic on: that’s what the Business Ads plan is for, and Get Ahead bundles both.' },
+];
+
+const META_DESCRIPTION = 'Local SEO for Springfield & Western Mass businesses: Google Business Profile, map pack rankings, and AI search optimization. Built into plans from $95/mo.';
+
+// Structured data for SEO + AI answer engines (Service + FAQ)
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${siteUrl}/local-seo#service`,
+      name: 'Local SEO',
+      serviceType: 'Local SEO, Google Business Profile & AI search optimization',
+      description: META_DESCRIPTION,
+      areaServed: [
+        { '@type': 'City', name: 'Springfield, Massachusetts' },
+        { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
+        { '@type': 'AdministrativeArea', name: 'Pioneer Valley' },
+      ],
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'MannyKnows',
+        email: EMAIL,
+        telephone: PHONE_TEL,
+        url: siteUrl,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Springfield',
+          addressRegion: 'MA',
+          addressCountry: 'US',
+        },
+        image: `${siteUrl}/favicon.svg`,
+        priceRange: '$$',
+        areaServed: 'Springfield, MA & Western Massachusetts',
+      },
+      offers: SEO_PLANS.map((p) => ({
+        '@type': 'Offer',
+        name: `${p.name} (Smart Website plan)`,
+        description: p.body,
+        priceCurrency: 'USD',
+        priceSpecification: { '@type': 'UnitPriceSpecification', price: String(price(p.slug)), priceCurrency: 'USD', unitText: 'MONTH' },
+        url: `${siteUrl}/plans/${p.slug}/`,
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/local-seo#faq`,
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title="Local SEO Springfield, MA: Google & AI Search | MannyKnows" description={META_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+
+    <!-- ───────────────────────── Hero ───────────────────────── -->
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+      <NavBar />
+      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
+        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Local SEO</span></li>
+        </ol>
+      </nav>
+
+      <div class="pb-14">
+        <Container>
+          <div class="max-w-[1440px] mx-auto text-center">
+            <div class="flex justify-center mb-6">
+              <img
+                src="/mascot/astronaut-megaphone.svg"
+                alt=""
+                aria-hidden="true"
+                width="150"
+                height="150"
+                decoding="async"
+                class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
+              />
+            </div>
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+              Springfield, MA &amp; Western Massachusetts
+            </span>
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+              <span class="apple-gradient-text" data-colorful-title>Local SEO that gets you found<br />on Google, and quoted by AI</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+              For Western Mass businesses that get customers by being found: the map pack, page one, and the AI answers customers now ask. SEO is built into every Smart Website plan, from ${price('get-found')}/mo, so the work never depends on you remembering to order it.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="#quote" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+                Start ranking today
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+              <a href="/free-ai-website-analysis/" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                Free AI website analysis
+              </a>
+            </div>
+            <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+              Month-to-month · cancel anytime · every figure on this page is sourced
+            </p>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- ───────────────────────── What's included ───────────────────────── -->
+    <Section id="included" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What local SEO covers here</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Not a report and a retainer: the work itself, done for you across your profile, your site, and your content.</p>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+          {INCLUDED.map((item) => (
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={item.icon} /></svg>
+              </span>
+              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{item.title}</h3>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── How it works ───────────────────────── -->
+    <Section id="how-it-works" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How it works</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a free audit to a site that keeps tuning itself.</p>
+        </div>
+        <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── SEO in the plans ───────────────────────── -->
+    <Section id="plans" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick your depth</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">SEO isn't sold separately here: it ships inside the Smart Website plans, so the site and the ranking work are never out of sync. Each tier includes everything in the one before it.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
+          {SEO_PLANS.map((p) => (
+            <a
+              href={`/plans/${p.slug}/`}
+              class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
+                p.featured
+                  ? 'border-primary-blue/50 ring-1 ring-primary-blue/30 shadow-lg shadow-primary-blue/10'
+                  : 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
+              }`}
+            >
+              {p.featured && (
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">Most popular</span>
+              )}
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
+              <div class="mt-1 mb-3">
+                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${price(p.slug).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+              </div>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{p.body}</p>
+              <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
+                What's included
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </a>
+          ))}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+          Already have a site you're keeping? Profile Setup + Verification is available on its own (from $145), SEO campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>, and one-time SEO projects can be scoped: <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">ask for a quote</a>.
+        </p>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── GBP: stats + comparison ───────────────────────── -->
+    <Section id="gbp" variant="default">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>It starts with your Google Business Profile</span></h2>
+          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The free listing behind Google Maps and the map pack is what ranks you locally. Most owners set it up once and never touch it again: getting it right is the cheapest win in local SEO.</p>
+        </div>
+        <div class="mt-10">
+          <GbpStats />
+        </div>
+        <div class="mt-16">
+          <GbpComparison />
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── Free ways to start ───────────────────────── -->
+    <Section id="free-starts" variant="alternate">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Two free ways to start</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Both stand on their own. Neither obligates you to anything.</p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+          <a href="/free-ai-website-analysis/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Free AI Website Analysis</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Send your site, get a clear report: speed, SEO, mobile, conversions, and AI-readiness.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Analyze my site <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+          <a href="/free-360-photo/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Free 360° Photo</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">We come to your business, shoot one immersive 360° photo, and publish it to your Google listing.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Claim the photo <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- ───────────────────────── FAQ ───────────────────────── -->
+    <Section id="faq" variant="gradient">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Questions, answered</span></h2>
+          </div>
+          <div class="space-y-3">
+            {FAQS.map((f) => (
+              <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">
+                <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {f.q}
+                  <svg class="w-5 h-5 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

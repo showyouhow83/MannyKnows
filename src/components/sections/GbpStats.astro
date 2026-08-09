@@ -1,0 +1,24 @@
+---
+// BrightLocal consumer stats — the "why your profile matters" tiles, shared by
+// /free-360-photo/ and /local-seo/ so the numbers can never drift between
+// pages. Same honesty rule as everywhere: the source is printed on the page.
+//   https://www.brightlocal.com/research/local-consumer-review-survey/
+const GBP_STATS: { n: string; label: string }[] = [
+  { n: '71%', label: 'use Google to find local businesses' },
+  { n: '97%', label: 'read reviews for local businesses, 41% always do' },
+  { n: '47%', label: "won't use a business with under 20 reviews" },
+  { n: '74%', label: 'want reviews from the last three months' },
+];
+---
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+  {GBP_STATS.map((s) => (
+    <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
+      <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
+      <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
+    </div>
+  ))}
+</div>
+<p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">
+  Source: <a href="https://www.brightlocal.com/research/local-consumer-review-survey/" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">BrightLocal Local Consumer Review Survey 2026</a>
+</p>
