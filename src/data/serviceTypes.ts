@@ -22,7 +22,7 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'get-ahead', label: 'Get Ahead ($895/mo)' },
   { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
-  { value: 'multimedia-agency', label: 'Multimedia Agency (from $1,350/wk)' },
+  { value: 'multimedia-agency', label: 'Multimedia Agency (from $2,350/wk)' },
   { value: 'ai-team', label: 'AI Team, hire agents (from $95/mo each)' },
   { value: 'custom-app', label: 'Custom Web App (scoped)' },
   // 360° / Google Business Profile packages — these are the cards on

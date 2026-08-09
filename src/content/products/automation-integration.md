@@ -49,7 +49,7 @@ For [VL Home Services](/work/vl-home-services/), we connected their admin dashbo
 
 Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
-When automation becomes part of a bigger picture (custom software, AI, and data pipelines alongside your site and promotion) the [Multimedia Agency plan](/plans/multimedia-agency/) (from $1,800/mo) puts a full media and tech team on it.
+When automation becomes part of a bigger picture (custom software, AI, and data pipelines alongside your site and promotion) the [Multimedia Agency plan](/plans/multimedia-agency/) (from $2,350/wk) puts a full media and tech team on it.
 
 **Ready?** [Get a scoped quote](/contact/) or [see how we did it for VL Home Services](/work/vl-home-services/).
 
