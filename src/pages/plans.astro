@@ -107,27 +107,78 @@ const pageJsonLd = {
           <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Plans</span></li>
         </ol>
       </nav>
-      <div class="pb-12">
+      <!-- Split hero (Aug 2026 per Manny): the old hero paragraph + the
+           Brand Brain paragraph merged into one block — condensed pitch on
+           the left, the Brand Brain as a scannable panel on the right, so
+           the copy stops reading like a trilogy while every SEO keyword
+           (AI-powered website, Western Massachusetts, the professions,
+           multilingual, leads, Brand Brain, API/MCP) survives. -->
+      <div class="pb-14">
         <Container>
-          <div class="text-center max-w-[1440px] mx-auto">
-            <div class="flex justify-center mb-6">
-              <img
-                src="/mascot/astro-laptop-fly.webp"
-                alt=""
-                aria-hidden="true"
-                width="560"
-                height="539"
-                decoding="async"
-                class="astro-float w-full max-w-[230px] h-auto pointer-events-none"
-              />
+          <div class="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            <div class="text-center lg:text-left">
+              <div class="flex justify-center lg:justify-start mb-6">
+                <img
+                  src="/mascot/astro-laptop-fly.webp"
+                  alt=""
+                  aria-hidden="true"
+                  width="560"
+                  height="539"
+                  decoding="async"
+                  class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
+                />
+              </div>
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Smart website plans · Western Massachusetts</span>
+              <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+                <span class="apple-gradient-text" data-colorful-title>A website that works while you do</span>
+              </h1>
+              <p class="max-w-2xl mx-auto lg:mx-0 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+                Every plan is an AI-powered website, not a brochure that sits there: multilingual, capturing leads, managing clients, and found on Google from day one. These aren't static websites: each one runs on your Brand Brain, working in your voice.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <a href="#pricingPlans" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+                  See the plans
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                </a>
+                <a href="#quote" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+                  Build your plan
+                </a>
+              </div>
+              <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
+                Built for contractors and home services, medical &amp; dental practices, daycares, professional offices, and retailers.
+              </p>
             </div>
-            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Smart website plans</span>
-            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
-              <span class="apple-gradient-text" data-colorful-title>A website that works while you do</span>
-            </h1>
-            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Every plan is an AI-powered website, not a brochure that sits there: multilingual, capturing leads, managing clients, and getting you found on Google, from day one. Built for Western Massachusetts businesses that get customers by being found: contractors and home services, medical and dental practices, daycares, professional offices, and retailers.
-            </p>
+
+            <!-- The Brand Brain, shown instead of explained -->
+            <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-lg shadow-primary-blue/5">
+              <span class="block text-[11px] font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-1">Powered by your Brand Brain</span>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">Your business's private database for its AI agents: one brain, every job.</p>
+              <ul class="space-y-3.5">
+                <li class="flex items-start gap-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg></span>
+                  <span>Answers customers in whichever language they arrive in</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg></span>
+                  <span>Captures and organizes every lead</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></span>
+                  <span>Writes its own content, in your voice</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></span>
+                  <span>Tunes its own speed and SEO</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg></span>
+                  <span>Wires into the tools you already use, through APIs and MCP servers, so what it does keeps growing with the business</span>
+                </li>
+              </ul>
+              <p class="mt-5 pt-5 border-t border-light-tertiary dark:border-dark-accent text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+                Like hiring a staff member who never sleeps, never forgets, and can pick up a new job whenever you need one.
+              </p>
+            </div>
           </div>
         </Container>
       </div>
@@ -135,10 +186,7 @@ const pageJsonLd = {
 
     <Section id="plans-list" variant="default">
       <Container>
-        <!-- Flagship: the AI Team (its own page, sold as a monthly retainer) -->
-        <p class="text-center max-w-3xl mx-auto mb-10 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-          These aren't static websites. <strong class="text-text-light-primary dark:text-text-dark-primary">Every Smart Website runs on your Brand Brain</strong>, your business's private database for its AI agents, so the site answers customers in whichever language they arrive in, captures and organizes every lead, writes its own content, and tunes its own speed and SEO, all in your voice. And it doesn't stop at the page: if a tool you already use has an API or an MCP server, your site can be wired into it, so what it does for you keeps growing with the business. Like hiring a staff member who never sleeps, never forgets, and can pick up a new job whenever you need one.
-        </p>
+        <!-- The Brand Brain story now lives in the hero panel above. -->
         <PricingPlans />
 
         {/* AI Team banner — moved into the review's old prime spot right under
