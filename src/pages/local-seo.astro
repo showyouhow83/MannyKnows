@@ -100,10 +100,10 @@ const FAQS = [
   { q: 'I already have a website. Can you do SEO on it?', a: "That's exactly what these packages are for: they work on any site. The free AI Website Analysis is a good first step either way; it shows what's holding your site back before you spend anything." },
   { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there: that's why profile work, photos, and reviews carry the packages." },
   { q: 'How long until results?', a: "The straight answer: it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
-  { q: 'Do you serve my area?', a: `We're based in Springfield, MA, and shoot on-site across the Pioneer Valley. Free shoots cover locations ${FREE_TRAVEL}; a little farther out we may add a small gas/travel fee, always quoted up front. The SEO work itself can be done from anywhere.` },
+  { q: 'Do you serve my area?', a: `We're based in Springfield, MA, and shoot on-site across the Pioneer Valley: Chicopee, Holyoke, Westfield, Northampton, and the towns around them. Free shoots cover locations ${FREE_TRAVEL}; a little farther out we may add a small gas/travel fee, always quoted up front. The SEO work itself can be done from anywhere.` },
 ];
 
-const META_DESCRIPTION = 'Local SEO for Springfield & Western Mass: Google Business Profile, monthly 360° photos, reviews, and AI search optimization. From $245/mo.';
+const META_DESCRIPTION = 'Local SEO for Springfield, Chicopee, Holyoke & Northampton MA: Google Business Profile, 360° photos, reviews & AI search optimization. From $245/mo.';
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
 const jsonLd = {
@@ -117,6 +117,10 @@ const jsonLd = {
       description: META_DESCRIPTION,
       areaServed: [
         { '@type': 'City', name: 'Springfield, Massachusetts' },
+        { '@type': 'City', name: 'Chicopee, Massachusetts' },
+        { '@type': 'City', name: 'Holyoke, Massachusetts' },
+        { '@type': 'City', name: 'Northampton, Massachusetts' },
+        { '@type': 'City', name: 'Westfield, Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Western Massachusetts' },
         { '@type': 'AdministrativeArea', name: 'Pioneer Valley' },
       ],

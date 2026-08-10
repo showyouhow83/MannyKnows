@@ -262,4 +262,8 @@ export const aiTeamFaq = [
     q: 'Do you only work with businesses in Springfield?',
     a: "We're based in Springfield and work across Western Massachusetts: Hampden, Hampshire, and Franklin counties. Because the whole engagement runs through one admin and one point of contact, distance has never been the constraint; the working sessions happen wherever you are.",
   },
+  {
+    q: 'Is this an AI chatbot for my business?',
+    a: 'The front desk is, and the team goes further. Remi AI is the chatbot your customers see: answering on your website 24/7 in any language, qualifying leads, and capturing every one. Behind it, the rest is AI automation: review responses, social posts, reports, and follow-ups that run without you. If what you searched was "AI chatbot," "AI receptionist," or "AI automation," this is that, with a manager and a human check built in.',
+  },
 ];
