@@ -36,7 +36,7 @@ interface DirectLeadRequest {
   partner_id?: number | string;
 }
 
-// Generate confirmation code (matches Remi's format: MK-{timestamp}-{random})
+// Generate confirmation code (matches Remi AI's format: MK-{timestamp}-{random})
 function generateConfirmationCode(): string {
   const prefix = 'MK';
   const timestamp = Date.now().toString(36).toUpperCase();

@@ -55,7 +55,7 @@ function attr(tag: string, name: string): string | null {
 // on exactly that. Four independent signals now, structural first, and the
 // analyzer reports WHICH one fired so a finding can always be defended.
 const AGENT_VENDORS: Array<[RegExp, string]> = [
-  // Our own product first — jkdaycare.com's Remi scored a false negative
+  // Our own product first — jkdaycare.com's Remi AI scored a false negative
   // because loader.js has no chat-ish filename and the agent id is hex.
   [/opscloud\.us/i, 'an OpsCloud AI agent'],
   [/intercom/i, 'Intercom'],
@@ -251,7 +251,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
             ? `Found ${agent.how}, but nothing we can confirm is a live agent: worth checking that it answers after hours, not just during business hours.`
             : `Detected ${agent.how}, visitors can get answers without waiting for a callback.`)
         : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code: if you have an agent we missed, the free human review will catch it.)",
-      { text: 'Remi answers 24/7 on every Smart Website plan, and books the job from Get Booked up.', href: GET_BOOKED }),
+      { text: 'Remi AI answers 24/7 on every Smart Website plan, and books the job from Get Booked up.', href: GET_BOOKED }),
     c('faq', 'FAQ content AI can quote', hasFaqSchema ? 'pass' : 'warn',
       hasFaqSchema ? 'FAQ structured data found: AI assistants can quote your answers.'
         : 'No FAQ schema, when customers ask ChatGPT or Google AI, competitors with answers get cited.',
@@ -298,7 +298,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
     c('capture', 'A way to capture the lead', hasForm || hasBooking ? 'pass' : 'fail',
       hasForm || hasBooking ? (hasBooking ? 'Booking flow detected.' : 'Contact form present.')
         : 'No form and no booking link, interested visitors have no next step.',
-      { text: 'Remi captures and books the lead even after hours.', href: GET_BOOKED }),
+      { text: 'Remi AI captures and books the lead even after hours.', href: GET_BOOKED }),
     c('contact', 'Easy contact path', hasContactPath ? 'pass' : 'warn',
       hasContactPath ? 'Contact page or email link found.' : 'No obvious contact page or email link.',
       { text: 'We make the next step impossible to miss.', href: PLANS }),

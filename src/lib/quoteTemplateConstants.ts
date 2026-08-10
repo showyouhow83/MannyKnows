@@ -390,7 +390,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         title: 'What We Build',
         items: [
           { id: 'it-web-build-1', type: 'bullet', text: 'Design and build your full multi-page website, layout, copy, and photos included' },
-          { id: 'it-web-build-2', type: 'bullet', text: 'Train Remi, your AI agent, on your business (services, prices, hours, and how you talk) to answer customers 24/7' },
+          { id: 'it-web-build-2', type: 'bullet', text: 'Train Remi AI, your AI agent, on your business (services, prices, hours, and how you talk) to answer customers 24/7' },
           { id: 'it-web-build-3', type: 'bullet', text: 'Set up your own admin: leads, contacts, and content you can manage yourself' },
           { id: 'it-web-build-4', type: 'bullet', text: 'English + Spanish as standard, written, not machine-translated' },
           { id: 'it-web-build-5', type: 'bullet', text: 'SSL, caching, hosting, and a domain if you need one, included in the plan' },
@@ -428,7 +428,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-store-build-1', type: 'bullet', text: 'Design and build your online store, theme, branding, and checkout, built to sell' },
           { id: 'it-store-build-2', type: 'bullet', text: 'Load your starting catalog: products, photos, descriptions, and prices' },
-          { id: 'it-store-build-3', type: 'bullet', text: 'Train Remi to sell, answer shoppers, steer them to the right product, and hand you the hard questions' },
+          { id: 'it-store-build-3', type: 'bullet', text: 'Train Remi AI to sell, answer shoppers, steer them to the right product, and hand you the hard questions' },
           { id: 'it-store-build-4', type: 'bullet', text: 'Your admin covers the store too: products, inventory, orders, and promos in one place' },
         ],
       },

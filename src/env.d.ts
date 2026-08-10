@@ -24,7 +24,7 @@ interface Env {
   SESSION_SECRET: string;
   INBOUND_EMAIL_SECRET?: string;
 
-  // Remi chatbot (Gemini)
+  // Remi AI chatbot (Gemini)
   GEMINI_API_KEY?: string;
 
   // Optional: SMS notifications (crew). All Twilio code degrades gracefully

@@ -1,5 +1,5 @@
 // Lead Capture API Endpoint - Unified D1 Storage
-// Captures leads from Quote Modal, Remi chat, and other sources
+// Captures leads from Quote Modal, Remi AI chat, and other sources
 // POST: Public (form submissions)
 // GET/PATCH/DELETE: Admin auth required
 import { env as cfEnv } from 'cloudflare:workers';
@@ -46,7 +46,7 @@ interface LeadCaptureRequest {
   // Financial
   financing_interest?: boolean;
 
-  // Remi context
+  // Remi AI context
   conversation_summary?: string;
 
   // Source
@@ -132,7 +132,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const serviceType = body.service_type || body.service || 'general';
     const projectDescription = body.project_description || body.details;
 
-    // Generate confirmation code and token (same format as Remi; CSPRNG)
+    // Generate confirmation code and token (same format as Remi AI; CSPRNG)
     const timestamp = Date.now().toString(36).toUpperCase();
     const confirmationCode = `MK-${timestamp}-${secureCode(4)}`;
 
@@ -282,7 +282,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         const sourceLabels: Record<string, string> = {
           'quote-form': 'Quote Form',
           'footer-form': 'Footer Quote Form',
-          'remi-chat': 'Remi chat',
+          'remi-chat': 'Remi AI chat',
           'phone': 'Phone Call',
           'referral': 'Referral',
           'other': 'Other'

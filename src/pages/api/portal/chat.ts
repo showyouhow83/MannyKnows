@@ -1,4 +1,4 @@
-// Project Concierge — a dedicated, project-aware Remi for the CUSTOMER PORTAL.
+// Project Concierge — a dedicated, project-aware Remi AI for the CUSTOMER PORTAL.
 //
 // Separate from the marketing /api/chat (lead capture). This one is for an
 // already-won client: it greets them by name, knows their project (scope,
@@ -73,7 +73,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }));
 
     // The originating quote — used as a fallback for scope + services when the
-    // contract isn't built yet, so Remi always knows the project.
+    // contract isn't built yet, so Remi AI always knows the project.
     const quote = project.quote_id ? await db.prepare(
       'SELECT services, template_sections, scope_description FROM quotes WHERE id = ?'
     ).bind(project.quote_id).first().catch(() => null) as any : null;
@@ -139,7 +139,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const startDate = contract?.start_date || project.scheduled_start || '';
     const endDate = project.scheduled_end || '';
 
-    // Mirror the exact status labels shown on the client portal page so Remi
+    // Mirror the exact status labels shown on the client portal page so Remi AI
     // never contradicts what the customer sees on-screen.
     const hasCrewAssigned = !!(project as any).crew_lead_name;
     const statusDescriptions: Record<string, string> = {
@@ -182,7 +182,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       payRows.length ? `Payments:\n${payRows.map(p => `  - "${p.label}" [row_id=${p.id}] ${fmtMoney(p.amount)} due ${fmtDate(p.due)}, ${p.paid ? 'PAID' : 'pending'}`).join('\n')}` : '',
     ].filter(Boolean).join('\n');
 
-    const systemInstruction = `You are Remi, the friendly project concierge for MannyKnows: talking with an EXISTING customer about THEIR specific project. You are NOT a salesperson: never pitch "free estimates", discounts, or promotions, and never try to book a new appointment.
+    const systemInstruction = `You are Remi AI, the friendly project concierge for MannyKnows: talking with an EXISTING customer about THEIR specific project. You are NOT a salesperson: never pitch "free estimates", discounts, or promotions, and never try to book a new appointment.
 
 Greet ${firstName} warmly by first name on your first reply. Keep replies short (2-3 sentences), warm, and helpful. One question at a time.
 

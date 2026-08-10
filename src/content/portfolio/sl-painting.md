@@ -49,7 +49,7 @@ A complete digital operation, from scratch:
 - **A website** that shows the work and turns visitors into leads: fast, modern, and easy to find locally.
 - **Technical & local SEO** built in from day one, so the site ranks for the searches that bring in work.
 - **An admin CRM** that captures every inquiry and tracks it from first contact to finished job, so nothing slips through the cracks.
-- **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours: the same front-desk role, “Remi”, that any business can [hire from the AI Team](/ai-team/).
+- **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours: the same front-desk role, Remi AI, that any business can [hire from the AI Team](/ai-team/).
 - **AI Painter Lab**: an app that lets homeowners see their own house in any of 2,000+ colors before they commit, turning "I'm not sure" into "let's do that one."
 
 ## How it works

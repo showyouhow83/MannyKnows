@@ -13,11 +13,11 @@ You didn't start your business to babysit a phone, write Instagram captions at m
 
 Here's who.
 
-## The one you may have already met: “Remi”
+## The one you may have already met: Remi AI
 
-“Remi” is the front desk, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), “Remi” is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
+Remi AI is the front desk, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), Remi AI is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
 
-But answering is just the first job. Every question customers ask “Remi” becomes intel for the rest of the team.
+But answering is just the first job. Every question customers ask Remi AI becomes intel for the rest of the team.
 
 ## The content crew
 
@@ -47,11 +47,11 @@ The day-to-day manager is Manny AI, but the judgment is human. Manny: twenty yea
 
 ## How they actually work together
 
-It runs like an assembly line built around one shared memory: your **Brand Brain**: your services, your story, your voice, your rules. “Remi” logs what customers ask. Eve turns the patterns into a plan. Elly writes, Leo and Aria produce, Nova tunes it for search, Piper publishes it, Finn works the responses, Max amplifies what earns it, and Vera measures everything and reports back, to Eve and to you. One team, one memory, no hand-off dropped.
+It runs like an assembly line built around one shared memory: your **Brand Brain**: your services, your story, your voice, your rules. Remi AI logs what customers ask. Eve turns the patterns into a plan. Elly writes, Leo and Aria produce, Nova tunes it for search, Piper publishes it, Finn works the responses, Max amplifies what earns it, and Vera measures everything and reports back, to Eve and to you. One team, one memory, no hand-off dropped.
 
 ## Hire one, or hire the crew
 
-Nobody starts with the whole roster. Most businesses start with the one that hurts, usually “Remi”, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Team page](/ai-team/)**.
+Nobody starts with the whole roster. Most businesses start with the one that hurts, usually Remi AI, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Team page](/ai-team/)**.
 
 And if you're wondering whether this works for a business your size: it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/): the same team already answering for a local daycare, qualifying leads for a Springfield painting contractor, and checking project statuses for a home services company. Built here, trained on your business, managed from one admin.
 

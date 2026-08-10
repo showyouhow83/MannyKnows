@@ -5,9 +5,9 @@
 // qualifying agent) that national SaaS tools can't match locally.
 // Every claim traces to the published case studies or the data files.
 //
-// The agent has a name: Remi (src/data/aiTeam.ts — front desk: sales, booking
-// & support). This page is where "Remi" links from the plans and the homepage
-// resolve — it explains what Remi does; /ai-team is where Remi gets hired.
+// The agent has a name: Remi AI (src/data/aiTeam.ts — front desk: sales, booking
+// & support). This page is where "Remi AI" links from the plans and the homepage
+// resolve — it explains what Remi AI does; /ai-team is where Remi AI gets hired.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -23,31 +23,31 @@ import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../data/aiWebsite';
 const PHONE_DISPLAY = '(413) 361-8451';
 const PHONE_TEL = '+14133618451';
 
-// The three versions of Remi (Manny, Aug 2026). The Lite one on the 1-page AI
+// The three versions of Remi AI (Manny, Aug 2026). The Lite one on the 1-page AI
 // Website carries the name but is an answering bot, not an agent — fixed, not
 // configurable. The agent proper is configured & customized per business.
 const VERSIONS = [
   {
-    name: 'Remi Lite',
+    name: 'Remi AI Lite',
     tag: 'The answering bot',
     price: '$40/mo',
     priceNote: 'with the one-page AI Website: $195 one-time setup fee',
-    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', '“Remi” is the starting name, pick your own', 'Fixed setup beyond that, no customization'],
+    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', 'Remi AI is the starting name, pick your own', 'Fixed setup beyond that, no customization'],
     cta: { label: 'Get the 1-page site', href: '/ai-website/' },
     featured: false,
   },
   {
-    name: 'Remi',
+    name: 'Remi AI',
     tag: 'The agent',
     price: 'From $95/mo',
     priceNote: `in every website plan · or on your existing site + $${aiTeamSetupFee} setup`,
-    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', '“Remi” is the starting name, rename it to fit your brand', 'Hands off to you when a human matters'],
+    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', 'Remi AI is the starting name, rename it to fit your brand', 'Hands off to you when a human matters'],
     cta: { label: 'See the website plans', href: '/plans/' },
     ctaAlt: { label: 'or hire it onto your site', href: '/ai-team/#agent-remi' },
     featured: true,
   },
   {
-    name: 'Remi Custom',
+    name: 'Remi AI Custom',
     tag: 'Built around you',
     price: 'From $2,500',
     priceNote: 'one-time, quoted up front',
@@ -58,10 +58,10 @@ const VERSIONS = [
 ];
 
 const FAQS = [
-  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. “Remi” answers in whichever language the customer starts with.' },
+  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. Remi AI answers in whichever language the customer starts with.' },
   { q: 'Can it answer phone calls, or just website chat?', a: "Yes, both. On your site it answers and books. On your phone line, a custom build answers every call and routes it to the right person." },
-  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team. You don't need to rebuild anything. If you're on one of our website plans, “Remi” is already included." },
-  { q: 'How fast can it be live?', a: 'Minutes. “Remi” is configured and added to your website that fast. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
+  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Team. You don't need to rebuild anything. If you're on one of our website plans, Remi AI is already included." },
+  { q: 'How fast can it be live?', a: 'Minutes. Remi AI is configured and added to your website that fast. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
   {
     q: 'What does an AI booking agent cost?',
     a: 'Four ways in. Pick by what you already have:',
@@ -70,7 +70,7 @@ const FAQS = [
       rows: [
         ['Included in every website plan', `From $${aiTeamStartingPrice}/mo`],
         ['Hired onto the site you already have', `From $${aiTeamStartingPrice}/mo + $${aiTeamSetupFee} setup`],
-        ['On the one-page AI Website (lightest “Remi”: answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
+        ['On the one-page AI Website (lightest Remi AI: answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
         ['Custom build: phone IVR, deep integrations', 'From $2,500 one-time'],
       ],
     },
@@ -78,12 +78,12 @@ const FAQS = [
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
-const META_DESCRIPTION = 'Remi answers customers 24/7 in English or Spanish, qualifies the lead, and books the job: the AI booking agent for Western Mass businesses. From $95/mo.';
+const META_DESCRIPTION = 'Remi AI answers customers 24/7 in English or Spanish, qualifies the lead, and books the job: the AI booking agent for Western Mass businesses. From $95/mo.';
 
 const pageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Remi: AI Booking Agent for Small Businesses',
+  name: 'Remi AI: AI Booking Agent for Small Businesses',
   serviceType: 'AI booking agent and AI answering service development',
   provider: {
     '@type': 'ProfessionalService',
@@ -96,13 +96,13 @@ const pageJsonLd = {
   areaServed: 'Western Massachusetts',
   description: META_DESCRIPTION,
   offers: [
-    { '@type': 'Offer', name: 'Included in every website plan (Remi)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi answering 24/7 from $95/mo; it books the job from Get Booked at $245/mo.' },
+    { '@type': 'Offer', name: 'Included in every website plan (Remi AI)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi AI answering 24/7 from $95/mo; it books the job from Get Booked at $245/mo.' },
     { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have, from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
   ],
 };
 ---
 
-<BaseLayout title="Remi: AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Remi AI: AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -117,7 +117,7 @@ const pageJsonLd = {
 
       <div class="pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[1440px] mx-auto text-center">
-          <!-- Remi himself, not a generic spot illustration (Manny, Aug 2026) -->
+          <!-- Remi AI himself, not a generic spot illustration (Manny, Aug 2026) -->
           <div class="flex justify-center mb-6">
             <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
               <AgentAvatar agent="desi" class="w-full h-full" />
@@ -130,7 +130,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>AI booking agents that answer,<br /> qualify &amp; book, 24/7</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Most jobs are lost to the call nobody could answer. “Remi” is our AI booking agent for Western Mass small businesses. Trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
+            Most jobs are lost to the call nobody could answer. Remi AI is our AI booking agent for Western Mass small businesses. Trained on your business, it answers customer questions in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
@@ -142,7 +142,7 @@ const pageJsonLd = {
                  "Astro" on our account, so #astro is the trigger (#chat also works).
                  It re-checks on hashchange, so this stays a same-page anchor and opens
                  the agent right here instead of bouncing the visitor to the homepage.
-                 Name it Astro here, not Remi, because Astro is who greets the visitor. -->
+                 Name it Astro here, not Remi AI, because Astro is who greets the visitor. -->
             <a href="#astro" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
               Test Astro, our own AI agent
             </a>
@@ -154,12 +154,12 @@ const pageJsonLd = {
       </div>
     </header>
 
-    <!-- What Remi does + the three versions, merged into one section
+    <!-- What Remi AI does + the three versions, merged into one section
          (was two long sections; Manny asked for less copy, Aug 2026). -->
     <Section id="versions" variant="alternate">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>One “Remi”, three sizes</span></h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>One Remi AI, three sizes</span></h2>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">

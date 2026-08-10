@@ -3,7 +3,7 @@
 // scope is tailored to each client. Multilingual sites are standard.
 //
 // The four website tiers are an incremental ladder — each one is "everything in
-// the tier below, plus…", and the built-in AI agent (Remi) gains capability as
+// the tier below, plus…", and the built-in AI agent (Remi AI) gains capability as
 // you climb: answers → books → sells → shopping assistant. Business Ads and
 // Multimedia Agency are broader services shown as their own sections on /plans
 // (hidden from the pricing grid), not website tiers.
@@ -88,12 +88,12 @@ export const plans: Plan[] = [
       'Hosting, SSL, and speed handled: nothing extra to buy',
       'Set up to rank on Google & Maps when locals search for you',
       'A contact form that reaches you the moment someone fills it',
-      '“Remi”, your AI agent, answering customer questions 24/7',
+      'Remi AI, your AI agent, answering customer questions 24/7',
       'Linked up to the social accounts you already have',
     ],
     headline: 'Get online, get found, start answering customers',
     blurb:
-      "The simple one. A sharp 1\u20133 page website designed for your business (logo included if you need one), hosted and kept fast, set up to show up when locals search you on Google, with a contact form that reaches you and “Remi” answering questions around the clock. If you're just getting online \u2014 or what you have is embarrassing \u2014 this is where you start.",
+      "The simple one. A sharp 1\u20133 page website designed for your business (logo included if you need one), hosted and kept fast, set up to show up when locals search you on Google, with a contact form that reaches you and Remi AI answering questions around the clock. If you're just getting online \u2014 or what you have is embarrassing \u2014 this is where you start.",
     whoFor:
       "New and small businesses that need a real website, need to be findable, and don't need anything complicated yet.",
     deliverables: [
@@ -101,7 +101,7 @@ export const plans: Plan[] = [
         title: 'Your Brand Brain',
         items: [
           'A private AI knowledge base of your business: services, prices, and voice',
-          'The site and “Remi” both read from it, so nothing goes stale or off-brand',
+          'The site and Remi AI both read from it, so nothing goes stale or off-brand',
         ],
       },
       {
@@ -114,7 +114,7 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: '“Remi”: your AI agent',
+        title: 'Remi AI: your AI agent',
         items: [
           'Answers customer questions 24/7, in your customer’s language',
           'Trained on your business: services, prices, hours, and how you talk',
@@ -125,8 +125,8 @@ export const plans: Plan[] = [
         title: 'Your own admin',
         items: [
           'Run the site yourself: update pages, posts, photos, and prices without waiting on us',
-          'Every lead, contact, and inquiry “Remi” captures, tracked in one place',
-          'Control “Remi” from it too: what it knows, what it says, what it hands to you',
+          'Every lead, contact, and inquiry Remi AI captures, tracked in one place',
+          'Control Remi AI from it too: what it knows, what it says, what it hands to you',
           'Built around your business: we add the sections you actually need (estimates, projects, contracts, portfolio) and leave out the ones you don’t',
         ],
       },
@@ -151,14 +151,14 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We learn your business: what you do, who your customers are, and the questions they keep asking.' },
       { title: 'We design & build', body: 'You approve the design before it goes live. Usually a couple of weeks from kickoff.' },
-      { title: '“Remi” learns your business', body: 'We train the agent on your services and voice, then test it before it ever talks to a customer.' },
+      { title: 'Remi AI learns your business', body: 'We train the agent on your services and voice, then test it before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Updates, monitoring, and tuning: you send changes, we handle them.' },
     ],
     faq: [
       { q: '$95 a month seems low. How?', a: 'Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. It is a monthly plan rather than a one-time project, so the build cost is spread across the relationship instead of landing as a bill up front. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price: work that published 2026 pricing surveys put at $3,000–$15,000 as an up-front project. You pay $95 the first month and $95 every month after.' },
-      { q: 'Can “Remi” book appointments on this plan?', a: 'On Get Found, “Remi” answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
+      { q: 'Can Remi AI book appointments on this plan?', a: 'On Get Found, Remi AI answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
       { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. Nothing is owed after you leave. Prepaid annual terms aren’t refundable once the year starts: details in our terms.' },
     ],
   },
@@ -167,16 +167,16 @@ export const plans: Plan[] = [
     name: 'Get Booked',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 245,
-    tagline: 'Your AI site now books the job: “Remi” answers, captures leads, and fills your calendar.',
+    tagline: 'Your AI site now books the job: Remi AI answers, captures leads, and fills your calendar.',
     builtOn: 'Everything in Get Found, plus',
     highlights: [
       'A full multi-page site with deeper self-optimization: more content & SEO kept fresh',
-      '“Remi” now books the job into your calendar, not just answers',
+      'Remi AI now books the job into your calendar, not just answers',
       'Local SEO and AI search optimization: rank for what customers search, and get quoted in AI answers',
     ],
     headline: 'A website that answers and books, for you',
     blurb:
-      "Everything in Get Found, on a full multi-page site, and now “Remi” books the job. Powered by your Brand Brain, “Remi” answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
+      "Everything in Get Found, on a full multi-page site, and now Remi AI books the job. Powered by your Brand Brain, Remi AI answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
       'Service businesses (contractors, clinics, daycares, professional offices) that need more than answers: they need the appointment captured while the customer is ready.',
     deliverables: [
@@ -188,7 +188,7 @@ export const plans: Plan[] = [
         ],
       },
       {
-        title: '“Remi”: answers & books',
+        title: 'Remi AI: answers & books',
         items: [
           'Answers customers and books appointments straight onto your calendar',
           'Captures every lead into your admin so nothing slips through',
@@ -216,14 +216,14 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We learn your business, your services, and what a booked job is worth to you.' },
       { title: 'We design & build', body: 'The full site, approved by you before launch: typically a few weeks.' },
-      { title: '“Remi” learns to book', body: 'We connect “Remi” to your calendar and train it on your booking rules, then test it hard.' },
+      { title: 'Remi AI learns to book', body: 'We connect Remi AI to your calendar and train it on your booking rules, then test it hard.' },
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
-      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and “Remi” stops only answering questions and starts booking work into your calendar: which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
-      { q: 'How does “Remi” book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books, then logs the lead in your admin.' },
-      { q: 'I already have a website, do I have to start over?', a: 'No. If it has good bones, we optimize it and add “Remi” and the SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
-      { q: 'Can I upgrade later?', a: 'Yes, move up to Get Growing to have “Remi” sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
+      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and Remi AI stops only answering questions and starts booking work into your calendar: which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
+      { q: 'How does Remi AI book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books, then logs the lead in your admin.' },
+      { q: 'I already have a website, do I have to start over?', a: 'No. If it has good bones, we optimize it and add Remi AI and the SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
+      { q: 'Can I upgrade later?', a: 'Yes, move up to Get Growing to have Remi AI sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
     ],
   },
   {
@@ -231,17 +231,17 @@ export const plans: Plan[] = [
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 545,
-    tagline: 'A website that runs itself: writes its own content, tunes its own SEO & speed, and sells with “Remi”.',
+    tagline: 'A website that runs itself: writes its own content, tunes its own SEO & speed, and sells with Remi AI.',
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
       'Full self-optimization: like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
-      '“Remi” sells: steers customers to the right service and asks for the job',
+      'Remi AI sells: steers customers to the right service and asks for the job',
       'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
     headline: 'A website that writes, optimizes, and sells on its own',
     blurb:
-      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain: writing its own fresh content and tuning its own SEO and speed, so it never goes stale, the closest thing to a full-time web developer on your site. “Remi” goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
+      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain: writing its own fresh content and tuning its own SEO and speed, so it never goes stale, the closest thing to a full-time web developer on your site. Remi AI goes from booking to selling: answering, booking, and steering shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
     whoFor:
       'Established service businesses and shops whose customers search Google and call (painters, contractors, daycares, clinics, law offices) that want the site and the agent doing the selling.',
     deliverables: [
@@ -250,11 +250,11 @@ export const plans: Plan[] = [
         items: [
           'Designed and built for your business, or your current one, rebuilt right',
           'Updates itself: fresh, relevant content and SEO kept current for you',
-          'Your admin gets the controls for that: review, edit, or roll back anything the site writes, and steer what “Remi” pushes',
+          'Your admin gets the controls for that: review, edit, or roll back anything the site writes, and steer what Remi AI pushes',
         ],
       },
       {
-        title: '“Remi”: answers, books & sells',
+        title: 'Remi AI: answers, books & sells',
         items: [
           'Points shoppers to the right product or service in your catalog, and upsells',
           'Answers and books 24/7 in your customer’s language, trained on your business',
@@ -281,13 +281,13 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We take the time to really understand your business: what you sell, who buys, how you sound, and what a good month looks like.' },
       { title: 'We design & build', body: 'You see the design before it goes live and we adjust until it’s right. Typically a few weeks from kickoff to launch.' },
-      { title: '“Remi” learns to sell', body: 'We train the agent on your catalog, prices, and rules, then test it hard before it ever talks to a customer.' },
+      { title: 'Remi AI learns to sell', body: 'We train the agent on your catalog, prices, and rules, then test it hard before it ever talks to a customer.' },
       { title: 'Every month after', body: 'Fixes, updates, monitoring, and tuning, plus the site keeping itself fresh.' },
     ],
     faq: [
       { q: 'I already have a website, do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it: same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'How does “Remi” know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
+      { q: 'How does Remi AI know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
       { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts: details in our terms.' },
     ],
@@ -308,7 +308,7 @@ export const plans: Plan[] = [
     ],
     headline: 'For businesses ready to lead their market',
     blurb:
-      "This is Get Growing ($545) with our Business Ads service on two networks ($700) bundled together \u2014 $1,245 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and “Remi” keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
+      "This is Get Growing ($545) with our Business Ads service on two networks ($700) bundled together \u2014 $1,245 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and Remi AI keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
       'Established businesses that already get work from their site and want to take ground \u2014 multi-crew contractors, busy practices, shops with real competition.',
     deliverables: [
@@ -316,7 +316,7 @@ export const plans: Plan[] = [
         title: 'Everything in Get Growing',
         items: [
           'The self-optimizing website: writes its own content, tunes its own SEO and speed',
-          '“Remi” selling and booking 24/7, your admin, multilingual as standard',
+          'Remi AI selling and booking 24/7, your admin, multilingual as standard',
           'Every Get Found and Get Booked capability underneath it',
         ],
       },
@@ -349,7 +349,7 @@ export const plans: Plan[] = [
       { q: 'Is the ad budget included in the $895?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
       { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $545 and Business Ads on two networks is $700: $1,245 a month. Bundled it's $895, so you keep $350. We can do that because the ads and the site stop being two separate projects: the landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
       { q: 'How is this different from a big agency?', a: "Published 2026 pricing guides put full agency retainers at $2,000–$10,000 a month, usually behind a minimum-term contract, and many agencies keep the website if you leave. Get Ahead is month-to-month and everything (the site, the content, the ad accounts) belongs to you." },
-      { q: 'Do I need this, or is Get Growing enough?', a: "If your site and “Remi” keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground, outrank and out-advertise the competition, with someone accountable for the whole engine, not just the website." },
+      { q: 'Do I need this, or is Get Growing enough?', a: "If your site and Remi AI keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground, outrank and out-advertise the competition, with someone accountable for the whole engine, not just the website." },
     ],
   },
   {
@@ -361,7 +361,7 @@ export const plans: Plan[] = [
     highlights: [
       'A real Shopify store, set up right: theme, payments, shipping, taxes',
       'Your Shopify subscription is included in the price: one bill, not two',
-      '“Remi” answers shoppers 24/7 from day one; higher tiers make it sell',
+      'Remi AI answers shoppers 24/7 from day one; higher tiers make it sell',
     ],
     headline: 'Online stores that sell while your business is closed',
     blurb:
@@ -391,7 +391,7 @@ export const plans: Plan[] = [
           'Products loaded and organized, up to 10 product adds or changes a month',
           'SEO product descriptions for your whole catalog: drafted with AI from your Brand Brain, reviewed, and optimized to rank',
           'Store SEO basics: titles, metas, and product schema set up right',
-          '“Remi” answers shopper questions 24/7, in any language',
+          'Remi AI answers shopper questions 24/7, in any language',
           'Your catalog published and synced to Google Shopping, Instagram & Facebook: one catalog, every channel',
           'Discount codes and gift cards set up when you need them',
           'Monitoring, order-email basics, and a clear monthly report',
@@ -423,7 +423,7 @@ export const plans: Plan[] = [
         featured: true,
         features: [
           'Your included Shopify subscription upgrades to Grow: staff accounts and shipping discounts a store this size needs',
-          '“Remi” becomes a true AI shopping assistant: recommends, answers, and upsells from your Brand Brain',
+          'Remi AI becomes a true AI shopping assistant: recommends, answers, and upsells from your Brand Brain',
           'Full eCommerce SEO program: keyword strategy, collection pages, content that ranks',
           'Email and SMS campaigns every month, not just automated flows',
           'Multilingual storefront as standard',
@@ -470,7 +470,7 @@ export const plans: Plan[] = [
       {
         title: 'The selling machine',
         items: [
-          '“Remi” answers shoppers 24/7 at every tier, and recommends, guides, and upsells from Sell Smarter up',
+          'Remi AI answers shoppers 24/7 at every tier, and recommends, guides, and upsells from Sell Smarter up',
           'Email that brings people back: flows from Sell More, monthly campaigns from Sell Smarter',
           'Analytics wired up so we know what sells and what stalls',
         ],
@@ -487,13 +487,13 @@ export const plans: Plan[] = [
     steps: [
       { title: 'Kickoff', body: 'We learn what you sell, how you fulfill, and what a good month looks like, in your shop or on a call, and scope the right tier for it together.' },
       { title: 'Store build', body: 'Theme, products, payments, shipping, taxes, emails: the whole machine, and you approve it before launch. Existing stores migrate here too.' },
-      { title: 'Launch & learn', body: 'Live, with “Remi” trained on your catalog. Early traffic shows us what to tune first.' },
+      { title: 'Launch & learn', body: 'Live, with Remi AI trained on your catalog. Early traffic shows us what to tune first.' },
       { title: 'Every month after', body: 'Products stay current, emails keep going out, SEO compounds, and on Sell Everywhere, ads feed the whole engine.' },
     ],
     faq: [
       { q: 'Is the Shopify subscription really included?', a: "Yes, and it scales with your tier. Sell Online and Sell More include Shopify's Basic plan, which is right for most stores starting out. Sell Smarter and Sell Everywhere include Shopify's Grow plan, because a store running campaigns with thousands of products needs its staff accounts and shipping rates anyway. Either way the account is opened in your name, so the store is yours, not ours. Enterprise operations that need Shopify Advanced or Plus: we run those too. You pay Shopify the difference and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },
       { q: 'Who actually writes thousands of product descriptions?', a: "AI does the drafting, from your product data, your photos, and your Brand Brain, so every description sounds like your store and is structured to rank. Then it gets reviewed and optimized before it ships; nothing goes live unread. That's why there are no per-product caps at prices a human-only agency can't touch: you approve the voice once, and your whole catalog gets covered." },
-      { q: 'Why is the entry price $150 when agencies charge $1,000+ a month?', a: "Because the entry tier is a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and “Remi” answers customers so you don't pay a person to. What costs $1,000+ at an agency (the going rate in 2026 pricing guides) is the work in the upper tiers (SEO programs, campaigns, ads, and product copy at real catalog scale) and that's exactly what those tiers add, at prices a local business can carry." },
+      { q: 'Why is the entry price $150 when agencies charge $1,000+ a month?', a: "Because the entry tier is a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and Remi AI answers customers so you don't pay a person to. What costs $1,000+ at an agency (the going rate in 2026 pricing guides) is the work in the upper tiers (SEO programs, campaigns, ads, and product copy at real catalog scale) and that's exactly what those tiers add, at prices a local business can carry." },
       { q: 'I already have a store. Do I have to start over?', a: "No. We take over existing stores at any tier: audit what you have, fix what's costing you sales, and run it from there. If you're on Etsy, Wix, Square, or WooCommerce, moving your products to Shopify is part of setup." },
       // Twin-ladder model (Manny, Aug 2026): each store tier is a website
       // tier's twin — the delta is the store machinery + the Shopify
@@ -504,10 +504,10 @@ export const plans: Plan[] = [
       // refunded in cash; after 7 days there are NO cash refunds — the unused
       // balance converts to service credit spendable on ANY MannyKnows
       // service, dollar for dollar. Side-by-side (two sites, two plans) was
-      // deliberately dropped — the store's pages/blog/Remi cover the service
+      // deliberately dropped — the store's pages/blog/Remi AI cover the service
       // side.
-      { q: 'Do I still need one of the website plans?', a: "No, each store tier is a website tier's twin, with the store machinery and your Shopify subscription added: Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere. Your store is your website: pages, blog, SEO, and “Remi” are all in it." },
-      { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across: your store looks like your site did, and the other way around, your monthly moves to the new tier's price, and “Remi's” training and your content carry. No migration fee, and you land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 7 days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Team, ads, photography." },
+      { q: 'Do I still need one of the website plans?', a: "No, each store tier is a website tier's twin, with the store machinery and your Shopify subscription added: Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere. Your store is your website: pages, blog, SEO, and Remi AI are all in it." },
+      { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across: your store looks like your site did, and the other way around, your monthly moves to the new tier's price, and Remi AI's training and your content carry. No migration fee, and you land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 7 days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Team, ads, photography." },
       { q: 'Is the ad budget included in Sell Everywhere?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
       { q: 'Can I move between tiers, or cancel?', a: "Month-to-month, move anytime, the work carries forward, so nothing is wasted. Prepay the year and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
       { q: 'Can you build the store as a one-time project instead?', a: "Yes, billed at a flat $75/hr and quoted up front. You'll still need to run it afterward: Shopify subscription, product updates, emails. Most owners hand that back to us with Sell Online at $150/mo once they've priced their own time." },
@@ -548,7 +548,7 @@ export const plans: Plan[] = [
           'A market analysis of your audience on that network: who they are, when they’re active, what they respond to',
           'An individual plan traced for the network: its own media types, formats, and sizes',
           'Provided content will be branded, sized, and posted for that network',
-          'Comments and messages sorted and answered by “Remi”, our AI agent',
+          'Comments and messages sorted and answered by Remi AI, our AI agent',
           'An AI-generated monthly report per network: add or drop networks as results come in',
         ],
       },
@@ -583,7 +583,7 @@ export const plans: Plan[] = [
         items: [
           'Your content branded, sized, and posted for you, formatted for each network',
           'A consistent presence on the networks that fit your business',
-          'Comments and messages sorted and answered by “Remi”, our AI agent',
+          'Comments and messages sorted and answered by Remi AI, our AI agent',
         ],
       },
       {

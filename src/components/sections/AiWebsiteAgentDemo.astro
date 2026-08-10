@@ -8,7 +8,7 @@
 // showing one — a claim standing in for a demonstration.
 //
 // Now the frame shows the page you're buying (hero, services, reviews, FAQ,
-// contact) with “Remi” docked on it the way it really ships, and the lead is
+// contact) with Remi AI docked on it the way it really ships, and the lead is
 // drawn as the email it actually becomes.
 //
 // Still static markup on purpose: this sits above the fold on a page whose
@@ -101,10 +101,10 @@ const faqs = ['Do you offer free estimates?', 'What areas do you cover?'];
       <!-- Spacer so the docked widget never covers the contact bar -->
       <div class="h-[164px]" aria-hidden="true"></div>
 
-      <!-- “Remi”, docked on the page exactly as it ships -->
+      <!-- Remi AI, docked on the page exactly as it ships -->
       <div class="absolute left-3 right-3 bottom-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary shadow-xl overflow-hidden">
         <div class="flex items-center justify-between px-2.5 py-1.5 bg-gray-50 dark:bg-dark-primary border-b border-light-tertiary dark:border-dark-accent">
-          <span class="text-[9px] font-bold text-text-light-primary dark:text-text-dark-primary">“Remi”</span>
+          <span class="text-[9px] font-bold text-text-light-primary dark:text-text-dark-primary">Remi AI</span>
           <span class="inline-flex items-center gap-1 text-[8px] font-semibold text-green-600 dark:text-green-400">
             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
             Online
@@ -121,7 +121,7 @@ const faqs = ['Do you offer free estimates?', 'What areas do you cover?'];
                     : 'bg-gray-100 dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary rounded-bl-sm',
                 ]}
               >
-                <span class="sr-only">{m.from === 'them' ? 'Customer: ' : 'Remi: '}</span>
+                <span class="sr-only">{m.from === 'them' ? 'Customer: ' : 'Remi AI: '}</span>
                 {m.text}
               </p>
             </li>
@@ -141,7 +141,7 @@ const faqs = ['Do you offer free estimates?', 'What areas do you cover?'];
       <span class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary">10:47 PM</span>
     </div>
     <div class="px-3 py-2.5">
-      <p class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary">“Remi” · yourbusiness.com</p>
+      <p class="text-[9px] text-text-light-tertiary dark:text-text-dark-tertiary">Remi AI · yourbusiness.com</p>
       <p class="text-[11px] font-bold text-text-light-primary dark:text-text-dark-primary mt-0.5 leading-snug">
         New lead — Carla · (413) 555-0182
       </p>

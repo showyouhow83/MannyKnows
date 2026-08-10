@@ -62,7 +62,7 @@ Manny
 		     Set by deploy.sh and CI as PUBLIC_BUILD_ID; "dev" when unset. -->
 		<meta name="build-id" content={import.meta.env.PUBLIC_BUILD_ID ?? 'dev'} />
 		{preconnect.map((origin) => <link rel="preconnect" href={origin} crossorigin />)}
-		<!-- Remi loads on every page (below), so its origin warms up on every
+		<!-- Remi AI loads on every page (below), so its origin warms up on every
 		     page. NO crossorigin: loader.js is a classic script (no-cors), and a
 		     crossorigin preconnect opens a connection that never gets reused. -->
 		<link rel="preconnect" href="https://opscloud.us" />
@@ -231,8 +231,8 @@ Manny
 		     (the carousel init polls for the Swiper global, so load order is safe). -->
 		{/* swiper-bundle.min.js also moved into Testimonials.astro — see note in <head>. */}
 
-		<!-- Remi — the real site agent, our own opscloud.us app (agent_manny_mk).
-		     Layout-level so Remi is on EVERY public page (was a homepage-only
+		<!-- Remi AI — the real site agent, our own opscloud.us app (agent_manny_mk).
+		     Layout-level so Remi AI is on EVERY public page (was a homepage-only
 		     trial; promoted per Manny, Aug 2026). CSP for opscloud.us
 		     (script/style/font/connect+wss/frame) lives in the meta tag above. -->
 		<script is:inline src="https://opscloud.us/widget/loader.js" data-agent-id="agent_manny_mk" async></script>
