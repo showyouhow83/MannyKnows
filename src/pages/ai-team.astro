@@ -301,7 +301,12 @@ Most owners land here asking "which AI agents does my business need?" That's the
                   <AgentAvatar agent={a.id} class="w-full h-full" alt={`${a.name}, ${a.role}: AI agent for Springfield & Western Mass small businesses by MannyKnows`} />
                 </div>
                 <div class="min-w-0">
-                  <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{a.name}</h3>
+                  <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">
+                    {a.name}
+                    {a.id === 'desi' && (
+                      <a href="/ai-booking-agent/" aria-label="Learn more about Remi AI, the AI booking agent" title="What is Remi AI?" class="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 text-[11px] font-bold align-middle hover:bg-primary-blue/5 transition-colors">?</a>
+                    )}
+                  </h3>
                   <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">{a.role}</span>
                 </div>
               </div>

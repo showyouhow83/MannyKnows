@@ -198,23 +198,7 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <!-- FAQ (Faq component emits FAQPage schema) -->
-    <Section id="faq" variant="alternate">
-      <Container>
-        <div class="max-w-3xl mx-auto">
-          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
-          <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
-              Talk about your booking agent
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
-            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
-          </div>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- Proof closes the page (moved from under the hero, Manny, Aug 2026):
+    <!-- Proof (moved from under the hero, Manny, Aug 2026):
          shipped, named, linked: the thing national SaaS tools can't say. -->
     <Section id="proof" variant="default">
       <Container>
@@ -240,6 +224,23 @@ const pageJsonLd = {
               Read the SL Painting case study
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- FAQ closes the page (Manny, Aug 2026). The Faq component emits
+         FAQPage schema; the contact CTA rides at its foot. -->
+    <Section id="faq" variant="alternate">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
+          <div class="text-center mt-12">
+            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
+              Talk about your booking agent
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
           </div>
         </div>
       </Container>
