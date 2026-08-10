@@ -117,18 +117,23 @@ const pageJsonLd = {
         <Container>
           <div class="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <div class="text-center lg:text-left">
-              <div class="flex justify-center lg:justify-start mb-6">
-                <img
-                  src="/mascot/astro-laptop-fly.webp"
-                  alt=""
-                  aria-hidden="true"
-                  width="560"
-                  height="539"
-                  decoding="async"
-                  class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
-                />
+              <div class="flex justify-center mb-6">
+                <!-- Flipped wrapper (not the img: astro-float's keyframes own
+                     the img's transform) so the mascot faces the Brand Brain
+                     panel instead of giving it its back. -->
+                <div class="-scale-x-100">
+                  <img
+                    src="/mascot/astro-laptop-fly.webp"
+                    alt=""
+                    aria-hidden="true"
+                    width="560"
+                    height="539"
+                    decoding="async"
+                    class="astro-float w-full max-w-[150px] h-auto pointer-events-none"
+                  />
+                </div>
               </div>
-              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Smart website plans · Western Massachusetts</span>
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Website Design &amp; Development</span>
               <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
                 <span class="apple-gradient-text" data-colorful-title>A website that works while you do</span>
               </h1>
