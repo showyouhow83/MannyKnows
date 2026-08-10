@@ -23,7 +23,7 @@ import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import GoogleProfile from '../components/sections/GoogleProfile.astro';
-import { theirSites, ourSites } from '../data/smartContrast';
+import { theirSites, ourSites, closingLine } from '../data/smartContrast';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
@@ -222,7 +222,10 @@ const NAVBAR_CONFIG = {
 				     on /plans so the copy can't drift. On phones the halves
 				     stack with a divider; the vs medallion is md+ only. -->
 				<div class="relative rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2">
-					<div class="bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
+					<div class="relative bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
+						<!-- Mobile vs medallion: sits on the boundary between the
+						     stacked halves, right side (per Manny's screenshot). -->
+						<span class="md:hidden absolute -bottom-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
 						<h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-5 uppercase tracking-wide text-xs">Their regular websites</h3>
 						<ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
 							{theirSites.map((t) => (
@@ -241,7 +244,7 @@ const NAVBAR_CONFIG = {
 					<span class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
 				</div>
 				<p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-10 max-w-2xl mx-auto">
-					A normal website that isn't updated and optimized is worth a little less every month. Yours optimizes itself and is worth a little more every day.
+					{closingLine}
 				</p>
 				<div class="text-center mt-8">
 					<a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">

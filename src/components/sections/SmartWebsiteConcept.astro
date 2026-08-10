@@ -20,7 +20,7 @@ export interface Props {
   showHeader?: boolean;
 }
 const { compact = false, showHeader = true } = Astro.props;
-import { theirSites, ourSites } from '../../data/smartContrast';
+import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
 // ("What it checks, every day" daily-loop grid removed per Manny, Aug 2026 —
 // the contrast columns and the builder objection carry the concept alone.)
 ---
@@ -61,6 +61,6 @@ import { theirSites, ourSites } from '../../data/smartContrast';
   </div>
 
   <p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-12 max-w-2xl mx-auto">
-    A normal website that isn't updated and optimized is worth a little less every month. Yours optimizes itself and is worth a little more every day.
+    {closingLine}
   </p>
 </div>
