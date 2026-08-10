@@ -40,27 +40,32 @@ import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
     </div>
   )}
 
-  <!-- The contrast: what you're used to vs what this is -->
-  <div class="grid gap-5 md:grid-cols-2 mb-14">
-    <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6">
-      <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">Their regular websites</h3>
-      <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+  <!-- The contrast as a fused "versus" panel (Manny's pick, Aug 2026) —
+       the single implementation, shared by /plans, the plan pages, and the
+       homepage. On phones the halves stack with a divider and the medallion
+       moves to the right of the boundary. -->
+  <div class="relative rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2 max-w-5xl mx-auto">
+    <div class="relative bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
+      <span class="md:hidden absolute -bottom-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
+      <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-5 uppercase tracking-wide text-xs">Their regular websites</h3>
+      <ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         {theirSites.map((t) => (
           <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>{t}</span></li>
         ))}
       </ul>
     </div>
-    <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5">
-      <h3 class="font-bold text-primary-blue dark:text-blue-300 mb-4 uppercase tracking-wide text-xs">Our AI Smart Websites</h3>
-      <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+    <div class="bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] bg-white dark:bg-dark-secondary p-6 sm:p-10">
+      <h3 class="font-bold text-primary-blue dark:text-blue-300 mb-5 uppercase tracking-wide text-xs">Our AI Smart Websites</h3>
+      <ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         {ourSites.map((t) => (
-          <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>{t}</span></li>
+          <li class="flex gap-3"><svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>{t}</span></li>
         ))}
       </ul>
     </div>
+    <span class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
   </div>
 
-  <p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-12 max-w-2xl mx-auto">
+  <p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-10 max-w-2xl mx-auto">
     {closingLine}
   </p>
 </div>
