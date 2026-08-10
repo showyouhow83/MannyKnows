@@ -23,7 +23,7 @@ import PageSection from '../components/layout/PageSection.astro';
 import SelectedWork from '../components/sections/SelectedWork.astro';
 import HomeAiTeam from '../components/sections/HomeAiTeam.astro';
 import GoogleProfile from '../components/sections/GoogleProfile.astro';
-import SmartWebsiteConcept from '../components/sections/SmartWebsiteConcept.astro';
+import { theirSites, ourSites } from '../data/smartContrast';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
@@ -216,9 +216,34 @@ const NAVBAR_CONFIG = {
 			subtitle="A normal website is frozen the day it launches: it only improves if you pay someone to touch it. Ours check themselves every single day: multilingual, capturing leads, and getting you found on Google."
 			variant="alternate"
 		>
-			<div class="max-w-6xl mx-auto">
-				<SmartWebsiteConcept showHeader={false} />
-				<div class="text-center mt-10">
+			<div class="max-w-5xl mx-auto">
+				<!-- "Versus" panel (Manny's pick, Aug 2026) — rows come from
+				     src/data/smartContrast.ts, shared with SmartWebsiteConcept
+				     on /plans so the copy can't drift. On phones the halves
+				     stack with a divider; the vs medallion is md+ only. -->
+				<div class="relative rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2">
+					<div class="bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
+						<h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-5 uppercase tracking-wide text-xs">Their regular websites</h3>
+						<ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+							{theirSites.map((t) => (
+								<li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>{t}</span></li>
+							))}
+						</ul>
+					</div>
+					<div class="bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] bg-white dark:bg-dark-secondary p-6 sm:p-10">
+						<h3 class="font-bold text-primary-blue dark:text-blue-300 mb-5 uppercase tracking-wide text-xs">Our AI Smart Websites</h3>
+						<ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+							{ourSites.map((t) => (
+								<li class="flex gap-3"><svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>{t}</span></li>
+							))}
+						</ul>
+					</div>
+					<span class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
+				</div>
+				<p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-10 max-w-2xl mx-auto">
+					A normal website that isn't updated and optimized is worth a little less every month. Yours optimizes itself and is worth a little more every day.
+				</p>
+				<div class="text-center mt-8">
 					<a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
 						Compare the plans
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
@@ -258,29 +283,39 @@ const NAVBAR_CONFIG = {
 			variant="alternate"
 		>
 			<div class="max-w-6xl mx-auto">
-				<!-- Copy mirrors the #concept cards on /apps/ (the source of
-				     truth) — no prices on the homepage, per Manny. -->
-				<div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
-					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
-						<span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">Disconnected</span>
-						<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Scripts &amp; tools</h3>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that files what you used to do by hand.</p>
+				<!-- Bento grid (Manny's pick, Aug 2026: the layout he liked
+				     from the Websites options, filled with Apps content).
+				     Stacks to one column on phones, story tile first.
+				     No prices on the homepage — tiers live on /apps/. -->
+				<div class="grid gap-5 md:grid-cols-4">
+					<div class="md:col-span-2 md:row-span-2 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-8 flex flex-col justify-center">
+						<h3 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">Disconnected and connected apps</h3>
+						<p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Some jobs need a standalone tool. Some need your website, inbox, CRM, calendar, and phone talking to each other so data stops being re-typed. We build both.</p>
+						<p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">The fastest way to get hours back is to stop doing the work a machine can do.</p>
 					</div>
-					<div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8">
-						<span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">Connected</span>
-						<h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Integrations &amp; MCP</h3>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Your tools wired together so data stops being re-typed: APIs and webhooks, Twilio phone &amp; SMS, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Scripts</div>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Apps Script tools: spreadsheets that become quoting tools, reports that send themselves.</p>
+					</div>
+					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Wired</div>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">APIs, webhooks, Twilio phone &amp; SMS, Make &amp; Zapier: your tools connected, end to end.</p>
+					</div>
+					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>MCP</div>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Your AI plugged into your calendar, CRM, and inventory: it works with them, not just talks.</p>
+					</div>
+					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Yours</div>
+						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Quoted up front: the code, the flows, and the accounts are yours. Co-own option for big ideas.</p>
 					</div>
 				</div>
-				<p class="text-center text-base sm:text-lg font-semibold text-text-light-primary dark:text-text-dark-primary mt-10 max-w-2xl mx-auto">
-					The fastest way to get hours back is to stop doing the work a machine can do.
-				</p>
-				<div class="text-center mt-8">
+				<div class="text-center mt-10">
 					<a href="/apps/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
 						Explore Business Apps
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
 					</a>
-					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Quoted up front · most projects live in 2–4 weeks · you own everything we build</p>
+					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Most projects live in 2–4 weeks · you own everything we build</p>
 				</div>
 			</div>
 		</PageSection>

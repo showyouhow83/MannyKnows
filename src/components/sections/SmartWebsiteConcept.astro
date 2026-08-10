@@ -20,6 +20,7 @@ export interface Props {
   showHeader?: boolean;
 }
 const { compact = false, showHeader = true } = Astro.props;
+import { theirSites, ourSites } from '../../data/smartContrast';
 // ("What it checks, every day" daily-loop grid removed per Manny, Aug 2026 —
 // the contrast columns and the builder objection carry the concept alone.)
 ---
@@ -44,22 +45,17 @@ const { compact = false, showHeader = true } = Astro.props;
     <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-6">
       <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-4 uppercase tracking-wide text-xs">Their regular websites</h3>
       <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Built once, then frozen. Every change costs a call, a quote, and a wait.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Slowly falls behind on speed and search as the rules change around it.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Breaks quietly. You find out when a customer tells you, or never.</span></li>
-        <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>Not ready for AI traffic: the answer engines customers now ask can't read it.</span></li>
+        {theirSites.map((t) => (
+          <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>{t}</span></li>
+        ))}
       </ul>
     </div>
     <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5">
       <h3 class="font-bold text-primary-blue dark:text-blue-300 mb-4 uppercase tracking-wide text-xs">Our AI Smart Websites</h3>
       <ul class="space-y-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Checks itself daily and fixes what's safe to fix on its own.</span></li>
-        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Keeps up with search and speed instead of falling behind them.</span></li>
-        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Catches breakage before your customers do.</span></li>
-        {/* Mirrors the "Not ready for AI traffic" row across the aisle. The
-            24/7-answering point lives on in “Remi's” deliverables on these
-            same pages. */}
-        <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>Structured so ChatGPT and Google's AI can read, quote, and recommend you.</span></li>
+        {ourSites.map((t) => (
+          <li class="flex gap-3"><span class="text-primary-blue dark:text-blue-300 flex-shrink-0">✓</span><span>{t}</span></li>
+        ))}
       </ul>
     </div>
   </div>

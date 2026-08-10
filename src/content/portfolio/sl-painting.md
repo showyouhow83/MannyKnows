@@ -3,7 +3,7 @@ draft: false
 title: "SL Painting"
 client: "SL Painting"
 tagline: "From invisible on Google to #1 organically for “exterior painting” in Springfield, with a website, a CRM, a 24/7 AI agent, and AI Painter Lab."
-summary: "SL Painting had a strong offline reputation and nothing online. They didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 98 colors. Today they rank #1 on Google: organically, for “exterior painting” in Springfield."
+summary: "SL Painting had a strong offline reputation and nothing online. They didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 200+ colors. Today they rank #1 on Google: organically, for “exterior painting” in Springfield."
 industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ goals:
 results:
   - { value: "#1", label: "Ranked #1 on Google for “Exterior Painting” in Springfield, organically" }
   - { value: "100", label: "Lighthouse score, and kept that way" }
-  - { value: "98", label: "Paint colors homeowners can preview in AI Painter Lab" }
+  - { value: "200+", label: "Paint colors homeowners can preview in AI Painter Lab" }
   - { value: "24/7", label: "AI agent answering & qualifying leads" }
 
 liveUrl: "https://slpainting.co"
@@ -50,7 +50,7 @@ A complete digital operation, from scratch:
 - **Technical & local SEO** built in from day one, so the site ranks for the searches that bring in work.
 - **An admin CRM** that captures every inquiry and tracks it from first contact to finished job, so nothing slips through the cracks.
 - **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours: the same front-desk role, “Remi”, that any business can [hire from the AI Team](/ai-team/).
-- **AI Painter Lab**: an app that lets homeowners see their own house in any of 98 colors before they commit, turning "I'm not sure" into "let's do that one."
+- **AI Painter Lab**: an app that lets homeowners see their own house in any of 200+ colors before they commit, turning "I'm not sure" into "let's do that one."
 
 ## How it works
 
