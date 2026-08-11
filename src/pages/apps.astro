@@ -268,28 +268,7 @@ const jsonLd = {
       </Container>
     </Section>
 
-    <!-- ───────────────────────── Proof ───────────────────────── -->
-    <Section id="proof" variant="alternate">
-      <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>We've wired this up before</span></h2>
-        </div>
-        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
-          <a href="/work/vl-home-services/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system: a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent: every inquiry captured and tracked, customers answered around the clock in any language.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
-          </a>
-          <a href="/work/sl-painting/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock: grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
-          </a>
-        </div>
-      </Container>
-    </Section>
-
-    <!-- ───────────────────────── How it works ───────────────────────── -->
+    <!-- ───────────────────────── How it works + case studies ───────────────────────── -->
     <Section id="how-it-works" variant="default">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
@@ -297,6 +276,24 @@ const jsonLd = {
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="underline decoration-dotted hover:text-primary-blue">how it works</a>.</p>
         </div>
         <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
+
+        <!-- Case studies (was its own "We've wired this up before" section;
+             folded in below the steps, Manny, Aug 2026). -->
+        <div id="case-studies" class="text-center max-w-2xl mx-auto mt-20 mb-12 scroll-mt-24">
+          <h3 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>Case Studies</span></h3>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
+          <a href="/work/vl-home-services/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system: a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent: every inquiry captured and tracked, customers answered around the clock in any language.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+          <a href="/work/sl-painting/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+            <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h4>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock: grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          </a>
+        </div>
       </Container>
     </Section>
 
