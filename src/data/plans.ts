@@ -93,7 +93,7 @@ export const plans: Plan[] = [
     ],
     headline: 'Get online, get found, start answering customers',
     blurb:
-      "The simple one. A sharp 1\u20133 page website designed for your business (logo included if you need one), hosted and kept fast, set up to show up when locals search you on Google, with a contact form that reaches you and Remi AI answering questions around the clock. If you're just getting online \u2014 or what you have is embarrassing \u2014 this is where you start.",
+      'The simple one. A sharp 1\u20133 page website designed for your business, logo included*, hosted and maintained fast, set up to show up when locals search you on Google.',
     whoFor:
       "New and small businesses that need a real website, need to be findable, and don't need anything complicated yet.",
     deliverables: [
