@@ -321,6 +321,11 @@ const NAVBAR_CONFIG = {
 			subtitle="The latest sites, stores, and apps we've designed and built: a site that ranks #1 on Google organically, AI agents that answer customers around the clock, and custom apps that take the manual work off your plate. Click any project for the full story."
 			variant="alternate"
 		>
+			<!-- Case-study astronaut peeking from the left edge of the
+			     portfolio, same treatment as the other case-study sections. -->
+			<div class="cs-mascot" aria-hidden="true">
+				<img src="/mascot/astro-casestudy.webp" alt="" width="360" height="631" loading="lazy" decoding="async" />
+			</div>
 			<SelectedWork />
 
 			{/* Idea launcher — hidden from the site per Manny (Aug 2026), together
@@ -399,6 +404,33 @@ const NAVBAR_CONFIG = {
 	/* Phones only: no empty margin at all, stays hidden. */
 	@media (max-width: 639px) {
 		.gbp-mascot { display: none; }
+	}
+
+	/* Case-study astronaut: left-edge peek on the portfolio section (same
+	   family as the case-study peeks on /apps, /ai-booking-agent, /ai-website). */
+	#work { position: relative; overflow: hidden; }
+	.cs-mascot {
+		--mascot-height: 360px;
+		--mascot-peek: 58%;
+		--mascot-rotate: 31deg;
+
+		position: absolute;
+		top: 50%;
+		left: 0;
+		transform: translateY(-50%) translateX(calc(-100% + var(--mascot-peek)));
+		pointer-events: none;
+		z-index: 20;
+	}
+	.cs-mascot img {
+		height: var(--mascot-height);
+		width: auto;
+		transform: rotate(var(--mascot-rotate));
+	}
+	@media (max-width: 1279px) {
+		.cs-mascot { --mascot-height: 280px; }
+	}
+	@media (max-width: 639px) {
+		.cs-mascot { display: none; }
 	}
 </style>
 

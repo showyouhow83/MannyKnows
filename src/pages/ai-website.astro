@@ -152,6 +152,10 @@ const pageJsonLd = {
 
     <!-- ───────────────────────── The agent ───────────────────────── -->
     <Section id="the-agent" variant="default">
+      <!-- Case-study astronaut peeking from the left edge. -->
+      <div class="cs-mascot" aria-hidden="true">
+        <img src="/mascot/astro-casestudy.webp" alt="" width="360" height="631" loading="lazy" decoding="async" />
+      </div>
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The part that isn't a website</span>
@@ -269,7 +273,7 @@ const pageJsonLd = {
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             If you want a multilingual site of several pages that we design, run, update four times a month, and
             keep ranking, with your Google Business Profile handled and your own admin: that's a monthly plan,
-            starting at $95/mo with no setup fee. Different product, different job.
+            with no setup fee. Different product, different job.
             <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 hover:underline font-semibold">Compare Get Found</a>.
           </p>
         </div>
@@ -377,3 +381,32 @@ const pageJsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Case-study astronaut: left-edge peek on the agent section (same family
+     as /apps and /ai-booking-agent). */
+  #the-agent { position: relative; overflow: hidden; }
+  .cs-mascot {
+    --mascot-height: 360px;
+    --mascot-peek: 58%;
+    --mascot-rotate: 31deg;
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateX(calc(-100% + var(--mascot-peek)));
+    pointer-events: none;
+    z-index: 20;
+  }
+  .cs-mascot img {
+    height: var(--mascot-height);
+    width: auto;
+    transform: rotate(var(--mascot-rotate));
+  }
+  @media (max-width: 1279px) {
+    .cs-mascot { --mascot-height: 280px; }
+  }
+  @media (max-width: 639px) {
+    .cs-mascot { display: none; }
+  }
+</style>
