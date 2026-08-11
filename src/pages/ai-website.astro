@@ -321,6 +321,18 @@ const pageJsonLd = {
          whole — and the Lighthouse block keeps its own #lighthouse anchor so
          existing deep links still land. -->
     <Section id="whats-on-it" variant="default">
+      <!-- Data astronaut standing in the corner, same treatment as the
+           telescope astronaut on the homepage "What clients say" section. -->
+      <img
+        src="/mascot/astro-data.webp"
+        alt=""
+        aria-hidden="true"
+        width="300"
+        height="335"
+        loading="lazy"
+        decoding="async"
+        class="block absolute bottom-0 left-4 w-[110px] h-auto pointer-events-none z-10"
+      />
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What's on the page, and what's under it</span></h2>
@@ -386,6 +398,7 @@ const pageJsonLd = {
   /* Case-study astronaut: left-edge peek on the agent section (same family
      as /apps and /ai-booking-agent). */
   #the-agent { position: relative; overflow: hidden; }
+  #whats-on-it { position: relative; overflow: hidden; }
   .cs-mascot {
     --mascot-height: 360px;
     --mascot-peek: 58%;
