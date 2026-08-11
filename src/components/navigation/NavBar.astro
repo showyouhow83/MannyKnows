@@ -551,26 +551,16 @@ const searchIndex = [
     50% { background-position: 100% 50%; }
   }
 
-  /* Mobile Menu Styles */
+  /* Mobile Menu Styles — tapping a link highlights it like the desktop
+     dropdown does. (The old gradient underline stuck after a touch-tap and
+     read as a stray separator line mid-panel.) */
   .mobile-nav-link {
-    position: relative;
-    display: block;
-    overflow: hidden;
+    border-radius: 10px;
+    padding: 8px 10px;
   }
-
-  .mobile-nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(45deg, #10d1ff, #ff4faa);
-    transition: width 0.3s ease;
-  }
-
-  .mobile-nav-link:hover::after {
-    width: 100%;
+  .mobile-nav-link:hover,
+  .mobile-nav-link:active {
+    background: rgba(0, 113, 227, 0.1);
   }
 
   /* Mobile menu animations */

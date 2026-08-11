@@ -33,7 +33,7 @@ const walkaway = [
 
 const faqs = [
   { q: 'Is it really free?', a: 'Yes, the instant scan and the human review both. It is how we show the kind of work we do before you spend a dollar.' },
-  { q: 'What do you need from me?', a: 'Your website address and an email where we can reach you about the results. If you have a goal in mind (more calls, more bookings, more online sales) say so and the review focuses there.' },
+  { q: 'What do you need from me?', a: 'Your website address and your email: the full report is delivered there, every finding with its fix. One website per email address; re-scanning your own site is always free. If you have a goal in mind (more calls, more bookings, more online sales) say so and the review focuses there.' },
   { q: 'How is this different from a free automated score?', a: 'The instant scan is automated, that is why it is instant. The human review is not: Manny checks your competitors, your actual rankings, and whether the site sells, then puts the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
   { q: 'How long does it take?', a: 'The scan takes seconds. The human review usually comes back within a couple of business days: tell us if you need it sooner.' },
 ];
@@ -62,7 +62,7 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named, with the fix next to it. Then a real person goes deeper, free.
+            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named, with the fix next to it, delivered to your inbox. Then a real person goes deeper, free.
           </p>
 
           <!-- Instant scanner -->
@@ -94,7 +94,7 @@ const quote = getTestimonial('SL Painting');
           </form>
           <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            Instant and free. Your email is where we follow up on what the scan finds. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+            Instant and free. The full report goes to your email: one website per email, re-scans anytime. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
           </p>
         </div>
       </div>
@@ -216,6 +216,47 @@ const quote = getTestimonial('SL Painting');
       return score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
     }
 
+    // Normal path: the full report went to their inbox — the page shows the
+    // score, the pillar bars, and where the details went. No expandable
+    // checks, no fixes: those live in the email (that's the whole gate).
+    function renderTeaser(data: any) {
+      if (!out || !section) return;
+      const pillars = [...data.pillars].sort((a: any, b: any) => a.score - b.score);
+      out.innerHTML = `
+        <div class="text-center mb-8">
+          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">Instant scan · ${esc(data.host)}</p>
+          <div class="inline-flex items-baseline gap-3">
+            <span class="text-6xl font-black apple-gradient-text" data-colorful-title>${data.overall}</span>
+            <span class="text-2xl font-bold text-text-light-tertiary dark:text-text-dark-tertiary">/100</span>
+          </div>
+          <p class="mt-2 text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">${esc(data.grade)}</p>
+          <p class="mt-1 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">${data.findings === 0 ? 'Nothing flagged on this pass.' : data.findings + ' finding' + (data.findings > 1 ? 's' : '') + ' worth your attention.'}</p>
+        </div>
+        <div class="max-w-xl mx-auto rounded-2xl border border-primary-blue/30 bg-primary-blue/5 dark:bg-primary-blue/10 p-6 text-center mb-10">
+          <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary">Full report sent to ${esc(data.sentTo)}</p>
+          <p class="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Every finding, with the fix next to it. Give it a minute — and check spam or Promotions if it doesn't show.</p>
+        </div>
+        <div class="space-y-4 max-w-3xl mx-auto">
+          ${pillars.map((p: any) => `
+            <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl px-6 py-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-text-light-primary dark:text-text-dark-primary">${esc(p.name)}</span>
+                <span class="text-sm font-bold ${p.score >= 80 ? 'text-green-500' : p.score >= 50 ? 'text-amber-500' : 'text-red-500'}">${p.score}</span>
+              </div>
+              <div class="h-2 rounded-full bg-light-tertiary dark:bg-dark-accent overflow-hidden">
+                <div class="h-full rounded-full ${barColor(p.score)} transition-all duration-700" style="width:${p.score}%"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page${data.cached ? ' (cached within the last 30 minutes)' : ''}. The detail behind each bar is in your email.</p>
+      `;
+      section.classList.remove('hidden');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Fallback path: the report email couldn't be sent, so the full report
+    // renders on the page — a real visitor shouldn't be stranded by an
+    // email-provider hiccup on our side.
     function render(data: any) {
       if (!out || !section) return;
       // Worst first (Manny, Aug 2026): lowest-scoring pillar leads, and inside
@@ -309,7 +350,7 @@ const quote = getTestimonial('SL Painting');
           body: JSON.stringify({ url, email }),
         });
         const data = await res.json();
-        if (data.ok) render(data);
+        if (data.ok) (data.emailed ? renderTeaser(data) : render(data));
         else showError(data.error || 'Something went wrong: try again, or request the free human review below.');
       } catch {
         showError('Network hiccup: try again in a moment.');

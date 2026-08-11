@@ -13,6 +13,8 @@ const MAX_BYTES = 1_500_000;
 const FETCH_TIMEOUT_MS = 12_000;
 const RL_MAX_PER_HOUR = 8;
 const CACHE_TTL_S = 1800;
+// One website per email, rolling 30 days. Re-scans of the same site stay free.
+const QUOTA_TTL_S = 30 * 86400;
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -34,6 +36,22 @@ function normalizeTarget(raw: string): URL | null {
   if (/(^|\.)(localhost|local|internal|lan|home|corp|test|invalid)$/.test(host)) return null;
   u.hash = '';
   return u;
+}
+
+// Quota identity: fold the throwaway-alias tricks into one address —
+// plus-tags everywhere (user+x@ → user@), dots on gmail (u.s.e.r@gmail.com
+// = user@gmail.com, and googlemail.com = gmail.com).
+function normalizeEmail(raw: string): string {
+  const e = raw.trim().toLowerCase();
+  const at = e.lastIndexOf('@');
+  if (at < 1) return e;
+  let local = e.slice(0, at);
+  let domain = e.slice(at + 1);
+  if (domain === 'googlemail.com') domain = 'gmail.com';
+  const plus = local.indexOf('+');
+  if (plus > 0) local = local.slice(0, plus);
+  if (domain === 'gmail.com') local = local.replace(/\./g, '');
+  return `${local}@${domain}`;
 }
 
 async function fetchCapped(url: string, accept: string): Promise<{ status: number; body: string; finalUrl: string; truncated: boolean } | null> {
@@ -146,6 +164,99 @@ async function captureLead(
   } catch { /* never block the scan on lead plumbing */ }
 }
 
+// The full report ships to the inbox, not the page — a fake email gets
+// nothing, which is the email verification. Worst pillar first, failures
+// first inside each, same ordering the page used.
+function reportEmailHtml(r: any): string {
+  const abs = (h: string) => (/^https?:/i.test(h) ? h : `https://mannyknows.com${h}`);
+  const ORDER: Record<string, number> = { fail: 0, warn: 1, pass: 2 };
+  const MARK: Record<string, [string, string]> = { pass: ['✓', '#15803d'], warn: ['!', '#b45309'], fail: ['✕', '#b91c1c'] };
+  const scoreColor = (s: number) => (s >= 80 ? '#15803d' : s >= 50 ? '#b45309' : '#b91c1c');
+  const pillars = [...(r.pillars || [])]
+    .sort((a: any, b: any) => a.score - b.score)
+    .map((p: any) => ({ ...p, checks: [...(p.checks || [])].sort((a: any, b: any) => (ORDER[a.status] ?? 3) - (ORDER[b.status] ?? 3)) }));
+  const findings = pillars.flatMap((p: any) => p.checks).filter((c: any) => c.status !== 'pass').length;
+  return `
+<div style="max-width: 640px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #ffffff;">
+  <div style="background: linear-gradient(135deg, #0071e3 0%, #8b5cf6 55%, #ff4faa 100%); padding: 28px 24px; text-align: center;">
+    <span style="font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">MannyKnows</span>
+    <div style="margin-top: 6px;"><span style="display: inline-block; background: rgba(255,255,255,0.18); color: #ffffff; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 1px;">YOUR WEBSITE REPORT</span></div>
+  </div>
+  <div style="padding: 28px 24px;">
+    <p style="margin: 0 0 4px; font-size: 15px; color: #475569;">Instant scan of</p>
+    <p style="margin: 0 0 18px; font-size: 20px; font-weight: 700;"><a href="${r.url}" style="color: #1e293b; text-decoration: none;">${r.host}</a></p>
+    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; margin-bottom: 8px;">
+      <p style="margin: 0; font-size: 34px; font-weight: 800; color: #1e293b;">${r.overall}<span style="font-size:16px; color:#94a3b8;">/100</span></p>
+      <p style="margin: 4px 0 0; font-size: 14px; color: #475569;">${r.grade}</p>
+    </div>
+    <p style="margin: 0 0 22px; font-size: 13px; color: #64748b;">${findings === 0 ? 'Nothing flagged on this pass.' : `${findings} finding${findings > 1 ? 's' : ''} below, worst first — each with the fix next to it.`}</p>
+    ${pillars.map((p: any) => `
+    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px;">
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;"><tr>
+        <td style="font-size: 15px; font-weight: 700; color: #1e293b;">${p.name}</td>
+        <td style="font-size: 15px; font-weight: 800; text-align: right; color: ${scoreColor(p.score)};">${p.score}</td>
+      </tr></table>
+      ${p.checks.map((c: any) => `
+      <p style="margin: 0 0 2px; font-size: 13px; font-weight: 700; color: ${MARK[c.status]?.[1] ?? '#475569'};">${MARK[c.status]?.[0] ?? '·'} ${c.label}</p>
+      <p style="margin: 0 0 10px; font-size: 13px; color: #475569;">${c.detail}${c.fix ? ` <a href="${abs(c.fix.href)}" style="color: #0071e3; font-weight: 600; text-decoration: none;">${c.fix.text} →</a>` : ''}</p>`).join('')}
+    </div>`).join('')}
+    ${Array.isArray(r.opportunities) && r.opportunities.length ? `
+    <p style="margin: 22px 0 10px; font-size: 16px; font-weight: 700; color: #1e293b;">Where AI could work for ${r.host}</p>
+    ${r.opportunities.map((o: any) => `
+    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;">
+      <p style="margin: 0 0 3px; font-size: 14px; font-weight: 700; color: #1e293b;">${o.title}</p>
+      <p style="margin: 0; font-size: 13px; color: #475569;">${o.body} <a href="${abs(o.href)}" style="color: #0071e3; font-weight: 600; text-decoration: none;">See how →</a></p>
+    </div>`).join('')}` : ''}
+    <div style="text-align: center; margin-top: 24px;">
+      <a href="https://mannyknows.com/contact/" style="display: inline-block; background: linear-gradient(135deg, #0071e3, #ff4faa); color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none;">Get the free human review</a>
+      <p style="margin: 12px 0 0; font-size: 12px; color: #94a3b8;">The scan reads one page by machine. The free human review goes where it can't: your competitors, your rankings, whether the site sells. Reply to this email and it reaches Manny directly.</p>
+    </div>
+  </div>
+  <div style="background: #0f172a; padding: 16px 24px; text-align: center;">
+    <span style="font-size: 12px; color: rgba(255,255,255,0.65);">mannyknows.com · (413) 361-8451 · you requested this report at mannyknows.com/free-ai-website-analysis</span>
+  </div>
+</div>`;
+}
+
+async function sendReportEmail(to: string, result: any): Promise<boolean> {
+  try {
+    const apiKey = env?.RESEND_API_KEY;
+    if (!apiKey) return false;
+    const from = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from,
+        to,
+        reply_to: env?.OWNER_EMAIL || 'mm@mannyknows.com',
+        subject: `Your website report: ${result.host} scored ${result.overall}/100`,
+        html: reportEmailHtml(result),
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// What the page gets when the full report went to the inbox: score, grade,
+// pillar bars — no check details, no fixes. Those live in the email.
+function teaserOf(r: any, sentTo: string) {
+  return {
+    url: r.url,
+    host: r.host,
+    fetchedAt: r.fetchedAt,
+    overall: r.overall,
+    grade: r.grade,
+    emailed: true,
+    sentTo,
+    pillars: (r.pillars || []).map((p: any) => ({ id: p.id, name: p.name, score: p.score })),
+    findings: (r.pillars || []).flatMap((p: any) => p.checks || []).filter((c: any) => c.status !== 'pass').length,
+  };
+}
+
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   let payload: { url?: string; email?: string };
   try { payload = await request.json(); } catch { return json({ ok: false, error: 'Bad request.' }, 400); }
@@ -165,6 +276,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const kv = env?.MK_KV_CHATBOT;
   const ip = clientAddress || request.headers.get('cf-connecting-ip') || 'unknown';
+  const normEmail = normalizeEmail(email);
+  // www.foo.com and foo.com are the same site for quota purposes.
+  const site = target.hostname.replace(/^www\./, '');
 
   if (kv) {
     // Fail open on KV hiccups: KV allows 1 write/sec/key, so two same-second
@@ -178,12 +292,23 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       await kv.put(rlKey, String(used + 1), { expirationTtl: 3600 });
     } catch { /* limiter unavailable: let the scan through */ }
 
+    // One website per email: the quota only burns on a successful scan, so a
+    // typo'd domain doesn't eat someone's free report.
+    try {
+      const prior = await kv.get(`scan_quota:${normEmail}`);
+      if (prior && prior !== site) {
+        return json({ ok: false, error: `This email already used its free scan on ${prior}. Re-scans of ${prior} are always free — for a different website, write us at mm@mannyknows.com.` }, 429);
+      }
+    } catch { /* quota unavailable: let the scan through */ }
+
     try {
       const cached = await kv.get(`scan_cache:v3:${target.hostname}`);
       if (cached) {
         const parsed = JSON.parse(cached);
-        await captureLead(kv, email, target.hostname, target.origin, ip, parsed, 'served from cache');
-        return json({ ok: true, cached: true, ...parsed });
+        await captureLead(kv, email, target.hostname, target.origin, ip, parsed, 'served from cache (report emailed)');
+        await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
+        const emailed = await sendReportEmail(email, parsed);
+        return json({ ok: true, cached: true, ...(emailed ? teaserOf(parsed, email) : parsed) });
       }
     } catch { /* fall through to live scan */ }
   }
@@ -234,9 +359,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   if (kv) {
     await kv.put(`scan_cache:v3:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
+    await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
   }
 
-  await captureLead(kv, email, target.hostname, target.origin, ip, result, 'live scan');
+  await captureLead(kv, email, target.hostname, target.origin, ip, result, 'live scan (report emailed)');
 
-  return json({ ok: true, ...result });
+  // The inbox is the product now. If the send fails (Resend down, key missing)
+  // fall back to the on-page report so a real visitor isn't stranded.
+  const emailed = await sendReportEmail(email, result);
+  return json({ ok: true, ...(emailed ? teaserOf(result, email) : result) });
 };
