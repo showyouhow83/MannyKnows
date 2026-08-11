@@ -266,6 +266,11 @@ const jsonLd = {
 
     <!-- ───────────────────────── How it works + case studies ───────────────────────── -->
     <Section id="how-it-works" variant="default">
+      <!-- Case-study astronaut peeking from the left, level with the
+           case-study cards at the section's bottom. -->
+      <div class="cs-mascot" aria-hidden="true">
+        <img src="/mascot/astro-casestudy.webp" alt="" width="360" height="631" loading="lazy" decoding="async" />
+      </div>
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How it works</span></h2>
@@ -276,9 +281,6 @@ const jsonLd = {
         <!-- Case studies (was its own "We've wired this up before" section;
              folded in below the steps, Manny, Aug 2026). -->
         <div id="case-studies" class="text-center max-w-2xl mx-auto mt-20 mb-12 scroll-mt-24">
-          <div class="flex justify-center mb-6">
-            <img src="/mascot/astro-casestudy.webp" alt="" aria-hidden="true" width="360" height="631" loading="lazy" decoding="async" class="astro-float w-full max-w-[130px] h-auto pointer-events-none" />
-          </div>
           <h3 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>Case Studies</span></h3>
         </div>
         <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
@@ -333,6 +335,33 @@ const jsonLd = {
   }
   @media (max-width: 639px) {
     .tiers-mascot { display: none; }
+  }
+
+  /* Case-study astronaut: left-edge peek, anchored to the section bottom
+     where the case-study cards live. */
+  #how-it-works { position: relative; overflow: hidden; }
+  .cs-mascot {
+    --mascot-height: 360px;
+    --mascot-peek: 58%;
+    --mascot-rotate: 31deg;
+
+    position: absolute;
+    bottom: 32px;
+    left: 0;
+    transform: translateX(calc(-100% + var(--mascot-peek)));
+    pointer-events: none;
+    z-index: 20;
+  }
+  .cs-mascot img {
+    height: var(--mascot-height);
+    width: auto;
+    transform: rotate(var(--mascot-rotate));
+  }
+  @media (max-width: 1279px) {
+    .cs-mascot { --mascot-height: 280px; }
+  }
+  @media (max-width: 639px) {
+    .cs-mascot { display: none; }
   }
 
   .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
