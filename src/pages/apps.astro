@@ -71,7 +71,7 @@ const TIERS = [
 ];
 
 const STEPS = [
-  { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote: flat $75/hr, total known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
+  { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote: the total is known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
   { n: '02', title: 'Build & connect', body: 'Apps Script, APIs, webhooks, Twilio, MCP servers, or a full custom build: whatever the job calls for, wired into the tools you already run on.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
   { n: '03', title: 'Document & hand off', body: 'Every flow documented, every account yours. Most projects run 2–4 weeks from kickoff to live, and it keeps working without you babysitting it.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
 ];
@@ -224,7 +224,7 @@ const jsonLd = {
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is quoted up front at a flat $75/hr. The prices below are starting points: you know the total before we start, and you only pay for the automation your business actually needs.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front: you know the total before we start, and you only pay for the automation your business actually needs.</p>
         </div>
         <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
           {TIERS.map((t) => (
