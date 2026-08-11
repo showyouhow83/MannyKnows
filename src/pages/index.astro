@@ -202,11 +202,6 @@ const NAVBAR_CONFIG = {
 			subtitle="Unanswered reviews, missed calls, and dormant social accounts are just a few of the many ways Western Mass businesses might be leaking revenue daily. Stop the drain with Manny AI."
 			variant="alternate"
 		>
-			<!-- Manny AI peeking in from the right edge — same treatment (and
-			     dials) as the 360 astronaut on the SEO section below. -->
-			<div slot="background" class="team-mascot" aria-hidden="true">
-				<img src="/mascot/astro-manny-ai.webp" alt="" width="508" height="880" loading="lazy" decoding="async" />
-			</div>
 			<HomeAiTeam />
 		</PageSection>
 
@@ -375,34 +370,6 @@ const NAVBAR_CONFIG = {
 	     --mascot-rotate  counterclockwise tilt (more negative = leans in more)
 	     --mascot-top     vertical position inside the section
 	   ------------------------------------------------------------------- */
-	/* Manny AI: right-edge peek on the AI Team section — same dials as the
-	   360 astronaut below (.gbp-mascot). */
-	.team-mascot {
-		--mascot-height: 440px;
-		--mascot-peek: 58%;
-		--mascot-rotate: -31deg;
-		--mascot-top: 46%;
-
-		position: absolute;
-		top: var(--mascot-top);
-		right: 0;
-		transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
-		pointer-events: none;
-		z-index: 20;
-	}
-	.team-mascot img {
-		height: var(--mascot-height);
-		width: auto;
-		display: block;
-		transform: rotate(var(--mascot-rotate));
-	}
-	@media (max-width: 1279px) {
-		.team-mascot { --mascot-height: 320px; }
-	}
-	@media (max-width: 639px) {
-		.team-mascot { display: none; }
-	}
-
 	.gbp-mascot {
 		--mascot-height: 440px;
 		--mascot-peek: 58%;
