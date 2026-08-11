@@ -216,10 +216,11 @@ const jsonLd = {
 
     <!-- ───────────────────────── Tiers ───────────────────────── -->
     <Section id="tiers" variant="default">
-      <!-- App astronaut peeking in from the left edge (mirror of the
-           homepage GBP peek). Dials live in the .tiers-mascot CSS below. -->
+      <!-- App astronaut peeking in from the right edge (the render carries
+           its own lean, so CSS rotation sits at 0). Dials live in the
+           .tiers-mascot CSS below. -->
       <div class="tiers-mascot" aria-hidden="true">
-        <img src="/mascot/astro-app-peek.webp" alt="" width="454" height="880" loading="lazy" decoding="async" />
+        <img src="/mascot/astro-app-peek.webp" alt="" width="389" height="880" loading="lazy" decoding="async" />
       </div>
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
@@ -304,18 +305,18 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
-  /* Left-edge peek for the tiers section — mirror of the homepage
-     .gbp-mascot (which peeks from the right). */
+  /* Right-edge peek for the tiers section (same family as the homepage
+     .gbp-mascot). The render is pre-tilted, so rotate stays 0. */
   #tiers { position: relative; overflow: hidden; }
   .tiers-mascot {
     --mascot-height: 440px;
     --mascot-peek: 58%;
-    --mascot-rotate: 31deg;
+    --mascot-rotate: 0deg;
 
     position: absolute;
     top: 50%;
-    left: 0;
-    transform: translateY(-50%) translateX(calc(-100% + var(--mascot-peek)));
+    right: 0;
+    transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
     pointer-events: none;
     z-index: 20;
   }
