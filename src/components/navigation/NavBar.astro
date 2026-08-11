@@ -240,15 +240,30 @@ const searchIndex = [
       
       <!-- Navigation Links -->
       <div class="px-4 py-4 space-y-1">
-        <p class="px-1 pb-1 text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">What we offer</p>
-        {offerings.map((o) => (
-          <a
-            href={o.href}
-            class="mobile-nav-link block text-base font-medium text-text-light-primary dark:text-text-dark-primary hover:text-primary-blue dark:hover:text-primary-blue transition-colors duration-200"
-          >
-            {o.label}
-          </a>
-        ))}
+        <!-- Services dropdown — same items as the desktop dropdown, loaded open -->
+        <button
+          type="button"
+          id="mobileServicesToggle"
+          class="w-full flex items-center justify-between py-1 bg-transparent border-none cursor-pointer"
+          aria-expanded="true"
+          aria-controls="mobileServicesPanel"
+        >
+          <span class="text-base font-semibold text-text-light-primary dark:text-text-dark-primary">Services</span>
+          <svg id="mobileServicesChevron" class="w-4 h-4 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform duration-200" style="transform: rotate(180deg);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </button>
+        <div id="mobileServicesPanel" class="ml-1 pl-3 border-l border-gray-200 dark:border-gray-700 space-y-2 pb-1">
+          {offerings.map((o) => (
+            <a
+              href={o.href}
+              class="mobile-nav-link block hover:text-primary-blue dark:hover:text-primary-blue transition-colors duration-200"
+            >
+              <span class="block text-base font-medium text-text-light-primary dark:text-text-dark-primary">{o.label}</span>
+              <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{o.desc}</span>
+            </a>
+          ))}
+        </div>
         <div class="h-px bg-gray-200 dark:bg-gray-700 my-3"></div>
         {primaryLinks.map((link) => (
           <a
@@ -668,10 +683,6 @@ const searchIndex = [
 
     let isMenuOpen = false;
 
-    // Mobile settings tracking
-    let userHasClosedSettings = false;
-    let isFirstMenuOpen = true;
-
     const openMenu = () => {
 
       isMenuOpen = true;
@@ -680,21 +691,18 @@ const searchIndex = [
       menuToggle.querySelector('.hamburger-icon').classList.add('hidden');
       menuToggle.querySelector('.close-icon').classList.remove('hidden');
       document.body.style.overflow = 'hidden'; // Prevent body scroll
-      
-      // Mobile settings auto-open logic
-      const mobileSettingsPanel = document.getElementById('mobileSettingsPanel');
-      const settingsChevron = document.getElementById('settingsChevron');
-      
-      if (mobileSettingsPanel && settingsChevron) {
-        if (isFirstMenuOpen && !userHasClosedSettings) {
-          // First time opening - auto open settings
-          mobileSettingsPanel.classList.remove('hidden');
-          settingsChevron.style.transform = 'rotate(180deg)';
-          isFirstMenuOpen = false;
-        }
-        // Subsequent opens - keep current state unless user manually closed it
+
+      // The Services dropdown always loads open (user preferences stays closed
+      // until tapped — it used to auto-open, which buried the nav links).
+      const servicesPanel = document.getElementById('mobileServicesPanel');
+      const servicesToggle = document.getElementById('mobileServicesToggle');
+      const servicesChevron = document.getElementById('mobileServicesChevron');
+      if (servicesPanel && servicesToggle && servicesChevron) {
+        servicesPanel.classList.remove('hidden');
+        servicesToggle.setAttribute('aria-expanded', 'true');
+        servicesChevron.style.transform = 'rotate(180deg)';
       }
-      
+
       // Hide the floating dock when mobile menu is open
       const floatingDock = document.getElementById('floatingDock');
       if (floatingDock) {
@@ -737,10 +745,18 @@ const searchIndex = [
       }
     };
 
-    // Make settings state tracking available to settings toggle
-    window.mobileSettingsState = {
-      setUserClosed: (closed) => { userHasClosedSettings = closed; }
-    };
+    // Services dropdown toggle (open state is reset by openMenu above)
+    const servicesToggle = document.getElementById('mobileServicesToggle');
+    const servicesPanel = document.getElementById('mobileServicesPanel');
+    const servicesChevron = document.getElementById('mobileServicesChevron');
+    if (servicesToggle && servicesPanel && servicesChevron) {
+      servicesToggle.addEventListener('click', () => {
+        const opening = servicesPanel.classList.contains('hidden');
+        servicesPanel.classList.toggle('hidden', !opening);
+        servicesToggle.setAttribute('aria-expanded', String(opening));
+        servicesChevron.style.transform = opening ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+    }
 
     // Toggle menu on button click
     menuToggle.addEventListener('click', (e) => {
