@@ -51,6 +51,6 @@ A few things to watch for when you're comparing quotes:
 
 ## So what should *you* pay?
 
-Enough to get a site that's fast, that Google can find, and that turns visitors into calls, and not a dollar for one that doesn't. For most Western Mass small businesses that's a one-time build from around $1,000, or a monthly website plan from $95/mo if you'd rather have it all handled.
+Enough to get a site that's fast, that Google can find, and that turns visitors into calls, and not a dollar for one that doesn't. For most Western Mass small businesses that's a custom one-time build from around $1,000, a monthly website plan from $95/mo if you'd rather have it all handled, or our [One-Page Website](/ai-website/) at $195 setup + $40/mo when one sharp page is all the job needs.
 
 Not sure which fits? **[Get a free look at your current site](/free-ai-website-analysis/)**: we'll tell you what's working, what's costing you, and what it would take to fix, with no obligation. Or just [tell us what you do](#contact) and we'll scope it with you.
