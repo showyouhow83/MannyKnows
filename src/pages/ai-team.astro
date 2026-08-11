@@ -244,8 +244,9 @@ const pageJsonLd = {
 
         <!-- Manager -->
         <div id={`agent-${manager.name.toLowerCase().replace(/\s+/g, '-')}`} class="scroll-mt-24 mb-8 max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
-          <div class="w-36 h-36 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
-            <AgentAvatar agent={manager.id} class="w-full h-full" />
+          <div class="w-36 h-36 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] overflow-hidden">
+            <!-- Same waist-up suit art as the homepage roster card. -->
+            <img src="/mascot/astro-manny-ai-bust.webp" alt={`${manager.name}, ${manager.role}`} width="420" height="415" loading="lazy" decoding="async" class="w-full h-full object-contain pointer-events-none" />
           </div>
           <div class="flex-1 text-center sm:text-left">
             {/* Name on its own line, the role badge beneath it. */}
