@@ -164,7 +164,7 @@ const jsonLd = {
               />
             </div>
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
-              Business Apps · Springfield, MA &amp; Western Massachusetts
+              Custom Business Apps &amp; Automation · Springfield, MA
             </span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
               <span class="apple-gradient-text" data-colorful-title>Apps for how your<br />business runs</span>
@@ -196,19 +196,19 @@ const jsonLd = {
         <div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
           <!-- Waist-up mascots sit flush on each card's bottom edge: the
                negative bottom margin cancels the card padding. -->
-          <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 flex gap-4 overflow-hidden">
-            <div class="flex-1">
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Disconnected: scripts &amp; tools</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that renames, sorts, or files what you used to do by hand.</p>
+          <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 overflow-hidden">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Disconnected: scripts &amp; tools</h3>
+            <div class="flex gap-4">
+              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that renames, sorts, or files what you used to do by hand.</p>
+              <img src="/mascot/astro-disconnected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
             </div>
-            <img src="/mascot/astro-disconnected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
           </div>
-          <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 flex gap-4 overflow-hidden">
-            <div class="flex-1">
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Connected: integrations &amp; MCP</h3>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">If a tool has an API, we can wire it in: webhooks, Twilio call routing and SMS with business-hours logic and A2P registration handled, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+          <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 overflow-hidden">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Connected: integrations &amp; MCP</h3>
+            <div class="flex gap-4">
+              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">If a tool has an API, we can wire it in: webhooks, Twilio call routing and SMS with business-hours logic and A2P registration handled, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+              <img src="/mascot/astro-connected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
             </div>
-            <img src="/mascot/astro-connected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
           </div>
         </div>
       </Container>
@@ -216,10 +216,15 @@ const jsonLd = {
 
     <!-- ───────────────────────── Tiers ───────────────────────── -->
     <Section id="tiers" variant="default">
+      <!-- App astronaut peeking in from the left edge (mirror of the
+           homepage GBP peek). Dials live in the .tiers-mascot CSS below. -->
+      <div class="tiers-mascot" aria-hidden="true">
+        <img src="/mascot/astro-app-peek.webp" alt="" width="454" height="880" loading="lazy" decoding="async" />
+      </div>
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Every project is quoted up front at a flat $75/hr: prices below are honest starting points, and you always know the total before we start.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is quoted up front at a flat $75/hr. The prices below are starting points: you know the total before we start, and you only pay for the automation your business actually needs.</p>
         </div>
         <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
           {TIERS.map((t) => (
@@ -299,6 +304,33 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
+  /* Left-edge peek for the tiers section — mirror of the homepage
+     .gbp-mascot (which peeks from the right). */
+  #tiers { position: relative; overflow: hidden; }
+  .tiers-mascot {
+    --mascot-height: 440px;
+    --mascot-peek: 58%;
+    --mascot-rotate: 31deg;
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateX(calc(-100% + var(--mascot-peek)));
+    pointer-events: none;
+    z-index: 20;
+  }
+  .tiers-mascot img {
+    height: var(--mascot-height);
+    width: auto;
+    transform: rotate(var(--mascot-rotate));
+  }
+  @media (max-width: 1279px) {
+    .tiers-mascot { --mascot-height: 320px; }
+  }
+  @media (max-width: 639px) {
+    .tiers-mascot { display: none; }
+  }
+
   .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
   @keyframes astro-float {
     0%, 100% { transform: translateY(0) rotate(0deg); }
