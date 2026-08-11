@@ -144,9 +144,9 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
 
     // ── Service preselection ────────────────────────────────────────────────
     // The ~75 #contact triggers across the site predate this modal and send
-    // free-text contexts ("AI Website (one-page)", "Get Found plan", "Sell
+    // free-text contexts ("One-Page Website", "Get Found plan", "Sell
     // Online: store plan") rather than service values. A plain substring test
-    // misses nearly all of them — "AI Website, one page ($195 + $40/mo)" does
+    // misses nearly all of them — "One-Page Website ($195 + $40/mo)" does
     // not contain "ai website (one-page)" — so we score word overlap instead
     // and only accept a confident match.
 
@@ -177,7 +177,7 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
     ];
 
     // Words that carry no signal — without "page" here, "About page" would
-    // match "AI Website, one page" on that word alone.
+    // match "One-Page Website" on that word alone.
     //
     // "get", "hire" and "one" are deliberately NOT stopped: the plan names ARE
     // "Get Found" / "Get Booked" / "Get Growing", so dropping "get" would take

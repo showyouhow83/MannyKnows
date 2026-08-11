@@ -198,7 +198,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
         : title.length > 65 ? `Title is ${title.length} characters; Google cuts it off around 60.`
         : title.length < 10 ? 'Title is too short to say what you do or where.'
         : 'Title present and a sensible length.',
-      { text: 'Technical SEO is built into every Smart Website plan.', href: GET_FOUND }),
+      { text: 'Technical SEO is built into every AI-Powered Website plan.', href: GET_FOUND }),
     c('description', 'Meta description', desc === null ? 'fail' : (desc.length < 50 || desc.length > 165) ? 'warn' : 'pass',
       desc === null ? "No meta description: Google writes its own, and it won't sell you."
         : desc.length < 50 ? 'Description is thin; this is your free ad in the results.'
@@ -251,7 +251,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
             ? `Found ${agent.how}, but nothing we can confirm is a live agent: worth checking that it answers after hours, not just during business hours.`
             : `Detected ${agent.how}, visitors can get answers without waiting for a callback.`)
         : "We couldn't find anything answering questions on this page. After hours, customers leave and call the next result. (Scanners only see the homepage's code: if you have an agent we missed, the free human review will catch it.)",
-      { text: 'Remi AI answers 24/7 on every Smart Website plan, and books the job from Get Booked up.', href: GET_BOOKED }),
+      { text: 'Remi AI answers 24/7 on every AI-Powered Website plan, and books the job from Get Booked up.', href: GET_BOOKED }),
     c('faq', 'FAQ content AI can quote', hasFaqSchema ? 'pass' : 'warn',
       hasFaqSchema ? 'FAQ structured data found: AI assistants can quote your answers.'
         : 'No FAQ schema, when customers ask ChatGPT or Google AI, competitors with answers get cited.',

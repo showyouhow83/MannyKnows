@@ -58,7 +58,7 @@ export const team: Agent[] = [
     handoff: 'Feeds the team: every question customers ask becomes intel, Remi AI logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
     price: 95,
-    note: 'included with every Smart Website · books from Get Booked, sells from Get Growing',
+    note: 'included with every AI-Powered Website · books from Get Booked, sells from Get Growing',
   },
   {
     id: 'eve',
@@ -236,7 +236,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `An agent starts at $${aiTeamStartingPrice}/mo: that's Remi AI, the front desk, which is also included with every Smart Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only other number: a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
+    a: `An agent starts at $${aiTeamStartingPrice}/mo: that's Remi AI, the front desk, which is also included with every AI-Powered Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Normal AI usage is included (unusually heavy use is quoted first). The only other number: a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
@@ -252,7 +252,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'Can the agents change my website itself?',
-    a: "Yes. This is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site: your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to a Smart Website plan where the site tunes itself in the background, and it's already running on a client's live site (VL Home Services).",
+    a: "Yes. This is where the team stops being a content tool. The publishing side of the team works on your site directly: scans what's there, ships a landing page for a new promo or service, refreshes your hero, or swaps content over for a holiday. Changes arrive as a private preview copy of your site: your live site doesn't change until you press Publish, and if you Discard, nothing ever shipped. This is on-request work, the counterpart to an AI-Powered Website plan where the site tunes itself in the background, and it's already running on a client's live site (VL Home Services).",
   },
   {
     q: "Can you build an agent that's not on the roster?",

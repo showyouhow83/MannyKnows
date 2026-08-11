@@ -58,6 +58,6 @@ Most projects go from kickoff to done in 2–4 weeks, depending on scope.
 
 ## Then keep it ranking
 
-SEO, and now AI-search, isn't a one-and-done. Our [Smart Website plans](/plans/) (from $95/mo) keep technical SEO, AI-search readiness, and speed maintained month after month, and the [fully self-optimizing tier ($545/mo)](/plans/get-growing/) rewrites content and tunes SEO and speed continuously, without you asking; the [Business Ads plan](/plans/business-ads/) (from $350/mo per social network) adds managed ads, SEO content campaigns, and continuous analysis and correction.
+SEO, and now AI-search, isn't a one-and-done. Our [AI-Powered Website plans](/plans/) (from $95/mo) keep technical SEO, AI-search readiness, and speed maintained month after month, and the [fully self-optimizing tier ($545/mo)](/plans/get-growing/) rewrites content and tunes SEO and speed continuously, without you asking; the [Business Ads plan](/plans/business-ads/) (from $350/mo per social network) adds managed ads, SEO content campaigns, and continuous analysis and correction.
 
 **Ready?** [Get a scoped quote](/contact/) or [see the SL Painting case study](/work/sl-painting/).

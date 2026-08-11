@@ -56,6 +56,6 @@ Here's what a complete local presence can do: **SL Painting** came to us invisib
 
 Everything in this guide is free to do, and you can absolutely do it yourself. The catch is time. Setting the profile up right is an afternoon; keeping it ranked is a habit: photos, posts, review replies, every month, forever.
 
-That's the part we take off your plate. With a **[Smart Website plan](/plans/)**, we set up (or clean up) and verify your Business Profile, build you a fast site that Google understands in English and Spanish, and put Remi AI on it so a customer at 10pm gets an answer instead of a voicemail. The [starter plan](/plans/get-found/) covers exactly what this guide describes, and we keep it tuned every month so the ranking sticks.
+That's the part we take off your plate. With a **[AI-Powered Website plan](/plans/)**, we set up (or clean up) and verify your Business Profile, build you a fast site that Google understands in English and Spanish, and put Remi AI on it so a customer at 10pm gets an answer instead of a voicemail. The [starter plan](/plans/get-found/) covers exactly what this guide describes, and we keep it tuned every month so the ranking sticks.
 
 Want to show up when your neighbors search? [Tell us what you do.](#contact)

@@ -381,7 +381,7 @@ export interface StarterTemplate {
 
 export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
   {
-    name: 'Smart Website: Launch',
+    name: 'AI-Powered Website: Launch',
     project_type: 'website-basic',
     is_default: true,
     sections: [

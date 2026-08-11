@@ -1,4 +1,4 @@
-// AI Website (one-page) — the single source of truth for the product.
+// One-Page Website — the single source of truth for the product.
 //
 // Sold in three places, all reading from this file so they can never drift:
 //   • /ai-website          — the full sales page
