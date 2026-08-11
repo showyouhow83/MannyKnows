@@ -208,8 +208,8 @@ function reportEmailHtml(r: any): string {
       <p style="margin: 0; font-size: 13px; color: #475569;">${o.body} <a href="${abs(o.href)}" style="color: #0071e3; font-weight: 600; text-decoration: none;">See how →</a></p>
     </div>`).join('')}` : ''}
     <div style="text-align: center; margin-top: 24px;">
-      <a href="https://mannyknows.com/contact/" style="display: inline-block; background: linear-gradient(135deg, #0071e3, #ff4faa); color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none;">Get the free human review</a>
-      <p style="margin: 12px 0 0; font-size: 12px; color: #94a3b8;">The scan reads one page by machine. The free human review goes where it can't: your competitors, your rankings, whether the site sells. Reply to this email and it reaches Manny directly.</p>
+      <a href="https://mannyknows.com/contact/" style="display: inline-block; background: linear-gradient(135deg, #0071e3, #ff4faa); color: #ffffff; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none;">Get the free full review</a>
+      <p style="margin: 12px 0 0; font-size: 12px; color: #94a3b8;">The scan reads one page by machine. Our free full review goes where it can't: your competitors, your rankings, whether the site sells. Reply to this email and it reaches us directly.</p>
     </div>
   </div>
   <div style="background: #0f172a; padding: 16px 24px; text-align: center;">

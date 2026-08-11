@@ -1,7 +1,7 @@
 ---
 // Landing page behind the "Free AI Website Analysis" nav CTA. Sells the offer
-// honestly and routes to the contact modal — no fake tooling. A human reviews
-// each site with the same tooling we build with.
+// honestly and routes to the contact modal — no fake tooling. We review each
+// site with the same tooling we build with.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -15,11 +15,11 @@ import { getTestimonial } from '../data/testimonials';
 
 const checks = [
   { title: 'Speed & Core Web Vitals', body: "How fast your site loads on a real phone: the single biggest thing that costs you visitors and Google ranking.", icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { title: 'AI-readiness', body: "Whether AI answer engines can find, read, and recommend you: crawler policy, llms.txt, machine-readable contact info, plus where an AI agent could answer and book for you 24/7.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
   { title: 'Google & technical SEO', body: "Whether Google can find, read, and rank your pages: titles, structure, sitemaps, schema, and the technical basics most sites get wrong.", icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
   { title: 'Mobile experience', body: "How the site actually feels on the phones most of your customers use: layout, tap targets, and readability.", icon: 'M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z' },
   { title: 'Conversion & trust', body: "Whether a visitor can quickly see what you do, trust you, and take the next step: call, book, or buy.", icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
   { title: 'Accessibility', body: "Whether everyone can use your site: the right thing to do, and a real ranking and legal factor.", icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
-  { title: 'AI-readiness', body: "Whether AI answer engines can find, read, and recommend you: crawler policy, llms.txt, machine-readable contact info, plus where an AI agent could answer and book for you 24/7.", icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
 ];
 
 // One section instead of the old three-step "How it works" + separate
@@ -32,10 +32,10 @@ const walkaway = [
 ];
 
 const faqs = [
-  { q: 'Is it really free?', a: 'Yes, the instant scan and the human review both. It is how we show the kind of work we do before you spend a dollar.' },
+  { q: 'Is it really free?', a: 'Yes, the instant scan and our full review both. It is how we show the kind of work we do before you spend a dollar.' },
   { q: 'What do you need from me?', a: 'Your website address and your email: the full report is delivered there, every finding with its fix. One website per email address; re-scanning your own site is always free. If you have a goal in mind (more calls, more bookings, more online sales) say so and the review focuses there.' },
-  { q: 'How is this different from a free automated score?', a: 'The instant scan is automated, that is why it is instant. The human review is not: Manny checks your competitors, your actual rankings, and whether the site sells, then puts the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
-  { q: 'How long does it take?', a: 'The scan takes seconds. The human review usually comes back within a couple of business days: tell us if you need it sooner.' },
+  { q: 'How is this different from a free automated score?', a: 'The instant scan is automated, that is why it is instant. Our full review is not: we check your competitors, your actual rankings, and whether the site sells, then put the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
+  { q: 'How long does it take?', a: 'The scan takes seconds. Our full review usually comes back within a couple of business days: tell us if you need it sooner.' },
 ];
 
 const quote = getTestimonial('SL Painting');
@@ -57,12 +57,12 @@ const quote = getTestimonial('SL Painting');
       </nav>
       <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Instant scan · human review · no obligation</span>
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Instant scan · full review · no obligation</span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
             <span class="apple-gradient-text" data-colorful-title>Free AI Website Analysis</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named, with the fix next to it, delivered to your inbox. Then a real person goes deeper, free.
+            Type your address and your email, and get an instant checkup: is your site findable, fast, answering customers, and turning visits into calls? Every gap comes back named, with the fix next to it, delivered to your inbox. Then we go deeper, free.
           </p>
 
           <!-- Instant scanner -->
@@ -94,7 +94,7 @@ const quote = getTestimonial('SL Painting');
           </form>
           <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            Instant and free. The full report goes to your email: one website per email, re-scans anytime. Prefer human eyes only? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+            Instant and free. The full report goes to your email: one website per email, re-scans anytime. Prefer to skip the scan? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
           </p>
         </div>
       </div>
@@ -106,10 +106,10 @@ const quote = getTestimonial('SL Painting');
         <div id="scanResults" class="max-w-6xl mx-auto"></div>
         <div class="max-w-4xl mx-auto text-center mt-10">
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 max-w-2xl mx-auto">
-            That's the automated first pass: one page, read by a machine. The free <strong class="text-text-light-primary dark:text-text-dark-primary">human review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
+            That's the automated first pass: one page, read by a machine. Our free <strong class="text-text-light-primary dark:text-text-dark-primary">full review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
           </p>
           <a href="#contact" data-contact-context="Free AI Website Analysis (ran the instant scan)" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-            Get the free human review
+            Get the free full review
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </a>
         </div>
@@ -144,7 +144,7 @@ const quote = getTestimonial('SL Painting');
             <span class="apple-gradient-text" data-colorful-title>What you walk away with</span>
           </h2>
           <p class="text-center text-base text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-8">
-            The scan is instant. The free human review is where it gets serious: Manny checks what a scanner can't (your competitors, your rankings, whether the site actually sells) and sends back a short plan.
+            The scan is instant. Our free full review is where it gets serious: we check what a scanner can't (your competitors, your rankings, whether the site actually sells) and send back a short plan.
           </p>
           <ul class="grid sm:grid-cols-2 gap-4">
             {walkaway.map((w) => (
@@ -321,7 +321,7 @@ const quote = getTestimonial('SL Painting');
               </a>`).join('')}
           </div>
         </div>` : ''}
-        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things a person catches. That's what the free review below is for.</p>
+        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">Automated first pass of one page, fetched ${esc(new Date(data.fetchedAt).toLocaleTimeString())}${data.cached ? ' (cached within the last 30 minutes)' : ''}. It can miss things we'd catch ourselves. That's what the free review below is for.</p>
       `;
       section.classList.remove('hidden');
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
