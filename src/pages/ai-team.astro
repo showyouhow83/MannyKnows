@@ -41,7 +41,7 @@ const pillars: { icon: string; title: string; body: string; avatar?: AgentId }[]
   {
     icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
     title: 'One agent you talk to',
-    body: 'Manny AI is your everything partner: ask for what you need, it scopes the work and sends the plan back for your approval, then puts the right specialists on the job.',
+    body: 'Manny AI is your everything partner. Ask for what you need, and it scopes the work, sends the plan back for your approval, then puts the right specialists on the job.',
     avatar: 'manny',
   },
   {
@@ -83,14 +83,14 @@ const pageJsonLd = {
     { '@type': 'AdministrativeArea', name: 'Hampshire County, MA' },
     { '@type': 'AdministrativeArea', name: 'Franklin County, MA' },
   ],
-  description: 'You hire Manny AI, one manager that staffs AI specialists on your business: front desk, daily intel, copywriting, SEO, engagement, and analytics, with design, video, voice, publishing, and ads sub-agents behind the scenes. Custom-built for your business.',
+  description: 'You hire Manny AI, one manager that staffs AI specialists on your business — front desk, daily intel, copywriting, SEO, engagement, and analytics — with design, video, voice, publishing, and ads sub-agents behind the scenes. Custom-built for your business.',
   offers: [
     {
       '@type': 'Offer',
       name: 'Remi AI: AI front desk agent',
       price: String(aiTeamStartingPrice),
       priceCurrency: 'USD',
-      description: `Remi AI answers, qualifies, and books 24/7: $${aiTeamStartingPrice}/mo as a standalone product. Included with every AI-Powered Website plan, where it books from Get Booked and sells from Get Growing.`,
+      description: `Remi AI answers, qualifies, and books 24/7 for $${aiTeamStartingPrice}/mo as a standalone product. Included with every AI-Powered Website plan, where it books from Get Booked and sells from Get Growing.`,
     },
     {
       '@type': 'Offer',
@@ -103,7 +103,7 @@ const pageJsonLd = {
 
 <BaseLayout
   title="AI Chatbots, Agents & Automation Springfield MA | MannyKnows"
-  description="AI chatbots, agents & automation for Springfield, MA and Western Mass businesses, from $95/mo: we find the bottleneck, then build the agent that fixes it."
+  description="AI chatbots, agents & automation for Springfield, MA and Western Mass businesses, from $95/mo. We find the bottleneck, then build the agent that fixes it."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
@@ -135,7 +135,7 @@ const pageJsonLd = {
             </h1>
             <p class="sf-bold text-[0.95rem] md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss: you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              When people picture AI, they picture a chat box you have to prompt. This is a hire instead: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong>, one manager that staffs AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
+              When people picture AI, they picture a chat box you have to prompt. This is a hire instead — <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong>, one manager that staffs AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
             </p>
 
             <!-- Merged from the old "Before you meet anyone" section (Manny,
@@ -158,10 +158,10 @@ const pageJsonLd = {
             </div>
             <p class="mt-8 max-w-3xl mx-auto text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               The answers rarely point to the same place, and AI isn't the strategy, it's the leverage. Your first
-              hire goes where the leak is: Manny AI staffs the specialist that fixes it, stock or custom-built.
+              hire goes where the leak is. Manny AI staffs the specialist that fixes it, stock or custom-built.
               Every AI agent reads from your Brand Brain, and the Brand Brain is yours to set. Change your services,
               your prices, or the way you want things said, and every agent works from the new version on its next
-              run. That is the control: you edit one source, and the whole team moves with it.
+              run. That is the control. You edit one source, and the whole team moves with it.
             </p>
 
             <!-- The three pillars (kept per Manny) -->
@@ -272,7 +272,7 @@ const pageJsonLd = {
             <div id={`agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`} class="snap-center shrink-0 w-[82vw] sm:w-auto scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
-                  <AgentAvatar agent={a.id} class="w-full h-full" alt={`${a.name}, ${a.role}: AI agent for Springfield & Western Mass small businesses by MannyKnows`} />
+                  <AgentAvatar agent={a.id} class="w-full h-full" alt={`${a.name}, ${a.role}, an AI agent for Springfield & Western Mass small businesses by MannyKnows`} />
                 </div>
                 <div class="min-w-0">
                   <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">
@@ -331,7 +331,7 @@ const pageJsonLd = {
               </div>
             </div>
             <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              The roster covers what every business needs. Some businesses need something only theirs does: an
+              The roster covers what every business needs. Some businesses need something only theirs does — an
               agent wired into your backend, your phone line, your scheduling, your inventory. We scope it, build
               it around your Brand Brain, and Manny AI manages it like any other hire.
             </p>
@@ -368,10 +368,10 @@ const pageJsonLd = {
           {/* 60/40 on desktop: copy carries three fifths, handshake two. */}
           <div class="md:col-span-3 text-center md:text-left">
             <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-              <span class="apple-gradient-text" data-colorful-title>Not fully autonomous: on purpose</span>
+              <span class="apple-gradient-text" data-colorful-title>Not fully autonomous, on purpose</span>
             </h2>
             <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              The agents do the heavy lifting: researching, drafting, designing, scheduling, monitoring, measuring. You stay in control: nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters (the calls, the verifications, the review appeals, the decisions AI shouldn't make alone). You get the speed of automation without handing your brand to a robot.
+              The agents do the heavy lifting — researching, drafting, designing, scheduling, monitoring, measuring. You stay in control. Nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters (the calls, the verifications, the review appeals, the decisions AI shouldn't make alone). You get the speed of automation without handing your brand to a robot.
             </p>
           </div>
           {/* self-end + -mb-8 cancels the card's own bottom padding, and the
@@ -380,7 +380,7 @@ const pageJsonLd = {
           <div class="md:col-span-2 flex justify-center self-end -mb-8">
             <img
               src="/mascot/astronaut-robot-handshake.webp"
-              alt="An astronaut shaking hands with a friendly robot: you stay in charge of your AI team"
+              alt="An astronaut shaking hands with a friendly robot. You stay in charge of your AI team"
               width="760" height="639" loading="lazy" decoding="async"
               class="w-full max-w-[240px] md:max-w-none h-auto"
             />
@@ -438,7 +438,7 @@ const pageJsonLd = {
           </h2>
           <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
             Bring your answers, or bring nothing and we'll find them together. You leave the call knowing which
-            department is bleeding and which single agent stops it: one from the roster, or one we scope just for
+            department is bleeding and which single agent stops it, whether one from the roster or one we scope just for
             you. Springfield-based, serving all of
             Western Mass, in English and Spanish.
           </p>

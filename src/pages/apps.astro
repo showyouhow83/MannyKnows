@@ -34,10 +34,10 @@ const TIERS = [
     kind: 'Disconnected',
     price: 300,
     service: 'app-scripts',
-    description: 'Standalone helpers that do one job well: the spreadsheet that becomes a tool, the script that runs on schedule, the utility that kills an hour of weekly busywork.',
+    description: 'Standalone helpers that do one job well. The spreadsheet that becomes a tool, the script that runs on schedule, the utility that kills an hour of weekly busywork.',
     features: [
-      'Google Apps Script: your Sheets, Docs, and Gmail doing the work themselves',
-      'Scheduled scripts: reports, reminders, and cleanups that run without you',
+      'Google Apps Script, so your Sheets, Docs, and Gmail do the work themselves',
+      'Scheduled scripts that run reports, reminders, and cleanups without you',
       'One-job tools built around how you already work',
     ],
   },
@@ -47,12 +47,12 @@ const TIERS = [
     price: 600,
     service: 'app-integration',
     featured: true,
-    description: 'Your tools wired together so data stops being re-typed: website, inbox, CRM, calendar, phone, and accounting moving information on their own.',
+    description: 'Your tools wired together so data stops being re-typed. Website, inbox, CRM, calendar, phone, and accounting move information on their own.',
     features: [
-      'API & webhook integration: if a tool has an API, we can wire it in',
-      'Twilio phone & SMS: call routing, business-hours logic, A2P registration handled',
+      'API & webhook integration — if a tool has an API, we can wire it in',
+      'Twilio phone & SMS with call routing, business-hours logic, and A2P registration handled',
       'Make.com & Zapier flows, documented so they keep running without babysitting',
-      'MCP servers: plug your business tools into AI, so your assistants can actually use them',
+      'MCP servers that plug your business tools into AI, so your assistants can actually use them',
     ],
   },
   {
@@ -60,7 +60,7 @@ const TIERS = [
     kind: 'Custom',
     price: 2500,
     service: 'custom-app',
-    description: 'The systems your business runs on: admin dashboards, booking and quoting engines, client portals: designed, built, and published for you.',
+    description: 'Admin dashboards, booking and quoting engines, client portals — the systems your business runs on, designed, built, and published for you.',
     features: [
       'Dashboards and admin panels that put your whole operation on one screen',
       'Booking, quoting, and lead-to-job systems like the one VL Home Services runs on',
@@ -71,23 +71,23 @@ const TIERS = [
 ];
 
 const STEPS = [
-  { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote: the total is known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
-  { n: '02', title: 'Build & connect', body: 'Apps Script, APIs, webhooks, Twilio, MCP servers, or a full custom build: whatever the job calls for, wired into the tools you already run on.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+  { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote, so the total is known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
+  { n: '02', title: 'Build & connect', body: 'Apps Script, APIs, webhooks, Twilio, MCP servers, or a full custom build. Whatever the job calls for, wired into the tools you already run on.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
   { n: '03', title: 'Document & hand off', body: 'Every flow documented, every account yours. Most projects run 2–4 weeks from kickoff to live, and it keeps working without you babysitting it.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
 ];
 
 const FAQS = [
-  { q: 'Is this app development like an app-store app?', a: "No: we build apps for how a business runs, not consumer apps for a store. Scripts, integrations, dashboards, and internal systems: the software that removes busywork and keeps your operation in one place." },
+  { q: 'Is this app development like an app-store app?', a: "No. We build apps for how a business runs, not consumer apps for a store. Scripts, integrations, dashboards, and internal systems — the software that removes busywork and keeps your operation in one place." },
   { q: 'How much does an app cost?', a: 'Scripts and tools start at $300, connected apps and integrations at $600, and full business apps at $2,500. Everything is billed at a flat $75/hr and quoted up front after a short call, so you know the total before we start.' },
-  { q: 'What is an MCP server, and why would my business want one?', a: "MCP (Model Context Protocol) is the open standard that lets AI assistants plug into business tools securely. Wire your calendar, CRM, or inventory into an MCP server once, and the AI you use can actually work with them: check availability, look up a customer, update a record: instead of just talking about it." },
+  { q: 'What is an MCP server, and why would my business want one?', a: "MCP (Model Context Protocol) is the open standard that lets AI assistants plug into business tools securely. Wire your calendar, CRM, or inventory into an MCP server once, and the AI you use can actually work with them — check availability, look up a customer, update a record — instead of just talking about it." },
   { q: 'Will it work with the tools I already use?', a: "Almost always. We connect what you've got (website, inbox, CRM, calendar, phone, accounting) rather than making you switch. If something can't connect cleanly, we'll tell you up front." },
-  { q: 'Will the AI parts make things up?', a: 'AI assistants we build are grounded in your own content and data, with clear review checkpoints: AI does the heavy lifting, and a human keeps control of what actually goes out the door.' },
-  { q: 'Do I own what you build?', a: 'Yes: completely. The code, the flows, the accounts, and the documentation are yours; we build with you, never to lock you in. Bigger builds can also be co-owned: we fund the build, you bring the business, nothing upfront.' },
+  { q: 'Will the AI parts make things up?', a: 'AI assistants we build are grounded in your own content and data, with clear review checkpoints. AI does the heavy lifting, and a human keeps control of what actually goes out the door.' },
+  { q: 'Do I own what you build?', a: 'Yes, completely. The code, the flows, the accounts, and the documentation are yours; we build with you, never to lock you in. Bigger builds can also be co-owned. We fund the build, you bring the business, and you pay nothing upfront.' },
   { q: 'How long does a project take?', a: 'Most projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote.' },
-  { q: 'Who maintains it after launch?', a: "Everything is documented for handoff, so you can run it yourself. If you'd rather have it monitored and maintained, it rolls into a monthly plan from $95/mo: optional, never required." },
+  { q: 'Who maintains it after launch?', a: "Everything is documented for handoff, so you can run it yourself. If you'd rather have it monitored and maintained, it rolls into a monthly plan from $95/mo — optional, never required." },
 ];
 
-const META_DESCRIPTION = 'Apps for how your business runs: Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $300, quoted up front.';
+const META_DESCRIPTION = 'Apps for how your business runs. Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $300, quoted up front.';
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
 const jsonLd = {
@@ -170,7 +170,7 @@ const jsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Apps for how your<br />business runs</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-              Custom business apps and workflow automation for Springfield and Western Mass small businesses: scripts that automate the busywork, integrations that connect the tools you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and complete systems for booking, quoting, and dashboards.
+              Custom business apps and workflow automation for Springfield and Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and complete systems for booking, quoting, and dashboards.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a href="#quote" data-quote-context="custom-app" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
@@ -191,7 +191,7 @@ const jsonLd = {
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Apps that stand alone. Apps that connect everything.</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do: data moving between your website, inbox, CRM, calendar, and accounting on its own, no more copying the same thing into five places.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do. Data moves between your website, inbox, CRM, calendar, and accounting on its own — no more copying the same thing into five places.</p>
         </div>
         <div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
           <!-- Waist-up mascots sit flush on each card's bottom edge: the
@@ -199,14 +199,14 @@ const jsonLd = {
           <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 overflow-hidden flex flex-col">
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Disconnected: scripts &amp; tools</h3>
             <div class="flex gap-4 flex-1">
-              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job: a Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that renames, sorts, or files what you used to do by hand.</p>
+              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Standalone helpers with one job. A Google Apps Script that turns a spreadsheet into a quoting tool, a scheduled report that lands in your inbox every Monday, a utility that renames, sorts, or files what you used to do by hand.</p>
               <img src="/mascot/astro-disconnected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
             </div>
           </div>
           <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 overflow-hidden flex flex-col">
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Connected: integrations &amp; MCP</h3>
             <div class="flex gap-4 flex-1">
-              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">If a tool has an API, we can wire it in: webhooks, Twilio call routing and SMS with business-hours logic and A2P registration handled, Make.com and Zapier flows: and MCP servers, so the AI you use can plug into your calendar, CRM, and inventory and actually work with them.</p>
+              <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">If a tool has an API, we can wire it in — webhooks, Twilio call routing and SMS with business-hours logic and A2P registration handled, and Make.com and Zapier flows. MCP servers let the AI you use plug into your calendar, CRM, and inventory and actually work with them.</p>
               <img src="/mascot/astro-connected.webp" alt="" aria-hidden="true" width="420" height="412" loading="lazy" decoding="async" class="self-end flex-shrink-0 w-32 sm:w-36 h-auto -mb-6 sm:-mb-8 pointer-events-none" />
             </div>
           </div>
@@ -225,7 +225,7 @@ const jsonLd = {
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front: you know the total before we start, and you only pay for the automation your business actually needs.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front. You know the total before we start, and you only pay for the automation your business actually needs.</p>
         </div>
         <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
           {TIERS.map((t) => (
@@ -259,7 +259,7 @@ const jsonLd = {
           ))}
         </div>
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Got an idea bigger than a build? Some apps we co-own: we fund the build, you bring the business, nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
+          Got an idea bigger than a build? Some apps we co-own. We fund the build, you bring the business, and you pay nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
         </p>
       </Container>
     </Section>
@@ -286,12 +286,12 @@ const jsonLd = {
         <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
           <a href="/work/vl-home-services/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
             <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system: a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent: every inquiry captured and tracked, customers answered around the clock in any language.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system — a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent. Every inquiry captured and tracked, customers answered around the clock in any language.</p>
             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
           </a>
           <a href="/work/sl-painting/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
             <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock: grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock. Grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
           </a>
         </div>

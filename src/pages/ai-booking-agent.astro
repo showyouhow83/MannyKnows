@@ -31,7 +31,7 @@ const VERSIONS = [
     name: 'Remi AI Lite',
     tag: 'The answering bot',
     price: '$40/mo',
-    priceNote: 'with the One-Page Website: $195 one-time setup fee',
+    priceNote: 'with the One-Page Website · $195 one-time setup fee',
     points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', 'Remi AI is the starting name, pick your own', 'Fixed setup beyond that, no customization'],
     cta: { label: 'Get the 1-page site', href: '/ai-website/' },
     featured: false,
@@ -70,15 +70,15 @@ const FAQS = [
       rows: [
         ['Included in every website plan', `From $${aiTeamStartingPrice}/mo`],
         ['Hired onto the site you already have', `From $${aiTeamStartingPrice}/mo + $${aiTeamSetupFee} setup`],
-        ['On the One-Page Website (lightest Remi AI: answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
-        ['Custom build: phone IVR, deep integrations', 'From $2,500 one-time'],
+        ['On the One-Page Website (the lightest Remi AI — answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
+        ['Custom build with phone IVR and deep integrations', 'From $2,500 one-time'],
       ],
     },
   },
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
-const META_DESCRIPTION = 'Remi AI answers customers 24/7 in English or Spanish, qualifies the lead, and books the job: the AI booking agent for Western Mass businesses. From $95/mo.';
+const META_DESCRIPTION = 'Remi AI, the AI booking agent for Western Mass businesses, answers customers 24/7 in English or Spanish, qualifies the lead, and books the job. From $95/mo.';
 
 const pageJsonLd = {
   '@context': 'https://schema.org',
@@ -102,7 +102,7 @@ const pageJsonLd = {
 };
 ---
 
-<BaseLayout title="Remi AI: AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
+<BaseLayout title="Remi AI, the AI Booking Agent for Western Mass | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
@@ -213,8 +213,8 @@ const pageJsonLd = {
         <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Licensed childcare · Springfield</span>
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare: website, AI agent &amp; phone system, in two weeks</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later: a site with an AI agent answering parents' questions from the site's own content, and a Twilio IVR phone system that gives callers what they need and routes them to the right person, every call answered.</p>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare got a website, AI agent &amp; phone system in two weeks</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later they had a site with an AI agent answering parents' questions from the site's own content, plus a Twilio IVR phone system that gives callers what they need and routes them to the right person. Every call answered.</p>
             <a href="/work/jk-daycare/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
               Read the JK Daycare case study
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
@@ -222,7 +222,7 @@ const pageJsonLd = {
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Painting contractor · Springfield</span>
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting: leads qualified around the clock</h3>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting gets leads qualified around the clock</h3>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7, so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
             <a href="/work/sl-painting/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
               Read the SL Painting case study

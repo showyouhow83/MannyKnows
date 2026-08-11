@@ -38,6 +38,16 @@ function normalizeTarget(raw: string): URL | null {
   return u;
 }
 
+// Conversion counter (same keys as /api/metric): successful scans per day.
+async function bumpScanMetric(kv: KVNamespace | undefined) {
+  if (!kv) return;
+  try {
+    const key = `metric:${new Date().toISOString().slice(0, 10)}:scan_run`;
+    const cur = parseInt((await kv.get(key)) || '0', 10);
+    await kv.put(key, String(cur + 1), { expirationTtl: 90 * 86400 });
+  } catch { /* ignore */ }
+}
+
 // Quota identity: fold the throwaway-alias tricks into one address —
 // plus-tags everywhere (user+x@ → user@), dots on gmail (u.s.e.r@gmail.com
 // = user@gmail.com, and googlemail.com = gmail.com).
@@ -307,6 +317,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         const parsed = JSON.parse(cached);
         await captureLead(kv, email, target.hostname, target.origin, ip, parsed, 'served from cache (report emailed)');
         await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
+        await bumpScanMetric(kv);
         const emailed = await sendReportEmail(email, parsed);
         return json({ ok: true, cached: true, ...(emailed ? teaserOf(parsed, email) : parsed) });
       }
@@ -363,6 +374,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   await captureLead(kv, email, target.hostname, target.origin, ip, result, 'live scan (report emailed)');
+  await bumpScanMetric(kv);
 
   // The inbox is the product now. If the send fails (Resend down, key missing)
   // fall back to the on-page report so a real visitor isn't stranded.

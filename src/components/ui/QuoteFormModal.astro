@@ -250,6 +250,7 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
       modal!.classList.remove('hidden');
       modal!.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      (window as any).mkMetric?.('quote_open');
       if (!csrfToken) getToken();
       setTimeout(() => (document.getElementById('qf-name') as HTMLInputElement | null)?.focus(), 60);
     }
@@ -391,6 +392,7 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
         });
         const result = await res.json().catch(() => ({}));
         if (res.ok) {
+          (window as any).mkMetric?.('quote_submit');
           form.reset();
           if (photoList) photoList.textContent = '';
           photoArea?.classList.add('hidden');

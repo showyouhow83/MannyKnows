@@ -4,9 +4,9 @@
 // something our sites actually do.
 export const theirSites = [
   'Built once, then frozen. Every change costs a call, a quote, and a wait.',
-  'Doesn’t write a word on its own: no new content from trending searches or the questions customers ask.',
+  'Doesn’t write a word on its own — no new content from trending searches or the questions customers ask.',
   'Breaks quietly. You find out when a customer tells you, or never.',
-  'Not ready for AI traffic: the answer engines customers now ask can’t read it.',
+  'Not ready for AI traffic. The answer engines customers now ask can’t read it.',
 ];
 
 export const ourSites = [
@@ -19,4 +19,4 @@ export const ourSites = [
 
 // The line under the contrast, shared by the homepage panel and /plans.
 export const closingLine =
-  'A website that doesn’t generate new content or get optimized regularly is worth a little less every month. Yours does both on its own, and is worth a little more every day.';
+  'A regular website needs a person for every fix and every new page. Ours is connected to AI agents that maintain it, test it, and keep adding content — so it’s worth a little more every day, not a little less every month.';

@@ -236,6 +236,25 @@ Manny
 		     trial; promoted per Manny, Aug 2026). CSP for opscloud.us
 		     (script/style/font/connect+wss/frame) lives in the meta tag above. -->
 		<script is:inline src="https://opscloud.us/widget/loader.js" data-agent-id="agent_manny_mk" async></script>
+
+		<!-- First-party conversion counters (/api/metric): page views, quote
+		     modal opens/submits, tel: taps. No cookies, no vendors — exists so
+		     copy changes can be judged by submits-per-view, not by feel. -->
+		<script is:inline>
+		(function () {
+			var send = function (e) {
+				try {
+					navigator.sendBeacon('/api/metric', new Blob([JSON.stringify({ e: e, p: location.pathname })], { type: 'application/json' }));
+				} catch (_) {}
+			};
+			window.mkMetric = send;
+			send('view');
+			document.addEventListener('click', function (ev) {
+				var t = ev.target;
+				if (t && t.closest && t.closest('a[href^="tel:"]')) send('call_click');
+			}, { passive: true });
+		})();
+		</script>
 	</body>
 </html>
 
