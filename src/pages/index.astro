@@ -216,6 +216,11 @@ const NAVBAR_CONFIG = {
 			subtitle="A normal website is frozen the day it launches. It only improves when you pay someone to touch it. Ours checks itself every single day, stays multilingual, captures leads, and gets you found on Google."
 			variant="alternate"
 		>
+			<!-- Laptop astronaut peeking in from the left edge (mirrored so the
+			     laptop leads into the section). Dials in .plans-mascot below. -->
+			<div slot="background" class="plans-mascot" aria-hidden="true">
+				<img src="/mascot/astro-laptop.webp" alt="" width="917" height="880" loading="lazy" decoding="async" />
+			</div>
 			<div class="max-w-5xl mx-auto">
 				<!-- The versus panel + closing line live in SmartWebsiteConcept,
 				     shared with /plans and the plan pages: one implementation. -->
@@ -370,6 +375,37 @@ const NAVBAR_CONFIG = {
 	     --mascot-rotate  counterclockwise tilt (more negative = leans in more)
 	     --mascot-top     vertical position inside the section
 	   ------------------------------------------------------------------- */
+	/* Laptop astronaut: left-edge peek on the AI-Powered Websites section.
+	   The art faces left, so the img is mirrored (scaleX) to lead with the
+	   laptop; rotate is applied after the flip. */
+	.plans-mascot {
+		--mascot-height: 400px;
+		--mascot-peek: 58%;
+		/* Gentler than the 31° house tilt: this art is wide (flying pose),
+		   so a full lean swings the laptop end too far. */
+		--mascot-rotate: 15deg;
+		--mascot-top: 50%;
+
+		position: absolute;
+		top: var(--mascot-top);
+		left: 0;
+		transform: translateY(-50%) translateX(calc(-100% + var(--mascot-peek)));
+		pointer-events: none;
+		z-index: 20;
+	}
+	.plans-mascot img {
+		height: var(--mascot-height);
+		width: auto;
+		display: block;
+		transform: rotate(var(--mascot-rotate)) scaleX(-1);
+	}
+	@media (max-width: 1279px) {
+		.plans-mascot { --mascot-height: 300px; }
+	}
+	@media (max-width: 639px) {
+		.plans-mascot { display: none; }
+	}
+
 	.gbp-mascot {
 		--mascot-height: 440px;
 		--mascot-peek: 58%;
