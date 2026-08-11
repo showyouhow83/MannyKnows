@@ -138,8 +138,33 @@ const pageJsonLd = {
               When people picture AI, they picture a chat box you have to prompt. This is a hire instead: <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong>, one manager that staffs AI specialists onto your work, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
             </p>
 
-            <!-- The three pillars, promoted into the hero (Manny: one stronger
-                 hero instead of hero + separate "One brain" section) -->
+            <!-- Merged from the old "Before you meet anyone" section (Manny,
+                 Aug 2026): the two-question diagnostic + the Brand Brain
+                 control paragraph now open the page. -->
+            <p class="mt-8 max-w-3xl mx-auto text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              Most owners land here asking "which AI agents does my business need?" Two questions get you there, and most people can answer both in under a minute:
+            </p>
+            <div class="mt-6 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">1</span>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you bad at that keeps costing you money?</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your bottleneck. It's where the leak is.</p>
+              </div>
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">2</span>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you good at that would print revenue if it scaled?</h3>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your lever, and it's what breaks first when volume shows up.</p>
+              </div>
+            </div>
+            <p class="mt-8 max-w-3xl mx-auto text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+              The answers rarely point to the same place, and AI isn't the strategy, it's the leverage. Your first
+              hire goes where the leak is: Manny AI staffs the specialist that fixes it, stock or custom-built.
+              Every AI agent reads from your Brand Brain, and the Brand Brain is yours to set. Change your services,
+              your prices, or the way you want things said, and every agent works from the new version on its next
+              run. That is the control: you edit one source, and the whole team moves with it.
+            </p>
+
+            <!-- The three pillars (kept per Manny) -->
             <div class="mt-10 grid gap-6 md:grid-cols-3 max-w-6xl mx-auto text-left">
               {pillars.map((pl) => (
                 <div class="relative rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
@@ -157,16 +182,6 @@ const pageJsonLd = {
               ))}
             </div>
 
-            <!-- Mini roster preview -->
-            <div class="mt-8 flex items-center justify-center -space-x-2">
-              {roster.map((a) => (
-                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name}: ${a.role}`}>
-                  <AgentAvatar agent={a.id} class="w-full h-full" />
-                </div>
-              ))}
-            </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Meet Manny AI and the specialist AI agents it puts to work behind the scenes.</p>
-
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#ai-team-roster" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
                 Meet the team
@@ -180,47 +195,6 @@ const pageJsonLd = {
         </Container>
       </div>
     </header>
-
-    <!-- Before you meet anyone — the two-questions diagnostic + the
-         bottleneck→agent router. Bottleneck-first framing (Manny, Aug 2026):
-         the page sells the ONE right hire, not ten. -->
-    <Section id="find-your-bottleneck" variant="default">
-      <Container>
-        <div class="max-w-3xl mx-auto text-center mb-10">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-            <span class="apple-gradient-text" data-colorful-title>Before you meet anyone</span>
-          </h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-Most owners land here asking "which AI agents does my business need?" That's the right destination, and two
-            questions get you there faster. Most people can answer both in under a minute:
-          </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-10">
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
-            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">1</span>
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you bad at that keeps costing you money?</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your bottleneck. It's where the leak is.</p>
-          </div>
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7">
-            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-black mb-4">2</span>
-            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">What are you good at that would print revenue if it scaled?</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your lever, and it's what breaks first when volume shows up.</p>
-          </div>
-        </div>
-
-        <div class="max-w-3xl mx-auto text-center mb-12">
-          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            The answers rarely point to the same place, and AI isn't the strategy, it's the leverage. Your first
-            hire goes where the leak is: Manny AI staffs the specialist that fixes it, stock or custom-built.
-            Every AI agent reads from your Brand Brain, and the Brand Brain is yours to set. Change your services,
-            your prices, or the way you want things said, and every agent works from the new version on its next
-            run. That is the control: you edit one source, and the whole team moves with it.
-          </p>
-        </div>
-
-      </Container>
-    </Section>
 
     <!-- What that looks like in practice -->
     <!-- The ecosystem — replaced the group-chat mock (Manny, Aug 2026): one
@@ -321,8 +295,7 @@ Most owners land here asking "which AI agents does my business need?" That's the
                     {a.note && <span class="block text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{a.note}</span>}
                   </div>
                   <a
-                    href="#contact"
-                    data-contact-context={`AI Team: hire ${a.name} (${a.role})`}
+                    href="/ai-booking-agent/"
                     class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
                   >
                     Hire {a.name}
