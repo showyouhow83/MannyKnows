@@ -38,7 +38,7 @@ const cardStyles = [
 const blogArticles = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 4)
+  .slice(0, 3)
   .map((post, i) => ({
     ...cardStyles[i % cardStyles.length],
     category: post.data.tags?.[0] ?? "Insights",
@@ -68,7 +68,7 @@ const townLinks: Record<string, string> = {
 };
 ---
 
-<div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0 lg:pb-14">
+<div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <!-- Column 1: Brand & Social (1 column = 33%) -->
@@ -155,7 +155,7 @@ const townLinks: Record<string, string> = {
     <!-- Column 2: AI News for Western Mass Businesses Blog Articles (1 column = 33%) -->
     <div class="lg:col-span-1 space-y-6 px-4 lg:px-6">
       <div>
-        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">SEO &amp; Marketing Tips for Western Mass Businesses</h4>
+        <h4 class="apple-gradient-text text-2xl font-bold text-gray-800 dark:text-white mb-6 text-left transition-colors duration-300" data-colorful-title="">Tips for Western Businesses</h4>
 
         <!-- Four latest posts, shown on every breakpoint, with room to breathe. -->
         <div class="space-y-8">
