@@ -1,145 +1,97 @@
 # Architecture Overview
 
+_Last verified: Aug 2026. If a number here disagrees with `package.json` or
+`wrangler.jsonc`, those win — update this file._
+
 ## Tech Stack
 
 | Component | Technology | Version |
 |-----------|------------|---------|
-| Framework | Astro | 5.13.0 |
-| Adapter | @astrojs/cloudflare | 12.6.3 |
-| Styling | Tailwind CSS | 3.4.17 |
-| Runtime | Cloudflare Workers | - |
-| Database | Cloudflare KV | - |
-| Storage | Cloudflare R2 | - |
-| Email | Resend API | - |
-| Language | TypeScript | 5.9.2 |
+| Framework | Astro (`output: 'server'`, SSR + prerendered pages) | 7.x |
+| Adapter | @astrojs/cloudflare (deployed as a **Worker**, not Pages) | 14.x |
+| Styling | Tailwind CSS via PostCSS (no Astro integration) | 3.4.x |
+| Sliders | Swiper | 12.x |
+| Images | sharp (build-time processing) | — |
+| Runtime | Cloudflare Workers (Node ≥ 22.12 locally) | — |
+| Data | Cloudflare KV, D1, R2 | — |
+| Email | Resend API (`send.mannyknows.com` sender domain) | — |
+| Language | TypeScript | 5.9.x |
 
-## Cloudflare Bindings
+## Cloudflare Bindings (root `wrangler.jsonc`; deploy uses `dist/server/wrangler.json`)
 
 ### KV Namespaces
 
-| Binding | Namespace ID | Purpose |
-|---------|--------------|---------|
-| `MK_KV_CHATBOT` | ed368c98eef342b79e8f7c4b96b3fb62 | Chat sessions, admin data, newsletter |
-| `MK_KV_PROFILES` | 901abbf5b0484165a8eaa35a035f1ba8 | User profiles |
-| `MK_KV_SESSIONS` | 4c1513b546c040678d266ba4f103a057 | User sessions |
-| `MK_KV_SERVICES` | 13e95a5db28a4a9da5f517fe0a1e4250 | Service configurations |
-| `MK_KV_PRODUCTS` | d5cc59ddbef24b8db748c977aee91bb0 | Product data |
-| `MK_KV_SCHEDULER` | 22c4ca99de924d07996d6b44d538602a | Discovery calls |
+| Binding | Purpose |
+|---------|---------|
+| `MK_KV_CHATBOT` | Chat sessions, scanner leads/quota/cache (`scan_*`), first-party metrics (`metric:*`), newsletter |
+| `MK_KV_PROFILES` | User profiles |
+| `MK_KV_SESSIONS` | Astro Sessions (`sessionKVBindingName`) + admin login rate-limit |
+| `MK_KV_SERVICES` | Service configurations |
+| `MK_KV_PRODUCTS` | Product data |
+| `MK_KV_SCHEDULER` | Discovery calls |
 
-### R2 Buckets
+**Gotcha:** `wrangler kv key …` needs `--preview false` on these bindings or
+the operation silently targets nothing.
 
-| Binding | Bucket Name | Purpose |
-|---------|-------------|---------|
-| `MK_R2` | mannyknows-website-analysis | Analysis results, file storage |
+### Other bindings
 
-### Environment Variables
+| Binding | Type | Purpose |
+|---------|------|---------|
+| `MK_APP_DB` | D1 | Admin CRM (39 tables, `database/migrations/`); site ships dark without it |
+| `MK_MEDIA_BUCKET` | R2 | Admin media pool / quote photo uploads |
+| `ASSETS` | Static assets | Serves `dist/client`, honors `public/_headers` + `_redirects` |
 
-| Variable | Purpose |
-|----------|---------|
-| `GA_MEASUREMENT_ID` | Google Analytics |
-| `OWNER_EMAIL` | Owner notifications |
-| `OWNER_TIMEZONE` | Scheduling timezone |
-| `RESEND_FROM` | Email sender |
-| `ADMIN_KEY` | Admin authentication |
-| `ADMIN_EMAIL` | Admin email |
+### Environment Variables / Secrets
 
-### Secrets (in .dev.vars / Cloudflare)
+Vars: `GA_MEASUREMENT_ID`, `OWNER_EMAIL` (mm@mannyknows.com), `OWNER_TIMEZONE`,
+`RESEND_FROM` (`Manny <manny@send.mannyknows.com>`), `ADMIN_EMAIL`.
+Secrets (via `npx wrangler secret put`): `RESEND_API_KEY`, `ADMIN_KEY`,
+`ADMIN_API_KEY`, admin bootstrap creds. Local dev keys in `.dev.vars`
+(gitignored), incl. `GEMINI_API_KEY` for image generation.
 
-| Secret | Purpose |
-|--------|---------|
-| `OPENAI_API_KEY` | OpenAI API |
-| `RESEND_API_KEY` | Resend email API |
-| `KV_ENCRYPTION_KEY` | KV data encryption |
+**Astro 7 / adapter 14 rule:** access env via `import { env } from
+'cloudflare:workers'` — `locals.runtime.env` THROWS in ported admin code.
 
-## Directory Structure
+## Key KV key families (MK_KV_CHATBOT)
 
-```
-src/
-├── components/              # 41 Astro components
-│   ├── analytics/          # GoogleAnalytics.astro
-│   ├── content/            # Content sections
-│   ├── footer/             # Footer components
-│   ├── layout/             # Container, Section, PageSection
-│   ├── navigation/         # NavBar, DockMenu
-│   ├── sections/           # Hero, Services, Reviews, Process
-│   └── ui/                 # ChatBox, Button, Tag, Modal
-│
-├── config/chatbot/         # Environment configs
-│
-├── layouts/
-│   └── BaseLayout.astro    # Main layout
-│
-├── lib/
-│   ├── chatbot/            # promptBuilder.ts
-│   ├── security/           # 7 security modules
-│   ├── services/           # Business logic
-│   │   ├── components/     # Service components
-│   │   ├── ServiceArchitecture.ts
-│   │   ├── serviceOrchestrator.ts
-│   │   └── dynamicServiceExecutor.ts
-│   └── user/               # ProfileManager.ts
-│
-├── pages/
-│   ├── api/                # 11 API endpoints
-│   ├── index.astro         # Homepage
-│   ├── admin.astro         # Admin dashboard
-│   ├── unsubscribe.astro   # Newsletter unsubscribe
-│   └── 404.astro           # Error page
-│
-└── utils/
-    └── debug.ts            # Logging utilities
-```
+| Prefix | Meaning | TTL |
+|--------|---------|-----|
+| `metric:{date}:{event}[:{page-or-label}]` | First-party analytics (view, quote_open/submit, call_click, scan_run, cta) | 90d |
+| `scan_rl:{ip}` | Scanner IP rate limit (8/hr) | 1h |
+| `scan_quota:{email}` | One-domain-per-email scanner quota | 30d |
+| `scan_cache:v3:{host}` | Scanner result cache | 30m |
+| `scan_lead:{ts}:{host}:{email}` | Scanner leads (permanent) | — |
+| `scan_lead_note:{email}:{host}` | Owner-alert daily dedupe | 24h |
 
-## Security Architecture
+## Front-end architecture notes
 
-### Layers
+- `BaseLayout.astro` wraps every public page: SEO/OG meta, CSP meta tag,
+  GA4 (lazy gtag), the opscloud Remi AI widget, the quote/contact modal, and
+  the first-party metrics beacon (auto-labels every a/button click as `cta`).
+- Admin (`/admin`, ported from VLHomes) is self-contained: `src/styles/admin.css`,
+  own auth (HMAC `mk_admin_session` cookie, `src/middleware.ts` scoped to
+  admin/portal namespaces), NOT Tailwind, NOT BaseLayout.
+- Shared copy components prevent drift: `SmartWebsiteConcept` (versus panel),
+  `PricingPlans`, `Faq` (emits FAQPage schema), `GbpStats`/`GbpComparison`;
+  canonical data in `src/data/*.ts` (see CLAUDE.md "Pricing canon").
+- `public/_headers`: security headers for static assets + browser-cache rules
+  (hashed `/_astro/*` immutable via adapter; mascots 1d; heroes 7d; fonts 1y).
 
-1. **Domain Validation** - Whitelist allowed origins
-2. **Rate Limiting** - Per-IP request limits
-3. **CSRF Protection** - Token-based validation
-4. **Input Validation** - Schema-based sanitization
-5. **Authentication** - Session + token auth
-6. **Encryption** - KV data encryption
-
-### Security Modules
-
-| Module | Purpose |
-|--------|---------|
-| `domainValidator.ts` | CORS and origin validation |
-| `rateLimiter.ts` | General rate limiting |
-| `adminRateLimiter.ts` | Admin-specific limits |
-| `csrfProtection.ts` | CSRF token generation/validation |
-| `inputValidator.ts` | Input sanitization |
-| `adminAuthenticator.ts` | Admin sessions |
-| `kvEncryption.ts` | KV data encryption |
-
-## Data Flow
-
-```
-Request → Domain Validator → Rate Limiter → CSRF Check → Input Validation → Business Logic → KV/R2 → Response
-```
-
-## Deployment
-
-### Routes
-
-| Pattern | Zone |
-|---------|------|
-| `mannyknows.com/*` | mannyknows.com |
-| `www.mannyknows.com/*` | mannyknows.com |
-
-### Build & Deploy
+## Build & Deploy
 
 ```bash
-npm run build           # Compile Astro to dist/
-npx wrangler deploy     # Deploy to Cloudflare
+npm run dev        # local dev
+npm run build      # emits dist/client (assets) + dist/server (worker)
+./deploy.sh        # manual: builds, strips ._* files, deploys, verifies live
 ```
 
-### Configuration Files
-
-| File | Purpose |
-|------|---------|
-| `wrangler.jsonc` | Cloudflare Workers config |
-| `astro.config.mjs` | Astro build config |
-| `tailwind.config.mjs` | Tailwind CSS config |
-| `tsconfig.json` | TypeScript config |
+- Push to `main` auto-deploys via GitHub Actions (`.github/workflows/deploy.yml`):
+  `npm run build` then `npx wrangler deploy -c dist/server/wrangler.json`.
+  **Always deploy from `dist/server/wrangler.json`** — the root `wrangler.jsonc`
+  no longer carries `main`.
+- Routes: `mannyknows.com/*` and `www.mannyknows.com/*` (+ workers.dev origin).
+- Expect a few seconds of edge propagation lag after deploy before all
+  requests hit the new worker.
+- Sitemap: `@astrojs/sitemap` → `/sitemap-index.xml` (robots.txt points there);
+  the filter in `astro.config.mjs` must exclude admin/portal pages AND any
+  page that 301s. `scripts/indexnow.mjs` pings IndexNow with the sitemap.

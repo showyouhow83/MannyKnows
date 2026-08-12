@@ -19,7 +19,7 @@ npm install
 npm run dev
 
 # Build and deploy
-npm run build && npx wrangler deploy
+./deploy.sh   # builds + deploys from dist/server/wrangler.json + verifies live
 ```
 
 ## Key Information

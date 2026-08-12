@@ -17,7 +17,7 @@
 
 | Layer | Technology |
 |-------|------------|
-| Framework | Astro 5.13.0 (SSR) |
+| Framework | Astro 7.x (SSR, @astrojs/cloudflare 14 — deployed as a Worker) |
 | Styling | Tailwind CSS 3.4 |
 | Runtime | Cloudflare Workers |
 | Database | Cloudflare KV |
@@ -147,7 +147,7 @@ ADMIN_EMAIL: "mk@mannyknows.com"
 ```bash
 npm run dev          # Start dev server (localhost:4321)
 npm run build        # Build for production
-npx wrangler deploy  # Deploy to Cloudflare
+npx wrangler deploy -c dist/server/wrangler.json  # always the emitted config
 ```
 
 ### Environment Files
@@ -160,7 +160,7 @@ npx wrangler deploy  # Deploy to Cloudflare
 ### Important: Always build before deploy
 
 ```bash
-npm run build && npx wrangler deploy
+./deploy.sh   # or push to main (GitHub Actions)
 ```
 
 ## Key Files

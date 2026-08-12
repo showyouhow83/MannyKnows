@@ -42,9 +42,121 @@ for small businesses in Western Massachusetts).
 - **Business email is `mm@mannyknows.com`** — use it in anything public-facing.
   Do NOT put the owner's personal Gmail (showyouhow83@gmail.com) in committed code.
 - `src/layouts/BaseLayout.astro` wraps every page (SEO/OG meta, CSP, view-source
-  comment live here).
+  comment, analytics beacon live here).
 - Performance is a priority: pages are tuned for near-100 Lighthouse
   (image optimization AVIF/WebP via `<picture>`, no render-blocking, a11y).
+  Bot Fight Mode stays ON (Manny's call) — it caps lab TBT/Best Practices;
+  don't re-investigate it as a perf lead.
+
+## Copy rules (house style — enforced across every public word)
+
+- **Naming:** "Manny" = the human. "Manny AI" and "Remi AI" = AI agents.
+  Never blur agent and company ("Manny AI builds websites" is wrong; "we" do).
+- **Remi AI capability ladder never drifts:** the $40 Lite (One-Page Website)
+  only answers & captures leads; booking arrives at Get Booked; selling at
+  Get Growing. No page may promise a cheaper tier a pricier tier's verb.
+- **Prices appear ONLY in pricing sections, tier cards, and cost FAQs** —
+  never in narrative copy, nav labels, or hero prose.
+- **No "clause: elaboration" colon splices** in copy (swept Aug 2026). Write
+  real sentences or connectors. Keep colons for genuine lists, labels
+  ("Disconnected: scripts & tools"), SERP title separators, and the approved
+  punchline "One team. One brain. One boss: you."
+- **Banned words:** "genuinely", "honestly", "no catch", "plain English"
+  (use "clear"). Don't protest sincerity — prove with specifics.
+- **Honesty rule:** never publish invented stats, clients, or capabilities.
+  Cited figures keep their citations. Never mention Costa Rica in public copy.
+- Meta descriptions 110–160 chars; titles ≤ 60. JSON-LD prices compute from
+  the data files (plans.ts / aiTeam.ts / aiWebsite.ts) — never hardcode.
+
+## Pricing canon
+
+- **Single sources of truth:** `src/data/plans.ts` (website + store + ads +
+  agency), `src/data/aiTeam.ts` (agents/bundles/setup fee),
+  `src/data/aiWebsite.ts` (One-Page $195 + $40/mo), page-local `PACKAGES`
+  in local-seo.astro ($245/$495) and `TIERS` in apps.astro ($300/$600/$2,500
+  at flat $75/hr). Most surfaces (nav search, JSON-LD, comparison tables)
+  interpolate from these; **on a reprice only local-seo and apps need hand
+  updates** (noted in a NavBar comment).
+- Yearly = 10× monthly, 2 months free, everywhere.
+- **Build-coverage rule (Aug 2026):** month-to-month plans stay cancel-anytime
+  with no setup fee, BUT the included build is covered by the first 6 months.
+  Earlier exit bills the tier's standard build value (published in
+  /terms/#build-fee: Get Found $1,500 · Get Booked $2,250 · Get Growing/Ahead
+  $3,000 · Sell Online $1,875 · Sell More $2,625 · Sell Smarter $3,375 ·
+  Sell Everywhere $4,125) minus every monthly paid. Never reintroduce
+  unqualified "nothing is owed after you leave" copy. Enforcement lives in
+  signed contracts — the clause still needs adding to the admin's contract
+  templates when they're readapted from their contractor shape.
+- **Shopify subscription is NOT included** in store tiers (unbundled Aug 2026):
+  the account is opened in the client's name and billed by Shopify (Basic at
+  Sell Online/More, Grow at Smarter/Everywhere).
+- **Remi AI never transfers on exit** — the agents are service software on our
+  infrastructure; the client keeps content and captured leads, not the agent.
+  The One-Page GitHub repo excludes Remi. Stated in terms + ownership FAQs.
+
+## Analytics & measurement (first-party + GA4)
+
+- `POST /api/metric` counts events into `MK_KV_CHATBOT` (keys
+  `metric:{YYYY-MM-DD}:{event}[:{page-or-label}]`, 90-day TTL): `view`,
+  `quote_open`, `quote_submit`, `call_click`, `scan_run`, and labeled `cta`.
+- The BaseLayout beacon auto-tracks **every a/button click** as `cta` with
+  label `"{path}|{data-track || modal context || visible text || aria-label}"`,
+  mirrored to GA4 as `cta_click` (G-J0V35RZNZB). `[data-no-track]` opts out.
+  Renamed button copy starts a new label line.
+- Read: `GET /api/metric?k=<ADMIN_KEY|ADMIN_API_KEY>&days=30`. The metric that
+  judges copy changes is **quote_submit ÷ view per page**, before vs after a
+  deploy (correlate with git log).
+
+## Free AI Website Analysis (scanner)
+
+- `/free-ai-website-analysis/` + `src/pages/api/analyze-site.ts` +
+  `src/lib/site-analyzer.ts`. Server-side fetch of one page + robots/llms/
+  sitemap; regex heuristics; NO JS execution.
+- **The full report is EMAILED** (Resend, from `manny@send.mannyknows.com`);
+  the page shows only a teaser (score + pillar bars). Fake emails get nothing —
+  that's the verification. Falls back to on-page render if the send fails.
+- Quota: **one domain per normalized email per rolling 30 days**
+  (`scan_quota:{email}`; gmail dots/plus-tags folded; www stripped; burned
+  only on successful scans). Re-scans of the same domain stay free.
+- Every scan also emails Manny a "SCANNER LEAD" alert (deduped daily per
+  email+host) — that alert is a summary by design; the lead's report is the
+  separate "Your website report: …" email.
+
+## Mascots & site imagery
+
+- Assets in `public/mascot/` — processed with sharp: `.trim()` →
+  `.resize()` → `.webp({quality:~82})`. Mascots are overwritten in place on
+  art updates, hence the 1-day cache TTL in `public/_headers`.
+- Two placement patterns: **edge peek** (absolute at a section edge,
+  `--mascot-height/-peek/-rotate` CSS vars, hidden ≤639px — needs side
+  gutters; never on full-width grids) and **corner stand** (absolute
+  bottom-0, ~110px, inside a `relative overflow-hidden` section).
+- **Alt policy:** decorative mascots carry a short descriptive alt AND
+  `aria-hidden="true"` (screen readers skip, crawlers satisfied). Image SEO
+  keywords belong ONLY on meaningful images (portfolio screenshots via
+  `imageAlt` in selectedWork.ts, blog banners, hero slides) — never stuffed
+  into decorative alts.
+- Image generation: `scripts/generate-blog-photo.mjs` (Gemini
+  `gemini-3.1-flash-image`, key in .dev.vars). Character-consistent scenes:
+  pass a mascot PNG as an image input part with the prompt (see the Holyoke
+  test in the Aug 2026 session).
+
+## Ops gotchas
+
+- `./deploy.sh` for rapid iterations (self-verifying, ~10s); push-to-main
+  Actions takes ~10 min and cancels superseded runs. Right after a deploy the
+  API edge can serve the previous worker for a few seconds (propagation lag) —
+  retest before diagnosing.
+- `wrangler kv key …` against these bindings **requires `--preview false`**
+  (they have preview_ids; without the flag, writes/deletes silently fail).
+- `public/_headers` carries browser-cache rules (mascots 1d, heroes 7d,
+  fonts immutable) AND the security headers for static assets.
+- The sitemap filter (astro.config.mjs) must exclude any page that becomes a
+  redirect (e.g. /free-360-photo) — sitemaps list final URLs only.
+  `node scripts/indexnow.mjs` pings IndexNow after meaningful content ships.
+- exFAT volume drops `._*` AppleDouble files: `node scripts/cleanup-mac-files.js`.
+- The `<h1>` on /ai-website rotates its last word by JS — SEO crawlers will
+  report "H1 changed" every crawl; that's the animation, not a regression.
 
 ## Portfolio / case studies
 
