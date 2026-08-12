@@ -487,10 +487,16 @@ const NAVBAR_CONFIG = {
 		border-top: 1px solid rgba(255, 255, 255, 0.10);
 	}
 
-	/* The two glow rooms, restored (Manny, Aug 2026) — everything else stays
-	   on the simplified two-tone system. AI Team: violet from the top, but its
-	   bottom echo is BLUE so the glow hands off into the blue room below —
-	   that's the violet→blue transition across the seam. */
+	/* ── The glow chain (Manny, Aug 2026): every section opens in its own hue
+	   and its floor pre-glows the NEXT section's hue, so each seam is a
+	   crossfade. Journey: violet → violet → blue → pink → violet → nebula →
+	   blue → violet → canvas. About keeps its veiled video (reads blue). ── */
+	html.dark #home-hero {
+		background-color: #0a0a14;
+		background-image:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.10), transparent 60%);
+	}
 	html.dark #ai-team {
 		background-color: #0a0a14;
 		background-image:
@@ -501,7 +507,30 @@ const NAVBAR_CONFIG = {
 		background-color: #0a0a14;
 		background-image:
 			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.08), transparent 60%);
+	}
+	html.dark #google-profile {
+		background-color: #0a0a14;
+		background-image:
+			radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.08), transparent 60%);
+	}
+	html.dark #apps {
+		background-color: #0a0a14;
+		background-image:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
 			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%);
+	}
+	html.dark #work {
+		background-color: #0a0a14;
+		background-image:
+			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.08), transparent 60%);
+	}
+	html.dark section[aria-label="Client testimonials"] {
+		background-color: #0a0a14;
+		background-image:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.14), transparent 60%);
 	}
 
 	/* Homepage only: the footer head sheds its bottom padding. */
