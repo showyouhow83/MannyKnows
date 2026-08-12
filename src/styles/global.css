@@ -16,3 +16,12 @@
     padding: 3rem 3rem 2rem 3rem;
   }
 }
+
+/* ── Mobile heading scale (Manny, Aug 2026) ──────────────────────────────
+   Utilities set heading sizes per-element, so this global mobile override
+   needs !important to win. Desktop scales are untouched. */
+@media (max-width: 639px) {
+	h1 { font-size: 2rem !important; }
+	h2 { font-size: 1.3rem !important; }
+	h3 { font-size: 1.15rem !important; }
+}
