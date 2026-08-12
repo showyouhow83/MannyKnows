@@ -150,7 +150,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'Does Remi AI speak Spanish?',
-    a: 'Yes. English and Spanish are standard on everything we build, never an add-on: Remi AI answers in whichever language the customer opens with.',
+    a: 'Yes. English, Spanish, French, German, Italian — all languages are available on everything we build, and Remi AI answers in whichever language the customer opens with.',
   },
   {
     q: 'What if I need more pages later?',
