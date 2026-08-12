@@ -526,13 +526,22 @@ const searchIndex = [
     transition: all 0.5s ease;
   }
 
+  /* Hover: ONE hue at a time, drawn as two shades of itself (darker left,
+     brighter right), morphing violet ↔ blue (Manny, Aug 2026). @property
+     makes the gradient stops animatable; browsers without it show the
+     static violet two-shade. */
+  @property --nav-c1 { syntax: '<color>'; inherits: false; initial-value: #7c3aed; }
+  @property --nav-c2 { syntax: '<color>'; inherits: false; initial-value: #c4b5fd; }
   .nav-gradient:hover {
-    background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
-    background-size: 200% 200%;
+    background: linear-gradient(90deg, var(--nav-c1), var(--nav-c2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: apple-gradient-flow 2s ease-in-out infinite;
+    animation: nav-hue-morph 2.4s ease-in-out infinite alternate;
+  }
+  @keyframes nav-hue-morph {
+    0%   { --nav-c1: #7c3aed; --nav-c2: #c4b5fd; }
+    100% { --nav-c1: #0071e3; --nav-c2: #7dd3fc; }
   }
 
   /* Logo: inverted, animated gradient by default, solid (theme color) on hover. */
