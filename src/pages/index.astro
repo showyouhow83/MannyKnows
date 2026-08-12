@@ -157,7 +157,7 @@ const NAVBAR_CONFIG = {
 		<!-- Marquee Announcement Section -->
 
 		<!-- Header Container with Subtle Background -->
-		<header id="home-hero" class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+		<header id="home-hero" class="room-hero relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
             <!-- Navigation -->
             <NavBar
 				animationConfig={{
@@ -203,6 +203,7 @@ const NAVBAR_CONFIG = {
 		     in the H1 gradient's own hues. Scoped to this section only. -->
 		<PageSection
 			id="ai-team"
+			className="room room-violet"
 			badge="AI Team"
 			title="Fix business bottlenecks<br />with AI agents"
 			subtitle="Stop losing revenue to operational bottlenecks. Manny AI doesn't just build chatbots; we deploy autonomous agents that can ingest a customer's project request, calculate rough estimates, and draft a quote in your CRM instantly. Let AI handle the busywork so you can focus on the business."
@@ -217,6 +218,7 @@ const NAVBAR_CONFIG = {
 		     /plans) so the copy can never drift. -->
 		<PageSection
 			id="plans"
+			className="room room-blue"
 			badge="AI-Powered Websites"
 			title="Websites that run <br />your business efficiently"
 			subtitle="Instead of costing you manual maintenance fees for every fix, your website continuously tests and improves itself—climbing Google rankings and becoming a more valuable, lead-generating asset every single day."
@@ -247,6 +249,7 @@ const NAVBAR_CONFIG = {
 		     component's header comment). -->
 		<PageSection
 			id="google-profile"
+			className="room room-violet"
 			badge="Search Engine Optimization"
 			title="Why a 360° photo <br />wins customers"
 			subtitle="People choose businesses they can see. A 360° photo turns your Google listing into a storefront that works around the clock."
@@ -263,7 +266,7 @@ const NAVBAR_CONFIG = {
 		<!-- Business Apps — the fourth hero pillar ("AI Agents, Websites, SEO
 		     & Apps"), a compact promo for /apps/. Tiers and prices mirror the
 		     page's TIERS data (apps.astro). -->
-		<PageSection id="apps" variant="hero">
+		<PageSection id="apps" variant="hero" className="room room-blue">
 			<!-- Custom header: on desktop the dashboards astronaut shares the row
 			     with the badge + title (Manny, Aug 2026); description below.
 			     Classes mirror PageSection's own header exactly. -->
@@ -322,6 +325,7 @@ const NAVBAR_CONFIG = {
 		<!-- Who you're working with — condensed founder intro, routes to /about -->
 		<PageSection
 			id="about"
+			className="room room-violet"
 			badge="Your solutions partner"
 			title="Who you're working with"
 			variant="hero"
@@ -338,6 +342,7 @@ const NAVBAR_CONFIG = {
 		     (Replaces the retired ReviewsSection carousel.) -->
 		<PageSection
 			id="work"
+			className="room room-blue"
 			badge="Portfolio"
 			title="Our web design portfolio"
 			subtitle="The latest sites, stores, and apps we've designed and built, including a site that ranks #1 on Google organically, AI agents that answer customers around the clock, and custom apps that take the manual work off your plate. Click any project for the full story."
@@ -464,221 +469,10 @@ const NAVBAR_CONFIG = {
 	}
 </style>
 <style is:global>
-	/* ═══ AI Team test — the "MannyKnows/OpsCloud" spec (dev prompt, Aug 2026).
-	   Section-scoped test of the full language. Global scope on purpose:
-	   #ai-team renders inside PageSection, out of reach of scoped styles. ═══ */
+	/* Homepage-only keepers after the room-system v2 simplification (the
+	   shared language lives in global.css). */
 
-	#ai-team {
-		background: #f4f6fb; /* light mode: quiet pale blue, untouched by the spec */
-	}
-
-	/* CANVAS: solid near-black navy + ONE violet wash anchored to the top.
-	   The hero/section divider returns as the spec's white-10% line. */
-	html.dark #ai-team {
-		background:
-			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.18), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-
-	/* TYPE: body copy zinc-400; headings/key values stay white. */
-	html.dark #ai-team p { color: #a1a1aa; }
-
-	/* The headline gradient: violet-400 → fuchsia-400 → pink-400 (the ONE
-	   gradient text element of the screen). */
-	html.dark #ai-team .apple-gradient-text {
-		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-
-	/* EYEBROW: a pill — white 6% fill, sky-300 text, 0.18em tracking. */
-	html.dark #ai-team .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #c4b5fd;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-
-	/* SURFACES: translucent cards — white 3% fill, white 10% border, subtle
-	   blur, no colored rings. Hits the manager card and the specialist tiles. */
-	html.dark #ai-team a > div:first-child {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.10);
-		backdrop-filter: blur(4px);
-		box-shadow: none;
-	}
-
-	/* ACTION: the one gradient button — blue-600 → fuchsia-500, tinted shadow. */
-	html.dark #ai-team a[href="/ai-team/"] {
-		background-image: linear-gradient(to right, #7c3aed, #d946ef);
-		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
-	}
-
-	/* ═══ Hero test: purple → blue transition on the spec canvas, subtle,
-	   matching the sections' tone. Dark mode only; light keeps its wash. ═══ */
-	html.dark #home-hero {
-		background:
-			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.12), transparent 60%),
-			#0a0a14;
-	}
-
-	/* ═══ #plans (AI-Powered Websites) — same spec, same violet family ═══ */
-	#plans {
-		background: #f4f6fb;
-	}
-	html.dark #plans {
-		/* Blue-leaning washes, top AND bottom sharing the hue — the symmetric
-		   blend Manny liked on the SEO section, in this section's blue. */
-		background:
-			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	html.dark #plans p { color: #a1a1aa; }
-	/* Headline matches the section's wash: blue family here (sky-400 →
-	   blue-400 → indigo-400), the violet section keeps violet→fuchsia→pink. */
-	html.dark #plans .apple-gradient-text {
-		background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	html.dark #plans .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #7dd3fc;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-	/* SURFACES: the versus panel's dark cards go translucent (white 3% fill,
-	   white 10% hairline). Attribute-substring selectors reach the Tailwind
-	   dark: classes inside the shared component without editing it. */
-	/* :not(.apple-gradient-text) — the vs medallions clip their text out of
-	   their own background gradient; repainting them erases the "vs". */
-	html.dark #plans [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text),
-	html.dark #plans [class*="dark:bg-dark-primary"]:not(.apple-gradient-text) {
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(4px);
-	}
-	html.dark #plans [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
-
-	/* ═══ #google-profile (SEO) — pink room ═══ */
-	#google-profile { background: #f4f6fb; }
-	html.dark #google-profile {
-		background:
-			radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.07), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	html.dark #google-profile p { color: #a1a1aa; }
-	html.dark #google-profile .apple-gradient-text {
-		background-image: linear-gradient(to right, #e879f9, #f472b6, #fb7185);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	html.dark #google-profile .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #f9a8d4;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-	html.dark #google-profile [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(4px);
-	}
-	html.dark #google-profile [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
-	html.dark #google-profile a[href="/local-seo/"] {
-		background-image: linear-gradient(to right, #d946ef, #ec4899);
-		box-shadow: 0 8px 24px rgba(236, 72, 153, 0.20);
-	}
-
-	/* ═══ #apps (Business Apps) — violet room ═══ */
-	#apps { background: #f4f6fb; }
-	html.dark #apps {
-		background:
-			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	html.dark #apps p { color: #a1a1aa; }
-	html.dark #apps .apple-gradient-text {
-		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	html.dark #apps .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #c4b5fd;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-	html.dark #apps [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(4px);
-	}
-	html.dark #apps [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
-	/* The bento's featured story tile = the spec's "one card that matters":
-	   fuchsia tint instead of the blue ring. */
-	html.dark #apps [class*="ring-primary-blue"] {
-		background: rgba(217, 70, 239, 0.06);
-		border-color: rgba(232, 121, 249, 0.25);
-		box-shadow: none;
-	}
-	html.dark #apps a[href="/apps/"] {
-		background-image: linear-gradient(to right, #7c3aed, #d946ef);
-		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
-	}
-
-	/* ═══ #work (Portfolio) — blue room ═══ */
-	#work { background: #f4f6fb; }
-	html.dark #work {
-		background:
-			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	html.dark #work p { color: #a1a1aa; }
-	html.dark #work .apple-gradient-text {
-		background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	html.dark #work .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #7dd3fc;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-	html.dark #work [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(4px);
-	}
-	html.dark #work [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
-
-	/* ═══ #about (Your solutions partner) — blue room; the nebula video IS
-	   the wash, deepened with a canvas veil so it sits with its neighbors ═══ */
-	html.dark #about {
-		background: #0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	/* Veil over the video so it reads as the room's wash, not a bright layer. */
+	/* About: the nebula video reads as the room's wash under a canvas veil. */
 	html.dark #about > :first-child::after {
 		content: '';
 		position: absolute;
@@ -686,77 +480,15 @@ const NAVBAR_CONFIG = {
 		background: rgba(10, 10, 20, 0.45);
 		pointer-events: none;
 	}
-	html.dark #about p { color: #a1a1aa; }
-	html.dark #about .apple-gradient-text {
-		background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	html.dark #about .section-badge {
-		background: rgba(255, 255, 255, 0.06);
-		color: #7dd3fc;
-		font-size: 11px;
-		letter-spacing: 0.18em;
-	}
-	html.dark #about [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(4px);
-	}
-	html.dark #about [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
 
-	/* Homepage only: the footer head sheds its bottom padding (inside pages
-	   keep the 3.5rem). */
-	footer .footer-head { padding-bottom: 0; }
-
-	/* ═══ Footer — quiet blue room closing the page ═══ */
+	/* Footer: flat canvas + divider (no wash — one wash per page, the hero's). */
 	html.dark footer {
-		background:
-			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.10), transparent 60%),
-			#0a0a14;
+		background: #0a0a14;
 		border-top: 1px solid rgba(255, 255, 255, 0.10);
 	}
 
-	/* ═══ Testimonials — violet room (no id; targeted by aria-label) ═══ */
-	html.dark section[aria-label="Client testimonials"] {
-		background:
-			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.14), transparent 60%),
-			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.08), transparent 60%),
-			#0a0a14;
-		border-top: 1px solid rgba(255, 255, 255, 0.10);
-	}
-	html.dark section[aria-label="Client testimonials"] p { color: #a1a1aa; }
-	html.dark section[aria-label="Client testimonials"] .apple-gradient-text {
-		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-	/* Review cards keep their ORIGINAL solid bodies (the translucent fill
-	   read too hard over the wash) — only the hue-carrying details join the
-	   violet room: the gradient ring border, the quote mark, the avatar. */
-	html.dark section[aria-label="Client testimonials"] figure[class*="from-primary-blue"] {
-		background-image: linear-gradient(135deg, rgba(167, 139, 250, 0.45), rgba(232, 121, 249, 0.20), rgba(244, 114, 182, 0.45));
-	}
-	html.dark section[aria-label="Client testimonials"] span[class*="dark:text-blue-300"] {
-		color: rgba(196, 181, 253, 0.12);
-	}
-	html.dark section[aria-label="Client testimonials"] span[class*="rounded-full"][class*="from-primary-blue"] {
-		background-image: linear-gradient(135deg, #7c3aed, #d946ef);
-	}
-	html.dark section[aria-label="Client testimonials"] a[class*="dark:text-blue-300"] {
-		color: #c4b5fd;
-	}
-	html.dark section[aria-label="Client testimonials"] [class*="dark:border-dark-accent"] {
-		border-color: rgba(255, 255, 255, 0.10);
-	}
-	/* ACTION: "Compare the plans" is this screen's one gradient button. */
-	html.dark #plans a[href="/plans/"] {
-		background-image: linear-gradient(to right, #2563eb, #0ea5e9);
-		box-shadow: 0 8px 24px rgba(14, 165, 233, 0.20);
-	}
+	/* Homepage only: the footer head sheds its bottom padding. */
+	footer .footer-head { padding-bottom: 0; }
 </style>
 
 

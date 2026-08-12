@@ -27,16 +27,10 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ROOM SYSTEM — the sitewide dark design language (Manny-approved, Aug 2026,
-   prototyped on the homepage). Dark mode only; light mode is untouched.
-   Usage: add `room room-violet|room-blue|room-pink` to a Section/PageSection
-   via className, or `room-hero` to a page <header>. Rules encoded here:
-   - canvas #0a0a14, ONE hue wash at top + softer echo at bottom
-   - white-10% divider line between rooms
-   - zinc-400 body copy, hue-matched gradient text and eyebrow pills
-   - translucent surfaces (white 3% + white 10% hairline), never gradients
-   - gradient-text elements are exempt from surface repaints (keeps "vs",
-     stat numbers, and clipped-text intact)
+   ROOM SYSTEM v2 — simplified to the spec (Manny + design review, Aug 2026).
+   ONE canvas, ONE wash (the page hero's), ONE accent family, rhythm through
+   lightness — not hue. Classes room-violet/blue/pink survive in markup as
+   TONE slots: violet & pink = canvas, blue = lifted. Dark mode only.
    ═════════════════════════════════════════════════════════════════════════ */
 
 html.dark .room,
@@ -45,14 +39,33 @@ html.dark .room-hero {
 }
 html.dark .room {
 	border-top: 1px solid rgba(255, 255, 255, 0.10);
+	background-image: none;
+}
+/* The lifted tone — the "lighter version" in the two-tone rhythm. */
+html.dark .room-blue {
+	background-color: #10101d;
 }
 html.dark .room p { color: #a1a1aa; }
+
+/* ONE accent gradient sitewide: violet → fuchsia → pink. */
+html.dark .room .apple-gradient-text,
+html.dark .room-hero .apple-gradient-text {
+	background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/* Eyebrow pills: one uniform treatment (spec: sky-300 on white 6%). */
 html.dark .room .section-badge,
 html.dark .room-hero .section-badge {
 	background: rgba(255, 255, 255, 0.06);
+	color: #7dd3fc;
 	font-size: 11px;
 	letter-spacing: 0.18em;
 }
+
+/* Surfaces: translucent, hairline, blurred — gradient-text exempt. */
 html.dark .room [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text),
 html.dark .room [class*="dark:bg-dark-tertiary"]:not(.apple-gradient-text) {
 	background: rgba(255, 255, 255, 0.03);
@@ -62,75 +75,25 @@ html.dark .room [class*="dark:border-dark-accent"] {
 	border-color: rgba(255, 255, 255, 0.10);
 }
 
-/* Page heroes: violet breathing from the top, brand blue from the bottom. */
-html.dark .room-hero {
-	background-image:
-		radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
-		radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.12), transparent 60%);
-}
-
-/* Violet room */
-html.dark .room-violet {
-	background-image:
-		radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
-		radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%);
-}
-html.dark .room-violet .apple-gradient-text {
-	background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-html.dark .room-violet .section-badge { color: #c4b5fd; }
-html.dark .room-violet a[class*="from-primary-blue"][class*="text-white"] {
-	background-image: linear-gradient(to right, #7c3aed, #d946ef);
+/* ONE gradient button (spec: blue-600 → fuchsia-500). */
+html.dark .room a[class*="from-primary-blue"][class*="text-white"] {
+	background-image: linear-gradient(to right, #2563eb, #d946ef);
 	box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
 }
 
-/* Blue room */
-html.dark .room-blue {
+/* The page hero's wash — the ONE wash per page. */
+html.dark .room-hero {
 	background-image:
-		radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
-		radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%);
-}
-html.dark .room-blue .apple-gradient-text {
-	background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-html.dark .room-blue .section-badge { color: #7dd3fc; }
-html.dark .room-blue a[class*="from-primary-blue"][class*="text-white"] {
-	background-image: linear-gradient(to right, #2563eb, #0ea5e9);
-	box-shadow: 0 8px 24px rgba(14, 165, 233, 0.20);
+		radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
+		radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.10), transparent 60%);
 }
 
-/* Pink room (the loudest hue — used sparingly, gentler washes) */
-html.dark .room-pink {
-	background-image:
-		radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%),
-		radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.07), transparent 60%);
-}
-html.dark .room-pink .apple-gradient-text {
-	background-image: linear-gradient(to right, #e879f9, #f472b6, #fb7185);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-html.dark .room-pink .section-badge { color: #f9a8d4; }
-html.dark .room-pink a[class*="from-primary-blue"][class*="text-white"] {
-	background-image: linear-gradient(to right, #d946ef, #ec4899);
-	box-shadow: 0 8px 24px rgba(236, 72, 153, 0.20);
-}
-
-/* Review-card exception (learned on the homepage): QuoteBlock figures keep
-   their solid bodies; only the gradient ring re-hues per room. */
-html.dark .room-violet figure[class*="from-primary-blue"] {
+/* Review cards: SOLID bodies always (translucent read muddy over washes),
+   one accent ring, matching the homepage treatment everywhere. */
+html.dark .room figure[class*="from-primary-blue"] {
 	background-image: linear-gradient(135deg, rgba(167, 139, 250, 0.45), rgba(232, 121, 249, 0.20), rgba(244, 114, 182, 0.45));
 }
-html.dark .room-blue figure[class*="from-primary-blue"] {
-	background-image: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(96, 165, 250, 0.20), rgba(129, 140, 248, 0.45));
-}
-html.dark .room-pink figure[class*="from-primary-blue"] {
-	background-image: linear-gradient(135deg, rgba(232, 121, 249, 0.45), rgba(244, 114, 182, 0.20), rgba(251, 113, 133, 0.45));
+html.dark .room figure[class*="from-primary-blue"] > div[class*="dark:bg-dark-secondary"] {
+	background: #151619;
+	backdrop-filter: none;
 }
