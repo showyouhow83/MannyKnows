@@ -86,7 +86,7 @@ const pageJsonLd = {
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <!-- ───────────────────────── Hero ───────────────────────── -->
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -143,7 +143,7 @@ const pageJsonLd = {
     </header>
 
     <!-- ───────────────────────── The agent ───────────────────────── -->
-    <Section id="the-agent" variant="default">
+    <Section id="the-agent" variant="default" className="room room-violet">
       <!-- Case-study astronaut peeking from the left edge. -->
       <div class="cs-mascot" aria-hidden="true">
         <img src="/mascot/astro-casestudy.webp" alt="Astronaut mascot peeking at the case studies" aria-hidden="true" width="360" height="631" loading="lazy" decoding="async" />
@@ -207,7 +207,7 @@ const pageJsonLd = {
          per Manny, Aug 2026: the sales sections lead, the anatomy follows.) -->
 
     <!-- ───────────────────────── Pricing ───────────────────────── -->
-    <Section id="pricing" variant="gradient">
+    <Section id="pricing" variant="gradient" className="room room-blue">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Pricing</span>
@@ -273,7 +273,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- ───────────────────────── How it works ───────────────────────── -->
-    <Section id="how-it-works" variant="default">
+    <Section id="how-it-works" variant="default" className="room room-pink">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>From one conversation to a page that works</span></h2>
@@ -286,7 +286,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- ───────────────────────── FAQ + CTA ───────────────────────── -->
-    <Section id="faq" variant="gradient">
+    <Section id="faq" variant="gradient" className="room room-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={aiWebsiteFaq} heading="One-page website questions, answered" />
@@ -312,7 +312,7 @@ const pageJsonLd = {
          reader met two headings and had to connect them. Together the claim is
          whole — and the Lighthouse block keeps its own #lighthouse anchor so
          existing deep links still land. -->
-    <Section id="whats-on-it" variant="default">
+    <Section id="whats-on-it" variant="default" className="room room-blue">
       <!-- Data astronaut standing in the corner, same treatment as the
            telescope astronaut on the homepage "What clients say" section. -->
       <img

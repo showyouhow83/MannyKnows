@@ -75,7 +75,7 @@ const pageJsonLd = {
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -168,7 +168,7 @@ const pageJsonLd = {
         as monthly retainers, at local-business prices. Data lives on the plan
         record (plans.ts `tiers`); the Shopify subscription is billed by Shopify
         in the client's name (unbundled Aug 2026). */}
-    <Section id="store-tiers" variant="default">
+    <Section id="store-tiers" variant="default" className="room room-violet">
       <Container>
         <div class="text-center max-w-[1440px] mx-auto mb-10">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
@@ -299,7 +299,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- Why this isn't one of the website plans -->
-    <Section id="store-vs-site" variant="alternate">
+    <Section id="store-vs-site" variant="alternate" className="room room-blue">
       <Container>
         <div class="max-w-3xl mx-auto text-center">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
@@ -316,7 +316,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- What's included -->
-    <Section id="store-included" variant="default">
+    <Section id="store-included" variant="default" className="room room-pink">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>Everything included</span>
@@ -346,7 +346,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- Proof -->
-    <Section id="store-proof" variant="alternate">
+    <Section id="store-proof" variant="alternate" className="room room-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
@@ -365,7 +365,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- How it works -->
-    <Section id="store-steps" variant="default">
+    <Section id="store-steps" variant="default" className="room room-blue">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How it works</span>
@@ -375,7 +375,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- FAQ -->
-    <Section id="store-faq" variant="alternate">
+    <Section id="store-faq" variant="alternate" className="room room-pink">
       <Container>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={plan.faq} />
@@ -390,7 +390,7 @@ const pageJsonLd = {
     </Section>
 
     <!-- Back to the website plans -->
-    <Section id="store-plans" variant="default">
+    <Section id="store-plans" variant="default" className="room room-violet">
       <Container>
         <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8">
           <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Selling services instead of products?</h2>

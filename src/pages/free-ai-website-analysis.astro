@@ -47,7 +47,7 @@ const quote = getTestimonial('SL Painting');
 >
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -101,7 +101,7 @@ const quote = getTestimonial('SL Painting');
     </header>
 
     <!-- Scan results (rendered by the script below) -->
-    <Section id="scan-results-section" variant="default" className="hidden">
+    <Section id="scan-results-section" variant="default" className="hidden room room-violet">
       <Container>
         <div id="scanResults" class="max-w-6xl mx-auto"></div>
         <div class="max-w-4xl mx-auto text-center mt-10">
@@ -116,7 +116,7 @@ const quote = getTestimonial('SL Painting');
       </Container>
     </Section>
 
-    <Section id="analysis-checks" variant="default">
+    <Section id="analysis-checks" variant="default" className="room room-blue">
       <Container>
         <div class="max-w-6xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
@@ -137,7 +137,7 @@ const quote = getTestimonial('SL Painting');
       </Container>
     </Section>
 
-    <Section id="analysis-walkaway" variant="alternate">
+    <Section id="analysis-walkaway" variant="alternate" className="room room-pink">
       <Container>
         <div class="max-w-3xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
@@ -159,7 +159,7 @@ const quote = getTestimonial('SL Painting');
     </Section>
 
     {quote && (
-      <Section id="analysis-proof" variant="default">
+      <Section id="analysis-proof" variant="default" className="room room-violet">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
             <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">The kind of result this leads to</p>
@@ -169,7 +169,7 @@ const quote = getTestimonial('SL Painting');
       </Section>
     )}
 
-    <Section id="analysis-faq" variant="alternate">
+    <Section id="analysis-faq" variant="alternate" className="room room-blue">
       <Container>
         <Faq faqs={faqs} />
         <div class="text-center mt-12">

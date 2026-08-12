@@ -179,7 +179,7 @@ const jsonLd = {
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <!-- ───────────────────────── Hero ───────────────────────── -->
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -230,7 +230,7 @@ const jsonLd = {
 
     <!-- ───────────────────────── Free 360° photo (the lead magnet) ─────────────────────────
          Anchor target for the old /free-360-photo/ URL (301s land here). -->
-    <Section id="free-360-photo" variant="alternate">
+    <Section id="free-360-photo" variant="alternate" className="room room-violet">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">We come to you · {SERVICE_AREA}</span>
@@ -255,7 +255,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── What's included ───────────────────────── -->
-    <Section id="included" variant="default">
+    <Section id="included" variant="default" className="room room-blue">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What local SEO covers here</span></h2>
@@ -279,7 +279,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── The SEO packages ───────────────────────── -->
-    <Section id="packages" variant="alternate">
+    <Section id="packages" variant="alternate" className="room room-pink">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">SEO packages</span>
@@ -329,7 +329,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── The other path: sites with SEO included ───────────────────────── -->
-    <Section id="plans" variant="default">
+    <Section id="plans" variant="default" className="room room-violet">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Every AI-powered website includes SEO</span></h2>
@@ -369,7 +369,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── GBP: stats + comparison ───────────────────────── -->
-    <Section id="gbp" variant="alternate">
+    <Section id="gbp" variant="alternate" className="room room-blue">
       <Container>
         <div class="text-center max-w-2xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>It starts with your Google Business Profile</span></h2>
@@ -385,7 +385,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── FAQ ───────────────────────── -->
-    <Section id="faq" variant="gradient">
+    <Section id="faq" variant="gradient" className="room room-pink">
       <Container>
         <div class="max-w-3xl mx-auto">
           <div class="text-center mb-12">

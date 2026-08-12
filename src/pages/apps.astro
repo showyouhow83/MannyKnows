@@ -140,7 +140,7 @@ const jsonLd = {
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
     <!-- ───────────────────────── Hero ───────────────────────── -->
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -191,7 +191,7 @@ const jsonLd = {
     </header>
 
     <!-- ───────────────────────── Disconnected / Connected ───────────────────────── -->
-    <Section id="concept" variant="alternate">
+    <Section id="concept" variant="alternate" className="room room-violet">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Apps that stand alone. Apps that connect everything.</span></h2>
@@ -219,7 +219,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── Tiers ───────────────────────── -->
-    <Section id="tiers" variant="default">
+    <Section id="tiers" variant="default" className="room room-blue">
       <!-- App astronaut peeking in from the right edge (the render carries
            its own lean, so CSS rotation sits at 0). Dials live in the
            .tiers-mascot CSS below. -->
@@ -269,7 +269,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── How it works + case studies ───────────────────────── -->
-    <Section id="how-it-works" variant="default">
+    <Section id="how-it-works" variant="default" className="room room-pink">
       <!-- Case-study astronaut peeking from the left, level with the
            case-study cards at the section's bottom. -->
       <div class="cs-mascot" aria-hidden="true">
@@ -303,7 +303,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── FAQ ───────────────────────── -->
-    <Section id="faq" variant="gradient">
+    <Section id="faq" variant="gradient" className="room room-violet">
       <Container>
         <Faq faqs={FAQS} heading="Questions, answered" />
       </Container>

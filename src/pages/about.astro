@@ -83,7 +83,7 @@ const pageJsonLd = {
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
-    <header class="has-hero-video relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="has-hero-video relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <HeroVideoBackground name="hero-blue" tone="color" />
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
@@ -121,7 +121,7 @@ const pageJsonLd = {
       </div>
     </header>
 
-    <Section id="about-story" variant="default">
+    <Section id="about-story" variant="default" className="room room-violet">
       <Container>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto mb-16">
           {stats.map((s) => (
@@ -164,7 +164,7 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <Section id="about-principles" variant="alternate">
+    <Section id="about-principles" variant="alternate" className="room room-blue">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How we work</span>

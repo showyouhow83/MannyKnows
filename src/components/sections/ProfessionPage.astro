@@ -27,7 +27,7 @@ const contactContext = `Website for ${p.name}`;
 <BaseLayout title={p.metaTitle} description={p.metaDescription}>
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -66,7 +66,7 @@ const contactContext = `Website for ${p.name}`;
     </header>
 
     <!-- The problems this trade actually feels -->
-    <Section id="prof-pains" variant="default">
+    <Section id="prof-pains" variant="default" className="room room-violet">
       <Container>
         <div class="max-w-3xl mx-auto text-center mb-10">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
@@ -85,7 +85,7 @@ const contactContext = `Website for ${p.name}`;
     </Section>
 
     <!-- What we do about it -->
-    <Section id="prof-offer" variant="alternate">
+    <Section id="prof-offer" variant="alternate" className="room room-blue">
       <Container>
         <div class="max-w-3xl mx-auto text-center mb-10">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
@@ -113,7 +113,7 @@ const contactContext = `Website for ${p.name}`;
     </Section>
 
     {quote && (
-      <Section id="prof-proof" variant="default">
+      <Section id="prof-proof" variant="default" className="room room-pink">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
             <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">{p.proofHeading}</p>
@@ -123,7 +123,7 @@ const contactContext = `Website for ${p.name}`;
       </Section>
     )}
 
-    <Section id="prof-faq" variant="alternate">
+    <Section id="prof-faq" variant="alternate" className="room room-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={p.faqs} />
@@ -132,7 +132,7 @@ const contactContext = `Website for ${p.name}`;
     </Section>
 
     <!-- Cross-links to the other verticals -->
-    <Section id="prof-others" variant="default">
+    <Section id="prof-others" variant="default" className="room room-blue">
       <Container>
         <div class="max-w-4xl mx-auto text-center">
           <p class="text-xs font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-5">We also build for</p>

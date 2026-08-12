@@ -99,7 +99,7 @@ const pageJsonLd = {
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
 
-    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -191,7 +191,7 @@ const pageJsonLd = {
       </div>
     </header>
 
-    <Section id="plans-list" variant="default">
+    <Section id="plans-list" variant="default" className="room room-violet">
       <Container>
         <!-- The Brand Brain story now lives in the hero panel above. -->
         <PricingPlans />
@@ -230,13 +230,13 @@ const pageJsonLd = {
     </Section>
 
     <!-- Beyond the website: Business Ads & Multimedia — services, not website tiers. -->
-    <Section id="why-smart" variant="alternate">
+    <Section id="why-smart" variant="alternate" className="room room-blue">
       <Container>
         <SmartWebsiteConcept />
       </Container>
     </Section>
 
-    <Section id="plans-services" variant="default">
+    <Section id="plans-services" variant="default" className="room room-pink">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-10">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold">
@@ -279,7 +279,7 @@ const pageJsonLd = {
       </Container>
     </Section>
 
-    <Section id="plans-faq" variant="default">
+    <Section id="plans-faq" variant="default" className="room room-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={faqs} />
