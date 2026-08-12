@@ -199,12 +199,14 @@ const NAVBAR_CONFIG = {
         </header>
 
 		<!-- AI Team — the flagship; teaser that routes to the /ai-team lander -->
+		<!-- COLOR TEST (Manny-guided): hero wash family + no top seam + a glow
+		     in the H1 gradient's own hues. Scoped to this section only. -->
 		<PageSection
 			id="ai-team"
 			badge="AI Team"
 			title="Fix business bottlenecks<br />with AI agents"
 			subtitle="Stop losing revenue to operational bottlenecks. Manny AI doesn't just build chatbots; we deploy autonomous agents that can ingest a customer's project request, calculate rough estimates, and draft a quote in your CRM instantly. Let AI handle the busywork so you can focus on the business."
-			variant="alternate"
+			variant="hero"
 		>
 			<HomeAiTeam />
 		</PageSection>
@@ -419,6 +421,15 @@ const NAVBAR_CONFIG = {
 		.plans-mascot { display: none; }
 	}
 
+	/* ── AI Team color test (Manny-guided session) ─────────────────────────
+	   Seamless: same wash family as the hero above, and the seam border is
+	   removed so the two grounds meet without a line. The glow uses the H1
+	   gradient's own hues — blue (#0071e3) upper-left, pink (#ff4faa) right,
+	   purple (#8b5cf6) low-center — each fading radially to nothing.
+	   Dials: the three rgba alphas below (dark) and the light-mode set. */
+	/* AI Team color test lives in the is:global block below — #ai-team is
+	   rendered by PageSection, so scoped selectors here can never match it. */
+
 	.gbp-mascot {
 		--mascot-height: 440px;
 		--mascot-peek: 58%;
@@ -450,6 +461,104 @@ const NAVBAR_CONFIG = {
 		.gbp-mascot { display: none; }
 	}
 </style>
+<style is:global>
+	/* ═══ AI Team test — the "MannyKnows/OpsCloud" spec (dev prompt, Aug 2026).
+	   Section-scoped test of the full language. Global scope on purpose:
+	   #ai-team renders inside PageSection, out of reach of scoped styles. ═══ */
+
+	#ai-team {
+		background: #f4f6fb; /* light mode: quiet pale blue, untouched by the spec */
+	}
+
+	/* CANVAS: solid near-black navy + ONE violet wash anchored to the top.
+	   The hero/section divider returns as the spec's white-10% line. */
+	html.dark #ai-team {
+		background:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.18), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+
+	/* TYPE: body copy zinc-400; headings/key values stay white. */
+	html.dark #ai-team p { color: #a1a1aa; }
+
+	/* The headline gradient: violet-400 → fuchsia-400 → pink-400 (the ONE
+	   gradient text element of the screen). */
+	html.dark #ai-team h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	/* EYEBROW: a pill — white 6% fill, sky-300 text, 0.18em tracking. */
+	html.dark #ai-team .section-badge {
+		background: rgba(255, 255, 255, 0.06);
+		color: #7dd3fc;
+		font-size: 11px;
+		letter-spacing: 0.18em;
+	}
+
+	/* SURFACES: translucent cards — white 3% fill, white 10% border, subtle
+	   blur, no colored rings. Hits the manager card and the specialist tiles. */
+	html.dark #ai-team a > div:first-child {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.10);
+		backdrop-filter: blur(4px);
+		box-shadow: none;
+	}
+
+	/* ACTION: the one gradient button — blue-600 → fuchsia-500, tinted shadow. */
+	html.dark #ai-team a[href="/ai-team/"] {
+		background-image: linear-gradient(to right, #2563eb, #d946ef);
+		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
+	}
+
+	/* ═══ #plans (AI-Powered Websites) — same spec, same violet family ═══ */
+	#plans {
+		background: #f4f6fb;
+	}
+	html.dark #plans {
+		/* Blue-leaning wash (brand blue, gentler than the violet's 0.18) —
+		   sections breathe across the brand's blue↔pink spectrum. */
+		background:
+			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+	html.dark #plans p { color: #a1a1aa; }
+	/* Headline matches the section's wash: blue family here (sky-400 →
+	   blue-400 → indigo-400), the violet section keeps violet→fuchsia→pink. */
+	html.dark #plans h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html.dark #plans .section-badge {
+		background: rgba(255, 255, 255, 0.06);
+		color: #7dd3fc;
+		font-size: 11px;
+		letter-spacing: 0.18em;
+	}
+	/* SURFACES: the versus panel's dark cards go translucent (white 3% fill,
+	   white 10% hairline). Attribute-substring selectors reach the Tailwind
+	   dark: classes inside the shared component without editing it. */
+	html.dark #plans [class*="dark:bg-dark-secondary"],
+	html.dark #plans [class*="dark:bg-dark-primary"] {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(4px);
+	}
+	html.dark #plans [class*="dark:border-dark-accent"] {
+		border-color: rgba(255, 255, 255, 0.10);
+	}
+	/* ACTION: "Compare the plans" is this screen's one gradient button. */
+	html.dark #plans a[href="/plans/"] {
+		background-image: linear-gradient(to right, #2563eb, #d946ef);
+		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
+	}
+</style>
+
 
 
 
