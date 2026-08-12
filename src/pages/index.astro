@@ -261,13 +261,22 @@ const NAVBAR_CONFIG = {
 		<!-- Business Apps — the fourth hero pillar ("AI Agents, Websites, SEO
 		     & Apps"), a compact promo for /apps/. Tiers and prices mirror the
 		     page's TIERS data (apps.astro). -->
-		<PageSection
-			id="apps"
-			badge="Business Apps"
-			title="Apps for how your <br />business runs"
-			subtitle="Custom business apps and workflow automation for Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use, and complete systems for booking, quoting, and dashboards. Quoted up front; you own all of it."
-			variant="hero"
-		>
+		<PageSection id="apps" variant="hero">
+			<!-- Custom header: on desktop the dashboards astronaut shares the row
+			     with the badge + title (Manny, Aug 2026); description below.
+			     Classes mirror PageSection's own header exactly. -->
+			<div class="mb-10">
+				<div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-12 text-center md:text-left">
+					<div>
+						<span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Business Apps</span>
+						<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-3xl md:text-6xl lg:text-7xl mb-0">
+							<span class="apple-gradient-text" data-colorful-title>Apps for how your <br />business runs</span>
+						</h2>
+					</div>
+					<img src="/mascot/astro-dashboards.webp" alt="" aria-hidden="true" width="556" height="620" loading="lazy" decoding="async" class="astro-float w-full max-w-[170px] md:max-w-[220px] h-auto pointer-events-none" />
+				</div>
+				<p class="mt-6 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl leading-relaxed mx-auto text-center">Custom business apps and workflow automation for Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use, and complete systems for booking, quoting, and dashboards. Quoted up front; you own all of it.</p>
+			</div>
 			<div class="max-w-6xl mx-auto">
 				<!-- Bento grid (Manny's pick, Aug 2026: the layout he liked
 				     from the Websites options, filled with Apps content).
