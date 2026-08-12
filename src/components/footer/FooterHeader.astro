@@ -68,7 +68,9 @@ const townLinks: Record<string, string> = {
 };
 ---
 
-<div class="max-w-[1440px] mx-auto pt-[4.5rem] pb-0">
+<!-- pb-14 (3.5rem) everywhere; the homepage zeroes it via .footer-head in
+     its own global styles (dock sits over the footer there). -->
+<div class="footer-head max-w-[1440px] mx-auto pt-[4.5rem] pb-14">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <!-- Column 1: Brand & Social (1 column = 33%) -->

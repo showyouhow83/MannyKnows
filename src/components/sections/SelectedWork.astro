@@ -31,9 +31,11 @@ const baseCard =
       : item.url
       ? { href: item.url, target: '_blank' as const, rel: 'noopener noreferrer' }
       : {};
+    // Hover: a subtle color glow only — no translate, no scale (Manny).
+    // Cards with a hoverImage crossfade to the mobile screenshot.
     return (
-      <Wrapper {...wrapperAttrs} class={`${baseCard} ${linked ? 'hover:shadow-lg hover:border-primary-blue/30' : ''}`}>
-        <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
+      <Wrapper {...wrapperAttrs} class={`${baseCard} ${linked ? 'hover:border-primary-blue/40 hover:shadow-[0_0_45px_rgba(0,113,227,0.25),0_0_18px_rgba(255,79,170,0.12)]' : ''}`}>
+        <div class="relative aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
           {item.image ? (
             <picture>
               <source type="image/avif" srcset={workSrcset(item.image, 'avif')} sizes={WORK_SIZES} />
@@ -45,13 +47,25 @@ const baseCard =
                 height="720"
                 loading="lazy"
                 decoding="async"
-                class="w-full h-full object-cover"
+                class={`w-full h-full object-cover ${item.hoverImage ? 'transition-opacity duration-500 group-hover:opacity-0' : ''}`}
               />
             </picture>
           ) : (
             <div class="w-full h-full bg-gradient-to-br from-primary-blue/15 via-purple-500/10 to-primary-pink/15 flex items-center justify-center">
               <span class="text-3xl font-bold apple-gradient-text">{initial(item.name)}</span>
             </div>
+          )}
+          {item.image && item.hoverImage && (
+            <img
+              src={`/works/${item.hoverImage}-960.webp`}
+              alt=""
+              aria-hidden="true"
+              width="960"
+              height="1790"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
+            />
           )}
         </div>
         <div class="p-5 flex flex-col flex-1">
