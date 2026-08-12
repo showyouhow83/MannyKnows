@@ -159,7 +159,7 @@ export const plans: Plan[] = [
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price. Published 2026 pricing surveys put that work at $3,000–$15,000 as an up-front project. You pay $95 the first month and $95 every month after.' },
       { q: 'Can Remi AI book appointments on this plan?', a: 'On Get Found, Remi AI answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
-      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. Nothing is owed after you leave. Prepaid annual terms aren’t refundable once the year starts; details are in our terms.' },
+      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. One fair guardrail: the included build is covered by your first 6 months, so if you leave earlier it’s billed once at our flat $75/hr, quoted at kickoff, minus every monthly you’ve paid. After 6 months nothing is owed when you leave. Prepaid annual terms aren’t refundable once the year starts; details are in our terms.' },
     ],
   },
   {
@@ -289,7 +289,7 @@ export const plans: Plan[] = [
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does Remi AI know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
-      { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. Prepaid annual terms aren’t refundable once the year starts; details are in our terms.' },
+      { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. The included build is covered by your first 6 months; leave earlier and it’s billed once at our flat $75/hr, quoted at kickoff, minus the monthlies you’ve paid. Prepaid annual terms aren’t refundable once the year starts; details are in our terms.' },
     ],
   },
   {
@@ -510,7 +510,7 @@ export const plans: Plan[] = [
       { q: 'Do I still need one of the website plans?', a: "No, each store tier is a website tier's twin with the store machinery added, on a Shopify account of your own: Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere. Your store is your website. Pages, blog, SEO, and Remi AI are all in it." },
       { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across, so your store looks like your site did (and the other way around). Your monthly moves to the new tier's price, and Remi AI's training and your content carry. No migration fee, and you land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 7 days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Team, ads, photography." },
       { q: 'Is the ad budget included in Sell Everywhere?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
-      { q: 'Can I move between tiers, or cancel?', a: "Month-to-month, move anytime, the work carries forward, so nothing is wasted. Prepay the year and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
+      { q: 'Can I move between tiers, or cancel?', a: "Month-to-month, move anytime, the work carries forward, so nothing is wasted. Like the website plans, the included store build is covered by your first 6 months; cancel earlier and it's billed once at our flat $75/hr, minus what you've paid. Prepay the year and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
       { q: 'Can you build the store as a one-time project instead?', a: "Yes, billed at a flat $75/hr and quoted up front. You'll still need to run it afterward: Shopify subscription, product updates, emails. Most owners hand that back to us with Sell Online at $150/mo once they've priced their own time." },
     ],
   },
