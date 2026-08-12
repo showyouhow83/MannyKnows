@@ -120,3 +120,6 @@ html.dark .chain-blue-pink     { background-color: #0a0a14; background-image: ra
 html.dark .chain-blue-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
 html.dark .chain-pink-violet   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
 html.dark .chain-pink-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
+
+/* Text selection wears the brand accent (Manny, Aug 2026). */
+::selection { background: #7c3aed; color: #ffffff; }
