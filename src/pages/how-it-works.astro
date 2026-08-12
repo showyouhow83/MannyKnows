@@ -44,6 +44,17 @@ const faqs = [
       <div id="get-started" class="pt-8 pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-10">
+            <div class="flex justify-center mb-6">
+              <img
+                src="/mascot/astro-megaphone.webp"
+                alt="Astronaut mascot making an announcement with a megaphone"
+                aria-hidden="true"
+                width="660"
+                height="880"
+                decoding="async"
+                class="astro-float w-auto h-[220px] pointer-events-none"
+              />
+            </div>
             <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Getting started</span>
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-4">
               <span class="apple-gradient-text" data-colorful-title>Reaching us is the easy part</span>
@@ -129,3 +140,13 @@ const faqs = [
     <DockMenu />
   </main>
 </BaseLayout>
+
+<style>
+  /* Gentle float for the hero mascot — same dials as the other page heroes. */
+  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes astro-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+</style>
