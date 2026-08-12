@@ -70,10 +70,16 @@ explainer. Register new migrations in `src/pages/api/admin/run-migration.ts`.
 
 ## Legacy / debug
 
-`/api/kv-analysis`, `/api/debug-kv`, `/api/debug-services`,
-`/api/dev-check-kv`, `/api/dev-reset-rate-limits` — Bearer `ADMIN_API_KEY`.
-Older chatbot-era endpoints not listed above are candidates for removal, not
-documentation.
+**Removed Aug 2026** after an unused-code audit (zero references anywhere):
+the chatbot-era debug endpoints (`kv-analysis`, `debug-kv`, `debug-services`,
+`dev-check-kv`, `dev-reset-rate-limits`, `security-status`,
+`services-analysis`), the retired scheduler's `verify-meeting-action`, the
+`calendar-health` tombstone, and the orphaned libs `src/lib/services/`,
+`src/lib/chatbot/`, `src/config/chatbot/`, `src/lib/user/`, and
+`src/lib/security/kvEncryption.ts`. The `KV_ENCRYPTION_KEY` secret is
+orphaned by this and can be deleted from the worker.
+`/api/stream-upload` was KEPT deliberately: no caller yet, but it's the
+admin port's Cloudflare Stream video machinery (hero video slides).
 
 ## Rate limits (public surface)
 
