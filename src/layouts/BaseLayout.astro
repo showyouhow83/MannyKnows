@@ -66,6 +66,9 @@ Manny
 		     page. NO crossorigin: loader.js is a classic script (no-cors), and a
 		     crossorigin preconnect opens a connection that never gets reused. -->
 		<link rel="preconnect" href="https://opscloud.us" />
+		<!-- The widget also fetches CORS resources (API calls, wss); those use a
+		     separate crossorigin connection, so warm both kinds. -->
+		<link rel="preconnect" href="https://opscloud.us" crossorigin />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<meta name="description" content={description} />
 		<meta property="og:title" content={title} />
