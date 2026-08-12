@@ -40,7 +40,7 @@ const baseCard =
               <source type="image/webp" srcset={workSrcset(item.image, 'webp')} sizes={WORK_SIZES} />
               <img
                 src={`/works/${item.image}-960.webp`}
-                alt={item.name}
+                alt={item.imageAlt ?? item.name}
                 width="1280"
                 height="720"
                 loading="lazy"

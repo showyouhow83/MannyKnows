@@ -106,12 +106,12 @@ const facts = [
           {d.heroImage && (
             <div class="rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent mb-12 aspect-[16/9] shadow-sm">
               {isLiteral(d.heroImage) ? (
-                <img src={d.heroImage} alt={d.title} width="1280" height="720" loading="eager" decoding="async" class="w-full h-full object-cover" />
+                <img src={d.heroImage} alt={`${d.title} website, designed and built by MannyKnows`} width="1280" height="720" loading="eager" decoding="async" class="w-full h-full object-cover" />
               ) : (
                 <picture>
                   <source type="image/avif" srcset={srcset(d.heroImage, 'avif')} sizes="(min-width: 1024px) 960px, 92vw" />
                   <source type="image/webp" srcset={srcset(d.heroImage, 'webp')} sizes="(min-width: 1024px) 960px, 92vw" />
-                  <img src={fallbackSrc(d.heroImage)} alt={d.title} width="1280" height="720" loading="eager" decoding="async" class="w-full h-full object-cover" />
+                  <img src={fallbackSrc(d.heroImage)} alt={`${d.title} website, designed and built by MannyKnows`} width="1280" height="720" loading="eager" decoding="async" class="w-full h-full object-cover" />
                 </picture>
               )}
             </div>
@@ -209,12 +209,12 @@ const facts = [
               {d.gallery.map((g) => (
                 <div class="rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent aspect-[16/9]">
                   {isLiteral(g) ? (
-                    <img src={g} alt={`${d.title} screenshot`} loading="lazy" decoding="async" class="w-full h-full object-cover" />
+                    <img src={g} alt={`${d.title} website screenshot, from the MannyKnows web design portfolio`} loading="lazy" decoding="async" class="w-full h-full object-cover" />
                   ) : (
                     <picture>
                       <source type="image/avif" srcset={srcset(g, 'avif')} sizes="(min-width: 640px) 45vw, 92vw" />
                       <source type="image/webp" srcset={srcset(g, 'webp')} sizes="(min-width: 640px) 45vw, 92vw" />
-                      <img src={fallbackSrc(g)} alt={`${d.title} screenshot`} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover" />
+                      <img src={fallbackSrc(g)} alt={`${d.title} website screenshot, from the MannyKnows web design portfolio`} width="1280" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover" />
                     </picture>
                   )}
                 </div>

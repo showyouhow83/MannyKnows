@@ -13,6 +13,9 @@ export interface WorkItem {
   image?: string;     // screenshot base name, responsive AVIF/WebP variants live at
                       // public/works/<base>-<width>.<ext> (run scripts/optimize-work-images.mjs
                       // after dropping a high-res source into src/assets/works). e.g. "slpainting-desktop"
+  imageAlt?: string;  // descriptive alt for the screenshot: what it is + who it's
+                      // for, in plain truthful words (this is where image SEO
+                      // lives — never on the decorative mascots)
   caseStudy?: string; // slug of a published case study in src/content/portfolio/*.md
                       // (the filename without .md). When set, the card links to
                       // /work/<slug> instead of the live site. Only set it once
@@ -26,6 +29,7 @@ export const selectedWork: WorkItem[] = [
     blurb: 'Painting contractor, from invisible on Google to ranking for “exterior painting” across Western Mass: website, admin CRM, a 24/7 AI agent, and AI Painter Lab.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'slpainting-desktop',
+    imageAlt: 'SL Painting homepage — web design and local SEO for a Western Mass painting contractor, with a 24/7 AI agent, by MannyKnows',
     caseStudy: 'sl-painting',
   },
   {
@@ -35,6 +39,7 @@ export const selectedWork: WorkItem[] = [
     tags: ['Website AI', 'AI Agent', 'Twilio IVR'],
     caseStudy: 'jk-daycare',
     image: 'jkdaycare-desktop',
+    imageAlt: "JK Daycare homepage — web design for a Springfield MA daycare, with an AI agent for parents' questions and a bilingual phone system, by MannyKnows",
   },
   {
     name: 'Cherry Vibes',
@@ -42,6 +47,7 @@ export const selectedWork: WorkItem[] = [
     blurb: 'An online store obsessed with all things cherry: migrated from Costa Rica to the U.S. market on a custom Shopify Hydrogen storefront.',
     tags: ['Online Store (AI)', 'Shopify Hydrogen', 'Migration'],
     image: 'cherry-vibes-d',
+    imageAlt: 'Cherry Vibes storefront — custom Shopify Hydrogen online store built by MannyKnows',
     caseStudy: 'cherry-vibes',
   },
   {
@@ -50,6 +56,7 @@ export const selectedWork: WorkItem[] = [
     blurb: 'Home improvement company: a complete digital operation with a website, admin dashboard, AI agent, and local SEO.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'vl-d',
+    imageAlt: 'VL Home Services homepage — web design, admin dashboard, AI agent and local SEO for a home improvement company, by MannyKnows',
     caseStudy: 'vl-home-services',
   },
   {
@@ -58,6 +65,7 @@ export const selectedWork: WorkItem[] = [
     blurb: "A church community's online home: programs, sermons, podcasts & live streaming, with AI translation into several languages.",
     tags: ['Website AI', 'Multimedia', 'AI Translations'],
     image: 'enVictoria-d',
+    imageAlt: 'Springfield en Victoria homepage — church website with sermons, live streaming and AI translations, built by MannyKnows',
     caseStudy: 'springfield-en-victoria',
   },
 ];
