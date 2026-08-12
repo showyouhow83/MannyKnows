@@ -49,7 +49,7 @@ export interface LocalArea {
   // "Beyond the website" cards — the rest of the 2026 catalog (AI Team, stores,
   // GBP, 360°/media), written per town. FACTS that must stay exact:
   //  - AI staff from $95/mo (Remi AI's price — the only public per-agent price); Remi AI is built into every site plan.
-  //  - Stores from $150/mo, Shopify subscription included, catalog synced to
+  //  - Stores from $150/mo (Shopify subscription billed separately), catalog synced to
   //    Google Shopping / Instagram / Facebook.
   //  - GBP setup/rescue: $145 one-time, or included in every monthly plan.
   //  - Free single 360° photo only within ~10 miles of Springfield (Chicopee &
@@ -170,7 +170,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Online stores that sell everywhere',
-        body: 'Shopify and beyond — one catalog synced to Google Shopping, Instagram & Facebook, with your Shopify subscription included, from $150/mo.',
+        body: 'Shopify and beyond — one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
@@ -273,7 +273,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Tiendas online, both languages',
-        body: 'A store that sells in Spanish and English and syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo, Shopify subscription included.',
+        body: 'A store that sells in Spanish and English and syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
@@ -380,7 +380,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Sell online without leaving the counter',
-        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo, Shopify subscription included, no percentage of your sales.',
+        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription — no percentage of your sales.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
@@ -485,7 +485,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Online stores as considered as the shelf',
-        body: 'Boutique-grade storefronts on Shopify and beyond, with one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo, subscription included.',
+        body: 'Boutique-grade storefronts on Shopify and beyond, with one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
@@ -574,7 +574,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Sell what you make, online',
-        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo, platform subscription included.',
+        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus the platform subscription.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
@@ -678,7 +678,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'A store for what you grow or make',
-        body: 'From farm stands to family shops — one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo, platform subscription included.',
+        body: 'From farm stands to family shops — one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus the platform subscription.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },

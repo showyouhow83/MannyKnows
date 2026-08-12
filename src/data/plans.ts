@@ -357,21 +357,22 @@ export const plans: Plan[] = [
     name: 'Online Store',
     icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
     price: 150,
-    tagline: 'Your store built, stocked, and run for you. Every tier includes the Shopify subscription.',
+    tagline: 'Your store built, stocked, and run for you, on a Shopify account that belongs to you.',
     highlights: [
       'A real Shopify store, set up right: theme, payments, shipping, taxes',
-      'Your Shopify subscription is included in the price, so it’s one bill, not two',
+      'The Shopify account is opened in your name and billed by Shopify, so the store is always yours',
       'Remi AI answers shoppers 24/7 from day one; higher tiers make it sell',
     ],
     headline: 'Online stores that sell while your business is closed',
     blurb:
-      "Setting up a store is easy. Anyone can click through a signup. Setting up a store that sells is a job — the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes, from a well-run store at $150/mo to a store with its own ad engine. Every tier includes your Shopify subscription and is run like the enterprise eCommerce operations we spent years building.",
+      "Setting up a store is easy. Anyone can click through a signup. Setting up a store that sells is a job — the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes, from a well-run store at $150/mo to a store with its own ad engine. Every tier is run like the enterprise eCommerce operations we spent years building.",
     whoFor:
       "Retailers, dealers, makers, and brands that want to sell online, starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels. One catalog runs them all, from a store you own.",
     // The four tiers ARE the product — modeled on what ecommerce agencies
     // actually sell as monthly retainers (catalog management, product copy,
     // store SEO, email flows/campaigns, CRO, ads), sized down to local-business
-    // prices. Every price includes a Shopify subscription, scaled to the tier:
+    // prices. The Shopify subscription is billed by Shopify in the client's
+    // name (unbundled Aug 2026), scaled to the tier:
     // Basic ($39/mo retail, 2026) at Sell Online and Sell More; Grow ($105/mo)
     // at Sell Smarter and Sell Everywhere, because stores that size need the
     // staff seats and shipping rates anyway. Advanced/Plus are the enterprise
@@ -383,11 +384,11 @@ export const plans: Plan[] = [
         name: 'Sell Online',
         price: 150,
         unit: '/mo',
-        note: 'Shopify Basic subscription included',
+        note: 'runs on Shopify Basic, billed by Shopify',
         description: 'Everything a working store needs, set up right and kept running.',
         features: [
           'Shopify store configured properly: theme, payments, shipping, taxes, checkout',
-          'Your Shopify (Basic) subscription included — the account is yours, we run it',
+          'Runs on Shopify Basic, billed by Shopify — the account is yours, we run it',
           'Products loaded and organized, up to 10 product adds or changes a month',
           'SEO product descriptions for your whole catalog, drafted with AI from your Brand Brain, reviewed, and optimized to rank',
           'Store SEO basics: titles, metas, and product schema set up right',
@@ -401,7 +402,7 @@ export const plans: Plan[] = [
         name: 'Sell More',
         price: 325,
         unit: '/mo',
-        note: 'Shopify Basic subscription included',
+        note: 'runs on Shopify Basic, billed by Shopify',
         description: 'The store starts pulling its weight, with copy, SEO basics, and email doing the selling.',
         builtOn: 'Everything in Sell Online, plus',
         features: [
@@ -417,12 +418,12 @@ export const plans: Plan[] = [
         name: 'Sell Smarter',
         price: 650,
         unit: '/mo',
-        note: 'Shopify Grow subscription included',
+        note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The full selling machine: an AI shopping assistant, a real SEO program, and a store that improves itself.',
         builtOn: 'Everything in Sell More, plus',
         featured: true,
         features: [
-          'Your included Shopify subscription upgrades to Grow, which adds the staff accounts and shipping discounts a store this size needs',
+          'Your Shopify subscription moves up to Grow, adding the staff accounts and shipping discounts a store this size needs',
           'Remi AI becomes a true AI shopping assistant, recommending, answering, and upselling from your Brand Brain',
           'Full eCommerce SEO program: keyword strategy, collection pages, content that ranks',
           'Email and SMS campaigns every month, not just automated flows',
@@ -436,7 +437,7 @@ export const plans: Plan[] = [
         name: 'Sell Everywhere',
         price: 1095,
         unit: '/mo',
-        note: 'Shopify Grow subscription included',
+        note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The store plus its own ad engine. Bought separately, this is $1,350/mo of service.',
         builtOn: 'Everything in Sell Smarter, plus',
         features: [
@@ -454,7 +455,7 @@ export const plans: Plan[] = [
         title: 'The storefront (every tier)',
         items: [
           'Shopify store with a theme configured for your brand, plus payments, taxes, shipping, and checkout done properly',
-          'Your Shopify subscription included in the price; the account belongs to you',
+          'Shopify account opened in your name and billed by Shopify, so the store is yours from day one',
           'Moving from Etsy, Wix, Square, or WooCommerce? Migration is part of setup',
           'Domain, SSL, and speed handled, with nothing extra to buy',
         ],
@@ -491,7 +492,7 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Products stay current, emails keep going out, SEO compounds, and on Sell Everywhere, ads feed the whole engine.' },
     ],
     faq: [
-      { q: 'Is the Shopify subscription really included?', a: "Yes, and it scales with your tier. Sell Online and Sell More include Shopify's Basic plan, which is right for most stores starting out. Sell Smarter and Sell Everywhere include Shopify's Grow plan, because a store running campaigns with thousands of products needs its staff accounts and shipping rates anyway. Either way the account is opened in your name, so the store is yours, not ours. Enterprise operations that need Shopify Advanced or Plus? We run those too. You pay Shopify the difference and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },
+      { q: 'Is the Shopify subscription included in the price?', a: "No, and that's deliberate. The account is opened in your name and the subscription is billed to you by Shopify, so the store is yours from day one, not rented from us. Our fee covers the build, the stocking, and the running. Sell Online and Sell More run on Shopify's Basic plan; Sell Smarter and Sell Everywhere run on Grow, because a store that size needs its staff accounts and shipping rates anyway. Enterprise operations on Advanced or Plus? We run those too, and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },
       { q: 'Who actually writes thousands of product descriptions?', a: "AI does the drafting, from your product data, your photos, and your Brand Brain, so every description sounds like your store and is structured to rank. Then it gets reviewed and optimized before it ships; nothing goes live unread. That's why there are no per-product caps at prices a human-only agency can't touch. You approve the voice once, and your whole catalog gets covered." },
       { q: 'Why is the entry price $150 when agencies charge $1,000+ a month?', a: "Because the entry tier is a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and Remi AI answers customers so you don't pay a person to. What costs $1,000+ at an agency (the going rate in 2026 pricing guides) is the work in the upper tiers (SEO programs, campaigns, ads, and product copy at real catalog scale) and that's exactly what those tiers add, at prices a local business can carry." },
       { q: 'I already have a store. Do I have to start over?', a: "No. We take over existing stores at any tier, audit what you have, fix what's costing you sales, and run it from there. If you're on Etsy, Wix, Square, or WooCommerce, moving your products to Shopify is part of setup." },

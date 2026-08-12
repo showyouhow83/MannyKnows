@@ -29,8 +29,12 @@ import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
 // never drift from the published price on a reprice.
 import { plans } from '../data/plans';
+import { team } from '../data/aiTeam';
 
 const planPrice = (slug: string) => String(plans.find((p) => p.slug === slug)?.price ?? '');
+// Cheapest hireable agent — the "AI staff from $X/mo" figure, computed so a
+// reprice in aiTeam.ts can't strand the structured data.
+const aiStaffFrom = String(Math.min(...team.filter((a) => a.price > 0).map((a) => a.price)));
 
 // ========================================
 // LOCAL SEO — structured data (LocalBusiness / Person / WebSite)
@@ -110,7 +114,7 @@ const structuredData = {
           {
             '@type': 'Offer',
             priceCurrency: 'USD',
-            priceSpecification: { '@type': 'UnitPriceSpecification', price: '95', priceCurrency: 'USD', unitText: 'MONTH' },
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: aiStaffFrom, priceCurrency: 'USD', unitText: 'MONTH' },
             itemOffered: { '@type': 'Service', name: 'AI Team (AI agents)', description: 'AI agents hired per role, sales & booking, research, copy, graphics, voice, SEO, publishing, ads, engagement, and reporting.' },
           },
           {

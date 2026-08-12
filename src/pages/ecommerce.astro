@@ -57,7 +57,7 @@ const pageJsonLd = {
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
   areaServed: 'Western Massachusetts',
-  description: 'Online stores built, stocked, and run — Shopify and beyond, with the platform subscription included in every tier.',
+  description: 'Online stores built, stocked, and run — Shopify and beyond, on a store account that belongs to you.',
   offers: (plan.tiers ?? []).map((t) => ({
     '@type': 'Offer',
     name: t.name,
@@ -121,7 +121,7 @@ const pageJsonLd = {
             </div>
 
             <p class="mt-3 text-sm font-medium text-text-light-primary dark:text-text-dark-primary">
-              Every tier includes your Shopify subscription, so it's one bill, not two.
+              Your Shopify account is opened in your name and billed by Shopify — the store is yours, we run it.
             </p>
 
             <p class="mt-6 text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -166,7 +166,8 @@ const pageJsonLd = {
 
     {/* The pricing ladder — four tiers, modeled on what ecommerce agencies sell
         as monthly retainers, at local-business prices. Data lives on the plan
-        record (plans.ts `tiers`); every price includes the Shopify subscription. */}
+        record (plans.ts `tiers`); the Shopify subscription is billed by Shopify
+        in the client's name (unbundled Aug 2026). */}
     <Section id="store-tiers" variant="default">
       <Container>
         <div class="text-center max-w-[1440px] mx-auto mb-10">
@@ -174,7 +175,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Four sizes of store</span>
           </h2>
           <p class="mt-3 max-w-3xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each tier includes everything in the one before it, and your Shopify subscription. Start where your store is; move up when it's earning more.
+            Each tier includes everything in the one before it. Your Shopify subscription is billed separately by Shopify, in your name. Start where your store is; move up when it's earning more.
           </p>
         </div>
         <!-- Monthly ⇄ Yearly toggle — visually identical to /plans, yearly
@@ -262,7 +263,7 @@ const pageJsonLd = {
               </thead>
               <tbody class="text-text-light-secondary dark:text-text-dark-secondary">
                 {[
-                  ['Shopify subscription included', 'Basic', 'Basic', 'Grow', 'Grow'],
+                  ['Shopify plan we set you up on (billed by Shopify)', 'Basic', 'Basic', 'Grow', 'Grow'],
                   ['Store built & configured — theme, payments, shipping, taxes', '✓', '✓', '✓', '✓'],
                   ['Remi AI answers shoppers 24/7, any language', '✓', '✓', '✓', '✓'],
                   ['Product adds & changes per month', '10', '30', '100', '100'],
