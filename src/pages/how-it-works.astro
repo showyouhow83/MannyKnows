@@ -1,6 +1,7 @@
 ---
 // How it works — the getting-started section IS the hero (contact rails +
-// what happens next), followed by a client quote and the first-timer FAQ.
+// what happens next), followed by the first-timer FAQ. (The JK Daycare
+// client quote was removed per Manny, Aug 2026.)
 // The old "From process to app" rotating hero and the SL Painting example
 // card were removed per Manny (Aug 2026) — the process story now lives in
 // the four-step list, and SL Painting's full story stays at /work/sl-painting.
@@ -9,12 +10,8 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
-import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
-import { getTestimonial } from '../data/testimonials';
 import { BOOKING_URL } from '../data/booking';
-
-const quote = getTestimonial('JK Daycare');
 
 // Answers assembled from copy already established elsewhere on the site —
 // same facts, gathered where a first-time visitor actually asks them.
@@ -123,14 +120,7 @@ const faqs = [
     <!-- Proof + first-timer questions -->
     <section class="relative py-16 bg-light-primary dark:bg-dark-primary transition-colors duration-300">
       <div class="max-w-6xl mx-auto px-6 lg:px-8">
-        {quote && (
-          <div class="max-w-2xl mx-auto text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">In a client's words</p>
-            <QuoteBlock quote={quote} align="center" />
-          </div>
-        )}
-
-        <div class="max-w-3xl mx-auto mt-16">
+        <div class="max-w-3xl mx-auto">
           <Faq faqs={faqs} heading="Common questions, answered" />
         </div>
       </div>
