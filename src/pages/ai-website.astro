@@ -105,13 +105,12 @@ const pageJsonLd = {
                 One page · One agent · Western Massachusetts
               </span>
               <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
-                <span class="apple-gradient-text" data-colorful-title>A one-page website that answers customers while you work, sleep, or finally take a day off</span>
+                <span class="apple-gradient-text" data-colorful-title>A one-page website that answers customers while you <span id="rotateWord" class="rotate-word apple-gradient-text" data-colorful-title>work</span></span>
               </h1>
               <p class="max-w-2xl mx-auto lg:mx-0 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-                Most local businesses don't need a twelve-page site, and DIY builders leave all the work to you.
-                This is one fast page on your own domain, built for you by a developer. Remi AI, an AI agent
-                trained on your business, lives on it. It answers your customers at any hour, in English or
-                Spanish, and sends every lead to your inbox.
+                Remi AI, your personal AI agent trained on your business data, runs your site. It answers your
+                customers at any hour — English, Spanish, French, German, Portuguese, and more — and sends
+                every lead to your inbox.
               </p>
 
               <!-- Price, stated up front. The old card buried it. -->
@@ -132,13 +131,6 @@ const pageJsonLd = {
                   See what's on the page
                 </a>
               </div>
-              <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-                You own the site* · in English &amp; Spanish · Live in 7 days^
-              </p>
-              <p class="mt-2 text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-                *Clients are given access to their GitHub repo once the project is complete.<br />
-                ^Most projects are completed in 7 days after the contract has been signed.
-              </p>
             </div>
 
             <!-- Proof, immediately: the agent doing its job -->
@@ -399,6 +391,16 @@ const pageJsonLd = {
      as /apps and /ai-booking-agent). */
   #the-agent { position: relative; overflow: hidden; }
   #whats-on-it { position: relative; overflow: hidden; }
+
+  /* Rotating verb in the H1 — one word slides out the top, the next slides
+     in from below. Reduced-motion users get the static first word. */
+  .rotate-word {
+    display: inline-block;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    will-change: transform, opacity;
+  }
+  .rotate-word.is-out { transform: translateY(-0.55em); opacity: 0; }
+  .rotate-word.is-prep { transition: none; transform: translateY(0.55em); opacity: 0; }
   .cs-mascot {
     --mascot-height: 360px;
     --mascot-peek: 58%;
@@ -423,3 +425,26 @@ const pageJsonLd = {
     .cs-mascot { display: none; }
   }
 </style>
+
+<script>
+  // H1 verb rotation: work → sleep → drive → quote the next job → …
+  // One at a time, sliding up and out, next sliding in from below.
+  (function () {
+    const el = document.getElementById('rotateWord');
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const WORDS = ['work', 'sleep', 'drive', 'quote the next job', 'run the crew', 'finally take a day off'];
+    let i = 0;
+    setInterval(() => {
+      el.classList.add('is-out');
+      setTimeout(() => {
+        i = (i + 1) % WORDS.length;
+        el.textContent = WORDS[i];
+        el.classList.remove('is-out');
+        el.classList.add('is-prep');
+        void el.offsetWidth; // commit the below-the-line start before sliding in
+        el.classList.remove('is-prep');
+      }, 360);
+    }, 2600);
+  })();
+</script>
