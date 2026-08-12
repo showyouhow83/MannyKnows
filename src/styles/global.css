@@ -108,8 +108,8 @@ html.dark .room figure[class*="from-primary-blue"] > div[class*="dark:bg-dark-se
 html.dark .room [class*="text-primary-blue"]:not(a):not(.section-badge) { color: #c4b5fd; }
 html.dark .room h3, html.dark .room h4 { color: #eceafb; }
 
-html.dark .glow-violet { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%); }
-html.dark .glow-blue   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%); }
+html.dark .glow-violet { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
+html.dark .glow-blue   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
 html.dark .glow-pink   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%); }
 
 html.dark .chain-violet-blue   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
