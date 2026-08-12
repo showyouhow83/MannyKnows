@@ -6,7 +6,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 
-const EVENTS = new Set(['view', 'quote_open', 'quote_submit', 'call_click', 'scan_run']);
+const EVENTS = new Set(['view', 'quote_open', 'quote_submit', 'call_click', 'scan_run', 'cta']);
 const TTL_S = 90 * 86400; // 90 days of history
 
 const json = (b: unknown, s = 200) =>
@@ -23,6 +23,8 @@ export const POST: APIRoute = async ({ request }) => {
   if (!EVENTS.has(e)) return json({ ok: false }, 400);
   let p = String(b?.p || '/').slice(0, 100).replace(/[?#].*$/, '');
   if (!p.startsWith('/')) p = '/';
+  // cta events carry a label ("/page|button text") instead of a bare path.
+  if (e === 'cta') p = String(b?.l || 'unlabeled').slice(0, 90).replace(/[\n\r]/g, ' ');
   const d = today();
   // Read-increment-write loses a count on same-second collisions; fine —
   // these are trend lines, not accounting.

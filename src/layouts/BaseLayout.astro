@@ -241,20 +241,38 @@ Manny
 		<script is:inline src="https://opscloud.us/widget/loader.js" data-agent-id="agent_manny_mk" async></script>
 
 		<!-- First-party conversion counters (/api/metric): page views, quote
-		     modal opens/submits, tel: taps. No cookies, no vendors — exists so
-		     copy changes can be judged by submits-per-view, not by feel. -->
+		     modal opens/submits, tel: taps, and a labeled `cta` event for every
+		     a/button click (mirrored to GA4). Labels come from data-track, the
+		     modal context attributes, visible text, or aria-label — so new
+		     buttons are tracked with zero wiring. No cookies, no vendors on the
+		     first-party side. -->
 		<script is:inline>
 		(function () {
-			var send = function (e) {
+			var post = function (body) {
 				try {
-					navigator.sendBeacon('/api/metric', new Blob([JSON.stringify({ e: e, p: location.pathname })], { type: 'application/json' }));
+					navigator.sendBeacon('/api/metric', new Blob([JSON.stringify(body)], { type: 'application/json' }));
 				} catch (_) {}
 			};
+			var send = function (e) { post({ e: e, p: location.pathname }); };
 			window.mkMetric = send;
 			send('view');
 			document.addEventListener('click', function (ev) {
 				var t = ev.target;
-				if (t && t.closest && t.closest('a[href^="tel:"]')) send('call_click');
+				if (!t || !t.closest) return;
+				var el = t.closest('a, button');
+				if (!el || el.closest('[data-no-track]')) return;
+				if (el.closest('a[href^="tel:"]')) send('call_click');
+				var label = el.getAttribute('data-track')
+					|| el.getAttribute('data-contact-context')
+					|| el.getAttribute('data-quote-context')
+					|| (el.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 40)
+					|| el.getAttribute('aria-label')
+					|| 'unlabeled';
+				label = location.pathname + '|' + label;
+				post({ e: 'cta', l: label });
+				if (typeof window.gtag === 'function') {
+					try { window.gtag('event', 'cta_click', { label: label }); } catch (_) {}
+				}
 			}, { passive: true });
 		})();
 		</script>
