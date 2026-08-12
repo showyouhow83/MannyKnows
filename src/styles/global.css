@@ -45,7 +45,7 @@ html.dark .room {
 html.dark .room-blue {
 	background-color: #10101d;
 }
-html.dark .room p { color: #a1a1aa; }
+html.dark .room p { color: #c9c8d4; }
 
 /* ONE accent gradient sitewide: violet → fuchsia → pink. */
 html.dark .room .apple-gradient-text,
@@ -60,7 +60,7 @@ html.dark .room-hero .apple-gradient-text {
 html.dark .room .section-badge,
 html.dark .room-hero .section-badge {
 	background: rgba(255, 255, 255, 0.06);
-	color: #7dd3fc;
+	color: #c4b5fd; /* accent family — labels match the titles */
 	font-size: 11px;
 	letter-spacing: 0.18em;
 }
@@ -85,7 +85,7 @@ html.dark .room a[class*="from-primary-blue"][class*="text-white"] {
 html.dark .room-hero {
 	background-image:
 		radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
-		radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.10), transparent 60%);
+		radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.10), transparent 60%);
 }
 
 /* Review cards: SOLID bodies always (translucent read muddy over washes),
@@ -94,6 +94,29 @@ html.dark .room figure[class*="from-primary-blue"] {
 	background-image: linear-gradient(135deg, rgba(167, 139, 250, 0.45), rgba(232, 121, 249, 0.20), rgba(244, 114, 182, 0.45));
 }
 html.dark .room figure[class*="from-primary-blue"] > div[class*="dark:bg-dark-secondary"] {
-	background: #151619;
+	background: #12121f;
 	backdrop-filter: none;
 }
+
+/* ═══ GLOW CHAIN utilities (Aug 2026) — each section opens in its own hue;
+   tall sections' floors pre-glow the NEXT section's hue (chain-<own>-<next>).
+   SHORT sections (FAQs, CTAs, banners) take a single top glow (glow-<hue>)
+   because two ellipses in a short box overlap into mud — the handoff then
+   comes from the next section's ceiling instead. Top volumes: violet .16,
+   blue .13, pink .11 (loudest hue, quietest wash). Floors .08–.10. ═══ */
+
+html.dark .room [class*="text-primary-blue"]:not(a):not(.section-badge) { color: #c4b5fd; }
+html.dark .room h3, html.dark .room h4 { color: #eceafb; }
+
+html.dark .glow-violet { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%); }
+html.dark .glow-blue   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%); }
+html.dark .glow-pink   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%); }
+
+html.dark .chain-violet-blue   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
+html.dark .chain-violet-pink   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%), radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.08), transparent 60%); }
+html.dark .chain-violet-violet { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
+html.dark .chain-blue-violet   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
+html.dark .chain-blue-pink     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.08), transparent 60%); }
+html.dark .chain-blue-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
+html.dark .chain-pink-violet   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
+html.dark .chain-pink-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }

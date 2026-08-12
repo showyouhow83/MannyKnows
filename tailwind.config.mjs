@@ -87,10 +87,10 @@ export default {
         'primary-pink': '#ff4faa',
         // Enhanced dark theme - much darker and richer
         dark: {
-          primary: '#0a0b0d',      // Much darker base
-          secondary: '#151619',     // Darker secondary
-          tertiary: '#1f2024',     // Darker tertiary
-          accent: '#2a2d31',       // For cards/components
+          primary: '#0a0a14',      // The canvas — near-black navy (design language, Aug 2026)
+          secondary: '#12121f',     // Canvas-family surface (modals, dropdowns, cards)
+          tertiary: '#1a1a2e',     // Canvas-family tertiary
+          accent: '#262640',       // Canvas-family borders/components
         },
         // New light theme colors
         light: {
@@ -102,9 +102,9 @@ export default {
         // Text colors for better contrast
         text: {
           'light-primary': '#18181b',    // Dark text on light bg
-          'light-secondary': '#71717a',   // Muted text on light bg
+          'light-secondary': '#18181b',   // Light mode: body text reads black (Manny, Aug 2026); titles keep their colors
           'dark-primary': '#fafafa',      // Light text on dark bg
-          'dark-secondary': '#a1a1aa',    // Muted text on dark bg
+          'dark-secondary': '#c9c8d4',    // Muted text on dark bg — brightened (too gray at zinc-400, Manny Aug 2026)
         },
       },
       spacing: {
