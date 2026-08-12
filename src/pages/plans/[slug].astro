@@ -163,7 +163,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
     <!-- Sub-plan tiers (e.g. Business Ads: per-network vs full coverage) -->
     {plan.tiers && (
-      <Section id="plan-tiers" variant="default" className="room room-violet">
+      <Section id="plan-tiers" variant="default" className="room chain-violet-blue">
         <Container>
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
             <span class="apple-gradient-text" data-colorful-title>{plan.tiersHeading ?? 'Pick your plan'}</span>
@@ -214,7 +214,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     )}
 
     <!-- What's included -->
-    <Section id="plan-included" variant="default" className="room room-blue">
+    <Section id="plan-included" variant="default" className="room glow-blue">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>Everything included</span>
@@ -245,7 +245,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
     <!-- Why a self-improving site beats a normal one (website plans only) -->
     {isWebsitePlan && (
-      <Section id="plan-concept" variant="alternate" className="room room-pink">
+      <Section id="plan-concept" variant="alternate" className="room glow-pink">
         <Container>
           <SmartWebsiteConcept compact={true} />
           <p class="text-center mt-10">
@@ -260,7 +260,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
     <!-- Proof — testimonial (if any) + the case studies that show this plan working -->
     {proof && (
-      <Section id="plan-proof" variant="default" className="room room-violet">
+      <Section id="plan-proof" variant="default" className="room glow-violet">
         <Container>
           <div class="max-w-3xl mx-auto">
             {proofQuote && <QuoteBlock quote={proofQuote} />}
@@ -279,7 +279,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     )}
 
     <!-- How it works -->
-    <Section id="plan-steps" variant="alternate" className="room room-blue">
+    <Section id="plan-steps" variant="alternate" className="room glow-blue">
       <Container>
         <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
           <span class="apple-gradient-text" data-colorful-title>How it works</span>
@@ -289,7 +289,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     </Section>
 
     <!-- FAQ -->
-    <Section id="plan-faq" variant="default" className="room room-pink">
+    <Section id="plan-faq" variant="default" className="room glow-pink">
       <Container>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={plan.faq} />
@@ -304,7 +304,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     </Section>
 
     <!-- Other plans -->
-    <Section id="plan-others" variant="alternate" className="room room-violet">
+    <Section id="plan-others" variant="alternate" className="room glow-violet">
       <Container>
         <h2 class="text-lg font-bold text-center mb-8 text-text-light-primary dark:text-text-dark-primary">Not the right fit? The other plans:</h2>
         <div class="grid gap-4 sm:grid-cols-3 max-w-6xl mx-auto">
