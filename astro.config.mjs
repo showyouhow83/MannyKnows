@@ -69,7 +69,9 @@ export default defineConfig({
         !page.includes('/admin') &&
         !page.includes('/my-project') &&
         !page.includes('/unsubscribe') &&
-        !page.includes('/404'),
+        !page.includes('/404') &&
+        // 301 to /local-seo/#free-360-photo — sitemaps list final URLs only.
+        !page.includes('/free-360-photo'),
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),
