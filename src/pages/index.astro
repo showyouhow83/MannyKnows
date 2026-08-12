@@ -157,7 +157,7 @@ const NAVBAR_CONFIG = {
 		<!-- Marquee Announcement Section -->
 
 		<!-- Header Container with Subtle Background -->
-		<header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+		<header id="home-hero" class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
             <!-- Navigation -->
             <NavBar
 				animationConfig={{
@@ -514,15 +514,25 @@ const NAVBAR_CONFIG = {
 		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
 	}
 
+	/* ═══ Hero test: purple → blue transition on the spec canvas, subtle,
+	   matching the sections' tone. Dark mode only; light keeps its wash. ═══ */
+	html.dark #home-hero {
+		background:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.12), transparent 60%),
+			#0a0a14;
+	}
+
 	/* ═══ #plans (AI-Powered Websites) — same spec, same violet family ═══ */
 	#plans {
 		background: #f4f6fb;
 	}
 	html.dark #plans {
-		/* Blue-leaning wash (brand blue, gentler than the violet's 0.18) —
-		   sections breathe across the brand's blue↔pink spectrum. */
+		/* Blue-leaning washes, top AND bottom sharing the hue — the symmetric
+		   blend Manny liked on the SEO section, in this section's blue. */
 		background:
 			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%),
 			#0a0a14;
 		border-top: 1px solid rgba(255, 255, 255, 0.10);
 	}
@@ -544,12 +554,150 @@ const NAVBAR_CONFIG = {
 	/* SURFACES: the versus panel's dark cards go translucent (white 3% fill,
 	   white 10% hairline). Attribute-substring selectors reach the Tailwind
 	   dark: classes inside the shared component without editing it. */
-	html.dark #plans [class*="dark:bg-dark-secondary"],
-	html.dark #plans [class*="dark:bg-dark-primary"] {
+	/* :not(.apple-gradient-text) — the vs medallions clip their text out of
+	   their own background gradient; repainting them erases the "vs". */
+	html.dark #plans [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text),
+	html.dark #plans [class*="dark:bg-dark-primary"]:not(.apple-gradient-text) {
 		background: rgba(255, 255, 255, 0.03);
 		backdrop-filter: blur(4px);
 	}
 	html.dark #plans [class*="dark:border-dark-accent"] {
+		border-color: rgba(255, 255, 255, 0.10);
+	}
+	/* Vs boxes: each half wears a directional gradient in the ground's blue
+	   family — "their sites" stays neutral and recessive, ours leans blue. */
+	html.dark #plans [class*="dark:bg-dark-primary"] {
+		background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+	}
+	html.dark #plans [class*="dark:bg-dark-secondary"][class*="from-primary-blue"] {
+		background: linear-gradient(160deg, rgba(56, 189, 248, 0.10), rgba(0, 113, 227, 0.02));
+	}
+
+	/* ═══ #google-profile (SEO) — pink room ═══ */
+	#google-profile { background: #f4f6fb; }
+	html.dark #google-profile {
+		background:
+			radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(255, 79, 170, 0.07), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+	html.dark #google-profile p { color: #a1a1aa; }
+	html.dark #google-profile h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #e879f9, #f472b6, #fb7185);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html.dark #google-profile .section-badge {
+		background: rgba(255, 255, 255, 0.06);
+		color: #7dd3fc;
+		font-size: 11px;
+		letter-spacing: 0.18em;
+	}
+	html.dark #google-profile [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(4px);
+	}
+	html.dark #google-profile [class*="dark:border-dark-accent"] {
+		border-color: rgba(255, 255, 255, 0.10);
+	}
+	html.dark #google-profile a[href="/local-seo/"] {
+		background-image: linear-gradient(to right, #2563eb, #d946ef);
+		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
+	}
+
+	/* ═══ #apps (Business Apps) — violet room ═══ */
+	#apps { background: #f4f6fb; }
+	html.dark #apps {
+		background:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+	html.dark #apps p { color: #a1a1aa; }
+	html.dark #apps h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html.dark #apps .section-badge {
+		background: rgba(255, 255, 255, 0.06);
+		color: #7dd3fc;
+		font-size: 11px;
+		letter-spacing: 0.18em;
+	}
+	html.dark #apps [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(4px);
+	}
+	html.dark #apps [class*="dark:border-dark-accent"] {
+		border-color: rgba(255, 255, 255, 0.10);
+	}
+	/* The bento's featured story tile = the spec's "one card that matters":
+	   fuchsia tint instead of the blue ring. */
+	html.dark #apps [class*="ring-primary-blue"] {
+		background: rgba(217, 70, 239, 0.06);
+		border-color: rgba(232, 121, 249, 0.25);
+		box-shadow: none;
+	}
+	html.dark #apps a[href="/apps/"] {
+		background-image: linear-gradient(to right, #2563eb, #d946ef);
+		box-shadow: 0 8px 24px rgba(217, 70, 239, 0.20);
+	}
+
+	/* ═══ #work (Portfolio) — blue room ═══ */
+	#work { background: #f4f6fb; }
+	html.dark #work {
+		background:
+			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+	html.dark #work p { color: #a1a1aa; }
+	html.dark #work h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #38bdf8, #60a5fa, #818cf8);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html.dark #work .section-badge {
+		background: rgba(255, 255, 255, 0.06);
+		color: #7dd3fc;
+		font-size: 11px;
+		letter-spacing: 0.18em;
+	}
+	html.dark #work [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(4px);
+	}
+	html.dark #work [class*="dark:border-dark-accent"] {
+		border-color: rgba(255, 255, 255, 0.10);
+	}
+
+	/* ═══ Testimonials — violet room (no id; targeted by aria-label) ═══ */
+	html.dark section[aria-label="Client testimonials"] {
+		background:
+			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.14), transparent 60%),
+			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.08), transparent 60%),
+			#0a0a14;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+	}
+	html.dark section[aria-label="Client testimonials"] p { color: #a1a1aa; }
+	html.dark section[aria-label="Client testimonials"] h2 .apple-gradient-text {
+		background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	html.dark section[aria-label="Client testimonials"] [class*="dark:bg-dark-secondary"]:not(.apple-gradient-text) {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(4px);
+	}
+	html.dark section[aria-label="Client testimonials"] [class*="dark:border-dark-accent"] {
 		border-color: rgba(255, 255, 255, 0.10);
 	}
 	/* ACTION: "Compare the plans" is this screen's one gradient button. */
