@@ -146,7 +146,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'How long does it take?',
-    a: 'Most one-page builds go live within about two weeks of that first conversation. For reference, JK Daycare got a full site, an AI agent, and a phone system that routes every call in two weeks.',
+    a: 'Most one-page builds are completed within 7 days of the contract being signed. For reference, even a full build (site, AI agent, and a phone system routing every call, for JK Daycare) went live in two weeks.',
   },
   {
     q: 'Does Remi AI speak Spanish?',
