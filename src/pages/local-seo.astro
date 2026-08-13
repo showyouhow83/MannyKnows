@@ -11,11 +11,13 @@
 //     program, pillar content, honest authority work, LLM visibility).
 //   • Four one-time services in the on-demand strip: audit $375 (credited
 //     toward month one within 30 days), migration from $750, virtual tour
-//     from $495, GBP rescue from $245. Photo pack / profile setup stay
-//     quotable in the footnote.
-//   • The AI-powered website plans as the other path — every site we build
-//     ships with SEO included; plan clients add the On the Map field layer
-//     for $145/mo (their plan already covers the digital half).
+//     from $495, GBP rescue from $245. Photo pack / profile setup remain
+//     quotable through the quote modal only — the footnote was cut Aug 12
+//     (Manny: too many prices on one screen).
+//   • The AI-powered website plans as the other path — a NO-PRICE invite
+//     banner to /plans/ (Manny, Aug 12: one product with prices per page;
+//     the plan cards' "$95/$245/$545" and the "$145 field layer" note were
+//     removed). The $145/mo plan-client add-on lives in the FAQ only.
 //   • Never sold, stated on the page: bought links, guest-post volume,
 //     ranking guarantees.
 //
@@ -31,7 +33,6 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import GbpStats from '../components/sections/GbpStats.astro';
 import GbpComparison from '../components/sections/GbpComparison.astro';
-import { plans } from '../data/plans';
 import { BOOKING_URL } from '../data/booking';
 
 const siteUrl = 'https://mannyknows.com';
@@ -39,10 +40,6 @@ const PHONE_TEL = '+14133618451';
 const EMAIL = 'mm@mannyknows.com';
 const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
 const FREE_TRAVEL = 'within ~10 miles of Springfield'; // free-shoot radius; beyond it a small gas/travel fee may apply
-
-// Prices come from the canonical plan data so a reprice can never strand this
-// page on old numbers.
-const price = (slug: string) => plans.find((p) => p.slug === slug)?.price ?? 0;
 
 // The two monthly SEO packages. `service` values exist in serviceTypes.ts so
 // the quote modal can name what the visitor clicked.
@@ -392,9 +389,6 @@ const jsonLd = {
               </div>
             ))}
           </div>
-          <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-            Just want the photos or the profile? The 360° Photo Pack (from $195) and Profile Setup + Verification (from $145) stay available one-time. <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">Ask for a quote</a>. Paid campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>.
-          </p>
         </div>
       </Container>
     </Section>
@@ -402,43 +396,15 @@ const jsonLd = {
     <!-- ───────────────────────── The other path: sites with SEO included ───────────────────────── -->
     <Section id="plans" variant="default" className="room chain-violet-blue">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="text-center max-w-3xl mx-auto">
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Every AI-powered website includes SEO</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Rather have the site do the work? Every website we build ships with SEO included, so the site and the ranking work are never out of sync. Each tier includes everything in the one before it.</p>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">Rather have the site do the work? Every website we build ships with SEO included from day one, so the build, the content, and the ranking work are never out of sync. The bigger plans go further — the site writes its own content and tunes its own SEO continuously.</p>
+          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">Get Found · Get Booked · Get Growing</p>
+          <a href="/plans/" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
+            Explore the AI-powered websites
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
         </div>
-        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
-          {[
-            { slug: 'get-found', name: 'Get Found', body: 'Set up to rank on Google & Maps when locals search for you, with hosting, SSL, and speed handled.' },
-            { slug: 'get-booked', name: 'Get Booked', body: 'Adds local SEO and AI search optimization, so you rank for what customers search and get quoted in AI answers.' },
-            { slug: 'get-growing', name: 'Get Growing', featured: true, body: 'Full self-optimization, with content written and SEO & speed tuned continuously, like a web developer on your site 24/7.' },
-          ].map((p) => (
-            <a
-              href={`/plans/${p.slug}/`}
-              class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${
-                p.featured
-                  ? 'border-primary-blue/50 ring-1 ring-primary-blue/30 shadow-lg shadow-primary-blue/10'
-                  : 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
-              }`}
-            >
-              {p.featured && (
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">Most popular</span>
-              )}
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
-              <div class="mt-1 mb-3">
-                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${price(p.slug).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-              </div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{p.body}</p>
-              <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
-                What's included
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </span>
-            </a>
-          ))}
-        </div>
-        <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-8 max-w-2xl mx-auto">
-          Already on a website plan? Add On the Map for $145/mo instead of $245 — your plan covers the digital work, so you only pay for the field layer: the monthly shoot, the review work, and hands-on profile management.
-        </p>
       </Container>
     </Section>
 
