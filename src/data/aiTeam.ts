@@ -1,11 +1,11 @@
-// The AI Team — our flagship offering. A named team of AI agents we build and
+// The AI Agents Team — our flagship offering. A named team of AI agents we build and
 // fine-tune around your business (the "product"), billed as a monthly retainer
 // per agent (the "plan"). Single source of truth for /ai-team, the flagship card
 // on /plans, and the homepage teaser.
 //
 // Ten specialists + one manager, all reading from and writing to one shared
 // "Brand Brain," coordinated by Manny AI:
-//   Manny AI=Manager (free), Remi AI=Front desk, Eve=Research, Elly=Copy,
+//   Manny AI=Manager (free), Remi AI=Chat agent, Eve=Research, Elly=Copy,
 //   Leo=Graphics & Video, Aria=Voice, Nova=SEO, Piper=Publishing,
 //   Max=Paid ads, Finn=Engagement, Vera=Analytics.
 // The roster is meant to grow as AI learns to do more.
@@ -29,7 +29,7 @@ export interface Agent {
   role: string;       // short specialty label
   does: string;       // one plain-spoken paragraph: what this agent does for you
   handoff?: string;   // how the agent connects to the rest of the team
-  order: number;      // pipeline order (manager → front desk → research → … → analytics)
+  order: number;      // pipeline order (manager → chat agent → research → … → analytics)
   price: number;      // flat monthly rate to "hire" this agent (USD); 0 when included
   included?: boolean; // true for Manny AI, the manager you actually hire
   hidden?: boolean;   // true = works behind the scenes as a Manny AI sub-agent:
@@ -53,7 +53,7 @@ export const team: Agent[] = [
   {
     id: 'desi',
     name: 'Remi AI',
-    role: 'Front desk — sales, booking & support',
+    role: 'Chat Agent — sales, booking & support',
     does: "Answers customer emails, texts, and messages on your site 24/7. Replies, books appointments, and guides shoppers to the right product, in their own language.",
     handoff: 'Feeds the team. Every question customers ask becomes intel, Remi AI logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
@@ -194,7 +194,7 @@ const BUNDLE_SPECS: Omit<Bundle, 'alaCarte' | 'savings'>[] = [
     id: 'whole',
     name: 'The Whole Team',
     diagnosis: 'For when you answered the two questions and named three departments.',
-    tagline: 'The complete operation — front desk, content, growth, and reporting — running as one coordinated team under Manny AI.',
+    tagline: 'The complete operation — chat agent, content, growth, and reporting — running as one coordinated team under Manny AI.',
     agentIds: ['desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap', 'addy', 'upie', 'ana'],
     monthly: 1195,
     best: true,
@@ -216,11 +216,11 @@ export const aiTeamFaq = [
   {
     // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
     q: 'Which AI agent should my Springfield business get first?',
-    a: "Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the front desk agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
+    a: "Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the chat agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",
-    a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time, with no memory of your business. The AI Team is agents we build around your business, trained on one shared Brand Brain, connected to your tools, and coordinated by Manny AI so the research feeds the writing, the writing feeds the design, it all gets published on schedule, and the results get measured and fed back into next month's plan, with a person reviewing what goes out. You get the results without doing the work.",
+    a: "No. ChatGPT is a blank chat you have to prompt from scratch, every time, with no memory of your business. The AI Agents Team is agents we build around your business, trained on one shared Brand Brain, connected to your tools, and coordinated by Manny AI so the research feeds the writing, the writing feeds the design, it all gets published on schedule, and the results get measured and fed back into next month's plan, with a person reviewing what goes out. You get the results without doing the work.",
   },
   {
     q: 'How do the agents work together?',
@@ -236,7 +236,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the front desk, which is also included with every AI-Powered Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
+    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every AI-Powered Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
   },
   {
     q: 'What does "hiring" Manny AI actually mean?',
@@ -264,6 +264,6 @@ export const aiTeamFaq = [
   },
   {
     q: 'Is this an AI chatbot for my business?',
-    a: 'The front desk is, and the team goes further. Remi AI is the chatbot your customers see, answering on your website 24/7 in any language, qualifying leads, and capturing every one. Behind it, the rest is AI automation: review responses, social posts, reports, and follow-ups that run without you. If what you searched was "AI chatbot," "AI receptionist," or "AI automation," this is that, with a manager and a human check built in.',
+    a: 'The chat agent is, and the team goes further. Remi AI is the chatbot your customers see, answering on your website 24/7 in any language, qualifying leads, and capturing every one. Behind it, the rest is AI automation: review responses, social posts, reports, and follow-ups that run without you. If what you searched was "AI chatbot," "AI receptionist," or "AI automation," this is that, with a manager and a human check built in.',
   },
 ];

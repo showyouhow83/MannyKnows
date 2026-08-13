@@ -42,6 +42,6 @@ In Western Mass, plenty of your customers are more comfortable in Spanish. The a
 
 ## Where we come in
 
-Remi AI, the agent doing all of the above, is built into our **[AI-Powered Website plans](/plans/)**: a fast, multilingual website that answers around the clock and, [when you're ready](/plans/get-booked/), books the appointments too, kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job. And Remi AI is only the front desk. There's a whole crew behind it. [Meet the rest of your AI Team.](/blog/meet-your-ai-team/)
+Remi AI, the agent doing all of the above, is built into our **[AI-Powered Website plans](/plans/)**: a fast, multilingual website that answers around the clock and, [when you're ready](/plans/get-booked/), books the appointments too, kept trained and tuned every month. It's the difference between a website that just sits there and one that actually works your leads while you work the job. And Remi AI is only the chat agent. There's a whole crew behind it. [Meet the rest of your AI Agents Team.](/blog/meet-your-ai-team/)
 
 Wondering how many calls you're quietly losing? **[Get a free look at your site](/free-ai-website-analysis/)**: we'll show you where leads slip away and what it takes to catch every one.

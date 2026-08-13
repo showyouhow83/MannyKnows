@@ -1,6 +1,6 @@
 ---
-title: "Meet Your AI Team. They Never Clock Out."
-description: "One AI team (front desk, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting) trained on your business and managed by Manny AI, working around the clock."
+title: "Meet Your AI Agents Team. They Never Clock Out."
+description: "One AI Agents Team (chat agent, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting) trained on your business and managed by Manny AI, working around the clock."
 pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Agent", "Customer Service", "Lead Generation"]
@@ -15,7 +15,7 @@ Here's who.
 
 ## The one you may have already met: Remi AI
 
-Remi AI is the front desk, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), Remi AI is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
+Remi AI is the chat agent, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), Remi AI is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
 
 But answering is just the first job. Every question customers ask Remi AI becomes intel for the rest of the team.
 
@@ -51,7 +51,7 @@ It runs like an assembly line built around one shared memory: your **Brand Brain
 
 ## Hire one, or hire the crew
 
-Nobody starts with the whole roster. Most businesses start with the one that hurts, usually Remi AI, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Team page](/ai-team/)**.
+Nobody starts with the whole roster. Most businesses start with the one that hurts, usually Remi AI, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Agents Team page](/ai-team/)**.
 
 And if you're wondering whether this works for a business your size: it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/): the same team already answering for a local daycare, qualifying leads for a Springfield painting contractor, and checking project statuses for a home services company. Built here, trained on your business, managed from one admin.
 

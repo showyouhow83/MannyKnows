@@ -1,5 +1,5 @@
 ---
-// The AI Team — our flagship, productized service. The hire is Manny AI: one
+// The AI Agents Team — our flagship, productized service. The hire is Manny AI: one
 // manager that staffs AI specialists (visible roster + hidden sub-agents), all
 // reading from one shared "Brand Brain," so a single request becomes a
 // finished, measured deliverable. Only Remi AI carries a public price ($95/mo —
@@ -61,12 +61,12 @@ const steps = [
 ];
 
 
-// Structured data: the AI Team as a Service. Prices come from aiTeam.ts at
+// Structured data: the AI Agents Team as a Service. Prices come from aiTeam.ts at
 // build time so this block can never drift from the real pricing.
 const pageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'The AI Team: AI Agents for Springfield & Western Mass Businesses',
+  name: 'The AI Agents Team for Springfield & Western Mass Businesses',
   serviceType: 'AI agent development',
   provider: {
   '@type': 'ProfessionalService',
@@ -83,11 +83,11 @@ const pageJsonLd = {
     { '@type': 'AdministrativeArea', name: 'Hampshire County, MA' },
     { '@type': 'AdministrativeArea', name: 'Franklin County, MA' },
   ],
-  description: 'You hire Manny AI, one manager that staffs AI specialists on your business — front desk, daily intel, copywriting, SEO, engagement, and analytics — with design, video, voice, publishing, and ads sub-agents behind the scenes. Custom-built for your business.',
+  description: 'You hire Manny AI, one manager that staffs AI specialists on your business — chat agent, daily intel, copywriting, SEO, engagement, and analytics — with design, video, voice, publishing, and ads sub-agents behind the scenes. Custom-built for your business.',
   offers: [
     {
       '@type': 'Offer',
-      name: 'Remi AI: AI front desk agent',
+      name: 'Remi AI: AI chat agent',
       price: String(aiTeamStartingPrice),
       priceCurrency: 'USD',
       description: `Remi AI answers, qualifies, and books 24/7 for $${aiTeamStartingPrice}/mo as a standalone product. Included with every AI-Powered Website plan, where it books from Get Booked and sells from Get Growing.`,
@@ -113,7 +113,7 @@ const pageJsonLd = {
       <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
         <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
           <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">AI Team</span></li>
+          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">AI Agents Team</span></li>
         </ol>
       </nav>
 
@@ -135,7 +135,7 @@ const pageJsonLd = {
             {/* Eyebrow adds the price fact the H1 doesn't carry, rather than
                 restating it (badge/H1 pairing rule, Aug 2026). */}
             <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-[0.65rem] md:text-xs font-bold uppercase tracking-wider mb-4">
-              The AI Team · AI staff from ${startFrom}/mo
+              The AI Agents Team · AI staff from ${startFrom}/mo
             </span>
             <h1 class="sf-bold apple-headline text-[1.75rem] md:text-5xl lg:text-6xl mb-4">
               <span class="apple-gradient-text" data-colorful-title>AI agents for Springfield &amp; Western Mass businesses</span>
@@ -260,7 +260,7 @@ const pageJsonLd = {
             <div class="mt-4 pt-1 flex items-end justify-center sm:justify-end">
               <a
                 href="#contact"
-                data-contact-context="AI Team: hire Manny AI"
+                data-contact-context="AI Agents Team: hire Manny AI"
                 class="flex-shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 Hire Manny AI
@@ -313,7 +313,7 @@ const pageJsonLd = {
                 <div class="mt-4 pt-1 flex items-end justify-end gap-3">
                   <a
                     href="#contact"
-                    data-contact-context={`AI Team: Manny AI with ${a.name} (${a.role})`}
+                    data-contact-context={`AI Agents Team: Manny AI with ${a.name} (${a.role})`}
                     class="flex-shrink-0 inline-flex items-center justify-center rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300"
                   >
                     Add to my team
@@ -350,7 +350,7 @@ const pageJsonLd = {
               </div>
               <a
                 href="#contact"
-                data-contact-context="AI Team: custom agent"
+                data-contact-context="AI Agents Team: custom agent"
                 class="flex-shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-4 py-2.5 text-sm font-semibold transition-all duration-300"
               >
                 Scope my agent
@@ -388,7 +388,7 @@ const pageJsonLd = {
           <div class="md:col-span-2 flex justify-center self-end -mb-8">
             <img
               src="/mascot/astronaut-robot-handshake.webp"
-              alt="An astronaut shaking hands with a friendly robot. You stay in charge of your AI team"
+              alt="An astronaut shaking hands with a friendly robot. You stay in charge of your AI Agents Team"
               width="760" height="639" loading="lazy" decoding="async"
               class="w-full max-w-[240px] md:max-w-none h-auto"
             />
@@ -416,8 +416,8 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <Faq faqs={aiTeamFaq} />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="AI Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Build my AI team
+            <a href="#contact" data-contact-context="AI Agents Team" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+              Build my AI Agents Team
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
           </div>

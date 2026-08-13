@@ -1,5 +1,5 @@
 ---
-// One avatar per AI Team member. Shared identity: a friendly gradient "bot"
+// One avatar per AI Agents Team member. Shared identity: a friendly gradient "bot"
 // head (brand blue→pink) with a dark visor + eyes — so the roster reads as one
 // team. Each agent is told apart by a specialty emblem in the corner badge.
 // Inline SVG: near-zero page weight, razor-sharp, adapts to light/dark.
@@ -21,7 +21,7 @@ const { agent, class: className = '', alt } = Astro.props;
 const emblems: Record<AgentId, string> = {
   // hub with spokes — the manager who routes work to the team
   manny: '<circle cx="0" cy="-6.6" r="2.1" fill="currentColor"/><circle cx="5.7" cy="3.8" r="2.1" fill="currentColor"/><circle cx="-5.7" cy="3.8" r="2.1" fill="currentColor"/><path d="M0 0 L0 -6.6 M0 0 L5.7 3.8 M0 0 L-5.7 3.8" stroke="currentColor" stroke-width="1.6"/><circle cx="0" cy="0" r="2.6" fill="currentColor"/>',
-  // chat bubble — front desk: sales, booking & support
+  // chat bubble — chat agent: sales, booking & support
   desi: '<rect x="-7" y="-6" width="14" height="10" rx="3" fill="currentColor"/><path d="M-2.6 3.4 L-2.6 7.6 L2.2 3.4 Z" fill="currentColor"/>',
   // magnifying glass — research
   eve: '<circle cx="-1.6" cy="-1.6" r="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M2.2 2.2 L6.6 6.6" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
@@ -50,7 +50,7 @@ const gid = `ag-${agent}-${Math.random().toString(36).slice(2, 9)}`;
 // Use the agent's display name (e.g. "Leo"), not the internal id ("eny"),
 // so alt/aria labels never leak an old or internal handle.
 const label = team.find((m) => m.id === agent)?.name ?? (agent.charAt(0).toUpperCase() + agent.slice(1));
-const a11yLabel = alt ?? `${label}, an AI Team agent`;
+const a11yLabel = alt ?? `${label}, an AI Agents Team member`;
 
 const svg = `<svg viewBox="0 0 96 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block" role="img" aria-label="${a11yLabel}">
   <defs>

@@ -8,9 +8,9 @@
 // PRICING (Aug 2026 reprice, Manny): the old card read "from $500 one-time +
 // optional $79/mo" — the $79 was the monthly equivalent of a retired $950
 // price (79 × 12 ≈ 948) and was never explained anywhere on the site. The
-// product now follows the AI Team shape: a one-time setup fee, then a flat
+// product now follows the AI Agents Team shape: a one-time setup fee, then a flat
 // monthly. Change the three constants below and every page follows.
-export const aiWebsiteSetupFee = 195;   // one-time: matches the AI Team setup fee
+export const aiWebsiteSetupFee = 195;   // one-time: matches the AI Agents Team setup fee
 export const aiWebsiteMonthly = 40;     // $/mo to keep it hosted, running & answering
 export const aiWebsiteYearly = aiWebsiteMonthly * 12; // $480: the annual equivalent
 
@@ -21,7 +21,7 @@ export const aiWebsitePriceLabel = `$${aiWebsiteSetupFee} setup + $${aiWebsiteMo
 // it converses, answers from the business's own info, and captures the lead.
 // It does NOT book appointments or sell — those are the bigger Remis (booking
 // starts at Get Booked $245/mo, selling at Get Growing; or hire Remi AI onto an
-// existing site via the AI Team). Never claim booking here.
+// existing site via the AI Agents Team). Never claim booking here.
 export const aiWebsiteAgent = [
   {
     title: 'Answers in your voice',
@@ -118,7 +118,7 @@ export const aiWebsiteSteps = [
 export const aiWebsiteFaq = [
   {
     q: `Why a setup fee and a monthly, instead of one price?`,
-    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI: real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as hiring an AI Team agent: a one-time setup, then a flat monthly.`,
+    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI: real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as hiring an AI Agents Team agent: a one-time setup, then a flat monthly.`,
   },
   {
     q: 'Do I own the site?',

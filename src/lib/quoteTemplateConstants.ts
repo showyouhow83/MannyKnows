@@ -452,7 +452,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
     ],
   },
   {
-    name: 'AI Team: Hire Agents',
+    name: 'AI Agents Team: Hire Agents',
     project_type: 'ai-team',
     is_default: true,
     sections: [

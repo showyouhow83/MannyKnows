@@ -347,7 +347,7 @@ export function analyzeHtml(html: string, opts: { llmsTxt?: boolean; truncated?:
   const opportunities: Opportunity[] = [];
   if (!hasAgent) {
     opportunities.push({
-      title: 'An AI front desk that never closes',
+      title: 'An AI chat agent that never closes',
       body: 'Nothing on this page answers visitors after hours. An AI agent trained on your business answers questions, qualifies the customer, and books the job, in English or Spanish, while you work.',
       href: '/ai-booking-agent/',
     });

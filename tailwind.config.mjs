@@ -104,7 +104,7 @@ export default {
           'light-primary': '#18181b',    // Dark text on light bg
           'light-secondary': '#18181b',   // Light mode: body text reads black (Manny, Aug 2026); titles keep their colors
           'dark-primary': '#fafafa',      // Light text on dark bg
-          'dark-secondary': '#c9c8d4',    // Muted text on dark bg — brightened (too gray at zinc-400, Manny Aug 2026)
+          'dark-secondary': '#ffffff',    // Body text on dark bg — white test (all grays to white, Manny Aug 13 2026)
         },
       },
       spacing: {

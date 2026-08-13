@@ -5,7 +5,7 @@
 //
 // This is the MannyKnows catalog: the six monthly plans (src/data/plans.ts is
 // the pricing source of truth — labels here show the starting price for quick
-// reference in dropdowns), the AI Team, custom builds, and the two free lead
+// reference in dropdowns), the AI Agents Team, custom builds, and the two free lead
 // magnets people actually write in about. Keep values stable once quotes
 // reference them — labels can change freely. Manny is still finalizing the
 // offer list; add/trim entries here and every admin form follows.
@@ -23,7 +23,7 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $2,350/wk)' },
-  { value: 'ai-team', label: 'AI Team, hire agents (from $95/mo each)' },
+  { value: 'ai-team', label: 'AI Agents Team, hire agents (from $95/mo each)' },
   { value: 'custom-app', label: 'Business App: custom build (from $2,500)' },
   // Business Apps tiers — the cards on /apps/ (Aug 2026).
   { value: 'app-scripts', label: 'Scripts & Tools (from $300)' },

@@ -47,7 +47,7 @@ A complete digital operation for a home improvement company:
 
 - **A website that brings in work**: services, proof of work, and a clear way for homeowners to reach out, built fast and mobile-first.
 - **An admin dashboard**: every inquiry captured and tracked in one place, instead of living in someone's memory and pockets of paper.
-- **An AI agent**: answers customer questions around the clock, in any language. And because it's connected to the admin, the team can ask it about their own projects too: where each one stands, what's included, whatever they need to know. It's a [custom agent of the kind we scope through the AI Team](/ai-team/): wired into their backend, not a stock chatbot.
+- **An AI agent**: answers customer questions around the clock, in any language. And because it's connected to the admin, the team can ask it about their own projects too: where each one stands, what's included, whatever they need to know. It's a [custom agent of the kind we scope through the AI Agents Team](/ai-team/): wired into their backend, not a stock chatbot.
 - **Technical & local SEO**: the foundations to rank for the searches homeowners in the area make.
 - **Content development, ongoing**: service content is being built out month by month so the site keeps getting found for more of the work they do.
 

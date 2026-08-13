@@ -1,5 +1,5 @@
 ---
-// Homepage AI Team teaser — shows the roster avatars and routes to the
+// Homepage AI Agents Team teaser — shows the roster avatars and routes to the
 // /ai-team lander. Data from src/data/aiTeam.ts.
 import { team } from '../../data/aiTeam';
 import AgentAvatar from '../team/AgentAvatar.astro';
@@ -15,7 +15,7 @@ const specialists = roster.filter((a) => !a.included);
 // Compact specialty labels for the teaser grid (the full role is on /ai-team).
 const specialty: Record<string, string> = {
   manny: 'Manager',
-  desi: 'Front desk',
+  desi: 'Chat Agent',
   eve: 'Research',
   elly: 'Copywriting',
   eny: 'Graphics & video',
@@ -38,7 +38,7 @@ const specialty: Record<string, string> = {
     <a
       href="/ai-team/#agent-manny-ai"
       class="group flex flex-col items-center gap-2 rounded-3xl p-2 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
-      aria-label={`${manager.name}: ${specialty[manager.id] ?? manager.role}. Read what ${manager.name} does on the AI Team page.`}
+      aria-label={`${manager.name}: ${specialty[manager.id] ?? manager.role}. Read what ${manager.name} does on the AI Agents Team page.`}
     >
       <div class="w-40 sm:w-48 aspect-square rounded-3xl bg-gradient-to-br from-primary-blue/[0.10] via-transparent to-primary-pink/[0.10] ring-1 ring-primary-blue/20 group-hover:from-primary-blue/[0.18] group-hover:to-primary-pink/[0.18] transition-colors duration-300 overflow-hidden">
         <!-- Manny AI in the suit, waist up, wave intact — the astronaut
@@ -55,7 +55,7 @@ const specialty: Record<string, string> = {
         <a
           href={`/ai-team/#agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`}
           class="group flex flex-col items-center gap-1 rounded-2xl p-1 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-blue/60"
-          aria-label={`${a.name}: ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Team page.`}
+          aria-label={`${a.name}: ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Agents Team page.`}
         >
           <div class="w-full max-w-[68px] sm:max-w-[84px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
           <AgentAvatar agent={a.id} class="w-full h-full" />
@@ -79,7 +79,7 @@ const specialty: Record<string, string> = {
     {/* Handshake illustration hidden per Manny (Aug 2026) — kept for reuse.
     <img
       src="/mascot/astronaut-robot-handshake.webp"
-      alt="An astronaut shaking hands with a friendly robot: you and your AI team"
+      alt="An astronaut shaking hands with a friendly robot: you and your AI Agents Team"
       width="866" height="752" loading="lazy" decoding="async"
       class="mx-auto mt-10 w-full max-w-[150px] h-auto"
     /> */}

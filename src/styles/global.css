@@ -22,8 +22,7 @@
    needs !important to win. Desktop scales are untouched. */
 @media (max-width: 639px) {
 	h1 { font-size: 2rem !important; }
-	h2 { font-size: 1.3rem !important; }
-	h3 { font-size: 1.15rem !important; }
+	h2 { font-size: 1.5rem !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -45,7 +44,7 @@ html.dark .room {
 html.dark .room-blue {
 	background-color: #10101d;
 }
-html.dark .room p { color: #c9c8d4; }
+html.dark .room p { color: #ffffff; }
 
 /* ONE accent gradient sitewide: violet → fuchsia → pink. */
 html.dark .room .apple-gradient-text,

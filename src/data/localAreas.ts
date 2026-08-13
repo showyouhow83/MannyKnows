@@ -46,7 +46,7 @@ export interface LocalArea {
   // Published case study to link under the quote (slug in src/content/portfolio,
   // must be draft:false). `line` is the one-sentence per-town framing.
   proofCaseStudy?: { slug: string; line: string };
-  // "Beyond the website" cards — the rest of the 2026 catalog (AI Team, stores,
+  // "Beyond the website" cards — the rest of the 2026 catalog (AI Agents Team, stores,
   // GBP, 360°/media), written per town. FACTS that must stay exact:
   //  - AI staff from $95/mo (Remi AI's price — the only public per-agent price); Remi AI is built into every site plan.
   //  - Stores from $150/mo (Shopify subscription billed separately), catalog synced to
@@ -166,7 +166,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI employees, hired like staff',
         body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager you hire, AI staff from $95/mo.',
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Online stores that sell everywhere',
@@ -269,7 +269,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI agents that speak Holyoke',
         body: 'Agents that answer in Spanish or English, whichever the customer opens with, and book the job at 10pm. AI staff from $95/mo, with Remi AI built into every site plan.',
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Tiendas online, both languages',
@@ -376,7 +376,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI that answers when you can\'t',
         body: "An agent on your site that takes the questions and books the estimate while you're mid-job. AI staff from $95/mo, with Remi AI built into every site plan.",
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Sell online without leaving the counter',
@@ -481,7 +481,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI that books while you\'re with a customer',
         body: 'An agent that answers the questions people ask before committing and fills the calendar, midnight after the show included. AI staff from $95/mo; Remi AI comes with every site plan.',
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Online stores as considered as the shelf',
@@ -570,7 +570,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI agents that work your hours',
         body: 'Agents that answer, qualify, and book while you run the shop. AI staff from $95/mo, with Remi AI built into every site plan.',
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Sell what you make, online',
@@ -674,7 +674,7 @@ export const localAreas: LocalArea[] = [
         title: 'AI agents, hired like staff',
         body: 'Remi AI answers your site around the clock, and Manny AI, the manager you hire, staffs specialists that research, write, post, run ads, and report. AI staff from $95/mo.',
         href: '/ai-team/',
-        linkText: 'Meet the AI Team',
+        linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'A store for what you grow or make',
