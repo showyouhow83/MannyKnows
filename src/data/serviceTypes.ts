@@ -39,6 +39,12 @@ export const SERVICE_TYPES: ServiceType[] = [
   // 360° media + reviews bundles.
   { value: 'seo-on-the-map', label: 'On the Map: Local SEO + 360° media ($245/mo)' },
   { value: 'seo-own-the-map', label: 'Own the Map: Local SEO + virtual tour ($495/mo)' },
+  { value: 'seo-own-the-market', label: 'Own the Market: full SEO program ($995/mo)' },
+  // One-time SEO services — the on-demand strip on /local-seo/ (Aug 2026).
+  { value: 'seo-audit', label: 'Deep SEO & AI-Readiness Audit ($375 one-time)' },
+  { value: 'seo-migration', label: 'Site Migration SEO (from $750)' },
+  { value: 'virtual-tour', label: 'Virtual Tour Shoot (from $495)' },
+  { value: 'gbp-rescue', label: 'Google Profile Rescue (from $245)' },
   { value: 'website-analysis', label: 'Free AI Website Analysis' },
   { value: 'other', label: 'Other (enter custom)' },
 ];

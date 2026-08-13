@@ -4,15 +4,20 @@
 // overlapping pages. /free-360-photo/ now 301s to #free-360-photo here, so
 // every old button, share, and print link still lands.
 //
-// The offer structure (blessed by Manny, Aug 9 2026):
+// The offer structure (blessed by Manny, Aug 9 2026; menu deepened Aug 12):
 //   • Free 360° photo — the lead magnet, unchanged.
-//   • Two monthly SEO packages that ABSORB the old one-time products and add
-//     recurring media: "On the Map" $245/mo and "Own the Map" $495/mo
-//     (fresh photos monthly, reviews collected & answered, virtual tour on
-//     the big tier). One-time pack/setup remain quotable in the footnote.
+//   • Three monthly SEO programs: "On the Map" $245/mo, "Own the Map" $495/mo,
+//     "Own the Market" $995/mo (the full-department tier: roadmap, technical
+//     program, pillar content, honest authority work, LLM visibility).
+//   • Four one-time services in the on-demand strip: audit $375 (credited
+//     toward month one within 30 days), migration from $750, virtual tour
+//     from $495, GBP rescue from $245. Photo pack / profile setup stay
+//     quotable in the footnote.
 //   • The AI-powered website plans as the other path — every site we build
-//     ships with SEO included. That's the unified language: sites include
-//     SEO; these packages bring the same human + AI pipeline to any site.
+//     ships with SEO included; plan clients add the On the Map field layer
+//     for $145/mo (their plan already covers the digital half).
+//   • Never sold, stated on the page: bought links, guest-post volume,
+//     ranking guarantees.
 //
 // HONESTY RULE: every figure traces to a printed source (GbpStats /
 // GbpComparison carry theirs). No invented timelines or ranking guarantees.
@@ -52,6 +57,7 @@ const PACKAGES = [
       'Fresh photos published every month — a mix of 360° and standard shots, so your profile never goes stale',
       'Reviews collected and answered every month: a review link & QR for your counter, asks on a schedule, every review replied to',
       'Monthly Google posts, plus on-page SEO fixes on your existing website',
+      'Citations built and cleaned — your name, address & phone consistent across the directories Google checks',
       'A monthly report on what moved and what changes next',
       'Month one sets you up: your Google Business Profile claimed, verified, and configured right — category, services, hours, info',
       'Plus the launch shoot: five 360° photos published as a mini "see inside" tour on your listing',
@@ -68,10 +74,38 @@ const PACKAGES = [
     features: [
       'Monthly content written in your voice, for the searches your customers actually make',
       "AI search optimization, kept current so ChatGPT and Google's AI can read, quote, and recommend you",
+      'Keyword & competitor research, refreshed quarterly — what customers search, what rivals rank for, and what we do about it',
+      'Map-pack rank tracking across the neighborhoods you serve, reported monthly',
       'Campaign landing pages on demand, whenever a promotion calls for one',
       'Month one builds your full virtual tour from 360° images and video, embedded on your site and your profile',
     ],
   },
+  {
+    name: 'Own the Market',
+    price: 995,
+    note: 'month-to-month · cancel anytime',
+    service: 'seo-own-the-market',
+    builtOn: 'Everything in Own the Map, plus',
+    description: 'A full SEO department for businesses competing beyond the neighborhood, or with a catalog to rank.',
+    features: [
+      'An SEO roadmap — a sequenced quarterly plan tied to traffic and revenue targets, reviewed together on a monthly strategy call',
+      'The full technical program — Core Web Vitals, schema at scale, crawl & index control, and migrations covered when you redesign',
+      'Pillar & cluster content that owns a topic per quarter — a hub page plus supporting articles, interlinked and reviewed before anything ships',
+      'Authority building without shortcuts — local links, unlinked mentions reclaimed, toxic links audited and disavowed',
+      'LLM visibility tracking — how often ChatGPT, Perplexity, and Google AI actually recommend you, measured monthly',
+      'eCommerce SEO where there is a catalog — collection pages, product schema, and content that ranks',
+      'A live dashboard of rankings, traffic, calls, and conversions, plus your 360° tour kept current as the business changes',
+    ],
+  },
+];
+
+// One-time services — quoted flat from the same public $75/hr the apps pillar
+// uses. The audit price is exact; the rest are floors ("from"), quoted up front.
+const ONDEMAND = [
+  { name: 'Deep SEO & AI-Readiness Audit', min: 375, exact: true, service: 'seo-audit', body: 'Technical, content, local, and AI search in one prioritized fix list. Start any package within 30 days and the full price is credited toward month one.' },
+  { name: 'Site Migration SEO', min: 750, service: 'seo-migration', body: 'Keep your rankings through a redesign, replatform, or domain change, with every old URL mapped to its new home.' },
+  { name: 'Virtual Tour Shoot', min: 495, service: 'virtual-tour', body: 'A full 360° walkthrough of your business, shot on site and published to your website and your Google listing.' },
+  { name: 'Google Profile Rescue', min: 245, service: 'gbp-rescue', body: 'Suspended, duplicate, or hijacked listings recovered, verified, and set back up right.' },
 ];
 
 // What "local SEO" covers here — each item maps to a deliverable in the
@@ -96,8 +130,11 @@ const FAQS = [
   { q: 'Is the 360° photo really free?', a: "Yes. We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile at no cost, with no obligation. It's how we introduce our work." },
   { q: 'What does "fresh photos every month" mean?', a: 'On the SEO packages we keep shooting. New photos go up every month, some 360° and some standard, published to your profile. An active profile with recent photos reads as an open, working business, to Google and to customers.' },
   { q: 'How does the review collection work?', a: "You get a review link and a QR code for the counter, asks go out on a schedule, and every review gets answered. 42% of consumers say they're unlikely to use a business that never replies to reviews." },
-  { q: 'Is SEO included in the website plans?', a: 'Yes. Every AI-powered website we build ships with SEO included, from day one. The packages on this page exist for businesses keeping a site we didn\'t build — the same human + AI pipeline, plus the photo and review work no website can do for you.' },
+  { q: 'Is SEO included in the website plans?', a: 'Yes. Every AI-powered website we build ships with SEO included, from day one. The packages here bring the same human + AI pipeline to sites we didn\'t build, and plan clients can still add the field layer — the monthly shoot, the review work, the profile management — at a reduced price, since their plan already covers the digital half.' },
   { q: 'I already have a website. Can you do SEO on it?', a: "That's exactly what these packages are for. They work on any site. The free AI Website Analysis is a good first step either way; it shows what's holding your site back before you spend anything." },
+  { q: 'Can I add a package to my website plan?', a: "Yes, and it costs less. Every website plan already covers the on-page work and reporting, so plan clients add On the Map for $145/mo instead of $245 and pay only for the field layer — the monthly shoot, the review work, and hands-on profile management. Own the Map's digital half already lives inside Get Growing, so plan clients who want the tour book it as a one-time shoot." },
+  { q: 'Do you build backlinks?', a: "The honest kind, on Own the Market. We earn local links from chambers, sponsorships, and directories, reclaim mentions of your business that never linked, and audit toxic links dragging you down. We never buy links, trade guest posts at volume, or promise a ranking — that's the stuff penalties are made of." },
+  { q: 'What does the audit cost, and do I need one first?', a: "The deep audit is $375, and if you start any package within 30 days the full price is credited toward your first month. You don't need it first — the free AI Website Analysis is the quick version, and month one of every package runs its own baseline. The audit is for owners who want the complete picture before spending anything else." },
   { q: 'What is the map pack and why does it matter?', a: "The map pack is the three results Google shows above everything else for local searches, and it's where the calls come from. Your Google Business Profile, not your website, is what ranks you there, which is why profile work, photos, and reviews carry the packages." },
   { q: 'How long until results?', a: "The straight answer is that it depends on your market. Lightly contested local terms can move fast; competitive ones take months of consistent work. Everything here is month-to-month, so you're never locked in while it compounds." },
   { q: 'Do you serve my area?', a: `We're based in Springfield, MA, and shoot on-site across the Pioneer Valley: Chicopee, Holyoke, Westfield, Northampton, and the towns around them. Free shoots cover locations ${FREE_TRAVEL}; a little farther out we may add a small gas/travel fee, always quoted up front. The SEO work itself can be done from anywhere.` },
@@ -112,8 +149,8 @@ const jsonLd = {
     {
       '@type': 'Service',
       '@id': `${siteUrl}/local-seo#service`,
-      name: 'Local SEO',
-      serviceType: 'Local SEO, Google Business Profile, 360° photography & AI search optimization',
+      name: 'SEO Services',
+      serviceType: 'Local SEO, technical SEO, content & AI search optimization, Google Business Profile, 360° photography',
       description: META_DESCRIPTION,
       areaServed: [
         { '@type': 'City', name: 'Springfield, Massachusetts' },
@@ -152,10 +189,20 @@ const jsonLd = {
         },
         ...PACKAGES.map((p) => ({
           '@type': 'Offer',
-          name: `${p.name} (Local SEO package)`,
+          name: `${p.name} (SEO package)`,
           description: p.description,
           priceCurrency: 'USD',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: String(p.price), priceCurrency: 'USD', unitText: 'MONTH' },
+          url: `${siteUrl}/local-seo/#packages`,
+        })),
+        ...ONDEMAND.map((s) => ({
+          '@type': 'Offer',
+          name: `${s.name} (one-time)`,
+          description: s.body,
+          priceCurrency: 'USD',
+          priceSpecification: s.exact
+            ? { '@type': 'UnitPriceSpecification', price: String(s.min), priceCurrency: 'USD' }
+            : { '@type': 'PriceSpecification', minPrice: String(s.min), priceCurrency: 'USD' },
           url: `${siteUrl}/local-seo/#packages`,
         })),
       ],
@@ -283,10 +330,10 @@ const jsonLd = {
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-14">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">SEO packages</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Get on the map. Then own it.</span></h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Get on the map. Own it. Then own the market.</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">For any website, including ones we didn't build, this is a human + AI pipeline with real photography behind it. Prices are starting points, tailored to your business.</p>
         </div>
-        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto items-stretch">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
           {PACKAGES.map((p) => (
             <div class={`relative flex flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 ${p.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
               {p.featured && (
@@ -322,9 +369,33 @@ const jsonLd = {
             </div>
           ))}
         </div>
-        <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Just want the photos or the profile? The 360° Photo Pack (from $195) and Profile Setup + Verification (from $145) are available one-time. <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">Ask for a quote</a>. Bigger SEO campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>.
+        <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-8 max-w-2xl mx-auto">
+          No bought links, no guest-post schemes, no ranking guarantees. The method is the work above, done every month.
         </p>
+
+        <!-- ── One-time, on demand ── -->
+        <div class="max-w-6xl mx-auto mt-16">
+          <div class="text-center max-w-2xl mx-auto mb-8">
+            <h3 class="sf-bold text-xl md:text-2xl font-bold mb-2"><span class="apple-gradient-text" data-colorful-title>One-time, on demand</span></h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">No subscription needed. Flat quotes at $75/hr, priced up front.</p>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {ONDEMAND.map((s) => (
+              <div class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{s.name}</h4>
+                <p class="text-sm font-semibold text-primary-blue dark:text-blue-300 mb-3">{s.exact ? `$${s.min}` : `from $${s.min}`}<span class="font-normal text-text-light-tertiary dark:text-text-dark-tertiary"> · one-time</span></p>
+                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{s.body}</p>
+                <a href="#quote" data-quote-context={s.service} class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
+                  Get a quote
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>
+              </div>
+            ))}
+          </div>
+          <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
+            Just want the photos or the profile? The 360° Photo Pack (from $195) and Profile Setup + Verification (from $145) stay available one-time. <a href="#quote" class="underline decoration-dotted hover:text-primary-blue">Ask for a quote</a>. Paid campaigns run through <a href="/plans/business-ads/" class="underline decoration-dotted hover:text-primary-blue">Business Ads</a>.
+          </p>
+        </div>
       </Container>
     </Section>
 
@@ -365,6 +436,9 @@ const jsonLd = {
             </a>
           ))}
         </div>
+        <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-8 max-w-2xl mx-auto">
+          Already on a website plan? Add On the Map for $145/mo instead of $245 — your plan covers the digital work, so you only pay for the field layer: the monthly shoot, the review work, and hands-on profile management.
+        </p>
       </Container>
     </Section>
 
