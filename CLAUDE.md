@@ -183,11 +183,19 @@ for small businesses in Western Massachusetts).
   Media Pool, Web (hero slides + wiki). Customer-facing machinery pages:
   `/quote/[token]`, `/project/[token]`, `/confirm/[token]`, `/my-project`,
   partner/crew portals. Setup + resource creation: **`SETUP-ADMIN.md`**.
-- **Ships dark**: with `MK_APP_DB` unbound, deploys are unaffected and
-  `/admin` answers a 503 explainer. Bindings live commented-out in
-  `wrangler.jsonc` (`MK_APP_DB` D1, `MK_ADMIN_KV` KV, `MK_MEDIA_BUCKET` R2,
-  `IMAGES`) until Manny creates the resources. Login rate-limit reuses
+- **Live since Aug 2026**: `MK_APP_DB` (D1) and `MK_MEDIA_BUCKET` (R2) are
+  bound in `wrangler.jsonc` — the admin runs in production. Still
+  commented-out: `MK_ADMIN_KV` and `IMAGES`. Login rate-limit reuses
   `MK_KV_SESSIONS`.
+- **Styling follows the homepage design language (Aug 2026 recolor):**
+  admin.css tokens carry it — canvas `#0a0a14` / lifted `#12121f`, violet
+  `rgba(124,58,237,…)` + blue washes (pink retired), magenta `#d946ef`
+  secondary, brand button gradient `#2563eb→#d946ef`, wordmark gradient
+  `#a78bfa→#e879f9→#f472b6`, glass cards white-3%/10%-border. Page-local
+  styles were re-paletted to match (projects' orange `#e05f00` is gone).
+  Recolor via tokens only; never rename behavioral classes (`active`,
+  `selected`, `collapsed`, …) — quotes/projects detail panes build DOM from
+  JS strings.
 - **Adapter-v14 rule (the port's one real breakage):** `locals.runtime.env`
   THROWS on any access — every ported file uses
   `import { env as cfEnv } from 'cloudflare:workers'`. Never reintroduce

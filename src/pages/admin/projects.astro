@@ -322,7 +322,7 @@ function formatCurrency(amount: number | null): string {
     }
     .upload-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #0071e3, #e05f00);
+      background: linear-gradient(90deg, #2563eb, #d946ef);
       border-radius: 3px;
       transition: width 0.3s ease;
       width: 0%;
@@ -626,7 +626,7 @@ function formatCurrency(amount: number | null): string {
 
     .detail-title {
       display: inline-block;
-      background: linear-gradient(135deg, #0071e3 0%, #e05f00 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #d946ef 100%);
       color: white;
       padding: 6px 14px;
       border-radius: 20px;
@@ -978,9 +978,9 @@ function formatCurrency(amount: number | null): string {
     }
 
     .btn {
-      padding: 10px 20px;
+      padding: 8px 14px;
       border-radius: var(--radius-md);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -991,7 +991,7 @@ function formatCurrency(amount: number | null): string {
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #0071e3 0%, #e05f00 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #d946ef 100%);
       color: white;
     }
 
@@ -1129,7 +1129,7 @@ function formatCurrency(amount: number | null): string {
       width: 100%; margin-bottom: 12px; padding: 11px 14px;
       border: none; border-radius: var(--radius-lg); cursor: pointer;
       font-size: 14px; font-weight: 700; color: #fff;
-      background: linear-gradient(135deg, var(--color-primary) 0%, #e05f00 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #d946ef 100%);
       box-shadow: 0 2px 8px rgba(0, 113, 227,0.25);
     }
     .new-project-btn:hover { transform: none; box-shadow: 0 4px 14px rgba(0, 113, 227,0.35); }
@@ -1159,8 +1159,8 @@ function formatCurrency(amount: number | null): string {
     .np-row { display: flex; gap: 16px; }
     .np-row .np-field { flex: 1; }
     .np-status { font-size: 13px; margin: 6px 0 2px; min-height: 16px; }
-    .np-status.ok { color: #16a34a; font-weight: 600; }
-    .np-status.err { color: #dc2626; font-weight: 600; }
+    .np-status.ok { color: #4ade80; font-weight: 600; }
+    .np-status.err { color: #f87171; font-weight: 600; }
 
     .search-bar {
       background: var(--glass-bg);
@@ -1220,7 +1220,7 @@ function formatCurrency(amount: number | null): string {
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: #151619;
+      background: #12121f;
       color: white;
       padding: 14px 24px;
       border-radius: 10px;
@@ -1276,7 +1276,7 @@ function formatCurrency(amount: number | null): string {
 
     .modal-content {
       position: relative;
-      background: var(--color-background-light, #1e1e2e);
+      background: var(--color-background-light, #12121f);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 32px;
@@ -1297,28 +1297,28 @@ function formatCurrency(amount: number | null): string {
     }
 
     .modal-icon.danger {
-      background: #fef2f2;
-      color: #dc2626;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
     }
 
     .modal-icon.warning {
-      background: #fef3c7;
-      color: #d97706;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
     }
 
     .modal-icon.info {
-      background: #eff6ff;
-      color: #2563eb;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
     }
 
     .modal-icon.success {
-      background: #f0fdf4;
-      color: #16a34a;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
     }
 
     .modal-icon.primary {
-      background: #eff6ff;
-      color: #2563eb;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
     }
 
     .modal-title {
@@ -1352,7 +1352,7 @@ function formatCurrency(amount: number | null): string {
     }
 
     .modal .btn-confirm {
-      background: linear-gradient(135deg, #0071e3 0%, #e05f00 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #d946ef 100%);
       color: white;
     }
 
@@ -1593,7 +1593,7 @@ function formatCurrency(amount: number | null): string {
       background: rgba(220, 38, 38, 0.1);
       border: 1px solid rgba(220, 38, 38, 0.3);
       border-radius: 4px;
-      color: #dc2626;
+      color: #f87171;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1604,7 +1604,7 @@ function formatCurrency(amount: number | null): string {
 
     .crew-update-delete:hover {
       background: rgba(220, 38, 38, 0.2);
-      border-color: #dc2626;
+      border-color: #f87171;
     }
 
     .no-crew-updates {
@@ -3311,7 +3311,7 @@ function formatCurrency(amount: number | null): string {
                   : '<video src="' + safeUrl + '#t=0.1" preload="metadata" muted playsinline style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; pointer-events:none;"></video>';
                 const lbArg = streamUid ? streamUid : safeUrl;
                 return `
-              <div class="image-thumb is-video${hiddenClass}"${updateId ? ' data-uid="' + updateId + '"' : ''} onclick="openLightbox('${lbArg}', true, '${streamUid}')" style="background: linear-gradient(135deg, #151619 0%, #1f2024 100%); display:flex; align-items:center; justify-content:center; color:#a1a1aa; position:relative; overflow:hidden;">
+              <div class="image-thumb is-video${hiddenClass}"${updateId ? ' data-uid="' + updateId + '"' : ''} onclick="openLightbox('${lbArg}', true, '${streamUid}')" style="background: linear-gradient(135deg, #12121f 0%, #1a1a2e 100%); display:flex; align-items:center; justify-content:center; color:#a1a1aa; position:relative; overflow:hidden;">
                 ${poster}
                 <svg class="video-fallback-icon" width="40" height="40" viewBox="0 0 24 24" fill="white" style="position:relative; z-index:1; filter:drop-shadow(0 1px 4px rgba(0,0,0,0.6));"><polygon points="6 4 20 12 6 20 6 4"/></svg>
                 <span class="image-video-badge" style="z-index:2;">Video</span>
