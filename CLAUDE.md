@@ -78,15 +78,27 @@ for small businesses in Western Massachusetts).
   interpolate from these; **on a reprice only local-seo and apps need hand
   updates** (noted in a NavBar comment).
 - Yearly = 10× monthly, 2 months free, everywhere.
-- **Build-coverage rule (Aug 2026):** month-to-month plans stay cancel-anytime
-  with no setup fee, BUT the included build is covered by the first 6 months.
-  Earlier exit bills the tier's standard build value (published in
-  /terms/#build-fee: Get Found $1,500 · Get Booked $2,250 · Get Growing/Ahead
-  $3,000 · Sell Online $1,875 · Sell More $2,625 · Sell Smarter $3,375 ·
-  Sell Everywhere $4,125) minus every monthly paid. Never reintroduce
-  unqualified "nothing is owed after you leave" copy. Enforcement lives in
-  signed contracts — the clause still needs adding to the admin's contract
-  templates when they're readapted from their contractor shape.
+- **Setup-fee rule (Aug 2026 — replaced the 6-month build-coverage clause):**
+  website and store plans charge a **one-time setup fee** for the build on
+  month-to-month billing, **waived in full on a prepaid year**. There is **no
+  minimum term and no exit charge** — "cancel anytime" is now literally true
+  and may be published without qualification. Both figures live in
+  `plans.ts` (`setupFee`, `buildValue`) and /terms/#build-fee interpolates
+  them, so a reprice touches one file. **setupFee = 40% of buildValue rounded
+  to the nearest -5:** Get Found $595/$1,500 · Get Booked $895/$2,250 ·
+  Get Growing & Get Ahead $1,195/$3,000 · Sell Online $745/$1,875 ·
+  Sell More $1,045/$2,625 · Sell Smarter $1,345/$3,375 ·
+  Sell Everywhere $1,645/$4,125. Never reintroduce recapture/clawback copy,
+  a minimum term, or "no setup fee" claims on plans.
+- **5-business-day refund window** from *kickoff* on both billing modes,
+  refunding everything paid including the setup fee. After it, setup fees and
+  prepaid years are non-refundable. **Plan switches** are a published formula at
+  /terms/#setup-on-switch — `due = new tier's setup − setup already paid,
+  floored at $0` (so moving down or sideways is free, and a waived yearly setup
+  counts as $0 paid). Quote that anchor rather than improvising a number.
+- Products that front no build keep a truthful cancel-anytime with no setup
+  fee of ours: /local-seo packages, Business Ads, Multimedia Agency. The
+  One-Page Website ($195) and AI Agents Team already had their own setup fees.
 - **Shopify subscription is NOT included** in store tiers (unbundled Aug 2026):
   the account is opened in the client's name and billed by Shopify (Basic at
   Sell Online/More, Grow at Smarter/Everywhere).

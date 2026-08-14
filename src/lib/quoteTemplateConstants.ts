@@ -403,7 +403,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
           { id: 'it-web-bill-1', type: 'choice', label: 'Plan tier', value: '', options: ['Get Found, $95/mo', 'Get Booked, $245/mo', 'Get Growing, $545/mo', 'Get Ahead, $895/mo'] },
           { id: 'it-web-bill-2', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-web-bill-3', type: 'subtotal', label: 'Due at start (setup + first month)', amount: 0 },
-          { id: 'it-web-bill-4', type: 'note', text: 'The plan then continues month-to-month, cancel anytime. Prepay the year and get the equivalent of 2 months free.' },
+          { id: 'it-web-bill-4', type: 'note', text: 'The one-time setup fee pays for the design and build (Get Found $595 · Get Booked $895 · Get Growing and Get Ahead $1,195). The plan then continues month to month with no minimum term — cancel at any time and nothing further is owed, because the build is already paid for. Prepay the year instead and the setup fee is waived in full, on top of the equivalent of 2 months free. Either way, the first 5 business days after kickoff carry a full refund, setup fee included.' },
         ],
       },
       {
@@ -438,7 +438,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
         items: [
           { id: 'it-store-bill-1', type: 'subtotal', label: 'One-time setup', amount: 0 },
           { id: 'it-store-bill-2', type: 'subtotal', label: 'Due at start (setup + first month at chosen tier)', amount: 0 },
-          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month-to-month in four tiers (Sell Online $150/mo, Sell More $325/mo, Sell Smarter $650/mo, Sell Everywhere $1,095/mo) and every tier includes your Shopify subscription (Basic at the first two tiers, Grow at Sell Smarter and above); the account is opened in your name. Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
+          { id: 'it-store-bill-3', type: 'note', text: 'The Online Store plans run month to month in four tiers (Sell Online $150/mo, Sell More $325/mo, Sell Smarter $650/mo, Sell Everywhere $1,095/mo), each with a one-time setup fee that pays for the store build (Sell Online $745 · Sell More $1,045 · Sell Smarter $1,345 · Sell Everywhere $1,645). There is no minimum term — cancel at any time and nothing further is owed. Prepay the year instead and the setup fee is waived in full, on top of the equivalent of 2 months free, and the first 5 business days after kickoff carry a full refund either way. Your Shopify subscription is separate and is billed to you by Shopify on an account opened in your name (Basic at the first two tiers, Grow at Sell Smarter and above). Shopify’s payment-processing fees apply to every store on the platform and are never marked up by us.' },
         ],
       },
       {

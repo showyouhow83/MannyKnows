@@ -16,11 +16,13 @@ export interface ServiceType {
 
 export const SERVICE_TYPES: ServiceType[] = [
   { value: 'ai-website', label: 'One-Page Website ($195 + $40/mo)' },
-  { value: 'website-basic', label: 'Get Found ($95/mo)' },
-  { value: 'website-plus', label: 'Get Booked ($245/mo)' },
-  { value: 'website-smart', label: 'Get Growing ($545/mo)' },
-  { value: 'get-ahead', label: 'Get Ahead ($895/mo)' },
-  { value: 'ecommerce', label: 'Online Store (from $150/mo)' },
+  // Plan labels carry setup + monthly, matching the One-Page format above —
+  // the setup fee is waived on a prepaid year, which the quote spells out.
+  { value: 'website-basic', label: 'Get Found ($595 + $95/mo)' },
+  { value: 'website-plus', label: 'Get Booked ($895 + $245/mo)' },
+  { value: 'website-smart', label: 'Get Growing ($1,195 + $545/mo)' },
+  { value: 'get-ahead', label: 'Get Ahead ($1,195 + $895/mo)' },
+  { value: 'ecommerce', label: 'Online Store (from $745 + $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $2,350/wk)' },
   { value: 'ai-team', label: 'AI Agents Team, hire agents (from $95/mo each)' },

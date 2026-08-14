@@ -8,11 +8,20 @@
 // Multimedia Agency are broader services shown as their own sections on /plans
 // (hidden from the pricing grid), not website tiers.
 //
-// Pricing model:
-//   • Month-to-month: `price`/mo, cancel anytime.
+// Pricing model (Aug 2026 — this replaced the 6-month build-coverage clause):
+//   • Month-to-month: a one-time `setupFee` pays for the build, then `price`/mo
+//     for the service. Cancel anytime, with no term and no exit charge — the
+//     build is paid for when it's built, so nothing is left to claw back.
 //   • Yearly (prepaid): pay the year upfront — yearlyTotal = price × 10, the
-//     equivalent of 2 months free. yearlyMonthly = the per-month equivalent,
-//     shown for comparison only.
+//     equivalent of 2 months free — and the setup fee is waived outright.
+//     yearlyMonthly = the per-month equivalent, shown for comparison only.
+//   • Either way there is a 5-business-day window from kickoff for a full
+//     refund of everything paid, setup fee included (/terms/#build-fee).
+//
+// The old model had no setup fee and instead billed the build back on early
+// exit, which made "cancel anytime" untrue and produced a $1,025 cliff between
+// month 5 and month 6 on Get Found. A setup fee and a minimum term are the same
+// tool; charging the fee is the honest one, so the term went away entirely.
 
 export interface PlanFaq {
   q: string;
@@ -47,6 +56,9 @@ export interface PlanTier {
   audience?: string;
   scope?: string;
   scopeLines?: string[];
+  // See the Plan fields of the same name.
+  setupFee?: number;
+  buildValue?: number;
 }
 
 export interface Plan {
@@ -56,6 +68,18 @@ export interface Plan {
   icon: string;         // SVG path (the `d` attribute of a 24×24 stroke icon)
   price: number;        // monthly $ (month-to-month), shown as "Starting at $X/mo"
   priceUnit?: string;   // overrides the "/mo" after `price` (e.g. '/wk' for weekly retainers)
+  // One-time fee that pays for the included build on month-to-month billing,
+  // waived outright on a prepaid year. Set ONLY on plans where we front a build
+  // (website tiers, store tiers) — services that build nothing (Business Ads,
+  // Multimedia Agency) leave both undefined and stay pure subscriptions.
+  //
+  // REPRICE RULE: setupFee = 40% of buildValue, rounded down to the nearest -5
+  // price point. `buildValue` is the retail worth of the build at our flat
+  // $75/hr rate and is the anchor the fee is discounted against ("a $1,500
+  // build, $595 to start"). /terms/#build-fee interpolates BOTH from here, so
+  // change them together and nowhere else.
+  setupFee?: number;
+  buildValue?: number;
   tagline: string;      // one-line promise on the card
   // Detail-page CTA overrides. Defaults: "Get started with <name>", "See it in our portfolio",
   // and a "Book a call" button. Set per plan when the sales motion differs.
@@ -64,7 +88,7 @@ export interface Plan {
   hideBooking?: boolean;
   // Replaces the generic `planIll` line illustration in the detail-page hero.
   heroMascot?: { src: string; width: number; height: number };
-  // Overrides the "Month-to-month · cancel anytime · …" line under the CTAs.
+  // Overrides the "$X to start · cancel anytime · …" line under the CTAs.
   terms?: string;
   builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
   // Pricing-grid extras, read by PricingCards.astro — see PlanTier above.
@@ -97,6 +121,8 @@ export const plans: Plan[] = [
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 95,
     tagline: "Everything a new business needs to exist online and be found. Nothing it doesn't.",
+    setupFee: 595,
+    buildValue: 1500,
     audience: 'For startups & new businesses',
     scope: '1–3 page website',
     scopeLines: ['Remi AI answers customers 24/7', 'Logo design included'],
@@ -173,11 +199,11 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, monitoring, and tuning. You send changes, we handle them.' },
     ],
     faq: [
-      { q: '$95 a month seems low. How?', a: 'Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. It is a monthly plan rather than a one-time project, so the build cost is spread across the relationship instead of landing as a bill up front. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
+      { q: '$95 a month seems low. How?', a: 'Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. The build is its own one-time $595, which means the $95 pays to run the site rather than to pay it off. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'Is there a setup fee?', a: 'No. Designing and building the site is included in the monthly price. Published 2026 pricing surveys put that work at $3,000–$15,000 as an up-front project. You pay $95 the first month and $95 every month after.' },
+      { q: 'Is there a setup fee?', a: 'Yes, $595 once, and prepaying the year waives it entirely. It pays for designing and building the site, which we value at $1,500 and published 2026 pricing surveys put at $3,000–$15,000 as an up-front project. After that it is $95 a month to run the site, for as long as you want it run.' },
       { q: 'Can Remi AI book appointments on this plan?', a: 'On Get Found, Remi AI answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
-      { q: 'What if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain, your content, and the site itself. (Remi AI is service software that runs with the plan, so the agent doesn’t transfer.) One fair guardrail: the included build is covered by your first 6 months, so if you leave earlier it’s billed once at your tier’s standard build value from our terms, minus every monthly you’ve paid. After 6 months nothing is owed when you leave. Prepaid annual terms aren’t refundable once the year starts.' },
+      { q: 'What if I cancel?', a: 'Then you cancel. There is no term, no notice period, and nothing owed on the way out, because the build was paid for when it was built. You keep your domain, your content, and the site itself. (Remi AI is service software that runs with the plan, so the agent doesn’t transfer.) Cancel mid-month and the site keeps running to the end of that month. Setup fees and prepaid years stop being refundable 5 business days after kickoff.' },
     ],
   },
   {
@@ -186,6 +212,8 @@ export const plans: Plan[] = [
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 245,
     tagline: 'Your AI site now books the job. Remi AI answers, captures leads, and fills your calendar.',
+    setupFee: 895,
+    buildValue: 2250,
     audience: 'For booking-based businesses',
     scope: 'Full multi-page website',
     scopeLines: ['Remi AI answers and books the job', 'Unlimited AI content updates'],
@@ -253,6 +281,8 @@ export const plans: Plan[] = [
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 545,
     tagline: 'A website that runs itself. It writes its own content, tunes its own SEO & speed, and sells with Remi AI.',
+    setupFee: 1195,
+    buildValue: 3000,
     audience: 'For businesses ready to go viral',
     scope: 'Self-optimizing website',
     scopeLines: ['Remi AI answers, books, and sells', 'Writes new content on its own'],
@@ -313,7 +343,7 @@ export const plans: Plan[] = [
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does Remi AI know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
       { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
-      { q: 'What happens if I cancel?', a: 'Month-to-month, cancel anytime and keep your domain and content. The included build is covered by your first 6 months; leave earlier and it’s billed once at your tier’s standard build value from our terms, minus the monthlies you’ve paid. Prepaid annual terms aren’t refundable once the year starts.' },
+      { q: 'What happens if I cancel?', a: 'You cancel, and that is the whole answer. No term, no exit charge, and your domain, content, and site stay yours. The setup fee already paid for the build, so nothing is left to bill. Setup fees and prepaid years stop being refundable 5 business days after kickoff.' },
     ],
   },
   {
@@ -322,6 +352,8 @@ export const plans: Plan[] = [
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
     price: 895,
     tagline: 'Get Growing plus your advertising, run for you. The site brings them in, the ads bring more.',
+    setupFee: 1195,
+    buildValue: 3000,
     audience: 'For businesses ready to lead their market',
     scope: 'Self-optimizing site + ads',
     scopeLines: ['Everything Get Growing does', 'Your ads run on two networks'],
@@ -375,7 +407,7 @@ export const plans: Plan[] = [
     faq: [
       { q: 'Is the ad budget included in the $895?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
       { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $545 and Business Ads on two networks is $700 — $1,245 a month. Bundled it's $895, so you keep $350. We can do that because the ads and the site stop being two separate projects. The landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
-      { q: 'How is this different from a big agency?', a: "Published 2026 pricing guides put full agency retainers at $2,000–$10,000 a month, usually behind a minimum-term contract, and many agencies keep the website if you leave. Get Ahead is month-to-month and everything (the site, the content, the ad accounts) belongs to you." },
+      { q: 'How is this different from a big agency?', a: "Published 2026 pricing guides put full agency retainers at $2,000–$10,000 a month, usually behind a minimum-term contract, and many agencies keep the website if you leave. Get Ahead has no term at all, and everything (the site, the content, the ad accounts) belongs to you." },
       { q: 'Do I need this, or is Get Growing enough?', a: "If your site and Remi AI keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground, outrank and out-advertise the competition, with someone accountable for the whole engine, not just the website." },
     ],
   },
@@ -384,6 +416,10 @@ export const plans: Plan[] = [
     name: 'Online Store',
     icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
     price: 150,
+    // Mirrors the Sell Online tier — the parent record is the "starting at"
+    // face of the store lane on /plans/sell-online.
+    setupFee: 745,
+    buildValue: 1875,
     tagline: 'Your store built, stocked, and run for you, on a Shopify account that belongs to you.',
     highlights: [
       'A real Shopify store, set up right: theme, payments, shipping, taxes',
@@ -413,6 +449,8 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'Everything a working store needs, set up right and kept running.',
+        setupFee: 745,
+        buildValue: 1875,
         audience: 'For first time online sellers',
         scope: '10 product changes a month',
         scopeLines: ['Shopify Basic, billed by Shopify', 'SEO descriptions, whole catalog'],
@@ -434,6 +472,8 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'The store starts pulling its weight, with copy, SEO basics, and email doing the selling.',
+        setupFee: 1045,
+        buildValue: 2625,
         audience: 'For selling even more',
         scope: '30 product changes a month',
         scopeLines: ['Shopify Basic, billed by Shopify', 'Email flows and review collection'],
@@ -453,6 +493,8 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The full selling machine: an AI shopping assistant, a real SEO program, and a store that improves itself.',
+        setupFee: 1345,
+        buildValue: 3375,
         audience: 'For automated online selling',
         scope: '100 product changes a month',
         scopeLines: ['Shopify Grow, billed by Shopify', 'Remi AI becomes a shopping assistant'],
@@ -475,6 +517,8 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The store plus its own ad engine. Bought separately, this is $1,350/mo of service.',
+        setupFee: 1645,
+        buildValue: 4125,
         audience: 'For selling viral products',
         scope: '100 product changes a month',
         scopeLines: ['Shopify Grow, billed by Shopify', 'Your ads run on two networks'],
@@ -547,9 +591,9 @@ export const plans: Plan[] = [
       // deliberately dropped — the store's pages/blog/Remi AI cover the service
       // side.
       { q: 'Do I still need one of the website plans?', a: "No, each store tier is a website tier's twin with the store machinery added, on a Shopify account of your own: Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere. Your store is your website. Pages, blog, SEO, and Remi AI are all in it." },
-      { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across, so your store looks like your site did (and the other way around). Your monthly moves to the new tier's price, and Remi AI's training and your content carry. No migration fee, and you land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 7 days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Agents Team, ads, photography." },
+      { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across, so your store looks like your site did (and the other way around). Your monthly moves to the new tier's price, and Remi AI's training and your content carry. No migration fee. Moving up into a bigger build you pay the difference between the two setup fees and nothing more, and moving down costs nothing at all. You land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 5 business days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Agents Team, ads, photography." },
       { q: 'Is the ad budget included in Sell Everywhere?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
-      { q: 'Can I move between tiers, or cancel?', a: "Month-to-month, move anytime, the work carries forward, so nothing is wasted. Like the website plans, the included store build is covered by your first 6 months; cancel earlier and it's billed once at your tier's standard build value from our terms, minus what you've paid. Prepay the year and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
+      { q: 'Can I move between tiers, or cancel?', a: "Move anytime, and the work carries forward so nothing is wasted. Moving up into a bigger build costs the difference between the two setup fees, and moving down costs nothing. Cancelling is just cancelling, with no term and no exit charge, because the setup fee already paid for the store build. Prepay the year and the setup fee is waived and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
       { q: 'Can you build the store as a one-time project instead?', a: "Yes, billed at a flat $75/hr and quoted up front. You'll still need to run it afterward: Shopify subscription, product updates, emails. Most owners hand that back to us with Sell Online at $150/mo once they've priced their own time." },
     ],
   },

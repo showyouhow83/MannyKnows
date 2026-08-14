@@ -63,8 +63,8 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 <BaseLayout
   title={plan.metaTitle ?? `${plan.name} Plan: from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
   description={plan.tiers
-    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. Cancel anytime.`
-    : `${plan.tagline} $${plan.price.toLocaleString('en-US')}/mo, or $${yearlyTotal(plan).toLocaleString('en-US')}/yr, 2 months free. Cancel anytime.`}
+    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. No term.`
+    : `${plan.tagline} $${plan.setupFee?.toLocaleString('en-US')} setup + $${plan.price.toLocaleString('en-US')}/mo. Prepay the year, setup free.`}
 >
   {/* one-canvas: one tone for the whole page instead of a different colour
       per section (Manny, Aug 2026). Hue is grouped by pillar — see the
@@ -116,7 +116,8 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
               <p class="mt-3 max-w-3xl mx-auto text-xs text-text-light-tertiary dark:text-text-dark-tertiary">*Logo via our Envato Elements license, used as-is or reworked with AI.</p>
             )}
 
-            <!-- Price block — sub-plan tiers when the plan has them, month-to-month/yearly otherwise -->
+            <!-- Price block — sub-plan tiers when the plan has them, otherwise
+                 the monthly (+ setup fee) and yearly (setup waived) pair -->
             {plan.tiers ? (
               <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 {plan.tiers.map((t) => (
@@ -130,14 +131,16 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
             ) : (
               <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
-                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month-to-month</span>
+                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
                   <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
+                  {plan.setupFee && <span class="block text-xs font-semibold text-text-light-secondary dark:text-text-dark-secondary mt-1">plus ${plan.setupFee.toLocaleString('en-US')} one-time setup</span>}
                 </div>
                 <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
-                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · 2 months free</span>
+                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · build free</span>
                   <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
+                  {plan.setupFee && <span class="block text-xs font-semibold text-green-700 dark:text-green-400 mt-1">2 months free, no setup fee</span>}
                 </div>
               </div>
             )}
@@ -160,7 +163,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
                 </a>
               )}
             </div>
-            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{plan.terms ?? 'Month-to-month · cancel anytime · your domain and content stay yours'}</p>
+            <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{plan.terms ?? 'No term · cancel anytime · your domain and content stay yours'}</p>
           </div>
         </Container>
       </div>

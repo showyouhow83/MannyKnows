@@ -134,7 +134,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: `How is this different from the $95/mo Get Found plan?`,
-    a: `Scope and who does the work. This is one page with the lightest Remi AI, built once and kept running: the cheapest way to have a real site that answers customers, at $${aiWebsiteMonthly}/mo after setup. Get Found is $95/mo with no setup fee and it's a service: a 1–3 page multilingual site we design, run, update four times a month, and keep ranking, with your Google Business Profile handled and your own admin to change things yourself. Start here if one page covers you; move up when it doesn't: the work carries forward.`,
+    a: `Scope and who does the work. This is one page with the lightest Remi AI, built once and kept running: the cheapest way to have a real site that answers customers, at $${aiWebsiteMonthly}/mo after setup. Get Found is $595 to build and $95/mo to run, and it's a service: a 1–3 page multilingual site we design, run, update four times a month, and keep ranking, with your Google Business Profile handled and your own admin to change things yourself. Start here if one page covers you; move up when it doesn't: the work carries forward.`,
   },
   {
     q: 'Can one page really be enough?',

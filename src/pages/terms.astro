@@ -7,8 +7,20 @@ import NavBar from '../components/navigation/NavBar.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
+import { plans } from '../data/plans';
 
-const effectiveDate = 'July 14, 2026';
+const effectiveDate = 'August 14, 2026';
+
+// Setup fees and build values are read from plans.ts rather than typed here, so
+// the legal page and the pricing grid cannot disagree after a reprice — this
+// section is the one place the two numbers are published side by side.
+const WEBSITE_SLUGS = ['get-found', 'get-booked', 'get-growing', 'get-ahead'];
+const websiteBuilds = WEBSITE_SLUGS
+  .map((slug) => plans.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p?.setupFee));
+const storeBuilds = (plans.find((p) => p.slug === 'sell-online')?.tiers ?? [])
+  .filter((t) => Boolean(t.setupFee));
+const fmt = (n: number) => n.toLocaleString('en-US');
 ---
 
 <BaseLayout title="Terms of Service | MannyKnows"
@@ -56,21 +68,28 @@ const effectiveDate = 'July 14, 2026';
           <h2>3. Plans, billing, and cancellation</h2>
           <p>Monthly plans come with two billing options. Published prices are "starting at" figures; the final price and scope for your engagement are set out in the written agreement or proposal for that engagement, which controls if it differs from these Terms.</p>
           <ul>
-            <li><strong>Month-to-month:</strong> the plan runs month to month at the standard monthly rate. You can cancel anytime; cancellation takes effect at the end of the then-current billing month, and fees already paid or owed for work performed are not refunded. If you cancel within your first 6 months on a plan that included a site or store build, the build is billed as set out under <a href="#build-fee">Setup and the initial build</a>.</li>
-            <li><strong>Yearly (prepaid, discounted):</strong> you pay for 12 months of service up front at the discounted annual total, 10× the monthly rate, the equivalent of 2 months free. The discount is conditioned on prepayment of the full 12-month term.</li>
+            <li><strong>Month to month:</strong> a one-time setup fee pays for the initial build (see <a href="#build-fee">Setup and the initial build</a>), and the plan then runs month to month at the standard monthly rate. There is no minimum term. You can cancel at any time and nothing further is owed; cancellation takes effect at the end of the then-current billing month, and the service keeps running until then. Fees already paid or owed for work performed are not refunded, except under the refund window described below.</li>
+            <li><strong>Yearly (prepaid, discounted):</strong> you pay for 12 months of service up front at the discounted annual total, 10× the monthly rate, the equivalent of 2 months free, <strong>and the setup fee is waived in full</strong>. Both the discount and the waiver are conditioned on prepayment of the full 12-month term.</li>
             <li><strong>Ads plans:</strong> on advertising plans, you fund your advertising spend directly with the ad platforms; our fee covers strategy, creative, and management, not the ad spend itself, which we never mark up.</li>
           </ul>
 
           <h3 id="build-fee" class="scroll-mt-24">Setup and the initial build</h3>
-          <p>Website and store plans include designing and building the site itself: work that is normally billed as a separate project. <strong>There is no separate setup or build fee on a monthly plan.</strong> You pay the monthly rate for your first month and the same rate each month after.</p>
-          <p>That included build is covered by your first 6 months on the plan. If you cancel before completing 6 monthly payments, the design-and-build work is billed once at your tier's standard build value — set from typical build hours at our flat $75/hr rate — <strong>minus every monthly payment you have already made</strong>. After 6 months on the plan, the build is fully covered and nothing further is ever owed for it.</p>
+          <p>Website and store plans include designing and building the site or store itself, work that is normally billed as a separate project. On month-to-month billing that build is paid for by a <strong>one-time setup fee</strong>, charged once at the start of the engagement. You then pay the monthly rate for the service, and the same rate each month after.</p>
+          <p><strong>Prepay the year and the setup fee is waived in full.</strong> Nothing is charged for the build at all on a prepaid annual term.</p>
+          <p>Each tier's setup fee is a fixed discount against the standard value of that build, which is set from typical build hours at our flat $75/hr rate:</p>
           <ul>
-            <li><strong>Website plans:</strong> Get Found $1,500 · Get Booked $2,250 · Get Growing and Get Ahead $3,000.</li>
-            <li><strong>Online-store tiers:</strong> Sell Online $1,875 · Sell More $2,625 · Sell Smarter $3,375 · Sell Everywhere $4,125.</li>
-            <li>These standard values apply unless your engagement was custom-scoped in writing, in which case the written quote controls.</li>
+            <li><strong>Website plans:</strong> {websiteBuilds.map((p, i) => (<>{i > 0 ? ' · ' : ''}{p.name} ${fmt(p.setupFee!)} setup (${fmt(p.buildValue!)} build)</>))}.</li>
+            <li><strong>Online-store tiers:</strong> {storeBuilds.map((t, i) => (<>{i > 0 ? ' · ' : ''}{t.name} ${fmt(t.setupFee!)} setup (${fmt(t.buildValue!)} build)</>))}.</li>
+            <li>These standard figures apply unless your engagement was custom-scoped in writing, in which case the written quote controls.</li>
           </ul>
-          <p>If an engagement does require a one-time charge (a migration, a catalog import, custom development, or other work outside the scope of your plan), it is quoted in writing and agreed before that work begins. We do not add one-time charges to an invoice you have not seen first.</p>
-          <p>The finished website is yours: your domain, your content, and the site itself go with you if you leave, once any early-exit build balance is settled.</p>
+          <p><strong>Because the build is paid for when it is built, there is no minimum term and no early-cancellation charge on a monthly plan.</strong> Whenever you cancel, whether that is in month two or month twenty, nothing further is owed for the build or for anything else. We do not bill build costs back on exit.</p>
+
+          <h3 id="refund-window" class="scroll-mt-24">Your first 5 business days</h3>
+          <p>For 5 business days after project kickoff, you may cancel for any reason and receive a <strong>full refund of everything you have paid, the setup fee included</strong>, on both monthly and prepaid annual billing. Ask in writing within that window and we refund it. After those 5 business days, setup fees and prepaid annual fees are non-refundable, except where the law requires otherwise or we materially fail to deliver and do not cure.</p>
+          <p>Kickoff is the date we start work on your build, which we confirm to you in writing. Business days exclude weekends and U.S. federal holidays.</p>
+
+          <p>If an engagement does require a further one-time charge (a migration, a catalog import, custom development, or other work outside the scope of your plan), it is quoted in writing and agreed before that work begins. We do not add one-time charges to an invoice you have not seen first.</p>
+          <p>The finished website is yours. Your domain, your content, and the site itself go with you if you leave, with nothing to settle first.</p>
           <p><strong>Remi AI and the other AI agents are service software</strong>, licensed for the duration of your plan. They run on our infrastructure and are not part of the files, code, or data that transfer when you leave. The content they produced for your site and the leads they captured remain yours; the agents themselves do not transfer.</p>
           <p>On the One-Page Website, clients are given access to the site's GitHub repository once the project is complete. Remi AI is not part of that repository and stops with the monthly plan. Most one-page projects are completed within 7 days after the contract has been signed; build timelines are good-faith estimates, not guarantees.</p>
 
@@ -84,10 +103,23 @@ const effectiveDate = 'July 14, 2026';
           <p>We ask only that use be reasonable. If usage becomes wildly disproportionate to what the plan costs, we will talk with you before changing anything.</p>
 
           <h3>Early cancellation of a prepaid annual term</h3>
-          <p>The annual discount exists because the year is paid up front. Prepaid annual fees are non-refundable once the term begins, except where the law requires otherwise or we materially fail to deliver and do not cure. If we agree to a refund in a particular case, the months already used are re-priced at the standard month-to-month rate and deducted, together with payment-processing costs, from any amount returned.</p>
+          <p>The annual discount and the setup-fee waiver both exist because the year is paid up front. Outside the <a href="#refund-window">first 5 business days</a>, prepaid annual fees are non-refundable once the term begins, except where the law requires otherwise or we materially fail to deliver and do not cure. If we agree to a refund in a particular case, the months already used are re-priced at the standard month-to-month rate and the waived setup fee is restored, and both are deducted, together with payment-processing costs, from any amount returned.</p>
 
           <h3 id="switching-plans" class="scroll-mt-24">Switching plans</h3>
-          <p>Moving between plans, including between a website plan and an online-store plan, in either direction, is a plan change, not a cancellation. On month-to-month billing, the change takes effect at the start of your next billing month; there is nothing to refund. On a prepaid annual term, within the first 7 days after project kickoff you may instead request a cash refund of the unused balance. After those 7 days, the unused balance is not refunded in cash. It converts, dollar for dollar, into service credit you can apply to the new plan or to any other MannyKnows service. Service credit is not redeemable for cash.</p>
+          <p>Moving between plans, including between a website plan and an online-store plan, in either direction, is a plan change, not a cancellation. On month-to-month billing, the change takes effect at the start of your next billing month and there is nothing to refund. Your new monthly rate is simply the new tier's rate.</p>
+          <p>On a prepaid annual term, within the <a href="#refund-window">first 5 business days</a> after project kickoff you may instead request a cash refund of the unused balance. After that window, the unused balance is not refunded in cash. It converts, dollar for dollar, into service credit you can apply to the new plan or to any other MannyKnows service. Service credit is not redeemable for cash.</p>
+
+          <h4 id="setup-on-switch" class="scroll-mt-24">What the setup fee does when you switch</h4>
+          <p>Setup fees attach to the build, not to the plan, so you are never charged twice for work you have already paid for. One rule covers every move:</p>
+          <p><strong>Amount due on a switch = the new tier's setup fee &minus; the setup fee you have already paid, and never less than $0.</strong></p>
+          <ul>
+            <li><strong>Moving up.</strong> You pay the difference and nothing more. Get Found ($595) to Get Booked ($895) is <strong>$300</strong>. Get Found ($595) to Sell Smarter ($1,345) is <strong>$750</strong>.</li>
+            <li><strong>Moving down.</strong> The result is negative, so nothing is due and nothing is refunded. Get Growing ($1,195) to Get Found ($595) costs <strong>$0</strong>, and if you later move back up to Get Growing it is $0 again, because $1,195 is already paid.</li>
+            <li><strong>Sideways at the same setup fee.</strong> Nothing is due. Get Growing and Get Ahead share a $1,195 build, so moving between them is <strong>$0</strong>.</li>
+            <li><strong>On a prepaid annual term</strong>, your setup fee was waived rather than paid, so the amount already paid is $0. Move up and stay on a prepaid year and the new tier's setup fee is waived too, so nothing is due. Move to month-to-month billing on a larger build and the new tier's setup fee applies in full, because none has been paid.</li>
+            <li>A switch never restarts the <a href="#refund-window">5-business-day refund window</a>, which runs once, from your original kickoff.</li>
+          </ul>
+          <p>Every tier's setup fee is listed under <a href="#build-fee">Setup and the initial build</a>. Where a build was custom-scoped in writing, the written quote sets the figure used in this calculation.</p>
 
           <h3>Late and failed payments</h3>
           <p>Invoices are due by the date stated on them. If an amount is not paid when due, we may:</p>
@@ -161,6 +193,7 @@ const effectiveDate = 'July 14, 2026';
   .legal-prose { color: inherit; font-size: 1.05rem; line-height: 1.8; }
   .legal-prose :global(h2) { font-size: 1.5rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
   .legal-prose :global(h3) { font-size: 1.15rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+  .legal-prose :global(h4) { font-size: 1.02rem; font-weight: 700; margin: 1.25rem 0 0.5rem; }
   .legal-prose :global(p) { margin: 0 0 1.25rem; }
   .legal-prose :global(ul), .legal-prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
   .legal-prose :global(li) { margin: 0.4rem 0; }

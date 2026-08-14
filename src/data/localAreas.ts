@@ -13,7 +13,8 @@
 // FACTS that must stay exact in every town's paraphrase (do not drift):
 //  - $95/mo plan: custom 1–3 page site, hosting + SSL, Remi AI answering 24/7,
 //    Google Business Profile setup, technical SEO, maintenance, multilingual
-//    standard, month-to-month, prepay a year = 2 months free.
+//    standard; a one-time setup fee builds it, then month to month with no
+//    term; prepay a year and the setup fee is waived + 2 months free.
 //  - $245/mo plan: full multi-page site + your own admin + Remi AI booking.
 //  - Credential: twenty years enterprise/startup engineering incl. enterprise
 //    eCommerce and consulting at Accenture. Based in Springfield.
@@ -129,7 +130,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'All of it starts at $95/mo: website, AI agent, SEO, and maintenance in one plan.',
     faqPricing:
-      "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. It's month-to-month with nothing extra to start. Prepay a year and two months are free. Need a full multi-page site with your own admin and Remi AI booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
+      "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. Need a full multi-page site with your own admin and Remi AI booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
     faqBusinesses:
       "Springfield's whole range: contractors in Sixteen Acres, medical and dental practices downtown, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath — ranking for what Springfield actually types into Google, answering when you can't reach the phone, and keeping the site maintained long after launch day.",
     faqAgents:
@@ -230,7 +231,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'The whole package (site, bilingual AI agent, SEO, maintenance) starts at $95/mo.',
     faqPricing:
-      "From $95/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, Remi AI answering customers around the clock, Google Business Profile setup, technical SEO, and ongoing maintenance. Month-to-month, nothing extra up front; prepay a year and you get two months free. A full multi-page site with your own admin and Remi AI booking appointments runs $245/mo, and one-time builds are on the table too. Every plan is scoped to the business, not the other way around.",
+      "From $95/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, Remi AI answering customers around the clock, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments runs $245/mo, and one-time builds are on the table too. Every plan is scoped to the business, not the other way around.",
     faqBusinesses:
       "The businesses that make Holyoke run: trades and contractors, medical and dental offices, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine — a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
     faqAgents:
@@ -336,7 +337,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'Website, AI agent, SEO, and upkeep together from $95/mo. The price is on the page, not behind a call.',
     faqPricing:
-      "It starts at $95/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. Month-to-month with nothing extra to start, and prepaying a year takes two months off. If you need a bigger multi-page site with your own admin and appointment booking, that tier is $245/mo. One-time builds exist too; either way we scope it to your business before you pay anything.",
+      "It starts at $95/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595 and the plan has no term, and prepaying a year waives that setup fee and takes two months off. If you need a bigger multi-page site with your own admin and appointment booking, that tier is $245/mo. One-time builds exist too; either way we scope it to your business before you pay anything.",
     faqBusinesses:
       "Family businesses, mostly — contractors and tradespeople, medical and dental offices, the family shops of Chicopee Center, services along Memorial Drive. The pattern rarely changes. Get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
     faqAgents:
@@ -440,7 +441,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'Design, AI agent, SEO, and maintenance start together at $95/mo.',
     faqPricing:
-      "From $95/mo. Independent shops ask this first, so here's the whole answer: a custom-designed 1–3 page site (designed, not templated), hosting and SSL, Remi AI answering visitors 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, multilingual included at every tier. Month-to-month with nothing extra up front; a prepaid year earns two months free. A larger multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds are available when a subscription isn't the right fit. Everything is scoped to your business first.",
+      "From $95/mo. Independent shops ask this first, so here's the whole answer: a custom-designed 1–3 page site (designed, not templated), hosting and SSL, Remi AI answering visitors 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, multilingual included at every tier. The build is a one-time $595, then $95/mo with no term; a prepaid year waives that setup fee and earns two months free. A larger multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds are available when a subscription isn't the right fit. Everything is scoped to your business first.",
     faqBusinesses:
       "The independents that make Northampton Northampton (clothing boutiques and furniture stores downtown, wellness and dental practices, real estate offices out in Florence) and the businesses that keep it all running off Main Street: contractors, medical practices, professional offices. Underneath the aesthetics the job is constant — ranking for what people search on their way to NoHo, answering and booking while you're with a customer, and keeping the site tended long after it launches.",
     faqAgents:
@@ -545,7 +546,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'Website, AI agent, SEO, and maintenance together from $95/mo.',
     faqPricing:
-      "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. Month-to-month, nothing extra to start. Prepay a year and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds get a flat written quote.",
+      "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds get a flat written quote.",
     faqBusinesses:
       "The businesses that make Westfield work: manufacturers and machine shops, contractors and tradespeople, the medical offices and independent retailers of downtown and the Southampton Road corridor, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same. Rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
     faqAgents:
@@ -649,7 +650,7 @@ export const localAreas: LocalArea[] = [
     plansLine:
       'Website, AI agent, SEO, and maintenance in one plan, from $95/mo.',
     faqPricing:
-      "Plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. Month-to-month, nothing extra to start; prepay a year and two months are free. The full multi-page tier with your own admin and Remi AI booking is $245/mo, and one-time builds get a flat written quote up front.",
+      "Plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. The full multi-page tier with your own admin and Remi AI booking is $245/mo, and one-time builds get a flat written quote up front.",
     faqBusinesses:
       "Agawam's backbone: contractors and tradespeople, family-run dealerships and retailers from Agawam Center to Feeding Hills, medical offices and seasonal businesses, and the services an established town leans on. The work underneath is constant. Rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
     faqAgents:

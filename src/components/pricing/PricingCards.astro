@@ -4,7 +4,8 @@
 // Aug 2026 — modeled on a reference he picked apart line by line).
 //
 // The anatomy, top to bottom:
-//   name + badge → audience line → SPEC BOX → price → CTA → savings → features
+//   name + badge → audience line → SPEC BOX → price (+ setup fee) → CTA →
+//   savings → features
 //
 // The spec box is the piece that earns its place: everything that used to be
 // three loose lines scattered under the price (the yearly total, "2 months
@@ -34,6 +35,13 @@ export interface PricingCard {
   name: string;
   audience?: string;      // "For …" — who this tier is for, one line
   price: number;
+  // One-time build fee on monthly billing, waived on a prepaid year. When set,
+  // it prints under the price in both billing views (so the two views stay the
+  // same height) and folds into the savings figure, which is what makes the
+  // yearly pitch land — at Get Found the waiver is worth more than the two
+  // free months. Omit on products that front no build; the card then reads as
+  // a plain subscription.
+  setupFee?: number;
   priceUnit?: string;     // after the price when billing is 'none' ("one-time", "/mo")
   priceNote?: string;     // the spec box's bottom line when billing is 'none'
   scope?: string;         // headline unit in the spec box ("30 product changes a month")
@@ -85,11 +93,11 @@ const money = (n: number) => n.toLocaleString('en-US');
         Monthly
       </button>
       <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
-        Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
+        Yearly <span class="font-bold billing-btn-note text-white">· build free</span>
       </button>
     </div>
     <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-      One upfront payment for the year, 2 months free
+      One upfront payment for the year, 2 months free and no setup fee
     </p>
   </div>
   )}
@@ -104,7 +112,8 @@ const money = (n: number) => n.toLocaleString('en-US');
         const accent = ACCENTS[i % ACCENTS.length];
         const yearTotal = yearlyTotal(asPlan(c.price));
         const yearMonthly = yearlyMonthly(asPlan(c.price));
-        const saves = c.price * 2;   // 12 months billed as 10
+        // Two free months, plus the setup fee the prepaid year waives.
+        const saves = c.price * 2 + (c.setupFee ?? 0);
         return (
           <div class={`tier-card tier-${accent} ${c.featured ? 'is-featured' : ''}`}>
             <div class="tier-head">
@@ -141,7 +150,7 @@ const money = (n: number) => n.toLocaleString('en-US');
                   <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   {billing === 'monthly' ? (
                     <span>
-                      <span data-billing-view="monthly" hidden>Billed monthly, cancel anytime</span>
+                      <span data-billing-view="monthly" hidden>Cancel anytime, no term</span>
                       <span data-billing-view="yearly">One payment of ${money(yearTotal)}</span>
                     </span>
                   ) : (
@@ -155,14 +164,18 @@ const money = (n: number) => n.toLocaleString('en-US');
             <div class="mt-5 text-center">
               {billing === 'monthly' ? (
                 <Fragment>
+                  {/* Both views carry the same number of lines under the price
+                      so the card doesn't change height when the toggle flips. */}
                   <div data-billing-view="monthly" hidden class="leading-none">
                     <span class="tier-price">${money(c.price)}</span>
                     <span class="tier-per">per month</span>
+                    {c.setupFee && <span class="tier-setup">plus ${money(c.setupFee)} one-time setup</span>}
                   </div>
                   <div data-billing-view="yearly" class="leading-none">
                     <s class="tier-was">${money(c.price)}</s>
                     <span class="tier-price">${money(yearMonthly)}</span>
                     <span class="tier-per">per month, billed annually</span>
+                    {c.setupFee && <span class="tier-setup is-waived">${money(c.setupFee)} setup fee waived</span>}
                   </div>
                 </Fragment>
               ) : (
@@ -375,6 +388,20 @@ const money = (n: number) => n.toLocaleString('en-US');
   }
   :global(html.dark) .tier-per { color: rgba(255, 255, 255, .65); }
 
+  /* The setup fee is a real cost, so it sits with the price rather than in the
+     11.5px billing line. On the yearly view the same slot says it's waived —
+     the strongest line on the card, and the reason the toggle is worth using. */
+  .tier-setup {
+    display: block;
+    margin-top: .3rem;
+    font-size: 12px;
+    font-weight: 700;
+    color: #3f3f46;
+  }
+  :global(html.dark) .tier-setup { color: rgba(255, 255, 255, .82); }
+  .tier-setup.is-waived { color: #15803d; }
+  :global(html.dark) .tier-setup.is-waived { color: #4ade80; }
+
   /* ── CTA + savings ────────────────────────────────────────────────────── */
   /* Glass, the same idiom as the dock and the nav: a translucent tint over a
      blur, a hairline edge, and a lit top edge — carrying the column's accent
@@ -555,8 +582,8 @@ const money = (n: number) => n.toLocaleString('en-US');
         });
         if (caption) {
           caption.textContent = mode === 'monthly'
-            ? 'Month-to-month · cancel anytime'
-            : 'One upfront payment for the year, 2 months free';
+            ? 'Setup once, then month to month · cancel anytime'
+            : 'One upfront payment for the year, 2 months free and no setup fee';
         }
         buttons.forEach((b) => {
           const active = b.dataset.billingBtn === mode;
