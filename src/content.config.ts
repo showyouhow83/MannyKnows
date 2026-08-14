@@ -8,6 +8,14 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
+    // When a post is substantially rewritten, set this instead of moving
+    // `pubDate`. `pubDate` stays the true first-published date, which is what
+    // /blog sorts on and what ships as `datePublished`; `updatedDate` prints as
+    // "Updated <date>" under the byline and ships as `dateModified`. Google
+    // reads that pair as "established article, freshly revised" — bumping
+    // pubDate instead claims a false publication date and re-sorts the index.
+    // Must be on or after pubDate.
+    updatedDate: z.coerce.date().optional(),
     author: z.string().default('Manny'),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),

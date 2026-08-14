@@ -21,6 +21,8 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import type { PricingCard } from '../components/pricing/PricingCards.astro';
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
@@ -28,9 +30,15 @@ const EMAIL = 'mm@mannyknows.com';
 
 // The three tiers. `service` values exist in serviceTypes.ts so the quote
 // modal can name what the visitor clicked.
+// Rendered through the shared PricingCards component so /apps matches /plans,
+// /ecommerce, and /local-seo. billing="none": these are one-time builds, so a
+// Monthly/Yearly toggle would be meaningless here.
 const TIERS = [
   {
     name: 'Scripts & Tools',
+    audience: 'For killing weekly busywork',
+    scope: 'Standalone tools',
+    scopeLines: ['Google Apps Script automations', 'Scheduled reports and reminders'],
     kind: 'Disconnected',
     price: 300,
     service: 'app-scripts',
@@ -43,6 +51,9 @@ const TIERS = [
   },
   {
     name: 'Connected Apps',
+    audience: "For tools that don't talk",
+    scope: 'Your stack, wired together',
+    scopeLines: ['APIs, webhooks, Twilio, Zapier', 'MCP servers so AI can use them'],
     kind: 'Connected',
     price: 600,
     service: 'app-integration',
@@ -57,6 +68,9 @@ const TIERS = [
   },
   {
     name: 'Business Apps',
+    audience: 'For running the whole operation',
+    scope: 'A system built for you',
+    scopeLines: ['Dashboards, booking, quoting', 'Yours outright, or co-owned'],
     kind: 'Custom',
     price: 2500,
     service: 'custom-app',
@@ -90,6 +104,21 @@ const FAQS = [
 const META_DESCRIPTION = 'Apps for how your business runs. Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $300, quoted up front.';
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
+const tierCards: PricingCard[] = TIERS.map((t) => ({
+  name: t.name,
+  audience: t.audience,
+  price: t.price,
+  priceUnit: 'one-time',
+  priceNote: 'Starting at, quoted flat at $75/hr',
+  scope: t.scope,
+  scopeLines: t.scopeLines,
+  tagline: t.description,
+  features: t.features,
+  featured: t.featured,
+  badge: t.kind,
+  primary: { label: 'Get a quote', href: '#quote', quoteContext: t.service },
+}));
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -137,7 +166,12 @@ const jsonLd = {
 <BaseLayout title="Business Apps, Integrations & MCP Servers | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  {/* one-canvas: one tone for the whole page instead of a different colour
+      per section (Manny, Aug 2026). Hue is grouped by pillar — see the
+      ONE-TONE CANVAS block in global.css. The per-section .room /
+      .chain-* / .glow-* classes below are left in place on purpose:
+      delete the two classes on the next line and the page reverts. */}
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
     <!-- ───────────────────────── Hero ───────────────────────── -->
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
@@ -231,37 +265,7 @@ const jsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front. You know the total before we start, and you only pay for the automation your business actually needs.</p>
         </div>
-        <div class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
-          {TIERS.map((t) => (
-            <div class={`relative flex flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 ${t.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
-              <span class="self-start inline-block text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3 bg-gradient-to-r from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">{t.kind}</span>
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
-              <div class="mt-2 mb-3">
-                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary"> one-time</span>
-              </div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{t.description}</p>
-              <ul class="space-y-2.5 flex-1">
-                {t.features.map((f) => (
-                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#quote"
-                data-quote-context={t.service}
-                class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
-              >
-                Get a quote
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-            </div>
-          ))}
-        </div>
+        <PricingCards id="appTiers" cards={tierCards} billing="none" />
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
           Got an idea bigger than a build? Some apps we co-own. We fund the build, you bring the business, and you pay nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
         </p>
@@ -327,7 +331,11 @@ const jsonLd = {
     right: 0;
     transform: translateY(-50%) translateX(calc(100% - var(--mascot-peek)));
     pointer-events: none;
-    z-index: 20;
+    /* Behind the cards, not over them. The edge-peek pattern assumes side
+       gutters (see CLAUDE.md); the tier grid now fills the container, so at
+       z-index 20 the astronaut sat across the third card's CTA. Painting it
+       under the grid keeps the peek and clears the button. */
+    z-index: 0;
   }
   .tiers-mascot img {
     height: var(--mascot-height);

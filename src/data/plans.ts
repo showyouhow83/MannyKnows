@@ -36,6 +36,17 @@ export interface PlanTier {
   builtOn?: string;     // "Everything in <tier>, plus" lead line
   features: string[];
   featured?: boolean;   // "best value"
+  // Pricing-grid extras, read by PricingCards.astro. `audience` is the "For …"
+  // line under the name (sentence case); `scope` is the tier's headline unit
+  // and `scopeLines` the "=" lines beneath it, which together fill the card's
+  // spec box.
+  // KEEP EACH scopeLine TO ONE LINE — roughly 36 characters at the card's
+  // width. A line that wraps makes its column's spec box taller than its
+  // neighbours', which drops that column's price below the others and breaks
+  // the side-by-side comparison the grid exists for.
+  audience?: string;
+  scope?: string;
+  scopeLines?: string[];
 }
 
 export interface Plan {
@@ -56,6 +67,10 @@ export interface Plan {
   // Overrides the "Month-to-month · cancel anytime · …" line under the CTAs.
   terms?: string;
   builtOn?: string;     // "Everything in <tier>, plus" lead line (incremental ladder)
+  // Pricing-grid extras, read by PricingCards.astro — see PlanTier above.
+  audience?: string;
+  scope?: string;
+  scopeLines?: string[];
   highlights: string[]; // punchy bullets for the card (the additions, for tiers that build on another)
   featured?: boolean;   // "most popular"
   hidden?: boolean;     // kept for its detail page + /plans section, but not shown in the pricing grid
@@ -82,6 +97,9 @@ export const plans: Plan[] = [
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
     price: 95,
     tagline: "Everything a new business needs to exist online and be found. Nothing it doesn't.",
+    audience: 'For startups & new businesses',
+    scope: '1–3 page website',
+    scopeLines: ['Remi AI answers customers 24/7', 'Logo design included'],
     highlights: [
       'A custom-designed 1–3 page website',
       'Logo design included',
@@ -168,6 +186,9 @@ export const plans: Plan[] = [
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
     price: 245,
     tagline: 'Your AI site now books the job. Remi AI answers, captures leads, and fills your calendar.',
+    audience: 'For booking-based businesses',
+    scope: 'Full multi-page website',
+    scopeLines: ['Remi AI answers and books the job', 'Unlimited AI content updates'],
     builtOn: 'Everything in Get Found, plus',
     highlights: [
       'A full multi-page site with deeper self-optimization that keeps more content & SEO fresh',
@@ -232,6 +253,9 @@ export const plans: Plan[] = [
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 545,
     tagline: 'A website that runs itself. It writes its own content, tunes its own SEO & speed, and sells with Remi AI.',
+    audience: 'For businesses ready to go viral',
+    scope: 'Self-optimizing website',
+    scopeLines: ['Remi AI answers, books, and sells', 'Writes new content on its own'],
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
       'Full self-optimization, like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
@@ -298,6 +322,9 @@ export const plans: Plan[] = [
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
     price: 895,
     tagline: 'Get Growing plus your advertising, run for you. The site brings them in, the ads bring more.',
+    audience: 'For businesses ready to lead their market',
+    scope: 'Self-optimizing site + ads',
+    scopeLines: ['Everything Get Growing does', 'Your ads run on two networks'],
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
       'Your ads run and managed on two networks (Google and a social platform, or two social) — the same Business Ads service, bundled in',
@@ -386,6 +413,9 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'Everything a working store needs, set up right and kept running.',
+        audience: 'For first time online sellers',
+        scope: '10 product changes a month',
+        scopeLines: ['Shopify Basic, billed by Shopify', 'SEO descriptions, whole catalog'],
         features: [
           'Shopify store configured properly: theme, payments, shipping, taxes, checkout',
           'Runs on Shopify Basic, billed by Shopify — the account is yours, we run it',
@@ -404,6 +434,9 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'The store starts pulling its weight, with copy, SEO basics, and email doing the selling.',
+        audience: 'For selling even more',
+        scope: '30 product changes a month',
+        scopeLines: ['Shopify Basic, billed by Shopify', 'Email flows and review collection'],
         builtOn: 'Everything in Sell Online, plus',
         features: [
           'Store SEO on autopilot, with titles, metas, schema, and collections tuned continuously by AI',
@@ -420,6 +453,9 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The full selling machine: an AI shopping assistant, a real SEO program, and a store that improves itself.',
+        audience: 'For automated online selling',
+        scope: '100 product changes a month',
+        scopeLines: ['Shopify Grow, billed by Shopify', 'Remi AI becomes a shopping assistant'],
         builtOn: 'Everything in Sell More, plus',
         featured: true,
         features: [
@@ -439,6 +475,9 @@ export const plans: Plan[] = [
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The store plus its own ad engine. Bought separately, this is $1,350/mo of service.',
+        audience: 'For selling viral products',
+        scope: '100 product changes a month',
+        scopeLines: ['Shopify Grow, billed by Shopify', 'Your ads run on two networks'],
         builtOn: 'Everything in Sell Smarter, plus',
         features: [
           'Your ads run and managed on two networks (Google Shopping and a social platform, or two social)',

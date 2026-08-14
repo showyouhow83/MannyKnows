@@ -45,7 +45,12 @@ const quote = getTestimonial('SL Painting');
   title="Free AI Website Analysis for Speed & SEO | MannyKnows"
   description="Get a free review of your website (speed, Google visibility, mobile, and conversions) with a prioritized list of fixes."
 >
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  {/* one-canvas: one tone for the whole page instead of a different colour
+      per section (Manny, Aug 2026). Hue is grouped by pillar — see the
+      ONE-TONE CANVAS block in global.css. The per-section .room /
+      .chain-* / .glow-* classes below are left in place on purpose:
+      delete the two classes on the next line and the page reverts. */}
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
@@ -75,7 +80,7 @@ const quote = getTestimonial('SL Painting');
               inputmode="url"
               autocomplete="url"
               placeholder="yourbusiness.com"
-              class="flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
+              class="sm:flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
             <label for="scanEmail" class="sr-only">Your email</label>
             <input
@@ -85,7 +90,7 @@ const quote = getTestimonial('SL Painting');
               inputmode="email"
               autocomplete="email"
               placeholder="you@yourbusiness.com"
-              class="flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
+              class="sm:flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
             <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 h-12 text-sm font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
               Scan my site, free

@@ -21,7 +21,12 @@
    Utilities set heading sizes per-element, so this global mobile override
    needs !important to win. Desktop scales are untouched. */
 @media (max-width: 639px) {
-	h1 { font-size: 2rem !important; }
+	/* Interior pages and the blog read at 1.3rem (Manny, Aug 2026); the
+	   homepage hero keeps the larger scale — it's the one h1 that is a
+	   display headline rather than a page title. :has() picks the homepage
+	   out by its hero id, so no page has to opt in. */
+	h1 { font-size: 1.3rem !important; }
+	body:has(#home-hero) h1 { font-size: 2rem !important; }
 	h2 { font-size: 1.5rem !important; }
 }
 
@@ -119,6 +124,113 @@ html.dark .chain-blue-pink     { background-color: #0a0a14; background-image: ra
 html.dark .chain-blue-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
 html.dark .chain-pink-violet   { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.09), transparent 60%); }
 html.dark .chain-pink-blue     { background-color: #0a0a14; background-image: radial-gradient(ellipse at top, rgba(255, 79, 170, 0.11), transparent 60%), radial-gradient(ellipse at bottom, rgba(0, 113, 227, 0.09), transparent 60%); }
+
+/* ═══ ONE-TONE CANVAS (Aug 2026) ═════════════════════════════════════════
+   The page is ONE room. The base colour and the wash live on <main>, and the
+   header and every section go transparent so the canvas runs unbroken top to
+   bottom. Every interior page AND the blog carries `one-canvas
+   one-canvas-live` on its <main> (the retired .post-canvas per-post hue
+   system folded into this one, Manny, Aug 14 2026); the homepage keeps its
+   per-section .room / .glow-* / .chain-* rhythm, which is also still in the
+   interior pages' markup so removing the two canvas classes reverts a page.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.one-canvas > header,
+.one-canvas > section,
+html.dark .one-canvas > header,
+html.dark .one-canvas > section {
+	background-color: transparent;
+	background-image: none;
+}
+
+/* A marketing page is one surface but still a sequence of arguments, so each
+   section opens on a hairline instead of a colour change (Manny, Aug 2026).
+   Lighter than the .room rule it replaces (white 10%) — with no band behind it
+   the line is the only edge, and at 10% it read as a bar. */
+.one-canvas > header { border-top-color: transparent; }
+.one-canvas > section { border-top: 1px solid rgba(0, 0, 0, 0.08); }
+html.dark .one-canvas > section { border-top-color: rgba(255, 255, 255, 0.07); }
+
+/* The wash is sized in px, not left to the default farthest-corner ellipse:
+   on <main> the element is as tall as the whole page, so an auto-sized wash
+   smears over thousands of pixels and short pages open differently from long
+   ones. 2600px with a mid stop keeps the fade long and gradual; raise
+   --canvas-wash-h to push the colour further down. The static hue classes are
+   the no-motion fallback — pages ship one-canvas-live (below) instead. Pink
+   is retired as a page wash: at these alphas over the near-black canvas it
+   reads red (Manny, Aug 2026). */
+.one-canvas { --canvas-wash-h: 2600px; }
+.one-canvas-violet { background-image: radial-gradient(ellipse 130% var(--canvas-wash-h) at 50% 0%, rgba(124, 58, 237, 0.10), rgba(124, 58, 237, 0.035) 45%, transparent 100%); }
+.one-canvas-blue   { background-image: radial-gradient(ellipse 130% var(--canvas-wash-h) at 50% 0%, rgba(0, 113, 227, 0.09), rgba(0, 113, 227, 0.03) 45%, transparent 100%); }
+
+html.dark .one-canvas { background-color: #0a0a14; }
+html.dark .one-canvas-violet { background-image: radial-gradient(ellipse 130% var(--canvas-wash-h) at 50% 0%, rgba(124, 58, 237, 0.22), rgba(124, 58, 237, 0.075) 45%, transparent 100%); }
+html.dark .one-canvas-blue   { background-image: radial-gradient(ellipse 130% var(--canvas-wash-h) at 50% 0%, rgba(0, 113, 227, 0.18), rgba(0, 113, 227, 0.06) 45%, transparent 100%); }
+
+
+/* ═══ LIVE CANVAS — the standard surface for interior pages (Aug 2026) ════
+   The animated variant of the one-canvas surface: homepage-style two-ellipse
+   washes (top + bottom, same volumes as #home-hero / .glow-blue) on two
+   stacked layers — violet on ::before, blue on ::after — cross-fading and
+   gently drifting in a slow loop, so the page breathes between the two cool
+   hues instead of sitting on one. Pink is deliberately not in the loop: at
+   wash alphas over the near-black canvas it reads red (Manny, Aug 2026 —
+   why pink is retired as a page wash everywhere).
+   Every interior page's <main> — the blog included — carries `one-canvas
+   one-canvas-live` (Manny approved the /free-ai-website-analysis test and
+   extended it to the blog, Aug 14 2026). Only the homepage keeps its
+   per-section rhythm. The static one-canvas-<hue> classes above survive as
+   the no-motion fallback. Animation is opacity/transform only (compositor-friendly,
+   no repaints); overflow:clip guards the drift without creating a scroll
+   container, so sticky table columns keep working. ═══════════════════════ */
+
+.one-canvas-live { overflow: clip; }
+.one-canvas-live::before,
+.one-canvas-live::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	will-change: opacity, transform;
+}
+.one-canvas-live::before {
+	background-image:
+		radial-gradient(ellipse 130% 1600px at 50% 0%, rgba(124, 58, 237, 0.08), transparent 70%),
+		radial-gradient(ellipse 130% 1600px at 50% 100%, rgba(124, 58, 237, 0.05), transparent 70%);
+	animation: canvas-live-violet 16s ease-in-out infinite;
+}
+.one-canvas-live::after {
+	background-image:
+		radial-gradient(ellipse 130% 1600px at 50% 0%, rgba(0, 113, 227, 0.07), transparent 70%),
+		radial-gradient(ellipse 130% 1600px at 50% 100%, rgba(0, 113, 227, 0.045), transparent 70%);
+	opacity: 0;
+	animation: canvas-live-blue 16s ease-in-out infinite;
+}
+html.dark .one-canvas-live::before {
+	background-image:
+		radial-gradient(ellipse 130% 1600px at 50% 0%, rgba(124, 58, 237, 0.16), transparent 70%),
+		radial-gradient(ellipse 130% 1600px at 50% 100%, rgba(124, 58, 237, 0.10), transparent 70%);
+}
+html.dark .one-canvas-live::after {
+	background-image:
+		radial-gradient(ellipse 130% 1600px at 50% 0%, rgba(0, 113, 227, 0.13), transparent 70%),
+		radial-gradient(ellipse 130% 1600px at 50% 100%, rgba(0, 113, 227, 0.09), transparent 70%);
+}
+/* The violet layer never fully leaves (floor 0.35) — dipping to zero read as
+   the page losing its colour for a beat before the blue arrived. */
+@keyframes canvas-live-violet {
+	0%, 100% { opacity: 1; transform: translateY(0); }
+	50%      { opacity: 0.35; transform: translateY(-28px); }
+}
+@keyframes canvas-live-blue {
+	0%, 100% { opacity: 0; transform: translateY(28px); }
+	50%      { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.one-canvas-live::before,
+	.one-canvas-live::after { animation: none; }
+	.one-canvas-live::after { opacity: 0; }
+}
 
 /* Text selection wears the brand accent (Manny, Aug 2026). */
 ::selection { background: #7c3aed; color: #ffffff; }

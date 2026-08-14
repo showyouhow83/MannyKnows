@@ -370,12 +370,21 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
 
   .hero-slide:focus-visible { outline: 3px solid #10d1ff; outline-offset: 3px; }
 
-  /* Tablet */
+  /* Tablet & mobile. The title is the only copy here (p is hidden), quiet and
+     centered per Manny (Aug 2026): regular weight, down from the desktop 22px.
+     font-size carries !important because global.css's mobile heading rule
+     (h2 { 1.5rem !important } at ≤639px) outranks any scoped size — it was
+     silently rendering these titles at 24px bold however this file set them. */
   @media (max-width: 768px) {
     .hero-carousel { height: 34vw; } /* +35% per Manny (was 25vw) */
     .hero-slide { width: 85vw; }
     .hero-slide-content { padding: 30px 18px 18px; }
     .hero-slide-content p { display: none; }
+    .hero-slide-content h2 {
+      font-size: 0.875rem !important;
+      font-weight: 400;
+      text-align: center;
+    }
   }
 
   /* Small mobile */
@@ -383,7 +392,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     .hero-carousel { height: 270px; } /* +35% per Manny (was 200px) */
     .hero-slide { width: calc(100% - 16px); }
     .hero-slide-content { padding: 24px 14px 14px; }
-    .hero-slide-content h2 { font-size: 1rem; }
+    .hero-slide-content h2 { font-size: 0.8125rem !important; }
     .hero-slide-content p { font-size: 13px; }
   }
 

@@ -1,12 +1,26 @@
 ---
 // Plan cards — driven by src/data/plans.ts (shared with the /plans/<slug>
 // detail pages). Prices are "Starting at"; every plan is tailored per client.
-// The Monthly/Yearly toggle swaps between the month-to-month rate and the
-// prepaid annual rate (pay the year upfront — 10x monthly — and get 2 months free).
-import { websitePlans, yearlyTotal, yearlyMonthly } from '../../data/plans';
+// The card layout itself lives in PricingCards.astro, shared with /ecommerce so
+// the two grids can't drift; this file maps plan records onto it and owns the
+// comparison table and the included-with-every-plan list below the grid.
+import { websitePlans } from '../../data/plans';
+import PricingCards from '../pricing/PricingCards.astro';
+import type { PricingCard } from '../pricing/PricingCards.astro';
 
-const cardBase =
-  'relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300';
+const cards: PricingCard[] = websitePlans.map((p) => ({
+  name: p.name,
+  audience: p.audience,
+  price: p.price,
+  scope: p.scope,
+  scopeLines: p.scopeLines,
+  tagline: p.tagline,
+  builtOn: p.builtOn,
+  features: p.highlights,
+  featured: p.featured,
+  primary: { label: 'See everything included', href: `/plans/${p.slug}/` },
+  secondary: { label: 'Get started', href: '#contact', context: `${p.name} plan` },
+}));
 
 // Included at every tier, so it's listed once below the comparison table rather
 // than as rows of four identical checkmarks (the table exists to show what
@@ -17,114 +31,27 @@ const cardBase =
 // then stock media.
 const includedEverywhere = [
   'Your own admin, built to fit your business',
-  'Multilingual as standard, never an add-on',
-  'Domain registered for you, if you need one',
+  'Multilingual as standard',
+  'Domain registered for you',
   'SSL certificate & DDoS protection',
   'Content caching across 330+ cities',
-  "Site runs on Cloudflare's global edge network",
-  'Unlimited storage & bandwidth, no overages',
-  'Content updates every month (unlimited from Get Booked up)',
+  "Site runs on Cloudflare's CDN",
+  'Unlimited storage & bandwidth',
   'Unlimited stock photography & video',
   'Unlimited logos',
-  'Graphic design, stock media, AI images & logo templates included*',
+  'Graphic design & AI stock media',
 ];
 ---
 
-<div class="max-w-6xl mx-auto" id="pricingPlans">
-  <!-- Billing toggle -->
-  <div class="flex flex-col items-center gap-2 mb-10">
-    <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
-      <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
-        Monthly
-      </button>
-      <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
-        Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
-      </button>
-    </div>
-    <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-      One upfront payment for the year, 2 months free
-    </p>
-  </div>
-
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
-    {websitePlans.map((p) => (
-      <div
-        class={`${cardBase} ${
-          p.featured
-            ? 'border-primary-blue/50 shadow-lg shadow-primary-blue/10 ring-1 ring-primary-blue/30 lg:-mt-2 lg:mb-2'
-            : 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'
-        }`}
-      >
-        {p.featured && (
-          <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">
-            Most popular
-          </span>
-        )}
-
-        <div class="flex items-center justify-center gap-2">
-          <svg class="w-5 h-5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
-          <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{p.name}</h3>
-        </div>
-
-        <div class="mt-4 text-center">
-          <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-          <div data-billing-view="monthly" hidden class="whitespace-nowrap leading-none mt-0.5">
-            <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-          </div>
-          <div data-billing-view="yearly" class="whitespace-nowrap leading-none mt-0.5">
-            <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${yearlyMonthly(p).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-          </div>
-          <div data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-            or ${yearlyTotal(p).toLocaleString('en-US')}/yr paid upfront · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-          </div>
-          <div data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-            billed as one payment of ${yearlyTotal(p).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-          </div>
-        </div>
-
-        <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.tagline}</p>
-
-        <div class="mt-4 pt-4 border-t border-light-tertiary dark:border-dark-accent flex-1">
-          {p.builtOn && (
-            <p class="mb-2.5 text-xs font-bold text-primary-blue dark:text-blue-300">{p.builtOn}</p>
-          )}
-          <ul class="space-y-2.5">
-            {p.highlights.map((f) => (
-              <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <a
-          href={`/plans/${p.slug}/`}
-          class={`mt-4 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
-            p.featured
-              ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white'
-              : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'
-          }`}
-        >
-          See everything included
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        </a>
-
-        <a
-          href="#contact"
-          data-contact-context={`${p.name} plan`}
-          class="mt-3 inline-flex items-center justify-center text-sm font-medium text-primary-blue dark:text-blue-300 hover:underline"
-        >
-          Get started
-        </a>
-      </div>
-    ))}
-  </div>
+{/* No max-width here: the grid fills the page Container (1440px), the same
+    width the homepage and /ecommerce use. It used to be capped at max-w-6xl
+    (1152px), which made these cards narrower than the identical grid on
+    /ecommerce and squeezed every tier's copy into extra line wraps. */}
+<div>
+  <PricingCards id="pricingPlans" cards={cards} />
 
   <!-- At-a-glance comparison — what's additive as you climb the tiers -->
-  <div class="mt-14 max-w-6xl mx-auto">
+  <div class="mt-14">
     <h3 class="text-center text-sm font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-5">Compare at a glance</h3>
     <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary">
       <table class="w-full text-sm min-w-[760px] table-fixed">
@@ -184,10 +111,10 @@ const includedEverywhere = [
   </div>
 
   <!-- What the monthly price covers — shown once for all plans -->
-  <div id="included" class="mt-10 max-w-3xl mx-auto pt-6 border-t border-gray-500/[0.27] scroll-mt-24">
+  <div id="included" class="mt-10 max-w-4xl mx-auto pt-6 border-t border-gray-500/[0.27] scroll-mt-24">
     <h3 class="text-center text-sm font-bold text-text-light-primary dark:text-text-dark-primary">Included with every plan</h3>
     <p class="mt-1.5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Fast, secure, and stocked, at every tier, not just the top one.</p>
-    <ul class="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+    <ul class="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
       {includedEverywhere.map((item) => (
         <li class="flex items-start gap-2">
           <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
@@ -196,56 +123,10 @@ const includedEverywhere = [
       ))}
     </ul>
     <p class="mt-5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-      *Via our Envato Elements license, used as-is or reworked with AI. What each "unlimited" covers is in our <a href="/terms/#unlimited" class="underline hover:text-primary-blue">terms</a>.
+      What each "unlimited" covers is in our <a href="/terms/#unlimited" class="underline hover:text-primary-blue">terms</a>.
     </p>
     <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
       Yearly pricing is one upfront payment for 12 months of service — pay for 10 months, get 12 (2 months free). Details in our <a href="/terms/" class="underline hover:text-primary-blue">terms</a>.
     </p>
   </div>
 </div>
-
-<script>
-  // Monthly ⇄ Yearly toggle: swaps cards between the month-to-month rate and
-  // the prepaid annual total (both views pre-rendered; JS toggles visibility).
-  (function () {
-    const root = document.getElementById('pricingPlans');
-    if (!root) return;
-    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
-    const caption = root.querySelector('[data-billing-caption]');
-    // Queried once here (not inside setBilling) so TS keeps the null-narrowing
-    // on `root` — and the elements never change anyway.
-    const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
-    const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
-    const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
-
-    function setBilling(mode: 'monthly' | 'yearly') {
-      views.forEach((el) => {
-        el.hidden = el.dataset.billingView !== mode;
-      });
-      if (caption) {
-        caption.textContent = mode === 'monthly'
-          ? 'Month-to-month · cancel anytime'
-          : 'One upfront payment for the year, 2 months free';
-      }
-      buttons.forEach((b) => {
-        const active = b.dataset.billingBtn === mode;
-        b.setAttribute('aria-pressed', String(active));
-        activeCls.forEach((c) => b.classList.toggle(c, active));
-        inactiveCls.forEach((c) => b.classList.toggle(c, !active));
-        const note = b.querySelector('.billing-btn-note');
-        if (note) {
-          // White inside the active gradient pill, brand-blue accent otherwise.
-          // (The static markup ships only text-white because yearly is the
-          // default — keeping both color classes there was a CSS conflict.)
-          note.classList.toggle('text-white', active);
-          note.classList.toggle('text-primary-blue', !active);
-          note.classList.toggle('dark:text-blue-300', !active);
-        }
-      });
-    }
-
-    buttons.forEach((b) =>
-      b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
-    );
-  })();
-</script>

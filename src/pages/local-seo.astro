@@ -34,6 +34,8 @@ import StepCards from '../components/ui/StepCards.astro';
 import GbpStats from '../components/sections/GbpStats.astro';
 import GbpComparison from '../components/sections/GbpComparison.astro';
 import { BOOKING_URL } from '../data/booking';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import type { PricingCard } from '../components/pricing/PricingCards.astro';
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
@@ -43,9 +45,16 @@ const FREE_TRAVEL = 'within ~10 miles of Springfield'; // free-shoot radius; bey
 
 // The two monthly SEO packages. `service` values exist in serviceTypes.ts so
 // the quote modal can name what the visitor clicked.
+// The package cards render through the shared PricingCards component, the same
+// one /plans and /ecommerce use, so all four pricing surfaces read alike.
+// billing="none": these are month-to-month only — no yearly rate has ever been
+// published on this page, and inventing one here would be an offer change.
 const PACKAGES = [
   {
     name: 'On the Map',
+    audience: 'For getting on the map',
+    scope: 'Your Google profile, run monthly',
+    scopeLines: ['Monthly 360° + standard photos', 'Reviews collected and answered'],
     price: 245,
     note: 'month-to-month · cancel anytime',
     service: 'seo-on-the-map',
@@ -62,6 +71,9 @@ const PACKAGES = [
   },
   {
     name: 'Own the Map',
+    audience: 'For owning your neighborhood',
+    scope: 'Profile, content and AI search',
+    scopeLines: ['Monthly content in your voice', 'Full virtual tour, month one'],
     price: 495,
     note: 'month-to-month · cancel anytime',
     service: 'seo-own-the-map',
@@ -79,6 +91,9 @@ const PACKAGES = [
   },
   {
     name: 'Own the Market',
+    audience: 'For competing beyond the block',
+    scope: 'A full SEO department',
+    scopeLines: ['Quarterly roadmap + strategy call', 'LLM visibility tracked monthly'],
     price: 995,
     note: 'month-to-month · cancel anytime',
     service: 'seo-own-the-market',
@@ -95,6 +110,21 @@ const PACKAGES = [
     ],
   },
 ];
+
+const packageCards: PricingCard[] = PACKAGES.map((p) => ({
+  name: p.name,
+  audience: p.audience,
+  price: p.price,
+  priceUnit: '/mo',
+  priceNote: 'Month-to-month, cancel anytime',
+  scope: p.scope,
+  scopeLines: p.scopeLines,
+  tagline: p.description,
+  builtOn: p.builtOn,
+  features: p.features,
+  featured: p.featured,
+  primary: { label: `Start with ${p.name}`, href: '#quote', quoteContext: p.service },
+}));
 
 // One-time services — quoted flat from the same public $75/hr the apps pillar
 // uses. The audit price is exact; the rest are floors ("from"), quoted up front.
@@ -220,7 +250,12 @@ const jsonLd = {
 <BaseLayout title="Springfield SEO Company: Local SEO, 360° & AI | MannyKnows" description={META_DESCRIPTION}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  {/* one-canvas: one tone for the whole page instead of a different colour
+      per section (Manny, Aug 2026). Hue is grouped by pillar — see the
+      ONE-TONE CANVAS block in global.css. The per-section .room /
+      .chain-* / .glow-* classes below are left in place on purpose:
+      delete the two classes on the next line and the page reverts. */}
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
     <!-- ───────────────────────── Hero ───────────────────────── -->
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
@@ -330,42 +365,7 @@ const jsonLd = {
           <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Get on the map. Own it. Then own the market.</span></h2>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">For any website, including ones we didn't build, this is a human + AI pipeline with real photography behind it. Prices are starting points, tailored to your business.</p>
         </div>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
-          {PACKAGES.map((p) => (
-            <div class={`relative flex flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 ${p.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
-              {p.featured && (
-                <span class="self-start inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3">Best value</span>
-              )}
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
-              <div class="mt-2 mb-3">
-                <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{p.note}</span>
-              </div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{p.description}</p>
-              {p.builtOn && (
-                <p class="text-xs font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{p.builtOn}:</p>
-              )}
-              <ul class="space-y-2.5 flex-1">
-                {p.features.map((f) => (
-                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#quote"
-                data-quote-context={p.service}
-                class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${p.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
-              >
-                Start with {p.name}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-            </div>
-          ))}
-        </div>
+        <PricingCards id="seoPackages" cards={packageCards} billing="none" featuredLabel="Best value" />
         <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-8 max-w-2xl mx-auto">
           No bought links, no guest-post schemes, no ranking guarantees. The method is the work above, done every month.
         </p>

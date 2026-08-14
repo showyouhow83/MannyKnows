@@ -28,7 +28,12 @@ const faqs = [
   title="How We Work: From First Call to Launch | MannyKnows"
   description="How to start with MannyKnows. Book a free call or message us. We map what's slowing you down, scope a plan or build, and you approve before anything starts."
 >
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  {/* one-canvas: one tone for the whole page instead of a different colour
+      per section (Manny, Aug 2026). Hue is grouped by pillar — see the
+      ONE-TONE CANVAS block in global.css. The per-section .room /
+      .chain-* / .glow-* classes below are left in place on purpose:
+      delete the two classes on the next line and the page reverts. */}
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />

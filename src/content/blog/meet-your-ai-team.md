@@ -1,60 +1,94 @@
 ---
-title: "Meet Your AI Agents Team. They Never Clock Out."
-description: "One AI Agents Team (chat agent, research, copy, design, voice, SEO, publishing, ads, reputation, and reporting) trained on your business and managed by Manny AI, working around the clock."
+title: "Meet Your AI Agents Team. You Only Hire the Manager."
+description: "You don't shop a roster of AI agents. You hire Manny AI, one manager trained on your business, and it staffs the specialists your bottleneck calls for."
 pubDate: "2026-07-24"
+updatedDate: "2026-08-13"
 author: "Manny"
-tags: ["AI Agent", "Customer Service", "Lead Generation"]
+tags: ["AI Agent", "AI Strategy", "Customer Service", "Lead Generation"]
 draft: false
-seoDescription: "Meet the AI agents that answer, research, write, design, publish, advertise, and report for your business, trained on your Brand Brain, managed by Manny AI."
+seoTitle: "Meet Your AI Agents Team | MannyKnows"
+seoDescription: "You hire one AI manager, not a roster. Manny AI staffs the specialists your bottleneck calls for, each trained on one Brand Brain you control."
 image: "/blog/meet-your-ai-team.jpg"
 ---
 
 You didn't start your business to babysit a phone, write Instagram captions at midnight, or figure out SEO. But that work decides who gets found and who gets hired, so somebody has to do it.
 
-Here's who.
+The question is who. And that's where most people get AI wrong — they go shopping for tools. What you need is a hire.
 
-## The one you may have already met: Remi AI
+## Start with the leak, not the roster
 
-Remi AI is the chat agent, living on your website and answering customers 24/7: questions, appointments, even pointing shoppers to the right product, in the customer's language. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), Remi AI is the fix: the reason a call at 9pm becomes a booked job instead of a voicemail.
+Before anyone gets introduced, two questions. Most owners can answer both in under a minute.
 
-But answering is just the first job. Every question customers ask Remi AI becomes intel for the rest of the team.
+**What are you bad at that keeps costing you money?** That's your bottleneck. It's where the leak is.
 
-## The content crew
+**What are you good at that would print revenue if it scaled?** That's your lever, and it's the thing that breaks first when volume shows up.
 
-**Eve — research & strategy.** Studies your market, your competitors, and what people around here actually search for, then tells the team what to make and why. Eve's plans are built on your real results and your real customers' questions — not generic best practices.
+The answers rarely point to the same place. AI isn't the strategy, it's the leverage — so your first hire goes where the leak is, and nowhere else.
 
-**Elly — copywriting.** Writes it the way you would say it: pages, posts, emails, product descriptions, welcome series. She never starts from a blank page — she works from Eve's brief and your Brand Brain, so the facts are right and the voice is yours.
+## The hire is Manny AI
 
-**Leo — graphics & video.** Turns Elly's copy into platform-ready graphics and short-form video — sized and captioned for Instagram, TikTok, or Facebook, not copy-pasted across all three. Always in your brand's look.
+Not ten agents. One manager.
 
-**Aria — voice & audio.** Learns your voice from a short sample, then says whatever Elly writes — voiceovers, reels, phone greetings — in *your own voice*. You never have to hit record.
+Manny AI is who you talk to. You ask for what you need, it scopes the work, sends the plan back for your approval, then puts the right specialists on the job — three, five, or seven of them, depending on what the work takes.
 
-## The growth crew
+It also checks the work. Every handoff between agents passes through Manny AI, and when a draft comes back thin, off-voice, or missing something, it goes back to the specialist for another pass before it moves on. What reaches you is a finished package, not a pile of drafts to sort out.
 
-**Nova — SEO & local search.** Makes sure the work gets found: maps the searches your customers type, tunes every page before it goes live, and keeps your Google Business Profile and local listings active — often the highest-return channel a local business has.
+> That's what separates this from a chat window. You're not prompting. You're delegating.
 
-**Piper — publisher & scheduling.** Puts everything live at the right time on every channel you use — including your website itself, where changes arrive as a private preview for your approval first. You post consistently without lifting a finger.
+## Remi AI, the one you may have already met
 
-**Max — paid ads.** Puts budget behind what's working: builds the campaigns, watches spend daily, pauses the losers, flags the winners — and never changes your budget without your sign-off.
+Remi AI is the chat agent, the one your customers see. It lives on your website and answers around the clock, in whatever language the customer opens with. If you've read [what missed calls actually cost](/blog/stop-losing-customers-missed-calls/), Remi AI is the fix — the reason a call at 9pm becomes a real lead instead of a voicemail.
 
-**Finn — engagement & reputation.** Answers the reviews, comments, and DMs in your voice. Finn handles the everyday ones; anything sensitive — an angry review, a complaint — goes to a human before it's answered. It also nudges happy customers to leave reviews.
+It comes in three sizes, and what changes between them is what it's allowed to do:
 
-**Vera — analytics & reporting.** Proves it's working. Vera tracks what every piece actually produced — traffic, calls, bookings, sales — and turns it into a monthly report: what ran, what it made, what to do more of. Those numbers feed Eve's next plan, so the team gets better every month.
+- On the [One-Page Website](/ai-website/), the lightest Remi AI answers from your business's own information and captures the lead with its details. It doesn't book.
+- On the [website plans](/plans/), Remi AI is configured around your business. It qualifies the lead, and from Get Booked up it books the job. From Get Growing, it sells.
+- Built custom, it answers your phone line, routes every call, and wires into your calendar and your backend.
 
-## And one human: Manny
+Answering is only its first job, though. Every question your customers ask becomes intel — Remi AI logs the patterns, and the rest of the team works from them.
 
-The day-to-day manager is Manny AI, but the judgment is human. Manny: twenty years solving business problems, including seven in enterprise eCommerce, reviews the work, approves the plans, and is your direct line. When you call, you get a person, not a ticket queue.
+## The specialists Manny AI staffs
 
-## How they actually work together
+**Eve — research & strategy.** A daily brief on your market, covering competitor moves, local trends, and the news that affects your business, tuned to whatever you want watched. It lands in your dashboard alongside everything else the team is doing.
 
-It runs like an assembly line built around one shared memory: your **Brand Brain**: your services, your story, your voice, your rules. Remi AI logs what customers ask. Eve turns the patterns into a plan. Elly writes, Leo and Aria produce, Nova tunes it for search, Piper publishes it, Finn works the responses, Max amplifies what earns it, and Vera measures everything and reports back, to Eve and to you. One team, one memory, no hand-off dropped.
+**Elly — copywriting.** Writes pages, posts, emails, and full sequences in your voice, working from Eve's brief and your Brand Brain. Never a blank page.
 
-## Hire one, or hire the crew
+**Nova — SEO & local search.** Maps what your customers actually type, tunes every page before it ships, and keeps your Google Business Profile active and accurate — often the highest-return channel a local business has.
 
-Nobody starts with the whole roster. Most businesses start with the one that hurts, usually Remi AI, because missed customers are the most expensive problem, and add teammates as the work grows. Every agent, what they do, and how hiring them works is on **[the AI Agents Team page](/ai-team/)**.
+**Finn — engagement & reputation.** Answers reviews, comments, and DMs in your voice, routes anything sensitive to a human before it gets a reply, and nudges happy customers to leave a review.
 
-And if you're wondering whether this works for a business your size: it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/): the same team already answering for a local daycare, qualifying leads for a Springfield painting contractor, and checking project statuses for a home services company. Built here, trained on your business, managed from one admin.
+**Vera — analytics & reporting.** Tracks what every piece produced (traffic, calls, bookings, sales) and turns it into a monthly report that feeds Eve's next plan. The team improves because it reads its own scoreboard.
 
-See it running first, if you like: [JK Daycare](/work/jk-daycare/) answers parents around the clock, and [VL Home Services](/work/vl-home-services/) wired their agent into their own admin, both right down the road.
+Behind them runs work that never gets its own card: design, video, voice, publishing, and paid ads. Those are sub-agents under Manny AI. You don't hire them or manage them — you see the graphic, the reel, the scheduled post, the campaign, and Manny AI is the one who ordered it.
 
-Ready to stop being your own front desk? [Tell us where it hurts.](#contact)
+## And the one that doesn't exist yet
+
+The roster covers what most businesses need. Some businesses need something only theirs does, and that's what a custom agent is for.
+
+Two of ours are running right now. [A daycare in Springfield](/work/jk-daycare/) got a bilingual phone system that answers every call and routes it to the right person. [A home services company](/work/vl-home-services/) got an agent wired into their own admin that checks project statuses against their backend. Neither was a roster agent, because neither problem was a roster problem.
+
+We scope those the same way — find the bottleneck, build the agent around it, and Manny AI manages it like any other hire. The custom builds that prove useful become roster agents. That's how the roster grows.
+
+## One brain, and it's yours
+
+All of it runs on one shared memory called your Brand Brain — your services, your prices, your past work, your rules, and the way you want things said. Every agent reads from it and writes back to it. Eve's research, Vera's numbers, and the questions Remi AI hears all day all get filed in the same place.
+
+And it's yours to set. Change a price, drop a service, decide you hate a phrase, and every agent works from the new version on its next run. That's the control. You don't retrain a team, you edit one source and the whole team moves with it.
+
+## Not fully autonomous, on purpose
+
+The agents do the volume — researching, drafting, designing, scheduling, monitoring, measuring. Nothing customer-facing goes out until you approve it. Even changes to your own website arrive as a private preview first, and nothing touches the live site until you press publish.
+
+A person stays in the loop where judgment matters, on the calls, the verifications, the review appeals, the decisions AI shouldn't make alone. That person is Manny — twenty years solving business problems, seven of them in enterprise eCommerce. When you call, you get him, not a ticket queue.
+
+## Where to start
+
+Nobody starts with everything. You start with the leak.
+
+For most businesses it's unanswered customers, which is why Remi AI is usually the first hire — a missed customer is the most expensive problem on the list. For others nothing gets made, or everything gets made and nobody sees it. Different leak, different first hire.
+
+Every agent, what it does, and how hiring works is on **[the AI Agents Team page](/ai-team/)**. If you'd rather watch one work before you decide, [Remi AI has a page of its own](/ai-booking-agent/), and you can talk to ours right on it.
+
+If you're wondering whether this is built for a business your size, it was built for one. These are [AI agents for small businesses in Springfield, MA and across Western Massachusetts](/ai-team/), already answering for a local daycare, qualifying leads for a [Springfield painting contractor](/work/sl-painting/), and checking project statuses for a home services company. Built here, trained on your business, run from one admin.
+
+Bring your answers to those two questions, or bring none and we'll find them together. [Tell us where it hurts.](#contact)

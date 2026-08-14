@@ -1,0 +1,620 @@
+---
+// The pricing grid, shared by /plans (website tiers) and /ecommerce (store
+// tiers) so the two can never drift in layout the way they had (Manny,
+// Aug 2026 — modeled on a reference he picked apart line by line).
+//
+// The anatomy, top to bottom:
+//   name + badge → audience line → SPEC BOX → price → CTA → savings → features
+//
+// The spec box is the piece that earns its place: everything that used to be
+// three loose lines scattered under the price (the yearly total, "2 months
+// free", which Shopify plan it runs on) now lives in one bordered panel with
+// the tier's headline unit on top. The billing line inside it swaps with the
+// Monthly/Yearly toggle, so the toggle changes one place instead of four.
+//
+// Each column carries its own accent (slate → blue → fuchsia → indigo) with a
+// glass button painted to match. That's a deliberate exception to the
+// one-gradient-button rule in global.css, scoped to pricing cards only; the
+// rest of the site keeps the single blue→fuchsia CTA.
+//
+// LAYOUT INVARIANT: every audience line and every scopeLine must fit on ONE
+// line. Nothing here reserves height — a line that wraps makes its column's
+// box taller than its neighbours' and drops that column's price off the shared
+// line, which is the whole point of a comparison grid. The 1280–1439 band
+// tightens padding and type a step to keep that true on smaller laptops;
+// below 1280 the grid drops to two columns, where there is room again.
+//
+// Below `md` the grid becomes a snap-scrolling rail with arrows and dots —
+// stacked pricing cards make a reader scroll past three tiers to compare two.
+import { yearlyTotal, yearlyMonthly } from '../../data/plans';
+
+type Cta = { label: string; href: string; context?: string; quoteContext?: string };
+
+export interface PricingCard {
+  name: string;
+  audience?: string;      // "For …" — who this tier is for, one line
+  price: number;
+  priceUnit?: string;     // after the price when billing is 'none' ("one-time", "/mo")
+  priceNote?: string;     // the spec box's bottom line when billing is 'none'
+  scope?: string;         // headline unit in the spec box ("30 product changes a month")
+  scopeLines?: string[];  // the "=" derivation lines beneath it
+  tagline: string;
+  builtOn?: string;
+  features: string[];
+  featured?: boolean;
+  badge?: string;         // own pill instead of the featured label (/apps: "Connected")
+  primary: Cta;
+  secondary?: Cta;
+}
+
+interface Props {
+  id: string;
+  cards: PricingCard[];
+  /** Label on the featured tier's pill. */
+  featuredLabel?: string;
+  /**
+   * 'monthly' — Monthly/Yearly toggle, struck-through monthly rate, savings line.
+   * 'none'    — one price with its own unit and note. Used where a yearly rate
+   *             would be meaningless (/apps sells one-time builds) or has never
+   *             been published (/local-seo is month-to-month only).
+   */
+  billing?: 'monthly' | 'none';
+}
+
+const { id, cards, featuredLabel = 'Most popular', billing = 'monthly' } = Astro.props;
+
+// Accent per column position. Column 3 (the "most popular" tier on both pages)
+// takes the loudest hue and column 4 a deep indigo — violet next to fuchsia
+// read as the same purple twice (Manny), so the two purples are now separated
+// by lightness as well as hue. Cycles if a page ever ships more than four tiers.
+const ACCENTS = ['slate', 'blue', 'fuchsia', 'indigo'] as const;
+
+// Both pages price the same way — pay 10 months, get 12 — so the yearly math
+// lives here rather than being re-derived per page. Typed on `price` alone so
+// the plan helpers work for store tiers too (they aren't full Plan records).
+const asPlan = (price: number) => ({ price }) as Parameters<typeof yearlyTotal>[0];
+const money = (n: number) => n.toLocaleString('en-US');
+---
+
+<div id={id} data-pricing-root>
+  <!-- Billing toggle -->
+  {billing === 'monthly' && (
+  <div class="flex flex-col items-center gap-2 mb-10">
+    <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
+      <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
+        Monthly
+      </button>
+      <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
+        Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
+      </button>
+    </div>
+    <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
+      One upfront payment for the year, 2 months free
+    </p>
+  </div>
+  )}
+
+  <div class="relative">
+    <div
+      class={`tier-rail ${cards.length >= 4 ? 'is-4up' : ''}`}
+      style={`--tier-cols:${cards.length}`}
+      data-pricing-rail
+    >
+      {cards.map((c, i) => {
+        const accent = ACCENTS[i % ACCENTS.length];
+        const yearTotal = yearlyTotal(asPlan(c.price));
+        const yearMonthly = yearlyMonthly(asPlan(c.price));
+        const saves = c.price * 2;   // 12 months billed as 10
+        return (
+          <div class={`tier-card tier-${accent} ${c.featured ? 'is-featured' : ''}`}>
+            <div class="tier-head">
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{c.name}</h3>
+                {(c.badge || c.featured) && <span class="tier-badge">{c.badge ?? featuredLabel}</span>}
+              </div>
+              {c.audience && (
+                <p class="mt-1 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{c.audience}</p>
+              )}
+            </div>
+
+            <!-- Spec box: what you get, then how it's billed -->
+            <div class="tier-spec">
+              {c.scope && (
+                <p class="flex items-start gap-2 text-sm font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">
+                  <svg class="tier-spec-icon w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                  <span>{c.scope}</span>
+                </p>
+              )}
+              {c.scopeLines && c.scopeLines.length > 0 && (
+                <ul class="mt-2 space-y-1">
+                  {c.scopeLines.map((l) => (
+                    <li class="flex gap-1.5 text-xs text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                      <span class="tier-spec-eq flex-shrink-0" aria-hidden="true">=</span><span>{l}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {/* Divided off by a rule, not boxed: a bordered pill inside an
+                  already-bordered box read as a box in a box (Manny). */}
+              <div class="tier-billing-wrap">
+                <div class="tier-billing">
+                  <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  {billing === 'monthly' ? (
+                    <span>
+                      <span data-billing-view="monthly" hidden>Billed monthly, cancel anytime</span>
+                      <span data-billing-view="yearly">One payment of ${money(yearTotal)}</span>
+                    </span>
+                  ) : (
+                    <span>{c.priceNote}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="mt-5 text-center">
+              {billing === 'monthly' ? (
+                <Fragment>
+                  <div data-billing-view="monthly" hidden class="leading-none">
+                    <span class="tier-price">${money(c.price)}</span>
+                    <span class="tier-per">per month</span>
+                  </div>
+                  <div data-billing-view="yearly" class="leading-none">
+                    <s class="tier-was">${money(c.price)}</s>
+                    <span class="tier-price">${money(yearMonthly)}</span>
+                    <span class="tier-per">per month, billed annually</span>
+                  </div>
+                </Fragment>
+              ) : (
+                <div class="leading-none">
+                  <span class="tier-price">${money(c.price)}</span>
+                  <span class="tier-per">{c.priceUnit}</span>
+                </div>
+              )}
+            </div>
+
+            <a
+              href={c.primary.href}
+              data-contact-context={c.primary.context}
+              data-quote-context={c.primary.quoteContext}
+              class="tier-cta mt-4"
+            >
+              {c.primary.label}
+            </a>
+
+            {billing === 'monthly' && (
+              <p class="tier-save mt-2.5">
+                <span data-billing-view="monthly" hidden>Pay yearly and save <strong>${money(saves)}</strong></span>
+                <span data-billing-view="yearly">Save <strong>${money(saves)}</strong> compared to monthly</span>
+              </p>
+            )}
+
+            {c.secondary && (
+              <a
+                href={c.secondary.href}
+                data-contact-context={c.secondary.context}
+                data-quote-context={c.secondary.quoteContext}
+                class="mt-3 inline-flex items-center justify-center text-sm font-medium text-primary-blue dark:text-blue-300 hover:underline"
+              >
+                {c.secondary.label}
+              </a>
+            )}
+
+            <div class="tier-body mt-5 pt-5 border-t border-light-tertiary dark:border-white/10 flex-1">
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.tagline}</p>
+              {c.builtOn && <p class="tier-builton mt-3">{c.builtOn}</p>}
+              {/* Lines about Remi AI get Remi's face for a bullet instead of a
+                  check — the agent is the product, so the reader can see at a
+                  glance which capabilities are the agent's (Manny, trial). The
+                  art is a head crop; the full /team/desi.webp is a whole desk
+                  scene and reads as a smudge at 20px. */}
+              <ul class="mt-3 space-y-2.5">
+                {c.features.map((f) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    {/\bRemi\b/.test(f) ? (
+                      <img src="/team/desi-face.webp" width="96" height="96" alt="" aria-hidden="true" loading="lazy" decoding="async" class="tier-remi flex-shrink-0" />
+                    ) : (
+                      <svg class="tier-check w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Rail controls — phones and small tablets only; the md+ grid needs none. */}
+    <button type="button" data-rail-nav="prev" aria-label="Previous plan"
+      class="rail-arrow left-0 -translate-x-1 md:hidden">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+    </button>
+    <button type="button" data-rail-nav="next" aria-label="Next plan"
+      class="rail-arrow right-0 translate-x-1 md:hidden">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+    </button>
+  </div>
+
+  <div class="mt-5 flex items-center justify-center gap-2 md:hidden" data-rail-dots>
+    {cards.map((c, i) => (
+      <button type="button" class="rail-dot" data-rail-dot={i} aria-label={`Show ${c.name}`} aria-current={i === 0 ? 'true' : 'false'}></button>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* ── Accent ramp ─────────────────────────────────────────────────────────
+     Space-separated RGB so one custom property drives fills at any alpha. */
+  /* `--btn-ink` is the light-mode button label: the accent is too light on a
+     translucent fill to clear contrast on its own, so each one gets its 700
+     shade for text. Dark mode just uses white. */
+  .tier-slate   { --accent: 100 116 139; --btn-ink: #27272a; }
+  .tier-blue    { --accent:  37  99 235; --btn-ink: #1d4ed8; }
+  .tier-fuchsia { --accent: 217  70 239; --btn-ink: #a21caf; }
+  .tier-indigo  { --accent:  79  70 229; --btn-ink: #4338ca; }
+  .tier-violet  { --accent: 124  58 237; --btn-ink: #6d28d9; }
+
+  /* One dial for the card's inset — every child aligns to it. */
+  .tier-card {
+    --tier-pad: 1.5rem;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1rem;
+    border: 1px solid rgb(var(--accent) / 0.28);
+    background:
+      linear-gradient(180deg, rgb(var(--accent) / 0.10), rgb(var(--accent) / 0.02) 45%, transparent 72%),
+      #ffffff;
+    padding: var(--tier-pad);
+    transition: border-color .3s, box-shadow .3s;
+  }
+  :global(html.dark) .tier-card {
+    background:
+      linear-gradient(180deg, rgb(var(--accent) / 0.22), rgb(var(--accent) / 0.06) 45%, transparent 72%),
+      #12121f;
+  }
+  .tier-card:hover { border-color: rgb(var(--accent) / 0.55); box-shadow: 0 10px 30px rgb(var(--accent) / 0.12); }
+  .tier-card.is-featured {
+    border-color: rgb(var(--accent) / 0.6);
+    box-shadow: 0 10px 34px rgb(var(--accent) / 0.18);
+  }
+
+  .tier-badge {
+    background: rgb(var(--accent));
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: .2rem .5rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* ── Spec box ─────────────────────────────────────────────────────────── */
+  /* Side by side, the price has to land on the same line in all four columns —
+     a reader compares prices by scanning across, not by reading a card. Tier
+     names, audience lines, and spec lines all wrap to different heights at
+     these widths, so the two blocks above the price reserve a floor. Only from
+     md up, where the cards are actually side by side; in the phone rail each
+     card is read on its own and the reserved space would just be a gap. */
+  .tier-spec {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    border-radius: .75rem;
+    border: 1px solid rgb(var(--accent) / 0.22);
+    background: rgb(var(--accent) / 0.06);
+    padding: .875rem;
+  }
+  :global(html.dark) .tier-spec { background: rgb(var(--accent) / 0.10); }
+  .tier-spec-icon { color: rgb(var(--accent)); }
+  :global(html.dark) .tier-spec-icon { color: rgb(var(--accent) / 0.95); filter: brightness(1.35); }
+  .tier-spec-eq { color: rgb(var(--accent)); font-weight: 700; }
+  :global(html.dark) .tier-spec-eq { filter: brightness(1.4); }
+
+  /* On phones each card is read alone, so the pill drops to the box floor and
+     the rule sits with it. On desktop the boxes size to their own content
+     (no min-height), so there's no slack to absorb and `auto` would do nothing
+     but confuse the next person reading this. */
+  .tier-billing-wrap {
+    margin-top: auto;
+    padding-top: .75rem;
+  }
+  @media (min-width: 768px) {
+    .tier-billing-wrap { margin-top: 0; }
+  }
+  /* A rule, not a border-box — see the markup note above. */
+  .tier-billing {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    border-top: 1px solid rgb(var(--accent) / 0.22);
+    padding-top: .6rem;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #3f3f46;
+  }
+  :global(html.dark) .tier-billing {
+    border-top-color: rgba(255, 255, 255, 0.12);
+    color: #e4e4e7;
+  }
+
+  /* The card's own padding is the ONLY horizontal inset. An earlier pass added
+     a second one here, which pushed the feature list in past the price and the
+     button above it and read as a misalignment rather than as breathing room.
+     To change the card's inset, change --tier-pad below — not this block. */
+  .tier-body { padding-left: 0; padding-right: 0; }
+
+  /* ── Price ────────────────────────────────────────────────────────────── */
+  .tier-was {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ef4444;
+    margin-right: .25rem;
+    text-decoration-thickness: 2px;
+  }
+  .tier-price {
+    font-size: 2.25rem;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    color: #18181b;
+  }
+  :global(html.dark) .tier-price { color: #ffffff; }
+  .tier-per {
+    display: block;
+    margin-top: .4rem;
+    font-size: 12px;
+    color: #52525b;
+  }
+  :global(html.dark) .tier-per { color: rgba(255, 255, 255, .65); }
+
+  /* ── CTA + savings ────────────────────────────────────────────────────── */
+  /* Glass, the same idiom as the dock and the nav: a translucent tint over a
+     blur, a hairline edge, and a lit top edge — carrying the column's accent
+     instead of a solid fill. */
+  .tier-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-radius: .75rem;
+    padding: .75rem 1rem;
+    font-size: .9rem;
+    font-weight: 700;
+    background: rgb(var(--accent) / 0.14);
+    border: 1px solid rgb(var(--accent) / 0.42);
+    color: var(--btn-ink);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    transition: background .25s, border-color .25s, transform .25s;
+  }
+  .tier-cta:hover {
+    background: rgb(var(--accent) / 0.24);
+    border-color: rgb(var(--accent) / 0.62);
+    transform: translateY(-1px);
+  }
+  :global(html.dark) .tier-cta {
+    background: rgb(var(--accent) / 0.28);
+    border-color: rgb(var(--accent) / 0.55);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  :global(html.dark) .tier-cta:hover {
+    background: rgb(var(--accent) / 0.42);
+    border-color: rgb(var(--accent) / 0.75);
+  }
+
+  .tier-save {
+    text-align: center;
+    font-size: 11.5px;
+    color: #52525b;
+  }
+  :global(html.dark) .tier-save { color: rgba(255, 255, 255, .6); }
+  .tier-save strong { color: #18181b; font-weight: 800; }
+  :global(html.dark) .tier-save strong { color: #ffffff; }
+
+  .tier-builton { font-size: 12px; font-weight: 700; color: rgb(var(--accent)); }
+  :global(html.dark) .tier-builton { filter: brightness(1.45); }
+  .tier-check { color: rgb(var(--accent)); }
+  /* Sized to the check's optical weight, on an accent disc so it reads as a
+     bullet rather than a stray photo. */
+  .tier-remi {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: -1px;
+    border-radius: 999px;
+    object-fit: cover;
+    background: rgb(var(--accent) / 0.16);
+  }
+  :global(html.dark) .tier-check { filter: brightness(1.45); }
+
+  /* ── Rail: snap-scrolling below md, plain grid from md up ─────────────── */
+  .tier-rail {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: .5rem;
+    /* Bleed to the viewport edges so a card can sit centred with its
+       neighbours peeking, instead of being boxed by the container padding. */
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    scrollbar-width: none;
+  }
+  .tier-rail::-webkit-scrollbar { display: none; }
+  .tier-rail > .tier-card {
+    flex: 0 0 auto;
+    width: 85vw;
+    max-width: 22rem;
+    scroll-snap-align: center;
+  }
+  @media (min-width: 768px) {
+    .tier-rail {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      align-items: stretch;
+    }
+    .tier-rail > .tier-card { width: auto; max-width: none; }
+  }
+  /* Four-across starts at 1280, not 1024: at 1024 a card is ~222px and no
+     readable type size fits a 36-character line without wrapping, which
+     staggered the columns. Two-up below that gives ~340px-plus cards. */
+  @media (min-width: 1280px) {
+    .tier-rail { grid-template-columns: repeat(var(--tier-cols, 4), minmax(0, 1fr)); }
+  }
+
+  /* The four-across band below ~1366px is the tight one: a card there is only
+     ~280px, and every spec line wrapped to two — which staggered the columns by
+     up to 19px and dropped the prices off a shared line (measured 132/148/148/
+     151 at 1280px). Rather than drop to two columns on a 1280 laptop, the card
+     tightens: less padding, one step down in type. One line per feature holds
+     at every width the grid is four-across. */
+  @media (min-width: 1280px) and (max-width: 1439px) {
+    .is-4up .tier-card { --tier-pad: 1.1rem; }
+    .is-4up .tier-spec { padding: .7rem; }
+    .is-4up .tier-spec > p { font-size: .8125rem; }
+    .is-4up .tier-spec li { font-size: 10.5px; }
+    .is-4up .tier-billing { font-size: 10.5px; }
+    .is-4up .tier-head p { font-size: 11px; }
+  }
+
+  .rail-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    background: rgba(255, 255, 255, .9);
+    color: #3f3f46;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+  }
+  :global(html.dark) .rail-arrow {
+    border-color: rgba(255, 255, 255, .16);
+    background: rgba(18, 18, 31, .9);
+    color: #e4e4e7;
+  }
+
+  .rail-dot {
+    width: .5rem;
+    height: .5rem;
+    border-radius: 999px;
+    background: rgba(113, 113, 122, .35);
+    transition: background .25s, width .25s;
+  }
+  .rail-dot[aria-current='true'] { width: 1.4rem; background: #7c3aed; }
+  :global(html.dark) .rail-dot { background: rgba(255, 255, 255, .22); }
+  :global(html.dark) .rail-dot[aria-current='true'] { background: #a78bfa; }
+
+  /* Last, on purpose: scoped rules outrank Tailwind's `md:hidden` (Astro adds a
+     data attribute to every selector in this block), and same-specificity rules
+     are settled by source order — declared earlier, `display: grid` below would
+     win and leave the arrows floating over the desktop grid. */
+  @media (min-width: 768px) {
+    .rail-arrow,
+    .rail-dot { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier-cta:hover { transform: none; }
+  }
+</style>
+
+<script>
+  // One handler for every pricing grid on the page: the Monthly/Yearly toggle
+  // (both views are pre-rendered; JS only flips `hidden`) and the mobile rail.
+  (function () {
+    document.querySelectorAll<HTMLElement>('[data-pricing-root]').forEach((root) => {
+      /* ── Billing toggle ────────────────────────────────────────────── */
+      const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
+      const caption = root.querySelector('[data-billing-caption]');
+      const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
+      const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
+      const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
+
+      function setBilling(mode: 'monthly' | 'yearly') {
+        views.forEach((el) => {
+          el.hidden = el.dataset.billingView !== mode;
+        });
+        if (caption) {
+          caption.textContent = mode === 'monthly'
+            ? 'Month-to-month · cancel anytime'
+            : 'One upfront payment for the year, 2 months free';
+        }
+        buttons.forEach((b) => {
+          const active = b.dataset.billingBtn === mode;
+          b.setAttribute('aria-pressed', String(active));
+          activeCls.forEach((c) => b.classList.toggle(c, active));
+          inactiveCls.forEach((c) => b.classList.toggle(c, !active));
+          const note = b.querySelector('.billing-btn-note');
+          if (note) {
+            // White inside the active gradient pill, brand-blue accent otherwise.
+            note.classList.toggle('text-white', active);
+            note.classList.toggle('text-primary-blue', !active);
+            note.classList.toggle('dark:text-blue-300', !active);
+          }
+        });
+      }
+
+      buttons.forEach((b) =>
+        b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
+      );
+
+      /* ── Mobile rail ───────────────────────────────────────────────── */
+      const rail = root.querySelector<HTMLElement>('[data-pricing-rail]');
+      if (!rail) return;
+      const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-rail-dot]'));
+      const cards = () => Array.from(rail.children).filter((el): el is HTMLElement => el instanceof HTMLElement);
+
+      // Nearest card to the rail's left edge — the one snapped into view.
+      function current() {
+        const list = cards();
+        let best = 0, min = Infinity;
+        list.forEach((el, i) => {
+          const d = Math.abs(el.offsetLeft - rail!.offsetLeft - rail!.scrollLeft);
+          if (d < min) { min = d; best = i; }
+        });
+        return best;
+      }
+      function goTo(i: number) {
+        const list = cards();
+        if (!list.length) return;
+        const idx = Math.max(0, Math.min(i, list.length - 1));
+        rail!.scrollTo({ left: list[idx].offsetLeft - rail!.offsetLeft, behavior: 'smooth' });
+      }
+      function syncDots() {
+        const at = current();
+        dots.forEach((d, i) => d.setAttribute('aria-current', String(i === at)));
+      }
+
+      root.querySelectorAll<HTMLButtonElement>('[data-rail-nav]').forEach((btn) => {
+        btn.addEventListener('click', () => goTo(current() + (btn.dataset.railNav === 'next' ? 1 : -1)));
+      });
+      dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+      let raf = 0;
+      rail.addEventListener('scroll', () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(syncDots);
+      }, { passive: true });
+      syncDots();
+    });
+  })();
+</script>

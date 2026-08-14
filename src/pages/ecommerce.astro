@@ -13,6 +13,8 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import Faq from '../components/ui/Faq.astro';
 import { ecommercePlans, yearlyTotal, yearlyMonthly } from '../data/plans';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import type { PricingCard } from '../components/pricing/PricingCards.astro';
 // Official monochrome brand marks from the CC0 simple-icons set, resolved at
 // build time. Adobe Commerce/Magento and Ecwid aren't in the set (Adobe's
 // marks were removed on trademark grounds) — those two render as text chips.
@@ -36,6 +38,21 @@ import StepCards from '../components/ui/StepCards.astro';
 
 const plan = ecommercePlans[0];
 const proofQuote = getTestimonial('Cherry Vibes');
+
+// The tier grid renders through the shared PricingCards component (same one
+// /plans uses) so the two pricing surfaces stay identical in layout.
+const storeCards: PricingCard[] = plan.tiers!.map((t) => ({
+  name: t.name,
+  audience: t.audience,
+  price: t.price,
+  scope: t.scope,
+  scopeLines: t.scopeLines,
+  tagline: t.description,
+  builtOn: t.builtOn,
+  features: t.features,
+  featured: t.featured,
+  primary: { label: 'Get started', href: '#contact', context: `Online Store: ${t.name}` },
+}));
 
 // The honest comparison: a store isn't a website tier, so we say plainly what
 // it costs relative to the plan it's built on rather than hiding the math.
@@ -73,7 +90,12 @@ const pageJsonLd = {
   description={`Ecommerce web design for Springfield, Northampton & Western Mass. Shopify stores built, stocked & run, Remi AI answering shoppers 24/7. From $${plan.price.toLocaleString('en-US')}/mo.`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  {/* one-canvas: one tone for the whole page instead of a different colour
+      per section (Manny, Aug 2026). Hue is grouped by pillar — see the
+      ONE-TONE CANVAS block in global.css. The per-section .room /
+      .chain-* / .glow-* classes below are left in place on purpose:
+      delete the two classes on the next line and the page reverts. */}
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
@@ -178,87 +200,23 @@ const pageJsonLd = {
             Each tier includes everything in the one before it. Your Shopify subscription is billed separately by Shopify, in your name. Start where your store is; move up when it's earning more.
           </p>
         </div>
-        <!-- Monthly ⇄ Yearly toggle — visually identical to /plans, yearly
-             pre-selected so the cheaper rate is what visitors meet first. -->
-        <div id="storePricing">
-        <div class="flex flex-col items-center gap-2 mb-10">
-          <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
-            <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
-              Monthly
-            </button>
-            <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
-              Yearly <span class="font-bold billing-btn-note text-white">· 2 months free</span>
-            </button>
-          </div>
-          <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-            One upfront payment for the year, 2 months free
-          </p>
-        </div>
-        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
-          {plan.tiers!.map((t) => (
-            <div class={`relative flex flex-col rounded-2xl border bg-white dark:bg-dark-secondary p-6 transition-all duration-300 ${t.featured ? 'border-primary-blue/50 shadow-lg shadow-primary-blue/10 ring-1 ring-primary-blue/30 xl:-mt-2 xl:mb-2' : 'border-light-tertiary dark:border-dark-accent hover:border-primary-blue/30 hover:shadow-lg'}`}>
-              {t.featured && (
-                <span class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow">
-                  Most popular
-                </span>
-              )}
-
-              <div class="flex items-center justify-center gap-2">
-                <h3 class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">{t.name}</h3>
-              </div>
-
-              <div class="mt-4 text-center">
-                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
-                <div data-billing-view="monthly" hidden class="whitespace-nowrap leading-none mt-0.5">
-                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                </div>
-                <div data-billing-view="yearly" class="whitespace-nowrap leading-none mt-0.5">
-                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${Math.round((t.price * 10) / 12).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
-                </div>
-                <div data-billing-view="monthly" hidden class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-                  or ${(t.price * 10).toLocaleString('en-US')}/yr paid upfront · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-                </div>
-                <div data-billing-view="yearly" class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1.5">
-                  billed as one payment of ${(t.price * 10).toLocaleString('en-US')}/yr · <span class="text-primary-blue dark:text-blue-300 font-semibold">2 months free</span>
-                </div>
-                <p class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mt-1.5">{t.note}</p>
-              </div>
-
-              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{t.description}</p>
-
-              <div class="mt-4 pt-4 border-t border-light-tertiary dark:border-dark-accent flex-1">
-                {t.builtOn && (
-                  <p class="mb-2.5 text-xs font-bold text-primary-blue dark:text-blue-300">{t.builtOn}</p>
-                )}
-                <ul class="space-y-2.5">
-                  {t.features.map((f) => (
-                    <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                      <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <a href="#contact" data-contact-context={`Online Store: ${t.name}`} class={`mt-4 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}>
-                Get started
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-            </div>
-          ))}
-        </div>
-        </div>
-
+        {/* The tier grid — shared PricingCards component (same one /plans
+            uses): billing toggle, spec box, accent-per-column, and the
+            snap-scrolling rail on phones. */}
+        <PricingCards id="storePricing" cards={storeCards} />
         <div class="mt-14">
           <p class="text-center text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-4">Compare at a glance</p>
           <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent">
-            <table class="w-full min-w-[720px] text-sm bg-white dark:bg-dark-secondary">
+            {/* First column is frozen while the tiers scroll under it — same
+                treatment as the /plans table, which had it and this one didn't:
+                on a phone the row labels scrolled away and the checkmarks lost
+                their meaning. Sticky cells carry their own background because
+                the table's would scroll out from under them. */}
+            <table class="w-full min-w-[760px] text-sm table-fixed bg-white dark:bg-dark-secondary">
               <thead>
                 <tr class="border-b border-light-tertiary dark:border-dark-accent text-left">
-                  <th class="p-4 font-semibold text-text-light-primary dark:text-text-dark-primary">What you get</th>
-                  {plan.tiers!.map((t) => <th class="p-4 font-semibold text-center text-text-light-primary dark:text-text-dark-primary">{t.name.replace('Sell ', '')}</th>)}
+                  <th class="w-[190px] sm:w-2/5 sticky left-0 z-20 p-4 font-semibold text-text-light-primary dark:text-text-dark-primary bg-light-secondary dark:bg-dark-primary border-r border-light-tertiary dark:border-dark-accent">What you get</th>
+                  {plan.tiers!.map((t) => <th class="p-4 font-semibold text-center text-text-light-primary dark:text-text-dark-primary bg-light-secondary dark:bg-dark-primary">{t.name.replace('Sell ', '')}</th>)}
                 </tr>
               </thead>
               <tbody class="text-text-light-secondary dark:text-text-dark-secondary">
@@ -278,14 +236,14 @@ const pageJsonLd = {
                   ['Monthly working session with Manny', '—', '—', '—', '✓'],
                 ].map((row) => (
                   <tr class="border-b border-light-tertiary/60 dark:border-dark-accent/60 last:border-0">
-                    <td class="p-4">{row[0]}</td>
+                    <td class="sticky left-0 z-10 p-4 bg-white dark:bg-dark-secondary border-r border-light-tertiary dark:border-dark-accent">{row[0]}</td>
                     {row.slice(1).map((c) => (
                       <td class={`p-4 text-center ${c === '✓' ? 'text-green-500 font-bold' : c === '—' ? 'text-text-light-tertiary dark:text-text-dark-tertiary' : 'font-semibold text-primary-blue dark:text-blue-300'}`}>{c}</td>
                     ))}
                   </tr>
                 ))}
-                <tr class="bg-light-secondary/40 dark:bg-dark-primary/40">
-                  <td class="p-4 font-bold text-text-light-primary dark:text-text-dark-primary">Per month</td>
+                <tr class="bg-light-secondary dark:bg-dark-primary">
+                  <td class="sticky left-0 z-10 p-4 font-bold text-text-light-primary dark:text-text-dark-primary bg-light-secondary dark:bg-dark-primary border-r border-light-tertiary dark:border-dark-accent">Per month</td>
                   {plan.tiers!.map((t) => <td class="p-4 text-center font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</td>)}
                 </tr>
               </tbody>
@@ -445,42 +403,4 @@ const pageJsonLd = {
     .platform-marquee { -webkit-mask-image: none; mask-image: none; }
   }
 </style>
-
-<script>
-  // Monthly ⇄ Yearly toggle for the store tiers — same behavior as /plans.
-  (function () {
-    const root = document.getElementById('storePricing');
-    if (!root) return;
-    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
-    const caption = root.querySelector('[data-billing-caption]');
-    const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
-    const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
-    const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
-
-    function setBilling(mode: 'monthly' | 'yearly') {
-      views.forEach((el) => { el.hidden = el.dataset.billingView !== mode; });
-      if (caption) {
-        caption.textContent = mode === 'monthly'
-          ? 'Month-to-month · cancel anytime'
-          : 'One upfront payment for the year, 2 months free';
-      }
-      buttons.forEach((b) => {
-        const active = b.dataset.billingBtn === mode;
-        b.setAttribute('aria-pressed', String(active));
-        activeCls.forEach((c) => b.classList.toggle(c, active));
-        inactiveCls.forEach((c) => b.classList.toggle(c, !active));
-        const note = b.querySelector('.billing-btn-note');
-        if (note) {
-          note.classList.toggle('text-white', active);
-          note.classList.toggle('text-primary-blue', !active);
-          note.classList.toggle('dark:text-blue-300', !active);
-        }
-      });
-    }
-
-    buttons.forEach((b) =>
-      b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
-    );
-  })();
-</script>
 

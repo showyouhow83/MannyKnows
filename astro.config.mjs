@@ -2,6 +2,32 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
+import fs from 'node:fs';
+
+// ── Real sitemap lastmod dates for the blog ──────────────────────────────────
+// Every URL used to ship `lastmod: new Date()`, i.e. "the whole site changed"
+// on every deploy — a signal crawlers learn to ignore, which wastes it on the
+// posts that genuinely did change. Frontmatter is read here at config time
+// (content collections aren't available in this file) and only the URLs we
+// know a real date for get a lastmod; the sitemap spec makes it optional, and
+// omitting it beats asserting something false.
+const BLOG_DIR = new URL('./src/content/blog/', import.meta.url);
+const blogLastmod = new Map();
+for (const file of fs.readdirSync(BLOG_DIR)) {
+  // exFAT sprays AppleDouble sidecars into this directory; they are not posts.
+  if (!file.endsWith('.md') || file.startsWith('._')) continue;
+  const fm = fs.readFileSync(new URL(file, BLOG_DIR), 'utf8').split('---')[1] ?? '';
+  if (/^draft:\s*true/m.test(fm)) continue;
+  const pick = (key) => fm.match(new RegExp(`^${key}:\\s*["']?(\\d{4}-\\d{2}-\\d{2})`, 'm'))?.[1];
+  // A rewritten post reports its revision date, not its original publish date.
+  const date = pick('updatedDate') ?? pick('pubDate');
+  if (date) blogLastmod.set(`/blog/${file.replace(/\.md$/, '')}/`, date);
+}
+// The index changes whenever its newest entry does.
+const newestPost = [...blogLastmod.values()].sort().pop();
+if (newestPost) blogLastmod.set('/blog/', newestPost);
+
+
 // https://astro.build/config
 // Tailwind runs via PostCSS (postcss.config.js) — no Astro integration needed.
 export default defineConfig({
@@ -74,7 +100,11 @@ export default defineConfig({
         !page.includes('/free-360-photo'),
       changefreq: 'weekly',
       priority: 0.7,
-      lastmod: new Date(),
+      serialize(item) {
+        const date = blogLastmod.get(new URL(item.url).pathname);
+        if (date) item.lastmod = new Date(`${date}T00:00:00Z`).toISOString();
+        return item;
+      },
     })
   ],
   vite: {

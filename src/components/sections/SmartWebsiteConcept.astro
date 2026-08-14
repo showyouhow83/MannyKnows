@@ -25,7 +25,9 @@ import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
 // the contrast columns and the builder objection carry the concept alone.)
 ---
 
-<div class="max-w-6xl mx-auto">
+{/* No width cap here: the page Container sets the width. The homepage
+    wraps this in its own max-w-5xl, so it stays narrow there. */}
+<div>
   {showHeader && (
     <div class="text-center mb-12">
       <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
@@ -44,7 +46,7 @@ import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
        the single implementation, shared by /plans, the plan pages, and the
        homepage. On phones the halves stack with a divider and the medallion
        moves to the right of the boundary. -->
-  <div class="relative rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2 max-w-5xl mx-auto">
+  <div class="relative max-w-6xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2">
     <div class="relative bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
       <span class="md:hidden absolute -bottom-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
       <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-5 uppercase tracking-wide text-xs">Their regular websites</h3>
