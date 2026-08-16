@@ -8,7 +8,7 @@
 //   /plans (PricingPlans.astro)  websitePlanCards()
 //   /ecommerce                   storeCards()
 //   /ai-booking-agent            remiCards()
-//   /ai-website                  onePageCards()
+//   /ai-website                  remiCards()[0]  (the One-Page Website IS Remi AI Lite)
 //   /local-seo                   localSeoCards()
 //   /apps                        appTierCards()
 //   /plans/business-ads          serviceTierCards('business-ads')
@@ -16,13 +16,6 @@
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
 import { plans, websitePlans, ecommercePlans } from '../data/plans';
 import { remiTiers, remiSetupFee } from '../data/remi';
-import {
-  aiWebsiteSetupFee,
-  aiWebsiteMonthly,
-  aiWebsiteYearly,
-  aiWebsiteSetupIncludes,
-  aiWebsiteMonthlyIncludes,
-} from '../data/aiWebsite';
 import { PACKAGES } from '../data/localSeo';
 import { TIERS, APPS_HOURLY } from '../data/apps';
 
@@ -69,33 +62,6 @@ export const remiCards = (): PricingCard[] =>
     featured: t.featured,
     primary: { label: `Start with ${t.name}`, href: '#contact', context: `Remi AI plans: ${t.name}` },
   }));
-
-// One product, its one-time and its monthly — billing='none' on the grid.
-export const onePageCards = (): PricingCard[] => [
-  {
-    name: 'Build & launch',
-    audience: 'What the one-time buys',
-    price: aiWebsiteSetupFee,
-    priceUnit: 'one-time',
-    priceNote: 'waived when you prepay the year',
-    scope: 'The page + Remi AI, set up once',
-    tagline: 'The work that happens once — designed, written, trained, and live on your own domain.',
-    features: aiWebsiteSetupIncludes,
-    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
-  },
-  {
-    name: 'Keep it running',
-    audience: 'What the monthly buys',
-    price: aiWebsiteMonthly,
-    priceUnit: `/mo · $${aiWebsiteYearly} for a prepaid year`,
-    priceNote: 'cancel anytime, the site and domain stay yours',
-    scope: 'Hosted, answering & maintained',
-    tagline: 'The work that never stops — so the page stays fast, keeps ranking, and keeps answering.',
-    features: aiWebsiteMonthlyIncludes,
-    featured: true,
-    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
-  },
-];
 
 export const localSeoCards = (): PricingCard[] =>
   PACKAGES.map((p) => ({

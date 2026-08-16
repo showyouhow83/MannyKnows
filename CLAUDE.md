@@ -109,7 +109,11 @@ for small businesses in Western Massachusetts).
   pricier tier's verb. There is ONE Remi Lite: the One-Page Website
   ($195 + $40/mo, aiWebsite.ts derives from remi.ts) is the same
   subscription with a one-page site included for buyers without a website —
-  never describe them as two products.
+  never describe them as two products. On /pricing there is NO One-Page
+  section (Manny, Aug 16: "makes no sense" as a separate product) — the Remi
+  section carries the "no website? Lite includes a one-page site" line, and
+  /ai-website's pricing grid renders the Remi AI Lite card
+  (`remiCards()[0]`) with two explainer cards for what setup vs monthly buys.
 - **Prices appear ONLY in pricing sections, tier cards, and cost FAQs** —
   never in narrative copy, nav labels, or hero prose.
 - **No "clause: elaboration" colon splices** in copy (swept Aug 2026). Write

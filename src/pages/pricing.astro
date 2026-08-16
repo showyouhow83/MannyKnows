@@ -25,7 +25,6 @@ import {
   websitePlanCards,
   storeCards,
   remiCards,
-  onePageCards,
   localSeoCards,
   appTierCards,
   serviceTierCards,
@@ -51,16 +50,6 @@ const sections = [
     linkLabel: 'Compare the plans in full',
   },
   {
-    id: 'one-page',
-    title: 'One-Page Website',
-    subtitle: 'No website yet? Remi AI Lite with a fast one-page site included, so the agent has somewhere to live.',
-    cards: onePageCards(),
-    billing: 'none' as const,
-    featuredLabel: 'The part that never stops',
-    href: '/ai-website/',
-    linkLabel: 'See the One-Page Website',
-  },
-  {
     id: 'stores',
     title: 'Online stores',
     subtitle: 'A Shopify store designed, stocked, and run for you. The Shopify subscription itself is billed by Shopify, in your name.',
@@ -73,7 +62,7 @@ const sections = [
   {
     id: 'remi',
     title: 'Remi AI, the AI booking agent',
-    subtitle: 'One agent, sold on its own for the website you already have. Each tier unlocks more of the admin; booking arrives at Pro.',
+    subtitle: 'One agent, sold on its own. Each tier unlocks more of the admin; booking arrives at Pro. No website yet? Lite includes a one-page site we build, on the same subscription.',
     cards: remiCards(),
     billing: 'monthly' as const,
     featuredLabel: 'Most popular',
@@ -244,6 +233,10 @@ const META_DESCRIPTION = `Every MannyKnows service on one page with what it cost
                 <div class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1 max-w-[16rem]">{remiCustom.priceNote}</div>
               </div>
             </div>
+          )}
+
+          {s.id === 'remi' && (
+            <p class="mt-6 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary">No website yet? Remi AI Lite includes a fast one-page site we design and host, so the agent has somewhere to live. Same {usd(remiSetupFee)} setup, same monthly. <a href="/ai-website/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See the One-Page Website</a>.</p>
           )}
 
           {s.id === 'seo' && (

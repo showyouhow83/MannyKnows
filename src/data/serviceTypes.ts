@@ -41,7 +41,7 @@ const businessAds = plan('business-ads');
 const agency = plan('multimedia-agency');
 
 export const SERVICE_TYPES: ServiceType[] = [
-  { value: 'ai-website', label: `One-Page Website ($${fmt(aiWebsiteSetupFee)} + $${fmt(aiWebsiteMonthly)}/mo)` },
+  { value: 'ai-website', label: `One-Page Website — Remi AI Lite with the page included ($${fmt(aiWebsiteSetupFee)} + $${fmt(aiWebsiteMonthly)}/mo)` },
   { value: 'website-basic', label: `Get Found (${setupPlusMonthly('get-found')})` },
   { value: 'website-plus', label: `Get Booked (${setupPlusMonthly('get-booked')})` },
   { value: 'website-smart', label: `Get Growing (${setupPlusMonthly('get-growing')})` },

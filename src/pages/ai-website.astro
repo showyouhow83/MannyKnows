@@ -23,7 +23,7 @@ import Faq from '../components/ui/Faq.astro';
 import AiWebsiteAgentDemo from '../components/sections/AiWebsiteAgentDemo.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import PricingCards from '../components/pricing/PricingCards.astro';
-import { onePageCards } from '../lib/pricingCards';
+import { remiCards } from '../lib/pricingCards';
 import { getTestimonial } from '../data/testimonials';
 import {
   aiWebsiteSetupFee,
@@ -48,7 +48,9 @@ const restSections = aiWebsiteSections.filter((s) => !s.hero);
 // every other pricing surface, Manny, Aug 2026). billing='none' because these
 // aren't competing tiers — one product, its one-time and its monthly, each
 // card itemizing exactly what that number buys.
-const priceCards = onePageCards();
+// ONE product: the One-Page Website is Remi AI Lite with the page included, so the
+// pricing grid renders the same Lite card /ai-booking-agent and /pricing render.
+const priceCards = remiCards().slice(0, 1).map((c) => ({ ...c, featured: true, primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' } }));
 
 // Title/meta kept under 60/160 chars — search results truncate past that.
 const META_DESCRIPTION = `A one-page website with Remi AI, an AI agent that answers customers and captures every lead. $${aiWebsiteSetupFee} to build, $${aiWebsiteMonthly}/mo to run. Springfield, MA.`;
@@ -217,11 +219,44 @@ const pageJsonLd = {
       <Container>
         <SectionHeader
           badge="Pricing"
-          title={`$${aiWebsiteSetupFee} to build it. $${aiWebsiteMonthly}/mo to keep it working.`}
-          subtitle="Two numbers, and here's exactly what each one buys."
+          title="One subscription. It is Remi AI Lite, with the page included."
+          subtitle="The same Lite plan sold on the Remi AI page. The one-time setup builds the page and trains the agent; the monthly keeps both running. Here is exactly what each buys."
         />
 
-        <PricingCards id="one-page-pricing" cards={priceCards} billing="none" featuredLabel="The part that never stops" />
+        <div class="max-w-md mx-auto">
+          <PricingCards id="one-page-pricing" cards={priceCards} billing="monthly" featuredLabel="Page included" />
+        </div>
+
+        <div class="max-w-6xl mx-auto mt-10 grid gap-6 md:grid-cols-2">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" /></svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">What the one-time setup buys</h3>
+            </div>
+            <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The work that happens once — designed, written, trained, and live on your own domain. Waived when you prepay the year.</p>
+            <ul class="mt-4 space-y-2">
+              {aiWebsiteSetupIncludes.map((f) => (
+                <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug"><svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>{f}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">What the monthly buys</h3>
+            </div>
+            <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The work that never stops — so the page stays fast, keeps ranking, and keeps answering. Cancel anytime; the site and domain stay yours.</p>
+            <ul class="mt-4 space-y-2">
+              {aiWebsiteMonthlyIncludes.map((f) => (
+                <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug"><svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>{f}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
         <!-- The honest comparison, rather than a section that argues against itself -->
         <div class="max-w-3xl mx-auto mt-12 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 text-center">
