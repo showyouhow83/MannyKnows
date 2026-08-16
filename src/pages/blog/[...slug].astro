@@ -9,6 +9,7 @@ import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import Button from '../../components/ui/Button.astro';
 import { getPostImage } from '../../utils/postImage';
 import { getPostIllustration } from '../../utils/postIllustration';
 import Illustration from '../../components/illustrations/Illustration.astro';
@@ -96,23 +97,23 @@ const postJsonLd = {
   <script type="application/ld+json" set:html={JSON.stringify(postJsonLd)} />
   <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
-    <header class="relative transition-colors duration-300 room-hero">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <Breadcrumb items={[{ label: 'Blog', href: '/blog/' }, { label: post.data.title }]} />
       <div class="pb-10">
         <Container>
-          <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <div class="order-1">
               {heroImage ? (
-                <div class="rounded-xl overflow-hidden border border-light-tertiary dark:border-dark-accent aspect-[16/9]">
+                <div class="rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent aspect-[16/9]">
                   <picture>
                     {heroAvif && <source type="image/avif" srcset={heroAvif} />}
                     {heroWebp && <source type="image/webp" srcset={heroWebp} />}
-                    <img src={heroImage} alt={post.data.title} loading="eager" class="w-full h-full object-cover" />
+                    <img src={heroImage} alt={post.data.title} width="1280" height="720" loading="eager" decoding="async" class="w-full h-full object-cover" />
                   </picture>
                 </div>
               ) : (
-                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.05] via-transparent to-primary-pink/[0.05] px-6 py-8 flex items-center justify-center">
+                <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-gradient-to-br from-primary-blue/[0.05] via-transparent to-primary-pink/[0.05] px-6 py-8 flex items-center justify-center">
                   <Illustration kind={getPostIllustration(post)} class="w-full max-w-xs" />
                 </div>
               )}
@@ -120,13 +121,13 @@ const postJsonLd = {
             <div class="order-2">
               <div class="flex flex-wrap gap-2 mb-4">
                 {post.data.tags.map((tag) => (
-                  <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2.5 py-1">{tag}</span>
+                  <span class="inline-flex items-center rounded-full bg-primary-blue/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">{tag}</span>
                 ))}
               </div>
-              <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-5 leading-tight">
+              <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
                 <span class="apple-gradient-text" data-colorful-title>{post.data.title}</span>
               </h1>
-              <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-5">{post.data.description}</p>
+              <p class="max-w-2xl text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">{post.data.description}</p>
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
                 <span class="font-medium text-text-light-secondary dark:text-text-dark-secondary">{post.data.author}</span>
                 <span aria-hidden="true">·</span>
@@ -146,12 +147,12 @@ const postJsonLd = {
 
     <Section id="post" variant="default" className="room">
       <Container>
-        <article class="blog-prose max-w-3xl mx-auto">
+        <article class="mk-prose max-w-3xl mx-auto">
           <Content />
         </article>
         {related.length > 0 && (
           <div class="mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent">
-            <h2 class="sf-bold text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-5">Keep reading</h2>
+            <h2 class="sf-bold text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-5">Keep reading</h2>
             <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
               {related.map((r) => {
                 const img = getPostImage(r);
@@ -160,14 +161,14 @@ const postJsonLd = {
                   <li>
                     <a
                       href={`/blog/${r.id}/`}
-                      class="group flex h-full flex-col overflow-hidden rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-lg hover:shadow-primary-blue/10"
+                      class="group flex h-full flex-col overflow-hidden rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary no-underline transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10"
                     >
                       {img && (
                         <div class="aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
                           <picture>
                             {sib.avif && <source type="image/avif" srcset={sib.avif} />}
                             {sib.webp && <source type="image/webp" srcset={sib.webp} />}
-                            <img src={img} alt={`${r.data.title}: article banner`} loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                            <img src={img} alt={`${r.data.title}: article banner`} width="640" height="360" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                           </picture>
                         </div>
                       )}
@@ -184,16 +185,16 @@ const postJsonLd = {
         )}
 
         {(newer || older) && (
-          <nav aria-label="More posts" class="mt-8 grid gap-3 sm:grid-cols-2">
+          <nav aria-label="More posts" class="mt-8 grid gap-4 sm:grid-cols-2">
             {older && (
-              <a href={`/blog/${older.id}/`} class="group flex flex-col rounded-xl border border-light-tertiary dark:border-dark-accent p-4 no-underline transition-colors hover:border-primary-blue/40">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Previous post</span>
+              <a href={`/blog/${older.id}/`} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4 no-underline transition-colors hover:border-primary-blue/40">
+                <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Previous post</span>
                 <span class="mt-1 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{older.data.title}</span>
               </a>
             )}
             {newer && (
-              <a href={`/blog/${newer.id}/`} class="group flex flex-col rounded-xl border border-light-tertiary dark:border-dark-accent p-4 no-underline transition-colors hover:border-primary-blue/40 sm:text-right sm:items-end">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Next post</span>
+              <a href={`/blog/${newer.id}/`} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4 no-underline transition-colors hover:border-primary-blue/40 sm:text-right sm:items-end">
+                <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Next post</span>
                 <span class="mt-1 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{newer.data.title}</span>
               </a>
             )}
@@ -201,10 +202,10 @@ const postJsonLd = {
         )}
 
         <div class="mt-10 pt-6 border-t border-light-tertiary dark:border-dark-accent">
-          <a href="/blog/" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
-            <svg class="w-4 h-4 rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <Button href="/blog/" variant="ghost" class="gap-2">
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             All posts
-          </a>
+          </Button>
         </div>
       </Container>
     </Section>
@@ -212,21 +213,3 @@ const postJsonLd = {
     <DockMenu />
   </main>
 </BaseLayout>
-
-<style>
-  .blog-prose { color: inherit; font-size: 1.0625rem; line-height: 1.8; }
-  .blog-prose :global(h2) { font-size: 1.5rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
-  .blog-prose :global(h3) { font-size: 1.125rem; font-weight: 700; margin: 1.75rem 0 0.5rem; }
-  .blog-prose :global(p) { margin: 0 0 1.25rem; }
-  .blog-prose :global(ul), .blog-prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
-  .blog-prose :global(li) { margin: 0.4rem 0; }
-  .blog-prose :global(ul) { list-style: disc; }
-  .blog-prose :global(ol) { list-style: decimal; }
-  .blog-prose :global(a) { color: #0071e3; text-decoration: underline; text-underline-offset: 2px; }
-  .blog-prose :global(a:hover) { color: #ff4faa; }
-  .blog-prose :global(strong) { font-weight: 700; }
-  .blog-prose :global(blockquote) { border-left: 3px solid transparent; border-image: linear-gradient(180deg, #0071e3, #ff4faa) 1; padding: 0.15rem 0 0.15rem 1.25rem; margin: 1.9rem 0; font-size: 1.2rem; line-height: 1.6; font-weight: 500; }
-  .blog-prose :global(blockquote p) { margin: 0; }
-  .blog-prose :global(hr) { border: none; height: 2px; width: 64px; margin: 2.75rem auto; border-radius: 2px; background: linear-gradient(90deg, #0071e3, #ff4faa); opacity: 0.55; }
-  .blog-prose :global(code) { background: rgba(127,127,127,0.15); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
-</style>

@@ -19,7 +19,8 @@ import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import StepCards from '../../components/ui/StepCards.astro';
 import SmartWebsiteConcept from '../../components/sections/SmartWebsiteConcept.astro';
-import PricingCards, { type PricingCard } from '../../components/pricing/PricingCards.astro';
+import PricingCards from '../../components/pricing/PricingCards.astro';
+import { serviceTierCards } from '../../lib/pricingCards';
 
 // Sell Online lives on its own page (/ecommerce) — selling products is a
 // different decision from getting found, so it isn't one of the website tiers.
@@ -66,22 +67,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 // PricingCards anatomy as /plans, /ecommerce, /apps and /local-seo, so every
 // pricing card on the site reads identically. These services front no build
 // and publish no yearly rate, so billing='none' — one price, its own unit.
-const tierCards: PricingCard[] | null = plan.tiers
-  ? plan.tiers.map((t) => ({
-      name: t.name,
-      audience: t.audience,
-      price: t.price,
-      priceUnit: t.unit,
-      priceNote: t.note,
-      scope: t.scope,
-      scopeLines: t.scopeLines,
-      tagline: t.description,
-      builtOn: t.builtOn,
-      features: t.features,
-      featured: t.featured,
-      primary: { label: `Start with ${t.name}`, href: '#contact', context: `${plan.name}: ${t.name}` },
-    }))
-  : null;
+const tierCards = serviceTierCards(plan.slug);
 
 // Mentions of Manny (the human) link to /about/ (Manny, Aug 2026). Word-bound
 // so "MannyKnows" and "Manny AI" never match — those aren't the person.
@@ -96,13 +82,23 @@ const mentionsManny = (s: string) => /\bManny\b(?!\s*AI\b)/.test(s);
 const planFaqs = plan.faq.map((f) =>
   mentionsManny(f.a) ? { ...f, a: linkManny(f.a), html: true } : f
 );
+
+// Meta description: tagline + the price pair, and the yearly-waiver note only
+// while the whole line stays inside the 160-char SERP budget.
+const usd = (n: number) => n.toLocaleString('en-US');
+const metaDescription = (() => {
+  if (plan.tiers) {
+    return `${plan.tagline} ${plan.tiers.map((t) => `${t.name} $${usd(t.price)}${t.unit}`).join(' · ')}. No term.`;
+  }
+  const base = `${plan.tagline} $${usd(plan.setupFee ?? 0)} setup + $${usd(plan.price)}/mo.`;
+  const waiver = ' Prepay the year, setup waived.';
+  return base.length + waiver.length <= 160 ? base + waiver : base;
+})();
 ---
 
 <BaseLayout
   title={plan.metaTitle ?? `${plan.name} Plan: from $${plan.price.toLocaleString('en-US')}/mo | MannyKnows`}
-  description={plan.tiers
-    ? `${plan.tagline} ${plan.tiers.map((t) => `${t.name} $${t.price.toLocaleString('en-US')}${t.unit}`).join(' · ')}. No term.`
-    : `${plan.tagline} $${plan.setupFee?.toLocaleString('en-US')} setup + $${plan.price.toLocaleString('en-US')}/mo. Prepay the year, setup free.`}
+  description={metaDescription}
 >
   {/* one-canvas: one tone for the whole page instead of a different colour
       per section (Manny, Aug 2026). Hue is grouped by pillar — see the
@@ -154,7 +150,7 @@ const planFaqs = plan.faq.map((f) =>
               <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 {plan.tiers.map((t) => (
                   <div class={`rounded-2xl bg-white dark:bg-dark-secondary px-6 py-4 ${t.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
-                    <span class={`block text-[11px] font-semibold uppercase tracking-wide ${t.featured ? 'text-primary-blue dark:text-blue-300' : 'text-text-light-tertiary dark:text-text-dark-tertiary'}`}>{t.name}</span>
+                    <span class={`block text-[11px] font-bold uppercase tracking-wider ${t.featured ? 'text-primary-blue dark:text-blue-300' : 'text-text-light-tertiary dark:text-text-dark-tertiary'}`}>{t.name}</span>
                     <span class="text-3xl font-black">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.unit}</span>
                     <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{t.note}</span>
                   </div>
@@ -163,16 +159,16 @@ const planFaqs = plan.faq.map((f) =>
             ) : (
               <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
                 <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
-                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
+                  <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
                   <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
                   {plan.setupFee && <span class="block text-xs font-semibold text-text-light-secondary dark:text-text-dark-secondary mt-1">plus ${plan.setupFee.toLocaleString('en-US')} one-time setup</span>}
                 </div>
                 <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
-                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · build free</span>
+                  <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Yearly · build free</span>
                   <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                   <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
-                  {plan.setupFee && <span class="block text-xs font-semibold text-green-700 dark:text-green-400 mt-1">2 months free, no setup fee</span>}
+                  {plan.setupFee && <span class="block text-xs font-semibold text-green-700 dark:text-green-400 mt-1">2 months free, setup fee waived</span>}
                 </div>
               </div>
             )}
@@ -200,9 +196,7 @@ const planFaqs = plan.faq.map((f) =>
       <Section id="plan-tiers" variant="default" className="room chain-violet-blue">
         <Container>
           <SectionHeader title={plan.tiersHeading ?? 'Pick your plan'} subtitle={plan.tiersIntro} />
-          <div class="max-w-5xl mx-auto">
-            <PricingCards id={`${plan.slug}-tiers`} cards={tierCards} billing="none" featuredLabel="Best value" />
-          </div>
+          <PricingCards id={`${plan.slug}-tiers`} cards={tierCards} billing="none" featuredLabel="Best value" />
         </Container>
       </Section>
     )}
@@ -228,10 +222,12 @@ const planFaqs = plan.faq.map((f) =>
             </div>
           ))}
         </div>
-        <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
-          Plus what every plan includes: your own admin, multilingual as standard, SSL and caching on a global edge network, a domain if you need one, and unlimited storage, bandwidth, content updates, and stock photos, video &amp; logos.
-          <a href="/plans/#included" class="text-primary-blue dark:text-blue-300 font-medium hover:underline whitespace-nowrap">See the full list →</a>
-        </p>
+        {isWebsitePlan && (
+          <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
+            Plus what every website plan includes: your own admin, multilingual as standard, SSL and caching on a global edge network, a domain if you need one, and unlimited storage, bandwidth, and stock photos, video &amp; logos.
+            <a href="/plans/#included" class="text-primary-blue dark:text-blue-300 font-medium hover:underline whitespace-nowrap">See the full list →</a>
+          </p>
+        )}
       </Container>
     </Section>
 
@@ -241,7 +237,7 @@ const planFaqs = plan.faq.map((f) =>
         <Container>
           <SmartWebsiteConcept compact={true} />
           <p class="text-center mt-10">
-            <Button href="/plans/#why-smart" variant="ghost" arrow="right">Compare all the plans</Button>
+            <Button href="/plans/#pricingPlans" variant="ghost" arrow="right">Compare all the plans</Button>
           </p>
         </Container>
       </Section>
@@ -256,10 +252,7 @@ const planFaqs = plan.faq.map((f) =>
             <div class={`flex flex-wrap items-center justify-center gap-3 ${proofQuote ? 'mt-6' : ''}`}>
               <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
               {proof.cases.map((c) => (
-                <a href={`/work/${c.slug}/`} class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
-                  {c.name}
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                </a>
+                <Button href={`/work/${c.slug}/`} variant="secondary" size="sm" arrow="right">{c.name}</Button>
               ))}
             </div>
           </div>
@@ -278,7 +271,7 @@ const planFaqs = plan.faq.map((f) =>
     <!-- FAQ -->
     <Section id="plan-faq" variant="default" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-6xl mx-auto">
           <Faq faqs={planFaqs} />
           <div class="text-center mt-12">
             <Button href="#contact" data-contact-context={`${plan.name} plan`} arrow="right">Talk to us about {plan.name}</Button>
@@ -290,12 +283,14 @@ const planFaqs = plan.faq.map((f) =>
     <!-- Other plans -->
     <Section id="plan-others" variant="alternate" className="room glow-violet">
       <Container>
-        <h2 class="text-lg font-bold text-center mb-8 text-text-light-primary dark:text-text-dark-primary">Not the right fit? The other plans:</h2>
+        <SectionHeader title="Not the right fit? The other plans" />
         <div class="grid gap-4 sm:grid-cols-3 max-w-6xl mx-auto">
           {others.map((p) => (
-            <a href={planHref(p.slug)} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <svg class="w-6 h-6 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
-              <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary mt-2">{p.name}</h3>
+            <a href={planHref(p.slug)} class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <div class="flex items-center gap-3">
+                <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg></span>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{p.name}</h3>
+              </div>
               <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">from ${p.price.toLocaleString('en-US')}{p.priceUnit ?? '/mo'}</p>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-2 leading-snug">{p.tagline}</p>
             </a>

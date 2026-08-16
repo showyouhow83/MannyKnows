@@ -43,10 +43,10 @@ const defaultSlides: Slide[] = [
     href: '/ecommerce/',
   },
   {
-    image: '/hero/your-ai-team-ready-to-hire',
+    image: '/hero/your-ai-team-ready-to-work',
     alt: 'One job moving down the AI Agents Team assembly line: a product handed in at intake, routed by Manny to research, copywriting, and video editing, and coming out the other end as a finished post ready to publish.',
     title: 'Your AI Agents Team, ready to work',
-    description: 'Sales, research, copy, graphics, voice: AI agents built around your business, run on demand.',
+    description: 'AI agents for sales, research, copy, graphics, and voice, built around your business and run on demand.',
     href: '/ai-team/',
   },
   {
@@ -60,7 +60,7 @@ const defaultSlides: Slide[] = [
     image: '/hero/business-ads-that-bring-the-work',
     alt: 'A laptop screen showing an ad-campaign dashboard: revenue and conversion charts climbing across the month, with traffic and session panels below.',
     title: 'Business Ads that bring the work',
-    description: 'Social media, Google & social ads, SEO, and your Google Business Profile: get seen everywhere.',
+    description: 'Social media, Google & social ads, SEO, and your Google Business Profile, so you get seen everywhere.',
     href: '/plans/business-ads/',
   },
 ];
@@ -295,7 +295,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     overflow: hidden;
     display: block;
     text-decoration: none;
-    background: #18212b;
+    background: theme('colors.dark.secondary'); /* canvas-family surface */
     opacity: 0;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
@@ -356,7 +356,8 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     .hero-slide-content p { margin-top: 0; }
   }
 
-  .hero-slide.is-center:hover .hero-slide-content h2 { color: #10d1ff; }
+  /* Hover/focus in the brand blue family (blue-300 reads on the dark overlay). */
+  .hero-slide.is-center:hover .hero-slide-content h2 { color: theme('colors.blue.300'); }
 
   .hero-slide-content p {
     margin: 8px 0 0;
@@ -371,7 +372,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
     overflow: hidden;
   }
 
-  .hero-slide:focus-visible { outline: 3px solid #10d1ff; outline-offset: 3px; }
+  .hero-slide:focus-visible { outline: 3px solid theme('colors.blue.300'); outline-offset: 3px; }
 
   /* Tablet & mobile. The title is the only copy here (p is hidden), quiet and
      centered per Manny (Aug 2026): regular weight, down from the desktop 22px.

@@ -15,12 +15,18 @@ import SectionHeader from '../components/ui/SectionHeader.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import PricingPlans from '../components/sections/PricingPlans.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
-import { servicePlans, websitePlans } from '../data/plans';
+import { plans, servicePlans, websitePlans } from '../data/plans';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
 import SmartWebsiteConcept from '../components/sections/SmartWebsiteConcept.astro';
-import { team, aiTeamStartingPrice } from '../data/aiTeam';
+import { team, aiTeamStartingPrice, aiTeamSetupFee } from '../data/aiTeam';
 
 const aiTeamRoster = [...team].filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
+
+// Get Found is the ladder's entry rung — every "from $X" on this page reads
+// its record so a reprice in plans.ts flows through the FAQ, <title> and
+// description without a hand edit.
+const getFound = plans.find((p) => p.slug === 'get-found')!;
+const usd = (n: number) => n.toLocaleString('en-US');
 
 // Mentions of Manny (the human) link to /about/ (Manny, Aug 2026) — same
 // helper as /plans/[slug]. Word-bound so "MannyKnows" / "Manny AI" never match.
@@ -37,21 +43,22 @@ const faqs = [
   },
   {
     q: "What if I don't have a website yet?",
-    a: "That's what the plans are for. Designing and building your site is a one-time setup fee, from $595 on Get Found, and then the monthly price runs it. Prepay the year and that setup fee is waived entirely. Prefer to pay once for a one-time build and no plan at all? We do that too, just ask.",
+    a: `That's what the plans are for. Designing and building your site is a one-time setup fee, from $${usd(getFound.setupFee!)} on Get Found, and then the monthly price runs it. Prepay the year and that setup fee is waived entirely. Prefer to pay once for a one-time build and no plan at all? We do that too, just ask.`,
   },
   {
     // Mirrors the twin-ladder FAQ on the Online Store plan (plans.ts,
     // sell-online) — keep the two in sync.
     q: 'What if I want to sell products?',
-    a: "Every website plan has a store twin on our Online Store page (Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere) — a real Shopify store, on an account opened in your name and billed by Shopify. Switching is a plan change, not a project. We clone your design across, your monthly moves to the store tier's price, and Remi AI's training and your content carry over. No migration fee, and it works the same in reverse if you stop selling. If you prepaid a year, switches after the first 7 days from kickoff aren't refunded in cash. The unused balance becomes credit, dollar for dollar, toward anything we do.",
+    a: "Every website plan has a store twin on our Online Store page (Get Found ↔ Sell Online, Get Booked ↔ Sell More, Get Growing ↔ Sell Smarter, Get Ahead ↔ Sell Everywhere) — a real Shopify store, on an account opened in your name and billed by Shopify. Switching is a plan change, not a project. We clone your design across, your monthly moves to the store tier's price, and Remi AI's training and your content carry over. No migration fee, and it works the same in reverse if you stop selling. If you prepaid a year, switches after the first 5 business days from kickoff aren't refunded in cash. The unused balance becomes credit, dollar for dollar, toward anything we do.",
   },
   {
-    q: 'Why is $95/mo enough?',
-    a: "Get Found is small — a 1–3 page site, hosted and kept fast, set up to rank locally, with your own admin, a contact form, and Remi AI answering questions 24/7. What it doesn't have is the bigger machinery: Remi AI booking jobs into your calendar, the multi-page build, the full self-optimizing engine. Those start at Get Booked. The $95 exists because a new business shouldn't need $3,000 to have a real website, and the ladder is built so you grow into the next tier when you're ready.",
+    q: `Why is $${usd(getFound.price)}/mo enough?`,
+    a: `Get Found is small — a 1–3 page site, hosted and kept fast, set up to rank locally, with your own admin, a contact form, and Remi AI answering questions 24/7. What it doesn't have is the bigger machinery: Remi AI booking jobs into your calendar, the multi-page build. Those start at Get Booked; the full self-optimizing engine arrives at Get Growing. The $${usd(getFound.price)} exists because a new business shouldn't need $${usd(getFound.buildValue!)} to have a real website, and the ladder is built so you grow into the next tier when you're ready.`,
   },
   {
     q: 'Is there a contract?',
-    a: "No term, either way. Month to month, a one-time setup fee pays for the build (from $595 on Get Found) and the monthly covers running the site. Cancel whenever you like and nothing is owed, because the build is already paid for. Yearly means you pay the year upfront, get 2 months free, and the setup fee is waived outright. Both options have a full refund for the first 5 business days after kickoff. Details are in our terms.",
+    a: `No term, either way. Month to month, a one-time setup fee pays for the build (from $${usd(getFound.setupFee!)} on Get Found) and the monthly covers running the site. Cancel whenever you like and nothing is owed, because the build is already paid for. Yearly means you pay the year upfront, get 2 months free, and the setup fee is waived outright. Both options have a full refund for the first 5 business days after kickoff. Details are in <a href="/terms/#build-fee" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">our terms</a>.`,
+    html: true,
   },
   {
     q: 'How do we start?',
@@ -104,8 +111,8 @@ const pageJsonLd = {
 ---
 
 <BaseLayout
-  title="Web Design Plans in Western Mass from $95/mo | MannyKnows"
-  description="Web design plans for Western Mass: Get Found, Get Booked, Get Growing & Get Ahead. Hosting, SEO & maintenance, from $595 to build + $95/mo. No contract."
+  title={`Web Design Plans in Western Mass from $${usd(getFound.price)}/mo | MannyKnows`}
+  description={`Web design plans for Western Mass: Get Found, Get Booked, Get Growing & Get Ahead. Hosting, SEO & maintenance, from $${usd(getFound.setupFee!)} to build + $${usd(getFound.price)}/mo. No term.`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   {/* one-canvas: /plans is the trial page for the blog's single-surface
@@ -123,7 +130,7 @@ const pageJsonLd = {
            the copy stops reading like a trilogy while every SEO keyword
            (AI-powered website, Western Massachusetts, the professions,
            multilingual, leads, Brand Brain, API/MCP) survives. -->
-      <div class="pb-14">
+      <div class="pb-12">
         <Container>
           <div class="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <div class="text-center lg:text-left">
@@ -188,7 +195,7 @@ const pageJsonLd = {
                 </li>
               </ul>
               <p class="mt-5 pt-5 border-t border-light-tertiary dark:border-dark-accent text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
-                Like a staff member who never sleeps, never forgets, and can pick up a new job whenever you need one.
+                Like a team member who never sleeps, never forgets, and can pick up a new job whenever you need one.
               </p>
             </div>
           </div>
@@ -201,36 +208,6 @@ const pageJsonLd = {
         <!-- The Brand Brain story now lives in the hero panel above. -->
         <PricingPlans />
 
-        {/* AI Agents Team banner — moved into the review's old prime spot right under
-            the pricing grid (per Manny): pick a plan, or put the agents to work directly. */}
-        <div class="mt-14">
-        <a href="/ai-team/" class="group block max-w-6xl mx-auto mb-12 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-[0_16px_50px_rgba(16,209,255,0.18)] transition-all duration-300">
-          <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-            <div class="flex flex-wrap justify-center gap-y-1.5 -space-x-1.5 flex-shrink-0 max-w-[280px] lg:max-w-[264px]">
-              {aiTeamRoster.map((a) => (
-                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name}: ${a.role}`}>
-                  <AgentAvatar agent={a.id} class="w-full h-full" />
-                </div>
-              ))}
-            </div>
-            <div class="flex-1 text-center lg:text-left">
-              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-2">Flagship</span>
-              <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">The AI Agents Team, built for you,<br class="sm:hidden" /> run on demand</h2>
-              <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-2xl">
-                Manny AI, added to your business and ready to work — one manager that finds the processes AI can improve and staffs AI specialists on them: chat agent, daily intel, copy, SEO, engagement, and reporting, with design, video, voice, publishing, and ads sub-agents behind the scenes. A person watches the output. One-time $195 setup.
-              </p>
-            </div>
-            <div class="flex-shrink-0 text-center">
-              <div class="text-xs uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">AI staff from</div>
-              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">${aiTeamStartingPrice.toLocaleString('en-US')}<span class="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
-              <span class="mt-3 inline-flex items-center justify-center gap-2 min-h-10 px-5 py-2 text-sm rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold shadow-sm">
-                Meet the team
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-        </div>
       </Container>
     </Section>
 
@@ -252,8 +229,10 @@ const pageJsonLd = {
           {servicePlans.map((p) => (
             <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 flex flex-col">
               <div class="flex items-center gap-3 mb-2">
-                <svg class="w-6 h-6 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
-                <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
+                <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
+                </div>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{p.name}</h3>
               </div>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4" set:html={linkManny(p.tagline)}></p>
               <ul class="space-y-2 mb-6 flex-1">
@@ -266,7 +245,7 @@ const pageJsonLd = {
               </ul>
               <div class="flex items-end justify-between gap-3 pt-4 border-t border-light-tertiary dark:border-dark-accent">
                 <div class="leading-none">
-                  <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
+                  <span class="block text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Starting at</span>
                   <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${p.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{p.priceUnit ?? '/mo'}</span>
                 </div>
                 <Button href={`/plans/${p.slug}/`} variant="secondary" size="sm" arrow="right" class="flex-shrink-0">What's included</Button>
@@ -275,12 +254,44 @@ const pageJsonLd = {
           ))}
         </div>
 
+        {/* AI Agents Team banner — closes the "Beyond your website" section
+            (Manny, Aug 16 2026): the last thing after the two service cards. */}
+        <div class="mt-10">
+        <a href="/ai-team/" class="group block max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-xl hover:shadow-primary-blue/10 transition-all duration-300">
+          <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+            <div class="flex flex-wrap justify-center gap-y-1.5 -space-x-1.5 flex-shrink-0 max-w-[280px] lg:max-w-[264px]">
+              {aiTeamRoster.map((a) => (
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title={`${a.name}: ${a.role}`}>
+                  <AgentAvatar agent={a.id} class="w-full h-full" />
+                </div>
+              ))}
+            </div>
+            <div class="flex-1 text-center lg:text-left">
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Flagship</span>
+              <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">The AI Agents Team, built for you,<br class="sm:hidden" /> run on demand</h2>
+              <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-2xl">
+                Manny AI, added to your business and ready to work — one manager that finds the processes AI can improve and staffs AI specialists on them: chat agent, daily intel, copy, SEO, engagement, and reporting, with design, video, voice, publishing, and ads sub-agents behind the scenes. A person watches the output. One-time ${usd(aiTeamSetupFee)} setup.
+              </p>
+            </div>
+            <div class="flex-shrink-0 text-center">
+              <div class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Remi AI from</div>
+              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">${aiTeamStartingPrice.toLocaleString('en-US')}<span class="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
+              {/* Button.astro's primary/sm classes on a <span>: the whole banner
+                  is the <a>, and an interactive element can't nest inside one. */}
+              <span class="mt-3 inline-flex items-center justify-center text-center leading-snug select-none min-h-10 px-5 py-2 text-sm gap-1.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold shadow-sm group-hover:shadow-lg group-hover:shadow-primary-blue/25 transition-shadow">
+                Meet the team
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+        </div>
       </Container>
     </Section>
 
     <Section id="plans-faq" variant="default" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-6xl mx-auto">
           <Faq faqs={faqs} />
 
           <div class="text-center mt-12">

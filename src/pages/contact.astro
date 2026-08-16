@@ -12,13 +12,18 @@ import { BOOKING_URL } from '../data/booking';
 import Faq from '../components/ui/Faq.astro';
 import Breadcrumb from '../components/ui/Breadcrumb.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
+import Button from '../components/ui/Button.astro';
+import { plans } from '../data/plans';
+import { APPS_HOURLY } from '../data/apps';
 
 // The questions people actually hesitate on before sending a first message.
-// Answers must stay in step with src/data/plans.ts.
+// Prices interpolate from src/data/plans.ts and src/data/apps.ts so the answers
+// (and the FAQPage JSON-LD they feed) can't drift after a reprice.
+const getFound = plans.find((p) => p.slug === 'get-found')!;
 const faqs = [
   {
     q: 'What does it cost to get started?',
-    a: 'Website plans start at $595 one-time to build the site and $95/mo to run it, month to month with no term. Prepay the year and the setup fee is waived. Prefer to own it outright? One-time builds are billed at a flat $75/hr and quoted up front. Either way you see the number before you commit to anything.',
+    a: `Website plans start at $${getFound.setupFee!.toLocaleString('en-US')} one-time to build the site and $${getFound.price}/mo to run it, month to month with no term. Prepay the year and the setup fee is waived. Prefer to own it outright? One-time builds are billed at a flat $${APPS_HOURLY}/hr and quoted up front. Either way you see the number before you commit to anything.`,
   },
   {
     q: 'Do I have to sign a long contract?',
@@ -38,8 +43,9 @@ const faqs = [
   },
 ];
 
+// Token-based input (same spec as QuoteFormModal's fields).
 const inputClass =
-  'w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-blue/50 focus:border-primary-blue/50 text-sm';
+  'w-full px-4 py-3 rounded-lg border border-light-tertiary dark:border-dark-accent bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary text-sm placeholder-text-light-tertiary dark:placeholder-text-dark-tertiary focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition';
 
 // Structured data: the business + a bilingual ContactPoint (EN/ES is real —
 // it's the site-wide standard).
@@ -55,7 +61,7 @@ const pageJsonLd = {
 },
   email: 'mm@mannyknows.com',
   priceRange: '$$',
-  areaServed: ['Hampden County, MA', 'Hampshire County, MA'],
+  areaServed: ['Hampden County, MA', 'Hampshire County, MA', 'Franklin County, MA', 'Western Massachusetts'],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: '+1-413-361-8451',
@@ -98,7 +104,7 @@ const pageJsonLd = {
       <Container>
         <div class="grid gap-10 lg:grid-cols-5 max-w-6xl mx-auto items-start">
           <!-- Form -->
-          <div class="lg:col-span-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 md:p-8">
+          <div class="lg:col-span-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
             <div id="contactPageFormWrap">
             <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-1">Send a message</h2>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">A sentence or two is plenty, we'll take it from there.</p>
@@ -107,9 +113,7 @@ const pageJsonLd = {
               <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class={inputClass} />
               <input type="text" name="business" placeholder="Business or website (optional)" maxlength="200" class={inputClass} />
               <textarea name="message" required rows="5" placeholder="What do you need help with?" maxlength="2000" class={`${inputClass} resize-none`}></textarea>
-              <button type="submit" id="contactPageSubmit" class="w-full inline-flex items-center justify-center gap-2 min-h-12 px-7 py-2.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white text-[15px] font-semibold shadow-sm hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow disabled:opacity-60">
-                Send
-              </button>
+              <Button type="submit" id="contactPageSubmit" class="w-full disabled:opacity-60">Send</Button>
               <p id="contactPageStatus" class="text-sm text-center hidden" role="status"></p>
             </form>
             </div>
@@ -123,16 +127,16 @@ const pageJsonLd = {
               </div>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-6">Here's exactly what happens next.</p>
               <div class="grid gap-4 sm:grid-cols-3">
-                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
-                  <span class="float-left mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">1</span>
+                <div class="flex items-start gap-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4">
+                  <span class="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">1</span>
                   <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We read your message ourselves and reply personally, usually within a day.</p>
                 </div>
-                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
-                  <span class="float-left mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">2</span>
+                <div class="flex items-start gap-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4">
+                  <span class="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">2</span>
                   <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A short call to understand your business. Nothing's locked in.</p>
                 </div>
-                <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-black/[0.02] dark:bg-white/[0.03] p-4">
-                  <span class="float-left mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">3</span>
+                <div class="flex items-start gap-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-4">
+                  <span class="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white text-sm font-black">3</span>
                   <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We scope the right plan or project together, and you decide.</p>
                 </div>
               </div>
@@ -141,20 +145,20 @@ const pageJsonLd = {
 
           <!-- Direct channels -->
           <div class="lg:col-span-2 space-y-4">
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="block rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/60 hover:shadow-lg transition-all duration-300">
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="block rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/60 hover:shadow-xl hover:shadow-primary-blue/10">
               <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-1">Book a call</span>
               <span class="text-text-light-primary dark:text-text-dark-primary font-semibold">Pick a time that works for you →</span>
             </a>
-            <a href="mailto:mm@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Email</span>
+            <a href="mailto:mm@mannyknows.com" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <span class="block text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Email</span>
               <span class="text-primary-blue dark:text-blue-300 font-semibold">mm@mannyknows.com</span>
             </a>
-            <a href="tel:+14133618451" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
-              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Call or text</span>
+            <a href="tel:+14133618451" class="block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <span class="block text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Call or text</span>
               <span class="text-primary-blue dark:text-blue-300 font-semibold">(413) 361-8451</span>
             </a>
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-              <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Service area</span>
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <span class="block text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Service area</span>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
                 Based in Springfield, Massachusetts, we work with businesses across Western Mass, and remotely anywhere.
               </p>
@@ -167,7 +171,7 @@ const pageJsonLd = {
     <!-- Objection-clearing FAQ — the questions people stall on before they write. -->
     <Section id="contact-faq" variant="alternate" className="room glow-blue">
       <Container>
-        <Faq faqs={faqs} heading="Before you write" />
+        <Faq faqs={faqs} />
         <p class="max-w-3xl mx-auto mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary">
           Want to know who you'd be working with first? <a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Read Manny's story</a>, twenty years of building for businesses big and small, now here in Western Mass.
         </p>
@@ -187,8 +191,7 @@ const pageJsonLd = {
         <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
         <div
           id="mk-map"
-          class="max-w-6xl mx-auto rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent shadow-lg"
-          style="height: 380px;"
+          class="max-w-6xl mx-auto h-[380px] rounded-2xl overflow-hidden border border-light-tertiary dark:border-dark-accent"
           data-lat="42.1015"
           data-lon="-72.5898"
           data-city="Springfield, MA"
@@ -199,7 +202,7 @@ const pageJsonLd = {
 
         <ul class="max-w-6xl mx-auto mt-6 flex flex-wrap items-center justify-center gap-2">
           {['Springfield','Chicopee','Holyoke','West Springfield','Westfield','Agawam','Ludlow','Northampton','Amherst','Easthampton'].map((t) => (
-            <li class="rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-3.5 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">{t}</li>
+            <li class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">{t}</li>
           ))}
         </ul>
       </Container>
@@ -242,9 +245,9 @@ const pageJsonLd = {
     /* Dark-mode map: invert the light Carto basemap into a dark one, keeping
        labels legible. Only the tiles are filtered, not the pin/label. */
     .dark #mk-map .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9); }
-    .dark #mk-map .leaflet-control-attribution { background: rgba(20,26,36,0.8); color: #9aa6ba; }
-    .dark #mk-map .leaflet-control-attribution a { color: #82b4ff; }
-    #mk-map .leaflet-control-zoom a { color: #16202e; }
+    .dark #mk-map .leaflet-control-attribution { @apply bg-dark-secondary/80 text-text-dark-secondary; }
+    .dark #mk-map .leaflet-control-attribution a { @apply text-blue-300; }
+    #mk-map .leaflet-control-zoom a { @apply text-text-light-primary; }
   </style>
 </BaseLayout>
 

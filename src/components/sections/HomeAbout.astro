@@ -7,19 +7,19 @@ import Button from '../ui/Button.astro';
 
 <div class="max-w-3xl mx-auto text-center">
   <!-- Founder headshot -->
-  <div class="mx-auto mb-6 w-28 h-28 sm:w-32 sm:h-32 rounded-full p-[0.5px] bg-gradient-to-br from-primary-blue to-primary-pink shadow-xl shadow-primary-blue/20">
+  <div class="mx-auto mb-6 w-32 h-32 md:w-36 md:h-36 rounded-full p-[3px] bg-gradient-to-br from-primary-blue to-primary-pink shadow-xl shadow-primary-blue/20">
     <picture>
-      <source type="image/avif" srcset="/about/manny-320.avif 320w, /about/manny-480.avif 480w, /about/manny-640.avif 640w" sizes="128px" />
-      <source type="image/webp" srcset="/about/manny-320.webp 320w, /about/manny-480.webp 480w, /about/manny-640.webp 640w" sizes="128px" />
+      <source type="image/avif" srcset="/about/manny-320.avif 320w, /about/manny-480.avif 480w, /about/manny-640.avif 640w" sizes="144px" />
+      <source type="image/webp" srcset="/about/manny-320.webp 320w, /about/manny-480.webp 480w, /about/manny-640.webp 640w" sizes="144px" />
       <img src="/about/manny-480.webp" alt="Manny, founder of MannyKnows" width="480" height="480" loading="lazy" decoding="async" class="w-full h-full rounded-full object-cover bg-white dark:bg-dark-secondary" />
     </picture>
   </div>
 
   <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-    MannyKnows is a Western Massachusetts web design and marketing agency led by <strong class="text-text-light-primary dark:text-text-dark-primary">Manny</strong>, twenty years spent solving business problems, from national brands to the shop down the street, including hundreds of dental and medical practice websites overseen at MedNet Technologies in New York. Practices are the niche we serve first; the same engine runs for contractors, daycares, professional offices, and shops. The focus is always the outcome: a fuller schedule, more ecommerce sales, faster-loading pages, and technology that quietly fixes whatever's holding a business back. Enterprise-caliber standards, scoped for the businesses of Western Mass.
+    MannyKnows is a Western Massachusetts web design and marketing agency led by <strong class="text-text-light-primary dark:text-text-dark-primary">Manny</strong>, twenty years spent solving business problems, from national brands to the shop down the street, including hundreds of dental and medical practice websites designed, built, and launched at MedNet Technologies in New York. Practices are the niche we serve first; the same engine runs for contractors, daycares, professional offices, and shops. The focus is always the outcome: a fuller schedule, more ecommerce sales, faster-loading pages, and technology that quietly fixes whatever's holding a business back. Enterprise-caliber standards, scoped for the businesses of Western Mass.
   </p>
 
-  <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+  <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
     <Button href="/about/" arrow="right">More about Manny</Button>
     <Button href="https://www.linkedin.com/in/mr83/" target="_blank" rel="noopener noreferrer" variant="ghost" class="gap-1.5">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>

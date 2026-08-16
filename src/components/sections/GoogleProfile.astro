@@ -23,10 +23,10 @@ const WHY = [
 <div class="max-w-6xl mx-auto">
   <!-- The pitch line lives in the section title/subtitle (index.astro);
        here are just the proof tiles. -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {WHY.map((w) => (
       <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 text-center flex flex-col">
-        <div class="text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
+        <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{w.stat}</div>
         <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary mb-3">{w.label}</div>
         <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{w.body}</p>
         {w.source && <p class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-3">Source: {w.source}</p>}
@@ -38,12 +38,12 @@ const WHY = [
   </p>
 
   <div class="text-center mt-10">
-    <div class="flex flex-wrap items-center justify-center gap-4">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
       <Button href="/local-seo/" arrow="right">Start ranking today</Button>
       <Button href="/local-seo/#free-360-photo" variant="secondary">Request 360° Photo</Button>
     </div>
     <p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
-      Rather do it yourself? <a href="/blog/google-business-profile-springfield/" class="underline decoration-dotted hover:text-primary-blue">The full guide is free on our blog.</a>
+      Rather do it yourself? <a href="/blog/google-business-profile-springfield/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">The full guide is free on our blog.</a>
     </p>
   </div>
 </div>

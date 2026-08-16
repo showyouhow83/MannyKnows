@@ -17,7 +17,7 @@ const WORK_SIZES = '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw';
 const initial = (name: string) => name.trim().charAt(0).toUpperCase();
 const host = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
 const baseCard =
-  'group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl overflow-hidden transition-all duration-300';
+  'group flex flex-col bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl overflow-hidden transition-all duration-300';
 ---
 
 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -34,7 +34,7 @@ const baseCard =
     // Hover: a subtle color glow only — no translate, no scale (Manny).
     // Cards with a hoverImage crossfade to the mobile screenshot.
     return (
-      <Wrapper {...wrapperAttrs} class={`${baseCard} ${linked ? 'hover:border-primary-blue/40 hover:shadow-[0_0_45px_rgba(0,113,227,0.25),0_0_18px_rgba(255,79,170,0.12)]' : ''}`}>
+      <Wrapper {...wrapperAttrs} class={`${baseCard} ${linked ? 'hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10' : ''}`}>
         <div class="relative aspect-[16/9] overflow-hidden border-b border-light-tertiary dark:border-dark-accent">
           {item.image ? (
             <picture>
@@ -68,9 +68,9 @@ const baseCard =
             />
           )}
         </div>
-        <div class="p-5 flex flex-col flex-1">
+        <div class="p-6 flex flex-col flex-1">
           <div class="flex items-center justify-between gap-2">
-            <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary">{item.name}</h3>
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{item.name}</h3>
             {item.url && (
               <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary group-hover:text-primary-blue transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H8M17 7v9" />
@@ -80,7 +80,7 @@ const baseCard =
           {item.tags && item.tags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-2">
               {item.tags.map((t) => (
-                <span class="text-[11px] font-medium uppercase tracking-wide text-primary-blue dark:text-blue-300 bg-primary-blue/10 rounded-full px-2 py-0.5">{t}</span>
+                <span class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary-blue dark:text-blue-300">{t}</span>
               ))}
             </div>
           )}

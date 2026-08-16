@@ -25,9 +25,12 @@ import Breadcrumb from '../components/ui/Breadcrumb.astro';
 import Button from '../components/ui/Button.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import PricingCards from '../components/pricing/PricingCards.astro';
-import type { PricingCard } from '../components/pricing/PricingCards.astro';
+import { appTierCards } from '../lib/pricingCards';
 // The three tiers live in src/data/apps.ts (shared with /pricing).
-import { TIERS } from '../data/apps';
+import { TIERS, APPS_HOURLY } from '../data/apps';
+
+const usd = (n: number) => n.toLocaleString('en-US');
+const [scriptsTier, connectedTier, customTier] = TIERS;
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
@@ -44,32 +47,19 @@ const STEPS = [
 
 const FAQS = [
   { q: 'Is this app development like an app-store app?', a: "No. We build apps for how a business runs, not consumer apps for a store. Scripts, integrations, dashboards, and internal systems — the software that removes busywork and keeps your operation in one place." },
-  { q: 'How much does an app cost?', a: 'Scripts and tools start at $300, connected apps and integrations at $600, and full business apps at $2,500. Everything is billed at a flat $75/hr and quoted up front after a short call, so you know the total before we start.' },
+  { q: 'How much does an app cost?', a: `Scripts and tools start at $${usd(scriptsTier.price)}, connected apps and integrations at $${usd(connectedTier.price)}, and full business apps at $${usd(customTier.price)}. Everything is billed at a flat $${usd(APPS_HOURLY)}/hr and quoted up front after a short call, so you know the total before we start.` },
   { q: 'What is an MCP server, and why would my business want one?', a: "MCP (Model Context Protocol) is the open standard that lets AI assistants plug into business tools securely. Wire your calendar, CRM, or inventory into an MCP server once, and the AI you use can actually work with them — check availability, look up a customer, update a record — instead of just talking about it." },
   { q: 'Will it work with the tools I already use?', a: "Almost always. We connect what you've got (website, inbox, CRM, calendar, phone, accounting) rather than making you switch. If something can't connect cleanly, we'll tell you up front." },
   { q: 'Will the AI parts make things up?', a: 'AI assistants we build are grounded in your own content and data, with clear review checkpoints. AI does the heavy lifting, and a human keeps control of what actually goes out the door.' },
   { q: 'Do I own what you build?', a: 'Yes, completely. The code, the flows, the accounts, and the documentation are yours; we build with you, never to lock you in. Bigger builds can also be co-owned. We fund the build, you bring the business, and you pay nothing upfront.' },
   { q: 'How long does a project take?', a: 'Most projects run 2–4 weeks from kickoff to live, depending on how many tools and flows are involved. You get a firm timeline with the quote.' },
-  { q: 'Who maintains it after launch?', a: "Everything is documented for handoff, so you can run it yourself. If you'd rather have it monitored and maintained, it rolls into a monthly plan from $95/mo — optional, never required." },
+  { q: 'Who maintains it after launch?', a: "Everything is documented for handoff, so you can run it yourself. If you'd rather have it monitored and maintained, we can quote ongoing monitoring and maintenance — optional, never required." },
 ];
 
-const META_DESCRIPTION = 'Apps for how your business runs. Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $300, quoted up front.';
+const META_DESCRIPTION = `Apps for how your business runs. Apps Script tools, API & Twilio integrations, MCP servers, and custom dashboards. From $${usd(scriptsTier.price)}, quoted up front.`;
 
 // Structured data for SEO + AI answer engines (Service + FAQ)
-const tierCards: PricingCard[] = TIERS.map((t) => ({
-  name: t.name,
-  audience: t.audience,
-  price: t.price,
-  priceUnit: 'one-time',
-  priceNote: 'Starting at, quoted flat at $75/hr',
-  scope: t.scope,
-  scopeLines: t.scopeLines,
-  tagline: t.description,
-  features: t.features,
-  featured: t.featured,
-  badge: t.kind,
-  primary: { label: 'Get a quote', href: '#quote', quoteContext: t.service },
-}));
+const tierCards = appTierCards();
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -130,39 +120,37 @@ const jsonLd = {
       <NavBar />
       <Breadcrumb items={[{ label: 'Business Apps' }]} />
 
-      <div class="pb-14">
-        <Container>
-          <div class="max-w-[1440px] mx-auto text-center">
-            <!-- Desktop: badge + title share the row with the dashboards
-                 astronaut (Manny, Aug 2026); description below. -->
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 text-center md:text-left">
-              <div>
-                <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
-                  Custom Business Apps &amp; Automation · Springfield, MA
-                </span>
-                <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-0 leading-tight">
-                  <span class="apple-gradient-text" data-colorful-title>Apps for how your<br />business runs</span>
-                </h1>
-              </div>
-              <img
-                src="/mascot/astro-dashboards.webp"
-                alt="Astronaut mascot presenting floating data dashboards"
-                aria-hidden="true"
-                width="556"
-                height="620"
-                decoding="async"
-                class="astro-float w-auto h-[220px] pointer-events-none"
-              />
+      <div class="pb-12 px-4">
+        <div class="max-w-[1440px] mx-auto text-center">
+          <!-- Desktop: badge + title share the row with the dashboards
+               astronaut (Manny, Aug 2026); description below. -->
+          <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 text-center md:text-left">
+            <div>
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                Custom Business Apps &amp; Automation · Springfield, MA
+              </span>
+              <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-0 leading-tight">
+                <span class="apple-gradient-text" data-colorful-title>Apps for how your<br />business runs</span>
+              </h1>
             </div>
-            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mt-6 mb-8">
-              Custom business apps and workflow automation for Springfield and Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and complete systems for booking, quoting, and dashboards.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button href="#quote" data-quote-context="custom-app" arrow="right">Scope my app</Button>
-              <Button href="/how-it-works/" variant="secondary">See the process</Button>
-            </div>
+            <img
+              src="/mascot/astro-dashboards.webp"
+              alt="Astronaut mascot presenting floating data dashboards"
+              aria-hidden="true"
+              width="556"
+              height="620"
+              decoding="async"
+              class="astro-float w-auto h-[220px] pointer-events-none"
+            />
           </div>
-        </Container>
+          <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mt-6 mb-8">
+            Custom business apps and workflow automation for Springfield and Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and complete systems for booking, quoting, and dashboards.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button href="#quote" data-quote-context="custom-app" arrow="right">Scope my app</Button>
+            <Button href="/how-it-works/" variant="secondary">See the process</Button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -173,7 +161,7 @@ const jsonLd = {
           title="Apps that stand alone. Apps that connect everything."
           subtitle="Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do. Data moves between your website, inbox, CRM, calendar, and accounting on its own — no more copying the same thing into five places."
         />
-        <div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
+        <div class="grid gap-6 md:grid-cols-2 max-w-6xl mx-auto">
           <!-- Waist-up mascots sit flush on each card's bottom edge: the
                negative bottom margin cancels the card padding. -->
           <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 overflow-hidden flex flex-col">
@@ -209,7 +197,7 @@ const jsonLd = {
         />
         <PricingCards id="appTiers" cards={tierCards} billing="none" />
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
-          Got an idea bigger than a build? Some apps we co-own. We fund the build, you bring the business, and you pay nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
+          Got an idea bigger than a build? Some apps we co-own. We fund the build, you bring the business, and you pay nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Multimedia Agency retainer</a> puts a developer on demand.
         </p>
       </Container>
     </Section>
@@ -224,26 +212,26 @@ const jsonLd = {
       <Container>
         <SectionHeader
           title="How it works"
-          subtitle='Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="underline decoration-dotted hover:text-primary-blue">how it works</a>.'
+          subtitle='Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">how it works</a>.'
           html
         />
         <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
 
         <!-- Case studies (was its own "We've wired this up before" section;
              folded in below the steps, Manny, Aug 2026). -->
-        <div id="case-studies" class="text-center max-w-2xl mx-auto mt-20 mb-12 scroll-mt-24">
-          <h3 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>Case Studies</span></h3>
+        <div class="mt-12 scroll-mt-24" id="case-studies">
+          <SectionHeader title="Case Studies" />
         </div>
-        <div class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
-          <a href="/work/vl-home-services/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system — a website, an admin dashboard, and a 24/7 AI Sales &amp; Booking Agent. Every inquiry captured and tracked, customers answered around the clock in any language.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+        <div class="grid gap-6 md:grid-cols-2 max-w-6xl mx-auto">
+          <a href="/work/vl-home-services/" class="group rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">VL Home Services</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">An operation that ran on referrals and paper, turned into one connected system — a website, an admin dashboard, and Remi AI, a 24/7 sales &amp; booking agent. Every inquiry captured and tracked, customers answered around the clock in any language.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-blue dark:text-blue-300 group-hover:underline">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
           </a>
-          <a href="/work/sl-painting/" class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
-            <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h4>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">A 24/7 AI Sales &amp; Booking Agent that answers homeowners and qualifies leads around the clock. Grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
-            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
+          <a href="/work/sl-painting/" class="group rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+            <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting</h3>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Remi AI, a 24/7 sales &amp; booking agent that answers homeowners and qualifies leads around the clock. Grounded in their business and their voice, not a generic bot. Real AI, doing a real job.</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-blue dark:text-blue-300 group-hover:underline">Read the case study <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
           </a>
         </div>
       </Container>
@@ -252,7 +240,7 @@ const jsonLd = {
     <!-- ───────────────────────── FAQ ───────────────────────── -->
     <Section id="faq" variant="gradient" className="room glow-violet">
       <Container>
-        <Faq faqs={FAQS} heading="Questions, answered" />
+        <Faq faqs={FAQS} />
       </Container>
     </Section>
 
@@ -318,11 +306,5 @@ const jsonLd = {
   @media (max-width: 639px) {
     .cs-mascot { display: none; }
   }
-
-  .astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
-  @keyframes astro-float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-10px) rotate(-1.5deg); }
-  }
-  @media (prefers-reduced-motion: reduce) { .astro-float { animation: none; } }
+  /* .astro-float (hero mascot drift) now lives in global.css. */
 </style>

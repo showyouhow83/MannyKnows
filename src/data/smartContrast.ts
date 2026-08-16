@@ -10,7 +10,7 @@ export const theirSites = [
 ];
 
 export const ourSites = [
-  'Generates its own content from trending searches and the questions customers actually ask.',
+  'Generates its own content from trending searches and the questions customers actually ask (Get Growing and up).',
   'Checks itself daily and fixes what’s safe to fix on its own.',
   'Keeps up with search and speed instead of falling behind them.',
   'Catches breakage before your customers do.',

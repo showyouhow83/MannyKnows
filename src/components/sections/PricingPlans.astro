@@ -6,22 +6,10 @@
 // comparison table and the included-with-every-plan list below the grid.
 import { websitePlans } from '../../data/plans';
 import PricingCards from '../pricing/PricingCards.astro';
-import type { PricingCard } from '../pricing/PricingCards.astro';
+// Card rows come from the shared builder so /pricing renders the identical grid.
+import { websitePlanCards } from '../../lib/pricingCards';
 
-const cards: PricingCard[] = websitePlans.map((p) => ({
-  name: p.name,
-  audience: p.audience,
-  price: p.price,
-  setupFee: p.setupFee,
-  scope: p.scope,
-  scopeLines: p.scopeLines,
-  tagline: p.tagline,
-  builtOn: p.builtOn,
-  features: p.highlights,
-  featured: p.featured,
-  primary: { label: 'See everything included', href: `/plans/${p.slug}/` },
-  secondary: { label: 'Get started', href: '#contact', context: `${p.name} plan` },
-}));
+const cards = websitePlanCards();
 
 // Included at every tier, so it's listed once below the comparison table rather
 // than as rows of four identical checkmarks (the table exists to show what
@@ -35,7 +23,7 @@ const includedEverywhere = [
   'Multilingual as standard',
   'Domain registered for you',
   'SSL certificate & DDoS protection',
-  'Content caching across 330+ cities',
+  'Content caching on Cloudflare’s global network',
   "Site runs on Cloudflare's CDN",
   'Unlimited storage & bandwidth',
   'Unlimited stock photography & video',
@@ -52,8 +40,8 @@ const includedEverywhere = [
   <PricingCards id="pricingPlans" cards={cards} />
 
   <!-- At-a-glance comparison — what's additive as you climb the tiers -->
-  <div class="mt-14">
-    <h3 class="text-center text-sm font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-5">Compare at a glance</h3>
+  <div class="mt-12">
+    <h3 class="text-center text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug mb-5">Compare at a glance</h3>
     <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary">
       <table class="w-full text-sm min-w-[760px] table-fixed">
         <thead>
@@ -120,8 +108,8 @@ const includedEverywhere = [
   </div>
 
   <!-- What the monthly price covers — shown once for all plans -->
-  <div id="included" class="mt-10 max-w-4xl mx-auto pt-6 border-t border-gray-500/[0.27] scroll-mt-24">
-    <h3 class="text-center text-sm font-bold text-text-light-primary dark:text-text-dark-primary">Included with every plan</h3>
+  <div id="included" class="mt-10 max-w-6xl mx-auto pt-6 border-t border-light-tertiary dark:border-dark-accent scroll-mt-24">
+    <h3 class="text-center text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">Included with every plan</h3>
     <p class="mt-1.5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Fast, secure, and stocked, at every tier, not just the top one.</p>
     <ul class="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
       {includedEverywhere.map((item) => (
@@ -132,10 +120,10 @@ const includedEverywhere = [
       ))}
     </ul>
     <p class="mt-5 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-      What each "unlimited" covers is in our <a href="/terms/#unlimited" class="underline hover:text-primary-blue">terms</a>.
+      What each "unlimited" covers is in our <a href="/terms/#unlimited" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">terms</a>.
     </p>
     <p class="mt-3 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">
-      Month to month, a one-time setup fee pays for the build and the monthly runs the site. There's no minimum term, so cancelling costs nothing. Yearly is one upfront payment for 12 months — pay for 10, get 12, and the setup fee is waived. Both carry a full refund for 5 business days after kickoff. Details in our <a href="/terms/#build-fee" class="underline hover:text-primary-blue">terms</a>.
+      Month to month, a one-time setup fee pays for the build and the monthly runs the site. There's no minimum term, so cancelling costs nothing. Yearly is one upfront payment for 12 months — pay for 10, get 12, and the setup fee is waived. Both carry a full refund for 5 business days after kickoff. Details in our <a href="/terms/#build-fee" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">terms</a>.
     </p>
   </div>
 </div>

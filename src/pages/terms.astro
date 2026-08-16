@@ -8,6 +8,7 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
 import { plans } from '../data/plans';
 
 const effectiveDate = 'August 14, 2026';
@@ -22,44 +23,47 @@ const websiteBuilds = WEBSITE_SLUGS
 const storeBuilds = (plans.find((p) => p.slug === 'sell-online')?.tiers ?? [])
   .filter((t) => Boolean(t.setupFee));
 const fmt = (n: number) => n.toLocaleString('en-US');
+// Setup fees for the worked switching examples below — computed from the same
+// data so the examples can't desync from the list above after a reprice.
+const sf = (slug: string) => plans.find((p) => p.slug === slug)?.setupFee ?? 0;
+const storeSf = (tier: string) => storeBuilds.find((t) => t.name === tier)?.setupFee ?? 0;
+const switchDue = (from: number, to: number) => Math.max(0, to - from);
 ---
 
 <BaseLayout title="Terms of Service | MannyKnows"
   description="The terms that govern MannyKnows services, plans, and payments: what we deliver, what you agree to, and how billing works.">
-  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300">
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
 
-    <header class="relative bg-light-primary dark:bg-dark-primary transition-colors duration-300">
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <Breadcrumb items={[{ label: 'Terms of Service' }]} />
-      <div class="pb-10 px-4">
-        <Container>
-          <div class="max-w-3xl mx-auto text-center">
-            <span class="inline-block bg-black/5 dark:bg-white/10 text-text-light-secondary dark:text-text-dark-secondary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Legal</span>
-            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-5 leading-tight">
-              <span class="text-text-light-primary dark:text-text-dark-primary">Terms of Service</span>
-            </h1>
-            <p class="text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The terms that govern your use of MannyKnows.</p>
-            <p class="mt-3 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Effective date: {effectiveDate}</p>
-          </div>
-        </Container>
+      <div class="pb-12 px-4">
+        <div class="max-w-[1440px] mx-auto text-center">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Legal</span>
+          <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+            <span class="apple-gradient-text" data-colorful-title>Terms of Service</span>
+          </h1>
+          <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The terms that govern your use of MannyKnows.</p>
+          <p class="mt-3 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Effective date: {effectiveDate}</p>
+        </div>
       </div>
     </header>
 
-    <Section id="terms" variant="default">
+    <Section id="terms" variant="default" className="room glow-violet">
       <Container>
-        <article class="legal-prose max-w-3xl mx-auto">
+        <article class="mk-prose max-w-3xl mx-auto">
           <p>Welcome to MannyKnows. These Terms of Service ("Terms") govern your access to and use of <a href="/">mannyknows.com</a> (the "Site") and any related content, tools, and services we provide (together, the "Services"). MannyKnows is a sole proprietorship based in Springfield, Massachusetts, serving businesses across Western Massachusetts and beyond. By using the Site, you agree to these Terms. If you do not agree, please do not use the Site.</p>
 
           <h2>1. Who may use the Services</h2>
           <p>You must be able to form a binding contract to use the Services. If you use the Services on behalf of an organization, you represent that you are authorized to accept these Terms on its behalf.</p>
 
           <h2>2. The Services</h2>
-          <p>We build custom apps and websites and provide AI automation for small businesses. Our offerings include monthly website plans (Get Found, Get Booked, Get Growing, and Get Ahead) along with Sell Online, Business Ads, AI Agents Team, and Multimedia Agency plans, and one-time projects such as website builds, SEO, automation, AI adoption, and audits. The Site describes these offerings and lets you contact us and subscribe to our newsletter.</p>
+          <p>We build custom apps and websites and provide AI automation for small businesses. Our offerings include monthly website plans (Get Found, Get Booked, Get Growing, and Get Ahead) along with the Online Store tiers, Remi AI plans, the One-Page Website, Local SEO packages, Business Ads, the AI Agents Team, and Multimedia Agency, plus one-time projects such as website builds, apps, SEO audits, and migrations. The Site describes these offerings and lets you contact us and subscribe to our newsletter.</p>
           <p>Any specific project or paid engagement is governed by a separate written agreement between you and MannyKnows; if that agreement conflicts with these Terms, the separate agreement controls for that engagement.</p>
 
-          <h3 id="free-360-photo" class="scroll-mt-24">Free 360° photo and paid photo packs</h3>
+          <h3 id="free-360-photo" class="scroll-mt-24">Free 360° photo and paid photography</h3>
           <p>The free 360° photo offer provides one professional 360° photograph of your business, captured by us and published to your Google Business Profile through MannyKnows' own Google account. The free photo remains hosted and controlled by MannyKnows, includes MannyKnows branding within the image (typically at the zenith, the top of the sphere, and possibly at other points), and the image file itself is not delivered to you. If you'd like it removed from your listing at any time, ask and we'll take it down.</p>
-          <p>Paid photography, including the 360° Photo Pack and any commissioned shoots, is different: once paid in full, the resulting files are delivered to you, contain no MannyKnows branding, and are yours to keep and use as you wish.</p>
+          <p>Paid photography, including virtual tour shoots, the monthly photos in the SEO packages, and any commissioned shoots, is different: once paid in full, the resulting files are delivered to you, contain no MannyKnows branding, and are yours to keep and use as you wish.</p>
 
           <h2>3. Plans, billing, and cancellation</h2>
           <p>Monthly plans come with two billing options. Published prices are "starting at" figures; the final price and scope for your engagement are set out in the written agreement or proposal for that engagement, which controls if it differs from these Terms.</p>
@@ -87,7 +91,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <p>If an engagement does require a further one-time charge (a migration, a catalog import, custom development, or other work outside the scope of your plan), it is quoted in writing and agreed before that work begins. We do not add one-time charges to an invoice you have not seen first.</p>
           <p>The finished website is yours. Your domain, your content, and the site itself go with you if you leave, with nothing to settle first.</p>
           <p><strong>Remi AI and the other AI agents are service software</strong>, licensed for the duration of your plan. They run on our infrastructure and are not part of the files, code, or data that transfer when you leave. The content they produced for your site and the leads they captured remain yours; the agents themselves do not transfer.</p>
-          <p>On the One-Page Website, clients are given access to the site's GitHub repository once the project is complete. Remi AI is not part of that repository and stops with the monthly plan. Most one-page projects are completed within 7 days after the contract has been signed; build timelines are good-faith estimates, not guarantees.</p>
+          <p>On the One-Page Website, clients are given access to the site's GitHub repository once the project is complete. Remi AI is not part of that repository and stops with the monthly plan. Most one-page projects are completed within a week after the contract has been signed; build timelines are good-faith estimates, not guarantees.</p>
 
           <h3 id="unlimited" class="scroll-mt-24">What "unlimited" means on a plan</h3>
           <p>Where a plan is described as including something "unlimited," that means we do not meter it or charge per unit, not that it has no practical limit at all. Specifically:</p>
@@ -109,9 +113,9 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <p>Setup fees attach to the build, not to the plan, so you are never charged twice for work you have already paid for. One rule covers every move:</p>
           <p><strong>Amount due on a switch = the new tier's setup fee &minus; the setup fee you have already paid, and never less than $0.</strong></p>
           <ul>
-            <li><strong>Moving up.</strong> You pay the difference and nothing more. Get Found ($595) to Get Booked ($895) is <strong>$300</strong>. Get Found ($595) to Sell Smarter ($1,345) is <strong>$750</strong>.</li>
-            <li><strong>Moving down.</strong> The result is negative, so nothing is due and nothing is refunded. Get Growing ($1,195) to Get Found ($595) costs <strong>$0</strong>, and if you later move back up to Get Growing it is $0 again, because $1,195 is already paid.</li>
-            <li><strong>Sideways at the same setup fee.</strong> Nothing is due. Get Growing and Get Ahead share a $1,195 build, so moving between them is <strong>$0</strong>.</li>
+            <li><strong>Moving up.</strong> You pay the difference and nothing more. Get Found (${fmt(sf('get-found'))}) to Get Booked (${fmt(sf('get-booked'))}) is <strong>${fmt(switchDue(sf('get-found'), sf('get-booked')))}</strong>. Get Found (${fmt(sf('get-found'))}) to Sell Smarter (${fmt(storeSf('Sell Smarter'))}) is <strong>${fmt(switchDue(sf('get-found'), storeSf('Sell Smarter')))}</strong>.</li>
+            <li><strong>Moving down.</strong> The result is negative, so nothing is due and nothing is refunded. Get Growing (${fmt(sf('get-growing'))}) to Get Found (${fmt(sf('get-found'))}) costs <strong>${fmt(switchDue(sf('get-growing'), sf('get-found')))}</strong>, and if you later move back up to Get Growing it is $0 again, because ${fmt(sf('get-growing'))} is already paid.</li>
+            <li><strong>Sideways at the same setup fee.</strong> Nothing is due. Get Growing and Get Ahead share a ${fmt(sf('get-growing'))} build, so moving between them is <strong>${fmt(switchDue(sf('get-growing'), sf('get-ahead')))}</strong>.</li>
             <li><strong>On a prepaid annual term</strong>, your setup fee was waived rather than paid, so the amount already paid is $0. Move up and stay on a prepaid year and the new tier's setup fee is waived too, so nothing is due. Move to month-to-month billing on a larger build and the new tier's setup fee applies in full, because none has been paid.</li>
             <li>A switch never restarts the <a href="#refund-window">5-business-day refund window</a>, which runs once, from your original kickoff.</li>
           </ul>
@@ -169,14 +173,11 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </article>
 
         <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-light-tertiary dark:border-dark-accent flex items-center justify-between gap-4">
-          <a href="/" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
-            <svg class="w-4 h-4 rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <Button href="/" variant="ghost" class="gap-2">
+            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             Back home
-          </a>
-          <a href="/privacy/" class="inline-flex items-center gap-2 text-primary-blue font-medium group">
-            Privacy Policy
-            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </a>
+          </Button>
+          <Button href="/privacy/" variant="ghost" arrow="right" class="gap-2">Privacy Policy</Button>
         </div>
       </Container>
     </Section>
@@ -184,18 +185,3 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     <DockMenu />
   </main>
 </BaseLayout>
-
-<style>
-  .legal-prose { color: inherit; font-size: 1.05rem; line-height: 1.8; }
-  .legal-prose :global(h2) { font-size: 1.5rem; font-weight: 700; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
-  .legal-prose :global(h3) { font-size: 1.15rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
-  .legal-prose :global(h4) { font-size: 1.02rem; font-weight: 700; margin: 1.25rem 0 0.5rem; }
-  .legal-prose :global(p) { margin: 0 0 1.25rem; }
-  .legal-prose :global(ul), .legal-prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
-  .legal-prose :global(li) { margin: 0.4rem 0; }
-  .legal-prose :global(ul) { list-style: disc; }
-  .legal-prose :global(ol) { list-style: decimal; }
-  .legal-prose :global(a) { color: #0071e3; text-decoration: underline; text-underline-offset: 2px; }
-  .legal-prose :global(a:hover) { color: #ff4faa; }
-  .legal-prose :global(strong) { font-weight: 700; }
-</style>

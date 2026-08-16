@@ -1,7 +1,9 @@
 ---
 // Testimonial card for embedding proof on high-intent pages. Pass a Testimonial
 // from src/data/testimonials.ts. Renders nothing if none is given.
-// Redesigned: gradient-ring card, avatar with initial, 5-star row, quote mark.
+// Highlight-panel card (the sitewide `border-primary-blue/40 ring-1` panel,
+// Aug 2026 normalization — replaced the one-off gradient ring), avatar with
+// initial, 5-star row, quote mark.
 import type { Testimonial } from '../../data/testimonials';
 
 interface Props {
@@ -15,8 +17,8 @@ const centered = align === 'center';
 ---
 
 {quote && (
-  <figure class={`group relative rounded-3xl p-[1.5px] bg-gradient-to-br from-primary-blue/40 via-purple-500/20 to-primary-pink/40 ${className}`}>
-    <div class={`relative flex h-full flex-col rounded-3xl bg-white dark:bg-dark-secondary p-6 md:p-8 overflow-hidden ${centered ? 'text-center' : ''}`}>
+  <figure class={`group relative rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary shadow-lg shadow-primary-blue/5 ${className}`}>
+    <div class={`relative flex h-full flex-col rounded-3xl p-6 sm:p-8 overflow-hidden ${centered ? 'text-center' : ''}`}>
       <!-- watermark quote glyph — kept fully inside the card so it never clips -->
       <span aria-hidden="true" class="pointer-events-none absolute top-3 right-5 text-[5.5rem] leading-none font-serif text-primary-blue/[0.07] dark:text-blue-300/[0.09] select-none">”</span>
 
@@ -27,12 +29,12 @@ const centered = align === 'center';
         ))}
       </div>
 
-      <blockquote class="relative flex-1 text-[15px] md:text-[17px] text-text-light-primary dark:text-text-dark-primary leading-relaxed">
+      <blockquote class="relative flex-1 text-base md:text-lg text-text-light-primary dark:text-text-dark-primary leading-relaxed">
         {quote.quote}
       </blockquote>
 
       <figcaption class={`mt-5 pt-5 border-t border-light-tertiary dark:border-dark-accent flex items-center gap-3 ${centered ? 'justify-center' : ''}`}>
-        <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-bold text-lg shadow-md shadow-primary-blue/20" aria-hidden="true">{initial}</span>
+        <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-blue to-primary-pink text-white font-bold text-lg shadow-lg shadow-primary-blue/20" aria-hidden="true">{initial}</span>
         <span class="text-left">
           <span class="block text-sm font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">
             {quote.name}{quote.role ? <span class="font-normal text-text-light-tertiary dark:text-text-dark-tertiary">, {quote.role}</span> : null}

@@ -242,5 +242,81 @@ html.dark .one-canvas-live::after {
 	.one-canvas-live::after { opacity: 0; }
 }
 
+/* ═══ HERO MASCOT FLOAT (Aug 2026 style pass) ═══════════════════════════════
+   The slow drift every interior hero's astronaut carries. Was copied into a
+   page-local <style> on each page (plans, ecommerce, services, how-it-works,
+   apps…) and missing on the ones that forgot (local-seo) — defined once here so
+   any `astro-float` mascot floats. Off for reduced-motion users. */
+.astro-float { animation: astro-float 6s ease-in-out infinite; will-change: transform; }
+@keyframes astro-float {
+	0%, 100% { transform: translateY(0) rotate(0deg); }
+	50%      { transform: translateY(-10px) rotate(-1.5deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.astro-float { animation: none; }
+}
+
+/* ═══ MK PROSE — the ONE long-form text block (Aug 2026 style pass) ═════════
+   Blog posts, case-study narratives, /terms and /privacy all render Markdown /
+   long copy through `.mk-prose`. It replaced four page-local <style> blocks
+   (.blog-prose ×2, .legal-prose ×2) that carried three different type scales
+   and raw hex colours. Headings sit on the canon scale (h2 = section title,
+   h3 = card title), links wear the inline-link tokens, and every colour is a
+   theme token — restyle long-form copy here, never per page. */
+.mk-prose {
+	@apply text-text-light-secondary dark:text-text-dark-secondary leading-relaxed;
+	font-size: 1.0625rem;
+	line-height: 1.8;
+}
+.mk-prose h2 {
+	@apply text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary;
+	margin: 2.25rem 0 0.75rem;
+	line-height: 1.25;
+}
+.mk-prose h3 {
+	@apply text-lg font-bold text-text-light-primary dark:text-text-dark-primary;
+	margin: 1.75rem 0 0.5rem;
+}
+.mk-prose h4 {
+	@apply text-base font-bold text-text-light-primary dark:text-text-dark-primary;
+	margin: 1.25rem 0 0.5rem;
+}
+.mk-prose p { margin: 0 0 1.25rem; }
+.mk-prose ul,
+.mk-prose ol { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+.mk-prose li { margin: 0.4rem 0; }
+.mk-prose ul { list-style: disc; }
+.mk-prose ol { list-style: decimal; }
+.mk-prose a {
+	@apply text-primary-blue dark:text-blue-300 font-medium hover:underline;
+	text-underline-offset: 2px;
+}
+.mk-prose strong { font-weight: 700; }
+.mk-prose blockquote {
+	border-left: 3px solid transparent;
+	border-image: linear-gradient(180deg, theme('colors.primary-blue'), theme('colors.primary-pink')) 1;
+	padding: 0.15rem 0 0.15rem 1.25rem;
+	margin: 1.9rem 0;
+	font-size: 1.2rem;
+	line-height: 1.6;
+	font-weight: 500;
+}
+.mk-prose blockquote p { margin: 0; }
+.mk-prose hr {
+	border: none;
+	height: 2px;
+	width: 64px;
+	margin: 2.75rem auto;
+	border-radius: 2px;
+	background: linear-gradient(90deg, theme('colors.primary-blue'), theme('colors.primary-pink'));
+	opacity: 0.55;
+}
+.mk-prose code {
+	@apply bg-light-tertiary dark:bg-dark-accent;
+	padding: 0.15em 0.4em;
+	border-radius: 4px;
+	font-size: 0.9em;
+}
+
 /* Text selection wears the brand accent (Manny, Aug 2026). */
 ::selection { background: #7c3aed; color: #ffffff; }

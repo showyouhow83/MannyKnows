@@ -35,7 +35,7 @@ You answer the same handful of questions all day, and the parent researching at 
 
 ## A simple admin the center runs itself
 
-If updating the site means emailing someone and waiting, it goes stale. Every site we build comes with an admin the center runs, easy enough to use between drop-off and snack time. For daycares it keeps enrollment inquiries, your children, and parent communication in one place.
+If updating the site means emailing someone and waiting, it goes stale. Every site we build comes with an admin the center runs, easy enough to use between drop-off and snack time. For daycares it keeps enrollment inquiries, the children enrolled, and parent communication in one place.
 
 ## Ranking in your town
 

@@ -13,12 +13,12 @@ const GBP_STATS: { n: string; label: string }[] = [
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
   {GBP_STATS.map((s) => (
-    <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 text-center">
+    <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 text-center">
       <div class="text-3xl md:text-4xl font-black apple-gradient-text mb-1" data-colorful-title>{s.n}</div>
       <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.label}</div>
     </div>
   ))}
 </div>
 <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-6">
-  Source: <a href="https://www.brightlocal.com/research/local-consumer-review-survey/" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted hover:text-primary-blue">BrightLocal Local Consumer Review Survey 2026</a>
+  Source: <a href="https://www.brightlocal.com/research/local-consumer-review-survey/" target="_blank" rel="noopener noreferrer" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">BrightLocal Local Consumer Review Survey 2026</a>
 </p>

@@ -54,7 +54,7 @@ A website that does the reassuring, a phone system that does the answering, deli
 
 ## How it works
 
-A parent searches, lands on the site, and gets every trust-building answer (licensing, programs, hours) without making a call. If something isn't on the page, the AI agent answers it in chat, drawing on everything the site knows. When they're ready, they book a tour through the form or call, and the IVR greets them, informs them, and puts them through to the right person. Both are builds from [the AI agents we hire out to Western Mass businesses](/ai-team/): the site agent from the roster, the phone system custom.
+A parent searches, lands on the site, and gets every trust-building answer (licensing, programs, hours) without making a call. If something isn't on the page, the AI agent answers it in chat, drawing on everything the site knows. When they're ready, they book a tour through the form or call, and the IVR greets them, informs them, and puts them through to the right person. Both are builds from [the AI agents Western Mass businesses add through the AI Agents Team](/ai-team/): the site agent from the roster, the phone system custom.
 
 ## The outcome
 

@@ -60,7 +60,7 @@ const pillars: { icon: string; title: string; body: string; avatar?: AgentId }[]
 const steps = [
   { n: '01', title: 'We sit down and find your voice', body: "A series of one-on-one working sessions between the person who owns your brand voice and our engineer, until we've dialed in exactly what you sell, who buys, and how you sound.", icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
   { n: '02', title: 'We build your Brand Brain', body: 'Everything from those sessions (plus your services, prices, past work, and best content) gets cleaned up, formatted, and loaded into one shared knowledge base every agent reads from.', icon: 'M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3-3.582 3-8 3-8-1.343-8-3zM4 7v5c0 1.657 3.582 3 8 3s8-1.343 8-3V7M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' },
-  { n: '03', title: 'We build & train your agents', body: "We set up each specialist Manny AI staffs around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { n: '03', title: 'We build & train your agents', body: "We set up each specialist Manny AI staffs around its one job, connect it to your Brand Brain and the tools it needs, and wire its handoffs through Manny AI.", icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
   { n: '04', title: 'We fine-tune it with you', body: 'We run the team alongside you and adjust until the output is quality and earns your approval, before anything goes live.', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
   { n: '05', title: 'You run it; we support it', body: 'You tell Manny AI what you need, approve what goes out, and read the reports. We handle the updates and ongoing support, so the team only gets sharper.', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
 ];
@@ -95,7 +95,7 @@ const pageJsonLd = {
       name: 'Remi AI: AI chat agent',
       price: String(aiTeamStartingPrice),
       priceCurrency: 'USD',
-      description: `Remi AI answers 24/7 and captures every lead, with its own plans from $${aiTeamStartingPrice}/mo; booking arrives on Remi AI Pro. Included with every AI-Powered Website plan, where it books from Get Booked and sells from Get Growing.`,
+      description: `Remi AI answers 24/7 and captures every lead, with its own plans from $${aiTeamStartingPrice}/mo; booking arrives on Remi AI Pro. Included with every website plan, where it books from Get Booked and sells from Get Growing.`,
     },
     {
       '@type': 'Offer',
@@ -108,7 +108,7 @@ const pageJsonLd = {
 
 <BaseLayout
   title="AI Chatbots, Agents & Automation Springfield MA | MannyKnows"
-  description="AI chatbots, agents & automation for Springfield, MA and Western Mass businesses, from $40/mo. We find the bottleneck, then put the agent that fixes it to work."
+  description={`AI chatbots, agents & automation for Springfield, MA and Western Mass businesses, from $${startFrom}/mo. We find the bottleneck, then put the agent that fixes it to work.`}
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   {/* one-canvas: one tone for the whole page instead of a different colour
@@ -131,6 +131,7 @@ const pageJsonLd = {
               <img
                 src="/mascot/astro-manny-ai.webp"
                 alt="Manny AI waving in a MannyKnows astronaut suit"
+                aria-hidden="true"
                 width="508"
                 height="880"
                 decoding="async"
@@ -139,13 +140,13 @@ const pageJsonLd = {
             </div>
             {/* Eyebrow adds the price fact the H1 doesn't carry, rather than
                 restating it (badge/H1 pairing rule, Aug 2026). */}
-            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-[0.65rem] md:text-xs font-bold uppercase tracking-wider mb-4">
-              The AI Agents Team · AI staff from ${startFrom}/mo
+            <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              The AI Agents Team · Springfield, MA
             </span>
-            <h1 class="sf-bold apple-headline text-[1.75rem] md:text-5xl lg:text-6xl mb-4">
+            <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>AI agents for Springfield &amp; Western Mass businesses</span>
             </h1>
-            <p class="sf-bold text-[0.95rem] md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss: you.</p>
+            <p class="sf-bold text-base md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">One team. One brain. One boss: you.</p>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               When people picture AI, they picture a chat box you have to prompt. This is <strong class="text-text-light-primary dark:text-text-dark-primary">Manny AI</strong> instead — a manager added to your business, ready to work. It finds the processes AI can improve, then staffs AI specialists onto them, like three, five, or seven people in one, custom-built when the job needs something no roster covers. Each AI agent is trained on your business, voice and services.
             </p>
@@ -156,17 +157,17 @@ const pageJsonLd = {
             <p class="mt-8 max-w-3xl mx-auto text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               Most owners land here asking "which AI agents does my business need?" Two questions get you there, and most people can answer both in under a minute:
             </p>
-            <div class="mt-6 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
-              <div class="rounded-2xl border border-light-tertiary dark:border-white/10 bg-white dark:bg-white/[0.03] dark:backdrop-blur-sm p-7">
+            <div class="mt-6 grid md:grid-cols-2 gap-6 max-w-6xl mx-auto text-left">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
                 <div class="flex items-center gap-3 mb-2">
-                  <span class="inline-flex items-center justify-center w-9 h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#d946ef] text-white font-black">1</span>
+                  <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 font-black">1</span>
                   <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">What are you bad at that keeps costing you money?</h3>
                 </div>
                 <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your bottleneck. It's where the leak is.</p>
               </div>
-              <div class="rounded-2xl border border-light-tertiary dark:border-white/10 bg-white dark:bg-white/[0.03] dark:backdrop-blur-sm p-7">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
                 <div class="flex items-center gap-3 mb-2">
-                  <span class="inline-flex items-center justify-center w-9 h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#d946ef] text-white font-black">2</span>
+                  <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 font-black">2</span>
                   <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">What are you good at that would print revenue if it scaled?</h3>
                 </div>
                 <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">That's your lever, and it's what breaks first when volume shows up.</p>
@@ -190,10 +191,10 @@ const pageJsonLd = {
                     </div>
                   )}
                   <div class="flex items-center gap-3 mb-2">
-                    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
                       <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={pl.icon} /></svg>
                     </div>
-                    <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{pl.title}</h3>
+                    <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{pl.title}</h3>
                   </div>
                   <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{pl.body}</p>
                 </div>
@@ -202,7 +203,7 @@ const pageJsonLd = {
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button href="#ai-team-roster" arrow="down">Meet the team</Button>
-              <Button href={BOOKING_URL} target="_blank" rel="noopener noreferrer" variant="secondary">Get a free quote</Button>
+              <Button href={BOOKING_URL} target="_blank" rel="noopener noreferrer" variant="secondary">Book a free diagnostic</Button>
             </div>
           </div>
         </Container>
@@ -218,7 +219,7 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <SectionHeader
             title="AI agents working for your business"
-            subtitle="Manny AI puts highly specialized AI agents on your business, running hundreds of tasks in minutes (market research, competition analysis, design, SEO) that would take a dedicated marketing team days to produce. Everything they make lands in one dashboard for your approval."
+            subtitle="Manny AI puts highly specialized AI agents on your business, running dozens of tasks in minutes (market research, competition analysis, design, SEO) that would take a dedicated marketing team days to produce. Everything they make lands in one dashboard for your approval."
             width="max-w-3xl"
           />
 
@@ -247,9 +248,9 @@ const pageJsonLd = {
           </div>
           <div class="flex-1 text-center sm:text-left">
             {/* Name on its own line, the role badge beneath it. */}
-            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{manager.name}</h3>
+            <h3 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{manager.name}</h3>
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-3">
-              <span class="inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{manager.role}</span>
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">{manager.role}</span>
             </div>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{manager.does}</p>
             {/* Bottom-right, the same corner the roster cards below park their
@@ -268,7 +269,7 @@ const pageJsonLd = {
           <!-- Anchor ids are the slugified agent name so multi-word names
                ("Manny AI") stay valid; single-word agents keep #agent-<name>. -->
           {agents.map((a) => (
-            <div id={`agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`} class="snap-center shrink-0 w-[82vw] sm:w-auto scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-lg transition-all duration-300">
+            <div id={`agent-${a.name.toLowerCase().replace(/\s+/g, '-')}`} class="snap-center shrink-0 w-[82vw] sm:w-auto scroll-mt-24 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10 transition-all duration-300">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
                   <AgentAvatar agent={a.id} class="w-full h-full" alt={`${a.name}, ${a.role}, an AI agent for Springfield & Western Mass small businesses by MannyKnows`} />
@@ -280,7 +281,7 @@ const pageJsonLd = {
                       <a href="/ai-booking-agent/" aria-label="Learn more about Remi AI, the AI booking agent" title="What is Remi AI?" class="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 text-[11px] font-bold align-middle hover:bg-primary-blue/5 transition-colors">?</a>
                     )}
                   </h3>
-                  <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">{a.role}</span>
+                  <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">{a.role}</span>
                 </div>
               </div>
               <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
@@ -308,14 +309,14 @@ const pageJsonLd = {
                hardest-to-shop-around work, and custom agents that prove
                useful become roster agents, which is what "the roster keeps
                growing" actually means. -->
-          <div id="custom-agent" class="snap-center shrink-0 w-[82vw] sm:w-auto scroll-mt-24 rounded-2xl border-2 border-dashed border-primary-blue/40 bg-gradient-to-br from-primary-blue/[0.04] via-transparent to-primary-pink/[0.04] p-6 flex flex-col hover:border-primary-blue/70 transition-all duration-300">
+          <div id="custom-agent" class="snap-center shrink-0 w-[82vw] sm:w-auto scroll-mt-24 rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 shadow-lg shadow-primary-blue/5 flex flex-col hover:border-primary-blue/70 transition-all duration-300">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-xl border-2 border-dashed border-primary-blue/30 flex items-center justify-center">
                 <svg class="w-10 h-10 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
               </div>
               <div class="min-w-0">
                 <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight">Your Custom Agent</h3>
-                <span class="text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Built for your exact problem</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Built for your exact problem</span>
               </div>
             </div>
             <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
@@ -334,32 +335,28 @@ const pageJsonLd = {
         </div>
 
         {/* Subtle prev/next, phones only (the sm+ grid needs no controls). */}
-        <button type="button" data-roster-nav="prev" aria-label="Previous agent"
-          class="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-9 h-9 rounded-full border border-light-tertiary dark:border-dark-accent bg-white/85 dark:bg-dark-secondary/85 backdrop-blur text-text-light-secondary dark:text-text-dark-secondary shadow-sm">
+        <Button type="button" variant="secondary" size="sm" data-roster-nav="prev" aria-label="Previous agent" class="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 !px-0 backdrop-blur">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
-        </button>
-        <button type="button" data-roster-nav="next" aria-label="Next agent"
-          class="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-9 h-9 rounded-full border border-light-tertiary dark:border-dark-accent bg-white/85 dark:bg-dark-secondary/85 backdrop-blur text-text-light-secondary dark:text-text-dark-secondary shadow-sm">
+        </Button>
+        <Button type="button" variant="secondary" size="sm" data-roster-nav="next" aria-label="Next agent" class="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 !px-0 backdrop-blur">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        </button>
+        </Button>
         </div>
 
         <!-- Human-in-the-loop card — closes the roster per Manny (Aug 2026):
              meet the team, then hear who stays in charge. -->
-        <div class="max-w-6xl mx-auto mt-14 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden p-8 grid gap-8 items-center md:grid-cols-5">
+        <div class="max-w-6xl mx-auto mt-12 rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden p-6 sm:p-8 grid gap-8 items-center md:grid-cols-5">
           {/* 60/40 on desktop: copy carries three fifths, handshake two. */}
           <div class="md:col-span-3 text-center md:text-left">
-            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-              <span class="apple-gradient-text" data-colorful-title>Not fully autonomous, on purpose</span>
-            </h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-4">Not fully autonomous, on purpose</h2>
             <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
               The agents do the heavy lifting — researching, drafting, designing, scheduling, monitoring, measuring. You stay in control. Nothing customer-facing goes out until you approve it, and a real person steps in where judgment matters (the calls, the verifications, the review appeals, the decisions AI shouldn't make alone). You get the speed of automation without handing your brand to a robot.
             </p>
           </div>
-          {/* self-end + -mb-8 cancels the card's own bottom padding, and the
+          {/* self-end + the negative margin cancels the card's own bottom padding, and the
               artwork's feet are flush with its bottom edge, so the pair stands
               on the card floor instead of hovering above it. */}
-          <div class="md:col-span-2 flex justify-center self-end -mb-8">
+          <div class="md:col-span-2 flex justify-center self-end -mb-6 sm:-mb-8">
             <img
               src="/mascot/astronaut-robot-handshake.webp"
               alt="An astronaut shaking hands with a friendly robot. You stay in charge of your AI Agents Team"
@@ -376,7 +373,7 @@ const pageJsonLd = {
     <Section id="ai-team-steps" variant="alternate" className="room chain-violet-violet">
       <Container>
         <SectionHeader title="How it works" />
-        <StepCards steps={steps} cols={5} class="max-w-7xl mx-auto" />
+        <StepCards steps={steps} cols={5} />
         {/* Setup-fee paragraph removed per Manny (Aug 2026) — the $195 setup
             and usage terms live in the "What does it cost?" FAQ below. */}
       </Container>
@@ -385,7 +382,7 @@ const pageJsonLd = {
     <!-- FAQ -->
     <Section id="ai-team-faq" variant="alternate" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-6xl mx-auto">
           <Faq faqs={aiTeamFaq} />
           <div class="text-center mt-12">
             <Button href="#contact" data-contact-context="AI Agents Team" arrow="right">Build my AI Agents Team</Button>
@@ -398,7 +395,7 @@ const pageJsonLd = {
     <!-- Final CTA — the diagnostic, no pitch (bottleneck-first close) -->
     <Section id="ai-team-diagnostic" variant="gradient" className="room glow-blue">
       <Container>
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <img
             src="/mascot/astro-client-cell.webp"
             alt="Astronaut mascot texting on a phone"
@@ -410,10 +407,10 @@ const pageJsonLd = {
             class="w-full max-w-[120px] md:max-w-[170px] h-auto pointer-events-none order-last md:order-first flex-shrink-0"
           />
           <div class="flex-1 text-center md:text-left">
-          <h2 class="sf-bold text-2xl md:text-4xl font-bold mb-5">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
             <span class="apple-gradient-text" data-colorful-title>We find the leak with 2 simple questions.</span>
           </h2>
-          <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
             Bring your answers, or bring nothing and we'll find them together. You leave the call knowing which
             department is bleeding and which single agent stops it, whether one from the roster or one we scope just for
             you. Springfield-based, serving all of

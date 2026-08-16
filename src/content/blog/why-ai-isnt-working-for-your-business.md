@@ -1,6 +1,6 @@
 ---
 title: "AI Is Everywhere. Why Isn't It Working for Your Business?"
-description: "AI hype is everywhere, but in most small businesses nothing has actually changed. Adoption stalls because AI is sold as a tool you run, not a system built into how you work: here's why, and the shortcut for small businesses."
+description: "AI hype is everywhere, but in most small businesses nothing has actually changed. Adoption stalls because AI is sold as a tool you run, not a system built into how you work. Here's why, and the shortcut for small businesses."
 pubDate: "2026-07-24"
 author: "Manny"
 tags: ["AI Strategy", "Small Business", "AI Agent"]

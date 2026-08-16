@@ -17,7 +17,7 @@ import Button from '../components/ui/Button.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import { ecommercePlans, yearlyTotal, yearlyMonthly } from '../data/plans';
 import PricingCards from '../components/pricing/PricingCards.astro';
-import type { PricingCard } from '../components/pricing/PricingCards.astro';
+import { storeCards as storeCards_ } from '../lib/pricingCards';
 // Official monochrome brand marks from the CC0 simple-icons set, resolved at
 // build time. Adobe Commerce/Magento and Ecwid aren't in the set (Adobe's
 // marks were removed on trademark grounds) — those two render as text chips.
@@ -44,19 +44,7 @@ const proofQuote = getTestimonial('Cherry Vibes');
 
 // The tier grid renders through the shared PricingCards component (same one
 // /plans uses) so the two pricing surfaces stay identical in layout.
-const storeCards: PricingCard[] = plan.tiers!.map((t) => ({
-  name: t.name,
-  audience: t.audience,
-  price: t.price,
-  setupFee: t.setupFee,
-  scope: t.scope,
-  scopeLines: t.scopeLines,
-  tagline: t.description,
-  builtOn: t.builtOn,
-  features: t.features,
-  featured: t.featured,
-  primary: { label: 'Get started', href: '#contact', context: `Online Store: ${t.name}` },
-}));
+const storeCards = storeCards_();
 
 // The honest comparison: a store isn't a website tier, so we say plainly what
 // it costs relative to the plan it's built on rather than hiding the math.
@@ -130,21 +118,21 @@ const pageJsonLd = {
               <span class="apple-gradient-text" data-colorful-title>Online stores that sell while your business is closed</span>
             </h1>
             <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Anyone can sign up for a store. A store that <em>sells</em> is a job. The right products, written and photographed right, emails that bring people back, a checkout nobody abandons. We do that job every month, so by the holiday rush you're tuned and stocked, not launching.
+              Anyone can sign up for a store. A store that <em>sells</em> is a job. The right products, written right and organized the way people shop, emails that bring people back, a checkout nobody abandons. We do that job every month, so by the holiday rush you're tuned and stocked, not launching.
             </p>
 
             <div class="mt-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
               <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
-                <span class="block text-[11px] font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
+                <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Month to month</span>
                 <span class="text-3xl font-black">${plan.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                 <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">starting at · cancel anytime</span>
                 <span class="block text-xs font-semibold text-text-light-secondary dark:text-text-dark-secondary mt-1">plus ${plan.setupFee!.toLocaleString('en-US')} one-time setup</span>
               </div>
               <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
-                <span class="block text-[11px] font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300">Yearly · build free</span>
+                <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Yearly · build free</span>
                 <span class="text-3xl font-black">${yearlyMonthly(plan).toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
                 <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">billed as one payment of ${yearlyTotal(plan).toLocaleString('en-US')}/yr</span>
-                <span class="block text-xs font-semibold text-green-700 dark:text-green-400 mt-1">2 months free, no setup fee</span>
+                <span class="block text-xs font-semibold text-green-700 dark:text-green-400 mt-1">2 months free, setup fee waived</span>
               </div>
             </div>
 
@@ -166,9 +154,9 @@ const pageJsonLd = {
                  prefers-reduced-motion). "Adobe Commerce" is Magento's current
                  name (renamed 2021). -->
             <div class="mt-8 max-w-3xl mx-auto">
-              <p class="text-xs font-semibold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">We work across the platforms</p>
+              <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">We work across the platforms</p>
               <div class="platform-marquee" role="img" aria-label="Shopify, WooCommerce, Adobe Commerce (Magento), BigCommerce, Ecwid, Square Online, Squarespace, Wix">
-                <div class="platform-track text-gray-500 dark:text-slate-400" aria-hidden="true">
+                <div class="platform-track text-text-light-tertiary dark:text-text-dark-tertiary" aria-hidden="true">
                   {[0, 1].map(() => (
                     platformLogos.map((l) => (
                       <span class="platform-item" title={l.title}>
@@ -202,7 +190,7 @@ const pageJsonLd = {
             uses): billing toggle, spec box, accent-per-column, and the
             snap-scrolling rail on phones. */}
         <PricingCards id="storePricing" cards={storeCards} />
-        <div class="mt-14">
+        <div class="mt-12 max-w-6xl mx-auto">
           <p class="text-center text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-4">Compare at a glance</p>
           <div class="overflow-x-auto rounded-2xl border border-light-tertiary dark:border-dark-accent">
             {/* First column is frozen while the tiers scroll under it — same
@@ -226,7 +214,7 @@ const pageJsonLd = {
                   ['SEO product descriptions — AI-written & reviewed', 'Unlimited', 'Unlimited', 'Unlimited', 'Unlimited'],
                   ['Store SEO', 'Basics', 'AI-Automated', 'Full program', 'Full program'],
                   ['Email — flows (cart, welcome, post-purchase)', '—', '✓', '✓', '✓'],
-                  ['Cart-abandonment optimization', '—', '—', '✓', '✓'],
+                  ['Conversion work — what stalls gets fixed, page by page', '—', '—', '✓', '✓'],
                   ['Reviews collected & shown', '—', '✓', '✓', '✓'],
                   ['AI shopping assistant — recommends & upsells', '—', '—', '✓', '✓'],
                   ['Multilingual storefront', '—', '—', '✓', '✓'],
@@ -298,7 +286,7 @@ const pageJsonLd = {
           ))}
         </div>
         <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto">
-          Every plan also includes your own admin, multilingual as standard, SSL and caching on a global edge network, a domain if you need one, and unlimited storage, bandwidth, content updates, and stock photos, video &amp; logos.
+          Every store tier also includes your own admin, SSL and caching on a global edge network, a domain if you need one, and unlimited storage, bandwidth, and stock photos, video &amp; logos.
           <a href="/plans/#included" class="text-primary-blue dark:text-blue-300 font-medium hover:underline whitespace-nowrap">See the full list →</a>
         </p>
       </Container>
@@ -329,7 +317,7 @@ const pageJsonLd = {
     <!-- FAQ -->
     <Section id="store-faq" variant="alternate" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-6xl mx-auto">
           <Faq faqs={plan.faq} />
           <div class="text-center mt-12">
             <Button href="#contact" data-contact-context="Sell Online: store plan" arrow="right">Talk to us about your store</Button>
@@ -341,10 +329,10 @@ const pageJsonLd = {
     <!-- Back to the website plans -->
     <Section id="store-plans" variant="default" className="room glow-violet">
       <Container>
-        <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-8">
-          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Selling services instead of products?</h2>
+        <div class="max-w-2xl mx-auto text-center rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
+          <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">Selling services instead of products?</h2>
           <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Then what you want is a website that gets you found on Google, answers your customers, and books the work. Four plans from $95/mo, every one with Remi AI included. And if you start selling later, your plan has a store twin waiting — switching is a plan change, not a rebuild.
+            Then what you want is a website that gets you found on Google, answers your customers, and books the work. Four plans, every one with Remi AI included. And if you start selling later, your plan has a store twin waiting — switching is a plan change, not a rebuild.
           </p>
           <Button href="/plans/" variant="secondary" arrow="right" class="mt-5">See the website plans</Button>
         </div>

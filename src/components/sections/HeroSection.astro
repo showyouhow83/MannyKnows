@@ -20,11 +20,13 @@ const { title, highlightedText, titleAfter = "", subtitle, badge, className = ""
         the site-wide hero-title width: interior page heroes match it. */}
     <div class="mx-auto">
       {badge && (
-        <span class="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-gray-200/40 dark:border-white/15 bg-white/50 dark:bg-white/5 backdrop-blur-md text-sm sf-medium text-text-light-secondary dark:text-text-dark-secondary">
+        <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
           {badge}
         </span>
       )}
-      <h1 class="sf-bold text-4xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 apple-headline" style="font-size: clamp(1.7rem, 6vw, 4.5rem);">
+      {/* Homepage hero scale: a fluid clamp (1.7rem → 6vw → 4.5rem) instead of
+          the interior h1 steps; ≤639px the global mobile rule sets it to 2rem. */}
+      <h1 class="sf-bold text-[clamp(1.7rem,6vw,4.5rem)] mb-4 sm:mb-6 apple-headline">
         <!-- Whole heading is gradient — house rule (Manny, Aug 2026): no more
              white/gradient splits inside titles. -->
         <!-- highlightedText is trusted site copy rendered as HTML so it can
@@ -37,29 +39,3 @@ const { title, highlightedText, titleAfter = "", subtitle, badge, className = ""
     </div>
   </div>
 </section>
-
-<style>
-  /* Hero responsive styles */
-  @media (max-width: 768px) {
-    .hero {
-      @apply py-10 pb-16 min-h-[calc(100vh-120px)];
-    }
-    
-    .hero h1 {
-      @apply text-4xl;
-    }
-    
-    .hero p {
-      @apply text-lg;
-    }
-    
-    .hero .flex {
-      @apply flex-col items-center;
-    }
-    
-    .btn-primary,
-    .btn-secondary {
-      @apply w-full max-w-xs;
-    }
-  }
-</style>

@@ -84,7 +84,7 @@ No minimum term on any website plan. Month-to-month plans carry a one-time setup
 
 ### What's included in the monthly price?
 
-Hosting, SSL, speed, security, and maintenance; Remi AI at your tier's level (answering and capturing leads at Get Found, booking at Get Booked, selling on a self-optimizing site at Get Growing); local SEO and Google Business Profile work scoped to the tier; and content updates with no per-change fee. Nothing else is needed to keep the site running.
+Hosting, SSL, speed, security, and maintenance; Remi AI at your tier's level (answering and capturing leads at Get Found, booking at Get Booked, selling on a self-optimizing site at Get Growing); local SEO and Google Business Profile work scoped to the tier; and content updates with no per-change fee (four a month on Get Found, unlimited from Get Booked). Nothing else is needed to keep the site running.
 
 ### Do we own the site?
 

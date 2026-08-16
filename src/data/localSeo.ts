@@ -42,7 +42,7 @@ export const PACKAGES: LocalSeoPackage[] = [
       'Monthly Google posts, plus on-page SEO fixes on your existing website',
       'Citations built and cleaned — your name, address & phone consistent across the directories Google checks',
       'A monthly report on what moved and what changes next',
-      'Month one sets you up: your Google Business Profile claimed, verified, and configured right — category, services, hours, info',
+      'Month one sets you up. Your Google Business Profile claimed, verified, and configured right — category, services, hours, info',
       'Plus the launch shoot: five 360° photos published as a mini "see inside" tour on your listing',
     ],
   },

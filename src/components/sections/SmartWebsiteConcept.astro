@@ -12,34 +12,33 @@
 // identical. Nothing here is aspirational.
 //
 // Renders inner content only — drop it inside a <Section>/<PageSection>.
+import SectionHeader from '../ui/SectionHeader.astro';
 export interface Props {
-  /** Heading level for the section title: h2 on plan pages, h2 on /plans. */
+  /** Legacy (Aug 2026 normalization): the header now always renders at the
+      one SectionHeader scale, so this no longer changes anything. Accepted so
+      older call sites keep compiling. */
   compact?: boolean;
   /** false = contrast columns + closing line only (the homepage promo brings
       its own PageSection title/subtitle). */
   showHeader?: boolean;
 }
-const { compact = false, showHeader = true } = Astro.props;
+const { showHeader = true } = Astro.props;
 import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
 // ("What it checks, every day" daily-loop grid removed per Manny, Aug 2026 —
 // the contrast columns and the builder objection carry the concept alone.)
 ---
 
-{/* No width cap here: the page Container sets the width. The homepage
-    wraps this in its own max-w-5xl, so it stays narrow there. */}
+{/* No width cap here: the page Container sets the width; the versus panel
+    below caps itself at max-w-6xl (the sitewide banner width) everywhere,
+    homepage included. */}
 <div>
   {showHeader && (
-    <div class="text-center mb-12">
-      <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-        A different kind of website
-      </span>
-      <h2 class={`sf-bold apple-headline font-bold mb-5 ${compact ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}`}>
-        <span class="apple-gradient-text" data-colorful-title>Most websites get worse every month. <br /> This one gets better.</span>
-      </h2>
-      <p class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
-        While traditional sites depreciate after launch, our AI-driven websites use autonomous AI agents to run daily self-checks, auto-generate fresh SEO content, and stay seamlessly multilingual to capture every possible lead.
-      </p>
-    </div>
+    <SectionHeader
+      badge="A different kind of website"
+      title="Most websites get worse every month. <br /> This one gets better."
+      subtitle="While traditional sites depreciate after launch, our AI-driven websites use autonomous AI agents to run daily self-checks and, from Get Growing up, auto-generate fresh SEO content, and stay seamlessly multilingual to capture every possible lead."
+      width="max-w-3xl"
+    />
   )}
 
   <!-- The contrast as a fused "versus" panel (Manny's pick, Aug 2026) —
@@ -47,9 +46,9 @@ import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
        homepage. On phones the halves stack with a divider and the medallion
        moves to the right of the boundary. -->
   <div class="relative max-w-6xl mx-auto rounded-3xl border border-light-tertiary dark:border-dark-accent overflow-hidden grid md:grid-cols-2">
-    <div class="relative bg-gray-50/80 dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
+    <div class="relative bg-light-secondary dark:bg-dark-primary/60 p-6 sm:p-10 border-b md:border-b-0 md:border-r border-light-tertiary dark:border-dark-accent">
       <span class="md:hidden absolute -bottom-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent shadow-lg text-sm font-black apple-gradient-text" aria-hidden="true">vs</span>
-      <h3 class="font-bold text-text-light-tertiary dark:text-text-dark-tertiary mb-5 uppercase tracking-wide text-xs">Their regular websites</h3>
+      <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-5">Their regular websites</p>
       <ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         {theirSites.map((t) => (
           <li class="flex gap-3"><span class="text-text-light-tertiary dark:text-text-dark-tertiary flex-shrink-0">—</span><span>{t}</span></li>
@@ -57,7 +56,7 @@ import { theirSites, ourSites, closingLine } from '../../data/smartContrast';
       </ul>
     </div>
     <div class="bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] bg-white dark:bg-dark-secondary p-6 sm:p-10">
-      <h3 class="font-bold text-primary-blue dark:text-blue-300 mb-5 uppercase tracking-wide text-xs">Our AI-Powered Websites</h3>
+      <p class="text-xs font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-5">Our AI-Powered Websites</p>
       <ul class="space-y-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">
         {ourSites.map((t) => (
           <li class="flex gap-3"><svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>{t}</span></li>

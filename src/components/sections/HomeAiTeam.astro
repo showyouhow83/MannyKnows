@@ -28,12 +28,12 @@ const specialty: Record<string, string> = {
 };
 ---
 
-<div class="max-w-7xl mx-auto">
+<div class="max-w-6xl mx-auto">
   {/* Each avatar deep-links to its card on /ai-team (anchors are the slugified
       agent name: same rule as the card ids there), so "who's Nova?" lands on
       Nova's description instead of the top of the page. Manny AI leads large;
       the specialists he staffs form a 3×2 grid beside him. */}
-  <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-4xl mx-auto">
+  <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14">
     <!-- Manny AI, featured: the manager added to your business -->
     <a
       href="/ai-team/#agent-manny-ai"
@@ -60,8 +60,8 @@ const specialty: Record<string, string> = {
           <div class="w-full max-w-[68px] sm:max-w-[84px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
           <AgentAvatar agent={a.id} class="w-full h-full" />
           </div>
-          <span class="text-[11px] sm:text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{a.name}</span>
-          <span class="text-[9px] sm:text-[10px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>
+          <span class="text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{a.name}</span>
+          <span class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>
         </a>
       ))}
     </div>
@@ -69,11 +69,11 @@ const specialty: Record<string, string> = {
 
   <div class="text-center max-w-2xl mx-auto mt-10">
     <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-      Want to see exactly how much time Manny AI can save your team? Book a free consultation today to discuss the processes you want off your plate.</p>
+      Want to see exactly how much time Manny AI can save your team? Start with the free 15-minute diagnostic on the AI Agents Team page and name the processes you want off your plate.</p>
     {/* Remi AI gets a second, verb-led route: the roster avatar above goes to the
         profile card; this goes to the booking-agent explainer page. */}
     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-6">
-      <a href="/ai-booking-agent/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">See Remi AI, our AI booking agent, at work →</a>
+      <a href="/ai-booking-agent/" class="font-medium text-primary-blue dark:text-blue-300 hover:underline">See Remi AI, our AI booking agent, at work →</a>
     </p>
     <Button href="/ai-team/" arrow="right">Find your bottleneck</Button>
     {/* Handshake illustration hidden per Manny (Aug 2026) — kept for reuse.

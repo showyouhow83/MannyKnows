@@ -22,7 +22,8 @@ import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
 import AiWebsiteAgentDemo from '../components/sections/AiWebsiteAgentDemo.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
-import PricingCards, { type PricingCard } from '../components/pricing/PricingCards.astro';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import { onePageCards } from '../lib/pricingCards';
 import { getTestimonial } from '../data/testimonials';
 import {
   aiWebsiteSetupFee,
@@ -47,31 +48,7 @@ const restSections = aiWebsiteSections.filter((s) => !s.hero);
 // every other pricing surface, Manny, Aug 2026). billing='none' because these
 // aren't competing tiers — one product, its one-time and its monthly, each
 // card itemizing exactly what that number buys.
-const priceCards: PricingCard[] = [
-  {
-    name: 'Build & launch',
-    audience: 'What the one-time buys',
-    price: aiWebsiteSetupFee,
-    priceUnit: 'one-time',
-    priceNote: 'waived when you prepay the year',
-    scope: 'The page + Remi AI, set up once',
-    tagline: 'The work that happens once — designed, written, trained, and live on your own domain.',
-    features: aiWebsiteSetupIncludes,
-    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
-  },
-  {
-    name: 'Keep it running',
-    audience: 'What the monthly buys',
-    price: aiWebsiteMonthly,
-    priceUnit: `/mo · $${aiWebsiteYearly} a year`,
-    priceNote: 'cancel anytime, the site and domain stay yours',
-    scope: 'Hosted, answering & maintained',
-    tagline: 'The work that never stops — so the page stays fast, keeps ranking, and keeps answering.',
-    features: aiWebsiteMonthlyIncludes,
-    featured: true,
-    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
-  },
-];
+const priceCards = onePageCards();
 
 // Title/meta kept under 60/160 chars — search results truncate past that.
 const META_DESCRIPTION = `A one-page website with Remi AI, an AI agent that answers customers and captures every lead. $${aiWebsiteSetupFee} to build, $${aiWebsiteMonthly}/mo to run. Springfield, MA.`;
@@ -129,30 +106,34 @@ const pageJsonLd = {
       <NavBar />
       <Breadcrumb items={[{ label: 'One-Page Website' }]} />
 
-      <div class="pb-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-[1440px] mx-auto">
-          <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <div class="pb-12">
+        <Container>
+          <div class="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             <!-- Pitch -->
-            <div class="flex-1 text-center lg:text-left">
-              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+            <div class="text-center lg:text-left">
+              <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
                 One page · One agent · Western Massachusetts
               </span>
               <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
                 <span class="apple-gradient-text" data-colorful-title>A one-page website that answers customers while you&nbsp;<span id="rotateWord" class="rotate-word apple-gradient-text" data-colorful-title>work</span></span>
               </h1>
-              <p class="max-w-2xl mx-auto lg:mx-0 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
-                Remi AI, your personal AI agent trained on your business data, runs your site. It answers your
-                customers at any hour — English, Spanish, French, German, Portuguese, and more — and sends
+              <p class="max-w-2xl mx-auto lg:mx-0 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+                Remi AI, your personal AI agent trained on your business data, answers on your site. It answers your
+                customers at any hour — English, Spanish, French, German, Italian, and more — and sends
                 every lead to your inbox.
               </p>
 
-              <!-- Price, stated up front. The old card buried it. -->
-              <div class="inline-flex flex-wrap items-baseline justify-center lg:justify-start gap-x-3 gap-y-1 rounded-2xl border border-primary-blue/30 bg-white/70 dark:bg-dark-secondary/70 px-5 py-3 mb-8">
-                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteSetupFee}</span>
-                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">to build</span>
-                <span class="text-text-light-tertiary dark:text-text-dark-tertiary">·</span>
-                <span class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteMonthly}<span class="text-base font-bold">/mo</span></span>
-                <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">to run it</span>
+              <!-- Price, stated up front (the old card buried it) — the same
+                   two-block price pattern as the /ecommerce and /plans/<slug> heroes. -->
+              <div class="mb-8 inline-flex flex-col sm:flex-row items-stretch gap-3 text-center">
+                <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-6 py-4">
+                  <span class="block text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">To build</span>
+                  <span class="text-3xl font-black">${aiWebsiteSetupFee}</span>
+                </div>
+                <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary px-6 py-4">
+                  <span class="block text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">To run it</span>
+                  <span class="text-3xl font-black">${aiWebsiteMonthly}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span>
+                </div>
               </div>
 
               <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -162,11 +143,11 @@ const pageJsonLd = {
             </div>
 
             <!-- Proof, immediately: the agent doing its job -->
-            <div class="flex-1 w-full">
+            <div class="w-full">
               <AiWebsiteAgentDemo />
             </div>
           </div>
-        </div>
+        </Container>
       </div>
     </header>
 
@@ -180,17 +161,17 @@ const pageJsonLd = {
         <SectionHeader
           badge="The part that isn't a website"
           title="Anyone can build you a page. This one has Remi AI on it."
-          subtitle="A normal small-business site is a brochure. It waits. Remi AI works the conversation — it answers what visitors ask, gathers who they are and what they need, and sends you the lead ready to close. It's Remi AI Lite, the first rung of <a href='/ai-booking-agent/' class='text-primary-blue dark:text-blue-300 hover:underline'>Remi AI's own plans</a> — the bigger versions customize deeper and book appointments, and the same agent ships with every <a href='/plans/' class='text-primary-blue dark:text-blue-300 hover:underline'>website plan</a>."
+          subtitle="A normal small-business site is a brochure. It waits. Remi AI works the conversation — it answers what visitors ask, gathers who they are and what they need, and sends you the lead ready to close. It's Remi AI Lite, the first rung of <a href='/ai-booking-agent/' class='text-primary-blue dark:text-blue-300 font-medium hover:underline'>Remi AI's own plans</a> — the bigger versions customize deeper and book appointments, and the same agent ships with every <a href='/plans/' class='text-primary-blue dark:text-blue-300 font-medium hover:underline'>website plan</a>."
           html
         />
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {aiWebsiteAgent.map((c) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
               <div class="flex items-center gap-3 mb-2">
-                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
                   <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
                 </div>
-                <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{c.title}</h3>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{c.title}</h3>
               </div>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
             </div>
@@ -201,29 +182,28 @@ const pageJsonLd = {
              bordered boxes with no label, so a reader hit "Painting contractor
              · Springfield" with no idea why it was there. This says what they
              are before they're read. -->
-        <div class="max-w-4xl mx-auto mt-14 text-center mb-6">
-          <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Two businesses running this today</h3>
-          <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-xl mx-auto">
-            Both in Springfield, both built by us, both with the agent answering right now.
-          </p>
-        </div>
-        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          <a href="/work/sl-painting/" class="group rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Painting contractor · Springfield</span>
-            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+        <SectionHeader
+          title="Two Springfield businesses with Remi AI answering today"
+          subtitle="Both built by us on bigger builds than this one page. Same agent, answering right now."
+          className="mt-12"
+        />
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col">
+            <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Painting contractor · Springfield</span>
+            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">
               SL Painting's agent qualifies leads around the clock, because a contractor can't answer chat from a ladder.
               The same site now ranks #1 on Google, organically, for exterior painting in Springfield.
             </p>
-            <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
-          </a>
-          <a href="/work/jk-daycare/" class="group rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Licensed childcare · Springfield</span>
-            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            <Button href="/work/sl-painting/" variant="ghost" size="sm" arrow="right" class="mt-3 self-start">Read the case study</Button>
+          </div>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col">
+            <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Licensed childcare · Springfield</span>
+            <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">
               JK Daycare went from no website and unanswered midday calls to a live site, a working AI agent,
               and a phone system that routes every call, all in two weeks.
             </p>
-            <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">Read the case study<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></span>
-          </a>
+            <Button href="/work/jk-daycare/" variant="ghost" size="sm" arrow="right" class="mt-3 self-start">Read the case study</Button>
+          </div>
         </div>
       </Container>
     </Section>
@@ -241,20 +221,18 @@ const pageJsonLd = {
           subtitle="Two numbers, and here's exactly what each one buys."
         />
 
-        <div class="max-w-4xl mx-auto">
-          <PricingCards id="one-page-pricing" cards={priceCards} billing="none" featuredLabel="The part that never stops" />
-        </div>
+        <PricingCards id="one-page-pricing" cards={priceCards} billing="none" featuredLabel="The part that never stops" />
 
         <!-- The honest comparison, rather than a section that argues against itself -->
-        <div class="max-w-3xl mx-auto mt-12 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/70 dark:bg-dark-secondary/70 p-6 text-center">
-          <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">When one page isn't the right answer</h3>
+        <div class="max-w-3xl mx-auto mt-12 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 text-center">
+          <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">When one page isn't the right answer</h3>
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Already have a website you like? Then skip the page — Remi AI embeds on it with one snippet, same price.
-            <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 hover:underline font-semibold">See the Remi AI plans</a>.
+            <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See the Remi AI plans</a>.
             And if you want a multilingual site of several pages that we design, run, update four times a month, and
             keep ranking, with your Google Business Profile handled, that's a monthly plan with its own one-time
             setup fee.
-            <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 hover:underline font-semibold">Compare Get Found</a>.
+            <a href="/plans/get-found/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Compare Get Found</a>.
           </p>
         </div>
       </Container>
@@ -274,12 +252,12 @@ const pageJsonLd = {
     <!-- ───────────────────────── FAQ + CTA ───────────────────────── -->
     <Section id="faq" variant="gradient" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
-          <Faq faqs={aiWebsiteFaq} heading="One-page website questions, answered" />
+        <div class="max-w-6xl mx-auto">
+          <Faq faqs={aiWebsiteFaq} />
           <div class="text-center mt-12">
             <Button href="#contact" data-contact-context="One-Page Website" arrow="right">Talk about your one-page site</Button>
             <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-              Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.
+              Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue dark:text-blue-300 font-medium hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.
             </p>
           </div>
         </div>
@@ -315,47 +293,44 @@ const pageJsonLd = {
         />
 
         <!-- Part one: the seven jobs. The two that do the heaviest lifting get the weight -->
-        <p class="text-center text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-6">The seven jobs</p>
+        <p class="text-center text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-6">The seven jobs</p>
         <div class="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-6">
           {heroSections.map((s) => (
-            <div class="rounded-2xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-7">
+            <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6">
               <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{s.name}</h3>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 max-w-6xl mx-auto">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
           {restSections.map((s) => (
-            <div class="rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
-              <h3 class="text-sm font-bold text-primary-blue dark:text-blue-300 mb-1.5">{s.name}</h3>
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug mb-1.5">{s.name}</h3>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
 
         <!-- Part two: the engineering underneath. Same argument, other half. -->
-        <div id="lighthouse" class="max-w-6xl mx-auto mt-16 pt-12 border-t border-light-tertiary dark:border-dark-accent scroll-mt-24">
-          <div class="text-center max-w-2xl mx-auto mb-10">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">The four scores Google grades</p>
-            <h3 class="text-xl md:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">Structure only counts if the page loads</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-              Lighthouse is Google's own audit of a page. Every section above is built against it, and we build to
-              near-perfect on all four — run it on this site, or on the one you have now.
-            </p>
-          </div>
+        <div id="lighthouse" class="max-w-6xl mx-auto mt-12 pt-10 border-t border-light-tertiary dark:border-dark-accent scroll-mt-24">
+          <SectionHeader
+            badge="The four scores Google grades"
+            title="Structure only counts if the page loads"
+            subtitle="Lighthouse is Google's own audit of a page. Every section above is built against it, and we build to near-perfect on all four — run it on this site, or on the one you have now."
+          />
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {aiWebsiteLighthouse.map((l) => (
-              <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
+              <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-2xl p-6 text-center">
                 <div class="flex items-center justify-center gap-2.5 mb-2">
-                  <div class="inline-flex items-center justify-center w-10 h-10 flex-shrink-0 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black text-sm">100</div>
-                  <h4 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary">{l.name}</h4>
+                  <div class="inline-flex items-center justify-center w-10 h-10 flex-shrink-0 rounded-full bg-green-500/10 text-green-600 dark:text-green-400" aria-label="near-perfect score"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+                  <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{l.name}</h4>
                 </div>
                 <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
               </div>
             ))}
           </div>
           <div class="text-center mt-8">
-            <Button href="/free-ai-website-analysis/" variant="ghost" arrow="right" class="gap-1.5 text-sm">Get a free analysis of your current site</Button>
+            <Button href="/free-ai-website-analysis/" variant="ghost" size="sm" arrow="right">Get a free analysis of your current site</Button>
           </div>
         </div>
       </Container>

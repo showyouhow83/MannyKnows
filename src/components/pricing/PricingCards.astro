@@ -106,7 +106,7 @@ const money = (n: number) => n.toLocaleString('en-US');
       </button>
     </div>
     <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
-      One upfront payment for the year, 2 months free and no setup fee
+      One upfront payment for the year, 2 months free and the setup fee waived
     </p>
   </div>
   )}
@@ -714,7 +714,7 @@ const money = (n: number) => n.toLocaleString('en-US');
         if (caption) {
           caption.textContent = mode === 'monthly'
             ? 'Setup once, then month to month · cancel anytime'
-            : 'One upfront payment for the year, 2 months free and no setup fee';
+            : 'One upfront payment for the year, 2 months free and the setup fee waived';
         }
         buttons.forEach((b) => {
           b.setAttribute('aria-pressed', String(b.dataset.billingBtn === mode));

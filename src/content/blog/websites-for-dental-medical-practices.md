@@ -61,7 +61,7 @@ The Springfield-specific version is in [ranking for “dentist near me” in Spr
 
 The site can look right and rank right and still lose the patient at 9 p.m., because the only next step is “Call us.” The fix is an AI agent on the site that answers what a front desk answers all day (insurance accepted, hours, what a procedure involves, whether you take new patients) and then books the appointment into your schedule, in English or Spanish. On our website plans that is [Remi AI](/ai-booking-agent/), and booking arrives on the Get Booked plan. A late-night search becomes a filled slot, and the front desk stops fielding the same six questions.
 
-Privacy is built into how it works. Remi AI asks only for what is needed to reach the patient back and confirm a time. Conversations are not stored as records and no health details are kept. Clinical intake stays in your own patient portal or secure forms. The longer version is in [an AI agent for medical practices](/blog/ai-agent-for-medical-practices/).
+Privacy is built into how it works. Remi AI asks only for what a receptionist would ask to reach the person back and hold a time: a name, a phone number or email, and what they'd like to book. It is not a medical record and it is not set up to collect health details. What the practice receives is the lead, the same details a person at the desk would have written on a message pad, and the booking if there is one. Clinical intake stays in your own patient portal or secure forms. The longer version is in [an AI agent for medical practices](/blog/ai-agent-for-medical-practices/).
 
 ## The three leaks that show up in practice after practice
 

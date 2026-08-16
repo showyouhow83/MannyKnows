@@ -2,7 +2,7 @@
 title: "What AI Agent Should a Springfield Business Get First?"
 description: "Not the one everyone's talking about: the one sitting on your bottleneck. Two questions most owners can answer in under a minute point straight at it."
 pubDate: 2026-08-05
-tags: ["ai-agents", "springfield", "small-business", "local-seo"]
+tags: ["AI Agent", "Springfield", "Small Business", "Local SEO"]
 seoTitle: "What AI Agent Should a Springfield Business Get First?"
 seoDescription: "Two questions point at the right first AI agent for your Springfield or Western Mass business: chat agent, intel, copy, SEO, or custom. From $95/mo."
 image: "/blog/what-ai-agent-should-a-springfield-business-get-first.jpg"

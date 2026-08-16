@@ -67,7 +67,7 @@ The agent is only as good as what it knows, so training is the setup. We call th
 - Tone. Warm and simple for a family dental office, measured for a specialty clinic.
 - What it refuses to answer, and how it says so
 
-The practice approves every fact the Brand Brain keeps before the agent goes live. After launch, the office can test conversations in the admin and correct an answer the moment it's wrong. When the insurance list changes in January, the desk updates it in a minute.
+The practice approves every fact the Brand Brain keeps before the agent goes live. After launch, on the Remi AI tier and up, the office can test conversations in the admin and correct an answer the moment it's wrong; on Lite we make those corrections for you at setup and on request. When the insurance list changes in January, the desk updates it in a minute.
 
 ## English, Spanish, and more
 
@@ -77,7 +77,7 @@ In Springfield and Holyoke, plenty of your patients are more comfortable in Span
 
 Here is what we can stand behind.
 
-Remi AI asks only for what a receptionist would ask to reach the person back and hold a time. That is a name, a phone number or email, and what they'd like to book. The conversation is not stored as a medical record, and no health details are kept. The chat lives for the session and is discarded afterwards. What the practice receives is the lead, the same contact details a person at the desk would have written on a message pad, and the booking if there is one.
+Remi AI asks only for what a receptionist would ask to reach the person back and hold a time: a name, a phone number or email, and what they'd like to book. It is not a medical record and it is not set up to collect health details. What the practice receives is the lead, the same details a person at the desk would have written on a message pad, and the booking if there is one.
 
 And the boundary. This is a front-desk assistant, not a clinical system. Clinical questions, medical history, and intake forms belong inside the practice's patient portal, and we configure the agent to send them there. If the practice's counsel wants a Business Associate Agreement or has questions about HIPAA, that is a conversation to have with us before setup, not after. We will tell you where the agent fits and where it does not. We will not tell you what the law requires of your practice.
 
@@ -99,7 +99,7 @@ Before MannyKnows, Manny designed, built, and launched hundreds of dental and me
 
 ### Will patients know they're talking to an AI?
 
-Yes. It identifies itself as an AI assistant, and the practice picks its name, greeting, and tone. A patient who wants a person can ask for one, and the conversation is passed to the desk as a lead.
+Yes. It identifies itself as an AI assistant, and on the Remi AI tier and up the practice picks its name, greeting, and tone in the admin (on Lite we set them at setup). A patient who wants a person can ask for one, and the conversation is passed to the desk as a lead.
 
 ### Can it book directly into our schedule?
 

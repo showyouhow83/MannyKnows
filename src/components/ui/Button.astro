@@ -93,7 +93,9 @@ const variantCls = {
 // tighter — small caps text, narrower padding, no wrapping — so two fit
 // side by side on a phone.
 const twoLine = Boolean(subtext);
-const shape = variant === 'ghost' ? '' : twoLine ? 'min-h-12 px-4 sm:px-6 py-2 text-sm gap-2 whitespace-nowrap leading-tight' : sizeCls;
+// Ghost keeps the size's type + gap but no padding/height (it's a text link).
+const ghostCls = { sm: 'text-sm gap-1.5', md: 'text-[15px] gap-2', lg: 'text-base gap-2.5' }[size];
+const shape = variant === 'ghost' ? ghostCls : twoLine ? 'min-h-12 px-4 sm:px-6 py-2 text-sm gap-2 whitespace-nowrap leading-tight' : sizeCls;
 const base = `inline-flex items-center justify-center text-center leading-snug no-underline select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-blue/50 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-dark-primary ${shape} ${block ? 'w-full sm:w-auto' : ''}`;
 
 const cls = `${base} ${variantCls} ${klass} ${className}`.replace(/\s+/g, ' ').trim();

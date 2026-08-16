@@ -71,9 +71,24 @@ for small businesses in Western Massachusetts).
   `LocalAreaPage.astro`. (The `/websites-for-<vertical>` profession pages
   were retired Aug 2026 — they re-pitched /plans and added a click; each URL
   301s to its blog article, see astro.config redirects.)
-- Interior hero shape (from /plans): breadcrumb → mascot → eyebrow chip →
-  gradient h1 → intro → primary + secondary pill → optional highlighted panel
-  on the right (`rounded-3xl border-primary-blue/40 ring-1`).
+- Interior hero shape (from /plans): breadcrumb → mascot (`h-[220px]`) →
+  eyebrow chip → gradient h1 → intro → primary + secondary pill → optional
+  highlighted panel on the right (`rounded-3xl border-primary-blue/40 ring-1`).
+  The simple/centred variant is /contact's (`pb-12 px-4`, chip, h1, intro).
+- **Style canon (Aug 16 2026 sitewide audit + fix pass — keep it):** content
+  width `max-w-6xl` for card grids, tables, FAQ blocks and banners (never
+  4xl/5xl/7xl; PricingCards grids fill the Container); prose `max-w-3xl`;
+  `Faq.astro` is `max-w-6xl` with the default heading everywhere; standard
+  card `rounded-2xl border-light-tertiary dark:border-dark-accent bg-white
+  dark:bg-dark-secondary p-6` + hover `border-primary-blue/40 shadow-xl
+  shadow-primary-blue/10`; chip `h-11 w-11 rounded-xl` brand gradient on the
+  title row; h3 `text-lg font-bold leading-snug`; labels `text-xs font-bold
+  uppercase tracking-wider …tertiary`; only token colours (no hex/gray/slate
+  on public pages); prose on blog/work/terms/privacy renders through the one
+  `.mk-prose` block in global.css. `text-text-*-tertiary` tokens exist again
+  (same values as secondary — no greys, Manny). Dead components were deleted
+  (ReviewsSection/ReviewCard/StatsCard, AiWebsiteShowcase, BlogHighlights,
+  LinkBanner).
 
 ## Copy rules (house style — enforced across every public word)
 
@@ -152,14 +167,21 @@ for small businesses in Western Massachusetts).
   2026 so /pricing can import them. Most surfaces (nav search, JSON-LD,
   comparison tables, the nav search index) interpolate from these — a reprice
   touches only the data file.
-- **`/pricing/` is the menu** (Aug 2026, Manny: "a menu of all our services
-  and pricing"): every product as compact rows (name · who · price · note)
-  grouped by pillar, each row linking to the product page, plus a billing
-  panel + OfferCatalog JSON-LD, all computed from the data files. Deliberately
-  NOT nine PricingCards grids (that would recreate the page duplication the
-  niche pages had); Manny agreed to try compact first. Top-level "Pricing"
-  nav link + footer/search entries. /services dropped "& Pricing" from its
-  title.
+- **`/pricing/` is the menu** (Aug 2026): simple centred hero (the /contact
+  shape), then one section per product rendering the SAME `PricingCards`
+  grid its product page renders — the card rows come from
+  `src/lib/pricingCards.ts` (`websitePlanCards()`, `storeCards()`,
+  `remiCards()`, `onePageCards()`, `localSeoCards()`, `appTierCards()`,
+  `serviceTierCards(slug)`), which the product pages import too, so the two
+  surfaces can't drift. Manny tried compact rows first and rejected them
+  ("horrible") — keep the cards. Billing rules live in its FAQ, the two free
+  offers as house cards, OfferCatalog JSON-LD computed from the same cards.
+  Top-level "Pricing" nav link + footer/search entries; /services title has
+  no "& Pricing".
+- **AI Agents Team has ONE public price** — Remi AI (from $40/mo). Everything
+  else is scoped and quoted on the free diagnostic (commit 0cebdef "Remi-only
+  pricing"); never publish per-agent or bundle prices (aiTeam.ts keeps them
+  for internal math only). /pricing shows a two-panel section, not a grid.
 - **All pricing-card grids render through `PricingCards.astro`** (Aug 2026):
   /plans, /ecommerce, /apps, /local-seo, /ai-booking-agent, and the tier
   grids on /plans/business-ads + /plans/multimedia-agency. New pricing cards

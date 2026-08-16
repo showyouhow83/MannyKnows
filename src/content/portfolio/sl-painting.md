@@ -3,7 +3,7 @@ draft: false
 title: "SL Painting"
 client: "SL Painting"
 tagline: "From invisible on Google to #1 organically for “exterior painting” in Springfield, with a website, a CRM, a 24/7 AI agent, and AI Painter Lab."
-summary: "SL Painting had a strong offline reputation and nothing online. They didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 2,000+ colors. Today they rank #1 on Google: organically, for “exterior painting” in Springfield."
+summary: "SL Painting had a strong offline reputation and nothing online. They didn't even show up on Google. We built their entire digital presence from scratch: a website that brings in work, an admin CRM to manage it, an AI agent that qualifies leads around the clock, and AI Painter Lab, an app that lets homeowners preview their home in 2,000+ colors. Today they rank #1 on Google, organically, for “exterior painting” in Springfield."
 industry: "Painting contractor"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ A complete digital operation, from scratch:
 - **A website** that shows the work and turns visitors into leads: fast, modern, and easy to find locally.
 - **Technical & local SEO** built in from day one, so the site ranks for the searches that bring in work.
 - **An admin CRM** that captures every inquiry and tracks it from first contact to finished job, so nothing slips through the cracks.
-- **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours: the same chat-agent role, Remi AI, that any business can [hire from the AI Agents Team](/ai-team/).
+- **An AI agent** that answers customer questions and qualifies leads around the clock, even after hours — the same Remi AI any business can add [on its own plan](/ai-booking-agent/) or with [the AI Agents Team](/ai-team/).
 - **AI Painter Lab**: an app that lets homeowners see their own house in any of 2,000+ colors before they commit, turning "I'm not sure" into "let's do that one."
 
 ## How it works
@@ -58,4 +58,4 @@ The website brings people in and hands every lead straight to the CRM, no copyin
 
 ## The outcome
 
-SL Painting went from invisible online, not even showing up on Google, to #1 on Google, organically, for "exterior painting" in Springfield: a fast site that brings in work, one place to manage it, an AI agent that never sleeps, and AI Painter Lab getting homeowners excited before the first conversation. And it's still being optimized.
+SL Painting went from invisible online, not even showing up on Google, to #1 on Google, organically, for "exterior painting" in Springfield — a fast site that brings in work, one place to manage it, an AI agent that never sleeps, and AI Painter Lab getting homeowners excited before the first conversation. And it's still being optimized.

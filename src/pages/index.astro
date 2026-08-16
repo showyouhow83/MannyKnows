@@ -10,11 +10,8 @@ import Button from '../components/ui/Button.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import HeroSection from '../components/sections/HeroSection.astro';
 import HeroSwiper from '../components/sections/HeroSwiper.astro';
-// BlogHighlights ("New playbooks") is hidden from the homepage for now — re-enable
-// the import and the <BlogHighlights /> tag below to bring it back.
-// import BlogHighlights from '../components/sections/BlogHighlights.astro';
-// Reviews section is temporarily hidden from the homepage until we have a real
-// client testimonial to display. The fabricated testimonials were removed from
+// BlogHighlights ("New playbooks") and the old ReviewsSection carousel were
+// removed in the Aug 2026 style pass (dead, off-canon; git history has them).
 // Testimonials render from src/data/testimonials.ts — hidden while the real
 // list is empty; add real quotes there to make the section appear.
 import Testimonials from '../components/sections/Testimonials.astro';
@@ -196,14 +193,17 @@ const NAVBAR_CONFIG = {
 
             <!-- Hero CTAs + credibility stat band -->
             <div class="max-w-[1440px] mx-auto px-4 mt-8 pb-10 md:pb-16">
-              <div class="flex flex-row items-stretch justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
+              {/* The homepage's one exception to the flex-col sm:flex-row button
+                  row: these are the two-line pills (Button `subtext`), built to
+                  sit side by side on a phone, so the row stays flex-row. */}
+              <div class="flex flex-row items-stretch justify-center gap-4 max-w-md sm:max-w-none mx-auto">
                 <Button href="/local-seo/#free-360-photo" text="FREE 360° PHOTO" subtext="CLAIM NOW" variant="secondary" class="flex-1 sm:flex-none sm:px-8" />
                 <Button href="/free-ai-website-analysis/" text="FREE AI WEBSITE" subtext="ANALYSIS" class="flex-1 sm:flex-none sm:px-8" />
               </div>
-              <ul class="mt-8 grid grid-cols-3 gap-x-2 gap-y-6 sm:gap-x-4 md:gap-x-5 max-w-3xl mx-auto text-text-light-secondary dark:text-text-dark-secondary">
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text">Organically #1</span> <span class="text-xs leading-snug">we help businesses climb to the top</span></li>
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text">AI-powered</span> <span class="text-xs leading-snug">Websites built to engage and support</span></li>
-                <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text">Direct <span class="whitespace-nowrap">1-on-1</span></span> <span class="text-xs leading-snug">access to a human senior account owner</span></li>
+              <ul class="mt-8 grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto text-text-light-secondary dark:text-text-dark-secondary">
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text">Organically #1</span> <span class="text-xs leading-snug">we help businesses climb to the top</span></li>
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text">AI-powered</span> <span class="text-xs leading-snug">Websites built to engage and support</span></li>
+                <li class="flex flex-col items-center text-center gap-1"><span class="text-lg font-black apple-gradient-text">Direct <span class="whitespace-nowrap">1-on-1</span></span> <span class="text-xs leading-snug">access to a human senior account owner</span></li>
               </ul>
             </div>
 
@@ -237,7 +237,7 @@ const NAVBAR_CONFIG = {
 			className="room room-blue"
 			badge="AI-Powered Websites"
 			title="Websites that run <br />your business efficiently"
-			subtitle="Instead of costing you manual maintenance fees for every fix, your website continuously tests and improves itself—climbing Google rankings and becoming a more valuable, lead-generating asset every single day."
+			subtitle="Instead of costing you manual maintenance fees for every fix, your website improves itself—climbing Google rankings and becoming a more valuable, lead-generating asset every single day. How far the autonomy goes depends on the plan — light on Get Found, full on Get Growing and up."
 			variant="hero"
 		>
 			<!-- Laptop astronaut peeking in from the left edge (mirrored so the
@@ -245,14 +245,13 @@ const NAVBAR_CONFIG = {
 			<div slot="background" class="plans-mascot" aria-hidden="true">
 				<img src="/mascot/astro-laptop.webp" alt="Astronaut mascot flying while typing on a laptop" aria-hidden="true" width="917" height="880" loading="lazy" decoding="async" />
 			</div>
-			<div class="max-w-5xl mx-auto">
-				<!-- The versus panel + closing line live in SmartWebsiteConcept,
-				     shared with /plans and the plan pages: one implementation. -->
-				<SmartWebsiteConcept showHeader={false} />
-				<div class="text-center mt-8">
-					<Button href="/plans/" arrow="right">Compare the plans</Button>
-					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Every plan is tailored to your business</p>
-				</div>
+			<!-- The versus panel + closing line live in SmartWebsiteConcept,
+			     shared with /plans and the plan pages: one implementation
+			     (it caps its own panel at max-w-6xl, the sitewide banner width). -->
+			<SmartWebsiteConcept showHeader={false} />
+			<div class="text-center mt-10">
+				<Button href="/plans/" arrow="right">Compare the plans</Button>
+				<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Every plan is tailored to your business</p>
 			</div>
 		</PageSection>
 
@@ -279,50 +278,44 @@ const NAVBAR_CONFIG = {
 		<!-- Business Apps — the fourth hero pillar ("AI Agents, Websites, SEO
 		     & Apps"), a compact promo for /apps/. Tiers and prices mirror the
 		     page's TIERS data (apps.astro). -->
-		<PageSection id="apps" variant="hero" className="room room-blue">
-			<!-- Custom header: on desktop the dashboards astronaut shares the row
-			     with the badge + title (Manny, Aug 2026); description below.
-			     Classes mirror PageSection's own header exactly. -->
-			<div class="mb-10">
-				<div class="text-center mb-2">
-					<span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Business Apps</span>
-				</div>
-				<div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-12 text-center md:text-left">
-					<div>
-						<h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-3xl md:text-6xl lg:text-7xl mb-0">
-							<span class="apple-gradient-text" data-colorful-title>Apps for how your <br />business runs</span>
-						</h2>
-					</div>
-					<img src="/mascot/astro-dashboards.webp" alt="Astronaut mascot presenting floating data dashboards" aria-hidden="true" width="556" height="620" loading="lazy" decoding="async" class="astro-float w-auto h-[220px] pointer-events-none" />
-				</div>
-				<p class="mt-6 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl leading-relaxed mx-auto text-center">Custom business apps and workflow automation for Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use, and complete systems for booking, quoting, and dashboards. Quoted up front; you own all of it.</p>
-			</div>
+		<PageSection
+			id="apps"
+			variant="hero"
+			className="room room-blue"
+			badge="Business Apps"
+			title="Apps for how your <br />business runs"
+			subtitle="Custom business apps and workflow automation for Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use, and complete systems for booking, quoting, and dashboards. Quoted up front; you own all of it."
+		>
+			<!-- On desktop the dashboards astronaut shares the title's row (Manny,
+			     Aug 2026) — the header's `aside` slot, so the header itself is
+			     the shared SectionHeader and not a copy. -->
+			<img slot="aside" src="/mascot/astro-dashboards.webp" alt="Astronaut mascot presenting floating data dashboards" aria-hidden="true" width="556" height="620" loading="lazy" decoding="async" class="astro-float w-auto h-[220px] pointer-events-none" />
 			<div class="max-w-6xl mx-auto">
 				<!-- Bento grid (Manny's pick, Aug 2026: the layout he liked
 				     from the Websites options, filled with Apps content).
 				     Stacks to one column on phones, story tile first.
 				     No prices on the homepage — tiers live on /apps/. -->
-				<div class="grid gap-5 md:grid-cols-4">
-					<div class="md:col-span-2 md:row-span-2 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-8 flex flex-col justify-center">
+				<div class="grid gap-6 md:grid-cols-4">
+					<div class="md:col-span-2 md:row-span-2 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 flex flex-col justify-center">
 						<h3 class="text-xl sm:text-2xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Disconnected and connected apps</span></h3>
 						<p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">Some jobs need a standalone tool. Some need your website, inbox, CRM, calendar, and phone talking to each other so data stops being re-typed. We build both.</p>
 						<p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">The fastest way to get hours back is to stop doing the work a machine can do.</p>
 					</div>
-					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Scripts</div>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Apps Script tools, from spreadsheets that become quoting tools to reports that send themselves.</p>
+					<div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<h3 class="text-lg font-bold leading-snug"><span class="apple-gradient-text" data-colorful-title>Scripts</span></h3>
+						<p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Apps Script tools, from spreadsheets that become quoting tools to reports that send themselves.</p>
 					</div>
-					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Wired</div>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">APIs, webhooks, Twilio phone &amp; SMS, Make &amp; Zapier — your tools connected, end to end.</p>
+					<div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<h3 class="text-lg font-bold leading-snug"><span class="apple-gradient-text" data-colorful-title>Wired</span></h3>
+						<p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">APIs, webhooks, Twilio phone &amp; SMS, Make &amp; Zapier — your tools connected, end to end.</p>
 					</div>
-					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>MCP</div>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Your AI plugged into your calendar, CRM, and inventory. It works with them, not just talks.</p>
+					<div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<h3 class="text-lg font-bold leading-snug"><span class="apple-gradient-text" data-colorful-title>MCP</span></h3>
+						<p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Your AI plugged into your calendar, CRM, and inventory. It works with them, not just talks.</p>
 					</div>
-					<div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-						<div class="text-2xl font-black apple-gradient-text mb-1" data-colorful-title>Yours</div>
-						<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Quoted up front. The code, the flows, and the accounts are yours. Co-own option for big ideas.</p>
+					<div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+						<h3 class="text-lg font-bold leading-snug"><span class="apple-gradient-text" data-colorful-title>Yours</span></h3>
+						<p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Quoted up front. The code, the flows, and the accounts are yours. Co-own option for big ideas.</p>
 					</div>
 				</div>
 				<div class="text-center mt-10">
@@ -379,20 +372,10 @@ const NAVBAR_CONFIG = {
       </div> */}
 		</PageSection>
 
-		<Testimonials />
+		<Testimonials size="hero" />
 
-		<!-- Latest Work (real client sites) — portfolio proof, closing the page
-		     right after the testimonials (per Manny: quotes first, then the work). -->
-
-		<!-- "New Playbooks" (blog highlights) — hidden from the homepage per request
-		     (kept, not deleted, in case we want it back). The posts still live in the
-		     footer's "AI News" column and at /blog. -->
-		{/* <BlogHighlights /> */}
-
-		<!-- Customer Reviews Section — hidden until a real client testimonial (e.g. SL Painting) is ready.
-		     Fabricated testimonials were removed; see ReviewsSection.astro. -->
-		<!-- <ReviewsSection /> -->
-
+		<!-- "New Playbooks" (blog highlights) left the homepage per request; the
+		     posts still live in the footer's "AI News" column and at /blog. -->
 
 		<!-- Floating Dock Menu -->
 		<DockMenu />
@@ -412,7 +395,10 @@ const NAVBAR_CONFIG = {
 	   laptop; rotate is applied after the flip. */
 	.plans-mascot {
 		--mascot-height: 400px;
-		--mascot-peek: 70%;
+		/* The versus panel is max-w-6xl (the sitewide banner width), which
+		   leaves a 144px gutter at 1440 — the peek is sized to live in it, not
+		   over the copy (Aug 2026; it was 70% when the panel was narrower). */
+		--mascot-peek: 34%;
 		/* Gentler than the 31° house tilt: this art is wide (flying pose),
 		   so a full lean swings the laptop end too far. */
 		--mascot-rotate: 15deg;
@@ -430,6 +416,9 @@ const NAVBAR_CONFIG = {
 		width: auto;
 		display: block;
 		transform: rotate(var(--mascot-rotate)) scaleX(-1);
+	}
+	@media (max-width: 1439px) {
+		.plans-mascot { --mascot-peek: 22%; }
 	}
 	@media (max-width: 1279px) {
 		.plans-mascot { --mascot-height: 300px; }
@@ -535,7 +524,7 @@ const NAVBAR_CONFIG = {
 			radial-gradient(ellipse at top, rgba(0, 113, 227, 0.13), transparent 60%),
 			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.08), transparent 60%);
 	}
-	html.dark section[aria-label="Client testimonials"] {
+	html.dark #testimonials {
 		background-color: #0a0a14;
 		background-image:
 			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.14), transparent 60%);

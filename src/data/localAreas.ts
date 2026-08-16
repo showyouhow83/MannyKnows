@@ -11,16 +11,32 @@
 // <town>, MA?" is the literal search query. Only the answers vary.
 //
 // FACTS that must stay exact in every town's paraphrase (do not drift):
-//  - $95/mo plan: custom 1–3 page site, hosting + SSL, Remi AI answering 24/7,
-//    Google Business Profile setup, technical SEO, maintenance, multilingual
-//    standard; a one-time setup fee builds it, then month to month with no
-//    term; prepay a year and the setup fee is waived + 2 months free.
-//  - $245/mo plan: full multi-page site + your own admin + Remi AI booking.
+//  - Get Found (price/setup interpolated from plans.ts below — never type the
+//    numbers here): custom 1–3 page site, hosting + SSL, Remi AI answering &
+//    capturing leads 24/7, your own admin, Google Business Profile setup,
+//    technical SEO, maintenance, multilingual standard; a one-time setup fee
+//    builds it, then month to month with no term; prepay a year and the setup
+//    fee is waived + 2 months free. It does NOT book.
+//  - Get Booked: full multi-page site + Remi AI booking appointments. Every
+//    "books" claim on these pages is qualified "on Get Booked and up".
 //  - Credential: twenty years enterprise/startup engineering incl. enterprise
 //    eCommerce and consulting at Accenture. Based in Springfield.
 //
 // To add a town: append an entry here + drop a 4-line wrapper page at
 // src/pages/web-design-<slug>-ma.astro that renders <LocalAreaPage area={..} />.
+
+import { plans } from './plans';
+import { ONDEMAND } from './localSeo';
+
+// Prices interpolated from the data files so a reprice can't strand six towns.
+const plan = (slug: string) => plans.find((p) => p.slug === slug)!;
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+const gfPrice = usd(plan('get-found').price);       // Get Found monthly
+const gfSetup = usd(plan('get-found').setupFee!);   // Get Found one-time setup
+const gbPrice = usd(plan('get-booked').price);      // Get Booked monthly (booking arrives here)
+const gbpRescueFrom = usd(ONDEMAND.find((o) => o.service === 'gbp-rescue')!.min);
+// One sentence, identical in every town (a price + product fact, not narrative).
+const gbpLine = `Google Profile Rescue is from ${gbpRescueFrom} one-time, or your profile is set up in month one of any SEO package or website plan.`;
 
 export interface LocalArea {
   slug: string; // 'holyoke' -> /web-design-holyoke-ma
@@ -34,7 +50,7 @@ export interface LocalArea {
   neighborhoods: string[]; // real neighborhoods / areas
   languageNote: string; // town-specific multilingual angle
   offers: { title: string; body: string }[]; // 4 value-prop cards, written per town
-  plansLine: string; // the "$95/mo" line under the offer cards (keep the fact, vary the words)
+  plansLine: string; // the "from ${gfPrice}/mo" line under the offer cards (keep the fact, vary the words; booking at ${gbPrice})
   faqPricing: string; // answer: how much does a website cost here
   faqBusinesses: string; // answer: what kinds of businesses (town business mix + shape of the work)
   faqAgents: string; // answer: can you build AI agents for my <town> business (facts: Remi AI in every site plan; the AI Agents Team, run by Manny AI — no prices in this narrative copy)
@@ -50,9 +66,12 @@ export interface LocalArea {
   // "Beyond the website" cards — the rest of the 2026 catalog (AI Agents Team, stores,
   // GBP, 360°/media), written per town. FACTS that must stay exact:
   //  - Remi AI is built into every site plan; the AI Agents Team is ready to work (prices live in aiTeam.ts/remi.ts, never here).
-  //  - Stores from $150/mo (Shopify subscription billed separately), catalog synced to
-  //    Google Shopping / Instagram / Facebook.
-  //  - GBP setup/rescue: $145 one-time, or included in every monthly plan.
+  //  - Stores: catalog synced to Google Shopping / Instagram / Facebook, on a
+  //    Shopify account in the client's name (no store price in these cards —
+  //    the tier grid on /ecommerce owns it).
+  //  - GBP: set up in month one of any SEO package or website plan; a suspended
+  //    or hijacked profile is Google Profile Rescue, from the localSeo.ts ONDEMAND
+  //    price (interpolated below).
   //  - Free single 360° photo only within ~10 miles of Springfield (Chicopee &
   //    Holyoke qualify; Northampton does NOT — never promise it free there).
   beyondWebHeading: string;
@@ -120,17 +139,17 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Booked while you work',
-        body: "Whether you're on a job in Sixteen Acres or closed for the night downtown, your site answers questions and books the appointment. Remi AI works the hours you can't.",
+        body: "Whether you're on a job in Sixteen Acres or closed for the night downtown, your site answers questions and, on Get Booked and up, books the appointment. Remi AI works the hours you can't.",
       },
       {
         title: 'Maintained by your neighbor, not a ticket queue',
-        body: "We're based in Springfield, and maintenance is the product. Monthly plans keep your site fast, secure, and ranking, with a clear report every month.",
+        body: "We're based in Springfield, and maintenance is the product. Monthly plans keep your site fast, secure, and ranking, and keep you posted on what changed.",
       },
     ],
     plansLine:
-      'All of it starts at $95/mo: website, AI agent, SEO, and maintenance in one plan.',
+      `All of it starts at ${gfPrice}/mo (website, Remi AI, SEO, and maintenance in one plan); booking arrives at ${gbPrice}/mo.`,
     faqPricing:
-      "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. Need a full multi-page site with your own admin and Remi AI booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
+      `Plans start at ${gfPrice}/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. The build is a one-time ${gfSetup}, then ${gfPrice}/mo with no term. Prepay a year and the setup fee is waived and two months are free. Need a full multi-page site with Remi AI booking appointments? That's ${gbPrice}/mo. One-time builds are available too, and every plan gets scoped to your actual business.`,
     faqBusinesses:
       "Springfield's whole range: medical and dental practices downtown, contractors in Sixteen Acres, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath — ranking for what Springfield actually types into Google, answering when you can't reach the phone, and keeping the site maintained long after launch day.",
     faqAgents:
@@ -140,7 +159,7 @@ export const localAreas: LocalArea[] = [
     faqExisting:
       "Absolutely. You don't have to start over. We audit the site you have, fix what's costing you customers (speed, technical SEO, mobile problems, pages that don't convert), and then take over the maintenance so it stays fixed.",
     faqDifferent:
-      "You get twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture, at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the people doing the work, no account manager in between.",
+      "You get twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture, at prices scoped for a Springfield business, not a Fortune 500 budget. And you talk directly to the person doing the work, no account manager in between.",
     servingBlurb:
       "We're based right here in Springfield — in person across the city when it helps, remote when it's faster.",
     proofBusiness: 'SL Painting',
@@ -164,21 +183,21 @@ export const localAreas: LocalArea[] = [
     beyondWebHeading: 'The rest of the toolkit, built in Springfield',
     beyondWeb: [
       {
-        title: 'AI employees, ready to work',
-        body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager added to your business, ready to work.',
+        title: 'AI agents, ready to work',
+        body: 'Remi AI answers your site around the clock, and nine more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager added to your business, ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Online stores that sell everywhere',
-        body: 'Shopify and beyond — one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
+        body: 'Shopify and beyond — one catalog synced to Google Shopping, Instagram & Facebook, on a Shopify account in your name.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'Your Google Business Profile, done right',
-        body: 'The map pack is the first screen Springfield sees. Profile setup or rescue is $145 one-time, or included in every monthly plan.',
-        href: '/plans/get-found/',
+        body: `The map pack is the first screen Springfield sees. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {
@@ -201,7 +220,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Holyoke · Western Massachusetts',
     metaTitle: 'Web Design in Holyoke, MA: Bilingual SEO & AI | MannyKnows',
     metaDescription:
-      'Web design for Holyoke, MA businesses. Fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From $95/mo.',
+      `Web design for Holyoke, MA businesses. Fast bilingual (English & Spanish) websites with AI booking agents and technical SEO. From ${gfPrice}/mo.`,
     heroIntro:
       'In the Paper City, your next customer is searching on their phone before they ever call. We build fast, bilingual websites with an AI agent that answers and books around the clock, so Holyoke businesses get found and get the job.',
     angleHeading: 'Holyoke runs in two languages, so should your site',
@@ -221,21 +240,21 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'An agent that never closes',
-        body: "High Street keeps shop hours; your customers don't. Remi AI answers questions and books work at 10pm in whichever language the customer opens with.",
+        body: "High Street keeps shop hours; your customers don't. Remi AI answers questions at 10pm in whichever language the customer opens with, and on Get Booked and up it books the work too.",
       },
       {
         title: 'Built to last, kept to last',
-        body: "The Paper City built things that outlived their builders. Your site should hold the same standard. Monthly maintenance keeps it fast, secure, and ranking, with a clear monthly report, no jargon.",
+        body: "The Paper City built things that outlived their builders. Your site should hold the same standard. Monthly maintenance keeps it fast, secure, and ranking, and keeps you posted on what changed, no jargon.",
       },
     ],
     plansLine:
-      'The whole package (site, bilingual AI agent, SEO, maintenance) starts at $95/mo.',
+      `The whole package (site, bilingual AI agent, SEO, maintenance) starts at ${gfPrice}/mo; booking arrives at ${gbPrice}/mo.`,
     faqPricing:
-      "From $95/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, Remi AI answering customers around the clock, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments runs $245/mo, and one-time builds are on the table too. Every plan is scoped to the business, not the other way around.",
+      `From ${gfPrice}/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, Remi AI answering customers around the clock, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time ${gfSetup}, then ${gfPrice}/mo with no term; prepay a year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking appointments runs ${gbPrice}/mo, and one-time builds are on the table too. Every plan is scoped to the business, not the other way around.`,
     faqBusinesses:
       "The businesses that make Holyoke run: medical and dental offices, trades and contractors, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine — a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
     faqAgents:
-      "Yes, and here they're bilingual by default, not by upgrade. Remi AI comes with every site plan and answers customers 24/7 in whichever language they open with; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, all managed for you. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
+      "Yes, and here they're bilingual by default, not by upgrade. Remi AI comes with every site plan and answers customers 24/7 in whichever language they open with; the full AI Agents Team, run by Manny AI, writes, posts, runs ads, and reports from your own admin. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
     faqOutside:
       "Of course. Holyoke is a few exits up I-91 from our Springfield base, and we cover the whole valley: Chicopee, Northampton, Westfield, Agawam, Amherst, Easthampton and beyond. Remote works too, for businesses anywhere.",
     faqExisting:
@@ -268,20 +287,20 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that speak Holyoke',
-        body: 'Agents that answer in Spanish or English, whichever the customer opens with, and book the job at 10pm. Remi AI is built into every site plan, and the AI Agents Team is ready to work.',
+        body: 'Agents that answer in Spanish or English, whichever the customer opens with, at 10pm. Remi AI answers on every site plan and books on Get Booked and up; the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Tiendas online, both languages',
-        body: 'A store that sells in Spanish and English and syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
+        body: 'A store that sells in Spanish and English and syncs one catalog to Google Shopping, Instagram & Facebook, on a Shopify account in your name.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'Own the map pack, en dos idiomas',
-        body: 'The map decides who gets the call on High Street. Google Business Profile setup or rescue is $145 one-time, or included in every monthly plan.',
-        href: '/plans/get-found/',
+        body: `The map decides who gets the call on High Street. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {
@@ -307,7 +326,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Chicopee · Western Massachusetts',
     metaTitle: 'Web Design in Chicopee, MA: SEO & AI Agents | MannyKnows',
     metaDescription:
-      'Web design for Chicopee, MA businesses. Fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From $95/mo.',
+      `Web design for Chicopee, MA businesses. Fast websites with AI booking agents and technical SEO. Turn your reputation into leads. From ${gfPrice}/mo.`,
     heroIntro:
       'Chicopee is built on family businesses, and family businesses win on reputation and word of mouth. We put that reputation online — a fast website, technical SEO that ranks you locally, and an AI agent that answers customers day and night.',
     angleHeading: 'Where Willimansett, Aldenville, and the Falls find you',
@@ -327,21 +346,21 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Estimates booked from the job site',
-        body: "Trades can't answer phones from a ladder. Remi AI takes the questions, qualifies the customer, and books the estimate, at lunch, after close, whenever they actually call.",
+        body: "Trades can't answer phones from a ladder. Remi AI takes the questions and qualifies the customer, and on Get Booked and up books the estimate, at lunch, after close, whenever they actually call.",
       },
       {
         title: 'No surprises, month to month',
-        body: "Published prices, plans you can leave anytime, and maintenance that keeps the site fast and ranking, with a monthly report written the way you'd explain it to family.",
+        body: "Published prices, plans you can leave anytime, and maintenance that keeps the site fast and ranking, explained the way you'd explain it to family.",
       },
     ],
     plansLine:
-      'Website, AI agent, SEO, and upkeep together from $95/mo. The price is on the page, not behind a call.',
+      `Website, AI agent, SEO, and upkeep together from ${gfPrice}/mo, booking from ${gbPrice}/mo. The price is on the page, not behind a call.`,
     faqPricing:
-      "It starts at $95/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595 and the plan has no term, and prepaying a year waives that setup fee and takes two months off. If you need a bigger multi-page site with your own admin and appointment booking, that tier is $245/mo. One-time builds exist too; either way we scope it to your business before you pay anything.",
+      `It starts at ${gfPrice}/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time ${gfSetup} and the plan has no term, and prepaying a year waives that setup fee and takes two months off. If you need a bigger multi-page site with Remi AI booking appointments, that tier is ${gbPrice}/mo. One-time builds exist too; either way we scope it to your business before you pay anything.`,
     faqBusinesses:
       "Family businesses, mostly — medical and dental offices, contractors and tradespeople, the family shops of Chicopee Center, services along Memorial Drive. The pattern rarely changes. Get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
     faqAgents:
-      "Yes, and for a family business it's the difference between a missed call and a booked estimate. Remi AI comes with every site plan and answers customers 24/7; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. For a local daycare we paired the site's agent with a phone system that answers and routes every call. The same pattern fits any busy Chicopee shop where nobody can stop to pick up.",
+      "Yes, and for a family business it's the difference between a missed call and a booked estimate. Remi AI comes with every site plan and answers customers 24/7; the full AI Agents Team, run by Manny AI, writes, posts, runs ads, and reports from your own admin. For a local daycare we paired the site's agent with a phone system that answers and routes every call. The same pattern fits any busy Chicopee shop where nobody can stop to pick up.",
     faqOutside:
       "Of course. Springfield is literally across the river from us (home base is there), and the rest of the valley is minutes away: Holyoke, Westfield, Ludlow, Agawam, up to Northampton and Amherst. Businesses further out we handle remotely, which works just as well.",
     faqExisting:
@@ -375,20 +394,20 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that answers when you can\'t',
-        body: "An agent on your site that takes the questions and books the estimate while you're mid-job. Remi AI is built into every site plan, and the AI Agents Team is ready to work.",
+        body: "An agent on your site that takes the questions while you're mid-job. Remi AI answers on every site plan and books the estimate on Get Booked and up; the AI Agents Team is ready to work.",
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Sell online without leaving the counter',
-        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription — no percentage of your sales.',
+        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, on a Shopify account in your name — no percentage of your sales.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'When Willimansett searches, the map decides',
-        body: 'Most local picks happen in the map pack before a website ever loads. Google Business Profile setup or rescue is $145 one-time, or included in every plan.',
-        href: '/plans/get-found/',
+        body: `Most local picks happen in the map pack before a website ever loads. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {
@@ -400,7 +419,7 @@ export const localAreas: LocalArea[] = [
     ],
     marketData: {
       heading: 'Why our prices are on the site instead of behind a phone call',
-      body: "When Massachusetts small business owners were surveyed in 2025, the obstacle they named most often wasn't the economy and it wasn't funding. It was being unable to get clear, trusted information about what to do next. In a city like Chicopee, where the median household runs near $63,000 and every monthly bill gets weighed on its own merits, that gap costs money in one of two directions. Either you overpay an agency that quotes you in jargon you can't check, or you do nothing and stay invisible while a competitor doesn't. It's why our pricing is published, our plans are month-to-month, and we'll tell you when the $95 plan is all your business needs.",
+      body: `When Massachusetts small business owners were surveyed in 2025, the obstacle they named most often wasn't the economy and it wasn't funding. It was being unable to get clear, trusted information about what to do next. In a city like Chicopee, where the median household runs near $63,000 and every monthly bill gets weighed on its own merits, that gap costs money in one of two directions. Either you overpay an agency that quotes you in jargon you can't check, or you do nothing and stay invisible while a competitor doesn't. It's why our pricing is published, our plans are month-to-month, and we'll tell you when the ${gfPrice} plan is all your business needs.`,
       source: 'Coalition for an Equitable Economy / MassINC Polling Group, 2025 Massachusetts Small Business Survey; U.S. Census Bureau median household income for Chicopee (ACS 2024 5-year: $62,615)',
       sourceUrl: 'https://www.massincpolling.com/our-work/2025-cee-survey',
     },
@@ -411,7 +430,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Northampton · Western Massachusetts',
     metaTitle: 'Web Design in Northampton, MA: SEO & AI Agents | MannyKnows',
     metaDescription:
-      "Web design for Northampton, MA businesses. Beautiful, fast websites with technical SEO and AI booking agents. From $95/mo.",
+      `Web design for Northampton, MA businesses. Beautiful, fast websites with technical SEO and AI booking agents. From ${gfPrice}/mo.`,
     heroIntro:
       "Northampton sets a high bar for design, and your website should meet it. We build beautiful, blazing-fast sites for NoHo's medical and wellness practices, professional offices, contractors, and independent retailers, with technical SEO and an AI agent that turns browsers into booked customers.",
     angleHeading: 'A site as considered as Main Street',
@@ -431,21 +450,21 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'From browsing to booked',
-        body: 'A dental office, a law practice, a home-services company. They all live on appointments. Remi AI answers the questions people ask before committing and books them in, including at midnight when nobody is at the desk.',
+        body: 'A dental office, a law practice, a home-services company. They all live on appointments. Remi AI answers the questions people ask before committing, including at midnight when nobody is at the desk, and on Get Booked and up it books them in.',
       },
       {
         title: 'Kept as polished as opening day',
-        body: "Design ages; maintained design doesn't. Monthly plans keep the site fast, current, secure, and ranking, and the monthly report reads like a note from a colleague, not a server log.",
+        body: "Design ages; maintained design doesn't. Monthly plans keep the site fast, current, secure, and ranking, and what changed reaches you like a note from a colleague, not a server log.",
       },
     ],
     plansLine:
-      'Design, AI agent, SEO, and maintenance start together at $95/mo.',
+      `Design, AI agent, SEO, and maintenance start together at ${gfPrice}/mo; booking arrives at ${gbPrice}/mo.`,
     faqPricing:
-      "From $95/mo. Independent shops ask this first, so here's the whole answer: a custom-designed 1–3 page site (designed, not templated), hosting and SSL, Remi AI answering visitors 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, multilingual included at every tier. The build is a one-time $595, then $95/mo with no term; a prepaid year waives that setup fee and earns two months free. A larger multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds are available when a subscription isn't the right fit. Everything is scoped to your business first.",
+      `From ${gfPrice}/mo. Independent shops ask this first, so here's the whole answer: a custom-designed 1–3 page site (designed, not templated), hosting and SSL, Remi AI answering visitors 24/7, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance, multilingual included at every tier. The build is a one-time ${gfSetup}, then ${gfPrice}/mo with no term; a prepaid year waives that setup fee and earns two months free. A larger multi-page site with Remi AI booking appointments is ${gbPrice}/mo, and one-time builds are available when a subscription isn't the right fit. Everything is scoped to your business first.`,
     faqBusinesses:
       "The independents that make Northampton Northampton (clothing boutiques and furniture stores downtown, wellness and dental practices, real estate offices out in Florence) and the businesses that keep it all running off Main Street: contractors, medical practices, professional offices. Underneath the aesthetics the job is constant — ranking for what people search on their way to NoHo, answering and booking while you're with a customer, and keeping the site tended long after it launches.",
     faqAgents:
-      "Yes. Appointment businesses get the most out of them, and Northampton runs on appointments. Remi AI comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake. On Get Booked and up, it books them in too. The full roster (from $95/mo per agent) writes, designs, posts, and reports, all managed for you, multilingual as standard.",
+      "Yes. Appointment businesses get the most out of them, and Northampton runs on appointments. Remi AI comes with every site plan and answers the pre-booking questions 24/7: the consult, the estimate, the new-patient intake. On Get Booked and up, it books them in too. The full AI Agents Team, run by Manny AI, writes, designs, posts, and reports from your own admin, multilingual as standard.",
     faqOutside:
       "Yes. We're based in Springfield, a straight shot down I-91, and we work across the valley: Easthampton, Amherst, Holyoke, Chicopee, Westfield and the rest of Western Mass. Remote engagements work anywhere.",
     faqExisting:
@@ -480,27 +499,27 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that books while you\'re with a customer',
-        body: 'An agent that answers the questions people ask before committing and fills the calendar, midnight after the show included. Remi AI comes with every site plan, and the AI Agents Team is ready to work.',
+        body: 'An agent that answers the questions people ask before committing, midnight after the show included. Remi AI answers on every site plan and fills the calendar on Get Booked and up; the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Online stores as considered as the shelf',
-        body: 'Boutique-grade storefronts on Shopify and beyond, with one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus your Shopify subscription.',
+        body: 'Boutique-grade storefronts on Shopify and beyond, with one catalog synced to Google Shopping, Instagram & Facebook, on a Shopify account in your name.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'The map pack reads before Main Street does',
-        body: 'Visitors decide where to eat and shop from the map on the walk over. Google Business Profile setup or rescue is $145 one-time, or included in every plan.',
-        href: '/plans/get-found/',
+        body: `Visitors decide where to eat and shop from the map on the walk over. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {
         title: 'Photo, video & 360° virtual tours',
-        body: "Interiors like Northampton's deserve better than a phone pano. 360° photo packs and Google Street View tours cover the whole valley, Hamp included.",
-        href: '/local-seo/#free-360-photo',
-        linkText: 'See 360° packs',
+        body: "Interiors like Northampton's deserve better than a phone pano. Virtual tour shoots and monthly 360° photos cover the whole valley, Hamp included.",
+        href: '/local-seo/#packages',
+        linkText: 'See the SEO packages',
       },
     ],
     marketData: {
@@ -516,7 +535,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Westfield · Western Massachusetts',
     metaTitle: 'Web Design in Westfield, MA: SEO & AI Agents | MannyKnows',
     metaDescription:
-      'Web design for Westfield, MA businesses. Fast websites with AI booking agents and local SEO, built for the Whip City. From $95/mo.',
+      `Web design for Westfield, MA businesses. Fast websites with AI booking agents and local SEO, built for the Whip City. From ${gfPrice}/mo.`,
     heroIntro:
       "Westfield built one of the best fiber networks in New England. Your website should be worth the bandwidth. We build fast sites with AI agents that answer and book around the clock, for the businesses of the Whip City.",
     angleHeading: 'A working city deserves a working website',
@@ -536,21 +555,21 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Answered from the shop floor',
-        body: "Manufacturers, trades, and shops can't stop to answer chat. Your site's AI agent takes the questions, qualifies the customer, and books the work, any hour.",
+        body: "Manufacturers, trades, and shops can't stop to answer chat. Your site's AI agent takes the questions and qualifies the customer any hour, and on Get Booked and up books the work.",
       },
       {
         title: 'Kept working, month after month',
-        body: 'Monthly plans keep the site fast, secure, and ranking, with a monthly report of what changed and what it did. Built like the things this city builds — to last.',
+        body: 'Monthly plans keep the site fast, secure, and ranking, and keep you posted on what changed and what it did. Built like the things this city builds — to last.',
       },
     ],
     plansLine:
-      'Website, AI agent, SEO, and maintenance together from $95/mo.',
+      `Website, AI agent, SEO, and maintenance together from ${gfPrice}/mo; booking from ${gbPrice}/mo.`,
     faqPricing:
-      "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds get a flat written quote.",
+      `Plans start at ${gfPrice}/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time ${gfSetup}, then ${gfPrice}/mo with no term. Prepay a year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking appointments is ${gbPrice}/mo, and one-time builds get a flat written quote.`,
     faqBusinesses:
       "The businesses that make Westfield work: the medical and dental offices of downtown and the Southampton Road corridor, manufacturers and machine shops, contractors and tradespeople, independent retailers, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same. Rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
     faqAgents:
-      "Yes, and for a working city they earn their keep fast. Remi AI comes with every site plan and answers customers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
+      "Yes, and for a working city they earn their keep fast. Remi AI comes with every site plan and answers customers 24/7 in English or Spanish; the full AI Agents Team, run by Manny AI, writes, posts, runs ads, and reports from your own admin. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
     faqOutside:
       "Yes. Westfield is about twenty minutes from our Springfield base, and we work across the whole valley: West Springfield, Agawam, Holyoke, Chicopee, Northampton, Southwick and the hilltowns. Remote works anywhere.",
     faqExisting:
@@ -569,27 +588,27 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that work your hours',
-        body: 'Agents that answer, qualify, and book while you run the shop. Remi AI is built into every site plan, and the AI Agents Team is ready to work.',
+        body: 'Agents that answer and qualify while you run the shop. Remi AI answers on every site plan and books on Get Booked and up; the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'Sell what you make, online',
-        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, from $150/mo plus the platform subscription.',
+        body: 'A store that syncs one catalog to Google Shopping, Instagram & Facebook, on a Shopify account in your name.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'Own the map when Westfield looks',
-        body: 'Most local picks happen in the map pack. Google Business Profile setup or rescue is $145 one-time, or included in every monthly plan.',
-        href: '/plans/get-found/',
+        body: `Most local picks happen in the map pack. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {
         title: '360° photos & virtual tours',
-        body: "Google Street View tours and 360° photo packs cover the whole valley. Westfield sits just past the free-photo radius. We quote any small travel fee up front, always.",
-        href: '/local-seo/#free-360-photo',
-        linkText: 'See 360° packs',
+        body: "Virtual tour shoots and monthly 360° photos cover the whole valley. Westfield sits just past the free-photo radius. We quote any small travel fee up front, always.",
+        href: '/local-seo/#packages',
+        linkText: 'See the SEO packages',
       },
     ],
     cityNow: {
@@ -620,7 +639,7 @@ export const localAreas: LocalArea[] = [
     badge: 'Agawam · Western Massachusetts',
     metaTitle: 'Web Design in Agawam, MA: SEO & AI Agents | MannyKnows',
     metaDescription:
-      'Web design for Agawam and Feeding Hills businesses. Fast websites with AI booking agents and local SEO, right across the river from Springfield. From $95/mo.',
+      `Web design for Agawam and Feeding Hills businesses. Fast websites with AI booking agents and local SEO, right across the river from Springfield. From ${gfPrice}/mo.`,
     heroIntro:
       "Agawam does business the established way — family names, long memories, customers who come back. We put that reputation online with web design and development that ranks, an AI agent that answers around the clock, and someone across the river keeping it all working.",
     angleHeading: 'From Agawam Center to Feeding Hills, found first',
@@ -636,7 +655,7 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Answered while you\'re on the job',
-        body: "Trades, services, family shops. Nobody can stop to answer chat. Your site's AI agent takes questions, qualifies the customer, and books the estimate, day or night.",
+        body: "Trades, services, family shops. Nobody can stop to answer chat. Your site's AI agent takes questions and qualifies the customer day or night, and on Get Booked and up books the estimate.",
       },
       {
         title: 'Ready for the seasonal wave',
@@ -644,17 +663,17 @@ export const localAreas: LocalArea[] = [
       },
       {
         title: 'Cared for from across the river',
-        body: 'We\'re minutes away in Springfield. Monthly plans keep the site fast, secure, and ranking, with a clear monthly report, and a real person one call away.',
+        body: 'We\'re minutes away in Springfield. Monthly plans keep the site fast, secure, and ranking, keep you posted on what changed, and put a real person one call away.',
       },
     ],
     plansLine:
-      'Website, AI agent, SEO, and maintenance in one plan, from $95/mo.',
+      `Website, AI agent, SEO, and maintenance in one plan, from ${gfPrice}/mo; booking from ${gbPrice}/mo.`,
     faqPricing:
-      "Plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. The full multi-page tier with your own admin and Remi AI booking is $245/mo, and one-time builds get a flat written quote up front.",
+      `Plans start at ${gfPrice}/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, your own admin, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time ${gfSetup}, then ${gfPrice}/mo with no term; prepay a year and the setup fee is waived and two months are free. The full multi-page tier with Remi AI booking is ${gbPrice}/mo, and one-time builds get a flat written quote up front.`,
     faqBusinesses:
       "Agawam's backbone: medical and dental offices, contractors and tradespeople, family-run dealerships and retailers from Agawam Center to Feeding Hills, seasonal businesses, and the services an established town leans on. The work underneath is constant. Rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
     faqAgents:
-      "Yes, and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage hire there is. Remi AI comes with every site plan and answers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you.",
+      "Yes, and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage addition there is. Remi AI comes with every site plan and answers 24/7 in English or Spanish; the full AI Agents Team, run by Manny AI, writes, posts, runs ads, and reports from your own admin.",
     faqOutside:
       "Of course. Springfield is directly across the river (home base), and the rest of the valley is minutes away: West Springfield, Westfield, Chicopee, Holyoke, up to Northampton. Remote works anywhere.",
     faqExisting:
@@ -672,21 +691,21 @@ export const localAreas: LocalArea[] = [
     beyondWebHeading: 'More tools for an established business',
     beyondWeb: [
       {
-        title: 'AI agents, hired like staff',
+        title: 'AI agents, added to your business',
         body: 'Remi AI answers your site around the clock, and Manny AI, the manager added to your business, staffs specialists that research, write, post, run ads, and report.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
       {
         title: 'A store for what you grow or make',
-        body: 'From farm stands to family shops — one catalog synced to Google Shopping, Instagram & Facebook, from $150/mo plus the platform subscription.',
+        body: 'From farm stands to family shops — one catalog synced to Google Shopping, Instagram & Facebook, on a Shopify account in your name.',
         href: '/ecommerce/',
         linkText: 'See store plans',
       },
       {
         title: 'Win the map from Feeding Hills to the Center',
-        body: 'Most local picks happen in the map pack before a website ever loads. Profile setup or rescue is $145 one-time, or included in every plan.',
-        href: '/plans/get-found/',
+        body: `Most local picks happen in the map pack before a website ever loads. ${gbpLine}`,
+        href: '/local-seo/#gbp',
         linkText: 'Get found on Google',
       },
       {

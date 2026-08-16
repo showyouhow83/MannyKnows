@@ -61,7 +61,7 @@ const contactContext = `Web design ${area.name}`;
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
       <Breadcrumb items={[{ label: `Web Design ${area.name}, MA` }]} />
-      <div class="pb-12 px-4 sm:px-6 lg:px-8">
+      <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">{area.badge}</span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
@@ -70,8 +70,8 @@ const contactContext = `Web design ${area.name}`;
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             {area.heroIntro}
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <Button href="#contact" data-contact-context={contactContext} arrow="right">Get a free look at your site</Button>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+            <Button href="/free-ai-website-analysis/" arrow="right">Get a free look at your site</Button>
             <Button href="/#work" variant="secondary">See local projects</Button>
           </div>
         </div>
@@ -82,14 +82,14 @@ const contactContext = `Web design ${area.name}`;
       <Container>
         <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {area.offers.map((o) => (
-            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
-              <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{o.title}</h2>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{o.body}</p>
+            <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{o.title}</h2>
+              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{o.body}</p>
             </div>
           ))}
         </div>
 
-        <div class="max-w-3xl mx-auto text-center mt-14">
+        <div class="max-w-3xl mx-auto text-center mt-12">
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             {area.plansLine}
             <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">See all plans →</a>
@@ -101,15 +101,15 @@ const contactContext = `Web design ${area.name}`;
     <Section id="local-context" variant="alternate" className="room chain-blue-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.angleHeading}</span></h2>
+          <SectionHeader alignment="left" width="" spacing="mb-4" title={area.angleHeading} />
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{area.angleBody}</p>
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
             <span class="text-text-light-primary dark:text-text-dark-primary font-medium">Multilingual by default.</span> {area.languageNote}
           </p>
-          <p class="text-xs font-semibold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Working across {area.name}</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Working across {area.name}</p>
           <ul class="flex flex-wrap gap-2">
             {area.neighborhoods.map((hood) => (
-              <li class="rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-3 py-1 text-xs text-text-light-secondary dark:text-text-dark-secondary">{hood}</li>
+              <li class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary px-4 py-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary">{hood}</li>
             ))}
           </ul>
         </div>
@@ -119,13 +119,13 @@ const contactContext = `Web design ${area.name}`;
     <Section id="local-now" variant="default" className="room chain-violet-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.cityNow.heading}</span></h2>
+          <SectionHeader alignment="left" width="" spacing="mb-4" title={area.cityNow.heading} />
           {area.cityNow.paragraphs.map((para) => (
             <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{para}</p>
           ))}
           <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed border-l-2 border-light-tertiary dark:border-dark-accent pl-3 mt-5">
             Sources: {area.cityNow.sources.map((s, i) => (
-              <span>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener noreferrer" class="underline decoration-dotted underline-offset-2 hover:text-primary-blue dark:hover:text-blue-300">{s.label}</a></span>
+              <span>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener noreferrer" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">{s.label}</a></span>
             ))}
           </p>
         </div>
@@ -138,9 +138,9 @@ const contactContext = `Web design ${area.name}`;
           <SectionHeader title={area.beyondWebHeading} />
           <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {area.beyondWeb.map((b) => (
-              <a href={b.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
-                <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{b.title}</h3>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{b.body}</p>
+              <a href={b.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{b.title}</h3>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{b.body}</p>
                 <span class="text-sm text-primary-blue dark:text-blue-300 font-medium mt-4 group-hover:underline">{b.linkText} →</span>
               </a>
             ))}
@@ -152,14 +152,14 @@ const contactContext = `Web design ${area.name}`;
     <Section id="local-market" variant="default" className="room glow-blue">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>{area.marketData.heading}</span></h2>
+          <SectionHeader alignment="left" width="" spacing="mb-4" title={area.marketData.heading} />
           <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-5">{area.marketData.body}</p>
           <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed border-l-2 border-light-tertiary dark:border-dark-accent pl-3">
             Source: <a
               href={area.marketData.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="underline decoration-dotted underline-offset-2 hover:text-primary-blue dark:hover:text-blue-300"
+              class="text-primary-blue dark:text-blue-300 font-medium hover:underline"
             >{area.marketData.source}</a>
           </p>
         </div>
@@ -170,7 +170,7 @@ const contactContext = `Web design ${area.name}`;
       <Section id="local-proof" variant="default" className="room glow-violet">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">{area.proofHeading}</p>
+            <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-6">{area.proofHeading}</p>
             <QuoteBlock quote={quote} align="center" />
             {area.proofCaseStudy && (
               <p class="mt-8 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">

@@ -21,7 +21,8 @@ import Button from '../components/ui/Button.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Faq from '../components/ui/Faq.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
-import PricingCards, { type PricingCard } from '../components/pricing/PricingCards.astro';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import { remiCards as remiCards_ } from '../lib/pricingCards';
 import { remiTiers, remiCustom, remiMatrix, remiSetupFee, remiLiteMonthly, remiMidMonthly, remiProMonthly } from '../data/remi';
 import { plans } from '../data/plans';
 
@@ -33,17 +34,7 @@ const getFound = plans.find((p) => p.slug === 'get-found')!;
 
 // The ladder on the shared pricing grid — same anatomy as /plans, /ecommerce,
 // /apps and /local-seo, so pricing reads identically everywhere.
-const remiCards: PricingCard[] = remiTiers.map((t) => ({
-  name: t.name,
-  audience: t.audience,
-  price: t.price,
-  setupFee: remiSetupFee,
-  scope: t.scope,
-  tagline: t.tagline,
-  features: t.features,
-  featured: t.featured,
-  primary: { label: `Start with ${t.name}`, href: '#contact', context: `Remi AI plans: ${t.name}` },
-}));
+const remiCards = remiCards_();
 
 const FAQS = [
   {
@@ -55,7 +46,7 @@ const FAQS = [
         ['Remi AI Lite — answers & captures leads', `$${remiLiteMonthly}/mo + $${remiSetupFee} setup`],
         ['Remi AI — Lite plus the full customization admin', `$${remiMidMonthly}/mo + $${remiSetupFee} setup`],
         ['Remi AI Pro — books into your calendar', `$${remiProMonthly}/mo + $${remiSetupFee} setup`],
-        ['Remi AI Custom — phone IVR & deep integrations', 'From $2,500, quoted'],
+        ['Remi AI Custom — phone IVR & deep integrations', `${remiCustom.priceLabel}, quoted`],
         ['Already inside every website plan', `From $${getFound.price}/mo (the plan price)`],
       ],
     },
@@ -65,7 +56,7 @@ const FAQS = [
   { q: 'Do I manage Remi AI myself?', a: "Yes, through your own admin. We configure Remi AI for your business at setup and train you on the admin; from there it's yours — the Brand Brain it answers from, your leads inbox, and every control your plan unlocks. You never file a ticket to change a price or an opening hour." },
   { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. Remi AI answers in whichever language the customer starts with.' },
   { q: 'Can it answer phone calls, or just website chat?', a: "On your site it answers, and on Remi AI Pro it books. For your phone line, Remi AI Custom answers every call and routes it to the right person — that's a quoted build." },
-  { q: 'How fast can it be live?', a: 'Minutes. Remi AI is configured and added to your website that fast. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
+  { q: 'How fast can it be live?', a: 'Fast. Remi AI is configured and on your site within days, and adding the embed to your website takes minutes. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
@@ -96,7 +87,7 @@ const pageJsonLd = {
       priceCurrency: 'USD',
       description: `${t.scope}. $${t.price}/mo plus a one-time $${remiSetupFee} setup, waived on a prepaid year.`,
     })),
-    { '@type': 'Offer', name: remiCustom.name, description: 'Phone IVR and deep integrations, scoped and quoted from $2,500; its running monthly is quoted with the build.' },
+    { '@type': 'Offer', name: remiCustom.name, description: `Phone IVR and deep integrations, scoped and quoted ${remiCustom.priceLabel.toLowerCase()}; its running monthly is quoted with the build.` },
   ],
 };
 ---
@@ -114,7 +105,8 @@ const pageJsonLd = {
       <NavBar />
       <Breadcrumb items={[{ label: 'AI Booking Agent' }]} />
 
-      <div class="pb-16 px-4 sm:px-6 lg:px-8">
+      <div class="pb-12">
+        <Container>
         <div class="max-w-[1440px] mx-auto text-center">
           <!-- Remi AI himself, not a generic spot illustration (Manny, Aug 2026) -->
           <div class="flex justify-center mb-6">
@@ -122,14 +114,14 @@ const pageJsonLd = {
               <AgentAvatar agent="desi" class="w-full h-full" />
             </div>
           </div>
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5">
+          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
             AI Business Chatbot
           </span>
           <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
             <span class="apple-gradient-text" data-colorful-title>AI agents that answer,<br /> qualify &amp; book leads, 24/7</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
-            Most jobs are lost to the call nobody could answer. Remi AI is our AI booking agent for Western Mass practices and small businesses. Trained on your business, it answers patients and customers in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
+            Most jobs are lost to the call nobody could answer. Remi AI is our AI booking agent for Western Mass practices and small businesses. Trained on your business, it answers patients and customers in English or Spanish, asks the qualifying questions you would, and, on Pro, books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button href="#contact" data-contact-context="AI booking agent" arrow="right">Get your booking agent</Button>
@@ -139,12 +131,13 @@ const pageJsonLd = {
                  It re-checks on hashchange, so this stays a same-page anchor and opens
                  the agent right here instead of bouncing the visitor to the homepage.
                  Name it Astro here, not Remi AI, because Astro is who greets the visitor. -->
-            <Button href="/ai-booking-agent/#astro?menu=demo" variant="secondary">Test Astro, our own “Remi” AI agent</Button>
+            <Button href="/ai-booking-agent/#astro?menu=demo" variant="secondary">Try Remi AI live (it answers as Astro here)</Button>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            English &amp; Spanish standard · Plans from ${remiLiteMonthly}/mo · Built in Springfield, MA
+            English &amp; Spanish standard · Built in Springfield, MA
           </p>
         </div>
+        </Container>
       </div>
     </header>
 
@@ -165,11 +158,11 @@ const pageJsonLd = {
 
         <!-- The fourth door: a build, not a subscription, so it sits outside
              the grid — same pattern as the Custom tier band on /apps. -->
-        <div class="max-w-6xl mx-auto mt-10 rounded-3xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+        <div class="max-w-6xl mx-auto mt-10 rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-lg shadow-primary-blue/5">
           <div class="flex flex-col lg:flex-row lg:items-center gap-6">
             <div class="flex-1">
               <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Built around you</span>
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mt-1 mb-3">{remiCustom.name}</h3>
+              <h3 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary mt-1 mb-3">{remiCustom.name}</h3>
               <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2">
                 {remiCustom.points.map((pt) => (
                   <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
@@ -198,7 +191,7 @@ const pageJsonLd = {
           title="Your admin, plan by plan"
           subtitle="Every plan comes with your own admin. We set Remi AI up and train you on it; what you can reach in there depends on the plan."
         />
-        <div class="max-w-4xl mx-auto overflow-x-auto">
+        <div class="max-w-6xl mx-auto overflow-x-auto">
           <table class="w-full text-sm border-collapse min-w-[560px]">
             <thead>
               <tr>
@@ -241,18 +234,18 @@ const pageJsonLd = {
           title="Answering Springfield customers today"
           subtitle="A daycare and a painting contractor, both case studies below."
         />
-        <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Licensed childcare · Springfield</span>
+        <div class="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col">
+            <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Licensed childcare · Springfield</span>
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare got a website, AI agent &amp; phone system in two weeks</h3>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later they had a site with an AI agent answering parents' questions from the site's own content, plus a Twilio IVR phone system that gives callers what they need and routes them to the right person. Every call answered.</p>
-            <Button href="/work/jk-daycare/" variant="ghost" arrow="right" class="mt-4 gap-1.5 text-sm self-start">Read the JK Daycare case study</Button>
+            <Button href="/work/jk-daycare/" variant="ghost" size="sm" arrow="right" class="mt-4 self-start">Read the JK Daycare case study</Button>
           </div>
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Painting contractor · Springfield</span>
+          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 flex flex-col">
+            <span class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Painting contractor · Springfield</span>
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting gets leads qualified around the clock</h3>
-            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7, so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
-            <Button href="/work/sl-painting/" variant="ghost" arrow="right" class="mt-4 gap-1.5 text-sm self-start">Read the SL Painting case study</Button>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's Remi AI agent answers questions and qualifies leads 24/7, so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
+            <Button href="/work/sl-painting/" variant="ghost" size="sm" arrow="right" class="mt-4 self-start">Read the SL Painting case study</Button>
           </div>
         </div>
       </Container>
@@ -262,11 +255,11 @@ const pageJsonLd = {
          FAQPage schema; the contact CTA rides at its foot. -->
     <Section id="faq" variant="alternate" className="room glow-violet">
       <Container>
-        <div class="max-w-3xl mx-auto">
-          <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
+        <div class="max-w-6xl mx-auto">
+          <Faq faqs={FAQS} />
           <div class="text-center mt-12">
             <Button href="#contact" data-contact-context="AI booking agent" arrow="right">Talk about your booking agent</Button>
-            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
+            <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue dark:text-blue-300 font-medium hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
           </div>
         </div>
       </Container>

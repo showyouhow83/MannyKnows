@@ -60,14 +60,14 @@ export const team: Agent[] = [
   {
     id: 'desi',
     name: 'Remi AI',
-    role: 'Chat Agent — sales, booking & support',
-    does: "Answers customer emails, texts, and messages on your site 24/7. Replies, books appointments, and guides shoppers to the right product, in their own language.",
+    role: 'Chat Agent — answers, qualifies & captures leads',
+    does: "Answers customers 24/7 and captures every lead on the site you have; books appointments and steers shoppers on the Pro tier or the Get Booked/Get Growing plans.",
     handoff: 'Feeds the team. Every question customers ask becomes intel, Remi AI logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
     // The "from" price of Remi AI's own ladder — booking is the Pro plan
     // there ($145); on websites it still arrives at Get Booked.
     price: remiLiteMonthly,
-    note: 'its own plans, $40 Lite to $145 Pro · included with every AI-Powered Website',
+    note: 'its own plans, $40 Lite to $145 Pro · included with every website plan',
   },
   {
     id: 'eve',
@@ -161,7 +161,8 @@ export const paidAgents = team.filter((a) => !a.included);
 
 // One flat one-time setup builds the Brand Brain and trains the team, however
 // many agents you hire (normal AI usage included; heavy usage metered at cost,
-// quoted first).
+// quoted first). Waived on a prepaid year, matching the sitewide setup-fee
+// canon (/pricing states the same rule).
 export const aiTeamSetupFee = 195;
 
 // À-la-carte total for a set of agent ids, from the roster (keeps bundles honest).
@@ -245,11 +246,11 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every AI-Powered Website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
+    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team, waived when you prepay a year.`,
   },
   {
     q: 'What does adding Manny AI to my business actually mean?',
-    a: "We build your Brand Brain, then Manny AI goes to work: it looks at how your business runs, finds the processes AI can improve, and staffs the specialists that work calls for. Each one is trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard. You ask Manny AI for what you need, approve what goes out, and we handle the updates and support.",
+    a: "We build your Brand Brain, then Manny AI goes to work. It looks at how your business runs, finds the processes AI can improve, and staffs the specialists that work calls for. Each one is trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard. You ask Manny AI for what you need, approve what goes out, and we handle the updates and support.",
   },
   {
     q: 'Do I have to bring on a whole team of agents?',

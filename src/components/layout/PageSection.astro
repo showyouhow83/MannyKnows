@@ -1,4 +1,15 @@
 ---
+// Homepage section primitive: a washed <section> (the homepage keeps its
+// per-section washes — interior pages use Section.astro's one-canvas shell)
+// wrapping the shared Container + a hero-scale SectionHeader, so the homepage
+// headers can't drift from the sitewide header again (Aug 2026 normalization).
+//
+// Slots: default (body), `background` (decorative layer behind the content,
+// e.g. HeroVideoBackground or an edge-peek mascot), `aside` (shares the
+// title's row — see SectionHeader).
+import Container from './Container.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+
 export interface Props {
   id?: string;
   badge?: string;
@@ -29,15 +40,8 @@ const variantStyles = {
   hero: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 border-t border-gray-300/30 dark:border-white/10'
 };
 
-// Define header alignment styles
-const alignmentStyles = {
-  left: 'text-left',
-  center: 'text-center',
-  right: 'text-right'
-};
-
 const sectionClass = `relative py-16 ${variantStyles[variant]} transition-colors duration-300 overflow-hidden ${className}`;
-const headerClass = `${alignmentStyles[headerAlignment]} mb-10`;
+const hasAside = Astro.slots.has('aside');
 ---
 
 <section id={id} class={sectionClass}>
@@ -45,32 +49,18 @@ const headerClass = `${alignmentStyles[headerAlignment]} mb-10`;
        section is already relative + overflow-hidden and the content wrapper
        below is z-10, so anything slotted here sits behind the content. -->
   <slot name="background" />
-  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    {(title || subtitle || badge) && (
-      <div class={headerClass}>
-        {badge && (
-          <span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-            {badge}
-          </span>
-        )}
-        {title && (
-          <h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-3xl md:text-6xl lg:text-7xl mb-6">
-            {/* set:html so a title can carry an inline <br /> for line-break control */}
-            <span class="apple-gradient-text" data-colorful-title set:html={title} />
-          </h2>
-        )}
-        {subtitle && (
-          <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl leading-relaxed"
-             class:list={[
-               headerAlignment === 'center' && 'mx-auto',
-               headerAlignment === 'right' && 'ml-auto'
-             ]}>
-            {subtitle}
-          </p>
-        )}
-      </div>
+  <Container className="relative z-10">
+    {/* Two branches on purpose: a slot forwarded inside a conditional still
+        registers as "present" on the child, which would put every header in
+        the aside row layout. */}
+    {title && hasAside && (
+      <SectionHeader size="hero" badge={badge} title={title} subtitle={subtitle} alignment={headerAlignment}>
+        <slot name="aside" slot="aside" />
+      </SectionHeader>
     )}
-    
+    {title && !hasAside && (
+      <SectionHeader size="hero" badge={badge} title={title} subtitle={subtitle} alignment={headerAlignment} />
+    )}
     <slot />
-  </div>
+  </Container>
 </section>

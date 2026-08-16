@@ -38,8 +38,10 @@ const faqSchema = schema && faqs.length > 0
   : null;
 ---
 
+{/* max-w-6xl: the FAQ block spans the same width as the card grids above it
+    on every page (Manny, Aug 2026) — pages must not wrap it in a narrower box. */}
 {faqs.length > 0 && (
-  <div class="max-w-4xl mx-auto md:flex md:items-center md:gap-10">
+  <div class="max-w-6xl mx-auto md:flex md:items-center md:gap-10">
     <div class="flex-1 min-w-0">
     {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
     {heading && (

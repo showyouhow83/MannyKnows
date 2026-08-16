@@ -10,11 +10,18 @@
 // have a website. It is NOT a second product: both numbers derive from
 // src/data/remi.ts, so the two surfaces can never drift apart. Reprice Remi
 // there and this page follows.
-import { remiSetupFee, remiLiteMonthly } from './remi';
+import { remiSetupFee, remiLiteMonthly, remiProMonthly } from './remi';
+import { plans } from './plans';
 
 export const aiWebsiteSetupFee = remiSetupFee;    // $195 one-time, same as every Remi AI plan
 export const aiWebsiteMonthly = remiLiteMonthly;  // $40/mo — the Remi AI Lite subscription
-export const aiWebsiteYearly = aiWebsiteMonthly * 12; // $480: the annual equivalent
+export const aiWebsiteYearly = aiWebsiteMonthly * 10; // $400: a prepaid year, 2 months free, setup waived
+
+// The two website plans this page compares itself against — read from
+// plans.ts so the FAQ's numbers can never drift from the plan cards.
+const getFound = plans.find((p) => p.slug === 'get-found')!;
+const getBooked = plans.find((p) => p.slug === 'get-booked')!;
+const usd = (n: number) => n.toLocaleString('en-US');
 
 export const aiWebsitePriceLabel = `$${aiWebsiteSetupFee} setup + $${aiWebsiteMonthly}/mo`;
 
@@ -31,7 +38,7 @@ export const aiWebsiteAgent = [
   },
   {
     title: 'Any hour, either language',
-    body: "English and Spanish are standard, not an add-on: Remi AI replies in whichever language the customer opens with, at whatever hour they show up.",
+    body: "English and Spanish are standard, not an add-on. Remi AI replies in whichever language the customer opens with, at whatever hour they show up.",
     icon: 'M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
   },
   {
@@ -66,7 +73,7 @@ export const aiWebsiteChat = [
 export const aiWebsiteSections = [
   {
     name: 'Virtual tour',
-    body: 'Your 360° photos embedded on your own domain: customers walk through your space without ever leaving your page, and the tour counts as content Google indexes under your name, not just Google’s.',
+    body: 'Your 360° photos embedded on your own domain, so customers walk through your space without ever leaving your page, and the tour counts as content Google indexes under your name, not just Google’s.',
     hero: true,
   },
   {
@@ -113,14 +120,14 @@ export const aiWebsiteSetupIncludes = [
 export const aiWebsiteSteps = [
   { title: 'One conversation', body: 'We go through what you do, what you charge, the questions customers keep asking, and what a good lead looks like. Usually under an hour.' },
   { title: 'We build the page', body: 'Design, copy, your photos, your 360° tour. You see it and change whatever you want before anyone else does.' },
-  { title: 'Remi AI learns your business', body: 'We train it on everything from step one and test it hard: you read how it answers before it ever talks to a customer.' },
+  { title: 'Remi AI learns your business', body: 'We train it on everything from step one and test it hard. You read how it answers before it ever talks to a customer.' },
   { title: 'It goes live and keeps running', body: 'Your domain, your site. From there the monthly keeps it hosted, fast, and answering; you get the leads.' },
 ];
 
 export const aiWebsiteFaq = [
   {
     q: `Why a setup fee and a monthly, instead of one price?`,
-    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI: real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as every Remi AI plan — a one-time setup, then a flat monthly — and prepaying the year waives the setup fee and gives you 2 months free.`,
+    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI, real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as every Remi AI plan — a one-time setup, then a flat monthly — and prepaying the year waives the setup fee and gives you 2 months free.`,
   },
   {
     q: 'I already have a website. Can I get Remi AI without the page?',
@@ -132,15 +139,15 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'How is this different from Wix or Squarespace?',
-    a: `Wix hands you a builder and the work is yours: the design, the writing, the SEO, the upkeep. Here a developer builds the page for you, tunes it to near-perfect scores on Google's own Lighthouse audit (most DIY builder sites don't come close), and Remi AI, an AI agent trained on your business, answers your customers and captures leads while you work. Comparable money, but you get your evenings back and an employee on the page.`,
+    a: `Wix hands you a builder and the work is yours: the design, the writing, the SEO, the upkeep. Here a developer builds the page for you, tunes it to near-perfect scores on Google's own Lighthouse audit (most DIY builder sites don't come close), and Remi AI, an AI agent trained on your business, answers your customers and captures leads while you work. Comparable money, but you get your evenings back and an agent on the page.`,
   },
   {
     q: 'Can Remi AI book appointments on this?',
-    a: `Not on this version. This is Remi AI Lite: it converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. To get booking, move up to Remi AI Pro ($145/mo) and keep the same page, or step up to the Get Booked website plan ($245/mo). Either way Remi AI's training carries with you.`,
+    a: `Not on this version. This is Remi AI Lite. It converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. To get booking, move up to Remi AI Pro ($${usd(remiProMonthly)}/mo) and keep the same page, or step up to the Get Booked website plan ($${usd(getBooked.price)}/mo). Either way Remi AI's training carries with you.`,
   },
   {
-    q: `How is this different from the $95/mo Get Found plan?`,
-    a: `Scope and who does the work. This is one page with the lightest Remi AI, built once and kept running: the cheapest way to have a real site that answers customers, at $${aiWebsiteMonthly}/mo after setup. Get Found is $595 to build and $95/mo to run, and it's a service: a 1–3 page multilingual site we design, run, update four times a month, and keep ranking, with your Google Business Profile handled and your own admin to change things yourself. Start here if one page covers you; move up when it doesn't: the work carries forward.`,
+    q: `How is this different from the $${usd(getFound.price)}/mo Get Found plan?`,
+    a: `Scope and who does the work. This is one page with the lightest Remi AI, built once and kept running, the cheapest way to have a real site that answers customers, at $${aiWebsiteMonthly}/mo after setup. Get Found is $${usd(getFound.setupFee!)} to build and $${usd(getFound.price)}/mo to run, and it's a service, a 1–3 page multilingual site we design, run, update four times a month, and keep ranking, with your Google Business Profile handled and your own admin to change things yourself. Start here if one page covers you; move up when it doesn't. The work carries forward.`,
   },
   {
     q: 'Can one page really be enough?',
@@ -148,11 +155,11 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'What if I already have 360° photos on Google?',
-    a: "Then we embed them. Photos on your Google Business Profile live on Google's property: the tour on your own site is content under your domain, working for your rankings, with Remi AI right next to it ready to answer.",
+    a: "Then we embed them. Photos on your Google Business Profile live on Google's property. The tour on your own site is content under your domain, working for your rankings, with Remi AI right next to it ready to answer.",
   },
   {
     q: 'How long does it take?',
-    a: 'Most one-page builds are completed within 7 days of the contract being signed. For reference, even a full build (site, AI agent, and a phone system routing every call, for JK Daycare) went live in two weeks.',
+    a: 'Most one-page builds are completed within a week of the contract being signed. For reference, even a full build (site, AI agent, and a phone system routing every call, for JK Daycare) went live in two weeks.',
   },
   {
     q: 'Does Remi AI speak Spanish?',
@@ -160,7 +167,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'What if I need more pages later?',
-    a: `Nothing is wasted. The design, the copy, Remi AI's training, and your Google setup all carry into a bigger build or a monthly plan: you're moving up from what's already working, not starting over.`,
+    a: `Nothing is wasted. The design, the copy, Remi AI's training, and your Google setup all carry into a bigger build or a monthly plan. You're moving up from what's already working, not starting over.`,
   },
 ];
 

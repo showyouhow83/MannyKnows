@@ -19,11 +19,15 @@ const {
   hasOverflow = false
 } = Astro.props;
 
+const DEFAULT_BAND = 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90';
 const variantClasses = {
-  default: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
-  alternate: 'bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90',
+  default: DEFAULT_BAND,
+  // Same band as `default` — kept as an alias for the ~20 call sites (see above).
+  alternate: DEFAULT_BAND,
   dark: 'bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30',
-  gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-150/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900'
+  // `via-gray-100/90` — the earlier `via-gray-150/90` named a gray step that
+  // doesn't exist in tailwind.config, so it compiled to nothing.
+  gradient: 'bg-gradient-to-b from-gray-100/95 via-gray-100/90 to-gray-100/95 dark:bg-gradient-to-br dark:from-gray-900 dark:via-slate-800 dark:to-gray-900'
 };
 
 const overflowClass = hasOverflow ? 'overflow-hidden' : '';

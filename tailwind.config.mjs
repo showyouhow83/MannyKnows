@@ -105,6 +105,13 @@ export default {
           'light-secondary': '#18181b',   // Light mode: body text reads black (Manny, Aug 2026); titles keep their colors
           'dark-primary': '#fafafa',      // Light text on dark bg
           'dark-secondary': '#ffffff',    // Body text on dark bg — white test (all grays to white, Manny Aug 13 2026)
+          // Tertiary = captions/labels. Same values as secondary on purpose (no
+          // greys — Manny, Aug 2026). The tokens had been dropped in 5a547aa, so
+          // ~200 `text-text-*-tertiary` labels compiled to nothing and inherited
+          // whatever colour their parent had; defining them makes labels
+          // deterministic. Restyle labels here, never per page.
+          'light-tertiary': '#18181b',
+          'dark-tertiary': '#ffffff',
         },
       },
       spacing: {

@@ -23,6 +23,36 @@
 // month 5 and month 6 on Get Found. A setup fee and a minimum term are the same
 // tool; charging the fee is the honest one, so the term went away entirely.
 
+import { APPS_HOURLY } from './apps';
+
+// Every price point, declared ONCE. The plan records below read these fields,
+// and so do the FAQ answers and card lines that spell a number out in a
+// sentence ("Get Booked at $245") — so a reprice edits this block and every
+// sentence follows. Never type a dollar figure into a string below; template
+// it from here with usd().
+export const PRICE = {
+  getFound:       { price: 95,   setupFee: 595,  buildValue: 1500 },
+  getBooked:      { price: 245,  setupFee: 895,  buildValue: 2250 },
+  getGrowing:     { price: 545,  setupFee: 1195, buildValue: 3000 },
+  getAhead:       { price: 895,  setupFee: 1195, buildValue: 3000 },
+  sellOnline:     { price: 150,  setupFee: 745,  buildValue: 1875 },
+  sellMore:       { price: 325,  setupFee: 1045, buildValue: 2625 },
+  sellSmarter:    { price: 650,  setupFee: 1345, buildValue: 3375 },
+  sellEverywhere: { price: 1095, setupFee: 1645, buildValue: 4125 },
+  adsPerNetwork: 350,
+  adsFullCoverage: 950,
+  agencyWeekly: 2350,
+  agencyMonthly: 8600,
+} as const;
+const usd = (n: number) => n.toLocaleString('en-US');
+// Bundle math for the two "site + ads" tiers: the à-la-carte total is the
+// site tier plus Business Ads on two networks.
+const adsTwoNetworks = PRICE.adsPerNetwork * 2;
+const getAheadAlaCarte = PRICE.getGrowing.price + adsTwoNetworks;
+const getAheadSavings = getAheadAlaCarte - PRICE.getAhead.price;
+const sellEverywhereAlaCarte = PRICE.sellSmarter.price + adsTwoNetworks;
+const sellEverywhereSavings = sellEverywhereAlaCarte - PRICE.sellEverywhere.price;
+
 export interface PlanFaq {
   q: string;
   a: string;
@@ -119,10 +149,10 @@ export const plans: Plan[] = [
     name: 'Get Found',
     metaTitle: 'Get Found: Local SEO & Website, Western Mass | MannyKnows',
     icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
-    price: 95,
+    price: PRICE.getFound.price,
     tagline: "Everything a new business needs to exist online and be found. Nothing it doesn't.",
-    setupFee: 595,
-    buildValue: 1500,
+    setupFee: PRICE.getFound.setupFee,
+    buildValue: PRICE.getFound.buildValue,
     audience: 'For startups & new businesses',
     scope: '1–3 page website',
     scopeLines: ['Remi AI answers customers 24/7', 'Logo design included'],
@@ -185,7 +215,7 @@ export const plans: Plan[] = [
       {
         title: 'Hosting, security & content',
         items: [
-          'SSL certificate, DDoS protection, and content caching across 330+ cities',
+          'SSL certificate, DDoS protection, and content caching on Cloudflare’s global network',
           'Unlimited storage and bandwidth, no metered overages or surprise bills',
           'Unlimited stock photography, video, and logos (via our Envato Elements license)',
           'Four content updates a month, most turned around within one business day',
@@ -199,9 +229,9 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, monitoring, and tuning. You send changes, we handle them.' },
     ],
     faq: [
-      { q: '$95 a month seems low. How?', a: 'Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. The build is its own one-time $595, which means the $95 pays to run the site rather than to pay it off. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $245. We would rather point you there than stretch this plan past what it is.' },
+      { q: `$${usd(PRICE.getFound.price)} a month seems low. How?`, a: `Here is the math. Get Found is a focused 1–3 page site, not a twenty-page build, so it is less work. The build is its own one-time $${usd(PRICE.getFound.setupFee)}, which means the $${usd(PRICE.getFound.price)} pays to run the site rather than to pay it off. And you are hiring one experienced person with almost no overhead, not an agency with a sales team and an office to pay for. If you need a full multi-page site with an agent that books work, that is Get Booked at $${usd(PRICE.getBooked.price)}. We would rather point you there than stretch this plan past what it is.` },
       { q: 'Do I own the website?', a: 'Yes. The domain and content are yours; if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
-      { q: 'Is there a setup fee?', a: 'Yes, $595 once, and prepaying the year waives it entirely. It pays for designing and building the site, which we value at $1,500 and published 2026 pricing surveys put at $3,000–$15,000 as an up-front project. After that it is $95 a month to run the site, for as long as you want it run.' },
+      { q: 'Is there a setup fee?', a: `Yes, $${usd(PRICE.getFound.setupFee)} once, and prepaying the year waives it entirely. It pays for designing and building the site, work we value at $${usd(PRICE.getFound.buildValue)} at our flat hourly rate and which agencies bill in full up front. After that it is $${usd(PRICE.getFound.price)} a month to run the site, for as long as you want it run.` },
       { q: 'Can Remi AI book appointments on this plan?', a: 'On Get Found, Remi AI answers questions and captures every lead. To have it book jobs into your calendar, move up to Get Booked; to have it sell and point shoppers to products, Get Growing. You can upgrade anytime and the work carries forward.' },
       { q: 'What if I cancel?', a: 'Then you cancel. There is no term, no notice period, and nothing owed on the way out, because the build was paid for when it was built. You keep your domain, your content, and the site itself. (Remi AI is service software that runs with the plan, so the agent doesn’t transfer.) Cancel mid-month and the site keeps running to the end of that month. Setup fees and prepaid years stop being refundable 5 business days after kickoff.' },
     ],
@@ -210,18 +240,18 @@ export const plans: Plan[] = [
     slug: 'get-booked',
     name: 'Get Booked',
     icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
-    price: 245,
+    price: PRICE.getBooked.price,
     tagline: 'Your AI site now books the job. Remi AI answers, captures leads, and fills your calendar.',
-    setupFee: 895,
-    buildValue: 2250,
+    setupFee: PRICE.getBooked.setupFee,
+    buildValue: PRICE.getBooked.buildValue,
     audience: 'For booking-based businesses',
     scope: 'Full multi-page website',
-    scopeLines: ['Remi AI answers and books the job', 'Unlimited AI content updates'],
+    scopeLines: ['Remi AI answers and books the job', 'Unlimited content updates'],
     builtOn: 'Everything in Get Found, plus',
     highlights: [
-      'A full multi-page site with deeper self-optimization that keeps more content & SEO fresh',
+      'A full multi-page site, with more content and SEO kept fresh every month',
       'Remi AI now books the job into your calendar, not just answers',
-      'Local SEO and AI search optimization, so you rank for what customers search and get quoted in AI answers',
+      'Local SEO and AI search optimization, built to rank for what customers search and to be quoted in AI answers',
     ],
     headline: 'A website that answers and books, for you',
     blurb:
@@ -269,20 +299,20 @@ export const plans: Plan[] = [
       { title: 'Every month after', body: 'Updates, fresh content, monitoring, and tuning as the bookings come in.' },
     ],
     faq: [
-      { q: 'What does this add over Get Found at $95?', a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and Remi AI stops only answering questions and starts booking work into your calendar, which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
+      { q: `What does this add over Get Found at $${usd(PRICE.getFound.price)}?`, a: 'Two things worth the difference. The site grows from a few pages into a full multi-page build, and Remi AI stops only answering questions and starts booking work into your calendar, which is the part that pays for the plan. Every booking and lead lands in your admin, so nothing slips.' },
       { q: 'How does Remi AI book appointments?', a: 'We connect it to your calendar or booking tool and train it on your availability and rules. It qualifies the customer, offers real times, and books, then logs the lead in your admin.' },
       { q: 'I already have a website, do I have to start over?', a: 'No. If it has good bones, we optimize it and add Remi AI and the SEO on top. If it’s holding you back, we rebuild it. Same plan either way.' },
-      { q: 'Can I upgrade later?', a: 'Yes, move up to Get Growing to have Remi AI sell and the site keep itself fresh, or add a store with Sell Online. The work carries forward.' },
+      { q: 'Can I upgrade later?', a: 'Yes, move up to Get Growing to have Remi AI sell and the site keep itself fresh, or switch lanes to its store twin, Sell More. The work carries forward.' },
     ],
   },
   {
     slug: 'get-growing',
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
-    price: 545,
+    price: PRICE.getGrowing.price,
     tagline: 'A website that runs itself. It writes and A/B tests its own content, tunes its own SEO & speed, and sells with Remi AI.',
-    setupFee: 1195,
-    buildValue: 3000,
+    setupFee: PRICE.getGrowing.setupFee,
+    buildValue: PRICE.getGrowing.buildValue,
     audience: 'For businesses ready to go viral',
     scope: 'Self-optimizing website',
     scopeLines: ['Remi AI answers, books, and sells', 'Writes & A/B tests its own content'],
@@ -295,7 +325,7 @@ export const plans: Plan[] = [
     featured: true,
     headline: 'A website that writes, optimizes, and sells on its own',
     blurb:
-      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain, writing its own fresh content and tuning its own SEO and speed so it never goes stale — the closest thing to a full-time web developer on your site. It doesn't just publish more, either. It A/B tests content ideas against each other, learns which formats and topics your visitors respond to, keeps the winners, and optimizes continuously. Remi AI goes from booking to selling. It answers, books, and steers shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Agents Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
+      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain, writing its own fresh content and tuning its own SEO and speed so it never goes stale — the closest thing to a full-time web developer on your site. It doesn't just publish more, either. It A/B tests content ideas against each other, learns which formats and topics your visitors respond to, keeps the winners, and optimizes continuously. Remi AI goes from booking to selling. It answers, books, and steers shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Agents Team anytime. A website that works and an agent that works it, for a monthly price and a one-time setup, not a five-figure build.",
     whoFor:
       'Established practices, service businesses, and shops whose customers search Google and call (dental and medical offices, painters, contractors, daycares, law offices) that want the site and the agent doing the selling.',
     deliverables: [
@@ -351,24 +381,24 @@ export const plans: Plan[] = [
     slug: 'get-ahead',
     name: 'Get Ahead',
     icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
-    price: 895,
+    price: PRICE.getAhead.price,
     tagline: 'Get Growing plus your advertising, run for you. The site brings them in, the ads bring more.',
-    setupFee: 1195,
-    buildValue: 3000,
+    setupFee: PRICE.getAhead.setupFee,
+    buildValue: PRICE.getAhead.buildValue,
     audience: 'For businesses ready to lead their market',
     scope: 'Self-optimizing site + ads',
     scopeLines: ['Everything Get Growing does', 'Your ads run on two networks'],
     builtOn: 'Everything in Get Growing, plus',
     highlights: [
       'Your ads run and managed on two networks (Google and a social platform, or two social) — the same Business Ads service, bundled in',
-      'Priced as a bundle, $1,245/mo of service for $895. You keep $350 every month',
+      `Priced as a bundle, $${usd(getAheadAlaCarte)}/mo of service for $${usd(PRICE.getAhead.price)}. You keep $${usd(getAheadSavings)} every month`,
       'You fund the ad spend directly with the platform; we never mark it up',
       'Landing pages built for each campaign, so ads land somewhere built to convert',
       'A monthly working session with Manny on what the numbers say and what changes next',
     ],
-    headline: 'For businesses ready to lead their market',
+    headline: 'The site that sells, plus the ads that feed it',
     blurb:
-      "This is Get Growing ($545) with our Business Ads service on two networks ($700) bundled together \u2014 $1,245 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and Remi AI keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
+      "This is Get Growing with our Business Ads service on two networks, bundled below what the two cost apart, because these are the two things that actually compound. Your site keeps improving itself and Remi AI keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
       'Established businesses that already get work from their site and want to take ground \u2014 busy dental and medical practices, multi-crew contractors, shops with real competition.',
     deliverables: [
@@ -387,7 +417,7 @@ export const plans: Plan[] = [
           'Each network gets its own competitive and market analysis, and its own plan, no two run the same way',
           'Campaigns aimed at booked work (calls, quotes, appointments) not vanity clicks',
           'Your ad budget is separate and paid directly to the platform; we never mark it up or hide it',
-          'Need more networks? Add them at the Business Ads rate of $350/mo each',
+          'Need more networks? Add them at the Business Ads per-network rate',
           'Landing pages built for each campaign, so ads land on pages made to convert',
         ],
       },
@@ -406,9 +436,9 @@ export const plans: Plan[] = [
       { title: 'Monthly loop', body: "We meet, read the numbers together, and adjust. What's working gets more; what isn't gets cut." },
     ],
     faq: [
-      { q: 'Is the ad budget included in the $895?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
-      { q: 'Why is this cheaper than buying the pieces separately?', a: "Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $545 and Business Ads on two networks is $700 — $1,245 a month. Bundled it's $895, so you keep $350. We can do that because the ads and the site stop being two separate projects. The landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it." },
-      { q: 'How is this different from a big agency?', a: "Published 2026 pricing guides put full agency retainers at $2,000–$10,000 a month, usually behind a minimum-term contract, and many agencies keep the website if you leave. Get Ahead has no term at all, and everything (the site, the content, the ad accounts) belongs to you." },
+      { q: `Is the ad budget included in the $${usd(PRICE.getAhead.price)}?`, a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
+      { q: 'Why is this cheaper than buying the pieces separately?', a: `Because it's the same work coordinated once instead of quoted twice. À la carte, Get Growing is $${usd(PRICE.getGrowing.price)} and Business Ads on two networks is $${usd(adsTwoNetworks)} ($${usd(PRICE.adsPerNetwork)} per network) — $${usd(getAheadAlaCarte)} a month. Bundled it's $${usd(PRICE.getAhead.price)}, so you keep $${usd(getAheadSavings)}. Need more networks? Each one is added at that same per-network rate. We can do that because the ads and the site stop being two separate projects. The landing pages the campaigns need are pages your site already builds itself, and what the ad data teaches us goes straight back into what the site writes next. You're paying once for one loop instead of twice for two halves of it.` },
+      { q: 'How is this different from a big agency?', a: "Full agency retainers usually sit behind a minimum-term contract, and many agencies keep the website if you leave. Get Ahead has no term at all, and everything (the site, the content, the ad accounts) belongs to you." },
       { q: 'Do I need this, or is Get Growing enough?', a: "If your site and Remi AI keep you as busy as you want, Get Growing is enough. Get Ahead is for when you want to actively take ground, outrank and out-advertise the competition, with someone accountable for the whole engine, not just the website." },
     ],
   },
@@ -416,11 +446,11 @@ export const plans: Plan[] = [
     slug: 'sell-online',
     name: 'Online Store',
     icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 11-4 0 2 2 0 014 0z',
-    price: 150,
+    price: PRICE.sellOnline.price,
     // Mirrors the Sell Online tier — the parent record is the "starting at"
     // face of the store lane on /plans/sell-online.
-    setupFee: 745,
-    buildValue: 1875,
+    setupFee: PRICE.sellOnline.setupFee,
+    buildValue: PRICE.sellOnline.buildValue,
     tagline: 'Your store built, stocked, and run for you, on a Shopify account that belongs to you.',
     highlights: [
       'A real Shopify store, set up right: theme, payments, shipping, taxes',
@@ -429,9 +459,9 @@ export const plans: Plan[] = [
     ],
     headline: 'Online stores that sell while your business is closed',
     blurb:
-      "Setting up a store is easy. Anyone can click through a signup. Setting up a store that sells is a job — the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes, from a well-run store at $150/mo to a store with its own ad engine. Every tier is run like the enterprise eCommerce operations we spent years building.",
+      "Setting up a store is easy. Anyone can click through a signup. Setting up a store that sells is a job — the right products, written right and organized the way people shop, with emails that bring customers back and a checkout nobody abandons. That's the job, and it comes in four sizes, from a well-run store to a store with its own ad engine. Every tier is run like the enterprise eCommerce operations we spent years building.",
     whoFor:
-      "Retailers, dealers, makers, and brands that want to sell online, starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels. One catalog runs them all, from a store you own.",
+      "Retailers, dealers, makers, and brands that want to sell online, starting from zero, or already selling on Etsy, Square, or Instagram. You don't have to leave those channels. One catalog can run them all, from Sell More up, from a store you own.",
     // The four tiers ARE the product — modeled on what ecommerce agencies
     // actually sell as monthly retainers (catalog management, product copy,
     // store SEO, email flows/campaigns, CRO, ads), sized down to local-business
@@ -446,12 +476,12 @@ export const plans: Plan[] = [
     tiers: [
       {
         name: 'Sell Online',
-        price: 150,
+        price: PRICE.sellOnline.price,
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'Everything a working store needs, set up right and kept running.',
-        setupFee: 745,
-        buildValue: 1875,
+        setupFee: PRICE.sellOnline.setupFee,
+        buildValue: PRICE.sellOnline.buildValue,
         audience: 'For first time online sellers',
         scope: '10 product changes a month',
         scopeLines: ['Shopify Basic, billed by Shopify', 'SEO descriptions, whole catalog'],
@@ -469,12 +499,12 @@ export const plans: Plan[] = [
       },
       {
         name: 'Sell More',
-        price: 325,
+        price: PRICE.sellMore.price,
         unit: '/mo',
         note: 'runs on Shopify Basic, billed by Shopify',
         description: 'The store starts pulling its weight, with copy, SEO basics, and email doing the selling.',
-        setupFee: 1045,
-        buildValue: 2625,
+        setupFee: PRICE.sellMore.setupFee,
+        buildValue: PRICE.sellMore.buildValue,
         audience: 'For selling even more',
         scope: '30 product changes a month',
         scopeLines: ['Shopify Basic, billed by Shopify', 'Email flows and review collection'],
@@ -490,12 +520,12 @@ export const plans: Plan[] = [
       },
       {
         name: 'Sell Smarter',
-        price: 650,
+        price: PRICE.sellSmarter.price,
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
         description: 'The full selling machine: an AI shopping assistant, a real SEO program, and a store that improves itself.',
-        setupFee: 1345,
-        buildValue: 3375,
+        setupFee: PRICE.sellSmarter.setupFee,
+        buildValue: PRICE.sellSmarter.buildValue,
         audience: 'For automated online selling',
         scope: '100 product changes a month',
         scopeLines: ['Shopify Grow, billed by Shopify', 'Remi AI becomes a shopping assistant'],
@@ -506,7 +536,7 @@ export const plans: Plan[] = [
           'Remi AI becomes a true AI shopping assistant, recommending, answering, and upselling from your Brand Brain',
           'Full eCommerce SEO program: keyword strategy, collection pages, content that ranks',
           'Email and SMS campaigns every month, not just automated flows',
-          'Multilingual storefront as standard',
+          'Multilingual storefront included',
           'Conversion work — we watch what stalls and fix it, page by page',
           'Your store doubles as your full website, with pages, blog, and SEO run the Get Growing way',
           'Up to 100 product adds or changes a month',
@@ -514,23 +544,23 @@ export const plans: Plan[] = [
       },
       {
         name: 'Sell Everywhere',
-        price: 1095,
+        price: PRICE.sellEverywhere.price,
         unit: '/mo',
         note: 'runs on Shopify Grow, billed by Shopify',
-        description: 'The store plus its own ad engine. Bought separately, this is $1,350/mo of service.',
-        setupFee: 1645,
-        buildValue: 4125,
+        description: `The store plus its own ad engine. Bought separately, this is $${usd(sellEverywhereAlaCarte)}/mo of service.`,
+        setupFee: PRICE.sellEverywhere.setupFee,
+        buildValue: PRICE.sellEverywhere.buildValue,
         audience: 'For selling viral products',
         scope: '100 product changes a month',
         scopeLines: ['Shopify Grow, billed by Shopify', 'Your ads run on two networks'],
         builtOn: 'Everything in Sell Smarter, plus',
         features: [
           'Your ads run and managed on two networks (Google Shopping and a social platform, or two social)',
-          'Product feeds synced where buyers browse: Google, Instagram & Facebook Shops',
+          'Shopping feeds tuned for each ad campaign',
           'Landing pages built for each campaign, so ads land somewhere built to convert',
           'Ad spend is separate and paid straight to the platform, never marked up',
           'A monthly working session with Manny on what the numbers say and what changes next',
-          'Priced as a bundle, $650 + $700 of Business Ads for $1,095. You keep $255 every month',
+          `Priced as a bundle, $${usd(PRICE.sellSmarter.price)} + $${usd(adsTwoNetworks)} of Business Ads for $${usd(PRICE.sellEverywhere.price)}. You keep $${usd(sellEverywhereSavings)} every month`,
         ],
       },
     ],
@@ -578,15 +608,15 @@ export const plans: Plan[] = [
     faq: [
       { q: 'Is the Shopify subscription included in the price?', a: "No, and that's deliberate. The account is opened in your name and the subscription is billed to you by Shopify, so the store is yours from day one, not rented from us. Our fee covers the build, the stocking, and the running. Sell Online and Sell More run on Shopify's Basic plan; Sell Smarter and Sell Everywhere run on Grow, because a store that size needs its staff accounts and shipping rates anyway. Enterprise operations on Advanced or Plus? We run those too, and nothing else changes. Payment processing fees are Shopify's own and apply to every store on the platform; we never mark them up." },
       { q: 'Who actually writes thousands of product descriptions?', a: "AI does the drafting, from your product data, your photos, and your Brand Brain, so every description sounds like your store and is structured to rank. Then it gets reviewed and optimized before it ships; nothing goes live unread. That's why there are no per-product caps at prices a human-only agency can't touch. You approve the voice once, and your whole catalog gets covered." },
-      { q: 'Why is the entry price $150 when agencies charge $1,000+ a month?', a: "Because the entry tier is a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and Remi AI answers customers so you don't pay a person to. What costs $1,000+ at an agency (the going rate in 2026 pricing guides) is the work in the upper tiers (SEO programs, campaigns, ads, and product copy at real catalog scale) and that's exactly what those tiers add, at prices a local business can carry." },
+      { q: `Why is the entry price $${usd(PRICE.sellOnline.price)} when agencies charge $1,000+ a month?`, a: "Because the entry tier is a well-run store, not a growth program. The setup is systemized, the infrastructure is Shopify's, and Remi AI answers customers so you don't pay a person to. What costs $1,000+ at an agency (the going rate in 2026 pricing guides) is the work in the upper tiers (SEO programs, campaigns, ads, and product copy at real catalog scale) and that's exactly what those tiers add, at prices a local business can carry." },
       { q: 'I already have a store. Do I have to start over?', a: "No. We take over existing stores at any tier, audit what you have, fix what's costing you sales, and run it from there. If you're on Etsy, Wix, Square, or WooCommerce, moving your products to Shopify is part of setup." },
       // Twin-ladder model (Manny, Aug 2026): each store tier is a website
       // tier's twin — the delta is the store machinery + the Shopify
       // subscription. Lane switches are plan changes: clone the design, land
       // on whichever tier fits (not forced rung-to-rung), no migration fee.
       // Money rules: month-to-month switches take effect at the next renewal
-      // (nothing to refund); prepaid switches within 7 days of kickoff can be
-      // refunded in cash; after 7 days there are NO cash refunds — the unused
+      // (nothing to refund); prepaid switches within 5 business days of kickoff
+      // can be refunded in cash; after that there are NO cash refunds — the unused
       // balance converts to service credit spendable on ANY MannyKnows
       // service, dollar for dollar. Side-by-side (two sites, two plans) was
       // deliberately dropped — the store's pages/blog/Remi AI cover the service
@@ -595,26 +625,26 @@ export const plans: Plan[] = [
       { q: 'What if I start selling later, or stop?', a: "Switching lanes is a plan change, not a project. We clone your design across, so your store looks like your site did (and the other way around). Your monthly moves to the new tier's price, and Remi AI's training and your content carry. No migration fee. Moving up into a bigger build you pay the difference between the two setup fees and nothing more, and moving down costs nothing at all. You land on whichever tier fits, not automatically the biggest one. Month-to-month, the change simply starts at your next renewal. Prepaid a year? Within 5 business days of kickoff you can still get money back; after that the unused balance becomes credit, dollar for dollar, spendable on anything we do: your new plan, the AI Agents Team, ads, photography." },
       { q: 'Is the ad budget included in Sell Everywhere?', a: 'No, and no serious agency includes it. Your ad spend is separate, you set the budget, and it goes directly to the platform. We never mark it up, and you see exactly what was spent where in your monthly report.' },
       { q: 'Can I move between tiers, or cancel?', a: "Move anytime, and the work carries forward so nothing is wasted. Moving up into a bigger build costs the difference between the two setup fees, and moving down costs nothing. Cancelling is just cancelling, with no term and no exit charge, because the setup fee already paid for the store build. Prepay the year and the setup fee is waived and you get 2 months free. And we'll tell you when a smaller tier covers what your store needs." },
-      { q: 'Can you build the store as a one-time project instead?', a: "Yes, billed at a flat $75/hr and quoted up front. You'll still need to run it afterward: Shopify subscription, product updates, emails. Most owners hand that back to us with Sell Online at $150/mo once they've priced their own time." },
+      { q: 'Can you build the store as a one-time project instead?', a: `Yes, billed at a flat $${usd(APPS_HOURLY)}/hr and quoted up front. You'll still need to run it afterward: Shopify subscription, product updates, emails. Most owners hand that back to us with Sell Online at $${usd(PRICE.sellOnline.price)}/mo once they've priced their own time.` },
     ],
   },
   {
     slug: 'business-ads',
     name: 'Business Ads',
     icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
-    price: 350,
+    price: PRICE.adsPerNetwork,
     hidden: true,
     tagline: 'The social, ads, and SEO that get you seen, priced per network, built to convert.',
     highlights: [
-      '$350/mo per social network, or 4 major networks for $950/mo',
+      `$${usd(PRICE.adsPerNetwork)}/mo per social network, or 4 major networks for $${usd(PRICE.adsFullCoverage)}/mo`,
       'Every network gets its own competitive analysis and market analysis',
-      'An individual plan traced per network, with its own media types, formats & sizes',
+      'An individual plan drawn up per network, with its own media types, formats & sizes',
       'Google Ads & social ads, managed (you fund the ad spend)',
       'Landing pages, banners, videos & SEO campaigns, watched and corrected monthly',
     ],
     headline: 'Get seen by the right people, ready to buy',
     blurb:
-      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time — $350/mo per network, or 4 major networks for $950/mo. No two networks are alike, so no two get the same plan. Each starts with a competitive analysis and a market analysis, then gets an individual plan traced for it, with its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO, watching what the numbers do and correcting.",
+      "Traffic isn’t the goal; customers are. Business Ads runs your visibility one social network at a time, or four under one strategy. No two networks are alike, so no two get the same plan. Each starts with a competitive analysis and a market analysis, then gets an individual plan drawn up for it, with its own media types, formats, and sizes. Then we make the traffic count with managed ads, landing pages, and SEO, watching what the numbers do and correcting.",
     whoFor:
       'Businesses whose website or store already works, and who now need more of the right people finding it, steadily, not in one lucky spike.',
     tiersHeading: 'Pick your coverage',
@@ -623,7 +653,7 @@ export const plans: Plan[] = [
     tiers: [
       {
         name: 'Per Network',
-        price: 350,
+        price: PRICE.adsPerNetwork,
         unit: '/mo per network',
         note: 'pick 1, 2, or as many as you need',
         audience: 'For starting where your customers are',
@@ -633,15 +663,15 @@ export const plans: Plan[] = [
         features: [
           'A competitive analysis of the network, showing who’s winning your market there and how',
           'A market analysis of your audience on that network, covering who they are, when they’re active, and what they respond to',
-          'An individual plan traced for the network, with its own media types, formats, and sizes',
-          'Provided content will be branded, sized, and posted for that network',
-          'Comments and messages sorted and answered by Remi AI, our AI agent',
+          'An individual plan drawn up for the network, with its own media types, formats, and sizes',
+          'The content you provide, branded, sized, and posted for that network',
+          'Comments and messages sorted and answered by our engagement agent, with a human on anything sensitive',
           'An AI-generated monthly report per network, so you can add or drop networks as results come in',
         ],
       },
       {
         name: 'Full Coverage',
-        price: 950,
+        price: PRICE.adsFullCoverage,
         unit: '/mo',
         note: 'covers 4 major networks',
         audience: 'For running everywhere at once',
@@ -664,7 +694,7 @@ export const plans: Plan[] = [
         items: [
           'A competitive analysis for every network you’re on, showing who’s winning your market there and how',
           'A market analysis per network, covering your audience, their habits, and what they respond to',
-          'An individual plan traced for each network, because no two share the same media, formats, and sizes',
+          'An individual plan drawn up for each network, because no two share the same media, formats, and sizes',
         ],
       },
       {
@@ -672,7 +702,7 @@ export const plans: Plan[] = [
         items: [
           'Your content branded, sized, and posted for you, formatted for each network',
           'A consistent presence on the networks that fit your business',
-          'Comments and messages sorted and answered by Remi AI, our AI agent',
+          'Comments and messages sorted and answered by our engagement agent, with a human on anything sensitive',
         ],
       },
       {
@@ -701,13 +731,13 @@ export const plans: Plan[] = [
     ],
     steps: [
       { title: 'Kickoff', body: 'What you sell, who buys it, what a lead is worth, and which networks make sense to start with — one, two, or the full four.' },
-      { title: 'Analysis & plan', body: 'Each network gets a competitive analysis, a market analysis, and an individual plan traced for it, covering media types, formats, sizes, and cadence.' },
+      { title: 'Analysis & plan', body: 'Each network gets a competitive analysis, a market analysis, and an individual plan drawn up for it, covering media types, formats, sizes, and cadence.' },
       { title: 'Launch campaigns', body: 'Tracking and landing pages go in first, then content and ads go live, fitted to each network. The early weeks are about learning fast, not vanity numbers.' },
       { title: 'Correct & compound', body: 'Every month we cut what underperforms, scale what works, shift budget to the networks that deliver, and report it clearly.' },
     ],
     faq: [
-      { q: 'How does the per-network pricing work?', a: 'Each social network you want us to run is $350/mo, which covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $950/mo, Full Coverage handles 4 major networks under one coordinated strategy — less than the price of 3 à la carte.' },
-      { q: 'Why does each network need its own plan?', a: 'Because each one is different, different audience, different media, different formats and sizes. A vertical Reel isn’t a Pin, and a LinkedIn post isn’t a TikTok. We trace an individual plan per network so the content fits where it lives, instead of being cross-posted everywhere and ignored.' },
+      { q: 'How does the per-network pricing work?', a: `Each social network you want us to run is $${usd(PRICE.adsPerNetwork)}/mo, which covers the competitive analysis, the market analysis, an individual plan for that network, and the content and management to execute it. At $${usd(PRICE.adsFullCoverage)}/mo, Full Coverage handles 4 major networks under one coordinated strategy — less than the price of 3 à la carte.` },
+      { q: 'Why does each network need its own plan?', a: 'Because each one is different — different audience, different media, different formats and sizes. A vertical Reel isn’t a Pin, and a LinkedIn post isn’t a TikTok. We draw up an individual plan per network so the content fits where it lives, instead of being cross-posted everywhere and ignored.' },
       { q: 'Is ad spend included in the price?', a: 'No, ad spend goes directly from you to Google or the social platforms, at whatever budget we agree makes sense. The service covers strategy, creative, management, and optimization. We never mark up your spend.' },
       { q: 'How much ad spend do I need?', a: 'It depends on your market and goals, some businesses get meaningful results from a few hundred dollars a month. We’ll recommend a starting budget in the kickoff and adjust from real results.' },
       { q: 'My website is weak, should I still buy ads?', a: 'No. Ads pointed at a weak site burn money. Start with a website tier (or pair them), then pour traffic on.' },
@@ -718,7 +748,7 @@ export const plans: Plan[] = [
     metaTitle: 'Multimedia Agency: Web Development Retainer | MannyKnows',
     name: 'Multimedia Agency',
     icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
-    price: 2350,
+    price: PRICE.agencyWeekly,
     priceUnit: '/wk',
     hidden: true,
     ctaLabel: 'Request more information',
@@ -744,7 +774,7 @@ export const plans: Plan[] = [
     tiers: [
       {
         name: 'Agency Weekly',
-        price: 2350,
+        price: PRICE.agencyWeekly,
         unit: '/wk',
         note: 'cancel any week',
         audience: 'For paying as you go',
@@ -761,7 +791,7 @@ export const plans: Plan[] = [
       },
       {
         name: 'Agency Monthly',
-        price: 8600,
+        price: PRICE.agencyMonthly,
         unit: '/mo',
         note: 'save about 15% vs weekly',
         audience: 'For one invoice a month',
@@ -827,7 +857,7 @@ export const plans: Plan[] = [
       { q: 'What’s the difference between weekly and monthly billing?', a: 'Only the invoice. Same scope, same communication. Monthly works out to about 15% less than paying week to week.' },
       { q: 'Are photo and video shoots included?', a: 'Yes, photography and videography are part of the package as scheduled shoot days, planned around your projects and campaigns. Editing, AI generation, and design are handled continuously in between.' },
       { q: 'What exactly does "everything" cover?', a: 'Websites, online stores, advertising, social, SEO, content, graphic design, photography, videography, video editing, AI generation, custom software, AI automation, and data work, queued on a shared roadmap. If your business needs it built, shot, or promoted, it’s in scope.' },
-      { q: 'Can we start smaller and upgrade?', a: 'Yes, many clients start with Get Growing or Sell Online and move up when they’re ready for the full agency plan. The work carries forward when you upgrade, so nothing is wasted.' },
+      { q: 'Can we start smaller and upgrade?', a: 'Yes. Start with Get Growing or Sell Online and move up when you’re ready for the full agency plan. The work carries forward when you upgrade, so nothing is wasted.' },
     ],
   },
 ];

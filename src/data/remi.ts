@@ -110,7 +110,7 @@ export const remiCustom = {
     'Answers your phone line (IVR), routing every call',
     'Deep integrations with the tools you already run',
     'Custom flows built around your business',
-    'Yours when it ships, running on a quoted monthly',
+    'Built around your business, running on a quoted monthly',
   ],
 };
 

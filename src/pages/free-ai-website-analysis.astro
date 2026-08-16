@@ -36,7 +36,7 @@ const walkaway = [
 
 const faqs = [
   { q: 'Is it really free?', a: 'Yes, the instant scan and our full review both. It is how we show the kind of work we do before you spend a dollar.' },
-  { q: 'What do you need from me?', a: 'Your website address and your email — the full report is delivered there, every finding with its fix. One website per email address; re-scanning your own site is always free. If you have a goal in mind (more calls, more bookings, more online sales), say so and the review focuses there.' },
+  { q: 'What do you need from me?', a: 'Your website address and your email — the full report is delivered there, every finding with its fix. One website per email address every 30 days; re-scanning that site is always free. If you have a goal in mind (more calls, more bookings, more online sales), say so and the review focuses there.' },
   { q: 'How is this different from a free automated score?', a: 'The instant scan is automated, which is why it is instant. Our full review is not. We check your competitors, your actual rankings, and whether the site sells, then put the findings in a prioritized, actionable list. Most tools stop at a number; we start there.' },
   { q: 'How long does it take?', a: 'The scan takes seconds. Our full review usually comes back within a couple of business days. Tell us if you need it sooner.' },
 ];
@@ -90,14 +90,14 @@ const quote = getTestimonial('SL Painting');
               placeholder="you@yourbusiness.com"
               class="sm:flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
-            <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-2.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white text-[15px] font-semibold shadow-sm hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow disabled:opacity-60 disabled:cursor-not-allowed">
+            <Button id="scanBtn" type="submit" class="disabled:opacity-60 disabled:cursor-not-allowed">
               Scan my site, free
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            </button>
+            </Button>
           </form>
           <p id="scanError" role="alert" class="hidden mt-4 max-w-xl mx-auto text-sm text-red-500"></p>
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            Instant and free. The full report goes to your email — one website per email, re-scans anytime. Prefer to skip the scan? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 hover:underline">Request the free review</a>.
+            Instant and free. The full report goes to your email — one website per email, re-scans anytime. Prefer to skip the scan? <a href="#contact" data-contact-context="Free AI Website Analysis" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Request the free review</a>.
           </p>
         </div>
       </div>
@@ -107,7 +107,7 @@ const quote = getTestimonial('SL Painting');
     <Section id="scan-results-section" variant="default" className="hidden room chain-violet-blue">
       <Container>
         <div id="scanResults" class="max-w-6xl mx-auto"></div>
-        <div class="max-w-4xl mx-auto text-center mt-10">
+        <div class="max-w-3xl mx-auto text-center mt-10">
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 max-w-2xl mx-auto">
             That's the automated first pass — one page, read by a machine. Our free <strong class="text-text-light-primary dark:text-text-dark-primary">full review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
           </p>
@@ -120,16 +120,16 @@ const quote = getTestimonial('SL Painting');
       <Container>
         <div class="max-w-6xl mx-auto">
           <SectionHeader title="What we check" />
-          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {checks.map((c) => (
-              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+              <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
                   </div>
-                  <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{c.title}</h3>
+                  <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{c.title}</h3>
                 </div>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
+                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
               </div>
             ))}
           </div>
@@ -147,7 +147,7 @@ const quote = getTestimonial('SL Painting');
           />
           <ul class="grid sm:grid-cols-2 gap-4">
             {walkaway.map((w) => (
-              <li class="flex items-start gap-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
+              <li class="flex items-start gap-3 rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
                 <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                 <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{w}</span>
               </li>
@@ -161,7 +161,7 @@ const quote = getTestimonial('SL Painting');
       <Section id="analysis-proof" variant="default" className="room glow-violet">
         <Container>
           <div class="max-w-2xl mx-auto text-center">
-            <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">The kind of result this leads to</p>
+            <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-6">The kind of result this leads to</p>
             <QuoteBlock quote={quote} align="center" />
           </div>
         </Container>
@@ -220,7 +220,7 @@ const quote = getTestimonial('SL Painting');
       const pillars = [...data.pillars].sort((a: any, b: any) => a.score - b.score);
       out.innerHTML = `
         <div class="text-center mb-8">
-          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">Instant scan · ${esc(data.host)}</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Instant scan · ${esc(data.host)}</p>
           <div class="inline-flex items-baseline gap-3">
             <span class="text-6xl font-black apple-gradient-text" data-colorful-title>${data.overall}</span>
             <span class="text-2xl font-bold text-text-light-tertiary dark:text-text-dark-tertiary">/100</span>
@@ -228,7 +228,7 @@ const quote = getTestimonial('SL Painting');
           <p class="mt-2 text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">${esc(data.grade)}</p>
           <p class="mt-1 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">${data.findings === 0 ? 'Nothing flagged on this pass.' : data.findings + ' finding' + (data.findings > 1 ? 's' : '') + ' worth your attention.'}</p>
         </div>
-        <div class="max-w-xl mx-auto rounded-2xl border border-primary-blue/30 bg-primary-blue/5 dark:bg-primary-blue/10 p-6 text-center mb-10">
+        <div class="max-w-xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-lg shadow-primary-blue/5 text-center mb-10">
           <p class="text-base font-bold text-text-light-primary dark:text-text-dark-primary">Full report sent to ${esc(data.sentTo)}</p>
           <p class="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Every finding, with the fix next to it. Give it a minute — and check spam or Promotions if it doesn't show.</p>
         </div>
@@ -268,7 +268,7 @@ const quote = getTestimonial('SL Painting');
       const fails = pillars.flatMap((p: any) => p.checks).filter((c: any) => c.status !== 'pass').length;
       out.innerHTML = `
         <div class="text-center mb-10">
-          <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-3">Instant scan · ${esc(data.host)}</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary mb-3">Instant scan · ${esc(data.host)}</p>
           <div class="inline-flex items-baseline gap-3">
             <span class="text-6xl font-black apple-gradient-text" data-colorful-title>${data.overall}</span>
             <span class="text-2xl font-bold text-text-light-tertiary dark:text-text-dark-tertiary">/100</span>
@@ -306,11 +306,13 @@ const quote = getTestimonial('SL Painting');
         </div>
         ${Array.isArray(data.opportunities) && data.opportunities.length ? `
         <div class="mt-12">
-          <h3 class="sf-bold text-xl md:text-2xl font-bold text-center mb-2"><span class="apple-gradient-text" data-colorful-title>Where AI could work for ${esc(data.host)}</span></h3>
-          <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-6">Each card comes from something the scan found on your page, matched to the AI agent, automation, or SEO service that fixes it.</p>
+          <div class="text-center max-w-2xl mx-auto mb-10">
+            <h3 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>Where AI could work for ${esc(data.host)}</span></h3>
+            <p class="mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Each card comes from something the scan found on your page, matched to the AI agent, automation, or SEO service that fixes it.</p>
+          </div>
           <div class="grid gap-4 sm:grid-cols-2">
             ${data.opportunities.map((o: any) => `
-              <a href="${esc(o.href)}" class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5 hover:border-primary-blue/30 hover:shadow-lg transition-all duration-300">
+              <a href="${esc(o.href)}" class="group block rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
                 <p class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1.5">${esc(o.title)}</p>
                 <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">${esc(o.body)}</p>
                 <span class="inline-block mt-3 text-sm text-primary-blue dark:text-blue-300 font-medium group-hover:underline">See how →</span>

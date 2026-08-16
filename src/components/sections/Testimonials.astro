@@ -6,17 +6,22 @@
 import { testimonials as realTestimonials, type Testimonial } from '../../data/testimonials';
 import QuoteBlock from '../ui/QuoteBlock.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
+import Section from '../layout/Section.astro';
+import Container from '../layout/Container.astro';
 
 interface Props {
   items?: Testimonial[];
   heading?: string;
+  /** Header scale: the homepage passes "hero" so this matches its other
+      statement headers; interior pages keep the default section scale. */
+  size?: 'section' | 'hero';
 }
 
-const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
+const { items = realTestimonials, heading = 'What clients say', size = 'section' } = Astro.props;
 ---
 
 {items.length > 0 && (
-  <section aria-label="Client testimonials" class="room room-violet relative py-16 bg-gradient-to-br from-gray-50/90 via-gray-100/85 to-gray-200/90 dark:from-gray-900/90 dark:via-slate-800/85 dark:to-gray-900/90 border-t border-gray-300/30 dark:border-white/10 transition-colors duration-300 overflow-hidden">
+  <Section id="testimonials" variant="alternate" className="room room-violet" hasOverflow>
     <!-- Telescope astronaut observing the reviews from the right corner.
          30 KB transparent WebP (2x): tweak size/offsets on the img classes. -->
     <img
@@ -29,10 +34,10 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
       decoding="async"
       class="block absolute bottom-0 left-4 w-[110px] h-auto pointer-events-none z-10 -scale-x-100"
     />
-    <div class="relative max-w-[1440px] mx-auto px-6 lg:px-8">
-      <SectionHeader title={heading} />
+    <Container className="relative">
+      <SectionHeader size={size} badge={size === 'hero' ? 'Testimonials' : undefined} title={heading} />
 
-      <div class="relative max-w-[1360px] mx-auto px-0 sm:px-12">
+      <div class="relative px-0 sm:px-12">
         <div class="swiper testimonials-swiper">
           <div class="swiper-wrapper">
             {items.map((t) => (
@@ -42,14 +47,16 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
           <div class="swiper-pagination"></div>
         </div>
 
-        <button type="button" class="t-nav t-prev" aria-label="Previous testimonial">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        {/* Prev/next: token classes (surface, hairline border, blue hover);
+            only the positioning lives in the CSS below. */}
+        <button type="button" class="t-nav t-prev hidden sm:flex items-center justify-center h-11 w-11 rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent text-text-light-secondary dark:text-text-dark-secondary shadow-lg shadow-primary-blue/10 hover:text-primary-blue dark:hover:text-blue-300 hover:border-primary-blue/40 transition-colors cursor-pointer" aria-label="Previous testimonial">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
-        <button type="button" class="t-nav t-next" aria-label="Next testimonial">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <button type="button" class="t-nav t-next hidden sm:flex items-center justify-center h-11 w-11 rounded-full bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent text-text-light-secondary dark:text-text-dark-secondary shadow-lg shadow-primary-blue/10 hover:text-primary-blue dark:hover:text-blue-300 hover:border-primary-blue/40 transition-colors cursor-pointer" aria-label="Next testimonial">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
       </div>
-    </div>
+    </Container>
 
     {/* Swiper's assets load HERE, not in BaseLayout — this is the only Swiper
         consumer, and loading globally cost every other page 151 KB of JS.
@@ -112,40 +119,34 @@ const { items = realTestimonials, heading = 'What clients say' } = Astro.props;
       })();
     </script>
 
-    <style is:global>
-      .testimonials-swiper { padding-bottom: 3rem; }
-      .testimonials-swiper .swiper-wrapper { align-items: stretch; }
-      .testimonials-swiper .swiper-slide { height: auto; display: flex; }
-      .testimonials-swiper .swiper-pagination { bottom: 0 !important; }
-      /* 24×24 tap targets (WCAG 2.5.8): the visible 9px dot sits inside a
-         transparent border; background-clip keeps the border invisible. */
-      .testimonials-swiper .swiper-pagination-bullet {
-        width: 23px; height: 23px; background: rgba(120, 130, 145, 0.45);
-        border: 7px solid transparent; background-clip: padding-box;
-        opacity: 1; transition: width .3s ease, background .3s ease;
-        margin: 0 1px !important;
-      }
-      .testimonials-swiper .swiper-pagination-bullet-active {
-        width: 40px; border-radius: 12px;
-        background: linear-gradient(135deg, #0071e3, #ff4faa);
-        background-clip: padding-box;
-      }
-      .t-nav {
-        position: absolute; top: calc(50% - 1.5rem); transform: translateY(-50%);
-        z-index: 10; width: 42px; height: 42px; border-radius: 9999px;
-        display: flex; align-items: center; justify-content: center;
-        background: #ffffff; color: #334155; border: 1px solid rgba(0, 0, 0, 0.08);
-        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.1); cursor: pointer;
-        transition: color .2s ease, border-color .2s ease, transform .2s ease;
-      }
-      .t-nav svg { width: 20px; height: 20px; }
-      .t-nav:hover { color: #0071e3; border-color: rgba(0, 113, 227, 0.4); }
-      .t-prev { left: 0; }
-      .t-next { right: 0; }
-      :root.dark .t-nav { background: #141b23; color: #cbd5e1; border-color: rgba(255, 255, 255, 0.1); }
-      :root.dark .t-nav:hover { color: #4aa8ff; border-color: rgba(74, 168, 255, 0.4); }
-      .t-nav.swiper-button-disabled { opacity: 0.35; pointer-events: none; }
-      @media (max-width: 639px) { .t-nav { display: none; } }
-    </style>
-  </section>
+  </Section>
 )}
+
+{/* Top-level (not inside the expression above) so Astro runs it through
+    Tailwind: the @apply lines below need that. Global because Swiper builds
+    the bullets at runtime. */}
+<style is:global>
+  .testimonials-swiper { padding-bottom: 3rem; }
+  .testimonials-swiper .swiper-wrapper { align-items: stretch; }
+  .testimonials-swiper .swiper-slide { height: auto; display: flex; }
+  .testimonials-swiper .swiper-pagination { bottom: 0 !important; }
+  /* 24×24 tap targets (WCAG 2.5.8): the visible 9px dot sits inside a
+     transparent border; background-clip keeps the border invisible. */
+  .testimonials-swiper .swiper-pagination-bullet {
+    width: 23px; height: 23px;
+    @apply bg-light-tertiary dark:bg-dark-accent;
+    border: 7px solid transparent; background-clip: padding-box;
+    opacity: 1; transition: width .3s ease, background .3s ease;
+    margin: 0 1px !important;
+  }
+  .testimonials-swiper .swiper-pagination-bullet-active {
+    width: 40px; border-radius: 12px;
+    @apply bg-gradient-to-br from-primary-blue to-primary-pink;
+    background-clip: padding-box;
+  }
+  /* Positioning only — the look is Tailwind classes on the buttons. */
+  .t-nav { position: absolute; top: calc(50% - 1.5rem); transform: translateY(-50%); z-index: 10; }
+  .t-prev { left: 0; }
+  .t-next { right: 0; }
+  .t-nav.swiper-button-disabled { opacity: 0.35; pointer-events: none; }
+</style>

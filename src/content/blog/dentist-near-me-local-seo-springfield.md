@@ -79,7 +79,7 @@ If those five move together, the work is working. If calls climb but bookings do
 
 ## Where MannyKnows fits
 
-Everything above is a monthly habit, not a one-time project, which is why our [local SEO packages](/local-seo/) run monthly. On the Map at $245/mo starts with the profile, monthly photos, and the review work; Own the Map at $495/mo adds the content and AI-search layer. Our [website plans](/plans/) include the on-page SEO, schema, and speed work, with [pricing on one page](/pricing/). Either way, start with the [free 360° photo](/local-seo/#free-360-photo) for your profile and a [free AI website analysis](/free-ai-website-analysis/) that shows where the site stands today.
+Everything above is a monthly habit, not a one-time project, which is why our [local SEO packages](/local-seo/) run monthly. On the Map starts with the profile, monthly photos, and the review work; Own the Map adds the content and AI-search layer, with prices on the [SEO packages page](/local-seo/#packages). Our [website plans](/plans/) include the on-page SEO, schema, and speed work, with [pricing on one page](/pricing/). Either way, start with the [free 360° photo](/local-seo/#free-360-photo) for your profile and a [free AI website analysis](/free-ai-website-analysis/) that shows where the site stands today.
 
 ## FAQ
 
