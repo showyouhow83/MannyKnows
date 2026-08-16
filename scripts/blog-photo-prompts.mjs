@@ -118,6 +118,62 @@ export const prompts = {
     'laptop he has clearly stopped using. Sticky notes curling off the monitor edge, a printed spreadsheet, a cold ' +
     'cup of coffee, a filing cabinet with a jammed drawer. Grey afternoon light casting soft stripes. His ' +
     'expression is unconvinced, not theatrical — someone who tried something and put it down. Muted color.',
+
+  // Aug 2026 medical cluster (the retired /websites-for-* pages became posts).
+  // Same photographic system: one person mid-task, plain unbranded scrubs,
+  // screens out of focus, nothing readable.
+  'websites-for-dental-medical-practices':
+    'Shot on a Sony A7 IV with a 35mm lens at f/1.8, available light only. Exactly one person in the frame: a ' +
+    'dental front-desk coordinator in her 40s, in plain unbranded scrubs, standing at the reception counter of a ' +
+    'small dental office in a western Massachusetts town at the end of the day, phone receiver tucked between ear ' +
+    'and shoulder while she checks a paper appointment book with a pen. Late-afternoon light from a front window ' +
+    'falls across the counter; the empty waiting room behind her is soft and out of focus, a few chairs, a plant, ' +
+    'a wall clock without readable numbers. The desktop monitor beside her is angled away and unreadable. Real ' +
+    'detail: a jar of pens, a stack of clipboards, a box of tissues, fingerprints on the counter glass, natural ' +
+    'skin texture, no retouching. She is looking down at the book, not at the camera. Muted natural color, ' +
+    'shallow depth of field, natural grain.',
+
+  'dental-website-cost':
+    'Shot on a Sony A7 IV with a 35mm lens at f/2, available light from a north-facing window. A dental practice ' +
+    'office manager in her 40s sits at the front-desk computer of a small New England dental office after the ' +
+    'last patient has left, one hand on a printed vendor proposal, the other resting on a calculator, brow ' +
+    'slightly furrowed as she compares figures. Reception counter with a stack of new-patient forms, a plain ' +
+    'appointment book, a coffee mug, a small potted plant, operatory door ajar in the background. The monitor is ' +
+    'angled away and out of focus; the papers show only blurred columns, nothing readable. Plain unbranded ' +
+    'scrubs, natural skin texture, no retouching. Late-afternoon light, muted color, shallow depth of field, ' +
+    'natural grain.',
+
+  'ai-agent-for-medical-practices':
+    'Shot on a Sony A7 IV with a 35mm lens at f/1.8, available light only. Exactly one person in the frame: a ' +
+    'dental front-desk receptionist in her 40s, plain scrubs with no logo, standing behind an empty reception ' +
+    'counter at closing time, keys in one hand, reaching to switch off a desk lamp. Behind her the waiting room ' +
+    'is dark, chairs empty, blinds half-drawn against blue dusk. On the counter, a phone with its handset in the ' +
+    'cradle and a monitor turned slightly away, its screen a soft glow, nothing readable. Her expression is tired ' +
+    'and unposed, eyes on the lamp, not the camera. Real wear: a coffee ring on the counter, a pen cup, a scuffed ' +
+    'mouse pad, a stack of unbranded intake folders. Warm lamplight against cool window light, shallow depth of ' +
+    'field, natural grain.',
+
+  // v2: the first take put a car with a maker badge and a plate in the frame.
+  // Hence: no vehicles at all, the street stays empty behind her.
+  'dentist-near-me-local-seo-springfield':
+    'Shot on a Fujifilm X-T5 with a 33mm lens at f/1.8, overcast daylight. A woman in her 30s stands on the ' +
+    'sidewalk outside a small brick medical office building in a Western Massachusetts town, phone in one hand, ' +
+    'looking up from the screen at the building entrance as if checking that this is the right door. Winter ' +
+    'coat, tote bag on her shoulder, a puddle and salt marks on the pavement, a bare tree and an empty street ' +
+    'behind her, no vehicles anywhere in the frame, red brick and a plain glass door with no lettering. Her phone screen is tilted away and out of ' +
+    'focus, nothing readable. Natural skin texture, muted New England color, shallow depth of field, documentary ' +
+    'framing, no signage anywhere.',
+
+  // v3: takes one and two both put a laptop lid with a maker's logo in the
+  // frame, whatever the prompt said. Hence: no laptop at all, phone only.
+  'daycare-website-that-fills-enrollment':
+    'Shot on a Sony A7 IV with a 35mm lens at f/1.8, lamplight only. A mother in her early 30s sits at a small ' +
+    'kitchen table at night in a modest New England apartment, no computer anywhere in the frame, a phone in one ' +
+    'hand, scrolling with a tired, deliberating expression, the other hand resting on a mug, a few printed ' +
+    'sheets and a pen on the table. Behind her, softly out of focus, a high chair with a bib draped over it and a ' +
+    'few toys on the floor, no child in the frame. Warm pooled light from a single pendant over the table, the ' +
+    'rest of the room dim. The phone screen is angled away and out of focus with nothing readable. Real clutter, natural skin texture, no ' +
+    'retouching. Shallow depth of field, muted evening color, natural grain.',
 };
 
 export const buildPrompt = (slug) => {

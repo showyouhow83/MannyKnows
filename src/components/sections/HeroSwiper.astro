@@ -21,17 +21,19 @@ export interface Props {
   slides?: Slide[];
 }
 
-// Default slides — the lead niche first (dental & medical practices, Aug 2026),
-// then the four monthly plans and the AI Agents Team. Five slides is the clean
-// minimum for a 2-per-side coverflow (every slide holds a unique position, so
-// the wrap-around never has to show one slide in two places); six is fine.
+// Default slides — the website plans lead, on the dental & medical practice
+// scene (the lead niche, Aug 2026: one slide, not a practice slide AND a plans
+// slide saying the same thing — Manny merged them), then stores, the AI Agents
+// Team, the agency retainer and Business Ads. Five slides is the clean minimum
+// for a 2-per-side coverflow (every slide holds a unique position, so the
+// wrap-around never has to show one slide in two places); six is fine.
 const defaultSlides: Slide[] = [
   {
     image: '/hero/websites-for-dental-medical-practices',
     alt: 'A dental office coordinator in scrubs at a bright reception desk, phone in hand, as notifications confirm Remi AI booked a new patient for Tuesday, captured a lead asking about Invisalign, and the practice ranks #1 for “dentist near me”.',
-    title: 'Websites for dental & medical practices',
-    description: 'Practice websites that answer patients 24/7, book into your schedule, and rank in your town, from experience overseeing hundreds of them.',
-    href: '/websites-for-clinics/',
+    title: 'Get Found. Get Booked. Get Growing.',
+    description: 'AI-Powered Websites that answer customers 24/7, book the work, and improve themselves, built, hosted, and maintained for you.',
+    href: '/plans/',
   },
   {
     image: '/hero/online-store-built-to-sell',
@@ -46,13 +48,6 @@ const defaultSlides: Slide[] = [
     title: 'Your AI Agents Team, ready to work',
     description: 'Sales, research, copy, graphics, voice: AI agents built around your business, run on demand.',
     href: '/ai-team/',
-  },
-  {
-    image: '/hero/remi-books-the-job',
-    alt: 'A contractor leaning against a work truck, phone in hand, as notifications confirm Remi AI booked a job for Tuesday, captured a new lead, and tuned the site’s speed and SEO.',
-    title: 'Get Found. Get Booked. Get Growing.',
-    description: 'AI-Powered Websites that answer customers 24/7, book the work, and improve themselves, built, hosted, and maintained for you.',
-    href: '/plans/',
   },
   {
     image: '/hero/your-full-media-tech-team',

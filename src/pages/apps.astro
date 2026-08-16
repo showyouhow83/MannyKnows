@@ -26,67 +26,16 @@ import Button from '../components/ui/Button.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import PricingCards from '../components/pricing/PricingCards.astro';
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
+// The three tiers live in src/data/apps.ts (shared with /pricing).
+import { TIERS } from '../data/apps';
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
 const EMAIL = 'mm@mannyknows.com';
 
-// The three tiers. `service` values exist in serviceTypes.ts so the quote
-// modal can name what the visitor clicked.
-// Rendered through the shared PricingCards component so /apps matches /plans,
-// /ecommerce, and /local-seo. billing="none": these are one-time builds, so a
+// The tiers render through the shared PricingCards component so /apps matches
+// /plans, /ecommerce, and /local-seo. billing="none": one-time builds, so a
 // Monthly/Yearly toggle would be meaningless here.
-const TIERS = [
-  {
-    name: 'Scripts & Tools',
-    audience: 'For killing weekly busywork',
-    scope: 'Standalone tools',
-    scopeLines: ['Google Apps Script automations', 'Scheduled reports and reminders'],
-    kind: 'Disconnected',
-    price: 300,
-    service: 'app-scripts',
-    description: 'Standalone helpers that do one job well. The spreadsheet that becomes a tool, the script that runs on schedule, the utility that kills an hour of weekly busywork.',
-    features: [
-      'Google Apps Script, so your Sheets, Docs, and Gmail do the work themselves',
-      'Scheduled scripts that run reports, reminders, and cleanups without you',
-      'One-job tools built around how you already work',
-    ],
-  },
-  {
-    name: 'Connected Apps',
-    audience: "For tools that don't talk",
-    scope: 'Your stack, wired together',
-    scopeLines: ['APIs, webhooks, Twilio, Zapier', 'MCP servers so AI can use them'],
-    kind: 'Connected',
-    price: 600,
-    service: 'app-integration',
-    featured: true,
-    description: 'Your tools wired together so data stops being re-typed. Website, inbox, CRM, calendar, phone, and accounting move information on their own.',
-    features: [
-      'API & webhook integration — if a tool has an API, we can wire it in',
-      'Twilio phone & SMS with call routing, business-hours logic, and A2P registration handled',
-      'Make.com & Zapier flows, documented so they keep running without babysitting',
-      'MCP servers that plug your business tools into AI, so your assistants can actually use them',
-    ],
-  },
-  {
-    name: 'Business Apps',
-    audience: 'For running the whole operation',
-    scope: 'A system built for you',
-    scopeLines: ['Dashboards, booking, quoting', 'Yours outright, or co-owned'],
-    kind: 'Custom',
-    price: 2500,
-    service: 'custom-app',
-    description: 'Admin dashboards, booking and quoting engines, client portals — the systems your business runs on, designed, built, and published for you.',
-    features: [
-      'Dashboards and admin panels that put your whole operation on one screen',
-      'Booking, quoting, and lead-to-job systems like the one VL Home Services runs on',
-      'AI assistants grounded in your own content, with a human approving what matters',
-      'Own it outright, or co-own it with nothing upfront',
-    ],
-  },
-];
-
 const STEPS = [
   { n: '01', title: 'Map & quote', body: 'A short call on the busywork and the tools you already use. We scope it and send a fixed quote, so the total is known before we start.', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
   { n: '02', title: 'Build & connect', body: 'Apps Script, APIs, webhooks, Twilio, MCP servers, or a full custom build. Whatever the job calls for, wired into the tools you already run on.', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },

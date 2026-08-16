@@ -1,0 +1,448 @@
+---
+// /pricing — the menu. Every service MannyKnows sells on one page, grouped by
+// pillar, each row = name · who it's for · price, linking to the product page
+// where the full PricingCards grid lives. Compact rows on purpose (Manny,
+// Aug 2026: "a menu of all our services and pricing", tried compact first) —
+// repeating nine card grids here would recreate the page-duplication problem
+// the niche pages had. Every number interpolates from the data files, so a
+// reprice never touches this page.
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavBar from '../components/navigation/NavBar.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import DockMenu from '../components/navigation/DockMenu.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Faq from '../components/ui/Faq.astro';
+import { plans, websitePlans, ecommercePlans } from '../data/plans';
+import { remiTiers, remiCustom, remiSetupFee } from '../data/remi';
+import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../data/aiWebsite';
+import { paidAgents, aiTeamBundles, aiTeamSetupFee, aiTeamStartingPrice } from '../data/aiTeam';
+import { PACKAGES, ONDEMAND, PLAN_CLIENT_ON_THE_MAP } from '../data/localSeo';
+import { TIERS, APPS_HOURLY } from '../data/apps';
+
+const siteUrl = 'https://mannyknows.com';
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+
+const store = ecommercePlans[0];
+const ads = plans.find((p) => p.slug === 'business-ads')!;
+const agency = plans.find((p) => p.slug === 'multimedia-agency')!;
+const getFound = websitePlans[0];
+
+interface Row {
+  name: string;
+  who: string;          // one line, who it's for
+  price: string;        // the big figure, e.g. "$95"
+  unit?: string;        // "/mo", "/wk", "one-time", "/mo per network"
+  from?: boolean;       // "from $X" — a floor, quoted up front
+  note?: string;        // small line under the price (setup, "per network", …)
+  href?: string;        // row-level link (defaults to the group's)
+  featured?: boolean;
+}
+interface Group {
+  id: string;
+  title: string;
+  lead: string;         // one line under the title
+  href: string;         // product page
+  linkLabel: string;
+  icon: string;         // 24×24 stroke path
+  rows: Row[];
+  foot?: string;        // billing note for the group
+}
+
+const setupNote = (fee?: number) => (fee ? `${usd(fee)} setup, waived on a prepaid year` : undefined);
+
+const groups: Group[] = [
+  {
+    id: 'websites',
+    title: 'Websites, built and run for you',
+    lead: 'AI-powered sites with Remi AI answering customers, hosting, SEO, and upkeep included. Practices first, every appointment business after.',
+    href: '/plans/',
+    linkLabel: 'Compare the website plans',
+    icon: 'M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 4h18M7 3v4',
+    rows: websitePlans.map((p) => ({
+      name: p.name,
+      who: p.audience ?? p.tagline,
+      price: usd(p.price),
+      unit: '/mo',
+      note: setupNote(p.setupFee),
+      href: `/plans/${p.slug}/`,
+      featured: p.featured,
+    })),
+    foot: `Month-to-month with a one-time setup fee for the build, or prepay a year (10× the monthly, two months free) and the setup is waived. No minimum term, no exit charge.`,
+  },
+  {
+    id: 'one-page',
+    title: 'One-Page Website',
+    lead: 'No website yet? Remi AI Lite with a fast one-page site included, so the agent has somewhere to live.',
+    href: '/ai-website/',
+    linkLabel: 'See the One-Page Website',
+    icon: 'M9 12h6m-6 4h6M7 4h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z',
+    rows: [
+      {
+        name: 'One-Page Website',
+        who: 'For getting online with an agent that answers and captures leads',
+        price: usd(aiWebsiteMonthly),
+        unit: '/mo',
+        note: setupNote(aiWebsiteSetupFee),
+      },
+    ],
+  },
+  {
+    id: 'stores',
+    title: 'Online stores',
+    lead: 'A Shopify store designed, stocked, and run for you. Your Shopify subscription is billed by Shopify, in your name.',
+    href: '/ecommerce/',
+    linkLabel: 'Compare the store plans',
+    icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z',
+    rows: (store.tiers ?? []).map((t) => ({
+      name: t.name,
+      who: t.audience ?? '',
+      price: usd(t.price),
+      unit: '/mo',
+      note: setupNote(t.setupFee),
+      featured: t.featured,
+    })),
+    foot: 'Same billing as the website plans: setup fee on month-to-month, waived on a prepaid year, cancel anytime.',
+  },
+  {
+    id: 'remi',
+    title: 'Remi AI, the AI booking agent',
+    lead: 'One agent, sold on its own for the website you already have. Tiers unlock more of the admin; booking arrives at Pro.',
+    href: '/ai-booking-agent/',
+    linkLabel: 'See what each tier unlocks',
+    icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
+    rows: [
+      ...remiTiers.map((t) => ({
+        name: t.name,
+        who: t.audience,
+        price: usd(t.price),
+        unit: '/mo',
+        note: setupNote(remiSetupFee),
+        featured: t.featured,
+      })),
+      {
+        name: remiCustom.name,
+        who: 'For phone lines (IVR), deep integrations, custom flows',
+        price: remiCustom.priceLabel.replace(/^From\s+/i, ''),
+        unit: 'one-time',
+        from: true,
+        note: 'Quoted up front; its running monthly is quoted with the build',
+      },
+    ],
+  },
+  {
+    id: 'ai-team',
+    title: 'The AI Agents Team',
+    lead: 'Specialist agents added to your business and run by Manny AI: research, copy, graphics, video, voice, SEO, ads, reporting.',
+    href: '/ai-team/',
+    linkLabel: 'Meet the team',
+    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+    rows: [
+      {
+        name: 'Any single agent',
+        who: `${paidAgents.length} specialists, each with a flat monthly rate`,
+        price: usd(aiTeamStartingPrice),
+        unit: '/mo',
+        from: true,
+        note: setupNote(aiTeamSetupFee),
+      },
+      ...aiTeamBundles.map((b) => ({
+        name: b.name,
+        who: b.tagline.split('.')[0],
+        price: usd(b.monthly),
+        unit: b.addOn ? '/mo add-on' : '/mo',
+        note: b.savings > 0 ? `${usd(b.alaCarte)} à la carte, save ${usd(b.savings)}` : undefined,
+        featured: b.best,
+      })),
+    ],
+  },
+  {
+    id: 'seo',
+    title: 'Local SEO packages',
+    lead: 'For the website you already have: your Google profile, monthly 360° photos, reviews, content, and AI-search work.',
+    href: '/local-seo/',
+    linkLabel: 'See the SEO packages',
+    icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z',
+    rows: [
+      ...PACKAGES.map((p) => ({
+        name: p.name,
+        who: p.audience,
+        price: usd(p.price),
+        unit: '/mo',
+        note: 'Month-to-month, no setup fee',
+        featured: p.featured,
+      })),
+      ...ONDEMAND.map((o) => ({
+        name: o.name,
+        who: o.body.split('.')[0],
+        price: usd(o.min),
+        unit: 'one-time',
+        from: !o.exact,
+      })),
+    ],
+    foot: `Website-plan clients add On the Map for ${usd(PLAN_CLIENT_ON_THE_MAP)}/mo, since their plan already covers the digital half.`,
+  },
+  {
+    id: 'apps',
+    title: 'Business apps',
+    lead: 'Scripts, integrations, MCP servers, and full business apps for how you run, quoted up front.',
+    href: '/apps/',
+    linkLabel: 'See the app tiers',
+    icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+    rows: TIERS.map((t) => ({
+      name: t.name,
+      who: t.audience,
+      price: usd(t.price),
+      unit: 'one-time',
+      from: true,
+      note: `${t.kind} · flat $${APPS_HOURLY}/hr`,
+      featured: t.featured,
+    })),
+  },
+  {
+    id: 'ads',
+    title: ads.name,
+    lead: 'Social, Google & social ads, and SEO campaigns, one network at a time. You fund the ad spend; it is never marked up.',
+    href: '/plans/business-ads/',
+    linkLabel: 'See Business Ads',
+    icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
+    rows: (ads.tiers ?? []).map((t) => ({
+      name: t.name,
+      who: t.audience ?? '',
+      price: usd(t.price),
+      unit: t.unit,
+      note: t.note,
+      featured: t.featured,
+    })),
+  },
+  {
+    id: 'agency',
+    title: agency.name,
+    lead: 'Hire Manny by the week: development, design, SEO, photo, and video, with AI multiplying the output.',
+    href: '/plans/multimedia-agency/',
+    linkLabel: 'See the agency retainer',
+    icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z',
+    rows: (agency.tiers ?? []).map((t) => ({
+      name: t.name,
+      who: t.audience ?? '',
+      price: usd(t.price),
+      unit: t.unit,
+      note: t.note,
+      featured: t.featured,
+    })),
+  },
+];
+
+const FREE = [
+  { name: 'Free AI Website Analysis', body: 'Send your site, get a scored report on speed, SEO, mobile, conversion, and AI-readiness, emailed to you.', href: '/free-ai-website-analysis/' },
+  { name: 'Free 360° photo', body: 'We come to your business, shoot one professional 360° photo, and publish it to your Google Business Profile.', href: '/local-seo/#free-360-photo' },
+];
+
+const BILLING = [
+  { title: 'Setup fee, or a prepaid year', body: `Website and store plans charge a one-time setup fee for the build on month-to-month billing (Get Found starts at ${usd(getFound.setupFee!)}), waived in full when you prepay a year at 10× the monthly, so two months are free.` },
+  { title: 'No minimum term', body: 'Month-to-month means exactly that. Cancel anytime, with no exit charge. Your domain, content, and captured leads stay yours; Remi AI is service software that runs on our side.' },
+  { title: 'Five business days to change your mind', body: 'Website and store plans carry a 5-business-day refund window from kickoff, on both billing modes, refunding everything paid including the setup fee.' },
+  { title: 'Switching plans', body: 'Moving up costs the difference between the two setup fees, floored at $0, so moving down or sideways is free. A waived yearly setup counts as $0 paid.' },
+];
+
+const FAQS = [
+  { q: 'Is there a contract?', a: 'No. Everything monthly is month-to-month with no minimum term and no exit charge. Yearly is optional, prepaid, and waives the setup fee. One-time builds are quoted up front and paid as scoped.' },
+  { q: 'What does the setup fee pay for?', a: `On website and store plans it pays for the build itself when you bill month-to-month, and it is waived on a prepaid year. Remi AI, the One-Page Website, and the AI Agents Team carry a ${usd(remiSetupFee)} setup on the same rule. SEO packages, Business Ads, and the agency retainer have no setup fee of ours.` },
+  { q: 'What is not included in these prices?', a: 'Ad spend on Business Ads and Get Ahead (it goes straight to the platform, never marked up), the Shopify subscription on store plans (billed by Shopify in your name), and third-party costs like a domain you register yourself. Everything else on a row is in the price.' },
+  { q: 'Can I switch plans later?', a: 'Yes, any time. Moving up costs the difference between the new setup fee and the one you already paid, floored at $0; moving down or sideways is free. The formula is published in the terms.' },
+  { q: 'Which one should I start with?', a: 'If you have a website that is not bringing customers, run the free AI Website Analysis and start where it points. If you have no site, the One-Page Website or Get Found. If the phone is the bottleneck, Remi AI on the site you already have. If you are not sure, send a message and we will tell you which single thing to do first.' },
+];
+
+// OfferCatalog structured data, computed from the same rows (never typed by hand).
+const parsePrice = (s: string) => Number(s.replace(/[^0-9.]/g, ''));
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'OfferCatalog',
+  '@id': `${siteUrl}/pricing/#catalog`,
+  name: 'MannyKnows services and pricing',
+  url: `${siteUrl}/pricing/`,
+  provider: { '@id': `${siteUrl}/#business` },
+  itemListElement: groups.map((g) => ({
+    '@type': 'OfferCatalog',
+    name: g.title,
+    url: `${siteUrl}${g.href}`,
+    itemListElement: g.rows.map((r) => ({
+      '@type': 'Offer',
+      name: r.name,
+      description: r.who,
+      url: `${siteUrl}${r.href ?? g.href}`,
+      priceCurrency: 'USD',
+      price: parsePrice(r.price),
+      ...(r.unit && r.unit.includes('/mo')
+        ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: parsePrice(r.price), priceCurrency: 'USD', unitText: 'month' } }
+        : r.unit && r.unit.includes('/wk')
+          ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: parsePrice(r.price), priceCurrency: 'USD', unitText: 'week' } }
+          : {}),
+    })),
+  })),
+};
+
+const META_TITLE = 'Pricing: Websites, AI Agents, SEO & Apps | MannyKnows';
+const META_DESCRIPTION = `Every MannyKnows service on one page with what it costs: website plans from ${usd(getFound.price)}/mo, stores, Remi AI, the AI Agents Team, SEO packages, apps, ads, and the agency retainer.`;
+---
+
+<BaseLayout title={META_TITLE} description={META_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <main class="relative bg-light-primary dark:bg-dark-primary text-text-light-primary dark:text-text-dark-primary min-h-screen transition-colors duration-300 one-canvas one-canvas-live">
+
+    <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
+      <NavBar />
+      <Breadcrumb items={[{ label: 'Pricing' }]} />
+      <div class="pb-14">
+        <Container>
+          <div class="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            <div class="text-center lg:text-left">
+              <div class="flex justify-center mb-6">
+                <img
+                  src="/mascot/astronaut-notes.webp"
+                  alt="Astronaut mascot taking notes on a clipboard"
+                  aria-hidden="true"
+                  width="320"
+                  height="600"
+                  decoding="async"
+                  class="w-auto h-[200px] pointer-events-none"
+                />
+              </div>
+              <div class="text-center">
+                <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Pricing</span>
+              </div>
+              <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">
+                <span class="apple-gradient-text" data-colorful-title>Everything we do, and what it costs</span>
+              </h1>
+              <p class="max-w-2xl mx-auto lg:mx-0 text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">
+                The whole menu on one page. Websites we build and run, online stores, Remi AI, the AI Agents Team, SEO packages, business apps, ads, and the agency retainer, each with its price and a link to the details. Nothing here is quoted vaguely; the numbers are the numbers.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button href="#menu" arrow="down">See the menu</Button>
+                <Button href="#contact" data-contact-context="Pricing page" variant="secondary">Ask which one fits</Button>
+              </div>
+            </div>
+
+            <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-lg shadow-primary-blue/5">
+              <span class="block text-[11px] font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-1">How billing works</span>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-5">The same four rules on every plan, published in full in the <a href="/terms/#build-fee" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">terms</a>.</p>
+              <ul class="space-y-4">
+                {BILLING.map((b) => (
+                  <li class="flex items-start gap-3">
+                    <span class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
+                    <span class="text-sm leading-snug">
+                      <span class="block font-semibold text-text-light-primary dark:text-text-dark-primary">{b.title}</span>
+                      <span class="text-text-light-secondary dark:text-text-dark-secondary">{b.body}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </header>
+
+    <!-- The menu -->
+    <Section id="menu" variant="default" className="room chain-violet-blue">
+      <Container>
+        <SectionHeader
+          title="The menu"
+          subtitle="Grouped the way we sell it. Every row links to the page with the full breakdown of what is included."
+        />
+        <div class="max-w-5xl mx-auto space-y-8">
+          {groups.map((g) => (
+            <section id={g.id} aria-labelledby={`${g.id}-title`} class="scroll-mt-24 rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary overflow-hidden">
+              <div class="p-6 sm:p-7 flex flex-col md:flex-row md:items-start md:justify-between gap-4 border-b border-light-tertiary dark:border-dark-accent">
+                <div class="flex items-start gap-3 min-w-0">
+                  <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={g.icon} /></svg>
+                  </div>
+                  <div class="min-w-0">
+                    <h2 id={`${g.id}-title`} class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{g.title}</h2>
+                    <p class="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{g.lead}</p>
+                  </div>
+                </div>
+                <div class="md:pl-4 flex-shrink-0">
+                  <Button href={g.href} variant="secondary" size="sm" arrow="right">{g.linkLabel}</Button>
+                </div>
+              </div>
+              <ul class="divide-y divide-light-tertiary dark:divide-dark-accent">
+                {g.rows.map((r) => {
+                  const href = r.href ?? g.href;
+                  return (
+                    <li>
+                      <a href={href} class="group flex items-center gap-4 px-6 sm:px-7 py-4 hover:bg-primary-blue/[0.04] dark:hover:bg-white/[0.03] transition-colors">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-semibold text-text-light-primary dark:text-text-dark-primary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{r.name}</span>
+                            {r.featured && <span class="inline-block rounded-full bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-blue-300 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Most popular</span>}
+                          </div>
+                          {r.who && <p class="mt-0.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">{r.who}</p>}
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                          <div class="flex items-baseline justify-end gap-1">
+                            {r.from && <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">from</span>}
+                            <span class="sf-bold text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary tabular-nums">{r.price}</span>
+                            {r.unit && <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{r.unit}</span>}
+                          </div>
+                          {r.note && <p class="mt-0.5 text-[11px] leading-snug text-text-light-tertiary dark:text-text-dark-tertiary max-w-[16rem] ml-auto">{r.note}</p>}
+                        </div>
+                        <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+              {g.foot && (
+                <p class="px-6 sm:px-7 py-4 border-t border-light-tertiary dark:border-dark-accent text-xs text-text-light-tertiary dark:text-text-dark-tertiary leading-relaxed">{g.foot}</p>
+              )}
+            </section>
+          ))}
+        </div>
+
+        <!-- Free to start -->
+        <div class="max-w-5xl mx-auto mt-10 grid gap-4 sm:grid-cols-2">
+          {FREE.map((f) => (
+            <a href={f.href} class="group rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
+              <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 text-primary-blue dark:text-blue-300">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
+                </div>
+                <div class="flex items-baseline gap-2 flex-wrap">
+                  <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{f.name}</h3>
+                  <span class="text-xs font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Free</span>
+                </div>
+              </div>
+              <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.body}</p>
+            </a>
+          ))}
+        </div>
+
+        <div class="max-w-3xl mx-auto text-center mt-12">
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">
+            Not sure which row is yours? Send your site through the free analysis, or tell us what is not working and we will point at the one thing to do first.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button href="/free-ai-website-analysis/" arrow="right">Run the free analysis</Button>
+            <Button href="#contact" data-contact-context="Pricing page" variant="secondary">Ask which one fits</Button>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <Section id="pricing-faq" variant="alternate" className="room glow-violet">
+      <Container>
+        <div class="max-w-3xl mx-auto">
+          <Faq faqs={FAQS} />
+        </div>
+      </Container>
+    </Section>
+
+    <DockMenu />
+  </main>
+</BaseLayout>

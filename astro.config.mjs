@@ -75,6 +75,13 @@ export default defineConfig({
     // decision, with its own build and its own economics.
     '/plans/online-store': '/ecommerce/',
     '/plans/sell-online': '/ecommerce/',
+    // Retired the /websites-for-<vertical> landing pages (Aug 2026): they
+    // re-pitched /plans with the trade name swapped and added a click. The
+    // niche framing lives in the sitewide copy now; the vertical how-to lives
+    // in the blog, so each old URL lands on its article.
+    '/websites-for-clinics': '/blog/websites-for-dental-medical-practices/',
+    '/websites-for-contractors': '/blog/lead-engine-for-contractors/',
+    '/websites-for-daycares': '/blog/daycare-website-that-fills-enrollment/',
   },
   // Astro's built-in origin check rejects cross-origin form POSTs (CSRF guard).
   // That blocks legitimate inbound webhooks like Twilio's status callback, which

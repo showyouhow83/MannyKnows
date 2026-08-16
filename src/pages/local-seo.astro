@@ -39,6 +39,8 @@ import GbpComparison from '../components/sections/GbpComparison.astro';
 import { BOOKING_URL } from '../data/booking';
 import PricingCards from '../components/pricing/PricingCards.astro';
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
+// Packages + one-time services live in src/data/localSeo.ts (shared with /pricing).
+import { PACKAGES, ONDEMAND } from '../data/localSeo';
 
 const siteUrl = 'https://mannyknows.com';
 const PHONE_TEL = '+14133618451';
@@ -46,74 +48,10 @@ const EMAIL = 'mm@mannyknows.com';
 const SERVICE_AREA = 'Springfield, MA & the Pioneer Valley';
 const FREE_TRAVEL = 'within ~10 miles of Springfield'; // free-shoot radius; beyond it a small gas/travel fee may apply
 
-// The two monthly SEO packages. `service` values exist in serviceTypes.ts so
-// the quote modal can name what the visitor clicked.
 // The package cards render through the shared PricingCards component, the same
 // one /plans and /ecommerce use, so all four pricing surfaces read alike.
 // billing="none": these are month-to-month only — no yearly rate has ever been
 // published on this page, and inventing one here would be an offer change.
-const PACKAGES = [
-  {
-    name: 'On the Map',
-    audience: 'For getting on the map',
-    scope: 'Your Google profile, run monthly',
-    scopeLines: ['Monthly 360° + standard photos', 'Reviews collected and answered'],
-    price: 245,
-    note: 'month-to-month · cancel anytime',
-    service: 'seo-on-the-map',
-    description: 'Everything a local profile needs to rank and stay ranked, done for you every month. It starts with a real shoot at your business.',
-    features: [
-      'Fresh photos published every month — a mix of 360° and standard shots, so your profile never goes stale',
-      'Reviews collected and answered every month: a review link & QR for your counter, asks on a schedule, every review replied to',
-      'Monthly Google posts, plus on-page SEO fixes on your existing website',
-      'Citations built and cleaned — your name, address & phone consistent across the directories Google checks',
-      'A monthly report on what moved and what changes next',
-      'Month one sets you up: your Google Business Profile claimed, verified, and configured right — category, services, hours, info',
-      'Plus the launch shoot: five 360° photos published as a mini "see inside" tour on your listing',
-    ],
-  },
-  {
-    name: 'Own the Map',
-    audience: 'For owning your neighborhood',
-    scope: 'Profile, content and AI search',
-    scopeLines: ['Monthly content in your voice', 'Full virtual tour, month one'],
-    price: 495,
-    note: 'month-to-month · cancel anytime',
-    service: 'seo-own-the-map',
-    featured: true,
-    builtOn: 'Everything in On the Map, plus',
-    description: 'The full presence — a virtual tour customers can walk through, content that compounds, and a site structured for AI answers.',
-    features: [
-      'Monthly content written in your voice, for the searches your customers actually make',
-      "AI search optimization, kept current so ChatGPT and Google's AI can read, quote, and recommend you",
-      'Keyword & competitor research, refreshed quarterly — what customers search, what rivals rank for, and what we do about it',
-      'Map-pack rank tracking across the neighborhoods you serve, reported monthly',
-      'Campaign landing pages on demand, whenever a promotion calls for one',
-      'Month one builds your full virtual tour from 360° images and video, embedded on your site and your profile',
-    ],
-  },
-  {
-    name: 'Own the Market',
-    audience: 'For competing beyond the block',
-    scope: 'A full SEO department',
-    scopeLines: ['Quarterly roadmap + strategy call', 'LLM visibility tracked monthly'],
-    price: 995,
-    note: 'month-to-month · cancel anytime',
-    service: 'seo-own-the-market',
-    builtOn: 'Everything in Own the Map, plus',
-    description: 'A full SEO department for businesses competing beyond the neighborhood, or with a catalog to rank.',
-    features: [
-      'An SEO roadmap — a sequenced quarterly plan tied to traffic and revenue targets, reviewed together on a monthly strategy call',
-      'The full technical program — Core Web Vitals, schema at scale, crawl & index control, and migrations covered when you redesign',
-      'Pillar & cluster content that owns a topic per quarter — a hub page plus supporting articles, interlinked and reviewed before anything ships',
-      'Authority building without shortcuts — local links, unlinked mentions reclaimed, toxic links audited and disavowed',
-      'LLM visibility tracking — how often ChatGPT, Perplexity, and Google AI actually recommend you, measured monthly',
-      'eCommerce SEO where there is a catalog — collection pages, product schema, and content that ranks',
-      'A live dashboard of rankings, traffic, calls, and conversions, plus your 360° tour kept current as the business changes',
-    ],
-  },
-];
-
 const packageCards: PricingCard[] = PACKAGES.map((p) => ({
   name: p.name,
   audience: p.audience,
@@ -128,15 +66,6 @@ const packageCards: PricingCard[] = PACKAGES.map((p) => ({
   featured: p.featured,
   primary: { label: `Start with ${p.name}`, href: '#quote', quoteContext: p.service },
 }));
-
-// One-time services — quoted flat from the same public $75/hr the apps pillar
-// uses. The audit price is exact; the rest are floors ("from"), quoted up front.
-const ONDEMAND = [
-  { name: 'Deep SEO & AI-Readiness Audit', min: 375, exact: true, service: 'seo-audit', body: 'Technical, content, local, and AI search in one prioritized fix list. Start any package within 30 days and the full price is credited toward month one.' },
-  { name: 'Site Migration SEO', min: 750, service: 'seo-migration', body: 'Keep your rankings through a redesign, replatform, or domain change, with every old URL mapped to its new home.' },
-  { name: 'Virtual Tour Shoot', min: 495, service: 'virtual-tour', body: 'A full 360° walkthrough of your business, shot on site and published to your website and your Google listing.' },
-  { name: 'Google Profile Rescue', min: 245, service: 'gbp-rescue', body: 'Suspended, duplicate, or hijacked listings recovered, verified, and set back up right.' },
-];
 
 // What "local SEO" covers here — each item maps to a deliverable in the
 // packages or plans above.

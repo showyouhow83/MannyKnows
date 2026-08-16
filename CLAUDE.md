@@ -67,9 +67,10 @@ for small businesses in Western Massachusetts).
   the interior section header: centred `max-w-2xl mb-10`, h2
   `sf-bold text-2xl md:text-3xl` gradient text, `mt-3 text-base` subtitle;
   `size="hero"` is the homepage-scale statement header. `StepCards` and
-  `Faq` are the shared card/FAQ blocks; profession pages render through
-  `ProfessionPage.astro` (split hero like /plans + one problems→fixes
-  section), city pages through `LocalAreaPage.astro`.
+  `Faq` are the shared card/FAQ blocks; city pages render through
+  `LocalAreaPage.astro`. (The `/websites-for-<vertical>` profession pages
+  were retired Aug 2026 — they re-pitched /plans and added a click; each URL
+  301s to its blog article, see astro.config redirects.)
 - Interior hero shape (from /plans): breadcrumb → mascot → eyebrow chip →
   gradient h1 → intro → primary + secondary pill → optional highlighted panel
   on the right (`rounded-3xl border-primary-blue/40 ring-1`).
@@ -105,18 +106,26 @@ for small businesses in Western Massachusetts).
   (the human, Multimedia Agency) is the approved exception, as is a customer
   "ready to hire" a business.
 - **Lead niche (SITEWIDE, Aug 2026):** web design & marketing for **dental &
-  medical practices**, backed by Manny's MedNet Technologies (NY) experience —
-  hundreds of practice sites overseen there. That was the employer's work:
-  state it as experience, NEVER show or link those sites as portfolio. The
-  niche leads everywhere, not just /about: homepage subhead (the H1 and
-  <title> stay broad — "AI Agents, Websites, SEO & Apps" — Manny's call) +
-  first hero slide (`/hero/websites-for-dental-medical-practices`), JSON-LD
-  description/knowsAbout, BaseLayout default description, nav Services
-  dropdown ("Dental & Medical") + search index, footer tagline + first
-  Web & Apps link, /services subhead, plans "Built for" line and whoFor
-  copy, professions.ts order (clinics first), and city pages' audience
-  sentences (practices named first). Other verticals stay — "practices first,
-  every business that runs on appointments after" is the frame.
+  medical practices**, backed by Manny's MedNet Technologies (NY) experience.
+  Approved phrasing: **"hundreds of dental and medical practice websites
+  designed, built, and launched"** — NEVER "overseeing/oversaw" (Manny: "I
+  made them come alive"), and agency voice, not a person pleading ("It's the
+  work Manny knows deepest — he oversaw…" is retired). That was the
+  employer's work: state it as experience, NEVER show or link those sites as
+  portfolio. The niche is woven into the sitewide copy, NOT a separate landing
+  page: homepage subhead (the H1 and <title> stay broad — "AI Agents,
+  Websites, SEO & Apps" — Manny's call), the first hero slide (the practice
+  reception scene carrying the plans copy "Get Found. Get Booked. Get
+  Growing." → /plans/ — one slide, never a practice slide AND a plans slide),
+  JSON-LD description/knowsAbout, BaseLayout default description, search
+  index ("dental" queries → /plans/), footer tagline + first Web & Apps link
+  (→ /plans/), /services subhead, plans "Built for" line and whoFor copy, and
+  city pages' audience sentences (practices named first). The how-to lives in
+  the blog cluster (`websites-for-dental-medical-practices` pillar,
+  `dental-website-cost`, `dentist-near-me-local-seo-springfield`,
+  `ai-agent-for-medical-practices`; tag "Dental & Medical"). Other verticals
+  stay — "practices first, every business that runs on appointments after" is
+  the frame.
 - **Card headers:** icon/number chips share the title's row
   (`flex items-center gap-3`) — never an icon on a row of its own. StepCards
   is the shared numbered-card component; PricingCards the only pricing grid.
@@ -137,14 +146,25 @@ for small businesses in Western Massachusetts).
   admin matrix — aiWebsite.ts and aiTeam.ts's desi price derive from it),
   `src/data/aiTeam.ts` (agents/bundles/setup fee),
   `src/data/aiWebsite.ts` (One-Page $195 + $40/mo, derived from remi.ts),
-  page-local `PACKAGES` in local-seo.astro ($245/$495) and `TIERS` in
-  apps.astro ($300/$600/$2,500 at flat $75/hr). Most surfaces (nav search,
-  JSON-LD, comparison tables) interpolate from these; **on a reprice only
-  local-seo and apps need hand updates** (noted in a NavBar comment).
+  `src/data/localSeo.ts` (`PACKAGES` $245/$495/$995 + `ONDEMAND` one-times +
+  the $145 plan-client add-on) and `src/data/apps.ts` (`TIERS` $300/$600/
+  $2,500 at flat `APPS_HOURLY` $75/hr) — both moved out of their pages Aug
+  2026 so /pricing can import them. Most surfaces (nav search, JSON-LD,
+  comparison tables, the nav search index) interpolate from these — a reprice
+  touches only the data file.
+- **`/pricing/` is the menu** (Aug 2026, Manny: "a menu of all our services
+  and pricing"): every product as compact rows (name · who · price · note)
+  grouped by pillar, each row linking to the product page, plus a billing
+  panel + OfferCatalog JSON-LD, all computed from the data files. Deliberately
+  NOT nine PricingCards grids (that would recreate the page duplication the
+  niche pages had); Manny agreed to try compact first. Top-level "Pricing"
+  nav link + footer/search entries. /services dropped "& Pricing" from its
+  title.
 - **All pricing-card grids render through `PricingCards.astro`** (Aug 2026):
   /plans, /ecommerce, /apps, /local-seo, /ai-booking-agent, and the tier
   grids on /plans/business-ads + /plans/multimedia-agency. New pricing cards
-  join that component; never hand-roll another card style.
+  join that component; never hand-roll another card style (/pricing's rows
+  are a menu, not cards).
 - Mentions of Manny the human in plan copy link to /about/ — a `linkManny()`
   helper in plans.astro + plans/[slug].astro does it at render time (word-
   bound, never matches "MannyKnows"/"Manny AI"; Faq accepts `html: true`).

@@ -5,11 +5,12 @@ import { localAreas } from '../../data/localAreas';
 import { plans } from '../../data/plans';
 import { aiTeamSetupFee, team } from '../../data/aiTeam';
 import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../../data/aiWebsite';
+import { PACKAGES } from '../../data/localSeo';
+import { TIERS, APPS_HOURLY } from '../../data/apps';
 
 // Prices in the search catalog interpolate from the canonical data files so a
-// reprice can't strand them. Two exceptions live inside their pages and need a
-// hand update on a reprice: Local SEO packages (local-seo.astro PACKAGES) and
-// Business Apps tiers (apps.astro TIERS).
+// reprice can't strand them (Local SEO packages and Business Apps tiers moved
+// into src/data/ in Aug 2026, so there are no hand-typed exceptions left).
 const plan = (slug: string) => plans.find((p) => p.slug === slug);
 const pp = (slug: string) => (plan(slug)?.price ?? 0).toLocaleString('en-US');
 const tp = (slug: string, tier: string) => (plan(slug)?.tiers?.find((t) => t.name === tier)?.price ?? 0).toLocaleString('en-US');
@@ -40,7 +41,6 @@ const {
 // the top bar uncluttered; everything else stays flat.
 const offerings = [
   { href: "/services/", label: "Overview", desc: "How it all fits together" },
-  { href: "/websites-for-clinics/", label: "Dental & Medical", desc: "Practice websites & marketing" },
   { href: "/plans/", label: "Monthly Plans", desc: "Websites we build & run for you" },
   { href: "/ecommerce/", label: "Online Stores", desc: "Built, stocked & run for you" },
   { href: "/local-seo/", label: "SEO Services", desc: "Rank on Google & AI search" },
@@ -48,6 +48,7 @@ const offerings = [
   { href: "/ai-team/", label: "AI Agents Team", desc: "AI agents ready to work" },
 ];
 const primaryLinks = [
+  { href: "/pricing/", label: "Pricing" },
   { href: "/#work", label: "Portfolio" },
   { href: "/about/", label: "About" },
   { href: "/blog/", label: "Blog" },
@@ -76,11 +77,15 @@ const searchIndex = [
   { title: "About", description: "Who's behind MannyKnows — twenty years of enterprise engineering, based in Springfield.", url: "/about/", type: "Page" },
   { title: "Contact", description: "Send a message, email mm@mannyknows.com, or call (413) 361-8451.", url: "/contact/", type: "Page" },
   { title: "Free AI Website Analysis", description: "Send your site, get a clear report covering speed, SEO, mobile, conversions & AI-readiness. Free, no obligation.", url: "/free-ai-website-analysis/", type: "Page" },
-  { title: "SEO Services", description: "SEO packages with monthly 360° photos, reviews collected & answered, and AI search optimization — On the Map $245/mo, Own the Map $495/mo, Own the Market $995/mo — plus one-time audits, migrations & virtual tours. Start with a free 360° photo. Included in every AI-powered website we build.", url: "/local-seo/", type: "Page" },
-  { title: "Business Apps", description: "Apps for how your business runs: Apps Script tools from $300, integrations & MCP servers from $600, custom dashboards & systems from $2,500. Flat $75/hr, quoted up front.", url: "/apps/", type: "Page" },
-  { title: "Websites for Dental & Medical Practices", description: "Practice websites that answer patients 24/7, book into the schedule, and rank in your town — from experience overseeing hundreds of dental & medical sites.", url: "/websites-for-clinics/", type: "Page" },
-  { title: "Websites for Contractors", description: "Sites that rank #1 and book jobs for painters, remodelers & home-service contractors, with an AI agent that books estimates 24/7.", url: "/websites-for-contractors/", type: "Page" },
-  { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare. Parent admin, enrollment answered 24/7 by an AI agent, multilingual by default.", url: "/websites-for-daycares/", type: "Page" },
+  { title: "SEO Services", description: `SEO packages with monthly 360° photos, reviews collected & answered, and AI search optimization — ${PACKAGES.map((p) => `${p.name} $${p.price.toLocaleString('en-US')}/mo`).join(', ')} — plus one-time audits, migrations & virtual tours. Start with a free 360° photo. Included in every AI-powered website we build.`, url: "/local-seo/", type: "Page" },
+  { title: "Business Apps", description: `Apps for how your business runs: ${TIERS.map((t) => `${t.name.toLowerCase()} from $${t.price.toLocaleString('en-US')}`).join(', ')}. Flat $${APPS_HOURLY}/hr, quoted up front.`, url: "/apps/", type: "Page" },
+  // The niche pages were folded into the plans + the blog cluster (Aug 2026):
+  // "dental"/"medical"/"practice" searches route to /plans/, where the plans
+  // are sold with the practice framing; the how-to lives in the blog posts.
+  { title: "Websites for Dental & Medical Practices", description: "Practice websites that answer patients 24/7, book into the schedule, and rank in your town — backed by hundreds of dental & medical practice sites designed, built, and launched.", url: "/plans/", type: "Page" },
+  { title: "Websites for Contractors", description: "Sites that rank and book jobs for painters, remodelers & home-service contractors, with Remi AI booking estimates 24/7.", url: "/plans/", type: "Page" },
+  { title: "Websites for Daycares", description: "Warm, trustworthy sites for daycares & childcare, with enrollment questions answered 24/7 by Remi AI.", url: "/plans/", type: "Page" },
+  { title: "Pricing", description: "Every service on one page: website plans, stores, Remi AI, the AI Agents Team, SEO packages, apps, ads and the agency retainer, with what each costs.", url: "/pricing/", type: "Page" },
   ...localAreas.map((a) => ({ title: `Web design ${a.name} MA`, description: `Multilingual websites with AI booking agents for ${a.name} & Western Mass businesses.`, url: `/web-design-${a.slug}-ma/`, type: "Page" })),
   // "Launch your app" search entry removed with the IdeaLaunchpad modal (Aug 2026) — its /#launchpad anchor no longer exists.
   { title: "Blog", description: "Notes on automation, AI, and lead generation.", url: "/blog/", type: "Page" },
