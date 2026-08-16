@@ -100,7 +100,7 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
           class="hero-slide"
           data-index={i}
           href={slide.href ?? '#'}
-          aria-label={slide.title}
+          aria-labelledby={slide.description ? `hero-slide-title-${i} hero-slide-desc-${i}` : `hero-slide-title-${i}`}
           draggable="false"
         >
           <picture>
@@ -124,8 +124,8 @@ const mobileSrc = (base: string) => `${base}?w=640&h=360&fit=crop&crop=entropy&q
             />
           </picture>
           <div class="hero-slide-content">
-            <h2>{slide.title}</h2>
-            {slide.description && <p>{slide.description}</p>}
+            <h2 id={`hero-slide-title-${i}`}>{slide.title}</h2>
+            {slide.description && <p id={`hero-slide-desc-${i}`}>{slide.description}</p>}
           </div>
         </a>
       ))}

@@ -10,6 +10,8 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import { BOOKING_URL } from '../data/booking';
 import Faq from '../components/ui/Faq.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 
 // The questions people actually hesitate on before sending a first message.
 // Answers must stay in step with src/data/plans.ts.
@@ -78,12 +80,7 @@ const pageJsonLd = {
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Contact</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Contact' }]} />
       <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">English &amp; Spanish · we reply personally</span>
@@ -110,7 +107,7 @@ const pageJsonLd = {
               <input type="email" name="email" required autocomplete="email" placeholder="Email" maxlength="255" class={inputClass} />
               <input type="text" name="business" placeholder="Business or website (optional)" maxlength="200" class={inputClass} />
               <textarea name="message" required rows="5" placeholder="What do you need help with?" maxlength="2000" class={`${inputClass} resize-none`}></textarea>
-              <button type="submit" id="contactPageSubmit" class="w-full bg-gradient-to-r from-primary-blue to-primary-pink text-white py-3.5 rounded-xl text-sm font-semibold transition-all duration-300 disabled:opacity-60">
+              <button type="submit" id="contactPageSubmit" class="w-full inline-flex items-center justify-center gap-2 min-h-12 px-7 py-2.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white text-[15px] font-semibold shadow-sm hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow disabled:opacity-60">
                 Send
               </button>
               <p id="contactPageStatus" class="text-sm text-center hidden" role="status"></p>
@@ -181,15 +178,11 @@ const pageJsonLd = {
          on Springfield; a service-area view, not a street address. -->
     <Section id="contact-map" variant="alternate" className="room glow-violet">
       <Container>
-        <div class="max-w-4xl mx-auto text-center mb-8">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Where we work</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-3">
-            Serving Springfield &amp; Western Massachusetts
-          </h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Based in Springfield, we work in person across the Pioneer Valley, and remotely with businesses anywhere.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Where we work"
+          title="Serving Springfield &amp; Western Massachusetts"
+          subtitle="Based in Springfield, we work in person across the Pioneer Valley, and remotely with businesses anywhere."
+        />
 
         <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
         <div

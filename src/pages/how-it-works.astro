@@ -11,6 +11,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import NavBar from '../components/navigation/NavBar.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Faq from '../components/ui/Faq.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
 import { BOOKING_URL } from '../data/booking';
 
 // Answers assembled from copy already established elsewhere on the site —
@@ -37,12 +39,7 @@ const faqs = [
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-2">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">How it works</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'How it works' }]} />
 
       <!-- Hero: the getting-started section, promoted. `id` kept so old
            /how-it-works/#get-started links still land right. -->
@@ -126,13 +123,8 @@ const faqs = [
             </ol>
 
             <div class="flex flex-wrap items-center justify-center gap-4 mt-12">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
-                Book a free call
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-7 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                See the plans first
-              </a>
+              <Button href={BOOKING_URL} target="_blank" rel="noopener noreferrer" arrow="right">Book a free call</Button>
+              <Button href="/plans/" variant="secondary">See the plans first</Button>
             </div>
           </div>
         </div>

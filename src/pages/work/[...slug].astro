@@ -10,6 +10,7 @@ import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
 import Button from '../../components/ui/Button.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 import { getTestimonial } from '../../data/testimonials';
 
@@ -75,13 +76,7 @@ const facts = [
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/#work" class="hover:text-primary-blue transition-colors">Portfolio</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium truncate max-w-[40ch]">{d.title}</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Portfolio', href: '/#work' }, { label: d.title }]} />
       <div class="pb-10">
         <Container>
           <div class="max-w-3xl mx-auto">
@@ -92,12 +87,9 @@ const facts = [
             <p class="text-lg md:text-xl text-text-light-primary dark:text-text-dark-primary font-medium mb-3 leading-snug">{d.tagline}</p>
             <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-6">{d.summary}</p>
             <div class="flex flex-col sm:flex-row gap-4">
-              <Button href="#contact" text="Start a project like this" variant="cta" arrow={true} />
+              <Button href="#contact" arrow="right">Start a project like this</Button>
               {d.liveUrl && (
-                <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                  Visit live site
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                </a>
+                <Button href={d.liveUrl} target="_blank" rel="noopener noreferrer" variant="secondary" arrow="external">Visit live site</Button>
               )}
             </div>
           </div>
@@ -262,7 +254,7 @@ const facts = [
               <svg class="w-4 h-4 rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
               Back to portfolio
             </a>
-            <Button href="#contact" text="Get started" variant="cta" arrow={true} />
+            <Button href="#contact" arrow="right">Get started</Button>
           </div>
         </div>
       </Container>

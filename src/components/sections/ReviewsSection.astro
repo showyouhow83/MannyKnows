@@ -24,6 +24,7 @@ const stats: { value: string; label: string }[] = [];
   <Container className="relative z-10">
     <div id="reviews-section">
       <SectionHeader
+        size="hero"
         badge="Testimonials"
         title="Customer Success Stories"
         subtitle="See how businesses like yours grew after we rebuilt the way they work to run on AI."
@@ -133,14 +134,7 @@ const stats: { value: string; label: string }[] = [];
 
     <!-- Call to Action -->
     <div class="text-center">
-      <Button 
-        href="#" 
-        text="Join Our Success Stories" 
-        variant="cta" 
-        size="lg" 
-        arrow={true}
-        sparkleTheme='cyan'
-        id="joinSuccessButton" />
+      <Button href="#" arrow="right" id="joinSuccessButton">Join Our Success Stories</Button>
     </div>
     </div>
   </Container>

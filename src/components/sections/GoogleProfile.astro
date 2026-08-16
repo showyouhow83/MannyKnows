@@ -11,6 +11,7 @@
 //   • 42% / 35% are Google's own Business Profile photo data
 // Vendor blogs claim bigger numbers (31% bookings, 5-10x view time) but none
 // trace to a named study, so they don't go on the page.
+import Button from '../ui/Button.astro';
 const WHY = [
   { stat: '2×', label: 'as likely to generate interest', body: 'Listings with photos & virtual tours are 2x as likely to generate customer interest as listings without.', source: null },
   { stat: '42%', label: 'more direction requests', body: 'Listings with photos get 42% more requests for driving directions on Google.', source: null },
@@ -38,13 +39,8 @@ const WHY = [
 
   <div class="text-center mt-10">
     <div class="flex flex-wrap items-center justify-center gap-4">
-      <a href="/local-seo/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-        Start ranking today
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-      </a>
-      <a href="/local-seo/#free-360-photo" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-        Request 360° Photo
-      </a>
+      <Button href="/local-seo/" arrow="right">Start ranking today</Button>
+      <Button href="/local-seo/#free-360-photo" variant="secondary">Request 360° Photo</Button>
     </div>
     <p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
       Rather do it yourself? <a href="/blog/google-business-profile-springfield/" class="underline decoration-dotted hover:text-primary-blue">The full guide is free on our blog.</a>

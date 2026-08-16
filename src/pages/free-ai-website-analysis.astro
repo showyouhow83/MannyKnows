@@ -11,6 +11,9 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
 import Faq from '../components/ui/Faq.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import { getTestimonial } from '../data/testimonials';
 
 const checks = [
@@ -54,12 +57,7 @@ const quote = getTestimonial('SL Painting');
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Free AI Website Analysis</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Free AI Website Analysis' }]} />
       <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Instant scan · full review · no obligation</span>
@@ -92,7 +90,7 @@ const quote = getTestimonial('SL Painting');
               placeholder="you@yourbusiness.com"
               class="sm:flex-1 min-w-0 h-12 px-4 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary text-text-light-primary dark:text-text-dark-primary text-base focus:outline-none focus:border-primary-blue/60 focus:ring-2 focus:ring-primary-blue/20 transition"
             />
-            <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 h-12 text-sm font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
+            <button id="scanBtn" type="submit" class="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-2.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white text-[15px] font-semibold shadow-sm hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow disabled:opacity-60 disabled:cursor-not-allowed">
               Scan my site, free
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </button>
@@ -113,10 +111,7 @@ const quote = getTestimonial('SL Painting');
           <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4 max-w-2xl mx-auto">
             That's the automated first pass — one page, read by a machine. Our free <strong class="text-text-light-primary dark:text-text-dark-primary">full review</strong> goes where scanners can't: your competitors, your actual rankings, and whether the site sells.
           </p>
-          <a href="#contact" data-contact-context="Free AI Website Analysis (ran the instant scan)" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-            Get the free full review
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <Button href="#contact" data-contact-context="Free AI Website Analysis (ran the instant scan)" arrow="right">Get the free full review</Button>
         </div>
       </Container>
     </Section>
@@ -124,9 +119,7 @@ const quote = getTestimonial('SL Painting');
     <Section id="analysis-checks" variant="default" className="room chain-blue-violet">
       <Container>
         <div class="max-w-6xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>What we check</span>
-          </h2>
+          <SectionHeader title="What we check" />
           <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {checks.map((c) => (
               <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
@@ -147,12 +140,11 @@ const quote = getTestimonial('SL Painting');
     <Section id="analysis-walkaway" variant="alternate" className="room glow-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
-            <span class="apple-gradient-text" data-colorful-title>What you walk away with</span>
-          </h2>
-          <p class="text-center text-base text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-8">
-            The scan is instant. Our free full review is where it gets serious. We check what a scanner can't (your competitors, your rankings, whether the site actually sells) and send back a short plan.
-          </p>
+          <SectionHeader
+            title="What you walk away with"
+            subtitle="The scan is instant. Our free full review is where it gets serious. We check what a scanner can't (your competitors, your rankings, whether the site actually sells) and send back a short plan."
+            spacing="mb-8"
+          />
           <ul class="grid sm:grid-cols-2 gap-4">
             {walkaway.map((w) => (
               <li class="flex items-start gap-3 rounded-xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-5">
@@ -180,10 +172,7 @@ const quote = getTestimonial('SL Painting');
       <Container>
         <Faq faqs={faqs} />
         <div class="text-center mt-12">
-          <a href="#contact" data-contact-context="Free AI Website Analysis" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-            Get my free analysis
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <Button href="#contact" data-contact-context="Free AI Website Analysis" arrow="right">Get my free analysis</Button>
         </div>
       </Container>
     </Section>

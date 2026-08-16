@@ -11,7 +11,19 @@
 // testimonials.ts. Leave it undefined for verticals we can't yet prove, rather
 // than borrowing someone else's result.
 
+import { plans } from './plans';
+
 type Illustration = 'website' | 'seo' | 'agent' | 'audit' | 'automation' | 'store' | 'ads' | 'multimedia';
+
+// Prices interpolate from plans.ts so a reprice can't leave a stale figure
+// here (Aug 2026 — they used to be typed by hand). Cost FAQs are the only
+// place a price may appear on these pages (house rule).
+const getFound = plans.find((x) => x.slug === 'get-found')!;
+const getBooked = plans.find((x) => x.slug === 'get-booked')!;
+const FOUND_MO = `$${getFound.price}/mo`;
+const FOUND_SETUP = `$${getFound.setupFee!.toLocaleString('en-US')}`;
+const BOOKED_MO = `$${getBooked.price}/mo`;
+const HOURLY = '$75/hr'; // flat one-time-build rate (apps.astro TIERS, plans.ts FAQs)
 
 export interface Profession {
   slug: string;            // /websites-for-<slug>
@@ -22,6 +34,17 @@ export interface Profession {
   h1: string;              // gradient headline
   heroIntro: string;
   illustration: Illustration;
+  // What a weak site costs this trade — "patients", "jobs", "families". Drives
+  // the combined problems→fixes section heading.
+  lossNoun: string;
+  // "your <businessNoun> website" — practice / contractor / daycare.
+  businessNoun: string;
+  // One-line intro under that heading.
+  fixIntro: string;
+  // Hero panel ("What you get" at a glance): one-line intro + closing proof
+  // line. Both must be facts already published elsewhere on the site.
+  panelIntro: string;
+  panelNote: string;
   // The problems this trade actually feels — specific, not generic.
   painPoints: { title: string; body: string }[];
   // What we do about them.
@@ -29,7 +52,7 @@ export interface Profession {
   // Proof (optional — only if real).
   proofBusiness?: string;  // testimonials.ts business name
   proofHeading?: string;
-  faqs: { q: string; a: string }[];
+  faqs: { q: string; a: string; html?: boolean }[];
 }
 
 export const professions: Profession[] = [
@@ -46,6 +69,12 @@ export const professions: Profession[] = [
     heroIntro:
       "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free. It's the work Manny knows deepest — he oversaw hundreds of practice websites at MedNet Technologies in New York before building for Western Mass.",
     illustration: 'agent',
+    lossNoun: 'patients',
+    businessNoun: 'practice',
+    panelIntro: 'One practice website, built to answer patients, book them, and rank in your town.',
+    panelNote: 'Built on experience overseeing hundreds of dental and medical practice websites at MedNet Technologies in New York.',
+    fixIntro:
+      'The same three leaks show up in practice after practice, and the same site fixes them. Here is what a patient runs into today, and what they find instead.',
     painPoints: [
       {
         title: 'Patients want to book without calling',
@@ -84,11 +113,11 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'Have you built websites for medical practices before?',
-        a: "Yes — hundreds of them. At MedNet Technologies in New York, a medical web company, I oversaw hundreds of websites for dental and medical practices. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. MedNet has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But dental and medical practices are the niche I know deepest.",
+        a: "Hundreds of them. Before MannyKnows, Manny worked at MedNet Technologies in New York, a medical web company, and oversaw hundreds of dental and medical practice websites there. Each site started with a phone call to the doctor. He would ask how new patients found the practice, which procedures they wanted more of, what the front desk was asked all day, and what made a patient trust one office over another. Then he designed the site, built it, launched it, shaped the copy with the SEO team, and kept it current for years. That is where the pattern on this page comes from. Patients decide in seconds whether an office looks trustworthy, insurance and hours questions eat the front desk, and a practice ranks for “near me” when its site is structured the way Google reads a practice rather than the way a template does. MedNet was later acquired and folded into another company, and those sites belong to that work, so we describe the experience rather than showing it. What you get is someone who has already solved a practice’s website hundreds of times and starts yours knowing what it needs.",
       },
       {
         q: 'How much does a clinic or practice website cost?',
-        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. The build is a one-time $595, then $95/mo with no term; prepay the year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: `Our website plans start at ${FOUND_MO} for a custom-designed 1–3 page site with hosting and SSL, Remi AI answering patients 24/7, “near me” local SEO, a Google Business Profile, and upkeep included. The build is a one-time ${FOUND_SETUP} setup fee, then ${FOUND_MO} with no term. Prepay the year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is ${BOOKED_MO}. One-time builds are available too, billed at a flat ${HOURLY} and quoted up front.`,
       },
       {
         q: 'Can patients book appointments through the site?',
@@ -109,12 +138,18 @@ export const professions: Profession[] = [
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
     metaDescription:
-      'Websites that rank on Google and book jobs for Western Mass contractors: an AI agent answers homeowners 24/7, and books estimates on higher plans. From $95/mo.',
+      `Websites that rank on Google and book jobs for Western Mass contractors: an AI agent answers homeowners 24/7, and books estimates on higher plans. From ${FOUND_MO}.`,
     badge: 'For contractors & home services',
     h1: 'Websites for contractors that actually book jobs',
     heroIntro:
       "Stop renting leads from Angi and Thumbtack. A fast, findable site that ranks in your town, shows off your work, and lets an AI agent answer questions and book estimates around the clock, so the jobs come to you.",
     illustration: 'website',
+    lossNoun: 'jobs',
+    businessNoun: 'contractor',
+    panelIntro: 'One contractor website, built to rank in your town, show the work, and book the estimate.',
+    panelNote: 'SL Painting runs on exactly this and ranks #1 organically for “Exterior Painting” in Springfield.',
+    fixIntro:
+      'The same three leaks show up in trade after trade, and the same site fixes them. Here is what a homeowner runs into today, and what they find instead.',
     painPoints: [
       {
         title: 'You’re paying for leads you should own',
@@ -152,7 +187,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a contractor website cost?',
-        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile, technical SEO, and ongoing upkeep included. The build is a one-time $595, then $95/mo with no term; prepay the year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking estimates for you is $245/mo, and every plan includes your own admin. Prefer a one-time build? We do that too, billed at a flat $75/hr and quoted up front.',
+        a: `Our website plans start at ${FOUND_MO} for a custom-designed 1–3 page site with hosting and SSL, Remi AI answering customers 24/7, a Google Business Profile, technical SEO, and ongoing upkeep included. The build is a one-time ${FOUND_SETUP} setup fee, then ${FOUND_MO} with no term. Prepay the year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking estimates for you is ${BOOKED_MO}, and every plan includes your own admin. Prefer a one-time build? We do that too, billed at a flat ${HOURLY} and quoted up front.`,
       },
       {
         q: 'How long until I rank on Google?',
@@ -173,12 +208,18 @@ export const professions: Profession[] = [
     name: 'Daycares',
     metaTitle: 'Websites for Daycares in Western Mass | MannyKnows',
     metaDescription:
-      'Warm, fast websites for Western Mass daycares: parent and enrollment questions answered 24/7 by an AI agent, in English and Spanish. From $95/mo.',
+      `Warm, fast websites for Western Mass daycares: parent and enrollment questions answered 24/7 by an AI agent, in English and Spanish. From ${FOUND_MO}.`,
     badge: 'For daycares & childcare',
     h1: 'Websites for daycares that fill your waitlist',
     heroIntro:
       "Parents choose with their hearts and their research. A warm, fast, trustworthy site (with an admin to manage your children and families, and an AI agent that answers enrollment questions any hour) turns quiet website visits into booked tours.",
     illustration: 'agent',
+    lossNoun: 'families',
+    businessNoun: 'daycare',
+    panelIntro: 'One daycare website, built to reassure parents, answer them any hour, and book the tour.',
+    panelNote: 'JK Daycare runs on exactly this and told us it’s “so easy to use, and fast.”',
+    fixIntro:
+      'The same three leaks show up in center after center, and the same site fixes them. Here is what a parent runs into today, and what they find instead.',
     painPoints: [
       {
         title: 'Parents research long before they call',
@@ -216,7 +257,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'How much does a daycare website cost?',
-        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering parents 24/7, Google Business Profile, technical SEO, and upkeep included. The build is a one-time $595, then $95/mo with no term; prepay the year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking tours for you starts at $245/mo, and every plan includes your own admin to track enrollment inquiries and update the site yourself. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+        a: `Our website plans start at ${FOUND_MO} for a custom-designed 1–3 page site with hosting and SSL, Remi AI answering parents 24/7, a Google Business Profile, technical SEO, and upkeep included. The build is a one-time ${FOUND_SETUP} setup fee, then ${FOUND_MO} with no term. Prepay the year and the setup fee is waived and two months are free. A full multi-page site with Remi AI booking tours for you starts at ${BOOKED_MO}, and every plan includes your own admin to track enrollment inquiries and update the site yourself. One-time builds are available too, billed at a flat ${HOURLY} and quoted up front.`,
       },
       {
         q: 'Can you help us manage enrollment and parents?',

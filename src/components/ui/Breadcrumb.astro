@@ -1,0 +1,58 @@
+---
+// The one breadcrumb (Aug 2026 normalization). Every interior page renders
+// its trail through this so the markup, colours and JSON-LD can't drift.
+//
+//   <Breadcrumb items={[{ label: 'Plans' }]} />                       Home / Plans
+//   <Breadcrumb items={[{ label: 'Blog', href: '/blog/' }, { label: post.title }]} />
+//
+// Convention: the trail mirrors the URL. Flat routes (/plans/, /apps/,
+// /websites-for-clinics/) are two levels — Home / Page — even when a hub page
+// like /services/ links to them; only routes that really nest in the URL
+// (/blog/<slug>, /plans/<slug>, /work/<slug>) get a middle crumb. The last
+// item is the current page and renders as plain text.
+//
+// Also emits schema.org BreadcrumbList so Google shows the trail in the SERP.
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+  class?: string;
+}
+const { items, class: klass = '' } = Astro.props;
+
+const SITE = 'https://mannyknows.com';
+const currentPath = Astro.url?.pathname ?? '/';
+const trail: Crumb[] = [{ label: 'Home', href: '/' }, ...items];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: SITE + (c.href ?? currentPath),
+  })),
+};
+---
+
+<nav aria-label="breadcrumb" class={`max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4 ${klass}`}>
+  <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+    {trail.map((c, i) => {
+      const last = i === trail.length - 1;
+      return (
+        <li class={i === 0 ? '' : 'flex items-center'}>
+          {i > 0 && <span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary" aria-hidden="true">/</span>}
+          {last || !c.href ? (
+            <span class="text-text-light-primary dark:text-text-dark-primary font-medium" aria-current={last ? 'page' : undefined}>{c.label}</span>
+          ) : (
+            <a href={c.href} class="hover:text-primary-blue transition-colors">{c.label}</a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

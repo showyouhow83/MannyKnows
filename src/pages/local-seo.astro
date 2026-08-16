@@ -31,6 +31,9 @@ import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import GbpStats from '../components/sections/GbpStats.astro';
 import GbpComparison from '../components/sections/GbpComparison.astro';
 import { BOOKING_URL } from '../data/booking';
@@ -260,12 +263,7 @@ const jsonLd = {
     <!-- ───────────────────────── Hero ───────────────────────── -->
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Local SEO</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Local SEO' }]} />
 
       <div class="pb-14">
         <Container>
@@ -291,13 +289,8 @@ const jsonLd = {
               Every AI-powered website we build ships with SEO included. These packages bring the same human + AI pipeline to any site, along with what no other Springfield SEO company does — 360° photos, virtual tours, and reviews, refreshed every month. From ${PACKAGES[0].price}/mo, or start with a free 360° photo.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="#quote" data-quote-context="seo-on-the-map" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-                Start ranking today
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <a href="#free-360-photo" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                Claim the free 360° photo
-              </a>
+              <Button href="#quote" data-quote-context="seo-on-the-map" arrow="right">Start ranking today</Button>
+              <Button href="#free-360-photo" variant="secondary">Claim the free 360° photo</Button>
             </div>
             <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
               Month-to-month · cancel anytime · every figure on this page is sourced
@@ -311,22 +304,19 @@ const jsonLd = {
          Anchor target for the old /free-360-photo/ URL (301s land here). -->
     <Section id="free-360-photo" variant="alternate" className="room chain-violet-blue">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">We come to you · {SERVICE_AREA}</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Start with a free 360° photo</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">We come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation. It's how we introduce our work.</p>
-        </div>
+        <SectionHeader
+          badge={`We come to you · ${SERVICE_AREA}`}
+          title="Start with a free 360° photo"
+          subtitle="We come to your business, shoot one immersive 360° photo, then publish it to your Google listing so customers can step inside before they visit. No cost, no obligation. It's how we introduce our work."
+        />
         <StepCards steps={SHOOT_STEPS} cols={3} class="max-w-6xl mx-auto" />
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
-          <a href="#quote" data-quote-context="360-photo" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-            Claim 360° photo
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <Button href="#quote" data-quote-context="360-photo" arrow="right">Claim 360° photo</Button>
           {BOOKING_URL && (
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
+            <Button href={BOOKING_URL} target="_blank" rel="noopener noreferrer" variant="secondary">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
               Book a time
-            </a>
+            </Button>
           )}
         </div>
         <p class="text-center mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">No cost · No obligation · Live on Google in days</p>
@@ -336,10 +326,10 @@ const jsonLd = {
     <!-- ───────────────────────── What's included ───────────────────────── -->
     <Section id="included" variant="default" className="room chain-blue-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What local SEO covers here</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Not a report and a retainer — the work itself, done for you across your profile, your site, your photos, and your reviews.</p>
-        </div>
+        <SectionHeader
+          title="What local SEO covers here"
+          subtitle="Not a report and a retainer — the work itself, done for you across your profile, your site, your photos, and your reviews."
+        />
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {INCLUDED.map((item) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
@@ -360,11 +350,11 @@ const jsonLd = {
     <!-- ───────────────────────── The SEO packages ───────────────────────── -->
     <Section id="packages" variant="alternate" className="room chain-violet-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">SEO packages</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Get on the map. Own it. Then own the market.</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">For any website, including ones we didn't build, this is a human + AI pipeline with real photography behind it. Prices are starting points, tailored to your business.</p>
-        </div>
+        <SectionHeader
+          badge="SEO packages"
+          title="Get on the map. Own it. Then own the market."
+          subtitle="For any website, including ones we didn't build, this is a human + AI pipeline with real photography behind it. Prices are starting points, tailored to your business."
+        />
         <PricingCards id="seoPackages" cards={packageCards} billing="none" featuredLabel="Best value" />
         <p class="text-center text-sm text-text-light-secondary dark:text-text-dark-secondary mt-8 max-w-2xl mx-auto">
           No bought links, no guest-post schemes, no ranking guarantees. The method is the work above, done every month.
@@ -382,10 +372,7 @@ const jsonLd = {
                 <h4 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{s.name}</h4>
                 <p class="text-sm font-semibold text-primary-blue dark:text-blue-300 mb-3">{s.exact ? `$${s.min}` : `from $${s.min}`}<span class="font-normal text-text-light-tertiary dark:text-text-dark-tertiary"> · one-time</span></p>
                 <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{s.body}</p>
-                <a href="#quote" data-quote-context={s.service} class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
-                  Get a quote
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                </a>
+                <Button href="#quote" data-quote-context={s.service} variant="ghost" arrow="right" class="mt-4 self-start gap-1.5 text-sm">Get a quote</Button>
               </div>
             ))}
           </div>
@@ -397,13 +384,14 @@ const jsonLd = {
     <Section id="plans" variant="default" className="room chain-violet-blue">
       <Container>
         <div class="text-center max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Every AI-powered website includes SEO</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-8">Rather have the site do the work? Every website we build ships with SEO included from day one, so the build, the content, and the ranking work are never out of sync. The bigger plans go further — the site writes its own content and tunes its own SEO continuously.</p>
+          <SectionHeader
+            title="Every AI-powered website includes SEO"
+            subtitle="Rather have the site do the work? Every website we build ships with SEO included from day one, so the build, the content, and the ranking work are never out of sync. The bigger plans go further — the site writes its own content and tunes its own SEO continuously."
+            width="max-w-3xl"
+            spacing="mb-8"
+          />
           <p class="text-sm font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-6">Get Found · Get Booked · Get Growing</p>
-          <a href="/plans/" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-            Explore the AI-powered websites
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <Button href="/plans/" arrow="right">Explore the AI-powered websites</Button>
         </div>
       </Container>
     </Section>
@@ -411,13 +399,11 @@ const jsonLd = {
     <!-- ───────────────────────── GBP: stats + comparison ───────────────────────── -->
     <Section id="gbp" variant="alternate" className="room chain-blue-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-3"><span class="apple-gradient-text" data-colorful-title>It starts with your Google Business Profile</span></h2>
-          <p class="text-sm sm:text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">The free listing behind Google Maps and the map pack is what ranks you locally. Most owners set it up once and never touch it again, so getting it right is the cheapest win in local SEO.</p>
-        </div>
-        <div class="mt-10">
-          <GbpStats />
-        </div>
+        <SectionHeader
+          title="It starts with your Google Business Profile"
+          subtitle="The free listing behind Google Maps and the map pack is what ranks you locally. Most owners set it up once and never touch it again, so getting it right is the cheapest win in local SEO."
+        />
+        <GbpStats />
         <div class="mt-16">
           <GbpComparison />
         </div>
@@ -428,9 +414,7 @@ const jsonLd = {
     <Section id="faq" variant="gradient" className="room glow-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Questions, answered</span></h2>
-          </div>
+          <SectionHeader title="Questions, answered" />
           <div class="space-y-3">
             {FAQS.map((f) => (
               <details class="group bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl px-5 py-4">

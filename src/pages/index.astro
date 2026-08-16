@@ -197,8 +197,8 @@ const NAVBAR_CONFIG = {
             <!-- Hero CTAs + credibility stat band -->
             <div class="max-w-[1440px] mx-auto px-4 mt-8 pb-10 md:pb-16">
               <div class="flex flex-row items-stretch justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
-                <Button href="/local-seo/#free-360-photo" text="FREE 360° PHOTO" subtext="CLAIM NOW" variant="theme-aware" sparkles={true} sparkleTheme="purple" className="flex-1 sm:flex-none sm:px-8" />
-                <Button href="/free-ai-website-analysis/" text="FREE AI WEBSITE" subtext="ANALYSIS" variant="primary" sparkles={false} className="flex-1 sm:flex-none sm:px-8" />
+                <Button href="/local-seo/#free-360-photo" text="FREE 360° PHOTO" subtext="CLAIM NOW" variant="secondary" class="flex-1 sm:flex-none sm:px-8" />
+                <Button href="/free-ai-website-analysis/" text="FREE AI WEBSITE" subtext="ANALYSIS" class="flex-1 sm:flex-none sm:px-8" />
               </div>
               <ul class="mt-8 grid grid-cols-3 gap-x-2 gap-y-6 sm:gap-x-4 md:gap-x-5 max-w-3xl mx-auto text-text-light-secondary dark:text-text-dark-secondary">
                 <li class="flex flex-col items-center text-center gap-1"><span class="text-base sm:text-lg font-black apple-gradient-text">Organically #1</span> <span class="text-xs leading-snug">we help businesses climb to the top</span></li>
@@ -250,10 +250,7 @@ const NAVBAR_CONFIG = {
 				     shared with /plans and the plan pages: one implementation. -->
 				<SmartWebsiteConcept showHeader={false} />
 				<div class="text-center mt-8">
-					<a href="/plans/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-						Compare the plans
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-					</a>
+					<Button href="/plans/" arrow="right">Compare the plans</Button>
 					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Every plan is tailored to your business</p>
 				</div>
 			</div>
@@ -329,10 +326,7 @@ const NAVBAR_CONFIG = {
 					</div>
 				</div>
 				<div class="text-center mt-10">
-					<a href="/apps/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-						Explore Business Apps
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-					</a>
+					<Button href="/apps/" arrow="right">Explore Business Apps</Button>
 					<p class="mt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">Most projects live in 2–4 weeks · you own everything we build</p>
 				</div>
 			</div>

@@ -12,6 +12,9 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import Faq from '../components/ui/Faq.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import { ecommercePlans, yearlyTotal, yearlyMonthly } from '../data/plans';
 import PricingCards from '../components/pricing/PricingCards.astro';
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
@@ -105,12 +108,7 @@ const pageJsonLd = {
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Online stores</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Online stores' }]} />
       <div class="pb-12">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
@@ -159,13 +157,8 @@ const pageJsonLd = {
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#contact" data-contact-context="Sell Online: store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-                Start your store
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <a href="/work/cherry-vibes/" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                See a store we built
-              </a>
+              <Button href="#contact" data-contact-context="Sell Online: store plan" arrow="right">Start your store</Button>
+              <Button href="/work/cherry-vibes/" variant="secondary">See a store we built</Button>
             </div>
             <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">No term · cancel anytime · your store and catalog stay yours</p>
             <!-- Platforms we service — a CSS-only logo marquee (track duplicated
@@ -200,14 +193,11 @@ const pageJsonLd = {
         in the client's name (unbundled Aug 2026). */}
     <Section id="store-tiers" variant="default" className="room chain-violet-blue">
       <Container>
-        <div class="text-center max-w-[1440px] mx-auto mb-10">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-            <span class="apple-gradient-text" data-colorful-title>Four sizes of store</span>
-          </h2>
-          <p class="mt-3 max-w-3xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Each tier includes everything in the one before it. Your Shopify subscription is billed separately by Shopify, in your name. Start where your store is; move up when it's earning more.
-          </p>
-        </div>
+        <SectionHeader
+          title="Four sizes of store"
+          subtitle="Each tier includes everything in the one before it. Your Shopify subscription is billed separately by Shopify, in your name. Start where your store is; move up when it's earning more."
+          width="max-w-3xl"
+        />
         {/* The tier grid — shared PricingCards component (same one /plans
             uses): billing toggle, spec box, accent-per-column, and the
             snap-scrolling rail on phones. */}
@@ -272,12 +262,13 @@ const pageJsonLd = {
     <Section id="store-vs-site" variant="alternate" className="room glow-blue">
       <Container>
         <div class="max-w-3xl mx-auto text-center">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4">
-            <span class="apple-gradient-text" data-colorful-title>A store is a different animal than a website</span>
-          </h2>
-          <p class="text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            A <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website</a> gets you found and reached. A store has a harder job. A stranger has to decide, trust you, and pay, without talking to anybody. That's inventory, product photography, shipping, taxes, and cart-recovery email. A bigger machine, with its own price.
-          </p>
+          <SectionHeader
+            title="A store is a different animal than a website"
+            subtitle={`A <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website</a> gets you found and reached. A store has a harder job. A stranger has to decide, trust you, and pay, without talking to anybody. That's inventory, product photography, shipping, taxes, and cart-recovery email. A bigger machine, with its own price.`}
+            html
+            width="max-w-3xl"
+            spacing="mb-0"
+          />
           <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
             Built for stores across Springfield, Northampton, Hampshire County, and the rest of Western Mass.
           </p>
@@ -288,9 +279,7 @@ const pageJsonLd = {
     <!-- What's included -->
     <Section id="store-included" variant="default" className="room chain-violet-violet">
       <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>Everything included</span>
-        </h2>
+        <SectionHeader title="Everything included" />
         <div class="grid gap-6 md:grid-cols-2 max-w-6xl mx-auto">
           {plan.deliverables.map((d) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
@@ -319,16 +308,11 @@ const pageJsonLd = {
     <Section id="store-proof" variant="alternate" className="room glow-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-10">
-            <span class="apple-gradient-text" data-colorful-title>From a store we built &amp; run</span>
-          </h2>
+          <SectionHeader title="From a store we built &amp; run" />
           {proofQuote && <QuoteBlock quote={proofQuote} />}
           <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
             <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">See it working:</span>
-            <a href="/work/cherry-vibes/" class="inline-flex items-center gap-1.5 rounded-full border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-4 py-1.5 text-sm font-medium hover:bg-primary-blue/5 transition-all">
-              Cherry Vibes
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/work/cherry-vibes/" variant="secondary" size="sm" arrow="right">Cherry Vibes</Button>
           </div>
         </div>
       </Container>
@@ -337,9 +321,7 @@ const pageJsonLd = {
     <!-- How it works -->
     <Section id="store-steps" variant="default" className="room glow-blue">
       <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>How it works</span>
-        </h2>
+        <SectionHeader title="How it works" />
         <StepCards steps={plan.steps} class="max-w-6xl mx-auto" />
       </Container>
     </Section>
@@ -350,10 +332,7 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <Faq faqs={plan.faq} />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="Sell Online: store plan" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Talk to us about your store
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="#contact" data-contact-context="Sell Online: store plan" arrow="right">Talk to us about your store</Button>
           </div>
         </div>
       </Container>
@@ -367,10 +346,7 @@ const pageJsonLd = {
           <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
             Then what you want is a website that gets you found on Google, answers your customers, and books the work. Four plans from $95/mo, every one with Remi AI included. And if you start selling later, your plan has a store twin waiting — switching is a plan change, not a rebuild.
           </p>
-          <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-            See the website plans
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <Button href="/plans/" variant="secondary" arrow="right" class="mt-5">See the website plans</Button>
         </div>
       </Container>
     </Section>

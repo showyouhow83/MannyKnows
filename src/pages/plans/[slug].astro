@@ -9,6 +9,9 @@ import DockMenu from '../../components/navigation/DockMenu.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import Faq from '../../components/ui/Faq.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import Button from '../../components/ui/Button.astro';
+import SectionHeader from '../../components/ui/SectionHeader.astro';
 import { plans, yearlyTotal, yearlyMonthly, type Plan } from '../../data/plans';
 import { BOOKING_URL } from '../../data/booking';
 import { getTestimonial } from '../../data/testimonials';
@@ -110,13 +113,7 @@ const planFaqs = plan.faq.map((f) =>
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/plans/" class="hover:text-primary-blue transition-colors">Plans</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">{plan.name}</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Plans', href: '/plans/' }, { label: plan.name }]} />
       <div class="pb-12">
         <Container>
           <div class="max-w-[1440px] mx-auto text-center">
@@ -185,17 +182,10 @@ const planFaqs = plan.faq.map((f) =>
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-8 py-3.5 text-sm font-semibold transition-all duration-300">
-                {plan.ctaLabel ?? `Get started with ${plan.name}`}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <a href="/#work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                {plan.portfolioLabel ?? 'See it in our portfolio'}
-              </a>
+              <Button href="#contact" data-contact-context={`${plan.name} plan`} arrow="right">{plan.ctaLabel ?? `Get started with ${plan.name}`}</Button>
+              <Button href="/#work" variant="secondary">{plan.portfolioLabel ?? 'See it in our portfolio'}</Button>
               {!plan.hideBooking && (
-                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-                  Book a call
-                </a>
+                <Button href={BOOKING_URL} target="_blank" rel="noopener noreferrer" variant="secondary">Book a call</Button>
               )}
             </div>
             <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">{plan.terms ?? 'No term · cancel anytime · your domain and content stay yours'}</p>
@@ -209,14 +199,7 @@ const planFaqs = plan.faq.map((f) =>
     {tierCards && (
       <Section id="plan-tiers" variant="default" className="room chain-violet-blue">
         <Container>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
-            <span class="apple-gradient-text" data-colorful-title>{plan.tiersHeading ?? 'Pick your plan'}</span>
-          </h2>
-          {plan.tiersIntro && (
-            <p class="text-center text-base text-text-light-secondary dark:text-text-dark-secondary max-w-2xl mx-auto mb-12">
-              {plan.tiersIntro}
-            </p>
-          )}
+          <SectionHeader title={plan.tiersHeading ?? 'Pick your plan'} subtitle={plan.tiersIntro} />
           <div class="max-w-5xl mx-auto">
             <PricingCards id={`${plan.slug}-tiers`} cards={tierCards} billing="none" featuredLabel="Best value" />
           </div>
@@ -227,9 +210,7 @@ const planFaqs = plan.faq.map((f) =>
     <!-- What's included -->
     <Section id="plan-included" variant="default" className="room glow-blue">
       <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>Everything included</span>
-        </h2>
+        <SectionHeader title="Everything included" />
         <div class="grid gap-6 md:grid-cols-2 max-w-6xl mx-auto">
           {plan.deliverables.map((d) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
@@ -260,10 +241,7 @@ const planFaqs = plan.faq.map((f) =>
         <Container>
           <SmartWebsiteConcept compact={true} />
           <p class="text-center mt-10">
-            <a href="/plans/#why-smart" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-              Compare all the plans
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/plans/#why-smart" variant="ghost" arrow="right">Compare all the plans</Button>
           </p>
         </Container>
       </Section>
@@ -292,9 +270,7 @@ const planFaqs = plan.faq.map((f) =>
     <!-- How it works -->
     <Section id="plan-steps" variant="alternate" className="room glow-blue">
       <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>How it works</span>
-        </h2>
+        <SectionHeader title="How it works" />
         <StepCards steps={plan.steps} class="max-w-6xl mx-auto" />
       </Container>
     </Section>
@@ -305,10 +281,7 @@ const planFaqs = plan.faq.map((f) =>
         <div class="max-w-3xl mx-auto">
           <Faq faqs={planFaqs} />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Talk to us about {plan.name}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="#contact" data-contact-context={`${plan.name} plan`} arrow="right">Talk to us about {plan.name}</Button>
           </div>
         </div>
       </Container>

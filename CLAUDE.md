@@ -46,7 +46,33 @@ for small businesses in Western Massachusetts).
 - Performance is a priority: pages are tuned for near-100 Lighthouse
   (image optimization AVIF/WebP via `<picture>`, no render-blocking, a11y).
   Bot Fight Mode stays ON (Manny's call) — it caps lab TBT/Best Practices;
-  don't re-investigate it as a perf lead.
+  don't re-investigate it as a perf lead. The other Best-Practices deduction
+  (console 404 on `/cdn-cgi/rum/`) is Cloudflare Web Analytics' auto-injected
+  beacon posting to a RUM endpoint that answers 404 — a dashboard toggle
+  (Analytics & Logs → Web Analytics), not code.
+
+## UI primitives (Aug 2026 normalization — every public page uses these)
+
+- **`src/components/ui/Button.astro`** is the ONE button. Pill, `min-h-12`,
+  `variant` primary (blue→violet→pink gradient, white) · secondary (hairline
+  outline) · ghost (text link); `size` sm/md/lg; `arrow` right/down/external;
+  slot for the label; `data-*`/`aria-*`/`target`/`rel` pass through. Never
+  hand-roll a CTA anchor again. The only deliberate exception is the glass
+  `.tier-cta` inside PricingCards (carries the column's accent).
+- **`src/components/ui/Breadcrumb.astro`** renders every interior breadcrumb
+  and its BreadcrumbList JSON-LD. Trail mirrors the URL: flat routes are
+  `Home / Page` (no "Services" middle crumb); only `/blog/<slug>`,
+  `/plans/<slug>`, `/work/<slug>` carry a parent crumb.
+- **`src/components/ui/SectionHeader.astro`** (default `size="section"`) is
+  the interior section header: centred `max-w-2xl mb-10`, h2
+  `sf-bold text-2xl md:text-3xl` gradient text, `mt-3 text-base` subtitle;
+  `size="hero"` is the homepage-scale statement header. `StepCards` and
+  `Faq` are the shared card/FAQ blocks; profession pages render through
+  `ProfessionPage.astro` (split hero like /plans + one problems→fixes
+  section), city pages through `LocalAreaPage.astro`.
+- Interior hero shape (from /plans): breadcrumb → mascot → eyebrow chip →
+  gradient h1 → intro → primary + secondary pill → optional highlighted panel
+  on the right (`rounded-3xl border-primary-blue/40 ring-1`).
 
 ## Copy rules (house style — enforced across every public word)
 

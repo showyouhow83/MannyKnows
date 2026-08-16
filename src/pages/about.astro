@@ -9,6 +9,9 @@ import DockMenu from '../components/navigation/DockMenu.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 
 // Every number here is already claimed elsewhere on this page or in a
 // published case study — the honesty rule applies to stat tiles too.
@@ -91,12 +94,7 @@ const pageJsonLd = {
     <header class="has-hero-video relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <HeroVideoBackground name="hero-blue" tone="color" />
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">About</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'About' }]} />
       <div class="pb-12 px-4">
         <div class="max-w-[1440px] mx-auto text-center">
           <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6">Springfield · Western Massachusetts</span>
@@ -164,9 +162,7 @@ const pageJsonLd = {
 
     <Section id="about-principles" variant="alternate" className="room glow-blue">
       <Container>
-        <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-12">
-          <span class="apple-gradient-text" data-colorful-title>How we work</span>
-        </h2>
+        <SectionHeader title="How we work" />
         <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {principles.map((p) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
@@ -190,13 +186,8 @@ const pageJsonLd = {
             The proof is in the work — the websites, online stores, and AI agents running for Western Mass businesses today.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-4">
-            <a href="/#work" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-6 py-3 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">
-              See our portfolio
-            </a>
-            <a href="#contact" data-contact-context="About page" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-              Talk to us
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/#work" variant="secondary">See our portfolio</Button>
+            <Button href="#contact" data-contact-context="About page" arrow="right">Talk to us</Button>
           </div>
           <!-- Directory listing, deliberately quiet (moved out of the sitewide
                footer, Manny, Aug 2026). -->

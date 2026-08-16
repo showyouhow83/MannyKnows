@@ -8,6 +8,7 @@ import NavBar from '../../components/navigation/NavBar.astro';
 import Section from '../../components/layout/Section.astro';
 import Container from '../../components/layout/Container.astro';
 import DockMenu from '../../components/navigation/DockMenu.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import { getPostImage } from '../../utils/postImage';
 import { getPostIllustration } from '../../utils/postIllustration';
 import Illustration from '../../components/illustrations/Illustration.astro';
@@ -44,12 +45,7 @@ const pageJsonLd = {
 
     <header class="relative transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Blog</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Blog' }]} />
       <div class="pb-12">
         <Container>
           <div class="text-center max-w-[1440px] mx-auto">

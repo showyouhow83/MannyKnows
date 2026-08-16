@@ -14,18 +14,13 @@
 // Manny's sign-off.
 import Section from '../layout/Section.astro';
 import Container from '../layout/Container.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
 ---
 
 <Section id="ways-to-work" variant="alternate" className="room chain-violet-blue">
   <Container>
-    <div class="text-center max-w-[1440px] mx-auto mb-4">
-      <h2 class="sf-bold text-2xl md:text-3xl font-bold">
-        <span class="apple-gradient-text" data-colorful-title>Three ways to work with us</span>
-      </h2>
-      <p class="mt-3 max-w-2xl mx-auto text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-        Everything we build (sites, stores, marketing, custom software) comes through one of three doors. Pick by how you want to own it.
-      </p>
-    </div>
+    <SectionHeader title="Three ways to work with us" subtitle="Everything we build (sites, stores, marketing, custom software) comes through one of three doors. Pick by how you want to own it." />
     <div class="grid gap-6 lg:grid-cols-3 max-w-6xl mx-auto items-stretch mt-10">
 
       <div class="flex flex-col rounded-2xl border border-primary-blue/30 bg-primary-blue/[0.04] p-7">
@@ -33,7 +28,7 @@ import Container from '../layout/Container.astro';
         <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Handled long-term</h3>
         <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A setup fee once, then a flat monthly rate, cancel anytime. With Plans we build and run your site, store, and marketing; with the <a href="/ai-team/" class="text-primary-blue dark:text-blue-300 hover:underline">AI Agents Team</a> we build the agents and you run them on demand. Best when you want it kept working, not just delivered once.</p>
         <img src="/mascot/astronaut-planting.webp" alt="Astronaut mascot planting a seedling" aria-hidden="true" width="872" height="1106" loading="lazy" decoding="async" class="mx-auto my-4 w-full max-w-[80px] h-auto pointer-events-none" />
-        <a href="/plans/" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">See the plans</a>
+        <Button href="/plans/" variant="secondary" size="sm" class="mt-5">See the plans</Button>
       </div>
 
       <div class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white/60 dark:bg-dark-secondary/60 p-7">
@@ -41,7 +36,7 @@ import Container from '../layout/Container.astro';
         <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">A specific thing, done once</h3>
         <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">One custom development project with a clear finish line — a website, an app, an automation, anything we can engineer. We scope it together, quote it up front, build it, and hand it over. The code and the tool are yours. Many owners build once, then roll onto a plan to keep it growing.</p>
         <p class="mt-3 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">New to this? See <a href="/how-it-works/" class="font-semibold text-primary-blue dark:text-blue-300 hover:underline">how we turn a process into an app</a>, start to finish.</p>
-        <a href="/contact/" data-contact-context="One-time build: scope it" class="mt-4 inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary-blue/40 text-primary-blue dark:text-blue-300 px-5 py-2.5 text-sm font-semibold hover:bg-primary-blue/5 transition-all duration-300">Scope a build</a>
+        <Button href="/contact/" data-contact-context="One-time build: scope it" variant="secondary" size="sm" class="mt-4">Scope a build</Button>
       </div>
 
       <div class="flex flex-col rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-7">
@@ -49,7 +44,7 @@ import Container from '../layout/Container.astro';
         <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Your idea, built together</h3>
         <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Got an idea for an app or online product? Pitch it. If we believe in it, we design, build, launch, and market it with <strong class="text-text-light-primary dark:text-text-dark-primary">no upfront cost</strong>. We build it together and share what it earns.</p>
         <img src="/mascot/astronaut-idea.webp" alt="Astronaut mascot with a lightbulb idea" aria-hidden="true" width="797" height="1101" loading="lazy" decoding="async" class="mx-auto my-4 w-full max-w-[80px] h-auto pointer-events-none" />
-        <a href="#contact" data-contact-context="Idea Launchpad: co-own an app" class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-5 py-2.5 text-sm font-semibold transition-all duration-300">Pitch your idea</a>
+        <Button href="#contact" data-contact-context="Idea Launchpad: co-own an app" size="sm" class="mt-5">Pitch your idea</Button>
       </div>
 
     </div>

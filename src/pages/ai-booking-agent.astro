@@ -16,6 +16,9 @@ import NavBar from '../components/navigation/NavBar.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import Faq from '../components/ui/Faq.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
 import PricingCards, { type PricingCard } from '../components/pricing/PricingCards.astro';
@@ -109,12 +112,7 @@ const pageJsonLd = {
 
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">AI Booking Agent</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'AI Booking Agent' }]} />
 
       <div class="pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[1440px] mx-auto text-center">
@@ -134,19 +132,14 @@ const pageJsonLd = {
             Most jobs are lost to the call nobody could answer. Remi AI is our AI booking agent for Western Mass practices and small businesses. Trained on your business, it answers patients and customers in English or Spanish, asks the qualifying questions you would, and books the appointment while you're away.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-              Get your booking agent
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="#contact" data-contact-context="AI booking agent" arrow="right">Get your booking agent</Button>
             <!-- Launches the live site agent (our opscloud.us app, agent_manny_mk).
                  The widget opens on a hash matching its own configured name, which is
                  "Astro" on our account, so #astro is the trigger (#chat also works).
                  It re-checks on hashchange, so this stays a same-page anchor and opens
                  the agent right here instead of bouncing the visitor to the homepage.
                  Name it Astro here, not Remi AI, because Astro is who greets the visitor. -->
-            <a href="/ai-booking-agent/#astro?menu=demo" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-              Test Astro, our own “Remi” AI agent
-            </a>
+            <Button href="/ai-booking-agent/#astro?menu=demo" variant="secondary">Test Astro, our own “Remi” AI agent</Button>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
             English &amp; Spanish standard · Plans from ${remiLiteMonthly}/mo · Built in Springfield, MA
@@ -159,12 +152,10 @@ const pageJsonLd = {
          then the custom build as its own band, then the admin matrix. -->
     <Section id="versions" variant="alternate" className="room chain-violet-blue">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One Remi AI, three sizes</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Pick by what you want Remi AI doing. Move up anytime — the training carries, and the tiers differ by which admin controls they unlock, not by which agent you get.
-          </p>
-        </div>
+        <SectionHeader
+          title="One Remi AI, three sizes"
+          subtitle="Pick by what you want Remi AI doing. Move up anytime — the training carries, and the tiers differ by which admin controls they unlock, not by which agent you get."
+        />
 
         <PricingCards id="remi-plans" cards={remiCards} billing="monthly" featuredLabel="Most popular" />
 
@@ -191,10 +182,7 @@ const pageJsonLd = {
             <div class="flex-shrink-0 text-center lg:text-right">
               <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">{remiCustom.priceLabel}</div>
               <p class="mt-1.5 text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-[220px] mx-auto lg:mx-0 lg:ml-auto">{remiCustom.priceNote}</p>
-              <a href="#contact" data-contact-context="Remi AI Custom build" class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
-                Scope a build
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
+              <Button href="#contact" data-contact-context="Remi AI Custom build" arrow="right" class="mt-4">Scope a build</Button>
             </div>
           </div>
         </div>
@@ -206,12 +194,10 @@ const pageJsonLd = {
          admin is yours. Rows come from src/data/remi.ts. -->
     <Section id="admin" variant="default" className="room chain-blue-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-10">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Your admin, plan by plan</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Every plan comes with your own admin. We set Remi AI up and train you on it; what you can reach in there depends on the plan.
-          </p>
-        </div>
+        <SectionHeader
+          title="Your admin, plan by plan"
+          subtitle="Every plan comes with your own admin. We set Remi AI up and train you on it; what you can reach in there depends on the plan."
+        />
         <div class="max-w-4xl mx-auto overflow-x-auto">
           <table class="w-full text-sm border-collapse min-w-[560px]">
             <thead>
@@ -251,28 +237,22 @@ const pageJsonLd = {
         <img src="/mascot/astro-casestudy.webp" alt="Astronaut mascot peeking at the case studies" aria-hidden="true" width="360" height="631" loading="lazy" decoding="async" />
       </div>
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Answering Springfield customers today</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">A daycare and a painting contractor, both case studies below.</p>
-        </div>
+        <SectionHeader
+          title="Answering Springfield customers today"
+          subtitle="A daycare and a painting contractor, both case studies below."
+        />
         <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Licensed childcare · Springfield</span>
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">JK Daycare got a website, AI agent &amp; phone system in two weeks</h3>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">Parents couldn't reach anyone midday and there was no website to answer them. Two weeks later they had a site with an AI agent answering parents' questions from the site's own content, plus a Twilio IVR phone system that gives callers what they need and routes them to the right person. Every call answered.</p>
-            <a href="/work/jk-daycare/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-              Read the JK Daycare case study
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/work/jk-daycare/" variant="ghost" arrow="right" class="mt-4 gap-1.5 text-sm self-start">Read the JK Daycare case study</Button>
           </div>
           <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-3">Painting contractor · Springfield</span>
             <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">SL Painting gets leads qualified around the clock</h3>
             <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">A contractor can't answer chat from a ladder. SL Painting's AI Sales &amp; Booking Agent answers questions and qualifies leads 24/7, so what reaches the crew is a real job with details, not a missed call. The same site now ranks #1 on Google, organically, for exterior painting in Springfield.</p>
-            <a href="/work/sl-painting/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-              Read the SL Painting case study
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/work/sl-painting/" variant="ghost" arrow="right" class="mt-4 gap-1.5 text-sm self-start">Read the SL Painting case study</Button>
           </div>
         </div>
       </Container>
@@ -285,10 +265,7 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <Faq faqs={FAQS} heading="Booking-agent questions, answered" />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="AI booking agent" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
-              Talk about your booking agent
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="#contact" data-contact-context="AI booking agent" arrow="right">Talk about your booking agent</Button>
             <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.</p>
           </div>
         </div>

@@ -21,6 +21,9 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import PricingCards from '../components/pricing/PricingCards.astro';
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
 
@@ -176,12 +179,7 @@ const jsonLd = {
     <!-- ───────────────────────── Hero ───────────────────────── -->
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">Business Apps</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'Business Apps' }]} />
 
       <div class="pb-14">
         <Container>
@@ -211,13 +209,8 @@ const jsonLd = {
               Custom business apps and workflow automation for Springfield and Western Mass small businesses. Scripts that automate the busywork, integrations that connect the tools you already use (APIs, phone &amp; SMS, MCP servers your AI can work through), and complete systems for booking, quoting, and dashboards.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="#quote" data-quote-context="custom-app" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-                Scope my app
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <a href="/how-it-works/" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                See the process
-              </a>
+              <Button href="#quote" data-quote-context="custom-app" arrow="right">Scope my app</Button>
+              <Button href="/how-it-works/" variant="secondary">See the process</Button>
             </div>
           </div>
         </Container>
@@ -227,10 +220,10 @@ const jsonLd = {
     <!-- ───────────────────────── Disconnected / Connected ───────────────────────── -->
     <Section id="concept" variant="alternate" className="room glow-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Apps that stand alone. Apps that connect everything.</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do. Data moves between your website, inbox, CRM, calendar, and accounting on its own — no more copying the same thing into five places.</p>
-        </div>
+        <SectionHeader
+          title="Apps that stand alone. Apps that connect everything."
+          subtitle="Some jobs need a tool. Some need your tools talking to each other. The fastest way to get hours back is to stop doing the work a machine can do. Data moves between your website, inbox, CRM, calendar, and accounting on its own — no more copying the same thing into five places."
+        />
         <div class="grid gap-5 md:grid-cols-2 max-w-5xl mx-auto">
           <!-- Waist-up mascots sit flush on each card's bottom edge: the
                negative bottom margin cancels the card padding. -->
@@ -261,10 +254,10 @@ const jsonLd = {
         <img src="/mascot/astro-app-peek.webp" alt="Astronaut mascot peeking at the pricing tiers" aria-hidden="true" width="389" height="880" loading="lazy" decoding="async" />
       </div>
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Pick the size of the job</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front. You know the total before we start, and you only pay for the automation your business actually needs.</p>
-        </div>
+        <SectionHeader
+          title="Pick the size of the job"
+          subtitle="From a single Google Apps Script to a full custom dashboard or client portal, every business app is scoped and quoted up front. You know the total before we start, and you only pay for the automation your business actually needs."
+        />
         <PricingCards id="appTiers" cards={tierCards} billing="none" />
         <p class="text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-8 max-w-2xl mx-auto">
           Got an idea bigger than a build? Some apps we co-own. We fund the build, you bring the business, and you pay nothing upfront. And when apps become part of everything (site, media, promotion) the <a href="/plans/multimedia-agency/" class="underline decoration-dotted hover:text-primary-blue">Multimedia Agency retainer</a> puts a developer on demand.
@@ -280,10 +273,11 @@ const jsonLd = {
         <img src="/mascot/astro-casestudy.webp" alt="Astronaut mascot peeking at the case studies" aria-hidden="true" width="360" height="631" loading="lazy" decoding="async" />
       </div>
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-14">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>How it works</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="underline decoration-dotted hover:text-primary-blue">how it works</a>.</p>
-        </div>
+        <SectionHeader
+          title="How it works"
+          subtitle='Three steps, a fixed quote, and a documented handoff. The full build process, from friction to finished app, lives on <a href="/how-it-works/" class="underline decoration-dotted hover:text-primary-blue">how it works</a>.'
+          html
+        />
         <StepCards steps={STEPS} cols={3} class="max-w-6xl mx-auto" />
 
         <!-- Case studies (was its own "We've wired this up before" section;

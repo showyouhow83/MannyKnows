@@ -15,6 +15,9 @@ import NavBar from '../components/navigation/NavBar.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
+import Breadcrumb from '../components/ui/Breadcrumb.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
 import AiWebsiteAgentDemo from '../components/sections/AiWebsiteAgentDemo.astro';
@@ -124,13 +127,7 @@ const pageJsonLd = {
     <!-- ───────────────────────── Hero ───────────────────────── -->
     <header class="relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300 room-hero">
       <NavBar />
-      <nav aria-label="breadcrumb" class="max-w-[1440px] mx-auto px-4 lg:px-6 pt-6 pb-4">
-        <ol class="flex flex-wrap items-center gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          <li><a href="/" class="hover:text-primary-blue transition-colors">Home</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><a href="/services/" class="hover:text-primary-blue transition-colors">Services</a></li>
-          <li class="flex items-center"><span class="mx-2 text-text-light-tertiary dark:text-text-dark-tertiary">/</span><span class="text-text-light-primary dark:text-text-dark-primary font-medium">One-Page Website</span></li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: 'One-Page Website' }]} />
 
       <div class="pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-[1440px] mx-auto">
@@ -159,13 +156,8 @@ const pageJsonLd = {
               </div>
 
               <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="#contact" data-contact-context="One-Page Website" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-                  Start my one-page site
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                </a>
-                <a href="#whats-on-it" class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-full border border-light-tertiary dark:border-dark-accent text-text-light-primary dark:text-text-dark-primary font-medium hover:border-primary-blue/40 transition-colors">
-                  See what's on the page
-                </a>
+                <Button href="#contact" data-contact-context="One-Page Website" arrow="right">Start my one-page site</Button>
+                <Button href="#whats-on-it" variant="secondary">See what's on the page</Button>
               </div>
             </div>
 
@@ -185,18 +177,12 @@ const pageJsonLd = {
         <img src="/mascot/astro-casestudy.webp" alt="Astronaut mascot peeking at the case studies" aria-hidden="true" width="360" height="631" loading="lazy" decoding="async" />
       </div>
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">The part that isn't a website</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Anyone can build you a page. This one has Remi AI on it.</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            A normal small-business site is a brochure. It waits. Remi AI works the conversation — it answers
-            what visitors ask, gathers who they are and what they need, and sends you the lead ready to close.
-            It's Remi AI Lite, the first rung of
-            <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 hover:underline">Remi AI's own plans</a> — the
-            bigger versions customize deeper and book appointments, and the same agent ships with every
-            <a href="/plans/" class="text-primary-blue dark:text-blue-300 hover:underline">website plan</a>.
-          </p>
-        </div>
+        <SectionHeader
+          badge="The part that isn't a website"
+          title="Anyone can build you a page. This one has Remi AI on it."
+          subtitle="A normal small-business site is a brochure. It waits. Remi AI works the conversation — it answers what visitors ask, gathers who they are and what they need, and sends you the lead ready to close. It's Remi AI Lite, the first rung of <a href='/ai-booking-agent/' class='text-primary-blue dark:text-blue-300 hover:underline'>Remi AI's own plans</a> — the bigger versions customize deeper and book appointments, and the same agent ships with every <a href='/plans/' class='text-primary-blue dark:text-blue-300 hover:underline'>website plan</a>."
+          html
+        />
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {aiWebsiteAgent.map((c) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
@@ -249,13 +235,11 @@ const pageJsonLd = {
     <!-- ───────────────────────── Pricing ───────────────────────── -->
     <Section id="pricing" variant="gradient" className="room chain-blue-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Pricing</span>
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>${aiWebsiteSetupFee} to build it. ${aiWebsiteMonthly}/mo to keep it working.</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Two numbers, and here's exactly what each one buys.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Pricing"
+          title={`$${aiWebsiteSetupFee} to build it. $${aiWebsiteMonthly}/mo to keep it working.`}
+          subtitle="Two numbers, and here's exactly what each one buys."
+        />
 
         <div class="max-w-4xl mx-auto">
           <PricingCards id="one-page-pricing" cards={priceCards} billing="none" featuredLabel="The part that never stops" />
@@ -279,9 +263,7 @@ const pageJsonLd = {
     <!-- ───────────────────────── How it works ───────────────────────── -->
     <Section id="how-it-works" variant="default" className="room chain-violet-violet">
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>From one conversation to a page that works</span></h2>
-        </div>
+        <SectionHeader title="From one conversation to a page that works" />
         <StepCards steps={aiWebsiteSteps} cols={4} class="max-w-6xl mx-auto" />
         {/* SL Painting pull-quote removed per Manny (Aug 2026): the proof cards
             above already name SL Painting and link the case study, so the quote
@@ -295,10 +277,7 @@ const pageJsonLd = {
         <div class="max-w-3xl mx-auto">
           <Faq faqs={aiWebsiteFaq} heading="One-page website questions, answered" />
           <div class="text-center mt-12">
-            <a href="#contact" data-contact-context="One-Page Website" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-7 py-3.5 text-sm font-semibold transition-all duration-300">
-              Talk about your one-page site
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="#contact" data-contact-context="One-Page Website" arrow="right">Talk about your one-page site</Button>
             <p class="mt-4 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
               Or call <a href={`tel:${PHONE_TEL}`} class="text-primary-blue hover:underline">{PHONE_DISPLAY}</a>, English or Spanish.
             </p>
@@ -330,13 +309,10 @@ const pageJsonLd = {
         class="block absolute bottom-0 left-4 w-[110px] h-auto pointer-events-none z-10"
       />
       <Container>
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>What's on the page, and what's under it</span></h2>
-          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            Seven jobs in one scroll, structured so Google and the AI assistants people now ask can read it, rank
-            it, and recommend you — on a page engineered to load fast enough that they actually do.
-          </p>
-        </div>
+        <SectionHeader
+          title="What's on the page, and what's under it"
+          subtitle="Seven jobs in one scroll, structured so Google and the AI assistants people now ask can read it, rank it, and recommend you — on a page engineered to load fast enough that they actually do."
+        />
 
         <!-- Part one: the seven jobs. The two that do the heaviest lifting get the weight -->
         <p class="text-center text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300 mb-6">The seven jobs</p>
@@ -379,10 +355,7 @@ const pageJsonLd = {
             ))}
           </div>
           <div class="text-center mt-8">
-            <a href="/free-ai-website-analysis/" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300 hover:underline">
-              Get a free analysis of your current site
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </a>
+            <Button href="/free-ai-website-analysis/" variant="ghost" arrow="right" class="gap-1.5 text-sm">Get a free analysis of your current site</Button>
           </div>
         </div>
       </Container>

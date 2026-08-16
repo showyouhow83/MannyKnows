@@ -1,22 +1,57 @@
 ---
+// The one section header (Aug 2026 normalization). Two sizes:
+//
+//   size="section" (default — interior pages, the sitewide standard)
+//     h2  sf-bold text-2xl md:text-3xl, gradient text, centred, mb-10
+//     p   text-base, secondary colour, max-w-2xl
+//
+//   size="hero" (homepage-scale statement headers only; opt in)
+//     h2  4xl → 7xl apple-headline, mb-20
+//
+// Pass `id` when the header anchors a jump link. `spacing` overrides the
+// bottom margin (e.g. spacing="mb-6" for a header directly over a caption).
 export interface Props {
   badge?: string;
   title: string;
   subtitle?: string;
+  size?: 'section' | 'hero';
   alignment?: 'left' | 'center' | 'right';
+  /** Bottom margin utility; defaults per size (mb-10 section, mb-20 hero). */
+  spacing?: string;
+  /** Max width of the block; defaults per size (max-w-2xl section, max-w-3xl hero). */
+  width?: string;
+  id?: string;
   className?: string;
+  /** Subtitle contains trusted markup (links, <strong>). */
+  html?: boolean;
 }
 
-const { badge, title, subtitle, alignment = 'center', className = "" } = Astro.props;
+const {
+  badge,
+  title,
+  subtitle,
+  size = 'section',
+  alignment = 'center',
+  spacing,
+  width,
+  id,
+  className = '',
+  html = false,
+} = Astro.props;
 
-const alignmentClasses = {
-  left: 'text-left',
-  center: 'text-center',
-  right: 'text-right'
-};
+const alignCls = { left: 'text-left', center: 'text-center mx-auto', right: 'text-right ml-auto' }[alignment];
+const isHero = size === 'hero';
+const mb = spacing ?? (isHero ? 'mb-20' : 'mb-10');
+const maxW = width ?? (isHero ? '' : 'max-w-2xl');
+const h2Cls = isHero
+  ? 'sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6'
+  : 'sf-bold text-2xl md:text-3xl font-bold';
+const pCls = isHero
+  ? 'text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed'
+  : 'mt-3 text-base text-text-light-secondary dark:text-text-dark-secondary leading-relaxed';
 ---
 
-<div class={`${alignmentClasses[alignment]} mb-20 ${className}`}>
+<div id={id} class={`${alignCls} ${maxW} ${mb} ${className}`.trim()}>
   {badge && (
     <div class="mb-4">
       <span class="section-badge inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue dark:text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
@@ -24,13 +59,8 @@ const alignmentClasses = {
       </span>
     </div>
   )}
-  <h2 class="sf-bold apple-headline text-text-light-primary dark:text-text-dark-primary text-4xl md:text-6xl lg:text-7xl mb-6">
-    <span class="apple-gradient-text" data-colorful-title>{title}</span>
+  <h2 class={h2Cls}>
+    <span class="apple-gradient-text" data-colorful-title set:html={title} />
   </h2>
-
-  {subtitle && (
-    <p class="text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto leading-relaxed">
-      {subtitle}
-    </p>
-  )}
+  {subtitle && (html ? <p class={pCls} set:html={subtitle} /> : <p class={pCls}>{subtitle}</p>)}
 </div>
