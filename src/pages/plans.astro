@@ -19,6 +19,14 @@ import { team, aiTeamStartingPrice } from '../data/aiTeam';
 
 const aiTeamRoster = [...team].filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
 
+// Mentions of Manny (the human) link to /about/ (Manny, Aug 2026) — same
+// helper as /plans/[slug]. Word-bound so "MannyKnows" / "Manny AI" never match.
+const linkManny = (s: string) =>
+  s.replace(
+    /\bManny\b(?!\s*AI\b)/g,
+    '<a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Manny</a>'
+  );
+
 const faqs = [
   {
     q: 'Can a plan be customized?',
@@ -257,7 +265,7 @@ const pageJsonLd = {
                 <svg class="w-6 h-6 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={p.icon} /></svg>
                 <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{p.name}</h3>
               </div>
-              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{p.tagline}</p>
+              <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4" set:html={linkManny(p.tagline)}></p>
               <ul class="space-y-2 mb-6 flex-1">
                 {p.highlights.slice(0, 4).map((f) => (
                   <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">

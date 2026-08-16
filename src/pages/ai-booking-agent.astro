@@ -5,9 +5,10 @@
 // qualifying agent) that national SaaS tools can't match locally.
 // Every claim traces to the published case studies or the data files.
 //
-// The agent has a name: Remi AI (src/data/aiTeam.ts — chat agent: sales, booking
-// & support). This page is where "Remi AI" links from the plans and the homepage
-// resolve — it explains what Remi AI does; /ai-team is where Remi AI gets hired.
+// The agent has a name: Remi AI, and this is its OWN product page (Manny,
+// Aug 2026 restructure): Remi sells standalone, separate from the AI Agents
+// Team and the website plans. The ladder, prices, and admin matrix live in
+// src/data/remi.ts — every number here interpolates from there.
 export const prerender = true;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -17,68 +18,55 @@ import Container from '../components/layout/Container.astro';
 import DockMenu from '../components/navigation/DockMenu.astro';
 import Faq from '../components/ui/Faq.astro';
 import AgentAvatar from '../components/team/AgentAvatar.astro';
-import { aiTeamStartingPrice, aiTeamSetupFee } from '../data/aiTeam';
-import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../data/aiWebsite';
+import PricingCards, { type PricingCard } from '../components/pricing/PricingCards.astro';
+import { remiTiers, remiCustom, remiMatrix, remiSetupFee, remiLiteMonthly, remiMidMonthly, remiProMonthly } from '../data/remi';
+import { plans } from '../data/plans';
 
 const PHONE_DISPLAY = '(413) 361-8451';
 const PHONE_TEL = '+14133618451';
 
-// The three versions of Remi AI (Manny, Aug 2026). The Lite one on the 1-page AI
-// Website carries the name but is an answering bot, not an agent — fixed, not
-// configurable. The agent proper is configured & customized per business.
-const VERSIONS = [
-  {
-    name: 'Remi AI Lite',
-    tag: 'The answering bot',
-    price: '$40/mo',
-    priceNote: 'with the One-Page Website · $195 one-time setup fee',
-    points: ['Answers from your business info, 24/7', 'Captures every lead to your inbox', 'Remi AI is the starting name, pick your own', 'Fixed setup beyond that, no customization'],
-    cta: { label: 'Get the 1-page site', href: '/ai-website/' },
-    featured: false,
-  },
-  {
-    name: 'Remi AI',
-    tag: 'The agent',
-    price: 'From $95/mo',
-    priceNote: `in every website plan · or on your existing site + $${aiTeamSetupFee} setup`,
-    points: ['Configured & customized to your business', 'Qualifies the lead, books the job (Get Booked and up)', 'Remi AI is the starting name, rename it to fit your brand', 'Hands off to you when a human matters'],
-    cta: { label: 'See the website plans', href: '/plans/' },
-    ctaAlt: { label: 'or hire it onto your site', href: '/ai-team/#agent-remi-ai' },
-    featured: true,
-  },
-  {
-    name: 'Remi AI Custom',
-    tag: 'Built around you',
-    price: 'From $2,500',
-    priceNote: 'one-time, quoted up front',
-    points: ['Answers your phone line (IVR), routing every call', 'Calendar & deep integrations', 'Yours when it ships'],
-    cta: { label: 'Scope a build', href: '#contact', context: 'Custom AI booking build' },
-    featured: false,
-  },
-];
+// The cheapest plan that ships Remi AI — for the "already included" note.
+const getFound = plans.find((p) => p.slug === 'get-found')!;
+
+// The ladder on the shared pricing grid — same anatomy as /plans, /ecommerce,
+// /apps and /local-seo, so pricing reads identically everywhere.
+const remiCards: PricingCard[] = remiTiers.map((t) => ({
+  name: t.name,
+  audience: t.audience,
+  price: t.price,
+  setupFee: remiSetupFee,
+  scope: t.scope,
+  tagline: t.tagline,
+  features: t.features,
+  featured: t.featured,
+  primary: { label: `Start with ${t.name}`, href: '#contact', context: `Remi AI plans: ${t.name}` },
+}));
 
 const FAQS = [
-  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. Remi AI answers in whichever language the customer starts with.' },
-  { q: 'Can it answer phone calls, or just website chat?', a: "Yes, both. On your site it answers and books. On your phone line, a custom build answers every call and routes it to the right person." },
-  { q: 'Does it work with the website I already have?', a: "Yes. An agent can be added to an existing site as a hire from the AI Agents Team. You don't need to rebuild anything. If you're on one of our website plans, Remi AI is already included." },
-  { q: 'How fast can it be live?', a: 'Minutes. Remi AI is configured and added to your website that fast. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
   {
     q: 'What does an AI booking agent cost?',
-    a: 'Four ways in. Pick by what you already have:',
+    a: `Remi AI has three plans plus a custom build. Every plan carries the one-time $${remiSetupFee} setup, waived when you prepay a year (which also gets you 2 months free):`,
     table: {
-      head: ['How you get it', 'Price'],
+      head: ['How you get Remi AI', 'Price'],
       rows: [
-        ['Included in every website plan', `From $${aiTeamStartingPrice}/mo`],
-        ['Hired onto the site you already have', `From $${aiTeamStartingPrice}/mo + $${aiTeamSetupFee} setup`],
-        ['On the One-Page Website (the lightest Remi AI — answers & captures leads, no booking)', `$${aiWebsiteSetupFee} + $${aiWebsiteMonthly}/mo`],
-        ['Custom build with phone IVR and deep integrations', 'From $2,500 one-time'],
+        ['Remi AI Lite — answers & captures leads', `$${remiLiteMonthly}/mo + $${remiSetupFee} setup`],
+        ['Remi AI — Lite plus the full customization admin', `$${remiMidMonthly}/mo + $${remiSetupFee} setup`],
+        ['Remi AI Pro — books into your calendar', `$${remiProMonthly}/mo + $${remiSetupFee} setup`],
+        ['Remi AI Custom — phone IVR & deep integrations', 'From $2,500, quoted'],
+        ['Already inside every website plan', `From $${getFound.price}/mo (the plan price)`],
       ],
     },
   },
+  { q: 'Which Remi AI books appointments?', a: 'Remi AI Pro. It books the appointment into your admin calendar and syncs it to the business or personal calendar you already use, so the job shows up where you actually look. On the website plans, booking arrives with Get Booked. Lite and the middle plan answer, qualify, and capture the lead for you to close.' },
+  { q: 'Does it work with the website I already have?', a: "Yes. Every Remi AI plan is one embed snippet on the site you already have, whatever it's built on — nothing gets rebuilt. And if you don't have a website, a fast one-page site on your own domain is included at no extra cost." },
+  { q: 'Do I manage Remi AI myself?', a: "Yes, through your own admin. We configure Remi AI for your business at setup and train you on the admin; from there it's yours — the Brand Brain it answers from, your leads inbox, and every control your plan unlocks. You never file a ticket to change a price or an opening hour." },
+  { q: 'Does the AI booking agent speak Spanish?', a: 'Yes, English and Spanish are standard on everything we build, not an add-on. Remi AI answers in whichever language the customer starts with.' },
+  { q: 'Can it answer phone calls, or just website chat?', a: "On your site it answers, and on Remi AI Pro it books. For your phone line, Remi AI Custom answers every call and routes it to the right person — that's a quoted build." },
+  { q: 'How fast can it be live?', a: 'Minutes. Remi AI is configured and added to your website that fast. A full build (website, AI agent, and a phone system routing every call) has gone from kickoff to live in two weeks.' },
 ];
 
 // Kept under 160 chars — search results truncate past that (SEO pass, Aug 2026).
-const META_DESCRIPTION = 'Remi AI, the AI booking agent for Western Mass businesses, answers customers 24/7 in English or Spanish, qualifies the lead, and books the job. From $95/mo.';
+const META_DESCRIPTION = `Remi AI answers your customers 24/7 in English or Spanish, captures every lead, and books jobs into your calendar. Plans from $${remiLiteMonthly}/mo, on any website.`;
 
 const pageJsonLd = {
   '@context': 'https://schema.org',
@@ -95,9 +83,17 @@ const pageJsonLd = {
   },
   areaServed: 'Western Massachusetts',
   description: META_DESCRIPTION,
+  // Recurring price in `price`; the one-time setup rides in the description so
+  // the offer never implies all-in pricing (same pattern as /ecommerce).
   offers: [
-    { '@type': 'Offer', name: 'Included in every website plan (Remi AI)', price: '95', priceCurrency: 'USD', description: 'Every MannyKnows website plan ships with Remi AI answering 24/7 from $95/mo; it books the job from Get Booked at $245/mo.' },
-    { '@type': 'Offer', name: 'Added to your existing site', price: String(aiTeamStartingPrice), priceCurrency: 'USD', description: `Hire a booking agent onto the site you already have, from $${aiTeamStartingPrice}/mo, one-time $${aiTeamSetupFee} setup.` },
+    ...remiTiers.map((t) => ({
+      '@type': 'Offer',
+      name: t.name,
+      price: String(t.price),
+      priceCurrency: 'USD',
+      description: `${t.scope}. $${t.price}/mo plus a one-time $${remiSetupFee} setup, waived on a prepaid year.`,
+    })),
+    { '@type': 'Offer', name: remiCustom.name, description: 'Phone IVR and deep integrations, scoped and quoted from $2,500; its running monthly is quoted with the build.' },
   ],
 };
 ---
@@ -153,52 +149,96 @@ const pageJsonLd = {
             </a>
           </div>
           <p class="mt-5 text-sm text-text-light-tertiary dark:text-text-dark-tertiary">
-            English &amp; Spanish standard · From $95/mo · Built in Springfield, MA
+            English &amp; Spanish standard · Plans from ${remiLiteMonthly}/mo · Built in Springfield, MA
           </p>
         </div>
       </div>
     </header>
 
-    <!-- What Remi AI does + the three versions, merged into one section
-         (was two long sections; Manny asked for less copy, Aug 2026). -->
+    <!-- The Remi AI plans — the shared pricing grid (same anatomy as /plans),
+         then the custom build as its own band, then the admin matrix. -->
     <Section id="versions" variant="alternate" className="room chain-violet-blue">
       <Container>
         <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="sf-bold text-2xl md:text-3xl font-bold"><span class="apple-gradient-text" data-colorful-title>One Remi AI, three sizes</span></h2>
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>One Remi AI, three sizes</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Pick by what you want Remi AI doing. Move up anytime — the training carries, and the tiers differ by which admin controls they unlock, not by which agent you get.
+          </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
-          {VERSIONS.map((v) => (
-            <div class={`relative rounded-2xl border bg-white dark:bg-dark-secondary p-7 flex flex-col ${v.featured ? 'border-primary-blue/50 ring-1 ring-primary-blue/20 shadow-lg shadow-primary-blue/10 md:-mt-2' : 'border-light-tertiary dark:border-dark-accent'}`}>
-              {v.featured && (
-                <div class="absolute -top-8 right-5 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07]">
-                  <AgentAvatar agent="desi" class="w-full h-full" />
-                </div>
-              )}
-              <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">{v.tag}</span>
-              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mt-1">{v.name}</h3>
-              <div class="mt-[0.05rem] mb-1"><span class="text-[1.3rem] font-black text-text-light-primary dark:text-text-dark-primary">{v.price}</span></div>
-              <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mb-4">{v.priceNote}</p>
-              <ul class="space-y-2 mb-6 flex-1">
-                {v.points.map((pt) => (
-                  <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
-                    <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        <PricingCards id="remi-plans" cards={remiCards} billing="monthly" featuredLabel="Most popular" />
+
+        <p class="mt-6 text-center text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-2xl mx-auto">
+          No website? A one-page site on your own domain is included with any plan — <a href="/ai-website/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">see the One-Page Website</a>. Already on a <a href="/plans/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">website plan</a>? Remi AI is in there from Get Found up.
+        </p>
+
+        <!-- The fourth door: a build, not a subscription, so it sits outside
+             the grid — same pattern as the Custom tier band on /apps. -->
+        <div class="max-w-6xl mx-auto mt-10 rounded-3xl border border-primary-blue/30 ring-1 ring-primary-blue/10 bg-white dark:bg-dark-secondary p-6 sm:p-8">
+          <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+            <div class="flex-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Built around you</span>
+              <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mt-1 mb-3">{remiCustom.name}</h3>
+              <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+                {remiCustom.points.map((pt) => (
+                  <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span>{pt}</span>
                   </li>
                 ))}
               </ul>
-              <a
-                href={v.cta.href}
-                data-contact-context={v.cta.context}
-                class={`inline-flex items-center justify-center gap-1.5 h-11 rounded-full font-semibold text-sm transition-all ${v.featured ? 'bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
-              >
-                {v.cta.label}
-              </a>
-              {v.ctaAlt && (
-                <a href={v.ctaAlt.href} class="mt-2 text-center text-xs text-primary-blue dark:text-blue-300 hover:underline">{v.ctaAlt.label}</a>
-              )}
             </div>
-          ))}
+            <div class="flex-shrink-0 text-center lg:text-right">
+              <div class="text-2xl font-black text-text-light-primary dark:text-text-dark-primary leading-none">{remiCustom.priceLabel}</div>
+              <p class="mt-1.5 text-xs text-text-light-tertiary dark:text-text-dark-tertiary max-w-[220px] mx-auto lg:mx-0 lg:ml-auto">{remiCustom.priceNote}</p>
+              <a href="#contact" data-contact-context="Remi AI Custom build" class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
+                Scope a build
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- The admin matrix: what each plan unlocks. This is the real difference
+         between tiers — we configure Remi AI at setup and train you, then the
+         admin is yours. Rows come from src/data/remi.ts. -->
+    <Section id="admin" variant="default" className="room chain-blue-violet">
+      <Container>
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="sf-bold text-2xl md:text-3xl font-bold mb-4"><span class="apple-gradient-text" data-colorful-title>Your admin, plan by plan</span></h2>
+          <p class="text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
+            Every plan comes with your own admin. We set Remi AI up and train you on it; what you can reach in there depends on the plan.
+          </p>
+        </div>
+        <div class="max-w-4xl mx-auto overflow-x-auto">
+          <table class="w-full text-sm border-collapse min-w-[560px]">
+            <thead>
+              <tr>
+                <th class="text-left pb-3 pr-4 text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary border-b border-light-tertiary dark:border-dark-accent">In the admin</th>
+                {remiTiers.map((t) => (
+                  <th class="pb-3 px-3 text-center text-[11px] font-bold uppercase tracking-wider text-text-light-primary dark:text-text-dark-primary border-b border-light-tertiary dark:border-dark-accent whitespace-nowrap">{t.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {remiMatrix.map((row) => (
+                <tr>
+                  <td class="py-3 pr-4 text-text-light-secondary dark:text-text-dark-secondary leading-snug border-b border-light-tertiary/60 dark:border-dark-accent/60">{row.label}</td>
+                  {row.tiers.map((has) => (
+                    <td class="py-3 px-3 text-center border-b border-light-tertiary/60 dark:border-dark-accent/60">
+                      {has ? (
+                        <svg class="w-4 h-4 inline-block text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      ) : (
+                        <span class="text-text-light-tertiary dark:text-text-dark-tertiary" aria-label="not included">—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </Container>
     </Section>

@@ -9,6 +9,13 @@
 //   Leo=Graphics & Video, Aria=Voice, Nova=SEO, Piper=Publishing,
 //   Max=Paid ads, Finn=Engagement, Vera=Analytics.
 // The roster is meant to grow as AI learns to do more.
+//
+// Remi AI is the one agent that is ALSO a product on its own: its ladder
+// lives in src/data/remi.ts and sells at /ai-booking-agent. The roster card
+// quotes that ladder's "from" price (imported below) so the two surfaces can
+// never publish two different Remi prices.
+
+import { remiLiteMonthly } from './remi';
 
 export type AgentId =
   | 'manny'
@@ -57,8 +64,10 @@ export const team: Agent[] = [
     does: "Answers customer emails, texts, and messages on your site 24/7. Replies, books appointments, and guides shoppers to the right product, in their own language.",
     handoff: 'Feeds the team. Every question customers ask becomes intel, Remi AI logs the patterns, and Eve uses them to decide what content to make next.',
     order: 1,
-    price: 95,
-    note: 'included with every AI-Powered Website · books from Get Booked, sells from Get Growing',
+    // The "from" price of Remi AI's own ladder — booking is the Pro plan
+    // there ($145); on websites it still arrives at Get Booked.
+    price: remiLiteMonthly,
+    note: 'its own plans, $40 Lite to $145 Pro · included with every AI-Powered Website',
   },
   {
     id: 'eve',
@@ -216,7 +225,7 @@ export const aiTeamFaq = [
   {
     // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
     q: 'Which AI agent should my Springfield business get first?',
-    a: "Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the chat agent, a product on its own at $95/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.",
+    a: `Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the chat agent, a product on its own with plans from $${remiLiteMonthly}/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.`,
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",

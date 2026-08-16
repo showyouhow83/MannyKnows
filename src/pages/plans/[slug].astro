@@ -16,6 +16,7 @@ import QuoteBlock from '../../components/ui/QuoteBlock.astro';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import StepCards from '../../components/ui/StepCards.astro';
 import SmartWebsiteConcept from '../../components/sections/SmartWebsiteConcept.astro';
+import PricingCards, { type PricingCard } from '../../components/pricing/PricingCards.astro';
 
 // Sell Online lives on its own page (/ecommerce) — selling products is a
 // different decision from getting found, so it isn't one of the website tiers.
@@ -58,6 +59,40 @@ const proofMap: Record<string, { quote?: string; cases: { slug: string; name: st
 const proof = proofMap[plan.slug];
 const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
 
+// Sub-plan tiers on the SHARED pricing grid (Manny, Aug 2026): the same
+// PricingCards anatomy as /plans, /ecommerce, /apps and /local-seo, so every
+// pricing card on the site reads identically. These services front no build
+// and publish no yearly rate, so billing='none' — one price, its own unit.
+const tierCards: PricingCard[] | null = plan.tiers
+  ? plan.tiers.map((t) => ({
+      name: t.name,
+      audience: t.audience,
+      price: t.price,
+      priceUnit: t.unit,
+      priceNote: t.note,
+      scope: t.scope,
+      scopeLines: t.scopeLines,
+      tagline: t.description,
+      builtOn: t.builtOn,
+      features: t.features,
+      featured: t.featured,
+      primary: { label: `Start with ${t.name}`, href: '#contact', context: `${plan.name}: ${t.name}` },
+    }))
+  : null;
+
+// Mentions of Manny (the human) link to /about/ (Manny, Aug 2026). Word-bound
+// so "MannyKnows" and "Manny AI" never match — those aren't the person.
+const linkManny = (s: string) =>
+  s.replace(
+    /\bManny\b(?!\s*AI\b)/g,
+    '<a href="/about/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">Manny</a>'
+  );
+const mentionsManny = (s: string) => /\bManny\b(?!\s*AI\b)/.test(s);
+// FAQ answers that name Manny get the link; the Faq component renders those
+// with set:html and strips the tags back out of the FAQPage schema.
+const planFaqs = plan.faq.map((f) =>
+  mentionsManny(f.a) ? { ...f, a: linkManny(f.a), html: true } : f
+);
 ---
 
 <BaseLayout
@@ -111,7 +146,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
             <h1 class="sf-bold apple-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               <span class="apple-gradient-text" data-colorful-title>{plan.headline}</span>
             </h1>
-            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{plan.blurb}</p>
+            <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed" set:html={linkManny(plan.blurb)}></p>
             {plan.blurb.includes('*') && (
               <p class="mt-3 max-w-3xl mx-auto text-xs text-text-light-tertiary dark:text-text-dark-tertiary">*Logo via our Envato Elements license, used as-is or reworked with AI.</p>
             )}
@@ -169,8 +204,9 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
       </div>
     </header>
 
-    <!-- Sub-plan tiers (e.g. Business Ads: per-network vs full coverage) -->
-    {plan.tiers && (
+    <!-- Sub-plan tiers (e.g. Business Ads: per-network vs full coverage) on
+         the shared pricing grid, so pricing cards read the same sitewide. -->
+    {tierCards && (
       <Section id="plan-tiers" variant="default" className="room chain-violet-blue">
         <Container>
           <h2 class="sf-bold text-2xl md:text-3xl font-bold text-center mb-4">
@@ -181,41 +217,8 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
               {plan.tiersIntro}
             </p>
           )}
-          <div class="grid gap-6 md:grid-cols-2 max-w-6xl mx-auto items-stretch">
-            {plan.tiers.map((t) => (
-              <div class={`rounded-3xl bg-white dark:bg-dark-secondary p-6 sm:p-8 flex flex-col ${t.featured ? 'border border-primary-blue/40 ring-1 ring-primary-blue/20' : 'border border-light-tertiary dark:border-dark-accent'}`}>
-                {t.featured && (
-                  <span class="self-start inline-block bg-gradient-to-r from-primary-blue to-primary-pink text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3">Best value</span>
-                )}
-                <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">{t.name}</h3>
-                <div class="mt-2 mb-3">
-                  <span class="text-3xl font-black text-text-light-primary dark:text-text-dark-primary">${t.price.toLocaleString('en-US')}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">{t.unit}</span>
-                  <span class="block text-xs text-text-light-tertiary dark:text-text-dark-tertiary mt-1">{t.note}</span>
-                </div>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed mb-4">{t.description}</p>
-                {t.builtOn && (
-                  <p class="text-xs font-semibold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-2">{t.builtOn}:</p>
-                )}
-                <ul class="space-y-2.5 flex-1">
-                  {t.features.map((f) => (
-                    <li class="flex items-start gap-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-snug">
-                      <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="#contact"
-                  data-contact-context={`${plan.name}: ${t.name}`}
-                  class={`mt-6 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-300 ${t.featured ? 'bg-gradient-to-r from-primary-blue to-primary-pink text-white' : 'border border-primary-blue/40 text-primary-blue dark:text-blue-300 hover:bg-primary-blue/5'}`}
-                >
-                  Start with {t.name}
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                </a>
-              </div>
-            ))}
+          <div class="max-w-5xl mx-auto">
+            <PricingCards id={`${plan.slug}-tiers`} cards={tierCards} billing="none" featuredLabel="Best value" />
           </div>
         </Container>
       </Section>
@@ -237,7 +240,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
                     <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-blue dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>{item}</span>
+                    <span set:html={linkManny(item)}></span>
                   </li>
                 ))}
               </ul>
@@ -300,7 +303,7 @@ const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;
     <Section id="plan-faq" variant="default" className="room glow-violet">
       <Container>
         <div class="max-w-3xl mx-auto">
-          <Faq faqs={plan.faq} />
+          <Faq faqs={planFaqs} />
           <div class="text-center mt-12">
             <a href="#contact" data-contact-context={`${plan.name} plan`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-blue to-primary-pink text-white px-6 py-3 text-sm font-semibold transition-all duration-300">
               Talk to us about {plan.name}

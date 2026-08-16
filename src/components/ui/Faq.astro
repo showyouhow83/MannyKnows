@@ -7,13 +7,18 @@
 // inside a dropdown). Its rows are flattened into the schema answer text so
 // the FAQPage data stays complete.
 interface FaqTable { head: string[]; rows: string[][]; }
-interface FaqItem { q: string; a: string; table?: FaqTable; }
+// `html: true` renders the answer with set:html (used to link Manny's name to
+// /about/ on the plan pages). The tags are stripped back out of the FAQPage
+// schema below, so structured data always carries plain text.
+interface FaqItem { q: string; a: string; table?: FaqTable; html?: boolean; }
 interface Props {
   faqs: FaqItem[];
   heading?: string;
   schema?: boolean;
 }
 const { faqs, heading = 'Common questions', schema = true } = Astro.props;
+
+const plain = (s: string) => s.replace(/<[^>]*>/g, '');
 
 const faqSchema = schema && faqs.length > 0
   ? {
@@ -25,8 +30,8 @@ const faqSchema = schema && faqs.length > 0
         acceptedAnswer: {
           '@type': 'Answer',
           text: f.table
-            ? `${f.a} ${f.table.rows.map((r) => r.join(': ')).join('. ')}.`
-            : f.a,
+            ? `${plain(f.a)} ${f.table.rows.map((r) => r.join(': ')).join('. ')}.`
+            : plain(f.a),
         },
       })),
     }
@@ -52,7 +57,11 @@ const faqSchema = schema && faqs.length > 0
             {f.q}
             <svg class="w-4 h-4 flex-shrink-0 text-text-light-tertiary dark:text-text-dark-tertiary transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
           </summary>
-          <p class="px-5 pb-5 -mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+          {f.html ? (
+            <p class="px-5 pb-5 -mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed" set:html={f.a}></p>
+          ) : (
+            <p class="px-5 pb-5 -mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{f.a}</p>
+          )}
           {f.table && (
             <div class="px-5 pb-5 -mt-2 overflow-x-auto">
               <table class="w-full text-sm border-collapse">

@@ -52,9 +52,22 @@ for small businesses in Western Massachusetts).
 
 - **Naming:** "Manny" = the human. "Manny AI" and "Remi AI" = AI agents.
   Never blur agent and company ("Manny AI builds websites" is wrong; "we" do).
-- **Remi AI capability ladder never drifts:** the $40 Lite (One-Page Website)
-  only answers & captures leads; booking arrives at Get Booked; selling at
-  Get Growing. No page may promise a cheaper tier a pricier tier's verb.
+- **Remi AI capability ladder never drifts (Aug 2026 restructure):** Remi AI
+  sells standalone at /ai-booking-agent — `src/data/remi.ts` is the source of
+  truth. Lite $40/mo answers & captures leads only; Remi $75/mo adds the full
+  customization admin (personality, widget styling, suggested questions,
+  test & correct); Pro $145/mo adds booking (into the admin calendar, synced
+  to the client's own) plus opening lines, quick buttons, scoped menus, and
+  the domain allowlist; Custom from $2,500 quoted (phone IVR, integrations),
+  its running monthly quoted with the build. All plans carry the $195 setup,
+  waived on a prepaid year. Tiers differ by which ADMIN PANELS they unlock —
+  never by managed service (Manny configures at setup + trains, then the
+  admin is the client's). On website plans nothing moved: booking arrives at
+  Get Booked, selling at Get Growing. No page may promise a cheaper tier a
+  pricier tier's verb. There is ONE Remi Lite: the One-Page Website
+  ($195 + $40/mo, aiWebsite.ts derives from remi.ts) is the same
+  subscription with a one-page site included for buyers without a website —
+  never describe them as two products.
 - **Prices appear ONLY in pricing sections, tier cards, and cost FAQs** —
   never in narrative copy, nav labels, or hero prose.
 - **No "clause: elaboration" colon splices** in copy (swept Aug 2026). Write
@@ -71,12 +84,21 @@ for small businesses in Western Massachusetts).
 ## Pricing canon
 
 - **Single sources of truth:** `src/data/plans.ts` (website + store + ads +
-  agency), `src/data/aiTeam.ts` (agents/bundles/setup fee),
-  `src/data/aiWebsite.ts` (One-Page $195 + $40/mo), page-local `PACKAGES`
-  in local-seo.astro ($245/$495) and `TIERS` in apps.astro ($300/$600/$2,500
-  at flat $75/hr). Most surfaces (nav search, JSON-LD, comparison tables)
-  interpolate from these; **on a reprice only local-seo and apps need hand
-  updates** (noted in a NavBar comment).
+  agency), `src/data/remi.ts` (Remi AI ladder $40/$75/$145 + $195 setup +
+  admin matrix — aiWebsite.ts and aiTeam.ts's desi price derive from it),
+  `src/data/aiTeam.ts` (agents/bundles/setup fee),
+  `src/data/aiWebsite.ts` (One-Page $195 + $40/mo, derived from remi.ts),
+  page-local `PACKAGES` in local-seo.astro ($245/$495) and `TIERS` in
+  apps.astro ($300/$600/$2,500 at flat $75/hr). Most surfaces (nav search,
+  JSON-LD, comparison tables) interpolate from these; **on a reprice only
+  local-seo and apps need hand updates** (noted in a NavBar comment).
+- **All pricing-card grids render through `PricingCards.astro`** (Aug 2026):
+  /plans, /ecommerce, /apps, /local-seo, /ai-booking-agent, and the tier
+  grids on /plans/business-ads + /plans/multimedia-agency. New pricing cards
+  join that component; never hand-roll another card style.
+- Mentions of Manny the human in plan copy link to /about/ — a `linkManny()`
+  helper in plans.astro + plans/[slug].astro does it at render time (word-
+  bound, never matches "MannyKnows"/"Manny AI"; Faq accepts `html: true`).
 - Yearly = 10× monthly, 2 months free, everywhere.
 - **Setup-fee rule (Aug 2026 — replaced the 6-month build-coverage clause):**
   website and store plans charge a **one-time setup fee** for the build on

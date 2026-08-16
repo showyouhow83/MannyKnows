@@ -25,6 +25,9 @@ export const SERVICE_TYPES: ServiceType[] = [
   { value: 'ecommerce', label: 'Online Store (from $745 + $150/mo)' },
   { value: 'business-ads', label: 'Business Ads (from $350/mo)' },
   { value: 'multimedia-agency', label: 'Multimedia Agency (from $2,350/wk)' },
+  // Remi AI's own ladder (src/data/remi.ts): Lite $40 / Remi $75 / Pro $145,
+  // all + $195 setup (waived on a prepaid year). Custom builds are quoted.
+  { value: 'remi-ai', label: 'Remi AI chat agent ($40–$145/mo + $195 setup)' },
   { value: 'ai-team', label: 'AI Agents Team, hire agents (from $95/mo each)' },
   { value: 'custom-app', label: 'Business App: custom build (from $2,500)' },
   // Business Apps tiers — the cards on /apps/ (Aug 2026).

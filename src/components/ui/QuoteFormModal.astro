@@ -152,7 +152,8 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
 
     /** Contexts that carry no word in common with their service's label. */
     const CONTEXT_OVERRIDES: Record<string, string> = {
-      'ai booking agent': 'website-plus',        // booking starts at Get Booked
+      'ai booking agent': 'remi-ai',             // Remi AI's own plans
+      'remi ai custom build': 'remi-ai',
       'idea launchpad': 'custom-app',
       'idea launchpad: co-own an app': 'custom-app',
       'one-time build: scope it': 'custom-app',
@@ -168,7 +169,7 @@ const TIMES = ['Morning (8am–12pm)', 'Afternoon (12pm–5pm)', 'Evening (5pm�
       ['/plans/business-ads', 'business-ads'],
       ['/plans/multimedia-agency', 'multimedia-agency'],
       ['/free-ai-website-analysis', 'website-analysis'],
-      ['/ai-booking-agent', 'website-plus'],
+      ['/ai-booking-agent', 'remi-ai'],
       ['/local-seo', 'seo-on-the-map'],
       ['/apps', 'custom-app'],
       ['/ai-website', 'ai-website'],

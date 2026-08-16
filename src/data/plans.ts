@@ -625,6 +625,8 @@ export const plans: Plan[] = [
         price: 350,
         unit: '/mo per network',
         note: 'pick 1, 2, or as many as you need',
+        audience: 'For starting where your customers are',
+        scope: 'Every network gets its own plan',
         description:
           'Choose the networks that fit your business (Facebook, Instagram, TikTok, YouTube, LinkedIn, X, Pinterest, and more) and pay only for those.',
         features: [
@@ -641,6 +643,8 @@ export const plans: Plan[] = [
         price: 950,
         unit: '/mo',
         note: 'covers 4 major networks',
+        audience: 'For running everywhere at once',
+        scope: '4 major networks, one strategy',
         featured: true,
         builtOn: 'Everything in Per Network, on 4 major networks, plus',
         description:
@@ -742,6 +746,8 @@ export const plans: Plan[] = [
         price: 2350,
         unit: '/wk',
         note: 'cancel any week',
+        audience: 'For paying as you go',
+        scope: 'Everything in scope, week to week',
         description:
           'The full scope, billed week to week. One project at a time, each one finished and published before the next begins.',
         features: [
@@ -757,6 +763,8 @@ export const plans: Plan[] = [
         price: 8600,
         unit: '/mo',
         note: 'save about 15% vs weekly',
+        audience: 'For one invoice a month',
+        scope: 'Same scope, about 15% off',
         featured: true,
         builtOn: 'Everything in Weekly, plus',
         description:

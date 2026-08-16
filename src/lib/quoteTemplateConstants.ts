@@ -463,7 +463,7 @@ export const DEFAULT_QUOTE_TEMPLATES: StarterTemplate[] = [
           { id: 'it-team-roster-1', type: 'fillable', label: 'Agent 1 (name + role)', value: '' },
           { id: 'it-team-roster-2', type: 'fillable', label: 'Agent 2 (name + role)', value: '' },
           { id: 'it-team-roster-3', type: 'fillable', label: 'Agent 3 (name + role)', value: '' },
-          { id: 'it-team-roster-4', type: 'note', text: 'Agents run $95–$245/mo each (roster and pricing at mannyknows.com/ai-team). Manny, the manager who coordinates the team, is included with any hire.' },
+          { id: 'it-team-roster-4', type: 'note', text: 'Team agents run $95–$245/mo each (roster and pricing at mannyknows.com/ai-team). Remi AI, the chat agent, has its own plans from $40/mo (mannyknows.com/ai-booking-agent). Manny AI, the manager who coordinates the team, is included with any hire.' },
         ],
       },
       {

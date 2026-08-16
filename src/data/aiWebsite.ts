@@ -5,23 +5,24 @@
 //   • /free-360-photo      — the "#ai-website" section (360° tour angle)
 //   • /services            — the "What we build" card
 //
-// PRICING (Aug 2026 reprice, Manny): the old card read "from $500 one-time +
-// optional $79/mo" — the $79 was the monthly equivalent of a retired $950
-// price (79 × 12 ≈ 948) and was never explained anywhere on the site. The
-// product now follows the AI Agents Team shape: a one-time setup fee, then a flat
-// monthly. Change the three constants below and every page follows.
-export const aiWebsiteSetupFee = 195;   // one-time: matches the AI Agents Team setup fee
-export const aiWebsiteMonthly = 40;     // $/mo to keep it hosted, running & answering
+// PRICING (Aug 2026 restructure, Manny): this product IS Remi AI Lite — the
+// same subscription, with a one-page site included because the buyer doesn't
+// have a website. It is NOT a second product: both numbers derive from
+// src/data/remi.ts, so the two surfaces can never drift apart. Reprice Remi
+// there and this page follows.
+import { remiSetupFee, remiLiteMonthly } from './remi';
+
+export const aiWebsiteSetupFee = remiSetupFee;    // $195 one-time, same as every Remi AI plan
+export const aiWebsiteMonthly = remiLiteMonthly;  // $40/mo — the Remi AI Lite subscription
 export const aiWebsiteYearly = aiWebsiteMonthly * 12; // $480: the annual equivalent
 
 export const aiWebsitePriceLabel = `$${aiWebsiteSetupFee} setup + $${aiWebsiteMonthly}/mo`;
 
-// What Remi AI does on THIS product. The agent is Remi AI — the same agent that
-// ships with every website plan — in its LIGHTEST version (Manny, Aug 2026):
-// it converses, answers from the business's own info, and captures the lead.
-// It does NOT book appointments or sell — those are the bigger Remis (booking
-// starts at Get Booked $245/mo, selling at Get Growing; or hire Remi AI onto an
-// existing site via the AI Agents Team). Never claim booking here.
+// What Remi AI does on THIS product. The agent is Remi AI Lite — the entry
+// rung of the standalone ladder in src/data/remi.ts: it converses, answers
+// from the business's own info, and captures the lead. It does NOT book or
+// sell — booking arrives at Remi AI Pro ($145/mo standalone) or the Get Booked
+// plan ($245/mo); selling at Get Growing. Never claim booking here.
 export const aiWebsiteAgent = [
   {
     title: 'Answers in your voice',
@@ -40,7 +41,7 @@ export const aiWebsiteAgent = [
   },
   {
     title: 'Hands off to you',
-    body: "Remi AI answers and gathers; you close. And when you want it booking jobs or selling, the same Remi AI does that on the website plans: the training carries.",
+    body: "Remi AI answers and gathers; you close. And when you want it booking jobs, the same Remi AI does that on Remi AI Pro or the booking website plans. The training carries.",
     icon: 'M17 8l4 4m0 0l-4 4m4-4H3',
   },
 ];
@@ -48,7 +49,8 @@ export const aiWebsiteAgent = [
 // The conversation shown in the agent demo. One transcript, reused on every
 // page that sells this — edit here and both pages update.
 // HONESTY GUARD: this Remi AI answers and captures the lead — it must NOT be
-// shown booking an appointment (that's Get Booked). Keep the ending a handoff.
+// shown booking an appointment (that's Remi AI Pro / Get Booked). Keep the
+// ending a handoff.
 export const aiWebsiteChat = [
   { from: 'them', text: 'Do you do this on weekends? And roughly what does it run?' },
   { from: 'us', text: "We do, Saturdays fill first. For a job that size it's usually $450–$650." },
@@ -118,7 +120,11 @@ export const aiWebsiteSteps = [
 export const aiWebsiteFaq = [
   {
     q: `Why a setup fee and a monthly, instead of one price?`,
-    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI: real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as hiring an AI Agents Team agent: a one-time setup, then a flat monthly.`,
+    a: `Because a website that stops being maintained stops working. The $${aiWebsiteSetupFee} covers designing, writing, and building the page and training Remi AI: real work that happens once. The $${aiWebsiteMonthly}/mo covers what never stops: hosting, security, Remi AI running and being retrained when your prices or hours change, and the leads reaching you. It's the same shape as every Remi AI plan — a one-time setup, then a flat monthly — and prepaying the year waives the setup fee and gives you 2 months free.`,
+  },
+  {
+    q: 'I already have a website. Can I get Remi AI without the page?',
+    a: `Yes. Remi AI sells on its own — the same $${aiWebsiteSetupFee} setup and $${aiWebsiteMonthly}/mo, embedded on the site you already have with one snippet. The one-page website is simply included when you don't have one, so nobody pays for a page they don't need. See the Remi AI plans at mannyknows.com/ai-booking-agent for the bigger versions.`,
   },
   {
     q: 'Do I own the site?',
@@ -130,7 +136,7 @@ export const aiWebsiteFaq = [
   },
   {
     q: 'Can Remi AI book appointments on this?',
-    a: `Not on this version. This is the lightest Remi AI: it converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. The Remi AI that books jobs into your calendar comes with Get Booked ($245/mo); the one that sells comes with Get Growing. Upgrade anytime: Remi AI's training carries with you.`,
+    a: `Not on this version. This is Remi AI Lite: it converses with your customers, answers from what it knows about your business, and captures the lead with its details for you to close. To get booking, move up to Remi AI Pro ($145/mo) and keep the same page, or step up to the Get Booked website plan ($245/mo). Either way Remi AI's training carries with you.`,
   },
   {
     q: `How is this different from the $95/mo Get Found plan?`,
