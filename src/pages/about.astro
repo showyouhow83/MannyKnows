@@ -17,10 +17,10 @@ import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // credential in the abstract. The note underneath keeps the human detail that
 // makes each number believable.
 const stats = [
-  { n: '20+', label: 'years of web design & development' },
+  { n: '30+', label: 'years building websites, since 1995' },
+  { n: '100s', label: 'of dental & medical practice sites at MedNet' },
   { n: '7', label: 'years building online stores at enterprise scale' },
   { n: 'EN·ES', label: 'bilingual websites, written natively' },
-  { n: '#1', label: 'local SEO ranking earned for many client' },
 ];
 
 // These were generic agency lines any competitor could have written. Each one
@@ -69,7 +69,7 @@ const pageJsonLd = {
   telephone: '+1-413-361-8451',
   address: { '@type': 'PostalAddress', addressLocality: 'Springfield', addressRegion: 'MA', addressCountry: 'US' },
 },
-    description: 'Web designer and developer with twenty years of experience, including consulting at Accenture and seven years in enterprise eCommerce, now building websites and AI agents for small businesses across Western Massachusetts.',
+    description: 'Web designer and developer building websites since 1995 — hundreds of dental and medical practice websites at MedNet Technologies in New York, consulting at Accenture, and seven years in enterprise eCommerce — now building websites and AI agents for small businesses across Western Massachusetts.',
     knowsLanguage: ['English', 'Spanish'],
     sameAs: ['https://www.linkedin.com/in/mr83/'],
   },
@@ -78,7 +78,7 @@ const pageJsonLd = {
 
 <BaseLayout
   title="About Manny: Web Designer in Springfield, MA | MannyKnows"
-  description="Manny is a web designer & developer in Springfield, MA. Seven years in enterprise eCommerce as the store grew ≈$1B to $4B/yr, now building for Western Mass."
+  description="Manny has built websites since 1995: hundreds of dental & medical practice sites in New York, then enterprise eCommerce. Now building for Western Mass."
 >
   <script type="application/ld+json" set:html={JSON.stringify(pageJsonLd)} />
   {/* one-canvas: one tone for the whole page instead of a different colour
@@ -114,7 +114,7 @@ const pageJsonLd = {
             <span class="apple-gradient-text" data-colorful-title>Who you're working with</span>
           </h1>
           <p class="max-w-3xl mx-auto text-base sm:text-xl text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
-            MannyKnows is a multimedia agency led by Manny, a web designer and developer with twenty years solving business problems for companies big and small, now building websites and AI agents that work for the businesses of Western Massachusetts.
+            MannyKnows is a multimedia agency led by Manny, building websites since 1995 — from hundreds of dental &amp; medical practice sites in New York to enterprise eCommerce — now putting websites and AI agents to work for the businesses of Western Massachusetts.
           </p>
           <div class="mt-6 flex items-center justify-center gap-4 text-sm">
             <a href="https://www.linkedin.com/in/mr83/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-primary-blue dark:text-blue-300 font-medium hover:underline">
@@ -139,14 +139,13 @@ const pageJsonLd = {
 
         <div class="max-w-3xl mx-auto space-y-6 text-lg text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">
           <p>
-            <strong class="text-text-light-primary dark:text-text-dark-primary">Starting MannyKnows had been the plan for years.</strong>
-            What made 2026 the moment was AI. After seven years in enterprise eCommerce, and four years earlier at Accenture, I could finally take everything I'd learned and put it into AI agents that actually work <em>for</em> a business.
+            <strong class="text-text-light-primary dark:text-text-dark-primary">I built my first websites around fourteen, in 1995</strong> — Lycos-era DIY builders, pages I'd load up with Java applets because making something move on a screen felt like magic. Thirty years later the tools have changed completely and the job hasn't: understand the business, build the thing, keep it alive.
           </p>
           <p>
-            My role sat between several departments. I was the person who turned data into decisions. I'd spot a problem in <strong class="text-text-light-primary dark:text-text-dark-primary">Quantum Metric</strong>, dig into the cause, take the fix through the dev cycle in <strong class="text-text-light-primary dark:text-text-dark-primary">Jira</strong>, then A/B test it in <strong class="text-text-light-primary dark:text-text-dark-primary">AB Tasty</strong> to prove it worked. Changes as small as moving an image higher or swapping a GIF for a crisp SVG could add <strong class="text-text-light-primary dark:text-text-dark-primary">thousands of dollars</strong> in sales. The store grew from roughly <strong class="text-text-light-primary dark:text-text-dark-primary">$1B to $4B a year</strong> while I was there, a whole team's work, and I owned my piece of it — turning data into fixes that made the site faster, clearer, and better at converting. You learn what really makes a website grow when a clumsy layout or a slow page costs that kind of money, not in theory, at scale.
+            At <strong class="text-text-light-primary dark:text-text-dark-primary">MedNet Technologies</strong> in New York, a medical web company, I oversaw <strong class="text-text-light-primary dark:text-text-dark-primary">hundreds of websites for dental and medical practices</strong>. I'd call the doctors myself and interview them about the practice, design the site, build it, launch it, work with the SEO team on the copy, and keep it updated for years after. MedNet has since been acquired and folded into another business, and those sites were the company's work rather than mine to publish — so you won't find them in my portfolio, and I won't pretend otherwise. But practices are the niche I know deepest, and the one MannyKnows serves first.
           </p>
           <p>
-            Long before any of that, I was building websites by hand. At <strong class="text-text-light-primary dark:text-text-dark-primary">Mednet</strong>, a medical web company that has since been acquired and folded into another business, I'd call the doctors myself and interview them about their practice, then design the site, slice it up in Photoshop, rebuild it in Dreamweaver, and write the JavaScript that brought it to life. Flash animations too, back when that's what the web ran on. Then I'd launch it, work with the SEO team on the copy, and keep it updated long after. Different tools, same job I do today — understand the business, build the thing, and keep it alive once it's out there.
+            Later came four years consulting at <strong class="text-text-light-primary dark:text-text-dark-primary">Accenture</strong> and seven in enterprise eCommerce, turning data into fixes — spot the problem in the analytics, ship the change, A/B test the proof. The store grew from roughly <strong class="text-text-light-primary dark:text-text-dark-primary">$1B to $4B a year</strong> while I was there. You learn what really makes a website grow when a slow page costs that kind of money.
           </p>
           <figure class="border-l-[3px] border-transparent pl-5" style="border-image: linear-gradient(180deg,#0071e3,#ff4faa) 1;">
             <p class="text-2xl md:text-[1.7rem] font-semibold leading-snug text-text-light-primary dark:text-text-dark-primary">
@@ -154,16 +153,10 @@ const pageJsonLd = {
             </p>
           </figure>
           <p>
-            Western Mass is full of great businesses nobody can find (no website, or one nobody's touched in years) while their customers have moved twice — first to Google, now to asking AI. Closing that gap is the whole point of MannyKnows. We've watched a client climb from invisible to the top of Google for the searches that bring in work, and every site we ship is built for the next shift too, showing up not just in the results, but in the answers.
+            Western Mass is full of great businesses nobody can find, while their customers have moved twice — first to Google, now to asking AI. Closing that gap is the whole point of MannyKnows: websites and AI agents for the dental or medical practice, the painter, the daycare, the shop that wants to sell online. And because so much of Western Mass lives in Spanish — I do too — every site speaks it natively, never as an add-on.
           </p>
           <p>
-            Now that experience works for small businesses across Western Massachusetts. The painter, the daycare, the shop that wants to sell online. They get the same problem-solving, the same relentless testing, and a team of AI agents that answer customers, create content, and book the work around the clock. The same nationwide-caliber standards a big brand pays six figures for, scoped and priced for a local business.
-          </p>
-          <p>
-            So much of Western Mass lives in Spanish. I do too. The sites we build speak it natively. When a family searches <em>"pintor cerca de mí"</em>, or asks an AI in Spanish who to call, my clients can be the answer in that language too. Bilingual is standard on every plan, never an add-on.
-          </p>
-          <p>
-            Most of all, <strong class="text-text-light-primary dark:text-text-dark-primary">a website is never finished.</strong> It isn't something you buy once. It has to keep working, keep ranking, and keep converting, however people search next. That's why the plans are monthly, and why my clients' sites don't quietly rot after launch.
+            Most of all, <strong class="text-text-light-primary dark:text-text-dark-primary">a website is never finished.</strong> It has to keep working, keep ranking, and keep converting, however people search next. That's why the plans are monthly, and why my clients' sites don't quietly rot after launch.
           </p>
         </div>
       </Container>
@@ -177,12 +170,16 @@ const pageJsonLd = {
         <div class="grid gap-6 sm:grid-cols-2 max-w-6xl mx-auto">
           {principles.map((p) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/30 hover:shadow-lg">
-              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d={p.icon} />
-                </svg>
+              {/* Icon shares the title's row (sitewide card-header pattern,
+                  Aug 2026) — an icon on a row of its own wasted a full line. */}
+              <div class="flex items-center gap-3 mb-2">
+                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d={p.icon} />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{p.title}</h3>
               </div>
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{p.title}</h3>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{p.body}</p>
             </div>
           ))}
@@ -201,6 +198,11 @@ const pageJsonLd = {
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </a>
           </div>
+          <!-- Directory listing, deliberately quiet (moved out of the sitewide
+               footer, Manny, Aug 2026). -->
+          <p class="pt-4 text-xs text-text-light-tertiary dark:text-text-dark-tertiary">
+            MannyKnows is <a href="https://www.designrush.com/agency/ai-companies" target="_blank" rel="noopener" class="hover:text-primary-blue underline decoration-dotted underline-offset-2 transition-colors">listed on DesignRush</a> among AI development companies in Massachusetts.
+          </p>
         </div>
       </Container>
     </Section>

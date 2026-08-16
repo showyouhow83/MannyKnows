@@ -44,7 +44,7 @@ const services = [
   {
     href: '/ai-team/',
     title: 'The AI Agents Team',
-    desc: 'You hire Manny AI, one manager that staffs AI specialists on your business: chat agent, daily intel, copy, SEO, engagement, reporting, and more behind the scenes.',
+    desc: 'Manny AI, added to your business and ready to work: one manager that finds the processes AI can improve and staffs AI specialists on them — chat agent, daily intel, copy, SEO, engagement, reporting, and more behind the scenes.',
     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
   },
   {
@@ -162,10 +162,12 @@ const pageJsonLd = {
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {services.map((s) => (
             <a href={s.href} class="group flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 transition-all duration-300 hover:border-primary-blue/40 hover:shadow-xl hover:shadow-primary-blue/10">
-              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={s.icon} /></svg>
+              <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={s.icon} /></svg>
+                </div>
+                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.title}</h3>
               </div>
-              <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">{s.title}</h3>
               <p class="mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{s.desc}</p>
               <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-blue dark:text-blue-300">
                 Learn more

@@ -102,6 +102,16 @@ html.dark .room figure[class*="from-primary-blue"] > div[class*="dark:bg-dark-se
 	backdrop-filter: none;
 }
 
+/* Comparison tables' frozen first column ("What you get"): SOLID always.
+   The translucent-surface rule above catches these cells too, and a sticky
+   cell with a see-through background lets the plan columns scroll visibly
+   underneath it (Manny's screenshot, Aug 2026). */
+html.dark .room th.sticky[class*="dark:bg-"],
+html.dark .room td.sticky[class*="dark:bg-"] {
+	background: #12121f;
+	backdrop-filter: none;
+}
+
 /* ═══ GLOW CHAIN utilities (Aug 2026) — each section opens in its own hue;
    tall sections' floors pre-glow the NEXT section's hue (chain-<own>-<next>).
    SHORT sections (FAQs, CTAs, banners) take a single top glow (glow-<hue>)

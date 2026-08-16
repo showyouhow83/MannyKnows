@@ -74,6 +74,18 @@ for small businesses in Western Massachusetts).
   real sentences or connectors. Keep colons for genuine lists, labels
   ("Disconnected: scripts & tools"), SERP title separators, and the approved
   punchline "One team. One brain. One boss: you."
+- **AI-team framing (Aug 2026):** agents are "added to your business" /
+  "ready to work" — never a hiring process. "Hire Manny by the week"
+  (the human, Multimedia Agency) is the approved exception, as is a customer
+  "ready to hire" a business.
+- **Lead niche:** web design & marketing for **dental & medical practices**,
+  backed by Manny's MedNet Technologies (NY) experience — hundreds of practice
+  sites overseen there. That was the employer's work: state it as experience,
+  NEVER show or link those sites as portfolio (/about + websites-for-clinics
+  carry the approved wording).
+- **Card headers:** icon/number chips share the title's row
+  (`flex items-center gap-3`) — never an icon on a row of its own. StepCards
+  is the shared numbered-card component; PricingCards the only pricing grid.
 - **Banned words:** "genuinely", "honestly", "no catch", "plain English"
   (use "clear"). Don't protest sincerity — prove with specifics.
 - **Honesty rule:** never publish invented stats, clients, or capabilities.

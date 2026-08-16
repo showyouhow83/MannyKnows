@@ -164,8 +164,8 @@ export const localAreas: LocalArea[] = [
     beyondWebHeading: 'The rest of the toolkit, built in Springfield',
     beyondWeb: [
       {
-        title: 'AI employees, hired like staff',
-        body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager you hire, AI staff from $95/mo.',
+        title: 'AI employees, ready to work',
+        body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager added to your business, AI staff from $40/mo.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },

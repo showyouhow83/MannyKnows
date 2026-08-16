@@ -164,13 +164,15 @@ export const professions: Profession[] = [
   {
     slug: 'clinics',
     name: 'Clinics',
-    metaTitle: 'Websites for Clinics & Dentists in Western Mass | MannyKnows',
+    // The niche MannyKnows leads with (Manny, Aug 2026): web design & marketing
+    // for dental & medical practices — backed by the MedNet experience below.
+    metaTitle: 'Web Design for Dental & Medical Practices, MA | MannyKnows',
     metaDescription:
-      'Fast, trustworthy websites for clinics and dental practices in Western Mass: local SEO and an AI agent answering patients 24/7. From $95/mo.',
-    badge: 'For clinics & practices',
-    h1: 'Websites for clinics that keep the schedule full',
+      'Website design and marketing for dental & medical practices in Western Mass, built on hundreds of practice websites. Remi AI answers patients 24/7.',
+    badge: 'For dental & medical practices',
+    h1: 'Websites for dental & medical practices that keep the schedule full',
     heroIntro:
-      "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free.",
+      "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free. It's the work Manny knows deepest — he oversaw hundreds of practice websites at MedNet Technologies in New York before building for Western Mass.",
     illustration: 'agent',
     painPoints: [
       {
@@ -210,7 +212,7 @@ export const professions: Profession[] = [
     faqs: [
       {
         q: 'Have you built websites for medical practices before?',
-        a: "Yes. Earlier in my career I built practice websites at Mednet, a medical web company. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. That company has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But medical practices are not new ground for me.",
+        a: "Yes — hundreds of them. At MedNet Technologies in New York, a medical web company, I oversaw hundreds of websites for dental and medical practices. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. MedNet has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But dental and medical practices are the niche I know deepest.",
       },
       {
         q: 'How much does a clinic or practice website cost?',

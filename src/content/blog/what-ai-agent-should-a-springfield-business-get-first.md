@@ -33,9 +33,9 @@ Your first agent goes exactly where the leak is: nowhere else. Here's how the an
 - **The writing never gets done · customers searching Springfield find someone else · reviews pile up unanswered · you can't say what's working** → each of those is one specialist's whole job.
 - **Your bottleneck isn't on any list** → then the agent shouldn't be either. We've built a custom agent that checks a contractor's project statuses against their backend, and a bilingual phone system that answers a daycare's calls and routes every one.
 
-## You don't hire ten agents. You hire one manager.
+## You don't add ten agents. One manager goes to work.
 
-Here's the part that surprises people: you don't assemble this yourself. You hire **Manny AI**: one manager that staffs AI specialists on your business, like hiring three, five, or seven people, each specialized, without managing any of them. You ask for what you need; Manny AI briefs the right specialists, runs the handoffs, and brings the finished work back for your approval. Nothing ships until you say so.
+Here's the part that surprises people: you don't assemble this yourself. **Manny AI** is added to your business, ready to work: one manager that finds the processes AI can improve and staffs AI specialists on them, like three, five, or seven people, each specialized, without you managing any of them. You ask for what you need; Manny AI briefs the right specialists, runs the handoffs, and brings the finished work back for your approval. Nothing ships until you say so.
 
 And because every specialist reads from one shared Brand Brain (your services, your prices, your voice) starting small costs you nothing later. Whatever gets staffed next inherits everything the team already learned.
 
@@ -49,6 +49,6 @@ Three Western Mass businesses, today:
 
 ## So which one first?
 
-Whichever one sits on your bottleneck. If you can name it, the map above points at your first hire. If you can't, that's what the 15-minute diagnostic is for: two questions, fifteen minutes, and you leave knowing which department is bleeding and which single agent stops it, and if the answer is "none yet," we'll tell you that too.
+Whichever one sits on your bottleneck. If you can name it, the map above points at the first agent to put to work. If you can't, that's what the 15-minute diagnostic is for: two questions, fifteen minutes, and you leave knowing which department is bleeding and which single agent stops it, and if the answer is "none yet," we'll tell you that too.
 
 **[Meet the AI Agents Team and book the diagnostic →](/ai-team/)** — built in Springfield, working for businesses across Western Massachusetts, in English and Spanish.

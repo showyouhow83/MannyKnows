@@ -19,6 +19,7 @@ import StepCards from '../components/ui/StepCards.astro';
 import Faq from '../components/ui/Faq.astro';
 import AiWebsiteAgentDemo from '../components/sections/AiWebsiteAgentDemo.astro';
 import QuoteBlock from '../components/ui/QuoteBlock.astro';
+import PricingCards, { type PricingCard } from '../components/pricing/PricingCards.astro';
 import { getTestimonial } from '../data/testimonials';
 import {
   aiWebsiteSetupFee,
@@ -38,6 +39,36 @@ const PHONE_TEL = '+14133618451';
 
 const heroSections = aiWebsiteSections.filter((s) => s.hero);
 const restSections = aiWebsiteSections.filter((s) => !s.hero);
+
+// The two numbers on the shared pricing grid (same card anatomy as /plans and
+// every other pricing surface, Manny, Aug 2026). billing='none' because these
+// aren't competing tiers — one product, its one-time and its monthly, each
+// card itemizing exactly what that number buys.
+const priceCards: PricingCard[] = [
+  {
+    name: 'Build & launch',
+    audience: 'What the one-time buys',
+    price: aiWebsiteSetupFee,
+    priceUnit: 'one-time',
+    priceNote: 'waived when you prepay the year',
+    scope: 'The page + Remi AI, set up once',
+    tagline: 'The work that happens once — designed, written, trained, and live on your own domain.',
+    features: aiWebsiteSetupIncludes,
+    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
+  },
+  {
+    name: 'Keep it running',
+    audience: 'What the monthly buys',
+    price: aiWebsiteMonthly,
+    priceUnit: `/mo · $${aiWebsiteYearly} a year`,
+    priceNote: 'cancel anytime, the site and domain stay yours',
+    scope: 'Hosted, answering & maintained',
+    tagline: 'The work that never stops — so the page stays fast, keeps ranking, and keeps answering.',
+    features: aiWebsiteMonthlyIncludes,
+    featured: true,
+    primary: { label: 'Start my one-page site', href: '#contact', context: 'One-Page Website' },
+  },
+];
 
 // Title/meta kept under 60/160 chars — search results truncate past that.
 const META_DESCRIPTION = `A one-page website with Remi AI, an AI agent that answers customers and captures every lead. $${aiWebsiteSetupFee} to build, $${aiWebsiteMonthly}/mo to run. Springfield, MA.`;
@@ -169,10 +200,12 @@ const pageJsonLd = {
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {aiWebsiteAgent.map((c) => (
             <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20 mb-4">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={c.icon} /></svg>
+                </div>
+                <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{c.title}</h3>
               </div>
-              <h3 class="text-base font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{c.title}</h3>
               <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{c.body}</p>
             </div>
           ))}
@@ -224,46 +257,8 @@ const pageJsonLd = {
           </p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">One-time</span>
-            <div class="flex items-baseline gap-2 mt-1 mb-4">
-              <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteSetupFee}</span>
-              <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">build &amp; launch</span>
-            </div>
-            <ul class="space-y-2.5 flex-1">
-              {aiWebsiteSetupIncludes.map((f) => (
-                <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
-                  <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div class="rounded-2xl border border-primary-blue/40 ring-1 ring-primary-blue/15 bg-white dark:bg-dark-secondary p-7 flex flex-col">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-primary-blue dark:text-blue-300">Every month after</span>
-            <div class="flex items-baseline gap-2 mt-1 mb-1">
-              <span class="text-4xl font-black text-text-light-primary dark:text-text-dark-primary">${aiWebsiteMonthly}</span>
-              <span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo, ${aiWebsiteYearly} a year</span>
-            </div>
-            <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary mb-4">Cancel anytime. The site and domain stay yours.</p>
-            <ul class="space-y-2.5 flex-1">
-              {aiWebsiteMonthlyIncludes.map((f) => (
-                <li class="flex items-start gap-2 text-sm text-text-light-primary dark:text-text-dark-primary">
-                  <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div class="text-center mt-8">
-          <a href="#contact" data-contact-context="One-Page Website" class="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold hover:shadow-lg hover:shadow-primary-blue/25 transition-shadow">
-            Start my one-page site
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
+        <div class="max-w-4xl mx-auto">
+          <PricingCards id="one-page-pricing" cards={priceCards} billing="none" featuredLabel="The part that never stops" />
         </div>
 
         <!-- The honest comparison, rather than a section that argues against itself -->
@@ -375,8 +370,10 @@ const pageJsonLd = {
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {aiWebsiteLighthouse.map((l) => (
               <div class="bg-white dark:bg-dark-secondary border border-light-tertiary dark:border-dark-accent rounded-xl p-5 text-center">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black mb-3">100</div>
-                <h4 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary mb-1">{l.name}</h4>
+                <div class="flex items-center justify-center gap-2.5 mb-2">
+                  <div class="inline-flex items-center justify-center w-10 h-10 flex-shrink-0 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-black text-sm">100</div>
+                  <h4 class="text-sm font-bold text-text-light-primary dark:text-text-dark-primary">{l.name}</h4>
+                </div>
                 <p class="text-xs text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{l.body}</p>
               </div>
             ))}

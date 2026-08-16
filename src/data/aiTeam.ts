@@ -225,7 +225,7 @@ export const aiTeamFaq = [
   {
     // Real long-tail query — geo in the question on purpose (Aug 2026 SEO pass).
     q: 'Which AI agent should my Springfield business get first?',
-    a: `Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the chat agent, a product on its own with plans from $${remiLiteMonthly}/mo. For everything else you hire Manny AI, and it staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.`,
+    a: `Whichever one sits on your bottleneck. Ask yourself what you're bad at that keeps costing you money. If the answer is unanswered customers, that's Remi AI, the chat agent, a product on its own with plans from $${remiLiteMonthly}/mo. For everything else, Manny AI is added to your business and staffs the specialist that fixes it, stock or custom-built. Not sure? That's what the 15-minute diagnostic is for.`,
   },
   {
     q: "Isn't this just ChatGPT I could use myself?",
@@ -245,15 +245,15 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every AI-Powered Website plan. For anything bigger you hire Manny AI, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
+    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every AI-Powered Website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team.`,
   },
   {
-    q: 'What does "hiring" Manny AI actually mean?',
-    a: "We build your Brand Brain, then Manny AI staffs the specialists your work calls for. Each one is trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard. You ask Manny AI for what you need, approve what goes out, and we handle the updates and support.",
+    q: 'What does adding Manny AI to my business actually mean?',
+    a: "We build your Brand Brain, then Manny AI goes to work: it looks at how your business runs, finds the processes AI can improve, and staffs the specialists that work calls for. Each one is trained on your rules, your voice, and your data, and fine-tuned with you until it's ready. From there the team lives in your admin and dashboard. You ask Manny AI for what you need, approve what goes out, and we handle the updates and support.",
   },
   {
-    q: 'Do I have to hire a whole team of agents?',
-    a: "No. That's the point of Manny AI. You hire one manager, and it deploys only the specialists your bottleneck calls for — three, five, or seven of them as the work demands — coordinating every handoff so you never play middleman.",
+    q: 'Do I have to bring on a whole team of agents?',
+    a: "No. That's the point of Manny AI. One manager goes to work on your business, and it deploys only the specialists your bottleneck calls for — three, five, or seven of them as the work demands — coordinating every handoff so you never play middleman.",
   },
   {
     q: "How do I know it's working?",
