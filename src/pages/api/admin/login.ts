@@ -38,7 +38,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const body = await request.json() as { username?: string; password?: string };
-    const { username, password } = body;
+    const username = typeof body?.username === 'string' ? body.username.slice(0, 100) : '';
+    const password = typeof body?.password === 'string' ? body.password.slice(0, 500) : '';
 
     if (!username || !password) {
       return new Response(JSON.stringify({
@@ -50,9 +51,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
+    // Per-account lockout on top of the per-IP window, so a distributed
+    // guesser can't get unbounded tries at one username. 10 failures / 30 min.
+    const acctKey = `login_fail:${username.toLowerCase()}`;
+    try {
+      const fails = parseInt((await (env?.MK_KV_SESSIONS as any)?.get(acctKey)) || '0', 10);
+      if (fails >= 10) {
+        console.warn('[security] admin account locked (too many failures)', { username, ip: clientIP });
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'Too many failed attempts for this account. Try again in about 30 minutes.'
+        }), { status: 429, headers: { 'Content-Type': 'application/json' } });
+      }
+    } catch {}
+
     let authenticated = false;
     let userDisplayName = username;
     let userRole = 'admin';
+    let userFound = false;
 
     // Try database authentication first (multi-user)
     if (db) {
@@ -62,6 +78,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         ).bind(username, 'active').first<AdminUser>();
 
         if (user) {
+          userFound = true;
           // Verify password against stored hash
           const isValid = await verifyPassword(password, user.password_hash, user.salt);
 
@@ -81,6 +98,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       } catch (dbError) {
         // Table might not exist yet, fall through to legacy auth
         console.log('[Admin] DB auth not available, trying legacy auth');
+      }
+      // Unknown username: burn the same PBKDF2 cost against a fixed salt so
+      // the response time doesn't say whether the account exists.
+      if (!userFound) {
+        try { await verifyPassword(password, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'mk-dummy-salt-for-timing'); } catch {}
       }
     }
 
@@ -103,8 +125,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
     }
 
-    // Authentication failed
+    // Authentication failed — log it (security event) and count it against
+    // the account.
     if (!authenticated) {
+      console.warn('[security] admin login failed', { username, ip: clientIP });
+      try {
+        const kv = env?.MK_KV_SESSIONS as any;
+        const fails = parseInt((await kv?.get(acctKey)) || '0', 10);
+        await kv?.put(acctKey, String(fails + 1), { expirationTtl: 30 * 60 });
+      } catch {}
       return new Response(JSON.stringify({
         success: false,
         error: 'Invalid username or password'
@@ -113,6 +142,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+    // Success clears the account's failure counter.
+    try { await (env?.MK_KV_SESSIONS as any)?.delete(acctKey); } catch {}
 
     // Create session (include role for access control)
     const { sessionCookie, expiresAt } = await AdminAuth.createSession(username, sessionSecret, userRole);

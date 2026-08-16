@@ -157,10 +157,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     console.error('Error generating upload URL:', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to generate upload URL',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Upload failed' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -302,10 +299,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     console.error('Error generating upload URL (POST):', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to generate upload URL',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Upload failed' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

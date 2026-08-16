@@ -23,12 +23,21 @@ export interface RateLimitResult {
   tier: string;
 }
 
+export interface RateLimiterOptions {
+  /** Per-tier overrides (window / max) for one endpoint — the shared defaults stay untouched. */
+  tiers?: Partial<Record<keyof RateLimitTiers, Partial<RateLimitConfig>>>;
+  /** KV key namespace so an endpoint with its own limits doesn't share counters with others. */
+  scope?: string;
+}
+
 export class RateLimiter {
   private kv: any;
   private tiers: RateLimitTiers;
+  private scope: string;
 
-  constructor(kv: any) {
+  constructor(kv: any, options: RateLimiterOptions = {}) {
     this.kv = kv;
+    this.scope = options.scope || 'rate_limit';
     this.tiers = {
       anonymous: {
         windowMs: 60 * 1000, // 1 minute
@@ -51,6 +60,11 @@ export class RateLimiter {
         message: 'Admin rate limit exceeded.'
       }
     };
+    if (options.tiers) {
+      for (const [tier, cfg] of Object.entries(options.tiers) as [keyof RateLimitTiers, Partial<RateLimitConfig>][]) {
+        if (cfg) this.tiers[tier] = { ...this.tiers[tier], ...cfg };
+      }
+    }
   }
 
   /**
@@ -65,7 +79,7 @@ export class RateLimiter {
     const windowStart = Math.floor(now / config.windowMs) * config.windowMs;
     
     // Create unique key for this IP, tier, and time window
-    const key = `rate_limit:${userTier}:${clientIP}:${windowStart}`;
+    const key = `${this.scope}:${userTier}:${clientIP}:${windowStart}`;
     
     try {
       // Get current count for this window

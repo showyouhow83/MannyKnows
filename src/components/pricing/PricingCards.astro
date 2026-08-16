@@ -87,13 +87,22 @@ const money = (n: number) => n.toLocaleString('en-US');
 <div id={id} data-pricing-root>
   <!-- Billing toggle -->
   {billing === 'monthly' && (
-  <div class="flex flex-col items-center gap-2 mb-10">
-    <div class="inline-flex items-center rounded-full border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-1" role="group" aria-label="Billing period">
-      <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 text-text-light-secondary dark:text-text-dark-secondary">
+  <div class="flex flex-col items-center gap-2.5 mb-10">
+    <!-- Segmented control: a glass track with one gradient thumb that slides
+         under whichever option is pressed. The thumb is positioned by JS
+         (measured from the pressed button); until that runs, the pressed
+         button paints its own gradient so the first frame already looks right. -->
+    <div class="billing-toggle" role="group" aria-label="Billing period" data-billing-toggle>
+      <span class="billing-thumb" aria-hidden="true" data-billing-thumb></span>
+      <button type="button" data-billing-btn="monthly" aria-pressed="false" class="billing-btn">
         Monthly
       </button>
-      <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-primary-blue to-primary-pink text-white shadow">
-        Yearly <span class="font-bold billing-btn-note text-white">· build free</span>
+      <button type="button" data-billing-btn="yearly" aria-pressed="true" class="billing-btn">
+        Yearly
+        <span class="billing-btn-note">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+          Build free
+        </span>
       </button>
     </div>
     <p class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary" data-billing-caption>
@@ -260,6 +269,118 @@ const money = (n: number) => n.toLocaleString('en-US');
 </div>
 
 <style>
+  /* ── Billing toggle ──────────────────────────────────────────────────────
+     A segmented control in the same glass idiom as the CTAs and the nav: a
+     translucent track with a hairline edge and a lit top, and one brand-
+     gradient thumb that slides between the two options. The pressed label
+     turns white on the thumb; the "Build free" chip inside Yearly reads as a
+     green savings tag when the option is at rest and as a frosted chip once
+     it's pressed, so the value proposition stays visible in both states. */
+  .billing-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .2rem;
+    padding: .3rem;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.06),
+      0 8px 24px -12px rgba(37, 99, 235, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+  :global(html.dark) .billing-toggle {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 8px 24px -12px rgba(124, 58, 237, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .billing-thumb {
+    position: absolute;
+    top: .3rem;
+    bottom: .3rem;
+    left: 0;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2563eb, #d946ef);
+    box-shadow:
+      0 6px 18px -4px rgba(124, 58, 237, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    opacity: 0;
+    transform: translateX(var(--x, 0px));
+    pointer-events: none;
+  }
+  .billing-toggle.is-ready .billing-thumb { opacity: 1; }
+  .billing-toggle.is-live .billing-thumb {
+    transition: transform .32s cubic-bezier(.4, 0, .2, 1), width .32s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .billing-btn {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem 1.15rem;
+    border-radius: 999px;
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #52525b;
+    white-space: nowrap;
+    transition: color .25s;
+  }
+  .billing-btn:hover { color: #18181b; }
+  .billing-btn:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.7);
+    outline-offset: 2px;
+  }
+  .billing-btn[aria-pressed="true"] { color: #fff; }
+  :global(html.dark) .billing-btn { color: rgba(255, 255, 255, 0.62); }
+  :global(html.dark) .billing-btn:hover { color: #fff; }
+  :global(html.dark) .billing-btn[aria-pressed="true"] { color: #fff; }
+
+  /* Fallback fill for the first frame (before JS positions the thumb) and
+     for the no-JS case, so the pressed option is never unmarked. */
+  .billing-toggle:not(.is-ready) .billing-btn[aria-pressed="true"] {
+    background: linear-gradient(90deg, #2563eb, #d946ef);
+    box-shadow: 0 6px 18px -4px rgba(124, 58, 237, 0.55);
+  }
+
+  .billing-btn-note {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .18rem .5rem .18rem .38rem;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: rgba(22, 163, 74, 0.12);
+    color: #15803d;
+    transition: background .25s, color .25s;
+  }
+  .billing-btn-note svg { width: .8rem; height: .8rem; }
+  :global(html.dark) .billing-btn-note {
+    background: rgba(74, 222, 128, 0.16);
+    color: #4ade80;
+  }
+  .billing-btn[aria-pressed="true"] .billing-btn-note,
+  :global(html.dark) .billing-btn[aria-pressed="true"] .billing-btn-note {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .billing-toggle.is-live .billing-thumb { transition: none; }
+  }
+
   /* ── Accent ramp ─────────────────────────────────────────────────────────
      Space-separated RGB so one custom property drives fills at any alpha. */
   /* `--btn-ink` is the light-mode button label: the accent is too light on a
@@ -573,8 +694,18 @@ const money = (n: number) => n.toLocaleString('en-US');
       const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
       const caption = root.querySelector('[data-billing-caption]');
       const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
-      const activeCls = ['bg-gradient-to-r', 'from-primary-blue', 'to-primary-pink', 'text-white', 'shadow'];
-      const inactiveCls = ['text-text-light-secondary', 'dark:text-text-dark-secondary'];
+      const toggle = root.querySelector<HTMLElement>('[data-billing-toggle]');
+      const thumb = root.querySelector<HTMLElement>('[data-billing-thumb]');
+
+      // Slide the thumb under the pressed button. Measured, not computed —
+      // the two labels are different widths ("Yearly" carries a chip).
+      function placeThumb() {
+        if (!toggle || !thumb) return;
+        const pressed = toggle.querySelector<HTMLButtonElement>('[data-billing-btn][aria-pressed="true"]');
+        if (!pressed) return;
+        thumb.style.setProperty('--x', `${pressed.offsetLeft}px`);
+        thumb.style.width = `${pressed.offsetWidth}px`;
+      }
 
       function setBilling(mode: 'monthly' | 'yearly') {
         views.forEach((el) => {
@@ -586,23 +717,31 @@ const money = (n: number) => n.toLocaleString('en-US');
             : 'One upfront payment for the year, 2 months free and no setup fee';
         }
         buttons.forEach((b) => {
-          const active = b.dataset.billingBtn === mode;
-          b.setAttribute('aria-pressed', String(active));
-          activeCls.forEach((c) => b.classList.toggle(c, active));
-          inactiveCls.forEach((c) => b.classList.toggle(c, !active));
-          const note = b.querySelector('.billing-btn-note');
-          if (note) {
-            // White inside the active gradient pill, brand-blue accent otherwise.
-            note.classList.toggle('text-white', active);
-            note.classList.toggle('text-primary-blue', !active);
-            note.classList.toggle('dark:text-blue-300', !active);
-          }
+          b.setAttribute('aria-pressed', String(b.dataset.billingBtn === mode));
         });
+        placeThumb();
       }
 
       buttons.forEach((b) =>
         b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
       );
+
+      if (toggle && thumb) {
+        // First placement lands without animation (is-ready), then transitions
+        // switch on (is-live) for every click after. Fonts can settle after
+        // first paint and change the button widths, so re-measure on load and
+        // whenever the toggle itself resizes.
+        placeThumb();
+        toggle.classList.add('is-ready');
+        requestAnimationFrame(() => toggle.classList.add('is-live'));
+        window.addEventListener('load', placeThumb, { once: true });
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(placeThumb).observe(toggle);
+        } else {
+          window.addEventListener('resize', placeThumb);
+        }
+        if ((document as any).fonts?.ready) (document as any).fonts.ready.then(placeThumb);
+      }
 
       /* ── Mobile rail ───────────────────────────────────────────────── */
       const rail = root.querySelector<HTMLElement>('[data-pricing-rail]');

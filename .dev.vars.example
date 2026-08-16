@@ -3,3 +3,7 @@ ADMIN_USERNAME=manny
 ADMIN_PASSWORD=change-me
 SESSION_SECRET=change-me-long-random
 # Optional locally: RESEND_API_KEY, GEMINI_API_KEY, TWILIO_*, CRON_SECRET
+# Scanner owner unlock (comma-separated emails that skip the free-scan quota,
+# get the full report on the page, and don't trigger "scanner lead" alerts).
+# Production value is a worker secret: npx wrangler secret put SCAN_OWNER_EMAILS
+# SCAN_OWNER_EMAILS=you@example.com

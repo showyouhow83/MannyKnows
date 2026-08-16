@@ -4,6 +4,20 @@
 //   - /api/inbound      (Resend email.received webhook, send.mannyknows.com)
 //   - /api/inbound-raw  (Cloudflare Email Routing worker handler, reply.mannyknows.com)
 
+// Attachment MIME types allowed to be served inline from the public media host.
+// Everything else is stored as application/octet-stream + Content-Disposition:
+// attachment so a sender can't plant HTML/SVG/JS on images.mannyknows.com.
+const INLINE_ATTACHMENT_TYPES = new Set([
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+	"image/gif",
+	"image/heic",
+	"application/pdf",
+	"video/mp4",
+	"video/quicktime",
+]);
+
 export type ParsedInbound = {
 	text: string | null;
 	html: string | null;
@@ -140,11 +154,19 @@ export async function threadCustomerReply(
 				if (a.data.byteLength > 50 * 1024 * 1024) continue;
 				const safeName = a.filename.replace(/[^\w.-]+/g, "_").slice(-120);
 				const key = `message-attachments/${Date.now()}-${safeName}`;
-				await bucket.put(key, a.data, { httpMetadata: { contentType: a.contentType } });
+				// The sender-declared MIME lands on a public media URL, so only a
+				// fixed allowlist is served inline; anything else is stored as an
+				// opaque download (never rendered by the browser).
+				const declaredType = (a.contentType || "").split(";")[0].trim().toLowerCase();
+				const inlineOk = INLINE_ATTACHMENT_TYPES.has(declaredType);
+				const httpMetadata: { contentType: string; contentDisposition?: string } = inlineOk
+					? { contentType: declaredType }
+					: { contentType: "application/octet-stream", contentDisposition: "attachment" };
+				await bucket.put(key, a.data, { httpMetadata });
 				stored.push({
 					url: `https://images.mannyknows.com/${key}`,
 					name: a.filename,
-					type: a.contentType,
+					type: inlineOk ? declaredType : "application/octet-stream",
 					size: a.data.byteLength,
 				});
 			}

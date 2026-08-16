@@ -34,6 +34,77 @@ export interface Profession {
 
 export const professions: Profession[] = [
   {
+    slug: 'clinics',
+    name: 'Clinics',
+    // The niche MannyKnows leads with (Manny, Aug 2026): web design & marketing
+    // for dental & medical practices — backed by the MedNet experience below.
+    metaTitle: 'Web Design for Dental & Medical Practices, MA | MannyKnows',
+    metaDescription:
+      'Website design and marketing for dental & medical practices in Western Mass, built on hundreds of practice websites. Remi AI answers patients 24/7.',
+    badge: 'For dental & medical practices',
+    h1: 'Websites for dental & medical practices that keep the schedule full',
+    heroIntro:
+      "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free. It's the work Manny knows deepest — he oversaw hundreds of practice websites at MedNet Technologies in New York before building for Western Mass.",
+    illustration: 'agent',
+    painPoints: [
+      {
+        title: 'Patients want to book without calling',
+        body: "More and more patients choose the practice they can research and book online at 9 p.m. If your site can’t answer and schedule, they pick the one down the street that can.",
+      },
+      {
+        title: 'Your front desk is buried in the phone',
+        body: "Hours, insurance, new-patient questions, rescheduling: the same calls all day, pulling staff away from patients in the room. An AI agent handles the repeat questions and books appointments so your team can breathe.",
+      },
+      {
+        title: 'Many patients are more comfortable in Spanish',
+        body: "In Western Mass, language is often the deciding factor in where a family seeks care. A site and an agent that speak Spanish natively earn the trust a translated page never will.",
+      },
+    ],
+    offer: [
+      {
+        title: 'A clean, trustworthy site',
+        body: 'Calm, fast, and reassuring: your services, your providers, your hours and locations, and real reviews, laid out the way a patient actually reads them.',
+      },
+      {
+        title: '“Near me” local SEO',
+        body: 'Technical SEO and a verified Google Business Profile so patients find you at the top of the map, on Google and when they ask an AI like ChatGPT for a “dentist near me.”',
+      },
+      {
+        title: 'An AI agent that books appointments 24/7',
+        body: 'Answers the common questions and books appointments around the clock, in English or Spanish, turning a late-night search into a filled slot.',
+      },
+      {
+        title: 'Privacy-conscious by design',
+        body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place: thoughtful defaults, not an afterthought.',
+      },
+    ],
+    // No published clinic case study — the medical work predates MannyKnows and
+    // belonged to an employer, so it's stated as experience, never shown as a
+    // portfolio piece. Do not add screenshots or links for it.
+    faqs: [
+      {
+        q: 'Have you built websites for medical practices before?',
+        a: "Yes — hundreds of them. At MedNet Technologies in New York, a medical web company, I oversaw hundreds of websites for dental and medical practices. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. MedNet has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But dental and medical practices are the niche I know deepest.",
+      },
+      {
+        q: 'How much does a clinic or practice website cost?',
+        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. The build is a one-time $595, then $95/mo with no term; prepay the year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
+      },
+      {
+        q: 'Can patients book appointments through the site?',
+        a: 'Yes: the AI agent answers common questions and books appointments 24/7, then hands the details to your front desk. We scope it to how your practice schedules so it fits your workflow, not the other way around.',
+      },
+      {
+        q: 'Is this HIPAA-safe?',
+        a: 'We build privacy-conscious contact and booking flows and avoid collecting sensitive medical detail where it doesn’t belong. For anything that touches protected health information, we scope the tools and agreements with you up front so the setup fits your obligations: we’ll never hand-wave a compliance question.',
+      },
+      {
+        q: 'Will it work in Spanish?',
+        a: 'Yes, multilingual is standard. The site and the agent both work in Spanish and English, written for Spanish-speaking patients rather than run through a translator.',
+      },
+    ],
+  },
+  {
     slug: 'contractors',
     name: 'Contractors',
     metaTitle: 'Websites for Contractors in Western Mass | MannyKnows',
@@ -158,77 +229,6 @@ export const professions: Profession[] = [
       {
         q: 'We’re brand new online: is that a problem?',
         a: 'Not at all: that’s the best time to start. JK Daycare had only been live a week when they started seeing their traffic grow day by day. We build the foundation right so it compounds from here.',
-      },
-    ],
-  },
-  {
-    slug: 'clinics',
-    name: 'Clinics',
-    // The niche MannyKnows leads with (Manny, Aug 2026): web design & marketing
-    // for dental & medical practices — backed by the MedNet experience below.
-    metaTitle: 'Web Design for Dental & Medical Practices, MA | MannyKnows',
-    metaDescription:
-      'Website design and marketing for dental & medical practices in Western Mass, built on hundreds of practice websites. Remi AI answers patients 24/7.',
-    badge: 'For dental & medical practices',
-    h1: 'Websites for dental & medical practices that keep the schedule full',
-    heroIntro:
-      "Patients search, compare, and expect to book without a phone call. A clean, trustworthy site that ranks for “near me,” with an AI agent that answers questions and books appointments any hour, keeps your chairs full and your front desk free. It's the work Manny knows deepest — he oversaw hundreds of practice websites at MedNet Technologies in New York before building for Western Mass.",
-    illustration: 'agent',
-    painPoints: [
-      {
-        title: 'Patients want to book without calling',
-        body: "More and more patients choose the practice they can research and book online at 9 p.m. If your site can’t answer and schedule, they pick the one down the street that can.",
-      },
-      {
-        title: 'Your front desk is buried in the phone',
-        body: "Hours, insurance, new-patient questions, rescheduling: the same calls all day, pulling staff away from patients in the room. An AI agent handles the repeat questions and books appointments so your team can breathe.",
-      },
-      {
-        title: 'Many patients are more comfortable in Spanish',
-        body: "In Western Mass, language is often the deciding factor in where a family seeks care. A site and an agent that speak Spanish natively earn the trust a translated page never will.",
-      },
-    ],
-    offer: [
-      {
-        title: 'A clean, trustworthy site',
-        body: 'Calm, fast, and reassuring: your services, your providers, your hours and locations, and real reviews, laid out the way a patient actually reads them.',
-      },
-      {
-        title: '“Near me” local SEO',
-        body: 'Technical SEO and a verified Google Business Profile so patients find you at the top of the map, on Google and when they ask an AI like ChatGPT for a “dentist near me.”',
-      },
-      {
-        title: 'An AI agent that books appointments 24/7',
-        body: 'Answers the common questions and books appointments around the clock, in English or Spanish, turning a late-night search into a filled slot.',
-      },
-      {
-        title: 'Privacy-conscious by design',
-        body: 'Contact and booking flows set up to avoid collecting sensitive details in the wrong place: thoughtful defaults, not an afterthought.',
-      },
-    ],
-    // No published clinic case study — the medical work predates MannyKnows and
-    // belonged to an employer, so it's stated as experience, never shown as a
-    // portfolio piece. Do not add screenshots or links for it.
-    faqs: [
-      {
-        q: 'Have you built websites for medical practices before?',
-        a: "Yes — hundreds of them. At MedNet Technologies in New York, a medical web company, I oversaw hundreds of websites for dental and medical practices. I'd call the doctors myself and interview them about how their practice actually ran, then design the site, build it, launch it, work with the SEO team on the copy, and keep it updated afterward. MedNet has since been acquired and folded into another business, and the sites were the company's work rather than mine to publish, so you won't find them in my portfolio, and I won't pretend otherwise. But dental and medical practices are the niche I know deepest.",
-      },
-      {
-        q: 'How much does a clinic or practice website cost?',
-        a: 'Our website plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering 24/7, “near me” local SEO, Google Business Profile, and upkeep included. The build is a one-time $595, then $95/mo with no term; prepay the year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo. One-time builds are available too, billed at a flat $75/hr and quoted up front.',
-      },
-      {
-        q: 'Can patients book appointments through the site?',
-        a: 'Yes: the AI agent answers common questions and books appointments 24/7, then hands the details to your front desk. We scope it to how your practice schedules so it fits your workflow, not the other way around.',
-      },
-      {
-        q: 'Is this HIPAA-safe?',
-        a: 'We build privacy-conscious contact and booking flows and avoid collecting sensitive medical detail where it doesn’t belong. For anything that touches protected health information, we scope the tools and agreements with you up front so the setup fits your obligations: we’ll never hand-wave a compliance question.',
-      },
-      {
-        q: 'Will it work in Spanish?',
-        a: 'Yes, multilingual is standard. The site and the agent both work in Spanish and English, written for Spanish-speaking patients rather than run through a translator.',
       },
     ],
   },

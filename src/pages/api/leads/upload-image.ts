@@ -8,6 +8,8 @@ import { resolveAllowedOrigin } from '../../../lib/cors';
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB max
 const MAX_IMAGES_PER_LEAD = 15;
 const ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
+// Fixed MIME → extension map. Extensions are never derived from the client string.
+const MIME_EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/heic': 'heic' };
 
 function getAllowedOrigin(request: Request): string | null {
   return resolveAllowedOrigin(request); // prod always; dev/LAN only on dev host (L9)
@@ -42,9 +44,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // Validate content type
-    const contentType = request.headers.get('Content-Type') || '';
-    if (!ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t))) {
+    // Validate content type (exact match on the media type; params/charset stripped)
+    const contentType = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase();
+    if (!ALLOWED_CONTENT_TYPES.includes(contentType)) {
       return new Response(
         JSON.stringify({ error: 'Invalid file type. Only JPEG, PNG, WebP, and HEIC images are allowed.' }),
         { status: 400, headers: makeHeaders() }
@@ -117,7 +119,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Generate unique filename
-    const extension = contentType.split('/')[1]?.replace('jpeg', 'jpg') || 'jpg';
+    const extension = MIME_EXT[contentType] || 'jpg';
     const timestamp = Date.now();
     const imageIndex = existingImages.length + 1;
     const fileName = `${timestamp}_${imageIndex}.${extension}`;
@@ -165,10 +167,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     console.error('[Lead Image] Upload error:', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to upload image',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Upload failed' }),
       { status: 500, headers: makeHeaders() }
     );
   }

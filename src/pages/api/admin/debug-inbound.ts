@@ -4,7 +4,7 @@
 // Optional: ?email_id=<id> to inspect a specific received email.
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from "astro";
-import { AdminAuth } from "../../../lib/adminAuth";
+import { AdminAuth, viewerGuard } from "../../../lib/adminAuth";
 import { parseRawInbound } from "../../../lib/inboundReply";
 
 export const prerender = false;
@@ -17,6 +17,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	if (!session.isAuthenticated) {
 		return Response.json({ error: "Unauthorized" }, { status: 401 });
 	}
+	// Dumps live inbox contents — not for view-only sessions.
+	const guard = viewerGuard(session);
+	if (guard) return guard;
 
 	const apiKey = env.RESEND_API_KEY;
 	if (!apiKey) return Response.json({ error: "RESEND_API_KEY missing" }, { status: 500 });

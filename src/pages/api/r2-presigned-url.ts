@@ -77,7 +77,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Parse request body
     const body = await request.json() as any;
-    const { key, contentType, contentLength } = body;
+    const { key, contentLength } = body;
+    // Normalize the client-declared media type; exact-match against the allowlist.
+    const contentType = typeof body.contentType === 'string'
+      ? body.contentType.split(';')[0].trim().toLowerCase()
+      : '';
 
     // Validate key/path
     if (!key || typeof key !== 'string' || !isValidPath(key)) {
@@ -88,7 +92,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Validate content type
-    if (!contentType || !ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t))) {
+    if (!contentType || !ALLOWED_CONTENT_TYPES.includes(contentType)) {
       return new Response(
         JSON.stringify({ error: 'Invalid content type. Only images and videos allowed.' }),
         { status: 400, headers: corsHeaders }
@@ -151,10 +155,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     console.error('[Presigned URL] Error:', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to generate presigned URL',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Upload failed' }),
       { status: 500, headers: corsHeaders }
     );
   }

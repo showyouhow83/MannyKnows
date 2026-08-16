@@ -2,6 +2,60 @@ import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { publicUrlForR2Path } from '../../lib/publicUrl';
 import { resolveAllowedOrigin } from '../../lib/cors';
+import { kvRateLimit, clientIp } from '../../lib/rateLimit';
+
+// Who may write to the bucket (Aug 2026 hardening — before this, an Origin
+// header was the only gate, and Origin is a request header anyone can set):
+//   admin   — HMAC admin session cookie: any allowed prefix, may overwrite.
+//   crew    — D1 crew_session cookie (timeclock kiosk): media + receipts.
+//   token   — X-Crew-Token / X-Client-Token from the project, crew, and
+//             partner portals, resolved against D1: `progress/` only, never
+//             overwrites an existing key.
+// Anything else is refused. Rate limits are KV-backed (global), not a Map.
+type Caller = { kind: 'admin' | 'crew' | 'token'; label: string } | null;
+
+async function identifyCaller(request: Request): Promise<Caller> {
+  const env = cfEnv as any;
+  const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
+  if (sessionSecret) {
+    try {
+      const { AdminAuth } = await import('../../lib/adminAuth');
+      const session = await AdminAuth.validateSession(request, sessionSecret);
+      if (session.isAuthenticated && session.role !== 'viewer') return { kind: 'admin', label: session.username || 'admin' };
+    } catch {}
+  }
+  const db = env?.MK_APP_DB;
+  if (!db) return null;
+  try {
+    const cookie = request.headers.get('cookie') || '';
+    const m = cookie.match(/crew_session=([^;]+)/);
+    if (m) {
+      const sess = await db.prepare(
+        'SELECT 1 FROM crew_sessions WHERE session_token = ? AND expires_at > CURRENT_TIMESTAMP'
+      ).bind(m[1]).first();
+      if (sess) return { kind: 'crew', label: 'crew-session' };
+    }
+  } catch {}
+  const crewToken = (request.headers.get('X-Crew-Token') || '').trim();
+  const clientToken = (request.headers.get('X-Client-Token') || '').trim();
+  const looksLikeToken = (t: string) => t.length >= 16 && t.length <= 128 && /^[A-Za-z0-9_-]+$/.test(t);
+  try {
+    if (looksLikeToken(crewToken)) {
+      const p = await db.prepare('SELECT id FROM projects WHERE crew_token = ?').bind(crewToken).first();
+      if (p) return { kind: 'token', label: `project-crew:${(p as any).id}` };
+      const j = await db.prepare('SELECT id FROM partner_jobs WHERE crew_token = ?').bind(crewToken).first();
+      if (j) return { kind: 'token', label: `partner-crew:${(j as any).id}` };
+    }
+    if (looksLikeToken(clientToken)) {
+      const p = await db.prepare('SELECT id FROM projects WHERE client_token = ?').bind(clientToken).first();
+      if (p) return { kind: 'token', label: `project-client:${(p as any).id}` };
+    }
+  } catch {}
+  return null;
+}
+
+const jsonRes = (body: unknown, status: number, extra: Record<string, string> = {}) =>
+  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...extra } });
 
 // Public host of the R2 bucket's custom domain — used only for the HEIC→JPEG
 // edge-transform fetch below. Overridable per deployment.
@@ -17,28 +71,14 @@ const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm'];
 // PDFs are allowed for receipts (expense uploads) only.
 const ALLOWED_DOC_TYPES = ['application/pdf'];
 
-// Rate limiting: anti-abuse only. Raised from 10 → 60/min because crew bulk
-// uploads (a whole project's photos+videos at once) were tripping the old cap
-// and silently dropping files. Authenticated crew/admin are exempt entirely.
-const uploadAttempts = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+// Rate limiting: anti-abuse only, for token callers (portals upload a whole
+// project's photos at once, so the cap is generous). Admin and crew sessions
+// are exempt. KV-backed so it holds across isolates.
+const RATE_LIMIT_WINDOW_S = 60;
 const RATE_LIMIT_MAX = 60;
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = uploadAttempts.get(ip);
-
-  if (!record || now > record.resetTime) {
-    uploadAttempts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return true;
-  }
-
-  if (record.count >= RATE_LIMIT_MAX) {
-    return false;
-  }
-
-  record.count++;
-  return true;
+async function tokenRateLimited(request: Request): Promise<boolean> {
+  const kv = (cfEnv as any)?.MK_KV_SESSIONS;
+  return !(await kvRateLimit(kv, `r2up:${clientIp(request)}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_S));
 }
 
 function getAllowedOrigin(request: Request): string | null {
@@ -58,51 +98,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // Check rate limit (skip for authenticated admin sessions)
+    // POST is the header-addressed upload used by the admin (portfolios, crew
+    // receipts) and the timeclock kiosk (crew session). No token caller uses
+    // it, so a session is required outright.
     const env = cfEnv;
-    const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
-    let isAdminPost = false;
-    if (sessionSecret) {
-      try {
-        const { AdminAuth } = await import('../../lib/adminAuth');
-        const session = await AdminAuth.validateSession(request, sessionSecret);
-        isAdminPost = session.isAuthenticated;
-      } catch {}
+    const caller = await identifyCaller(request);
+    if (!caller || caller.kind === 'token') {
+      return jsonRes({ error: 'Unauthorized' }, 401);
     }
 
-    // Authenticated crew (timeclock bulk uploads) are also exempt — they upload
-    // a whole project's media at once and were getting rate-limited mid-batch.
-    let isCrewPost = false;
-    if (!isAdminPost && env?.MK_APP_DB) {
-      try {
-        const cookie = request.headers.get('cookie') || '';
-        const m = cookie.match(/crew_session=([^;]+)/);
-        if (m) {
-          const sess = await env.MK_APP_DB.prepare(
-            'SELECT 1 FROM crew_sessions WHERE session_token = ? AND expires_at > CURRENT_TIMESTAMP'
-          ).bind(m[1]).first();
-          isCrewPost = !!sess;
-        }
-      } catch {}
-    }
-
-    if (!isAdminPost && !isCrewPost) {
-      const clientIP = request.headers.get('cf-connecting-ip') ||
-                       request.headers.get('x-forwarded-for')?.split(',')[0] ||
-                       'unknown';
-      if (!checkRateLimit(clientIP)) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please wait before uploading again.' }),
-          { status: 429, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-    }
-
-    // Validate content type (images and videos for portfolios)
-    const contentType = request.headers.get('Content-Type') || '';
-    const isImage = ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t));
-    const isVideo = ALLOWED_VIDEO_TYPES.some(t => contentType.startsWith(t));
-    const isDoc = ALLOWED_DOC_TYPES.some(t => contentType.startsWith(t));
+    // Validate content type (images and videos for portfolios). Exact match on
+    // the media type — `startsWith` let "image/jpeg, text/html" through.
+    const contentType = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase();
+    const isImage = ALLOWED_CONTENT_TYPES.includes(contentType);
+    const isVideo = ALLOWED_VIDEO_TYPES.includes(contentType);
+    const isDoc = ALLOWED_DOC_TYPES.includes(contentType);
     if (!isImage && !isVideo && !isDoc) {
       return new Response(
         JSON.stringify({ error: 'Invalid file type. Only images, videos, and PDF receipts are allowed.' }),
@@ -253,10 +263,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     console.error('Error uploading to R2:', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to upload file',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Failed to upload file' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -274,28 +281,13 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
       );
     }
 
-    // Check rate limit (skip for authenticated admin sessions)
-    const envPut = cfEnv;
-    const secretPut = envPut?.SESSION_SECRET || envPut?.ADMIN_PASSWORD;
-    let isAdminPut = false;
-    if (secretPut) {
-      try {
-        const { AdminAuth } = await import('../../lib/adminAuth');
-        const session = await AdminAuth.validateSession(request, secretPut);
-        isAdminPut = session.isAuthenticated;
-      } catch {}
+    // Who is this? Admin/crew sessions, or a portal token in a header.
+    const caller = await identifyCaller(request);
+    if (!caller) {
+      return jsonRes({ error: 'Unauthorized' }, 401);
     }
-
-    if (!isAdminPut) {
-      const clientIP = request.headers.get('cf-connecting-ip') ||
-                       request.headers.get('x-forwarded-for')?.split(',')[0] ||
-                       'unknown';
-      if (!checkRateLimit(clientIP)) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please wait before uploading again.' }),
-          { status: 429, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
+    if (caller.kind === 'token' && (await tokenRateLimited(request))) {
+      return jsonRes({ error: 'Rate limit exceeded. Please wait before uploading again.' }, 429);
     }
 
     // Get key from query string
@@ -314,11 +306,19 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
+    // Prefix rights: signed contracts are admin-only; portal tokens may only
+    // add progress media. Crew sessions get everything but contracts.
+    if (key.startsWith('contracts/') && caller.kind !== 'admin') {
+      return jsonRes({ error: 'Forbidden path' }, 403);
+    }
+    if (caller.kind === 'token' && !key.startsWith('progress/')) {
+      return jsonRes({ error: 'Forbidden path' }, 403);
+    }
 
-    // Validate content type (images and videos for portfolios)
-    const contentType = request.headers.get('Content-Type') || 'image/jpeg';
-    const isImagePut = ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t));
-    const isVideoPut = ALLOWED_VIDEO_TYPES.some(t => contentType.startsWith(t));
+    // Validate content type (images and videos for portfolios) — exact match.
+    const contentType = (request.headers.get('Content-Type') || 'image/jpeg').split(';')[0].trim().toLowerCase();
+    const isImagePut = ALLOWED_CONTENT_TYPES.includes(contentType);
+    const isVideoPut = ALLOWED_VIDEO_TYPES.includes(contentType);
     const isPdfPut = contentType === 'application/pdf';
     if (!isImagePut && !isVideoPut && !isPdfPut) {
       return new Response(
@@ -356,6 +356,13 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
       );
     }
 
+    // Non-admin callers can add objects, never replace one — a portal token
+    // must not be able to swap a photo (or anything else) already in place.
+    if (caller.kind !== 'admin') {
+      const existing = await bucket.head(key).catch(() => null);
+      if (existing) return jsonRes({ error: 'That file already exists.' }, 409);
+    }
+
     // Upload to R2
     await bucket.put(key, fileData, {
       httpMetadata: {
@@ -363,11 +370,11 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
       },
       customMetadata: {
         uploadedAt: new Date().toISOString(),
-        source: 'crew-portal',
+        source: caller.kind === 'admin' ? 'admin' : caller.kind === 'crew' ? 'crew-session' : `portal:${caller.label}`,
       },
     });
 
-    console.log(`[R2 Upload] Crew upload: ${key} (${fileData.byteLength} bytes)`);
+    console.log(`[R2 Upload] ${caller.kind} upload (${caller.label}): ${key} (${fileData.byteLength} bytes)`);
 
     return new Response(
       JSON.stringify({
@@ -388,10 +395,7 @@ export const PUT: APIRoute = async ({ request, locals, url }) => {
   } catch (error) {
     console.error('Error uploading to R2 (PUT):', error);
     return new Response(
-      JSON.stringify({
-        error: 'Failed to upload file',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
+      JSON.stringify({ error: 'Failed to upload file' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -410,7 +414,7 @@ export const OPTIONS: APIRoute = async ({ request }) => {
     headers: {
       'Access-Control-Allow-Origin': allowedOrigin,
       'Access-Control-Allow-Methods': 'POST, PUT, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Path, X-Upload-Timestamp',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Path, X-Upload-Timestamp, X-Crew-Token, X-Client-Token',
       'Access-Control-Allow-Credentials': 'true',
       'Access-Control-Max-Age': '86400',
     },

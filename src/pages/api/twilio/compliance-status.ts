@@ -9,14 +9,12 @@ import type { APIRoute } from 'astro';
 // KV, and email the owner. This URL is what you paste into Twilio's
 // "Status Callback URL" field:  https://mannyknows.com/api/twilio/compliance-status
 //
-// Security — both optional; the endpoint works without either:
+// Security — ONE of the two must be configured (the endpoint fails closed):
 //   • Set the TWILIO_AUTH_TOKEN secret -> we verify Twilio's X-Twilio-Signature
 //     header (the recommended, cryptographic check).
 //   • Or set TWILIO_CALLBACK_SECRET and configure the URL with ?key=<secret>
 //     -> simple shared-secret check.
-// With neither set it still works, but is unauthenticated: it only emails when
-// the payload actually looks like a Twilio status callback (has Status/BundleSid),
-// which keeps it from being an open email-spam relay.
+// With neither set every POST is rejected with 401 (no KV write, no email).
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
@@ -119,6 +117,14 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
     authState = 'shared-secret';
+  } else {
+    // Fail closed: with no TWILIO_AUTH_TOKEN and no TWILIO_CALLBACK_SECRET
+    // configured, anyone could write KV + trigger owner emails.
+    console.warn('[twilio-compliance] No TWILIO_AUTH_TOKEN or TWILIO_CALLBACK_SECRET configured: rejecting unauthenticated callback.');
+    return new Response(JSON.stringify({ error: 'unauthorized' }), {
+      status: 401,
+      headers: JSON_HEADERS,
+    });
   }
 
   const status = params.Status || params.status || '';
@@ -134,21 +140,22 @@ export const POST: APIRoute = async ({ request }) => {
     fields: Object.keys(params),
   });
 
-  // --- Persist (no TTL — compliance history must not expire) ---
+  // --- Persist (180-day TTL so the namespace can't grow unbounded) ---
   const kv = env?.MK_KV_CHATBOT;
   if (kv && looksLikeTwilio) {
     try {
       const record = { receivedAt, authState, status, bundleSid, params };
-      await kv.put(`twilio:compliance:${bundleSid || 'unknown'}:${receivedAt}`, JSON.stringify(record));
-      await kv.put('twilio:compliance:latest', JSON.stringify(record));
+      const expirationTtl = 60 * 60 * 24 * 180; // 180 days
+      await kv.put(`twilio:compliance:${bundleSid || 'unknown'}:${receivedAt}`, JSON.stringify(record), { expirationTtl });
+      await kv.put('twilio:compliance:latest', JSON.stringify(record), { expirationTtl });
     } catch (e) {
       console.error('[twilio-compliance] KV write failed:', e);
     }
   }
 
-  // --- Email the owner (only when authenticated or the payload looks real) ---
+  // --- Email the owner (every request past this point is authenticated) ---
   const resendKey = env?.RESEND_API_KEY;
-  if (resendKey && (authState !== 'unauthenticated' || looksLikeTwilio)) {
+  if (resendKey) {
     const ownerEmail = env?.OWNER_EMAIL || 'mm@mannyknows.com';
     const resendFrom = env?.RESEND_FROM || 'MannyKnows <onboarding@resend.dev>';
     const rows = Object.entries(params)

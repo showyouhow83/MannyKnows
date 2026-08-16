@@ -1,7 +1,7 @@
 // Admin Users API - Create and manage admin users
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { AdminAuth, generateSalt, hashPassword, type AdminUser } from '../../../lib/adminAuth';
+import { adminOnlyGuard, AdminAuth, generateSalt, hashPassword, type AdminUser } from '../../../lib/adminAuth';
 
 // GET - List all admin users (requires admin session)
 export const GET: APIRoute = async ({ request, locals }) => {
@@ -52,7 +52,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const db = env?.MK_APP_DB;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
-  // Verify admin session
+  // Verify admin session — and the admin role: creating or disabling users
+  // is not a manager's job.
   const session = await AdminAuth.validateSession(request, sessionSecret);
   if (!session.isAuthenticated) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -60,6 +61,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+  const roleDenied = adminOnlyGuard(session);
+  if (roleDenied) return roleDenied;
 
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
@@ -73,6 +76,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
       username?: string; password?: string; displayName?: string; email?: string; role?: string;
     };
     const { username, password, displayName, email, role = 'admin' } = body;
+
+    if (!['admin', 'manager', 'viewer'].includes(role)) {
+      return new Response(JSON.stringify({ error: 'role must be admin, manager, or viewer' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     if (!username || !password) {
       return new Response(JSON.stringify({ error: 'Username and password required' }), {
@@ -149,7 +159,8 @@ export const DELETE: APIRoute = async ({ request, locals }) => {
   const db = env?.MK_APP_DB;
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
 
-  // Verify admin session
+  // Verify admin session — and the admin role: creating or disabling users
+  // is not a manager's job.
   const session = await AdminAuth.validateSession(request, sessionSecret);
   if (!session.isAuthenticated) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -157,6 +168,8 @@ export const DELETE: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+  const roleDenied = adminOnlyGuard(session);
+  if (roleDenied) return roleDenied;
 
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {

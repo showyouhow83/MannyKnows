@@ -2,6 +2,7 @@
 // POST: Authenticate crew member by name + phone, return session cookie (expires end of day)
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { kvRateLimit, clientIp } from '../../../lib/rateLimit';
 
 function normalizePhone(phone: string): string {
   const digits = phone.replace(/\D/g, '');
@@ -22,12 +23,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
       return new Response(JSON.stringify({ error: 'Database not configured' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
     }
 
+    // Name + last-10-digits-of-phone is a low-entropy credential, so the
+    // guessing rate has to be capped: per IP and per name, KV-backed.
+    const ip = clientIp(request);
+    const kv = env?.MK_KV_SESSIONS as any;
+    if (!(await kvRateLimit(kv, `crewlogin:ip:${ip}`, 10, 15 * 60))) {
+      console.warn('[security] crew login rate-limited', { ip });
+      return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
+    }
+
     const body = await request.json() as any;
-    const name = body.name?.trim();
-    const phone = body.phone?.trim();
+    const name = typeof body?.name === 'string' ? body.name.trim().slice(0, 100) : '';
+    const phone = typeof body?.phone === 'string' ? body.phone.trim().slice(0, 30) : '';
 
     if (!name || !phone) {
       return new Response(JSON.stringify({ error: 'Name and phone number are required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (!(await kvRateLimit(kv, `crewlogin:name:${normalizeName(name)}`, 10, 15 * 60))) {
+      console.warn('[security] crew login rate-limited (name)', { ip });
+      return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
     }
 
     const phoneDigits = normalizePhone(phone);
@@ -42,6 +56,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     `).bind(nameLower, phoneDigits.slice(-10)).first() as any;
 
     if (!result) {
+      console.warn('[security] crew login failed', { ip });
       return new Response(JSON.stringify({ error: 'Name and phone number not found. Please check your information or contact your manager.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
     }
 
@@ -71,7 +86,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Set-Cookie': `crew_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
+        'Set-Cookie': `crew_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
       }
     });
 

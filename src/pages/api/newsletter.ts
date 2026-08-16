@@ -2,6 +2,24 @@ import { env } from "cloudflare:workers";
 import type { APIRoute } from 'astro';
 import { InputValidator } from '../../lib/security/inputValidator.js';
 import { CSRFProtection } from '../../lib/security/csrfProtection.js';
+import { RateLimiter } from '../../lib/security/rateLimiter.js';
+
+// One confirmation / re-subscription email per normalized email per 24h.
+const EMAIL_SEND_CAP_TTL = 60 * 60 * 24;
+
+/** Fold gmail dots/plus-tags and case so a single inbox can't be re-mailed
+ *  via trivial address variants. */
+function normalizeEmailForCap(email: string): string {
+  const e = String(email || '').trim().toLowerCase();
+  const at = e.lastIndexOf('@');
+  if (at < 0) return e;
+  let local = e.slice(0, at);
+  const domain = e.slice(at + 1);
+  const plus = local.indexOf('+');
+  if (plus >= 0) local = local.slice(0, plus);
+  if (domain === 'gmail.com' || domain === 'googlemail.com') local = local.replace(/\./g, '');
+  return `${local}@${domain}`;
+}
 
 export const GET: APIRoute = async ({ url, locals }) => {
   const kv = env?.MK_KV_CHATBOT;
@@ -39,7 +57,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
   try {
     const kv = env?.MK_KV_CHATBOT;
     const resendKey = env?.RESEND_API_KEY;
@@ -47,9 +65,28 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Subscriber-facing emails send from the send-only subdomain; replies
     // should land in the real business inbox.
     const ownerEmail = env?.OWNER_EMAIL || 'mm@mannyknows.com';
-    
+
     if (!kv) {
       throw new Error('KV storage not available');
+    }
+
+    // Rate limiting (per IP) — same limiter contact.ts uses, own scope + window
+    // so a script can't hammer subscribe/resubscribe emails.
+    const rateLimiter = new RateLimiter(kv, {
+      scope: 'rate_limit:newsletter',
+      tiers: { anonymous: { windowMs: 60 * 60 * 1000, maxRequests: 6, message: 'Rate limit exceeded. Please wait before trying again.' } },
+    });
+    const clientIP = clientAddress || request.headers.get('cf-connecting-ip') || 'unknown';
+    const rateResult = await rateLimiter.checkRateLimit(clientIP, 'anonymous');
+    if (!rateResult.allowed) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Rate limit exceeded. Please wait before trying again.',
+        resetTime: rateResult.resetTime
+      }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Parse request data
@@ -95,7 +132,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const sanitizedEmail = validationResult.sanitizedData.email;
-    
+
+    // Per-email send cap: at most one confirmation email per normalized
+    // address per 24h (covers gmail dot/plus variants and unsubscribe→resubscribe loops).
+    const sendCapKey = `newsletter_sendcap:${normalizeEmailForCap(sanitizedEmail)}`;
+    let canSendEmail = false;
+    try { canSendEmail = !(await kv.get(sendCapKey)); } catch { canSendEmail = false; }
+    const markEmailSent = async () => {
+      try { await kv.put(sendCapKey, new Date().toISOString(), { expirationTtl: EMAIL_SEND_CAP_TTL }); } catch {}
+    };
+
     // Check if email already exists and handle re-subscription
     const existingSubscription = await kv.get(`newsletter:${sanitizedEmail}`);
     if (existingSubscription) {
@@ -143,10 +189,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
         );
 
         // Send re-subscription confirmation email if Resend is configured
-        if (resendKey) {
+        // (and this address hasn't been emailed in the last 24h)
+        if (resendKey && canSendEmail) {
           try {
             const resubscriptionHtml = generateNewsletterResubscriptionEmail(sanitizedEmail, existingData.id);
-            
+            await markEmailSent();
+
             await fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
@@ -210,10 +258,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
 
     // Send confirmation email if Resend is configured
-    if (resendKey) {
+    // (and this address hasn't been emailed in the last 24h)
+    if (resendKey && canSendEmail) {
       try {
         const confirmationHtml = generateNewsletterConfirmationEmail(sanitizedEmail, subscriptionId);
-        
+        await markEmailSent();
+
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {

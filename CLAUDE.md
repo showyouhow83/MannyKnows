@@ -78,18 +78,29 @@ for small businesses in Western Massachusetts).
   "ready to work" — never a hiring process. "Hire Manny by the week"
   (the human, Multimedia Agency) is the approved exception, as is a customer
   "ready to hire" a business.
-- **Lead niche:** web design & marketing for **dental & medical practices**,
-  backed by Manny's MedNet Technologies (NY) experience — hundreds of practice
-  sites overseen there. That was the employer's work: state it as experience,
-  NEVER show or link those sites as portfolio (/about + websites-for-clinics
-  carry the approved wording).
+- **Lead niche (SITEWIDE, Aug 2026):** web design & marketing for **dental &
+  medical practices**, backed by Manny's MedNet Technologies (NY) experience —
+  hundreds of practice sites overseen there. That was the employer's work:
+  state it as experience, NEVER show or link those sites as portfolio. The
+  niche leads everywhere, not just /about: homepage subhead (the H1 and
+  <title> stay broad — "AI Agents, Websites, SEO & Apps" — Manny's call) +
+  first hero slide (`/hero/websites-for-dental-medical-practices`), JSON-LD
+  description/knowsAbout, BaseLayout default description, nav Services
+  dropdown ("Dental & Medical") + search index, footer tagline + first
+  Web & Apps link, /services subhead, plans "Built for" line and whoFor
+  copy, professions.ts order (clinics first), and city pages' audience
+  sentences (practices named first). Other verticals stay — "practices first,
+  every business that runs on appointments after" is the frame.
 - **Card headers:** icon/number chips share the title's row
   (`flex items-center gap-3`) — never an icon on a row of its own. StepCards
   is the shared numbered-card component; PricingCards the only pricing grid.
 - **Banned words:** "genuinely", "honestly", "no catch", "plain English"
   (use "clear"). Don't protest sincerity — prove with specifics.
 - **Honesty rule:** never publish invented stats, clients, or capabilities.
-  Cited figures keep their citations. Never mention Costa Rica in public copy.
+  Cited figures keep their citations. Never mention Costa Rica in public copy
+  — with ONE exception: the Cherry Vibes case study/testimonial/blurb keeps
+  its "started in Costa Rica → migrated to the U.S." origin story (Manny's
+  call, Aug 2026); don't strip CR from Cherry Vibes.
 - Meta descriptions 110–160 chars; titles ≤ 60. JSON-LD prices compute from
   the data files (plans.ts / aiTeam.ts / aiWebsite.ts) — never hardcode.
 
@@ -164,6 +175,17 @@ for small businesses in Western Massachusetts).
 - Quota: **one domain per normalized email per rolling 30 days**
   (`scan_quota:{email}`; gmail dots/plus-tags folded; www stripped; burned
   only on successful scans). Re-scans of the same domain stay free.
+- **Email must be deliverable:** after the syntax regex, the domain is checked
+  over Cloudflare DNS-over-HTTPS (MX, then A/AAAA fallback; NXDOMAIN → reject,
+  resolver error → fail open). "gmail.cpom"-style typos get a one-click
+  "Use …@gmail.com" suggestion (`suggestDomain`, major providers only). Resend
+  otherwise ACCEPTS a send to a nonexistent domain and it just bounces — no
+  retry loop on our side, but the report would vanish and the quota burn.
+- **Owner unlock:** `SCAN_OWNER_EMAILS` worker secret (comma-separated; set
+  via `wrangler secret put`, also in .dev.vars) + any `@mannyknows.com`
+  address = no quota, no "scanner lead" alert to himself, full report on the
+  page (`owner: true` in the JSON) as well as emailed, 5× the per-IP rate
+  cap, and may scan mannyknows.com itself. Never hardcode a personal email.
 - Every scan also emails Manny a "SCANNER LEAD" alert (deduped daily per
   email+host) — that alert is a summary by design; the lead's report is the
   separate "Your website report: …" email.
@@ -186,6 +208,46 @@ for small businesses in Western Massachusetts).
   `gemini-3.1-flash-image`, key in .dev.vars). Character-consistent scenes:
   pass a mascot PNG as an image input part with the prompt (see the Holyoke
   test in the Aug 2026 session).
+
+## Security posture (hardened Aug 2026 — don't regress these)
+
+- **Uploads:** `/api/r2-upload` POST needs an admin or crew session; PUT
+  additionally accepts a portal token header (`X-Crew-Token` /
+  `X-Client-Token`, resolved in D1) restricted to `progress/`, add-only (no
+  overwrite), KV rate-limited; `contracts/` is admin-only. MIME allowlists are
+  EXACT matches on the normalized media type (never `startsWith`); PDFs are
+  magic-byte checked; upload keys are server-shaped. Error bodies are generic.
+- **Serving media:** everything read back from the bucket (media host in
+  middleware, `/r2-local/`, `/api/leads/image/`) goes through
+  `src/lib/security/mediaHeaders.ts` `safeMediaHeaders()` — only real
+  image/video/audio/PDF types render inline (SVG sandboxed), everything else
+  is octet-stream + attachment, always `nosniff`. Never serve a stored
+  Content-Type raw.
+- **CSRF:** middleware refuses cookie-authenticated POST/PUT/PATCH/DELETE
+  whose `Sec-Fetch-Site` isn't same-origin/none (Origin/Referer host fallback)
+  on `/api/admin/*` and any `/api/*` carrying the admin cookie. Session-based
+  mutators must be POST (cron/run's session path is POST-only). Admin/crew
+  cookies: HttpOnly + Secure + SameSite=Lax.
+- **Auth:** admin login is IP-limited (5/15 min) AND per-account locked
+  (10 fails/30 min), unknown users burn the same PBKDF2 cost, failures are
+  logged (`[security]` console.warn → Workers Logs). `adminOnlyGuard` gates
+  user management + migrations; `viewerGuard` gates every other write. No
+  hardcoded session-secret fallback — missing `SESSION_SECRET` fails closed.
+  Sessions are stateless HMAC (24 h): there is no password-change flow yet, so
+  revoking a session = rotate `SESSION_SECRET` (known gap).
+- **Rate limits are KV-backed** (`src/lib/rateLimit.ts` fails open without
+  KV): `MK_ADMIN_KV` is NOT bound, so limiters use
+  `env.MK_ADMIN_KV || env.MK_KV_SESSIONS`. Public writers all have one:
+  contact 6/h, newsletter 6/h + 1 confirm email/address/day, leads 10/h,
+  scanner 8/h, metric 300/h, crew login 10/15 min (IP + name), portal chat
+  30/h/token, portal auth + project lookup per IP + email.
+- **Public input:** leads/capture cleans + caps every field, validates
+  phone/email, only accepts our own image URLs, HTML-escapes both emails, and
+  never builds the confirm link from the Host header. Admin pages render
+  public data via textContent/escapeHtml — never raw innerHTML.
+- **HSTS** is set on every response (public/_headers for static, middleware
+  for SSR). Webhooks fail closed without their secret (Svix inbound, Twilio
+  compliance). `/api/metric` reads take the key via `x-admin-key` header.
 
 ## Ops gotchas
 

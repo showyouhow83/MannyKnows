@@ -37,7 +37,7 @@ export interface LocalArea {
   plansLine: string; // the "$95/mo" line under the offer cards (keep the fact, vary the words)
   faqPricing: string; // answer: how much does a website cost here
   faqBusinesses: string; // answer: what kinds of businesses (town business mix + shape of the work)
-  faqAgents: string; // answer: can you build AI agents for my <town> business (facts: Remi AI in every site plan; AI staff from $95/mo, run by Manny AI)
+  faqAgents: string; // answer: can you build AI agents for my <town> business (facts: Remi AI in every site plan; the AI Agents Team, run by Manny AI — no prices in this narrative copy)
   faqOutside: string; // answer: do you work outside <town>, real geography from this town's vantage
   faqExisting: string; // answer: can you fix the site I have
   faqDifferent: string; // answer: vs big agency / DIY (credential facts exact)
@@ -49,7 +49,7 @@ export interface LocalArea {
   proofCaseStudy?: { slug: string; line: string };
   // "Beyond the website" cards — the rest of the 2026 catalog (AI Agents Team, stores,
   // GBP, 360°/media), written per town. FACTS that must stay exact:
-  //  - AI staff from $95/mo (Remi AI's price — the only public per-agent price); Remi AI is built into every site plan.
+  //  - Remi AI is built into every site plan; the AI Agents Team is ready to work (prices live in aiTeam.ts/remi.ts, never here).
   //  - Stores from $150/mo (Shopify subscription billed separately), catalog synced to
   //    Google Shopping / Instagram / Facebook.
   //  - GBP setup/rescue: $145 one-time, or included in every monthly plan.
@@ -132,9 +132,9 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo, and that first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. English and Spanish are standard at every tier. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. Need a full multi-page site with your own admin and Remi AI booking appointments? That's $245/mo. One-time builds are available too, and every plan gets scoped to your actual business.",
     faqBusinesses:
-      "Springfield's whole range: contractors in Sixteen Acres, medical and dental practices downtown, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath — ranking for what Springfield actually types into Google, answering when you can't reach the phone, and keeping the site maintained long after launch day.",
+      "Springfield's whole range: medical and dental practices downtown, contractors in Sixteen Acres, law and professional offices, home services, churches. If your customers find you by searching, the work is the same underneath — ranking for what Springfield actually types into Google, answering when you can't reach the phone, and keeping the site maintained long after launch day.",
     faqAgents:
-      "Yes. It's half of what we do. Remi AI, the agent built into every site plan, answers questions 24/7 in English and Spanish, and on Get Booked and up it books the work too. Beyond Remi AI there's a whole roster of agents that write, design, post, run ads, and report, all run for you by Manny AI, the manager you hire — AI staff from $95/mo. A Springfield painting contractor runs one today. It qualifies leads around the clock while the crew is up a ladder.",
+      "Yes. It's half of what we do. Remi AI, the agent built into every site plan, answers questions 24/7 in English and Spanish, and on Get Booked and up it books the work too. Beyond Remi AI there's a whole roster of agents that write, design, post, run ads, and report, all run for you by Manny AI, the manager added to your business, ready to work. A Springfield painting contractor runs one today. It qualifies leads around the clock while the crew is up a ladder.",
     faqOutside:
       "Yes. Springfield is home base, and the rest of Western Mass is our backyard: Chicopee right across the river, Holyoke and Northampton up I-91, Westfield, Agawam, Ludlow, Amherst. We also work remotely with businesses anywhere.",
     faqExisting:
@@ -165,7 +165,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI employees, ready to work',
-        body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager added to your business, AI staff from $40/mo.',
+        body: 'Remi AI answers your site around the clock, and ten more agents write, design, post, run ads, and report, one shared brain, run by Manny AI, the manager added to your business, ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
@@ -233,7 +233,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "From $95/mo, and in Holyoke that buys the bilingual setup outright, because Spanish is standard with us, not a line item. The first tier includes a custom 1–3 page site, hosting and SSL, Remi AI answering customers around the clock, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments runs $245/mo, and one-time builds are on the table too. Every plan is scoped to the business, not the other way around.",
     faqBusinesses:
-      "The businesses that make Holyoke run: trades and contractors, medical and dental offices, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine — a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
+      "The businesses that make Holyoke run: medical and dental offices, trades and contractors, family retailers from downtown to the Mall, services in every neighborhood between. What they get is the same spine — a fast site that ranks for the searches Holyoke really makes, an agent answering in Spanish or English when you're busy, and someone still tending the site a year after launch.",
     faqAgents:
       "Yes, and here they're bilingual by default, not by upgrade. Remi AI comes with every site plan and answers customers 24/7 in whichever language they open with; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, all managed for you. In a city where the first message is as likely to arrive in Spanish as English, an agent that handles both is the difference between a reply and a lost job.",
     faqOutside:
@@ -268,7 +268,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that speak Holyoke',
-        body: 'Agents that answer in Spanish or English, whichever the customer opens with, and book the job at 10pm. AI staff from $95/mo, with Remi AI built into every site plan.',
+        body: 'Agents that answer in Spanish or English, whichever the customer opens with, and book the job at 10pm. Remi AI is built into every site plan, and the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
@@ -339,7 +339,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "It starts at $95/mo, published right here because that's how we'd want to be sold to. That gets a Chicopee business a custom 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595 and the plan has no term, and prepaying a year waives that setup fee and takes two months off. If you need a bigger multi-page site with your own admin and appointment booking, that tier is $245/mo. One-time builds exist too; either way we scope it to your business before you pay anything.",
     faqBusinesses:
-      "Family businesses, mostly — contractors and tradespeople, medical and dental offices, the family shops of Chicopee Center, services along Memorial Drive. The pattern rarely changes. Get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
+      "Family businesses, mostly — medical and dental offices, contractors and tradespeople, the family shops of Chicopee Center, services along Memorial Drive. The pattern rarely changes. Get found for the searches your neighbors actually make, have something answering when you're mid-job, and keep the site cared for years past launch.",
     faqAgents:
       "Yes, and for a family business it's the difference between a missed call and a booked estimate. Remi AI comes with every site plan and answers customers 24/7; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. For a local daycare we paired the site's agent with a phone system that answers and routes every call. The same pattern fits any busy Chicopee shop where nobody can stop to pick up.",
     faqOutside:
@@ -375,7 +375,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that answers when you can\'t',
-        body: "An agent on your site that takes the questions and books the estimate while you're mid-job. AI staff from $95/mo, with Remi AI built into every site plan.",
+        body: "An agent on your site that takes the questions and books the estimate while you're mid-job. Remi AI is built into every site plan, and the AI Agents Team is ready to work.",
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
@@ -480,7 +480,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI that books while you\'re with a customer',
-        body: 'An agent that answers the questions people ask before committing and fills the calendar, midnight after the show included. AI staff from $95/mo; Remi AI comes with every site plan.',
+        body: 'An agent that answers the questions people ask before committing and fills the calendar, midnight after the show included. Remi AI comes with every site plan, and the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
@@ -548,7 +548,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo and the first tier is complete: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance. The build is a one-time $595, then $95/mo with no term. Prepay a year and the setup fee is waived and two months are free. A full multi-page site with your own admin and Remi AI booking appointments is $245/mo, and one-time builds get a flat written quote.",
     faqBusinesses:
-      "The businesses that make Westfield work: manufacturers and machine shops, contractors and tradespeople, the medical offices and independent retailers of downtown and the Southampton Road corridor, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same. Rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
+      "The businesses that make Westfield work: the medical and dental offices of downtown and the Southampton Road corridor, manufacturers and machine shops, contractors and tradespeople, independent retailers, and the services that follow Westfield State's four-and-a-half thousand students. The job underneath is the same. Rank for what Westfield searches, answer while you work, and keep the site tended long after launch.",
     faqAgents:
       "Yes, and for a working city they earn their keep fast. Remi AI comes with every site plan and answers customers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you. If nobody can leave the floor or the ladder to pick up the phone, an agent that answers and books is the difference between a missed call and a scheduled job.",
     faqOutside:
@@ -569,7 +569,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents that work your hours',
-        body: 'Agents that answer, qualify, and book while you run the shop. AI staff from $95/mo, with Remi AI built into every site plan.',
+        body: 'Agents that answer, qualify, and book while you run the shop. Remi AI is built into every site plan, and the AI Agents Team is ready to work.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },
@@ -652,7 +652,7 @@ export const localAreas: LocalArea[] = [
     faqPricing:
       "Plans start at $95/mo: a custom-designed 1–3 page site, hosting and SSL, Remi AI answering customers 24/7, Google Business Profile setup, technical SEO, and ongoing maintenance, with English and Spanish standard. The build is a one-time $595, then $95/mo with no term; prepay a year and the setup fee is waived and two months are free. The full multi-page tier with your own admin and Remi AI booking is $245/mo, and one-time builds get a flat written quote up front.",
     faqBusinesses:
-      "Agawam's backbone: contractors and tradespeople, family-run dealerships and retailers from Agawam Center to Feeding Hills, medical offices and seasonal businesses, and the services an established town leans on. The work underneath is constant. Rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
+      "Agawam's backbone: medical and dental offices, contractors and tradespeople, family-run dealerships and retailers from Agawam Center to Feeding Hills, seasonal businesses, and the services an established town leans on. The work underneath is constant. Rank for what Agawam searches, answer when you can't, and keep the site tended for years.",
     faqAgents:
       "Yes, and in a town where most owners ARE the business, an agent that answers while you work is the highest-leverage hire there is. Remi AI comes with every site plan and answers 24/7 in English or Spanish; the full roster (from $95/mo per agent) writes, posts, runs ads, and reports, managed for you.",
     faqOutside:
@@ -673,7 +673,7 @@ export const localAreas: LocalArea[] = [
     beyondWeb: [
       {
         title: 'AI agents, hired like staff',
-        body: 'Remi AI answers your site around the clock, and Manny AI, the manager you hire, staffs specialists that research, write, post, run ads, and report. AI staff from $95/mo.',
+        body: 'Remi AI answers your site around the clock, and Manny AI, the manager added to your business, staffs specialists that research, write, post, run ads, and report.',
         href: '/ai-team/',
         linkText: 'Meet the AI Agents Team',
       },

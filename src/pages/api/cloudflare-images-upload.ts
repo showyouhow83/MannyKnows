@@ -206,7 +206,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed'
+        error: 'Upload failed'
       }),
       { status: 500, headers: corsHeaders }
     );

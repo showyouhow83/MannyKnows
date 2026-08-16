@@ -75,13 +75,82 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Throttle public lead submissions (per IP) to prevent CRM flooding / spam.
-    if (!(await kvRateLimit(env?.MK_ADMIN_KV as any, `lead:${clientIp(request)}`, 10, 3600))) {
+    // MK_ADMIN_KV is not bound on this worker (see wrangler.jsonc), and the
+    // limiter fails open without KV — so fall back to the sessions KV, which is.
+    const rlKv = (env?.MK_ADMIN_KV || env?.MK_KV_SESSIONS) as any;
+    if (!(await kvRateLimit(rlKv, `lead:${clientIp(request)}`, 10, 3600))) {
       return new Response(JSON.stringify({ success: false, error: 'Too many submissions. Please try again later.' }), {
         status: 429, headers: { 'Content-Type': 'application/json' }
       });
     }
 
+    // Body size: a lead is a few KB. Refuse anything that isn't.
+    const declaredLen = parseInt(request.headers.get('content-length') || '0', 10);
+    if (declaredLen > 64 * 1024) {
+      return new Response(JSON.stringify({ success: false, error: 'Request too large' }), {
+        status: 413, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const body: LeadCaptureRequest = await request.json() as any;
+    if (!body || typeof body !== 'object') {
+      return new Response(JSON.stringify({ success: false, error: 'Bad request' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Normalize + bound every free-text field before anything reads it:
+    // trim, strip control characters, cap length. Everything downstream (D1,
+    // the admin UI, both emails) sees only these cleaned values.
+    const clean = (v: unknown, max: number): string | undefined => {
+      if (typeof v !== 'string') return undefined;
+      const t = v.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
+      return t ? t.slice(0, max) : undefined;
+    };
+    body.name = clean(body.name, 100) as string;
+    body.email = clean(body.email, 254);
+    body.phone = clean(body.phone, 30);
+    body.address = clean(body.address, 200);
+    body.city = clean(body.city, 80);
+    body.state = clean(body.state, 40);
+    body.zip = clean(body.zip, 12);
+    body.service_type = clean(body.service_type, 60);
+    body.service = clean(body.service, 60);
+    body.project_description = clean(body.project_description, 4000);
+    body.details = clean(body.details, 4000);
+    body.preferred_date = clean(body.preferred_date, 60);
+    body.preferred_time = clean(body.preferred_time, 60);
+    body.preferred_contact_time = clean(body.preferred_contact_time, 60);
+    body.year_built = clean(body.year_built, 20);
+    body.surface_types = clean(body.surface_types, 200);
+    body.repairs_needed = clean(body.repairs_needed, 500);
+    body.repairs = clean(body.repairs, 500);
+    body.timeline = clean(body.timeline, 100);
+    body.conversation_summary = clean(body.conversation_summary, 6000);
+    body.source = clean(body.source, 80) as string;
+    if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email)) {
+      return new Response(JSON.stringify({ success: false, error: 'That email address doesn\'t look right.' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    if (body.phone && !/^[\d\s()+.\-]{7,30}$/.test(body.phone)) {
+      return new Response(JSON.stringify({ success: false, error: 'That phone number doesn\'t look right.' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    // Photos: only URLs on our own media host / proxy, at most 15.
+    if (body.project_images !== undefined) {
+      const ok = Array.isArray(body.project_images)
+        ? body.project_images
+            .filter((u): u is string => typeof u === 'string' && u.length <= 300)
+            .filter((u) => /^(https:\/\/images\.mannyknows\.com\/leads\/|\/api\/leads\/image\/)[A-Za-z0-9_./-]+$/.test(u))
+            .slice(0, 15)
+        : [];
+      body.project_images = ok.length ? ok : undefined;
+    }
+    // HTML-escape for the two emails below (D1 stores the raw cleaned text;
+    // the admin UI escapes on render).
+    const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string);
 
     // Validate required fields
     if (!body.name) {
@@ -316,15 +385,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
           const borderStyle = isLast ? '' : 'border-bottom: 1px solid #e2e8f0;';
           const fontWeight = row!.bold ? 'font-weight: 600;' : '';
           return `<tr>
-            <td style="padding: 12px 0; ${borderStyle} color: #64748b; font-size: 14px; width: 100px;">${row!.label}</td>
-            <td style="padding: 12px 0; ${borderStyle} color: #1e293b; font-size: 14px; ${fontWeight}">${row!.value}</td>
+            <td style="padding: 12px 0; ${borderStyle} color: #64748b; font-size: 14px; width: 100px;">${esc(row!.label)}</td>
+            <td style="padding: 12px 0; ${borderStyle} color: #1e293b; font-size: 14px; ${fontWeight}">${esc(row!.value)}</td>
           </tr>`;
         }).join('');
 
         await resend.emails.send({
           from: 'MK Lead Alerts <leads@send.mannyknows.com>',
           to: notificationEmail,
-          subject: `New Lead: ${body.name} - ${sourceLabel}`,
+          subject: `New Lead: ${body.name.replace(/[\r\n]+/g, ' ')} - ${sourceLabel}`,
           html: `
 <div style="max-width: 700px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #ffffff;">
   <div style="background: linear-gradient(135deg, #ff781d 0%, #ff781d 40%, #6366f1 70%, #f263be 100%); padding: 40px 30px 36px; text-align: center;">
@@ -338,13 +407,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
     <div style="text-align: center; margin-bottom: 30px;">
       <div style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: 1px;">NEW LEAD</div>
     </div>
-    <h1 style="font-size: 28px; font-weight: 700; color: #1e293b; margin: 0 0 16px 0; text-align: center;">${body.name}</h1>
+    <h1 style="font-size: 28px; font-weight: 700; color: #1e293b; margin: 0 0 16px 0; text-align: center;">${esc(body.name)}</h1>
     <p style="font-size: 16px; color: #475569; line-height: 1.7; margin: 0 0 30px 0; text-align: center;">
       A new lead has come in from <strong style="color: #1e293b;">${sourceLabel}</strong>. Contact them soon!
     </p>
     <div style="text-align: center; margin: 30px 0;">
       ${body.phone ? `<a href="tel:${body.phone.replace(/[^0-9]/g, '')}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; margin: 0 8px 8px 0;">📞 Call Now</a>` : ''}
-      ${body.email ? `<a href="mailto:${body.email}" style="display: inline-block; background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%); color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px;">✉️ Send Email</a>` : ''}
+      ${body.email ? `<a href="mailto:${esc(body.email)}" style="display: inline-block; background: linear-gradient(135deg, #ff781d 0%, #6366f1 100%); color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px;">✉️ Send Email</a>` : ''}
     </div>
     <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;">
       <h2 style="font-size: 18px; font-weight: 700; color: #ff781d; margin: 0 0 20px 0;">Lead Details</h2>
@@ -383,7 +452,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
           const firstName = body.name.trim().split(' ')[0];
           // Dynamic URL: localhost gets http://localhost, production gets https://mannyknows.com
           const protocol = isLocalTest ? 'http' : 'https';
-          const confirmUrl = `${protocol}://${host}/confirm/${confirmationToken}`;
+          // Never build the confirmation link from the request's Host header —
+          // a forged Host would put a foreign domain in a MannyKnows-branded email.
+          const confirmUrl = isLocalTest ? `${protocol}://${host}/confirm/${confirmationToken}` : `https://mannyknows.com/confirm/${confirmationToken}`;
           const fullAddress = [body.address, body.city, body.state || 'MA', body.zip].filter(Boolean).join(', ');
 
           await resend.emails.send({
@@ -414,7 +485,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       </div>
       <h1 style="font-size: 28px; font-weight: 700; color: #1e293b; margin: 0 0 16px 0; text-align: center;">You're Almost Set!</h1>
       <p style="font-size: 16px; color: #475569; line-height: 1.7; margin: 0 0 30px 0; text-align: center;">
-        Hi <strong style="color: #1e293b;">${firstName}</strong>, thank you for choosing MannyKnows! Please confirm your appointment by clicking the button below.
+        Hi <strong style="color: #1e293b;">${esc(firstName)}</strong>, thank you for choosing MannyKnows! Please confirm your appointment by clicking the button below.
       </p>
       <div style="text-align: center; margin: 30px 0;">
         <a href="${confirmUrl}" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #ffffff; padding: 18px 48px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 18px; letter-spacing: 0.5px;">
@@ -429,11 +500,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;">
         <h2 style="font-size: 18px; font-weight: 700; color: #ff781d; margin: 0 0 20px 0;">Appointment Details</h2>
         <table style="width: 100%; border-collapse: collapse;">
-          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px; width: 120px;">Service</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${serviceName}</td></tr>
-          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px;">Date</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${body.preferred_date || 'TBD'}</td></tr>
-          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px;">Time</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${body.preferred_time || 'TBD'}</td></tr>
-          <tr><td style="padding: 12px 0; color: #64748b; font-size: 14px; vertical-align: top;">Location</td><td style="padding: 12px 0; color: #1e293b; font-size: 14px; font-weight: 600;">${fullAddress || 'Not provided'}</td></tr>
-          ${projectDescription ? `<tr><td style="padding: 12px 0; color: #64748b; font-size: 14px; vertical-align: top;">Notes</td><td style="padding: 12px 0; color: #1e293b; font-size: 14px;">${projectDescription}</td></tr>` : ''}
+          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px; width: 120px;">Service</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${esc(serviceName)}</td></tr>
+          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px;">Date</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${esc(body.preferred_date || 'TBD')}</td></tr>
+          <tr><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 14px;">Time</td><td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-size: 14px; font-weight: 600;">${esc(body.preferred_time || 'TBD')}</td></tr>
+          <tr><td style="padding: 12px 0; color: #64748b; font-size: 14px; vertical-align: top;">Location</td><td style="padding: 12px 0; color: #1e293b; font-size: 14px; font-weight: 600;">${esc(fullAddress || 'Not provided')}</td></tr>
+          ${projectDescription ? `<tr><td style="padding: 12px 0; color: #64748b; font-size: 14px; vertical-align: top;">Notes</td><td style="padding: 12px 0; color: #1e293b; font-size: 14px;">${esc(projectDescription)}</td></tr>` : ''}
         </table>
       </div>
       <div style="margin: 30px 0; text-align: center;">

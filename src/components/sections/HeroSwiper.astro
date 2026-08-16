@@ -21,10 +21,18 @@ export interface Props {
   slides?: Slide[];
 }
 
-// Default slides — the four monthly plans plus the AI Agents Team. Five slides is the
-// clean minimum for a 2-per-side coverflow (every slide holds a unique position,
-// so the wrap-around never has to show one slide in two places).
+// Default slides — the lead niche first (dental & medical practices, Aug 2026),
+// then the four monthly plans and the AI Agents Team. Five slides is the clean
+// minimum for a 2-per-side coverflow (every slide holds a unique position, so
+// the wrap-around never has to show one slide in two places); six is fine.
 const defaultSlides: Slide[] = [
+  {
+    image: '/hero/websites-for-dental-medical-practices',
+    alt: 'A dental office coordinator in scrubs at a bright reception desk, phone in hand, as notifications confirm Remi AI booked a new patient for Tuesday, captured a lead asking about Invisalign, and the practice ranks #1 for “dentist near me”.',
+    title: 'Websites for dental & medical practices',
+    description: 'Practice websites that answer patients 24/7, book into your schedule, and rank in your town, from experience overseeing hundreds of them.',
+    href: '/websites-for-clinics/',
+  },
   {
     image: '/hero/online-store-built-to-sell',
     alt: 'A maker’s table of products (mugs, folded shirts, a cap) with a storefront interface floating above it, the scene shifting from daylight to night as orders, shipping, and sales reports keep running.',

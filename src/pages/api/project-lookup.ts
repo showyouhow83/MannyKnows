@@ -37,7 +37,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Throttle so this can't be used to email-bomb a known customer or burn the
     // Resend quota. On limit, return the same generic success without sending.
-    const rlKv = env?.MK_ADMIN_KV as any;
+    // MK_ADMIN_KV is not bound on this worker; the limiter fails open without
+    // KV, so fall back to the sessions KV (bound) to keep the throttle real.
+    const rlKv = (env?.MK_ADMIN_KV || env?.MK_KV_SESSIONS) as any;
     const ipOk = await kvRateLimit(rlKv, `plookup:ip:${clientIp(request)}`, 8, 3600);
     const emailOk = await kvRateLimit(rlKv, `plookup:em:${email}`, 4, 3600);
     if (!ipOk || !emailOk) return successResponse;

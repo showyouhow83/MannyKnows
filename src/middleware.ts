@@ -24,10 +24,27 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import { defineMiddleware } from 'astro:middleware';
 import { AdminAuth } from './lib/adminAuth';
+import { safeMediaHeaders } from './lib/security/mediaHeaders';
 
 // Private, token-gated customer pages (quote review, client/crew portals,
 // confirmation links, partner crew assignments).
 const TOKEN_PAGE = /^\/(confirm|project|quote)(\/|$)/;
+
+// Cross-site request forgery guard for cookie-authenticated writes. Every
+// current browser sends Sec-Fetch-Site; a value other than same-origin/none
+// on a state-changing request means another site made it. Older clients
+// without the header fall back to an Origin/Referer host match. Requests
+// carrying neither header (curl, server-to-server with a header secret) pass —
+// they can't be riding a victim's cookie in the first place.
+function isCrossSiteWrite(request: Request, url: URL): boolean {
+  const m = request.method;
+  if (m !== 'POST' && m !== 'PUT' && m !== 'PATCH' && m !== 'DELETE') return false;
+  const sfs = request.headers.get('sec-fetch-site');
+  if (sfs) return !(sfs === 'same-origin' || sfs === 'none');
+  const src = request.headers.get('origin') || request.headers.get('referer');
+  if (!src) return false;
+  try { return new URL(src).host !== url.host; } catch { return true; }
+}
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, locals, redirect } = context;
@@ -46,7 +63,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (!key) return new Response('Not found', { status: 404 });
 
     const mediaHeaders = (obj: any, extra: Record<string, string> = {}) => ({
-      'Content-Type': obj.httpMetadata?.contentType || 'application/octet-stream',
+      ...safeMediaHeaders(obj.httpMetadata?.contentType, obj.httpMetadata?.contentDisposition),
       'Cache-Control': 'public, max-age=31536000, immutable',
       'Accept-Ranges': 'bytes',
       'ETag': obj.httpEtag,
@@ -174,6 +191,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
       );
     }
 
+    // ── 4b. CSRF guard (admin APIs) ────────────────────────────────────────
+    if (isAdminApi && isCrossSiteWrite(request, url)) {
+      console.warn('[security] cross-site admin write refused', { path, user: session.username });
+      return new Response(JSON.stringify({ success: false, error: 'Cross-site request refused.' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // ── 5a. Viewer write-guard (admin APIs) ────────────────────────────────
     if (
       isAdminApi &&
@@ -201,6 +227,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const session = await AdminAuth.validateSession(request, sessionSecret);
     if (session.isAuthenticated && session.role === 'viewer') {
       return new Response(JSON.stringify({ success: false, error: 'View-only access, contact an admin to make changes.' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    // Same CSRF rule for the ported non-admin write APIs when the admin cookie
+    // is what authorizes them.
+    if (session.isAuthenticated && isCrossSiteWrite(request, url)) {
+      console.warn('[security] cross-site session write refused', { path, user: session.username });
+      return new Response(JSON.stringify({ success: false, error: 'Cross-site request refused.' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -305,6 +340,17 @@ export const onRequest = defineMiddleware(async (context, next) => {
     });
   }
 
-  // Everything else — MannyKnows' public site — passes through untouched.
-  return next();
+  // Everything else — MannyKnows' public site — passes through untouched,
+  // except for HSTS: static assets get it from public/_headers, but SSR
+  // responses (API routes, server-rendered pages) had none. One header, added
+  // only when missing; nothing else about the response is touched.
+  const response = await next();
+  if (!response.headers.has('Strict-Transport-Security')) {
+    try {
+      response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    } catch {
+      // Immutable headers (e.g. a passthrough asset response) — leave as is.
+    }
+  }
+  return response;
 });

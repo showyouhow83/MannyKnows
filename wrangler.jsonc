@@ -25,7 +25,8 @@
     // ADMIN_USERNAME / ADMIN_PASSWORD / SESSION_SECRET (admin login),
     // ADMIN_API_KEY (diagnostics endpoints), OPENAI_API_KEY +
     // KV_ENCRYPTION_KEY (Remi), GEMINI_API_KEY (admin AI assists),
-    // RESEND_API_KEY (email). The old ADMIN_KEY secret is orphaned —
+    // RESEND_API_KEY (email), SCAN_OWNER_EMAILS (owner unlock for the
+    // free website scanner — quota bypass + full on-page report). The old ADMIN_KEY secret is orphaned —
     // nothing reads it since the legacy admin was deleted.
     // Not read by any current code (legacy from the admin port) — kept in sync
     // with OWNER_EMAIL anyway so no config anywhere points at mk@.

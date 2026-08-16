@@ -358,7 +358,21 @@ const quote = getTestimonial('SL Painting');
         });
         const data = await res.json();
         if (data.ok) (data.emailed ? renderTeaser(data) : render(data));
-        else showError(data.error || 'Something went wrong. Try again, or request our free full review below.');
+        else if (data.field === 'email' && data.suggestion && errEl && emailInput) {
+          // Typo'd mail domain ("gmail.cpom"): one click swaps in the fix and re-runs.
+          showError(data.error);
+          const fix = document.createElement('button');
+          fix.type = 'button';
+          fix.className = 'ml-2 underline font-semibold text-primary-blue dark:text-blue-300';
+          fix.textContent = `Use ${data.suggestion}`;
+          fix.addEventListener('click', () => { emailInput.value = data.suggestion; form.requestSubmit(); });
+          errEl.append(' ', fix);
+          emailInput.focus();
+        }
+        else {
+          showError(data.error || 'Something went wrong. Try again, or request our free full review below.');
+          if (data.field === 'email') emailInput?.focus();
+        }
       } catch {
         showError('Network hiccup. Try again in a moment.');
       } finally {

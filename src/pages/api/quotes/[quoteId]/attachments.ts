@@ -6,11 +6,16 @@
 // carries the customer-facing label (defaults to "Estimate").
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { AdminAuth } from '../../../../lib/adminAuth';
+import { AdminAuth, timingSafeEqual } from '../../../../lib/adminAuth';
 import { publicUrlForR2Path } from '../../../../lib/publicUrl';
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 const MAX_PER_QUOTE = 10;               // sanity cap; bump if it ever bites
+// PDF files start with the ASCII signature "%PDF-".
+function isPdfBytes(buf: ArrayBuffer): boolean {
+  const b = new Uint8Array(buf, 0, Math.min(5, buf.byteLength));
+  return b.length === 5 && b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46 && b[4] === 0x2d;
+}
 
 export const GET: APIRoute = async ({ request, locals, params }) => {
   try {
@@ -50,8 +55,8 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     const quoteId = parseInt(params.quoteId as string, 10);
     if (!quoteId) return j({ success: false, error: 'Invalid quote id' }, 400);
 
-    const contentType = request.headers.get('Content-Type') || '';
-    if (!contentType.startsWith('application/pdf')) {
+    const contentType = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase();
+    if (contentType !== 'application/pdf') {
       return j({ success: false, error: 'Only PDFs are allowed' }, 400);
     }
 
@@ -69,10 +74,14 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
     const session = await AdminAuth.validateSession(request, sessionSecret);
     const headerToken = (request.headers.get('X-Quote-Token') || '').trim();
-    const tokenAuthorized = !!(headerToken && quote.quote_token && headerToken === quote.quote_token);
+    const tokenAuthorized = !!(headerToken && quote.quote_token && (await timingSafeEqual(headerToken, quote.quote_token)));
     if (!session.isAuthenticated && !tokenAuthorized) {
       return j({ success: false, error: 'Unauthorized' }, 401);
     }
+    // Customer (token-only) uploads are ADD-only: the label is forced
+    // server-side and the replace-by-label cleanup below is skipped, so a
+    // token holder can never overwrite or delete admin-uploaded files.
+    const customerUpload = !session.isAuthenticated && tokenAuthorized;
 
     // Cap so a runaway script can't fill the bucket
     const countRow = await db.prepare(`SELECT COUNT(*) AS n FROM quote_attachments WHERE quote_id = ?`).bind(quoteId).first() as { n: number };
@@ -83,6 +92,8 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     const data = await request.arrayBuffer();
     if (!data || data.byteLength === 0) return j({ success: false, error: 'Empty file' }, 400);
     if (data.byteLength > MAX_FILE_SIZE) return j({ success: false, error: 'File too large (max 20MB)' }, 413);
+    // Content-Type is client-controlled; check the "%PDF-" magic bytes too.
+    if (!isPdfBytes(data)) return j({ success: false, error: 'Only PDFs are allowed' }, 400);
 
     // Headers are URL-encoded client-side so unicode (em-dash etc.) can
     // round-trip through ISO-8859-1 HTTP header values. Try-decode and
@@ -91,7 +102,18 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       try { return decodeURIComponent(raw); } catch { return raw; }
     }
     const labelRaw = request.headers.get('X-Attachment-Label') || 'Estimate';
-    const label = safeDecode(labelRaw).trim().slice(0, 80) || 'Estimate';
+    let label = safeDecode(labelRaw).trim().slice(0, 80) || 'Estimate';
+    if (customerUpload) {
+      // Force a "<base> — Signed" label. The only thing the customer flow
+      // legitimately uploads is the signed copy the accept page generates, and
+      // the admin/projects UI recognises signed PDFs by that suffix (isSigned
+      // → "Signed" pill, no backfill nag). A client-supplied unsigned label
+      // ("Estimate") can therefore never land on — or replace — an admin file.
+      const clean = label.replace(/[\x00-\x1f\x7f]/g, '').trim();
+      const m = clean.match(/^(.*?)[\s]*[:—–-][\s]*signed\s*$/i);
+      const base = (m ? m[1] : 'Estimate').trim().slice(0, 60) || 'Estimate';
+      label = `${base} — Signed`;
+    }
     const filenameRaw = request.headers.get('X-Attachment-Filename') || 'estimate.pdf';
     const rawFileName = safeDecode(filenameRaw).trim();
     // Strip any path/illegal chars so we never end up with traversal
@@ -140,7 +162,8 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
     }
 
     let replacedCount = 0;
-    try {
+    // Customer (token-only) uploads never replace or delete anything.
+    if (!customerUpload) try {
       const placeholders = Array.from(labelsToReplace).map(() => '?').join(',');
       const stale = await db.prepare(`
         SELECT id, file_url FROM quote_attachments
@@ -191,10 +214,13 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
         }
         // Mirror the replace-by-label cleanup: drop stale project copies (e.g.
         // the promoted unsigned "Estimate" once "Estimate — Signed" arrives).
-        const phl = Array.from(labelsToReplace).map(() => '?').join(',');
-        await db.prepare(
-          `DELETE FROM project_documents WHERE project_id = ? AND label IN (${phl}) AND file_url != ?`
-        ).bind(proj.id, ...labelsToReplace, fileUrl).run();
+        // Admin uploads only — customer uploads are add-only.
+        if (!customerUpload) {
+          const phl = Array.from(labelsToReplace).map(() => '?').join(',');
+          await db.prepare(
+            `DELETE FROM project_documents WHERE project_id = ? AND label IN (${phl}) AND file_url != ?`
+          ).bind(proj.id, ...labelsToReplace, fileUrl).run();
+        }
       }
     } catch (mirrorErr) {
       console.warn('[QuoteAttachments] project_documents mirror failed (continuing):', mirrorErr);

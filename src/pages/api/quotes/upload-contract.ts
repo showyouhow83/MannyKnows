@@ -8,6 +8,12 @@ import { AdminAuth } from '../../../lib/adminAuth';
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB max for PDFs
 const ALLOWED_CONTENT_TYPES = ['application/pdf'];
 
+// PDF files start with the ASCII signature "%PDF-".
+function isPdfBytes(buf: ArrayBuffer): boolean {
+  const b = new Uint8Array(buf, 0, Math.min(5, buf.byteLength));
+  return b.length === 5 && b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46 && b[4] === 0x2d;
+}
+
 // POST: Upload contract
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -36,8 +42,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const contentType = request.headers.get('Content-Type') || '';
-    if (!ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t))) {
+    const contentType = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase();
+    if (!ALLOWED_CONTENT_TYPES.includes(contentType)) {
       return new Response(JSON.stringify({
         success: false,
         error: 'Invalid file type. Only PDF files are allowed.'
@@ -96,6 +102,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
+    // Verify PDF magic bytes ("%PDF-") — the Content-Type header alone is client-controlled.
+    if (!isPdfBytes(fileData)) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Invalid file type. Only PDF files are allowed.'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Delete old contract from R2 if one exists
     if (quote.contract_url) {
       try {
@@ -142,8 +159,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     console.error('[Quote Contract] Upload error:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: 'Failed to upload contract',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      error: 'Upload failed',
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

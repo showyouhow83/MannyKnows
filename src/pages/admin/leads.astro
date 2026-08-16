@@ -2008,10 +2008,21 @@ const adminAddress = 'Springfield, MA';
         const email = lead.customer_email || '';
         const contactEl = document.getElementById('detailContactInfo');
         if (contactEl) {
-          contactEl.innerHTML =
-            (phone ? '<a href="tel:' + phone + '" style="color: var(--color-primary); text-decoration: none;">' + phone + '</a>' : 'No phone') +
-            ' · ' +
-            (email ? '<a href="mailto:' + email + '" style="color: var(--color-primary); text-decoration: none;">' + email + '</a>' : 'No email');
+          // Public-form data — build with DOM nodes, never innerHTML, so a
+          // crafted phone/email can't run script in the admin.
+          contactEl.textContent = '';
+          const mkLink = (href, label) => {
+            const a = document.createElement('a');
+            a.href = href;
+            a.textContent = label;
+            a.style.color = 'var(--color-primary)';
+            a.style.textDecoration = 'none';
+            return a;
+          };
+          const safeTel = phone.replace(/[^\d+().\-\s]/g, '');
+          contactEl.append(phone ? mkLink('tel:' + safeTel, phone) : 'No phone');
+          contactEl.append(' · ');
+          contactEl.append(email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? mkLink('mailto:' + email, email) : (email || 'No email'));
         }
 
         document.getElementById('detailService').textContent =
@@ -2095,9 +2106,14 @@ const adminAddress = 'Springfield, MA';
             const images = JSON.parse(lead.project_images);
             if (images.length > 0) {
               photosSection.style.display = 'block';
-              photosEl.innerHTML = images.map((url, i) => {
-                const publicUrl = toPublicUrl(url);
-                return `<a href="${publicUrl}" target="_blank" class="photo-link">
+              // Only our own media host may be linked — anything else that
+              // arrived through the public form is dropped rather than rendered.
+              const safeImages = images
+                .filter((u) => typeof u === 'string')
+                .map(toPublicUrl)
+                .filter((u) => /^https:\/\/images\.mannyknows\.com\/leads\/[A-Za-z0-9_./-]+$/.test(u));
+              photosEl.innerHTML = safeImages.map((publicUrl, i) => {
+                return `<a href="${publicUrl}" target="_blank" rel="noopener" class="photo-link">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
                   </svg>

@@ -63,11 +63,13 @@ async function verifyHmacSignature(data: string, signature: string, secret: stri
 // Get signing secret from environment or use fallback for development
 // In production, SESSION_SECRET should be set via wrangler secret
 function getSessionSecret(): string {
-  // Check if we're in a context where env is available (will be overridden in actual calls)
-  // This is a fallback - the actual secret should come from the environment
-  return process.env.SESSION_SECRET ||
-         process.env.ADMIN_PASSWORD ||
-         'mk-session-secret-change-in-production';
+  // Callers pass env.SESSION_SECRET (or ADMIN_PASSWORD) explicitly; this only
+  // runs when neither is configured. There is deliberately NO hardcoded
+  // fallback any more — a known signing key would make every session cookie
+  // forgeable — so an unconfigured worker fails closed instead.
+  const s = (globalThis as any).process?.env?.SESSION_SECRET || (globalThis as any).process?.env?.ADMIN_PASSWORD;
+  if (!s) throw new Error('SESSION_SECRET is not configured (set it with `wrangler secret put SESSION_SECRET`)');
+  return s;
 }
 
 // =====================================================
@@ -130,6 +132,22 @@ export function viewerGuard(session: AdminSession): Response | null {
     return new Response(JSON.stringify({
       success: false,
       error: 'View-only access. Contact admin for changes.'
+    }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  return null;
+}
+
+// Helper: returns a 403 Response unless the session role is 'admin'. For the
+// handful of endpoints that manage the admin itself (users, migrations) —
+// managers and viewers can do their jobs without them.
+export function adminOnlyGuard(session: AdminSession): Response | null {
+  if (session.role !== 'admin') {
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Admin role required.'
     }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' }

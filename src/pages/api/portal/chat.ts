@@ -11,8 +11,45 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { kvRateLimit, clientIp } from '../../../lib/rateLimit';
 
 export const prerender = false;
+
+// History sanitization caps — only plain text turns reach Gemini.
+const HISTORY_MAX_TURNS = 20;
+const HISTORY_MAX_PART_CHARS = 2000;
+const HISTORY_MAX_TOTAL_CHARS = 12000;
+
+type HistoryTurn = { role: 'user' | 'model'; parts: { text: string }[] };
+
+/** Accept only { role: 'user'|'model', parts: [{ text: string }] } turns; drop
+ *  everything else (inlineData, functionCall/functionResponse, etc.). */
+function sanitizeHistory(raw: unknown): HistoryTurn[] {
+  if (!Array.isArray(raw)) return [];
+  const out: HistoryTurn[] = [];
+  let total = 0;
+  for (const m of raw.slice(-HISTORY_MAX_TURNS)) {
+    if (!m || typeof m !== 'object') continue;
+    const role = (m as any).role;
+    if (role !== 'user' && role !== 'model') continue;
+    const partsIn = (m as any).parts;
+    if (!Array.isArray(partsIn)) continue;
+    const parts: { text: string }[] = [];
+    for (const p of partsIn) {
+      if (!p || typeof p !== 'object' || typeof (p as any).text !== 'string') continue;
+      let text = (p as any).text.slice(0, HISTORY_MAX_PART_CHARS);
+      const room = HISTORY_MAX_TOTAL_CHARS - total;
+      if (room <= 0) break;
+      if (text.length > room) text = text.slice(0, room);
+      if (!text) continue;
+      total += text.length;
+      parts.push({ text });
+    }
+    if (parts.length) out.push({ role, parts });
+    if (total >= HISTORY_MAX_TOTAL_CHARS) break;
+  }
+  return out;
+}
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -45,6 +82,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (!token) return json({ success: false, error: 'Not authorized' }, 403);
     if (!message) return json({ success: false, error: 'Message required' }, 400);
     if (message.length > 1500) return json({ success: false, error: 'Message too long' }, 400);
+
+    // Rate limit (KV, global across isolates): per client token AND per IP.
+    const rlKv = env?.MK_KV_SESSIONS as any;
+    const ip = clientIp(request);
+    const [tokenOk, ipOk] = await Promise.all([
+      kvRateLimit(rlKv, `portal-chat:token:${token}`, 30, 3600),
+      kvRateLimit(rlKv, `portal-chat:ip:${ip}`, 60, 3600),
+    ]);
+    if (!tokenOk || !ipOk) {
+      return json({ success: false, error: 'Too many messages. Please wait a bit and try again.' }, 429);
+    }
 
     // Resolve the project from the client_token.
     const project = await db.prepare(
@@ -235,9 +283,7 @@ When you record something with a tool, confirm it back in plain language (e.g. "
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction, tools: tools as any });
-    const history = Array.isArray(body.history)
-      ? body.history.filter((m: any) => m && (m.role === 'user' || m.role === 'model') && Array.isArray(m.parts)).slice(-20)
-      : [];
+    const history = sanitizeHistory(body.history);
     const chat = model.startChat({ history, generationConfig: { temperature: 0.5, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } } as any });
 
     const actions: string[] = [];

@@ -2236,7 +2236,7 @@ const status = project?.status ? statusInfo[project.status] : null;
             });
             var urlData = await urlRes.json();
             if (!urlData.success) throw new Error(urlData.error || 'upload url failed');
-            var put = await fetch(urlData.uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+            var put = await fetch(urlData.uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type, 'X-Client-Token': _cpClientToken } });
             if (!put.ok) throw new Error('R2 upload failed');
             imageUrl = urlData.publicUrl;
           }

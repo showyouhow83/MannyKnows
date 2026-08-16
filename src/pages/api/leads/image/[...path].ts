@@ -1,5 +1,6 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { safeMediaHeaders } from '../../../../lib/security/mediaHeaders';
 
 /**
  * R2 Image Proxy for Lead Images
@@ -13,7 +14,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
   try {
     const { path } = params;
 
-    if (!path) {
+    if (!path || path.includes('..')) {
       return new Response('Not found', { status: 404 });
     }
 
@@ -36,16 +37,13 @@ export const GET: APIRoute = async ({ params, locals }) => {
       return new Response('Image not found', { status: 404 });
     }
 
-    // Get content type from stored metadata or default to jpeg
-    const contentType = object.httpMetadata?.contentType || 'image/jpeg';
-
-    // Return the image with appropriate headers
+    // Serve-time MIME policy: only real image types render inline here (this
+    // is the main origin); anything else downloads.
     return new Response(object.body, {
       status: 200,
       headers: {
-        'Content-Type': contentType,
+        ...safeMediaHeaders(object.httpMetadata?.contentType || 'image/jpeg'),
         'Cache-Control': 'public, max-age=31536000, immutable', // Cache for 1 year
-        'X-Content-Type-Options': 'nosniff',
       },
     });
   } catch (error) {

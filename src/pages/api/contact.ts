@@ -42,8 +42,13 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
       });
     }
 
-    // Rate limiting
-    const rateLimiter = new RateLimiter(kv);
+    // Rate limiting — 6 submissions per hour per IP (this endpoint sends an
+    // auto-reply to any address, so the shared 30/min default is far too loose).
+    // Own scope so the counter isn't shared with other RateLimiter users.
+    const rateLimiter = new RateLimiter(kv, {
+      scope: 'rate_limit:contact',
+      tiers: { anonymous: { windowMs: 60 * 60 * 1000, maxRequests: 6 } },
+    });
     const clientIP = clientAddress || request.headers.get('cf-connecting-ip') || 'unknown';
     const rateResult = await rateLimiter.checkRateLimit(clientIP, 'anonymous');
     
@@ -225,10 +230,17 @@ export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
         };
         const confirmationCode = `MK-${Date.now().toString(36).toUpperCase()}-${rand()}`;
         const confirmationToken = crypto.randomUUID();
-        const svc = (body.service || '').toString().trim() || 'other';
-        const businessName = (body.business || '').toString().trim() || null;
+        // Optional free-text hints from the page: cap length + strip control chars
+        // before they reach the CRM.
+        const cleanHint = (v: unknown, max = 200): string =>
+          (typeof v === 'string' || typeof v === 'number' ? String(v) : '')
+            .replace(/[\x00-\x1f\x7f]/g, '')
+            .trim()
+            .slice(0, max);
+        const svc = cleanHint(body.service) || 'other';
+        const businessName = cleanHint(body.business) || null;
         // Prefer the visitor's own words; fall back to the page context.
-        const description = (message || '').toString().slice(0, 4000) || (body.context || null);
+        const description = (message || '').toString().slice(0, 4000) || cleanHint(body.context) || null;
 
         await appDb.prepare(`
           INSERT INTO leads (

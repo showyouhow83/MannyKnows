@@ -24,6 +24,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+    // The URL is shown to the admin as "the signed contract" — it must point at
+    // our own media host (or the dev proxy), never at an arbitrary site.
+    const signedUrl = String(body.signed_url).trim();
+    const mediaHost = (cfEnv as any)?.MEDIA_PUBLIC_HOST || 'images.mannyknows.com';
+    let urlOk = false;
+    try {
+      const u = new URL(signedUrl, request.url);
+      urlOk = signedUrl.length <= 500 && (
+        (u.protocol === 'https:' && u.hostname === mediaHost) ||
+        (u.origin === new URL(request.url).origin && u.pathname.startsWith('/r2-local/'))
+      );
+    } catch {}
+    if (!urlOk) {
+      return new Response(JSON.stringify({ success: false, error: 'signed_url must be a file on our media host' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Verify project exists
     const project = await db.prepare(
@@ -42,7 +60,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       UPDATE projects
       SET project_signed_contract_url = ?, contract_status = 'pending_review', updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).bind(body.signed_url, project.id).run();
+    `).bind(signedUrl, project.id).run();
 
     console.log(`[Contract] Signed contract uploaded for project ${project.id}`);
 

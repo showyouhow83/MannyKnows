@@ -37,7 +37,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Throttle to prevent magic-link email-bombing / Resend-quota abuse.
     // On limit, return the same generic response (no send).
-    const rlKv = env?.MK_ADMIN_KV as any;
+    // MK_ADMIN_KV is not bound on this worker; the limiter fails open without
+    // KV, so fall back to the sessions KV (bound) to keep the throttle real.
+    const rlKv = (env?.MK_ADMIN_KV || env?.MK_KV_SESSIONS) as any;
     if (!(await kvRateLimit(rlKv, `portalauth:ip:${clientIp(request)}`, 10, 3600)) ||
         !(await kvRateLimit(rlKv, `portalauth:em:${email}`, 5, 3600))) {
       return json(GENERIC);

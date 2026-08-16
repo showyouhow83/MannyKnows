@@ -7,22 +7,26 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { sendQuoteFollowUp, type FollowUpData } from '../../../lib/quote-emails';
 
-export const GET: APIRoute = async ({ request, locals }) => {
+// This job mutates state (expires quotes, sends follow-ups), so it must not be
+// reachable by a top-level GET navigation riding an admin's Lax cookie
+// (<a href="/api/cron/run"> on any site would fire it). The session path is
+// POST-only; the header-secret path (server-to-server) accepts either method.
+const run: APIRoute = async ({ request }) => {
   const env = cfEnv;
   const url = new URL(request.url);
   const cron = url.searchParams.get('cron');
 
   // Validate: a dedicated CRON_SECRET in a header (constant-time), OR a valid
-  // admin session. The secret is NOT read from the query string (which leaks
-  // into logs/Referer) and is NOT the admin password.
+  // admin session on POST. The secret is NOT read from the query string (which
+  // leaks into logs/Referer) and is NOT the admin password.
   const sessionSecret = env?.SESSION_SECRET || env?.ADMIN_PASSWORD;
   const { AdminAuth, timingSafeEqual } = await import('../../../lib/adminAuth');
   const headerSecret = request.headers.get('x-cron-secret') || '';
   let authorized = !!env?.CRON_SECRET && (await timingSafeEqual(headerSecret, env.CRON_SECRET));
-  if (!authorized && sessionSecret) {
+  if (!authorized && sessionSecret && request.method === 'POST') {
     try {
       const session = await AdminAuth.validateSession(request, sessionSecret);
-      authorized = session.isAuthenticated;
+      authorized = session.isAuthenticated && session.role !== 'viewer';
     } catch {}
   }
   if (!authorized) {
@@ -65,6 +69,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
     headers: { 'Content-Type': 'application/json' }
   });
 };
+
+export const POST = run;
+export const GET = run;
 
 // ---- Quote Follow-Ups ----
 async function processQuoteFollowUps(db: any, resendApiKey: string) {

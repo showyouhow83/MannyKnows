@@ -289,9 +289,16 @@ export class CSRFProtection {
    */
   private createRandomToken(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // CSPRNG (never Math.random for a security token). Rejection-sample so the
+    // 62-char alphabet is uniformly distributed (256 % 62 != 0).
+    const limit = 256 - (256 % chars.length);
     let result = '';
-    for (let i = 0; i < this.config.tokenLength; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    const buf = new Uint8Array(this.config.tokenLength * 2);
+    while (result.length < this.config.tokenLength) {
+      crypto.getRandomValues(buf);
+      for (let i = 0; i < buf.length && result.length < this.config.tokenLength; i++) {
+        if (buf[i] < limit) result += chars.charAt(buf[i] % chars.length);
+      }
     }
     return result;
   }

@@ -227,7 +227,7 @@ export const plans: Plan[] = [
     blurb:
       "Everything in Get Found, on a full multi-page site, and now Remi AI books the job. Powered by your Brand Brain, Remi AI answers, captures the lead, and puts appointments straight on your calendar 24/7, in any language. Deeper local SEO helps the right customers find you first. It's the plan for service businesses that live or die by the booked appointment.",
     whoFor:
-      'Service businesses (contractors, clinics, daycares, professional offices) that need more than answers. They need the appointment captured while the customer is ready.',
+      'Dental and medical practices, and every service business (contractors, daycares, professional offices) that needs more than answers. They need the appointment captured while the patient or customer is ready.',
     deliverables: [
       {
         title: 'The website',
@@ -280,30 +280,31 @@ export const plans: Plan[] = [
     name: 'Get Growing',
     icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18',
     price: 545,
-    tagline: 'A website that runs itself. It writes its own content, tunes its own SEO & speed, and sells with Remi AI.',
+    tagline: 'A website that runs itself. It writes and A/B tests its own content, tunes its own SEO & speed, and sells with Remi AI.',
     setupFee: 1195,
     buildValue: 3000,
     audience: 'For businesses ready to go viral',
     scope: 'Self-optimizing website',
-    scopeLines: ['Remi AI answers, books, and sells', 'Writes new content on its own'],
+    scopeLines: ['Remi AI answers, books, and sells', 'Writes & A/B tests its own content'],
     builtOn: 'Everything in Get Booked, plus',
     highlights: [
-      'Full self-optimization, like a web developer on your site 24/7, writing content and tuning SEO & speed continuously',
+      'Full self-optimization, like a web developer on your site 24/7 — writing content, A/B testing which formats and topics land, keeping the winners, and tuning SEO & speed continuously',
       'Remi AI sells, steering customers to the right service and asking for the job',
       'Immersive 360° galleries, built to get picked by AI search (ChatGPT, Google AI)',
     ],
     featured: true,
     headline: 'A website that writes, optimizes, and sells on its own',
     blurb:
-      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain, writing its own fresh content and tuning its own SEO and speed so it never goes stale — the closest thing to a full-time web developer on your site. Remi AI goes from booking to selling. It answers, books, and steers shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Agents Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
+      "This is where the website comes alive. On top of everything in Get Booked, your site runs itself off the Brand Brain, writing its own fresh content and tuning its own SEO and speed so it never goes stale — the closest thing to a full-time web developer on your site. It doesn't just publish more, either. It A/B tests content ideas against each other, learns which formats and topics your visitors respond to, keeps the winners, and optimizes continuously. Remi AI goes from booking to selling. It answers, books, and steers shoppers to the right product or service, with you approving anything that matters. Need the full content team too? Add the AI Agents Team anytime. A website that works and an agent that works it, for a monthly price, not a big upfront bill.",
     whoFor:
-      'Established service businesses and shops whose customers search Google and call (painters, contractors, daycares, clinics, law offices) that want the site and the agent doing the selling.',
+      'Established practices, service businesses, and shops whose customers search Google and call (dental and medical offices, painters, contractors, daycares, law offices) that want the site and the agent doing the selling.',
     deliverables: [
       {
         title: 'The website',
         items: [
           'Designed and built for your business, or your current one, rebuilt right',
           'Updates itself with fresh, relevant content and SEO kept current for you',
+          'A/B tests content ideas — formats, topics, and layouts — against each other, keeps what your visitors respond to, and optimizes continuously',
           'Your admin gets the controls for that, so you can review, edit, or roll back anything the site writes and steer what Remi AI pushes',
         ],
       },
@@ -342,7 +343,7 @@ export const plans: Plan[] = [
       { q: 'I already have a website, do I have to start over?', a: 'No. If your current site has good bones, we optimize it and add the AI agent and SEO on top. If it’s holding you back, we rebuild it. Same plan either way.' },
       { q: 'Do I own the website?', a: 'Yes. The domain is yours, the content is yours, and if you ever leave, the site goes with you. The plan covers the work and the upkeep, not a rental.' },
       { q: 'How does Remi AI know what to say?', a: 'We train it on your business, services, prices, hours, catalog, and the questions customers keep asking. You review how it answers before it goes live, and we keep refining it.' },
-      { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed, ready to review or roll back.' },
+      { q: 'What does "updates itself" mean?', a: 'Low-risk upkeep runs on automation, continuously: speed, search signals, tightening titles and descriptions, adding answers to questions customers keep asking. It also runs A/B tests on its own content — two versions of a page, a headline, or a post format shown to different visitors — and keeps whichever one people read, click, and book from more, so the site learns what your audience responds to instead of guessing. Anything about your prices, promises, or voice reaches you as a preview for your OK first. Either way the site never goes stale, and your admin keeps the record of everything it changed and every test it ran, ready to review or roll back.' },
       { q: 'What happens if I cancel?', a: 'You cancel, and that is the whole answer. No term, no exit charge, and your domain, content, and site stay yours. The setup fee already paid for the build, so nothing is left to bill. Setup fees and prepaid years stop being refundable 5 business days after kickoff.' },
     ],
   },
@@ -369,12 +370,12 @@ export const plans: Plan[] = [
     blurb:
       "This is Get Growing ($545) with our Business Ads service on two networks ($700) bundled together \u2014 $1,245 a month of service for $895, because these are the two things that actually compound. Your site keeps improving itself and Remi AI keeps selling, while your ads bring new people to it, watched and corrected every month. Ad spend is separate and goes straight to the platform; we never mark it up. Once a month we sit down, read the numbers together, and decide what changes.",
     whoFor:
-      'Established businesses that already get work from their site and want to take ground \u2014 multi-crew contractors, busy practices, shops with real competition.',
+      'Established businesses that already get work from their site and want to take ground \u2014 busy dental and medical practices, multi-crew contractors, shops with real competition.',
     deliverables: [
       {
         title: 'Everything in Get Growing',
         items: [
-          'The self-optimizing website that writes its own content and tunes its own SEO and speed',
+          'The self-optimizing website that writes and A/B tests its own content and tunes its own SEO and speed',
           'Remi AI selling and booking 24/7, your admin, multilingual as standard',
           'Every Get Found and Get Booked capability underneath it',
         ],

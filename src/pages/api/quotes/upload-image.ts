@@ -42,9 +42,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Validate content type
-    const contentType = request.headers.get('Content-Type') || '';
-    if (!ALLOWED_CONTENT_TYPES.some(t => contentType.startsWith(t))) {
+    // Validate content type (exact match on the media type; params/charset stripped)
+    const contentType = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase();
+    if (!ALLOWED_CONTENT_TYPES.includes(contentType)) {
       return new Response(JSON.stringify({
         success: false,
         error: 'Invalid file type. Allowed: JPEG, PNG, WebP, HEIC images, MP4/MOV/WebM videos.'
@@ -53,7 +53,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         headers: { 'Content-Type': 'application/json' }
       });
     }
-    const isVideoUpload = ALLOWED_VIDEO_TYPES.some(t => contentType.startsWith(t));
+    const isVideoUpload = ALLOWED_VIDEO_TYPES.includes(contentType);
 
     const bucket = env?.MK_MEDIA_BUCKET;
     const db = env?.MK_APP_DB;
@@ -128,7 +128,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Convert HEIC to JPEG server-side using Cloudflare Images API. Skip for videos.
-    const isHeic = !isVideoUpload && (contentType.includes('heic') || contentType.includes('heif'));
+    const isHeic = !isVideoUpload && contentType === 'image/heic';
     if (isHeic) {
       try {
         const cfAccountId = env?.CF_ACCOUNT_ID || env?.CLOUDFLARE_ACCOUNT_ID;
@@ -183,9 +183,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/heic': 'jpg',
       'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm',
     };
-    const extension = (isHeic && finalContentType === 'image/jpeg')
-      ? 'jpg'
-      : (mimeExtMap[finalContentType] || finalContentType.split('/')[1] || 'bin');
+    // finalContentType is always an allowlisted MIME (or 'image/jpeg' after
+    // HEIC conversion), so the fixed map always resolves — never trust the
+    // client string for the extension.
+    const extension = mimeExtMap[finalContentType] || 'bin';
     const timestamp = Date.now();
     const imageIndex = existingImages.length + 1;
     const fileName = `${timestamp}_${imageIndex}.${extension}`;
@@ -232,8 +233,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     console.error('[Quote Image] Upload error:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: 'Failed to upload image',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      error: 'Upload failed',
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

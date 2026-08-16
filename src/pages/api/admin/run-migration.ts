@@ -9,7 +9,7 @@
 // to the MIGRATIONS map below when they land in database/migrations/.
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
+import { AdminAuth, viewerGuard, adminOnlyGuard } from '../../../lib/adminAuth';
 // @ts-ignore - Vite raw import
 import sql002 from '../../../../database/migrations/002-full-admin.sql?raw';
 // @ts-ignore - Vite raw import
@@ -72,6 +72,9 @@ async function requireAdmin(request: Request, env: any): Promise<Response | null
   }
   const guard = viewerGuard(session);
   if (guard) return guard;
+  // Schema changes are admin-only, not a manager's job.
+  const roleDenied = adminOnlyGuard(session);
+  if (roleDenied) return roleDenied;
   return null;
 }
 

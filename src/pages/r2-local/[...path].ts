@@ -8,6 +8,7 @@
 // custom-domain CDN), but no upload code points URLs at it in production.
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { safeMediaHeaders } from '../../lib/security/mediaHeaders';
 
 export const GET: APIRoute = async ({ params, locals, request }) => {
   const env = cfEnv;
@@ -37,17 +38,15 @@ export const GET: APIRoute = async ({ params, locals, request }) => {
   // through its worker→Vite boundary. Wrap in a Uint8Array which Devalue
   // handles natively. Buffering is fine — small files.
   const data = new Uint8Array(await obj.arrayBuffer());
-  const contentType = obj.httpMetadata?.contentType || 'application/octet-stream';
+  // This route serves bucket objects on the MAIN origin (the admin cookie's
+  // origin), so the stored MIME is not trusted: only real image/video/PDF
+  // types render inline (a PDF's stored inline disposition is preserved so
+  // /quote/accept can iframe it); anything else downloads as octet-stream.
   const headers: Record<string, string> = {
-    'content-type': contentType,
+    ...safeMediaHeaders(obj.httpMetadata?.contentType, obj.httpMetadata?.contentDisposition),
     'content-length': String(data.byteLength),
     'etag': obj.httpEtag,
     'cache-control': 'public, max-age=60',
   };
-  // Preserve the inline disposition the upload set so PDFs render in
-  // iframes (instead of triggering a download dialog) when this proxy is
-  // used as a same-origin iframe source from /quote/accept.
-  const disposition = obj.httpMetadata?.contentDisposition;
-  if (disposition) headers['content-disposition'] = disposition;
   return new Response(data, { headers });
 };

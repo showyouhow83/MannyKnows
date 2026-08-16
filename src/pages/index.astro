@@ -52,7 +52,18 @@ const structuredData = {
       '@id': `${siteUrl}/#business`,
       name: 'MannyKnows',
       description:
-        'Custom apps, websites, and AI automation for established small businesses across Springfield and Western Massachusetts. Manny turns the manual processes that slow a business down into software that runs them, from ecommerce stores and lead-to-job systems to data pipelines and API integrations.',
+        'Web design and marketing for dental and medical practices in Springfield and Western Massachusetts, built on experience overseeing hundreds of practice websites, plus AI-powered websites, AI agents, local SEO, online stores, and custom apps for contractors, daycares, professional offices, and shops across the region.',
+      knowsAbout: [
+        'Dental practice website design',
+        'Medical practice website design',
+        'Healthcare marketing',
+        'Local SEO',
+        'AI agents for small business',
+        'AI booking agents',
+        'Shopify ecommerce',
+        'Google Business Profile',
+        'Custom business apps and automation',
+      ],
       url: siteUrl,
       email: EMAIL,
       telephone: PHONE_TEL,
@@ -99,6 +110,11 @@ const structuredData = {
         '@type': 'OfferCatalog',
         name: 'Services',
         itemListElement: [
+          {
+            '@type': 'Offer',
+            url: `${siteUrl}/websites-for-clinics/`,
+            itemOffered: { '@type': 'Service', name: 'Websites & marketing for dental & medical practices', description: 'Practice websites with an AI agent that answers patients 24/7 and books into the schedule, local SEO for the town, and monthly upkeep, from experience overseeing hundreds of dental and medical practice sites.' },
+          },
           {
             '@type': 'Offer',
             priceCurrency: 'USD',
@@ -149,7 +165,7 @@ const NAVBAR_CONFIG = {
 
 <BaseLayout
 	title="AI Agents, Web Design & SEO in Springfield, MA | MannyKnows"
-	description="Web design, AI agents, local SEO & custom apps in Springfield, MA and all of Western Mass. Sites from $595 to build + $95/mo, no contract. Call (413) 361-8451."
+	description="Web design & marketing for dental & medical practices in Springfield & Western Mass, from hundreds of practice sites. AI agents, SEO & apps for local business."
 	footerServices={true}
 >
 	<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
@@ -175,7 +191,7 @@ const NAVBAR_CONFIG = {
                 title=""
                 highlightedText='AI Agents, Websites, SEO <br class="sm:hidden" /> & Apps'
                 titleAfter=""
-                subtitle="We offer AI-powered websites for businesses of any size in Western Mass. Multilingual, built to capture leads, manage clients, and get you found on Google."
+                subtitle="AI-powered practice websites, local SEO, and AI agents that answer patients and keep the schedule full, built on experience overseeing hundreds of dental and medical practice sites. Contractors, daycares, professional offices, and shops across Western Mass run on the same engine."
             />
 
             <!-- Hero CTAs + credibility stat band -->

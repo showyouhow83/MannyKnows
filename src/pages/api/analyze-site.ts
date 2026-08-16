@@ -64,6 +64,70 @@ function normalizeEmail(raw: string): string {
   return `${local}@${domain}`;
 }
 
+// Owner unlock: Manny scanning prospects from his own inbox shouldn't burn a
+// quota, spam himself with "scanner lead" alerts, or get only the teaser. The
+// business address always counts; personal addresses come from the
+// SCAN_OWNER_EMAILS secret (comma-separated) so no personal email is committed.
+function isOwnerEmail(normEmail: string): boolean {
+  if (/@mannyknows\.com$/.test(normEmail)) return true;
+  const list = String((env as any)?.SCAN_OWNER_EMAILS || '')
+    .split(',')
+    .map((s) => normalizeEmail(s))
+    .filter(Boolean);
+  return list.includes(normEmail);
+}
+
+// The syntax regex can't catch "gmail.cpom" — Resend accepts the send, the
+// domain has no mail server, the report bounces, and the visitor's quota is
+// gone. So the domain has to resolve to something that receives mail (MX,
+// or an A/AAAA fallback per RFC 5321) before we run anything. Cloudflare's
+// DNS-over-HTTPS answers in a few ms; if it's unreachable, fail open.
+async function domainAcceptsMail(domain: string): Promise<boolean> {
+  const query = async (type: 'MX' | 'A' | 'AAAA') => {
+    const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=${type}`, {
+      headers: { Accept: 'application/dns-json' },
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!res.ok) throw new Error(`doh ${res.status}`);
+    const data = (await res.json()) as { Status?: number; Answer?: Array<{ type: number; data: string }> };
+    // NXDOMAIN — the domain does not exist at all.
+    if (data.Status === 3) return 'nxdomain' as const;
+    return (data.Answer || []).length > 0 ? ('yes' as const) : ('no' as const);
+  };
+  try {
+    const mx = await query('MX');
+    if (mx === 'nxdomain') return false;
+    if (mx === 'yes') return true;
+    const [a, aaaa] = await Promise.all([query('A'), query('AAAA')]);
+    return a === 'yes' || aaaa === 'yes';
+  } catch {
+    return true; // resolver trouble is our problem, not the visitor's
+  }
+}
+
+// "gmail.cpom" → "gmail.com": one edit away from a major mailbox provider is a
+// typo, not a new domain. Only the big consumer providers — a business domain
+// that happens to sit near one of these is left alone.
+const COMMON_MAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com', 'comcast.net', 'live.com', 'me.com', 'msn.com', 'protonmail.com', 'proton.me'];
+function suggestDomain(domain: string): string | null {
+  if (COMMON_MAIL_DOMAINS.includes(domain)) return null;
+  const dist = (a: string, b: string) => {
+    const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+    for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= a.length; i++)
+      for (let j = 1; j <= b.length; j++)
+        dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return dp[a.length][b.length];
+  };
+  let best: string | null = null;
+  let bestD = 3;
+  for (const d of COMMON_MAIL_DOMAINS) {
+    const k = dist(domain, d);
+    if (k < bestD) { bestD = k; best = d; }
+  }
+  return best;
+}
+
 async function fetchCapped(url: string, accept: string): Promise<{ status: number; body: string; finalUrl: string; truncated: boolean } | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
@@ -272,31 +336,68 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try { payload = await request.json(); } catch { return json({ ok: false, error: 'Bad request.' }, 400); }
 
   const email = (typeof payload?.email === 'string' ? payload.email : '').trim().toLowerCase();
-  if (!email || email.length > 254 || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email)) {
+  // Syntax first (cheap), then the domain has to actually receive mail — see
+  // domainAcceptsMail. Both run before the target is touched so a bad email
+  // never costs a fetch or a quota.
+  if (!email || email.length > 254 || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email) || /\.\.|^\.|\.@|@\./.test(email)) {
     return json({ ok: false, error: 'Add your email to run the free scan. It takes the same two seconds.' }, 400);
+  }
+  const emailDomain = email.slice(email.lastIndexOf('@') + 1);
+  if (!(await domainAcceptsMail(emailDomain))) {
+    const hint = suggestDomain(emailDomain);
+    const local = email.slice(0, email.lastIndexOf('@'));
+    return json({
+      ok: false,
+      field: 'email',
+      ...(hint ? { suggestion: `${local}@${hint}` } : {}),
+      error: hint
+        ? `${emailDomain} can't receive mail — did you mean ${local}@${hint}? The report ships to your inbox, so the address has to be real.`
+        : `${emailDomain} doesn't accept email, so the report would have nowhere to go. Check the address for a typo.`,
+    }, 400);
   }
 
   const target = normalizeTarget(typeof payload?.url === 'string' ? payload.url : '');
   if (!target) return json({ ok: false, error: "That doesn't look like a public website address. Try something like yourbusiness.com." }, 400);
 
-  // Don't scan ourselves into a loop.
-  if (/(^|\.)mannyknows\.com$/.test(target.hostname)) {
-    return json({ ok: false, error: 'Nice try. We like this site too. Enter your business website.' }, 400);
-  }
-
   const kv = env?.MK_KV_CHATBOT;
   const ip = clientAddress || request.headers.get('cf-connecting-ip') || 'unknown';
   const normEmail = normalizeEmail(email);
+  const owner = isOwnerEmail(normEmail);
   // www.foo.com and foo.com are the same site for quota purposes.
   const site = target.hostname.replace(/^www\./, '');
+
+  // Don't scan ourselves into a loop (the owner may — it's how the site's own
+  // scanner gets checked against itself).
+  if (!owner && /(^|\.)mannyknows\.com$/.test(target.hostname)) {
+    return json({ ok: false, error: 'Nice try. We like this site too. Enter your business website.' }, 400);
+  }
+
+  // Owner runs: no lead alert to himself, no quota burn, and the full report
+  // on the page as well as in the inbox.
+  const finish = async (result: any, extra: Record<string, unknown>) => {
+    if (owner) {
+      await sendReportEmail(email, result);
+      return json({ ok: true, ...extra, owner: true, ...result });
+    }
+    if (kv) await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
+    await captureLead(kv, email, target.hostname, target.origin, ip, result, String(extra.note ?? 'live scan (report emailed)'));
+    await bumpScanMetric(kv);
+    // The inbox is the product. If the send fails (Resend down, key missing)
+    // fall back to the on-page report so a real visitor isn't stranded.
+    const emailed = await sendReportEmail(email, result);
+    const { note: _n, ...rest } = extra;
+    return json({ ok: true, ...rest, ...(emailed ? teaserOf(result, email) : result) });
+  };
 
   if (kv) {
     // Fail open on KV hiccups: KV allows 1 write/sec/key, so two same-second
     // scans from one IP would otherwise turn the limiter itself into a 500.
+    // The owner gets a wider lane for prospecting sessions; still capped so a
+    // stranger typing his address can't turn this into a hammer.
     try {
       const rlKey = `scan_rl:${ip}`;
       const used = parseInt((await kv.get(rlKey)) || '0', 10);
-      if (used >= RL_MAX_PER_HOUR) {
+      if (used >= (owner ? RL_MAX_PER_HOUR * 5 : RL_MAX_PER_HOUR)) {
         return json({ ok: false, error: "That's a lot of scans in one hour. Give it a rest, or tell us what you're up to at mm@mannyknows.com." }, 429);
       }
       await kv.put(rlKey, String(used + 1), { expirationTtl: 3600 });
@@ -304,34 +405,32 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     // One website per email: the quota only burns on a successful scan, so a
     // typo'd domain doesn't eat someone's free report.
-    try {
-      const prior = await kv.get(`scan_quota:${normEmail}`);
-      if (prior && prior !== site) {
-        return json({ ok: false, error: `This email already used its free scan on ${prior}. Re-scans of ${prior} are always free — for a different website, write us at mm@mannyknows.com.` }, 429);
-      }
-    } catch { /* quota unavailable: let the scan through */ }
+    if (!owner) {
+      try {
+        const prior = await kv.get(`scan_quota:${normEmail}`);
+        if (prior && prior !== site) {
+          return json({ ok: false, error: `This email already used its free scan on ${prior}. Re-scans of ${prior} are always free — for a different website, write us at mm@mannyknows.com.` }, 429);
+        }
+      } catch { /* quota unavailable: let the scan through */ }
+    }
 
     try {
       const cached = await kv.get(`scan_cache:v3:${target.hostname}`);
       if (cached) {
         const parsed = JSON.parse(cached);
-        await captureLead(kv, email, target.hostname, target.origin, ip, parsed, 'served from cache (report emailed)');
-        await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
-        await bumpScanMetric(kv);
-        const emailed = await sendReportEmail(email, parsed);
-        return json({ ok: true, cached: true, ...(emailed ? teaserOf(parsed, email) : parsed) });
+        return await finish(parsed, { cached: true, note: 'served from cache (report emailed)' });
       }
     } catch { /* fall through to live scan */ }
   }
 
   const page = await fetchCapped(target.origin + '/', 'text/html,application/xhtml+xml');
   if (!page) {
-    await captureLead(kv, email, target.hostname, target.origin, ip, null, 'site unreachable (timeout/refused)');
+    if (!owner) await captureLead(kv, email, target.hostname, target.origin, ip, null, 'site unreachable (timeout/refused)');
     return json({ ok: false, error: "We couldn't reach that site (timeout or connection refused). Double-check the address, or if the site is down, that's finding #1." }, 502);
   }
   if (page.status === 403 || page.status === 503 || /just a moment|cf-chl|challenge-platform/i.test(page.body)) {
     // Still a lead — arguably a warmer one: they wanted the scan and couldn't get it.
-    await captureLead(kv, email, target.hostname, target.origin, ip, null, 'site firewall blocked the scanner');
+    if (!owner) await captureLead(kv, email, target.hostname, target.origin, ip, null, 'site firewall blocked the scanner');
     return json({
       ok: false,
       blocked: true,
@@ -339,11 +438,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }, 200);
   }
   if (page.status >= 400) {
-    await captureLead(kv, email, target.hostname, target.origin, ip, null, `site answered HTTP ${page.status}`);
+    if (!owner) await captureLead(kv, email, target.hostname, target.origin, ip, null, `site answered HTTP ${page.status}`);
     return json({ ok: false, error: `The site answered with an error (HTTP ${page.status}). If that's your homepage, that's the first thing to fix.` }, 200);
   }
   if (!/<[a-z][\s\S]*>/i.test(page.body)) {
-    await captureLead(kv, email, target.hostname, target.origin, ip, null, 'address returned non-HTML');
+    if (!owner) await captureLead(kv, email, target.hostname, target.origin, ip, null, 'address returned non-HTML');
     return json({ ok: false, error: "That address didn't return a web page we can read." }, 200);
   }
 
@@ -370,14 +469,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   if (kv) {
     await kv.put(`scan_cache:v3:${target.hostname}`, JSON.stringify(result), { expirationTtl: CACHE_TTL_S }).catch(() => {});
-    await kv.put(`scan_quota:${normEmail}`, site, { expirationTtl: QUOTA_TTL_S }).catch(() => {});
   }
 
-  await captureLead(kv, email, target.hostname, target.origin, ip, result, 'live scan (report emailed)');
-  await bumpScanMetric(kv);
-
-  // The inbox is the product now. If the send fails (Resend down, key missing)
-  // fall back to the on-page report so a real visitor isn't stranded.
-  const emailed = await sendReportEmail(email, result);
-  return json({ ok: true, ...(emailed ? teaserOf(result, email) : result) });
+  return await finish(result, { note: 'live scan (report emailed)' });
 };
