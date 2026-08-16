@@ -1,0 +1,42 @@
+---
+// The AI Agents Team banner — one component, used on /plans (closing the
+// "Beyond your website" section) and on /pricing (the AI Agents Team section).
+//
+// The story is Manny AI, the manager (Manny, Aug 16 2026): it adds as many AI
+// agents as each workflow needs, so the banner shows Manny AI alone — not the
+// roster cluster, and never Remi AI (people confused the two). Pricing is by
+// the workflow, not the head count; the setup fee is the only public number.
+// The whole banner is the <a>, so the CTA is a <span> styled with Button
+// primary/sm classes (an interactive element can't nest inside one).
+import AgentAvatar from '../team/AgentAvatar.astro';
+import { aiTeamSetupFee } from '../../data/aiTeam';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<a href="/ai-team/" class={`group block max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 hover:shadow-xl hover:shadow-primary-blue/10 transition-all duration-300 ${className}`.trim()}>
+  <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+    <div class="flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-2 ring-primary-blue/40 bg-gradient-to-br from-primary-blue/10 to-primary-pink/10 overflow-hidden" title="Manny AI: AI Agents Manager">
+      <AgentAvatar agent="manny" class="w-full h-full" />
+    </div>
+    <div class="flex-1 text-center lg:text-left">
+      <span class="inline-block bg-gradient-to-r from-primary-blue/10 via-purple-500/10 to-primary-pink/10 text-primary-blue px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Manny AI</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-text-light-primary dark:text-text-dark-primary">Your AI agents' manager,<br class="sm:hidden" /> added to your business</h2>
+      <p class="mt-1.5 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed max-w-2xl">
+        You define the work. Manny AI turns each process into a workflow and staffs it with as many AI agents as it needs — research, copy, graphics and video, voice, SEO, ads, publishing, reporting — then runs it on your business, faster and with fewer errors, and hands you the output to approve. Your own AI multimedia agency, with one manager and one boss: you.
+      </p>
+    </div>
+    <div class="flex-shrink-0 text-center">
+      <div class="text-xs font-bold uppercase tracking-wider text-text-light-tertiary dark:text-text-dark-tertiary">Priced per workflow</div>
+      <div class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary leading-snug mt-1">Scoped on the free diagnostic</div>
+      <div class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary mt-1">${aiTeamSetupFee} setup, waived on a prepaid year</div>
+      <span class="mt-3 inline-flex items-center justify-center text-center leading-snug select-none min-h-10 px-5 py-2 text-sm gap-1.5 rounded-full bg-gradient-to-r from-primary-blue via-purple-500 to-primary-pink text-white font-semibold shadow-sm group-hover:shadow-lg group-hover:shadow-primary-blue/25 transition-shadow">
+        Meet Manny AI
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </span>
+    </div>
+  </div>
+</a>

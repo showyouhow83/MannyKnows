@@ -182,10 +182,16 @@ for small businesses in Western Massachusetts).
   offers as house cards, OfferCatalog JSON-LD computed from the same cards.
   Top-level "Pricing" nav link + footer/search entries; /services title has
   no "& Pricing".
-- **AI Agents Team has ONE public price** — Remi AI (from $40/mo). Everything
-  else is scoped and quoted on the free diagnostic (commit 0cebdef "Remi-only
-  pricing"); never publish per-agent or bundle prices (aiTeam.ts keeps them
-  for internal math only). /pricing shows a two-panel section, not a grid.
+- **AI Agents Team = Manny AI, priced per WORKFLOW** (Manny, Aug 16 2026):
+  the story is the manager that adds as many agents as each workflow (one
+  defined business process) needs — "your own AI multimedia agency". Never
+  price per agent or per head count; never publish bundle/per-agent figures
+  (aiTeam.ts keeps them for internal math only). Public numbers: the $195
+  setup (waived on a prepaid year); the monthly is quoted per workflow on the
+  diagnostic until Manny sets a workflow ladder. On /pricing and /plans the
+  section is `AiTeamBanner.astro` (Manny AI avatar, no roster, no Remi) —
+  Remi AI is deliberately absent from AI-team surfaces so the two aren't
+  confused; Remi lives in its own section.
 - **All pricing-card grids render through `PricingCards.astro`** (Aug 2026):
   /plans, /ecommerce, /apps, /local-seo, /ai-booking-agent, and the tier
   grids on /plans/business-ads + /plans/multimedia-agency. New pricing cards

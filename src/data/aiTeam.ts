@@ -246,7 +246,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced by what it runs for you, quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team, waived when you prepay a year.`,
+    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced per workflow (one business process, staffed by as many agents as it needs), never per agent, and quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team, waived when you prepay a year.`,
   },
   {
     q: 'What does adding Manny AI to my business actually mean?',

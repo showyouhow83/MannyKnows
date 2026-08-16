@@ -18,7 +18,8 @@ import Faq from '../components/ui/Faq.astro';
 import PricingCards from '../components/pricing/PricingCards.astro';
 import { plans, websitePlans } from '../data/plans';
 import { remiCustom, remiSetupFee } from '../data/remi';
-import { aiTeamSetupFee, aiTeamStartingPrice } from '../data/aiTeam';
+import { aiTeamSetupFee } from '../data/aiTeam';
+import AiTeamBanner from '../components/sections/AiTeamBanner.astro';
 import { ONDEMAND, PLAN_CLIENT_ON_THE_MAP } from '../data/localSeo';
 import { APPS_HOURLY } from '../data/apps';
 import {
@@ -76,12 +77,12 @@ const sections = [
     // panel, not a grid, and /pricing says the same thing /ai-team says.
     id: 'ai-team',
     title: 'The AI Agents Team',
-    subtitle: 'Manny AI, added to your business and ready to work, staffing AI specialists on the processes it finds. One public price, the rest scoped to your business.',
+    subtitle: 'Manny AI is the manager. You define the work; it adds as many AI agents as each workflow needs and runs them for you. Priced by the workflow, never by the head count.',
     cards: [] as ReturnType<typeof remiCards>,
     billing: 'none' as const,
     featuredLabel: '',
     href: '/ai-team/',
-    linkLabel: 'Meet the team',
+    linkLabel: 'Meet Manny AI and the team',
   },
   {
     id: 'seo',
@@ -123,6 +124,15 @@ const sections = [
     href: '/plans/multimedia-agency/',
     linkLabel: 'See the agency retainer in full',
   },
+];
+
+// How the AI Agents Team is priced — by the workflow (Manny, Aug 16 2026):
+// a workflow is one business process, defined with you, staffed by however
+// many agents it needs. No per-agent price tags anywhere.
+const AI_TEAM_HOW = [
+  { title: 'A workflow is the unit', body: 'One business process, defined with you on the free diagnostic: what comes in, what the agents do, who approves, what goes out. Publish a week of content, answer and qualify leads, turn every job into a case study, keep the profile alive.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+  { title: 'Manny AI staffs it', body: 'The manager adds as many specialists as the workflow needs and runs them, so the same process runs every time, faster and with fewer errors than a hand-off between people and tools. Add a workflow any time; the team grows with it.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+  { title: 'Priced per workflow', body: `The monthly is quoted per workflow after the diagnostic, so you pay for what runs for you, not for a roster. One-time ${usd(aiTeamSetupFee)} setup to build and train the first workflow, waived on a prepaid year. Normal AI usage is included.`, icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' },
 ];
 
 const FREE = [
@@ -202,19 +212,22 @@ const META_DESCRIPTION = `Every MannyKnows service on one page with what it cost
           )}
 
           {s.id === 'ai-team' && (
-            <div class="max-w-6xl mx-auto grid gap-6 md:grid-cols-2">
-              <div class="rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-white dark:bg-dark-secondary p-6 sm:p-8 shadow-lg shadow-primary-blue/5">
-                <span class="block text-[11px] font-bold uppercase tracking-wide text-primary-blue dark:text-blue-300 mb-1">The one public price</span>
-                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">Remi AI, the chat agent</h3>
-                <div class="mt-3 flex items-baseline gap-1"><span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary">from</span><span class="sf-bold text-3xl font-bold text-text-light-primary dark:text-text-dark-primary">{usd(aiTeamStartingPrice)}</span><span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">/mo</span></div>
-                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Answers customers 24/7 and captures every lead on the website you have. Its full ladder, and what each tier unlocks, is in the Remi AI section above. Also included in every website plan.</p>
+            <>
+              <AiTeamBanner />
+              <div class="max-w-6xl mx-auto mt-8 grid gap-6 md:grid-cols-3">
+                {AI_TEAM_HOW.map((h) => (
+                  <div class="rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
+                    <div class="flex items-center gap-3">
+                      <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-blue to-primary-pink text-white shadow-lg shadow-primary-blue/20">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d={h.icon} /></svg>
+                      </div>
+                      <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{h.title}</h3>
+                    </div>
+                    <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{h.body}</p>
+                  </div>
+                ))}
               </div>
-              <div class="rounded-3xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6 sm:p-8">
-                <span class="block text-[11px] font-bold uppercase tracking-wide text-text-light-tertiary dark:text-text-dark-tertiary mb-1">Everything else</span>
-                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">Manny AI and the specialists, scoped to your business</h3>
-                <p class="mt-3 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">Research, copy, graphics and video, voice, SEO, ads, publishing, and reporting agents are staffed on the processes Manny AI finds worth automating. The monthly is priced by what it runs for you and quoted on the free 15-minute diagnostic before anything is billed, with a one-time {usd(aiTeamSetupFee)} setup, waived on a prepaid year.</p>
-              </div>
-            </div>
+            </>
           )}
 
           {s.id === 'remi' && (
