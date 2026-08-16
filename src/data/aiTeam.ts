@@ -219,6 +219,85 @@ export const aiTeamBundles: Bundle[] = BUNDLE_SPECS.map((b) => ({
 
 export const wholeTeamBundle = aiTeamBundles.find((b) => b.id === 'whole')!;
 
+// ── Manny AI, priced per WORKFLOW (Manny, Aug 16 2026) ─────────────────────
+// The public ladder for Manny AI on its own. The unit is a workflow — one
+// defined business process (what comes in, what the agents do, who approves,
+// what goes out), staffed by however many agents it needs. Never per agent,
+// never per head count; the roster prices and bundles above stay internal
+// math. Same billing canon as every other ladder: yearly = 10× monthly, and
+// the one-time setup (aiTeamSetupFee) is waived on a prepaid year. Normal AI
+// usage is included; a paid third-party seat a workflow needs (stock, ad
+// spend, a phone number) passes through at cost. Rendered through
+// PricingCards on /ai-team and /pricing (src/lib/pricingCards.ts →
+// mannyAiCards()), and quoted in the /ai-team FAQ + JSON-LD.
+export interface MannyAiTier {
+  id: 'one' | 'growth' | 'agency';
+  name: string;
+  audience: string;
+  scope: string;
+  scopeLines: string[];
+  price: number;
+  featured?: boolean;
+  builtOn?: string;
+  tagline: string;
+  features: string[];
+}
+
+export const mannyAiTiers: MannyAiTier[] = [
+  {
+    id: 'one',
+    name: 'One Workflow',
+    audience: 'For the one process eating the most hours',
+    scope: 'One workflow, run for you',
+    scopeLines: ['As many agents as it needs', 'Built and trained with you'],
+    price: 245,
+    tagline: 'One business process handed to Manny AI, staffed with the specialists it takes, and run the same way every time. Publish a week of content, answer and qualify every lead, turn every finished job into a case study and a review ask.',
+    features: [
+      'One workflow, defined with you on the free diagnostic — what comes in, what the agents do, who approves, what goes out',
+      'Manny AI staffs it with as many AI specialists as the work needs (research, copy, graphics & video, voice, SEO, publishing, reporting)',
+      'Your Brand Brain built at setup, so everything ships in your voice',
+      'You approve the output; the agents do the volume',
+      'Normal AI usage included; third-party seats pass through at cost, never marked up',
+    ],
+  },
+  {
+    id: 'growth',
+    name: 'Growth',
+    audience: 'For three processes running side by side',
+    scope: 'Up to three workflows',
+    scopeLines: ['One manager over all of them', 'Add or swap a workflow any time'],
+    price: 595,
+    featured: true,
+    builtOn: 'Everything in One Workflow, plus',
+    tagline: 'Three workflows under one manager, so the research feeds the writing, the writing feeds the design, and it all lands in one dashboard for your approval.',
+    features: [
+      'Up to three workflows running side by side, coordinated by Manny AI',
+      'Handoffs between workflows, so one process feeds the next instead of you playing middleman',
+      'A monthly report tying the work to calls, bookings, and sales',
+      'Swap a workflow when the business changes, at no charge',
+    ],
+  },
+  {
+    id: 'agency',
+    name: 'Agency',
+    audience: 'For your own AI multimedia agency',
+    scope: 'Unlimited workflows, normal use',
+    scopeLines: ['Quarterly review of what to automate next', 'Custom agents scoped in'],
+    price: 1195,
+    builtOn: 'Everything in Growth, plus',
+    tagline: 'Your own AI multimedia agency, with one manager and one boss: you. Every process you can define, staffed and run, and a standing look at what to hand over next.',
+    features: [
+      'Unlimited workflows within normal use, added as fast as we can define them with you',
+      'A quarterly working session on which processes to automate next',
+      'Custom-built agents for the workflows that are specific to your business, scoped in',
+      'Priority turnaround on changes and new workflows',
+    ],
+  },
+];
+
+// "From" anchor for Manny AI on its own — the cheapest workflow tier.
+export const mannyAiStartingPrice = Math.min(...mannyAiTiers.map((t) => t.price));
+
 // "From" anchor used on the hero + the /plans flagship card (cheapest paid agent).
 export const aiTeamStartingPrice = Math.min(...paidAgents.map((a) => a.price));
 
@@ -246,7 +325,7 @@ export const aiTeamFaq = [
   },
   {
     q: 'What does it cost?',
-    a: `It varies. A chat agent starts at $${aiTeamStartingPrice}/mo — that's Remi AI, the chat agent, which is also included with every website plan. For anything bigger, Manny AI goes to work on your business, and the monthly is priced per workflow (one business process, staffed by as many agents as it needs), never per agent, and quoted on the 15-minute diagnostic before anything is billed. Set up once, and fine-tuned going forward. Normal AI usage is included (unusually heavy use is quoted first). The only other number is a one-time $${aiTeamSetupFee} setup, which builds your Brand Brain and trains your team, waived when you prepay a year.`,
+    a: `Two ways in. Remi AI, the chat agent, is a product on its own with plans from $${aiTeamStartingPrice}/mo (and it comes with every website plan). Manny AI is priced per workflow, never per agent: One Workflow at $${mannyAiTiers[0].price}/mo, Growth (up to three workflows) at $${mannyAiTiers[1].price}/mo, and Agency (unlimited workflows within normal use) at $${mannyAiTiers[2].price}/mo. Every tier adds a one-time $${aiTeamSetupFee} setup that builds your Brand Brain and trains the first workflow, waived when you prepay a year (10× the monthly, two months free). Normal AI usage is included; a paid third-party seat a workflow needs passes through at cost. A workflow with real integrations is scoped on the 15-minute diagnostic before anything is billed.`,
   },
   {
     q: 'What does adding Manny AI to my business actually mean?',

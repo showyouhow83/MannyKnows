@@ -20,10 +20,14 @@ export interface LocalSeoPackage {
 
 export interface LocalSeoOneTime {
   name: string;
+  audience: string;     // "For …" — one line, the PricingCards audience row
+  scope: string;        // headline unit in the card's spec box
+  scopeLines: string[]; // the "=" lines under it (one line each)
   min: number;
   exact?: boolean;
   service: string;
   body: string;
+  features: string[];
 }
 
 export const PACKAGES: LocalSeoPackage[] = [
@@ -91,10 +95,68 @@ export const PACKAGES: LocalSeoPackage[] = [
 // One-time services — quoted flat from the same public $75/hr the apps pillar
 // uses. The audit price is exact; the rest are floors ("from"), quoted up front.
 export const ONDEMAND: LocalSeoOneTime[] = [
-  { name: 'Deep SEO & AI-Readiness Audit', min: 375, exact: true, service: 'seo-audit', body: 'Technical, content, local, and AI search in one prioritized fix list. Start any package within 30 days and the full price is credited toward month one.' },
-  { name: 'Site Migration SEO', min: 750, service: 'seo-migration', body: 'Keep your rankings through a redesign, replatform, or domain change, with every old URL mapped to its new home.' },
-  { name: 'Virtual Tour Shoot', min: 495, service: 'virtual-tour', body: 'A full 360° walkthrough of your business, shot on site and published to your website and your Google listing.' },
-  { name: 'Google Profile Rescue', min: 245, service: 'gbp-rescue', body: 'Suspended, duplicate, or hijacked listings recovered, verified, and set back up right.' },
+  {
+    name: 'Deep SEO & AI-Readiness Audit',
+    audience: 'For knowing what to fix first',
+    scope: 'One prioritized fix list',
+    scopeLines: ['Technical, content, local, AI search', 'Credited toward month one'],
+    min: 375,
+    exact: true,
+    service: 'seo-audit',
+    body: 'Technical, content, local, and AI search in one prioritized fix list. Start any package within 30 days and the full price is credited toward month one.',
+    features: [
+      'Crawl, speed, and Core Web Vitals, with every issue ranked by impact',
+      'Content and keyword gaps against the competitors who outrank you',
+      'Google Business Profile and citation check, town by town',
+      "AI-readiness: whether ChatGPT and Google's AI can read, quote, and recommend you",
+      'Delivered as a fix list you can hand to anyone, or to us',
+    ],
+  },
+  {
+    name: 'Site Migration SEO',
+    audience: 'For redesigns and domain changes',
+    scope: 'Rankings carried over',
+    scopeLines: ['Every old URL redirected', 'Before/after crawl checks'],
+    min: 750,
+    service: 'seo-migration',
+    body: 'Keep your rankings through a redesign, replatform, or domain change, with every old URL mapped to its new home.',
+    features: [
+      'Full URL inventory and a redirect map, tested before launch',
+      'Titles, schema, and internal links carried over, not rebuilt from scratch',
+      'Search Console and analytics re-pointed and verified',
+      'Post-launch crawl and rank checks until it settles',
+    ],
+  },
+  {
+    name: 'Virtual Tour Shoot',
+    audience: 'For letting customers walk in first',
+    scope: 'A full 360° walkthrough',
+    scopeLines: ['Shot on site at your business', 'Published to site and listing'],
+    min: 495,
+    service: 'virtual-tour',
+    body: 'A full 360° walkthrough of your business, shot on site and published to your website and your Google listing.',
+    features: [
+      'On-site shoot, every room and angle that sells the visit',
+      'Stitched, linked, and published to your Google Business Profile',
+      'Embedded on your website with the right markup',
+      'Standard photos from the same visit, yours to keep',
+    ],
+  },
+  {
+    name: 'Google Profile Rescue',
+    audience: 'For a suspended or hijacked listing',
+    scope: 'Your listing back, set up right',
+    scopeLines: ['Suspensions, duplicates, hijacks', 'Verified and configured'],
+    min: 245,
+    service: 'gbp-rescue',
+    body: 'Suspended, duplicate, or hijacked listings recovered, verified, and set back up right.',
+    features: [
+      'Appeals and reinstatement handled with Google, with the evidence they ask for',
+      'Duplicates merged or removed so reviews and rank land on one listing',
+      'Ownership recovered and access locked to your accounts',
+      'Category, services, hours, and info configured right once it is back',
+    ],
+  },
 ];
 
 // What plan clients pay to add On the Map (the field layer only — their plan

@@ -763,9 +763,9 @@ export const plans: Plan[] = [
       'All web & SEO: websites, landing pages, content, and continuous optimization',
       'In constant contact through the workday, so every request gets a same-day answer',
     ],
-    headline: 'A whole agency’s output. One person doing the work.',
+    headline: 'A whole agency’s output, on one retainer.',
     blurb:
-      "You’re buying Manny’s time, not a package. One senior builder covers development, design, SEO, photo, and video, with AI multiplying the output, and builds whatever you point at (even the tool that doesn’t exist yet) while you watch and redirect.",
+      "You’re hiring Manny by the week, not buying a package. Development, design, SEO, photo, and video, with AI multiplying the output, and whatever you point at gets built (even the tool that doesn’t exist yet) while you watch and redirect.",
     whoFor:
       'Owners who’d rather sit in on the build than wait for a status update.',
     tiersHeading: 'Pick how you pay',

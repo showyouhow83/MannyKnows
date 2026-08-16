@@ -3,9 +3,9 @@
 // the business, ready to work: one
 // manager that staffs AI specialists (visible roster + hidden sub-agents), all
 // reading from one shared "Brand Brain," so a single request becomes a
-// finished, measured deliverable. Only Remi AI carries a public price (its own
-// ladder in src/data/remi.ts, from $40/mo —
-// it's a product on its own); everything else is scoped on the diagnostic.
+// finished, measured deliverable. Priced per WORKFLOW (aiTeam.ts mannyAiTiers,
+// Aug 16 2026), never per agent; Remi AI is the one agent that is also a
+// product on its own (its own ladder in src/data/remi.ts).
 // Content is driven by src/data/aiTeam.ts.
 export const prerender = true;
 
@@ -21,7 +21,9 @@ import Breadcrumb from '../components/ui/Breadcrumb.astro';
 import Button from '../components/ui/Button.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import AiTeamEcosystem from '../components/team/AiTeamEcosystem.astro';
-import { team, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq } from '../data/aiTeam';
+import { team, aiTeamSetupFee, aiTeamStartingPrice, aiTeamFaq, mannyAiTiers } from '../data/aiTeam';
+import PricingCards from '../components/pricing/PricingCards.astro';
+import { mannyAiCards } from '../lib/pricingCards';
 import type { AgentId } from '../data/aiTeam';
 import { BOOKING_URL } from '../data/booking';
 
@@ -97,11 +99,14 @@ const pageJsonLd = {
       priceCurrency: 'USD',
       description: `Remi AI answers 24/7 and captures every lead, with its own plans from $${aiTeamStartingPrice}/mo; booking arrives on Remi AI Pro. Included with every website plan, where it books from Get Booked and sells from Get Growing.`,
     },
-    {
+    ...mannyAiTiers.map((t) => ({
       '@type': 'Offer',
-      name: 'Manny AI, managed AI operation',
-      description: `Manny AI is added to your business, ready to work — the manager that finds the processes AI can improve and staffs AI specialists on them. Scoped and quoted on a 15-minute diagnostic; one-time $${aiTeamSetupFee} setup.`,
-    },
+      name: `Manny AI: ${t.name}`,
+      price: String(t.price),
+      priceCurrency: 'USD',
+      priceSpecification: { '@type': 'UnitPriceSpecification', price: String(t.price), priceCurrency: 'USD', unitText: 'MONTH' },
+      description: `${t.tagline} Priced per workflow, never per agent; one-time $${aiTeamSetupFee} setup, waived on a prepaid year.`,
+    })),
   ],
 };
 ---
@@ -285,9 +290,9 @@ const pageJsonLd = {
                 </div>
               </div>
               <p class="flex-1 text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed">{a.does}</p>
-              {/* Remi AI is the only agent with a public price — it's a product
-                  on its own. Everyone else goes to work through Manny AI
-                  (scoped on the diagnostic), so no per-agent price tags. */}
+              {/* Remi AI is the only agent with its own price tag — it's a
+                  product on its own. Everyone else goes to work through Manny
+                  AI, priced per workflow (the grid below), never per agent. */}
               {a.id === 'desi' ? (
                 <div class="mt-4 pt-1 flex items-end justify-between gap-3">
                   <div class="leading-none">
@@ -376,6 +381,23 @@ const pageJsonLd = {
         <StepCards steps={steps} cols={5} />
         {/* Setup-fee paragraph removed per Manny (Aug 2026) — the $195 setup
             and usage terms live in the "What does it cost?" FAQ below. */}
+      </Container>
+    </Section>
+
+    <!-- What Manny AI costs — per workflow (Manny, Aug 16 2026). The same
+         PricingCards grid /pricing renders, from the same builder, so the two
+         can't drift. Remi AI's own ladder lives on /ai-booking-agent. -->
+    <Section id="ai-team-pricing" variant="default" className="room chain-violet-blue">
+      <Container>
+        <SectionHeader
+          badge="Pricing"
+          title="Priced per workflow, never per agent"
+          subtitle="A workflow is one business process, defined with you on the free diagnostic, staffed by as many AI agents as it needs. Pick how many you want running; Manny AI manages all of them."
+        />
+        <PricingCards id="mannyAiTiers" cards={mannyAiCards()} billing="monthly" featuredLabel="Most popular" />
+        <p class="mt-8 text-center text-sm text-text-light-secondary dark:text-text-dark-secondary max-w-3xl mx-auto">
+          Every tier includes normal AI usage. A paid third-party seat a workflow needs (stock, ad spend, a phone number) passes through at cost, never marked up, and a workflow with real integrations is scoped on the diagnostic before anything is billed. Remi AI, the chat agent, sells on its own at <a href="/ai-booking-agent/" class="text-primary-blue dark:text-blue-300 font-medium hover:underline">its own plans</a> and comes with every website plan.
+        </p>
       </Container>
     </Section>
 

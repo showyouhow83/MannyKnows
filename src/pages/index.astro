@@ -26,12 +26,12 @@ import HeroVideoBackground from '../components/ui/HeroVideoBackground.astro';
 // Offer-catalog prices come from the canonical plan data so structured data can
 // never drift from the published price on a reprice.
 import { plans } from '../data/plans';
-import { team } from '../data/aiTeam';
+import { mannyAiStartingPrice } from '../data/aiTeam';
 
 const planPrice = (slug: string) => String(plans.find((p) => p.slug === slug)?.price ?? '');
-// Cheapest hireable agent — the "AI staff from $X/mo" figure, computed so a
+// Manny AI's cheapest workflow tier — the "from $X/mo" figure, computed so a
 // reprice in aiTeam.ts can't strand the structured data.
-const aiStaffFrom = String(Math.min(...team.filter((a) => a.price > 0).map((a) => a.price)));
+const aiStaffFrom = String(mannyAiStartingPrice);
 
 // ========================================
 // LOCAL SEO — structured data (LocalBusiness / Person / WebSite)
@@ -128,7 +128,7 @@ const structuredData = {
             '@type': 'Offer',
             priceCurrency: 'USD',
             priceSpecification: { '@type': 'UnitPriceSpecification', price: aiStaffFrom, priceCurrency: 'USD', unitText: 'MONTH' },
-            itemOffered: { '@type': 'Service', name: 'AI Agents Team', description: 'AI agents ready to work on your business, per role: sales & booking, research, copy, graphics, voice, SEO, publishing, ads, engagement, and reporting.' },
+            itemOffered: { '@type': 'Service', name: 'AI Agents Team', description: 'Manny AI, the manager, added to your business: each business process becomes a workflow staffed by as many AI agents as it needs (research, copy, graphics, voice, SEO, publishing, ads, engagement, reporting), priced per workflow.' },
           },
           {
             '@type': 'Offer',
@@ -188,7 +188,7 @@ const NAVBAR_CONFIG = {
                 title=""
                 highlightedText='AI Agents, Websites, SEO <br class="sm:hidden" /> & Apps'
                 titleAfter=""
-                subtitle="AI-powered practice websites, local SEO, and AI agents that answer patients and keep the schedule full, backed by hundreds of dental and medical practice websites designed, built, and launched. Contractors, daycares, professional offices, and shops across Western Mass run on the same engine."
+                subtitle="AI-powered practice websites, local SEO, and AI agents that answer patients and keep the schedule full, backed by hundreds of dental and medical practice websites designed, built, and launched."
             />
 
             <!-- Hero CTAs + credibility stat band -->
@@ -221,8 +221,8 @@ const NAVBAR_CONFIG = {
 			id="ai-team"
 			className="room room-violet"
 			badge="AI Agents Team"
-			title="Fix business bottlenecks<br />with AI agents"
-			subtitle="Stop losing revenue to operational bottlenecks. We deploy autonomous AI agents that can take a customer's request, price the job, and draft the quote in your CRM while you're still on the ladder. Let AI handle the busywork so you can focus on the business."
+			title="Fix your business' bottlenecks<br />with AI agents"
+			subtitle="Stop losing hours to the busywork around every appointment. Hand the flows that eat your team's day — answering the phone, confirming visits, chasing recalls, sending the follow-up — to AI agents that run them under your rules, so your people get their time back for the patients in front of them. AI doesn't replace your team; it gives them their hours back."
 			variant="hero"
 		>
 			<HomeAiTeam />
@@ -236,7 +236,7 @@ const NAVBAR_CONFIG = {
 			id="plans"
 			className="room room-blue"
 			badge="AI-Powered Websites"
-			title="Websites that run <br />your business efficiently"
+			title="Autonomous AI-powered <br />websites that think"
 			subtitle="Instead of costing you manual maintenance fees for every fix, your website improves itself—climbing Google rankings and becoming a more valuable, lead-generating asset every single day. How far the autonomy goes depends on the plan — light on Get Found, full on Get Growing and up."
 			variant="hero"
 		>
@@ -347,7 +347,7 @@ const NAVBAR_CONFIG = {
 			id="work"
 			className="room room-blue"
 			badge="Portfolio"
-			title="Our web design portfolio"
+			title="Our portfolio of websites, stores and apps"
 			subtitle="The latest sites, stores, and apps we've designed and built — they rank organically on Google, answer customers around the clock, and take the manual work off your plate. Click any project for the full story."
 			variant="alternate"
 		>
@@ -395,14 +395,18 @@ const NAVBAR_CONFIG = {
 	   laptop; rotate is applied after the flip. */
 	.plans-mascot {
 		--mascot-height: 400px;
-		/* The versus panel is max-w-6xl (the sitewide banner width), which
-		   leaves a 144px gutter at 1440 — the peek is sized to live in it, not
-		   over the copy (Aug 2026; it was 70% when the panel was narrower). */
-		--mascot-peek: 34%;
+		/* 70% shows the whole astronaut (Manny, Aug 16 2026 — a style pass had
+		   trimmed it to 34% to clear the 6xl panel's gutter and "you can barely
+		   see it"). Overlapping the panel's corner is house style, like the
+		   telescope astronaut; pointer-events none keeps it all clickable. */
+		--mascot-peek: 70%;
 		/* Gentler than the 31° house tilt: this art is wide (flying pose),
 		   so a full lean swings the laptop end too far. */
 		--mascot-rotate: 15deg;
-		--mascot-top: 50%;
+		/* Rides beside the centred header copy (max-w-3xl leaves ~330px of
+		   empty gutter at 1440) and only touches the versus panel's top-left
+		   corner, so the full peek never sits on the panel's bullets. */
+		--mascot-top: 30%;
 
 		position: absolute;
 		top: var(--mascot-top);
@@ -416,9 +420,6 @@ const NAVBAR_CONFIG = {
 		width: auto;
 		display: block;
 		transform: rotate(var(--mascot-rotate)) scaleX(-1);
-	}
-	@media (max-width: 1439px) {
-		.plans-mascot { --mascot-peek: 22%; }
 	}
 	@media (max-width: 1279px) {
 		.plans-mascot { --mascot-height: 300px; }

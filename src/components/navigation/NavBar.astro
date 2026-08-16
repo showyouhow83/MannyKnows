@@ -3,7 +3,7 @@ import Button from '../ui/Button.astro';
 import { getCollection } from 'astro:content';
 import { localAreas } from '../../data/localAreas';
 import { plans } from '../../data/plans';
-import { aiTeamSetupFee } from '../../data/aiTeam';
+import { aiTeamSetupFee, mannyAiStartingPrice } from '../../data/aiTeam';
 import { remiLiteMonthly } from '../../data/remi';
 import { aiWebsiteSetupFee, aiWebsiteMonthly } from '../../data/aiWebsite';
 import { PACKAGES } from '../../data/localSeo';
@@ -71,8 +71,8 @@ const searchIndex = [
   { title: "Get Ahead plan", description: `Get Growing plus your ads run and managed on two networks, and a monthly working session with Manny. $${pp('get-ahead')}/mo for $${getAheadWorth} of service.`, url: "/plans/get-ahead/", type: "Page" },
   { title: "Online stores", description: `A Shopify store built, stocked, and run for you. Four tiers from $${pp('sell-online')}/mo plus your Shopify subscription. AI shopping assistant at the top tiers.`, url: "/ecommerce/", type: "Page" },
   { title: "Business Ads plan", description: `Social growth, managed Google & social ads, and SEO campaigns. $${tp('business-ads', 'Per Network')}/mo per network, or 4 major networks for $${tp('business-ads', 'Full Coverage')}/mo.`, url: "/plans/business-ads/", type: "Page" },
-  { title: "Multimedia Agency plan", description: `One person, every role: development, design, SEO, photo, video, apps & software, with AI multiplying the output. $${pp('multimedia-agency')}/wk or $${tp('multimedia-agency', 'Agency Monthly')}/mo, everything on one retainer.`, url: "/plans/multimedia-agency/", type: "Page" },
-  { title: "The AI Agents Team", description: `Manny AI, ready to work on your business: one manager that staffs AI specialists — chat agent (Remi AI), daily intel (Eve), copy (Elly), SEO (Nova), engagement (Finn) & reporting (Vera), plus sub-agents behind the scenes. $${aiTeamSetupFee} setup, Remi AI from $${remiLiteMonthly}/mo, the rest scoped on the free diagnostic.`, url: "/ai-team/", type: "Page" },
+  { title: "Multimedia Agency plan", description: `Every role on one retainer: development, design, SEO, photo, video, apps & software, with AI multiplying the output. $${pp('multimedia-agency')}/wk or $${tp('multimedia-agency', 'Agency Monthly')}/mo, everything included either way.`, url: "/plans/multimedia-agency/", type: "Page" },
+  { title: "The AI Agents Team", description: `Manny AI, ready to work on your business: one manager that turns each business process into a workflow and staffs it with as many AI specialists as it needs — research, copy, graphics & video, voice, SEO, publishing, ads, reporting. Priced per workflow from $${mannyAiStartingPrice}/mo, never per agent; $${aiTeamSetupFee} setup, waived on a prepaid year. Remi AI, the chat agent, sells on its own.`, url: "/ai-team/", type: "Page" },
   { title: "Portfolio", description: "Real sites we've designed and built for Western Mass businesses, case studies included.", url: "/#work", type: "Page" },
   { title: "About", description: "Who's behind MannyKnows — twenty years of enterprise engineering, based in Springfield.", url: "/about/", type: "Page" },
   { title: "Contact", description: "Send a message, email mm@mannyknows.com, or call (413) 361-8451.", url: "/contact/", type: "Page" },

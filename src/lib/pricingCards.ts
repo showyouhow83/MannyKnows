@@ -9,15 +9,17 @@
 //   /ecommerce                   storeCards()
 //   /ai-booking-agent            remiCards()
 //   /ai-website                  remiCards()[0]  (the One-Page Website IS Remi AI Lite)
-//   /local-seo                   localSeoCards()
+//   /local-seo                   localSeoCards() + seoOneTimeCards()
+//   /ai-team                     mannyAiCards()   (Manny AI, priced per workflow)
 //   /apps                        appTierCards()
 //   /plans/business-ads          serviceTierCards('business-ads')
 //   /plans/multimedia-agency     serviceTierCards('multimedia-agency')
 import type { PricingCard } from '../components/pricing/PricingCards.astro';
 import { plans, websitePlans, ecommercePlans } from '../data/plans';
 import { remiTiers, remiSetupFee } from '../data/remi';
-import { PACKAGES } from '../data/localSeo';
+import { PACKAGES, ONDEMAND } from '../data/localSeo';
 import { TIERS, APPS_HOURLY } from '../data/apps';
+import { mannyAiTiers, aiTeamSetupFee } from '../data/aiTeam';
 
 export const websitePlanCards = (): PricingCard[] =>
   websitePlans.map((p) => ({
@@ -79,6 +81,40 @@ export const localSeoCards = (): PricingCard[] =>
     primary: { label: `Start with ${p.name}`, href: '#quote', quoteContext: p.service },
   }));
 
+// The one-time SEO services ("One-time, on demand" on /local-seo). Same shape
+// as the app tiers: one price, quoted flat at the public hourly, no yearly.
+export const seoOneTimeCards = (): PricingCard[] =>
+  ONDEMAND.map((s) => ({
+    name: s.name,
+    audience: s.audience,
+    price: s.min,
+    priceUnit: 'one-time',
+    priceNote: s.exact ? 'Flat price, quoted up front' : `Starting at, quoted flat at $${APPS_HOURLY}/hr`,
+    scope: s.scope,
+    scopeLines: s.scopeLines,
+    tagline: s.body,
+    features: s.features,
+    primary: { label: 'Get a quote', href: '#quote', quoteContext: s.service },
+  }));
+
+// Manny AI on its own, priced per WORKFLOW (Manny, Aug 16 2026) — never per
+// agent. Monthly billing with the setup fee, waived on a prepaid year, like
+// every other subscription ladder.
+export const mannyAiCards = (): PricingCard[] =>
+  mannyAiTiers.map((t) => ({
+    name: t.name,
+    audience: t.audience,
+    price: t.price,
+    setupFee: aiTeamSetupFee,
+    scope: t.scope,
+    scopeLines: t.scopeLines,
+    tagline: t.tagline,
+    builtOn: t.builtOn,
+    features: t.features,
+    featured: t.featured,
+    primary: { label: `Start with ${t.name}`, href: '#contact', context: `Manny AI: ${t.name}` },
+  }));
+
 export const appTierCards = (): PricingCard[] =>
   TIERS.map((t) => ({
     name: t.name,
@@ -116,5 +152,5 @@ export const serviceTierCards = (slug: string): PricingCard[] | null => {
   }));
 };
 
-// NOTE: no AI Agents Team builder on purpose — Remi AI is the team's only public
-// price (Manny: "no per-agent price tags"; the rest is scoped on the diagnostic).
+// NOTE: no per-agent or bundle builder on purpose — the AI Agents Team is sold
+// as Manny AI per workflow (mannyAiCards above); Remi AI has its own ladder.

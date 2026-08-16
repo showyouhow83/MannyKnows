@@ -39,7 +39,7 @@ import GbpStats from '../components/sections/GbpStats.astro';
 import GbpComparison from '../components/sections/GbpComparison.astro';
 import { BOOKING_URL } from '../data/booking';
 import PricingCards from '../components/pricing/PricingCards.astro';
-import { localSeoCards } from '../lib/pricingCards';
+import { localSeoCards, seoOneTimeCards } from '../lib/pricingCards';
 // Packages + one-time services live in src/data/localSeo.ts (shared with /pricing).
 import { PACKAGES, ONDEMAND, PLAN_CLIENT_ON_THE_MAP } from '../data/localSeo';
 import { APPS_HOURLY } from '../data/apps';
@@ -58,6 +58,9 @@ const seoAudit = ONDEMAND.find((s) => s.service === 'seo-audit')!;
 // billing="none": these are month-to-month only — no yearly rate has ever been
 // published on this page, and inventing one here would be an offer change.
 const packageCards = localSeoCards();
+// The one-time services render through the same grid (Manny, Aug 16 2026:
+// "similar to the regular pricing grids"), from the same builder /pricing uses.
+const oneTimeCards = seoOneTimeCards();
 
 // What "local SEO" covers here — each item maps to a deliverable in the
 // packages or plans above.
@@ -269,7 +272,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── The SEO packages ───────────────────────── -->
-    <Section id="packages" variant="alternate" className="room chain-violet-violet">
+    <Section id="packages" variant="alternate" className="room chain-violet-blue">
       <Container>
         <SectionHeader
           badge="SEO packages"
@@ -282,30 +285,18 @@ const jsonLd = {
         </p>
 
         <!-- ── One-time, on demand ── -->
-        <div class="max-w-6xl mx-auto mt-12">
+        <div class="mt-16">
           <SectionHeader
             title="One-time, on demand"
             subtitle={`No subscription needed. Flat quotes at $${APPS_HOURLY}/hr, priced up front.`}
             spacing="mb-8"
           />
-          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {ONDEMAND.map((s) => (
-              <div class="flex flex-col rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
-                <h3 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-snug">{s.name}</h3>
-                <p class="mt-1 text-sm font-semibold text-primary-blue dark:text-blue-300 mb-3">{s.exact ? `$${s.min}` : `from $${s.min}`}<span class="font-normal text-text-light-tertiary dark:text-text-dark-tertiary"> · one-time</span></p>
-                <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary leading-relaxed flex-1">{s.body}</p>
-                <Button href="#quote" data-quote-context={s.service} variant="ghost" arrow="right" class="mt-4 self-start gap-1.5 text-sm">Get a quote</Button>
-              </div>
-            ))}
-          </div>
+          <PricingCards id="seoOneTime" cards={oneTimeCards} billing="none" />
         </div>
-      </Container>
-    </Section>
 
-    <!-- ───────────────────────── The other path: sites with SEO included ───────────────────────── -->
-    <Section id="plans" variant="default" className="room chain-violet-blue">
-      <Container>
-        <div class="text-center max-w-3xl mx-auto">
+        <!-- ── The other path: sites with SEO included (moved inside this
+             section, under the on-demand grid — Manny, Aug 16 2026) ── -->
+        <div id="plans" class="mt-16 text-center max-w-3xl mx-auto">
           <SectionHeader
             title="Every AI-powered website includes SEO"
             subtitle="Rather have the site do the work? Every website we build ships with SEO included from day one, so the build, the content, and the ranking work are never out of sync. The bigger plans go further — the site writes its own content and tunes its own SEO continuously."
@@ -319,7 +310,7 @@ const jsonLd = {
     </Section>
 
     <!-- ───────────────────────── GBP: stats + comparison ───────────────────────── -->
-    <Section id="gbp" variant="alternate" className="room chain-blue-violet">
+    <Section id="gbp" variant="default" className="room chain-blue-violet">
       <Container>
         <SectionHeader
           title="It starts with your Google Business Profile"

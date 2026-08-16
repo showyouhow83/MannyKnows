@@ -123,7 +123,15 @@ for small businesses in Western Massachusetts).
 - **AI-team framing (Aug 2026):** agents are "added to your business" /
   "ready to work" — never a hiring process. "Hire Manny by the week"
   (the human, Multimedia Agency) is the approved exception, as is a customer
-  "ready to hire" a business.
+  "ready to hire" a business. **Multimedia Agency is never framed by head
+  count** (Manny, Aug 16 2026: "not about me being a lone wolf… make it about
+  the things we can do") — no "one person / solo / every role, one person";
+  sell the capabilities on one retainer.
+- **Homepage voice (Aug 16 2026):** the about blurb is agency voice, short
+  (≤ 4 lines at max-w-3xl), never the word "niche" in copy, never a personal
+  narrative ("led by Manny, twenty years…"), no employer name on the homepage
+  (the MedNet story lives on /about). AI-team subtitle is medical-first and
+  "AI gives your team its hours back", never "replace staff".
 - **Lead niche (SITEWIDE, Aug 2026):** web design & marketing for **dental &
   medical practices**, backed by Manny's MedNet Technologies (NY) experience.
   Approved phrasing: **"hundreds of dental and medical practice websites
@@ -186,12 +194,23 @@ for small businesses in Western Massachusetts).
   the story is the manager that adds as many agents as each workflow (one
   defined business process) needs — "your own AI multimedia agency". Never
   price per agent or per head count; never publish bundle/per-agent figures
-  (aiTeam.ts keeps them for internal math only). Public numbers: the $195
-  setup (waived on a prepaid year); the monthly is quoted per workflow on the
-  diagnostic until Manny sets a workflow ladder. On /pricing and /plans the
-  section is `AiTeamBanner.astro` (Manny AI avatar, no roster, no Remi) —
-  Remi AI is deliberately absent from AI-team surfaces so the two aren't
+  (aiTeam.ts keeps them for internal math only). **The public ladder is
+  `mannyAiTiers` in aiTeam.ts** (approved Aug 16 2026): One Workflow $245/mo ·
+  Growth (up to three workflows) $595/mo · Agency (unlimited within normal
+  use) $1,195/mo, all + the $195 setup (waived on a prepaid year), yearly =
+  10×; normal AI usage included, third-party seats pass through at cost,
+  integrations scoped on the diagnostic. It renders through
+  `mannyAiCards()` (pricingCards.ts) on /ai-team (#ai-team-pricing) and
+  /pricing, and feeds the /ai-team FAQ + JSON-LD, the quote-form label, and
+  the nav search entry. On /pricing and /plans the section carries
+  `AiTeamBanner.astro` (Manny AI avatar, no roster, no Remi, "from $245/mo")
+  — Remi AI is deliberately absent from AI-team surfaces so the two aren't
   confused; Remi lives in its own section.
+- **One-time SEO services** (`ONDEMAND` in localSeo.ts) render through
+  `PricingCards` too (`seoOneTimeCards()`, billing="none") on /local-seo and
+  /pricing — Manny, Aug 16 2026: on-demand cards look like the pricing grids.
+  On /local-seo the "Every AI-powered website includes SEO" block sits inside
+  the #packages section under the on-demand grid (no separate section).
 - **All pricing-card grids render through `PricingCards.astro`** (Aug 2026):
   /plans, /ecommerce, /apps, /local-seo, /ai-booking-agent, and the tier
   grids on /plans/business-ads + /plans/multimedia-agency. New pricing cards

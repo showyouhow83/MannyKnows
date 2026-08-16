@@ -12,6 +12,7 @@
 // stable once quotes reference them — labels can change freely.
 import { plans } from './plans';
 import { remiLiteMonthly, remiProMonthly, remiSetupFee } from './remi';
+import { mannyAiTiers, mannyAiStartingPrice, aiTeamSetupFee } from './aiTeam';
 import { aiWebsiteSetupFee, aiWebsiteMonthly } from './aiWebsite';
 import { TIERS as APP_TIERS } from './apps';
 import { PACKAGES as SEO_PACKAGES, ONDEMAND as SEO_ONDEMAND } from './localSeo';
@@ -21,6 +22,7 @@ export interface ServiceType {
   label: string;
 }
 
+const mannyAiTopPrice = Math.max(...mannyAiTiers.map((t) => t.price));
 const fmt = (n: number) => n.toLocaleString('en-US');
 const plan = (slug: string) => plans.find((p) => p.slug === slug)!;
 // "Setup + monthly" — the setup fee is waived on a prepaid year, which the
@@ -52,10 +54,9 @@ export const SERVICE_TYPES: ServiceType[] = [
   // Remi AI's own ladder (src/data/remi.ts): Lite → Pro, all + one setup fee
   // (waived on a prepaid year). Custom builds are quoted.
   { value: 'remi-ai', label: `Remi AI ($${fmt(remiLiteMonthly)}–$${fmt(remiProMonthly)}/mo + $${fmt(remiSetupFee)} setup)` },
-  // Remi AI is the only agent with a public price; the rest of the roster is
-  // scoped and quoted on the free 15-minute diagnostic (one setup fee, from
-  // aiTeam.ts, spelled out in the quote itself).
-  { value: 'ai-team', label: `AI Agents Team, agents ready to work (Remi AI from $${fmt(remiLiteMonthly)}/mo; the rest scoped on the diagnostic)` },
+  // Manny AI is priced per workflow (aiTeam.ts mannyAiTiers), never per agent;
+  // Remi AI has its own line above.
+  { value: 'ai-team', label: `AI Agents Team, Manny AI per workflow ($${fmt(mannyAiStartingPrice)}–$${fmt(mannyAiTopPrice)}/mo + $${fmt(aiTeamSetupFee)} setup)` },
   // Business Apps tiers — the cards on /apps/ (src/data/apps.ts).
   { value: 'custom-app', label: `Business App: custom build (from $${fmt(appTier('custom-app').price)})` },
   { value: 'app-scripts', label: `Scripts & Tools (from $${fmt(appTier('app-scripts').price)})` },
