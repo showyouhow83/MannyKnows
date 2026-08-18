@@ -33,7 +33,10 @@ results:
   - { value: "100", label: "Lighthouse score, fast for homeowners on any device" }
 
 liveUrl: "https://vlhomeservices.com"
-heroImage: "vl-d"
+heroImage: "vlhis-d"
+gallery:
+  - "vlhis-d2"
+  - "vlhis-m-pair"
 seoDescription: "How VL Home Improvement Services went from referrals and manual tracking to a website that brings in work, an admin dashboard, and a 24/7 AI agent."
 ---
 
