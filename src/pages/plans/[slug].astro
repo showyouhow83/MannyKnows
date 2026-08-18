@@ -54,11 +54,11 @@ const planIll: Record<string, 'website' | 'store' | 'ads' | 'multimedia'> = {
 // borrowing a bigger build to sell it would overstate what the plan is.
 const proofMap: Record<string, { quote?: string; cases: { slug: string; name: string }[] }> = {
   'get-booked': { cases: [{ slug: 'jk-daycare', name: 'JK Daycare' }] },
-  'get-growing': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Services' }] },
+  'get-growing': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }, { slug: 'vl-home-services', name: 'VL Home Improvement Services' }] },
   'get-ahead': { cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
   'sell-online': { quote: 'Cherry Vibes', cases: [{ slug: 'cherry-vibes', name: 'Cherry Vibes' }] },
   'business-ads': { quote: 'SL Painting', cases: [{ slug: 'sl-painting', name: 'SL Painting' }] },
-  'multimedia-agency': { quote: 'VL Home Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
+  'multimedia-agency': { quote: 'VL Home Improvement Services', cases: [{ slug: 'vl-home-services', name: 'VL Home Improvement Services' }, { slug: 'sl-painting', name: 'SL Painting' }] },
 };
 const proof = proofMap[plan.slug];
 const proofQuote = proof?.quote ? getTestimonial(proof.quote) : undefined;

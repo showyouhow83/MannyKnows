@@ -24,7 +24,7 @@ export const testimonials: Testimonial[] = [
     quote:
       'Even before launching fully on Google, working with Manny delivered immediate value. Our new website looks exceptional, and the custom AI agent is a game-changer. It handles multiple languages effortlessly and integrates directly with our backend, allowing us to instantly check project statuses, scope details, and operations on the fly.',
     name: 'Owner',
-    business: 'VL Home Services',
+    business: 'VL Home Improvement Services',
     href: '/work/vl-home-services/',
   },
   {

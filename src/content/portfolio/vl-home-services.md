@@ -1,9 +1,9 @@
 ---
 draft: false
-title: "VL Home Services"
-client: "VL Home Services"
+title: "VL Home Improvement Services"
+client: "VL Home Improvement Services"
 tagline: "From referrals-and-paper to a complete digital operation: a website that brings in work, an admin to manage it, and an AI agent that answers customers."
-summary: "VL Home Services, a home improvement company, ran on referrals with everything handled manually. We built them a complete digital operation: a website that brings in work, an admin dashboard to manage it, and an AI agent that answers customers, with SEO, technical SEO, and content development ongoing."
+summary: "VL Home Improvement Services ran on referrals with everything handled manually. We built them a complete digital operation: a website that brings in work, an admin dashboard to manage it, and an AI agent that answers customers, with SEO, technical SEO, and content development ongoing."
 industry: "Home improvement"
 
 # At a glance ──────────────────────────────────────────────────────────────────
@@ -33,13 +33,16 @@ results:
   - { value: "100", label: "Lighthouse score, fast for homeowners on any device" }
 
 liveUrl: "https://vlhomeservices.com"
-heroImage: "vl-d"
-seoDescription: "How VL Home Services went from referrals and manual tracking to a website that brings in work, an admin dashboard, and a 24/7 AI agent."
+heroImage: "vlhis-d"
+gallery:
+  - "vlhis-d2"
+  - "vlhis-m-pair"
+seoDescription: "How VL Home Improvement Services went from referrals and manual tracking to a website that brings in work, an admin dashboard, and a 24/7 AI agent."
 ---
 
 ## The challenge
 
-VL Home Services did work homeowners recommended to their neighbors, and had nothing online to show for it. Every job came through referrals, and everything behind the scenes was handled manually. Meanwhile, homeowners comparing home improvement companies online found competitors instead. They needed to look as professional online as the work is in person, and they needed a system.
+VL Home Improvement Services did work homeowners recommended to their neighbors, and had nothing online to show for it. Every job came through referrals, and everything behind the scenes was handled manually. Meanwhile, homeowners comparing home improvement companies online found competitors instead. They needed to look as professional online as the work is in person, and they needed a system.
 
 ## What we built
 
@@ -57,4 +60,4 @@ A homeowner searches, finds VL, and gets their questions answered, by the site o
 
 ## The outcome
 
-VL Home Services now competes for the homeowners who research before they hire, and runs on a system instead of memory. Inquiries arrive in writing and get tracked, the AI agent covers the questions, and the SEO and content work keeps compounding. Like every operation we build, it's still being optimized.
+VL Home Improvement Services now competes for the homeowners who research before they hire, and runs on a system instead of memory. Inquiries arrive in writing and get tracked, the AI agent covers the questions, and the SEO and content work keeps compounding. Like every operation we build, it's still being optimized.
