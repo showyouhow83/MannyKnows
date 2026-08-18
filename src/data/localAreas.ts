@@ -263,11 +263,11 @@ export const localAreas: LocalArea[] = [
       "Big-agency skill without the big-agency machinery — twenty years engineering for enterprise and startups, enterprise eCommerce, consulting at Accenture, pointed at Holyoke-sized budgets. You deal directly with the builder, in English or Spanish, not with an account manager reading a status sheet.",
     servingBlurb:
       "Home base is Springfield, a few exits down I-91. Close enough to meet at your shop, remote when that's quicker.",
-    proofBusiness: 'VL Home Services',
+    proofBusiness: 'VL Home Improvement Services',
     proofHeading: 'Proof from Western Massachusetts',
     proofCaseStudy: {
       slug: 'vl-home-services',
-      line: 'VL Home Services ran on referrals and paper. Now a website brings in work, an admin tracks it, and an AI agent answers customers in any language.',
+      line: 'VL Home Improvement Services ran on referrals and paper. Now a website brings in work, an admin tracks it, and an AI agent answers customers in any language.',
     },
     cityNow: {
       heading: 'The Paper City is becoming an AI city',
@@ -473,11 +473,11 @@ export const localAreas: LocalArea[] = [
       "The pairing is the point — twenty years of enterprise and startup engineering, enterprise eCommerce, consulting at Accenture, with the design standards a Main Street business actually needs, at independent-shop prices. And you work with the builder directly; no account manager translating in the middle.",
     servingBlurb:
       "Based in Springfield, thirty minutes down I-91. Up in Hamp regularly, remote whenever that serves you better.",
-    proofBusiness: 'VL Home Services',
+    proofBusiness: 'VL Home Improvement Services',
     proofHeading: 'Proof from Western Massachusetts',
     proofCaseStudy: {
       slug: 'vl-home-services',
-      line: 'VL Home Services went from referrals-only to a complete digital operation — a website that brings in work, an admin that tracks it, and an AI agent answering customers.',
+      line: 'VL Home Improvement Services went from referrals-only to a complete digital operation — a website that brings in work, an admin that tracks it, and an AI agent answering customers.',
     },
     cityNow: {
       heading: "Main Street's next act is coming — be findable before it starts",
@@ -578,11 +578,11 @@ export const localAreas: LocalArea[] = [
       "Twenty years of engineering for enterprise and startups, including enterprise eCommerce and consulting at Accenture, at prices scoped for a Westfield business. You talk directly to the person doing the work, no account manager in between.",
     servingBlurb:
       'Based in Springfield, twenty minutes east — on site in Westfield when it helps, remote when it\'s faster.',
-    proofBusiness: 'VL Home Services',
+    proofBusiness: 'VL Home Improvement Services',
     proofHeading: 'Proof from Western Massachusetts',
     proofCaseStudy: {
       slug: 'vl-home-services',
-      line: 'VL Home Services ran on referrals and paper. Now a website brings in work, an admin tracks it, and an AI agent answers customers in any language.',
+      line: 'VL Home Improvement Services ran on referrals and paper. Now a website brings in work, an admin tracks it, and an AI agent answers customers in any language.',
     },
     beyondWebHeading: 'The rest of the toolkit for the Whip City',
     beyondWeb: [

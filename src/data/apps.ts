@@ -62,7 +62,7 @@ export const TIERS: AppTier[] = [
     description: 'Admin dashboards, booking and quoting engines, client portals — the systems your business runs on, designed, built, and published for you.',
     features: [
       'Dashboards and admin panels that put your whole operation on one screen',
-      'Booking, quoting, and lead-to-job systems like the one VL Home Services runs on',
+      'Booking, quoting, and lead-to-job systems like the one VL Home Improvement Services runs on',
       'AI assistants grounded in your own content, with a human approving what matters',
       'Own it outright, or co-own it with nothing upfront',
     ],

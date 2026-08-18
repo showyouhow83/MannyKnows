@@ -55,13 +55,13 @@ export const selectedWork: WorkItem[] = [
     caseStudy: 'cherry-vibes',
   },
   {
-    name: 'VL Home Services',
+    name: 'VL Home Improvement Services',
     url: 'https://vlhomeservices.com',
     blurb: 'Home improvement company: a complete digital operation with a website, admin dashboard, AI agent, and local SEO.',
     tags: ['Website AI', 'AI Agent', 'Local SEO'],
     image: 'vl-d',
     hoverImage: 'vl-m',
-    imageAlt: 'VL Home Services homepage — web design, admin dashboard, AI agent and local SEO for a home improvement company, by MannyKnows',
+    imageAlt: 'VL Home Improvement Services homepage — web design, admin dashboard, AI agent and local SEO for a home improvement company, by MannyKnows',
     caseStudy: 'vl-home-services',
   },
   {
