@@ -598,6 +598,10 @@ const money = (n: number) => n.toLocaleString('en-US');
     scrollbar-width: none;
   }
   .tier-rail::-webkit-scrollbar { display: none; }
+  /* The Monthly/Yearly swap works by the hidden attribute; UA [hidden] is
+     easily defeated by any author/extension display rule on the element, which
+     freezes the card on "One payment of …". Belt and braces (Aug 2026). */
+  :global([data-pricing-root] [data-billing-view][hidden]) { display: none !important; }
   .tier-rail > .tier-card {
     flex: 0 0 auto;
     width: 85vw;
@@ -691,9 +695,7 @@ const money = (n: number) => n.toLocaleString('en-US');
   (function () {
     document.querySelectorAll<HTMLElement>('[data-pricing-root]').forEach((root) => {
       /* ── Billing toggle ────────────────────────────────────────────── */
-      const buttons = root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]');
       const caption = root.querySelector('[data-billing-caption]');
-      const views = root.querySelectorAll<HTMLElement>('[data-billing-view]');
       const toggle = root.querySelector<HTMLElement>('[data-billing-toggle]');
       const thumb = root.querySelector<HTMLElement>('[data-billing-thumb]');
 
@@ -708,7 +710,11 @@ const money = (n: number) => n.toLocaleString('en-US');
       }
 
       function setBilling(mode: 'monthly' | 'yearly') {
-        views.forEach((el) => {
+        // Re-queried on every switch, not captured once: translation layers
+        // (iOS translate, Google Translate) clone/replace card DOM after load,
+        // which would strand a captured NodeList and freeze the yearly lines
+        // (reported on a phone, Aug 2026).
+        root.querySelectorAll<HTMLElement>('[data-billing-view]').forEach((el) => {
           el.hidden = el.dataset.billingView !== mode;
         });
         if (caption) {
@@ -716,15 +722,18 @@ const money = (n: number) => n.toLocaleString('en-US');
             ? 'Setup once, then month to month · cancel anytime'
             : 'One upfront payment for the year, 2 months free and the setup fee waived';
         }
-        buttons.forEach((b) => {
+        root.querySelectorAll<HTMLButtonElement>('[data-billing-btn]').forEach((b) => {
           b.setAttribute('aria-pressed', String(b.dataset.billingBtn === mode));
         });
         placeThumb();
       }
 
-      buttons.forEach((b) =>
-        b.addEventListener('click', () => setBilling(b.dataset.billingBtn as 'monthly' | 'yearly'))
-      );
+      // Delegated from the root so the handler survives the buttons being
+      // cloned or replaced after load (same translation-layer failure mode).
+      root.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-billing-btn]');
+        if (b && root.contains(b)) setBilling(b.dataset.billingBtn as 'monthly' | 'yearly');
+      });
 
       if (toggle && thumb) {
         // First placement lands without animation (is-ready), then transitions
