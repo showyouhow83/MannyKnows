@@ -88,45 +88,6 @@ const money = (n: number) => n.toLocaleString('en-US');
   <!-- Billing toggle -->
   {billing === 'monthly' && (
   <Fragment>
-  {/* Classic inline script, NOT the deferred module below: on a phone
-      connection the toggle paints seconds before the page's module scripts
-      run, and a tap in that window was dead (Manny, Aug 2026 — "takes about
-      3 seconds for the copy to update"). This registers the click handler at
-      parse time, so the first tap works while the rest of the page is still
-      streaming. Guarded so five grids on /pricing register it once. */}
-  <script is:inline>
-    (function () {
-      if (window.__mkBilling) return; window.__mkBilling = true;
-      function placeThumb(root) {
-        var toggle = root.querySelector('[data-billing-toggle]');
-        var thumb = root.querySelector('[data-billing-thumb]');
-        if (!toggle || !thumb) return;
-        var pressed = toggle.querySelector('[data-billing-btn][aria-pressed="true"]');
-        if (!pressed) return;
-        thumb.style.setProperty('--x', pressed.offsetLeft + 'px');
-        thumb.style.width = pressed.offsetWidth + 'px';
-      }
-      window.__mkPlaceThumb = placeThumb;
-      document.addEventListener('click', function (ev) {
-        var b = ev.target && ev.target.closest ? ev.target.closest('[data-billing-btn]') : null;
-        if (!b) return;
-        var root = b.closest('[data-pricing-root]');
-        if (!root) return;
-        var mode = b.getAttribute('data-billing-btn');
-        root.querySelectorAll('[data-billing-view]').forEach(function (el) {
-          el.hidden = el.getAttribute('data-billing-view') !== mode;
-        });
-        var caption = root.querySelector('[data-billing-caption]');
-        if (caption) caption.textContent = mode === 'monthly'
-          ? 'Setup once, then month to month · cancel anytime'
-          : 'One upfront payment for the year, 2 months free and the setup fee waived';
-        root.querySelectorAll('[data-billing-btn]').forEach(function (x) {
-          x.setAttribute('aria-pressed', String(x.getAttribute('data-billing-btn') === mode));
-        });
-        placeThumb(root);
-      });
-    })();
-  </script>
   <div class="flex flex-col items-center gap-2.5 mb-10">
     <!-- Segmented control: a glass track with one gradient thumb that slides
          under whichever option is pressed. The thumb is positioned by JS
@@ -149,6 +110,60 @@ const money = (n: number) => n.toLocaleString('en-US');
       One upfront payment for the year, 2 months free and the setup fee waived
     </p>
   </div>
+  {/* Classic inline script, NOT the deferred module below: on a phone
+      connection the toggle paints seconds before the page's module scripts
+      run, and a tap in that window was dead (Manny, Aug 2026). Placed AFTER
+      the toggle markup so the buttons exist at parse time and get DIRECT
+      click listeners — the most reliable path on iOS Safari, which has a
+      history of dropping taps that only a document-level delegated listener
+      is watching. Delegation stays as a fallback for buttons some
+      translation layer clones later. Renders once per grid; the shared
+      pieces live on window so five grids on /pricing define them once. */}
+  <script is:inline>
+    (function () {
+      var setBilling = window.__mkSetBilling || (window.__mkSetBilling = function (root, mode) {
+        root.querySelectorAll('[data-billing-view]').forEach(function (el) {
+          el.hidden = el.getAttribute('data-billing-view') !== mode;
+        });
+        var caption = root.querySelector('[data-billing-caption]');
+        if (caption) caption.textContent = mode === 'monthly'
+          ? 'Setup once, then month to month · cancel anytime'
+          : 'One upfront payment for the year, 2 months free and the setup fee waived';
+        root.querySelectorAll('[data-billing-btn]').forEach(function (x) {
+          x.setAttribute('aria-pressed', String(x.getAttribute('data-billing-btn') === mode));
+        });
+        if (window.__mkPlaceThumb) window.__mkPlaceThumb(root);
+      });
+      if (!window.__mkPlaceThumb) window.__mkPlaceThumb = function (root) {
+        var toggle = root.querySelector('[data-billing-toggle]');
+        var thumb = root.querySelector('[data-billing-thumb]');
+        if (!toggle || !thumb) return;
+        var pressed = toggle.querySelector('[data-billing-btn][aria-pressed="true"]');
+        if (!pressed) return;
+        thumb.style.setProperty('--x', pressed.offsetLeft + 'px');
+        thumb.style.width = pressed.offsetWidth + 'px';
+      };
+      // Direct listeners on THIS grid's buttons (primary path).
+      var me = document.currentScript;
+      var root = me && me.closest ? me.closest('[data-pricing-root]') : null;
+      if (root) root.querySelectorAll('[data-billing-btn]').forEach(function (b) {
+        b.addEventListener('click', function (ev) {
+          ev.__mkHandled = true;
+          setBilling(root, b.getAttribute('data-billing-btn'));
+        });
+      });
+      // Document-level fallback (once): catches buttons replaced after load.
+      if (!window.__mkBillingDoc) { window.__mkBillingDoc = true;
+        document.addEventListener('click', function (ev) {
+          if (ev.__mkHandled) return;
+          var b = ev.target && ev.target.closest ? ev.target.closest('[data-billing-btn]') : null;
+          if (!b) return;
+          var r = b.closest('[data-pricing-root]');
+          if (r) setBilling(r, b.getAttribute('data-billing-btn'));
+        });
+      }
+    })();
+  </script>
   </Fragment>
   )}
 
