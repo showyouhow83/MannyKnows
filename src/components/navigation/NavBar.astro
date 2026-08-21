@@ -551,8 +551,10 @@ const searchIndex = [
     100% { --nav-c1: #0071e3; --nav-c2: #7dd3fc; }
   }
 
-  /* Logo: inverted, animated gradient by default, solid (theme color) on hover. */
+  /* Logo: inverted, animated gradient by default, solid (theme color) on hover.
+     Wordmark rides the round display face (Baloo 2, @font-face in BaseLayout). */
   .logo-gradient {
+    font-family: 'Baloo 2', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: linear-gradient(45deg, #0071e3, #ff4faa, #10d1ff);
     background-size: 200% 200%;
     -webkit-background-clip: text;
