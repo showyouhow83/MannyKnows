@@ -23,9 +23,14 @@ interface Props {
       when scrolled near) so playback starts instantly. Still after the load
       event, so it can never compete with the page's own assets. */
   warm?: boolean;
+  /** Also play on phones. Reserve for genuinely small files (the ~330KB
+      procedural starfield) — the desktop-only default exists because
+      multi-MB footage costs mobile visitors data and battery. Reduced-motion
+      and Save-Data are still honoured. */
+  mobile?: boolean;
   class?: string;
 }
-const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' } = Astro.props;
+const { name = 'hero-waves', tone = 'mono', warm = false, mobile = false, class: className = '' } = Astro.props;
 ---
 
 <div class={`hero-video-bg ${tone === 'color' ? 'hero-video-bg--color' : ''} ${className}`} aria-hidden="true">
@@ -35,6 +40,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     data-webm={`/video/${name}.webm`}
     data-mp4={`/video/${name}.mp4`}
     data-warm={warm ? '1' : undefined}
+    data-mobile={mobile ? '1' : undefined}
     poster={`/video/${name}-poster.webp`}
     muted
     loop
@@ -162,7 +168,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     const desktop = window.matchMedia('(min-width: 1024px)').matches;
     const conn = (navigator as any).connection;
     const thrifty = !!conn && (conn.saveData || /2g|3g/.test(conn.effectiveType ?? ''));
-    if (reduced || !desktop || thrifty) return; // posters stay; nothing downloads
+    if (reduced || thrifty) return; // posters stay; nothing downloads
 
     // Audition override: ?bgvideo=<name> swaps in /video/<name>.webm and
     // treats it as colour footage — lets us compare candidate backgrounds on
@@ -171,6 +177,8 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
     const override = new URLSearchParams(location.search).get('bgvideo');
 
     for (const video of videos) {
+      // Desktop-only unless this instance opted into mobile (small files only).
+      if (!desktop && !video.dataset.mobile) continue;
       if (override && /^[a-z0-9-]{1,40}$/.test(override)) {
         video.dataset.webm = `/video/${override}.webm`;
         delete video.dataset.mp4;
