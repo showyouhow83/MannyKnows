@@ -170,7 +170,13 @@ const NAVBAR_CONFIG = {
 		<!-- Marquee Announcement Section -->
 
 		<!-- Header Container with Subtle Background -->
-		<header id="home-hero" class="room-hero relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+		<header id="home-hero" class="room-hero has-hero-video relative bg-gradient-to-t from-gray-50/50 via-gray-100/30 to-gray-50/20 dark:from-gray-900/60 dark:via-slate-800/40 dark:to-gray-900/30 transition-colors duration-300">
+            <!-- Motion overlay: white-on-black footage blended over the whole
+                 header (nav included), on top of the violet wash. Blend rules
+                 live in the is:global block with the other #home-hero styles.
+                 Swap the footage by changing `name` (hero-snow and hero-shapes
+                 both live in /public/video). -->
+            <HeroVideoBackground name="hero-shapes" tone="color" warm class="hero-fx" />
             <!-- Navigation -->
             <NavBar
 				animationConfig={{
@@ -243,7 +249,7 @@ const NAVBAR_CONFIG = {
 			<!-- Laptop astronaut peeking in from the left edge (mirrored so the
 			     laptop leads into the section). Dials in .plans-mascot below. -->
 			<div slot="background" class="plans-mascot" aria-hidden="true">
-				<img src="/mascot/astro-laptop.webp" alt="Astronaut mascot flying while typing on a laptop" aria-hidden="true" width="917" height="880" loading="lazy" decoding="async" />
+				<img src="/mascot/astro-laptop.webp" srcset="/mascot/astro-laptop-1x.webp 1x, /mascot/astro-laptop.webp 2x" alt="Astronaut mascot flying while typing on a laptop" aria-hidden="true" width="917" height="880" loading="lazy" decoding="async" />
 			</div>
 			<!-- The versus panel + closing line live in SmartWebsiteConcept,
 			     shared with /plans and the plan pages: one implementation
@@ -270,7 +276,7 @@ const NAVBAR_CONFIG = {
 			<!-- 360-camera astronaut peeking in from the right edge. All the dials
 			     live in the .gbp-mascot CSS block below: tweak and hot-reload. -->
 			<div slot="background" class="gbp-mascot" aria-hidden="true">
-				<img src="/mascot/astro-360-peek.webp" alt="Astronaut mascot with a 360-degree camera peeking into the section" aria-hidden="true" width="598" height="880" loading="lazy" decoding="async" />
+				<img src="/mascot/astro-360-peek.webp" srcset="/mascot/astro-360-peek-1x.webp 1x, /mascot/astro-360-peek.webp 2x" alt="Astronaut mascot with a 360-degree camera peeking into the section" aria-hidden="true" width="598" height="880" loading="lazy" decoding="async" />
 			</div>
 			<GoogleProfile />
 		</PageSection>
@@ -494,6 +500,35 @@ const NAVBAR_CONFIG = {
 		background-image:
 			radial-gradient(ellipse at top, rgba(124, 58, 237, 0.16), transparent 60%),
 			radial-gradient(ellipse at bottom, rgba(124, 58, 237, 0.10), transparent 60%);
+	}
+	/* Motion-overlay blends (any light-on-black footage). Dark theme screens
+	   the bright detail over the canvas (black disappears). Light theme inverts
+	   first — the black field becomes white, which multiply erases, leaving
+	   soft dark detail over the pale header. The hue-rotate flips the hue back
+	   after invert, so coloured footage (the blue star field) keeps its family
+	   instead of turning orange; it's a no-op on white/grey footage. */
+	#home-hero .hero-fx .hero-video-bg__media {
+		mix-blend-mode: multiply;
+		filter: invert(1) hue-rotate(180deg);
+		opacity: 0.18;
+	}
+	html.dark #home-hero .hero-fx .hero-video-bg__media {
+		mix-blend-mode: screen;
+		filter: none;
+		opacity: 0.45;
+	}
+	/* The component's text scrim and bottom fade are built for busy full-frame
+	   footage — here they veiled the header's violet wash in near-black. The
+	   blended overlay needs neither, so the wash shows through and the motion
+	   sits on top; a mask fades it out toward the seam instead of a painted-on
+	   dark gradient. */
+	#home-hero .hero-fx::before,
+	#home-hero .hero-fx::after {
+		content: none;
+	}
+	#home-hero .hero-fx .hero-video-bg__media {
+		-webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+		mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
 	}
 	html.dark #ai-team {
 		background-color: #0a0a14;

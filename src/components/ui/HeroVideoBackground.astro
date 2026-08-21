@@ -177,15 +177,16 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
         video.closest('.hero-video-bg')?.classList.add('hero-video-bg--color');
       }
 
+      // One src, chosen up front via canPlayType — never <source> children.
+      // With both formats listed, Lighthouse recorded BOTH files downloading
+      // in full (~5.5MB per video, Aug 2026); a single src makes a second
+      // fetch impossible.
       const attach = () => {
-        if (video.querySelector('source')) return;
-        for (const [type, src] of [['video/webm', video.dataset.webm], ['video/mp4', video.dataset.mp4]] as const) {
-          if (!src) continue;
-          const s = document.createElement('source');
-          s.type = type;
-          s.src = src;
-          video.appendChild(s);
-        }
+        if (video.src) return;
+        const webm = video.dataset.webm && video.canPlayType('video/webm; codecs="vp9"') ? video.dataset.webm : '';
+        const src = webm || video.dataset.mp4 || video.dataset.webm;
+        if (!src) return;
+        video.src = src;
         video.load();
       };
 
@@ -225,7 +226,7 @@ const { name = 'hero-waves', tone = 'mono', warm = false, class: className = '' 
         if (document.hidden) video.pause();
         // Resume only what the observer had running — not videos it paused
         // for being off-screen.
-        else if (video.dataset.onscreen && video.querySelector('source')) video.play().catch(() => {});
+        else if (video.dataset.onscreen && video.src) video.play().catch(() => {});
       }
     });
   })();
