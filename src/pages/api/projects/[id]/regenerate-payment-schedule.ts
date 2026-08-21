@@ -8,6 +8,7 @@
 
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { generatePaymentSchedule } from '../../../../lib/paymentSchedule';
 import { AdminAuth } from '../../../../lib/adminAuth';
 
 export const prerender = false;
@@ -29,97 +30,7 @@ function freshId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-type PayRow = { id: string; kind: string; label: string; amount: number; due_date: string; due_source?: 'end_date' };
 
-// Shared generator. Two plans:
-//   'end_date' (default) — down payment(s) + ONE balance row due on the
-//                          project's end date. The balance row carries
-//                          due_source:'end_date' so it stays synced when the
-//                          admin later changes the end date.
-//   'monthly'           — down payment(s) + N monthly installments.
-function generatePaymentSchedule(opts: {
-  total: number;
-  downPct: number;
-  downCount: number;
-  monthlyCount: number;
-  startDate: string | null;
-  endDate?: string | null;
-  plan?: 'end_date' | 'monthly';
-}): PayRow[] {
-  const { total, downPct, downCount, monthlyCount } = opts;
-  const plan = opts.plan === 'monthly' ? 'monthly' : 'end_date';
-  if (!Number.isFinite(total) || total <= 0) return [];
-
-  const downTotal = +(total * (downPct / 100)).toFixed(2);
-  const balanceTotal = +(total - downTotal).toFixed(2);
-  const downAmount = downCount > 0 ? +(downTotal / downCount).toFixed(2) : 0;
-  const monthlyAmount = monthlyCount > 0 ? +(balanceTotal / monthlyCount).toFixed(2) : 0;
-
-  let cursor: Date;
-  if (opts.startDate) {
-    const parsed = new Date(opts.startDate + 'T00:00:00');
-    cursor = isNaN(parsed.getTime()) ? new Date() : parsed;
-  } else {
-    cursor = new Date();
-  }
-  const isoDate = (d: Date) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${dd}`;
-  };
-  const addMonths = (d: Date, n: number) => {
-    const out = new Date(d);
-    out.setMonth(out.getMonth() + n);
-    return out;
-  };
-
-  const rows: PayRow[] = [];
-  let downSum = 0;
-  for (let i = 0; i < downCount; i++) {
-    const isLast = i === downCount - 1;
-    const amt = isLast ? +(downTotal - downSum).toFixed(2) : downAmount;
-    downSum += amt;
-    rows.push({
-      id: freshId('pay'),
-      kind: 'down',
-      label: downCount === 1 ? 'Down payment' : `Down payment ${i + 1} of ${downCount}`,
-      amount: amt,
-      due_date: isoDate(addMonths(cursor, i)),
-    });
-  }
-
-  if (plan === 'end_date') {
-    // Single balance payment due on the project end date. due_source keeps
-    // it synced to projects.scheduled_end (resolved at generate time + on
-    // every project-date change).
-    const endDate = (opts.endDate || '').trim();
-    rows.push({
-      id: freshId('pay'),
-      kind: 'final',
-      label: 'Balance on completion',
-      amount: balanceTotal,
-      // Fall back to one month past the last down payment if no end date set.
-      due_date: endDate || isoDate(addMonths(cursor, Math.max(downCount, 1))),
-      due_source: 'end_date',
-    });
-  } else {
-    let monthlySum = 0;
-    for (let i = 0; i < monthlyCount; i++) {
-      const isLast = i === monthlyCount - 1;
-      const amt = isLast ? +(balanceTotal - monthlySum).toFixed(2) : monthlyAmount;
-      monthlySum += amt;
-      rows.push({
-        id: freshId('pay'),
-        kind: 'monthly',
-        label: `Payment ${i + 1} of ${monthlyCount}`,
-        amount: amt,
-        due_date: isoDate(addMonths(cursor, downCount + i)),
-      });
-    }
-  }
-  return rows;
-}
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {

@@ -21,6 +21,7 @@
 
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { generatePaymentSchedule } from '../../../../lib/paymentSchedule';
 import { AdminAuth } from '../../../../lib/adminAuth';
 import { parseScopes, type QuoteScope, sumSubtotals } from '../../../../lib/quoteTemplateConstants';
 
@@ -67,94 +68,6 @@ function cloneSections(rawSections: unknown): any[] {
 //     for `monthly_payment_count` months.
 //   • Final-row rounding error goes on the LAST monthly payment so the sum
 //     equals the contract total exactly.
-function generatePaymentSchedule(opts: {
-  total: number;
-  downPct: number;
-  downCount: number;
-  monthlyCount: number;
-  startDate: string | null;
-  endDate?: string | null;
-  plan?: 'end_date' | 'monthly';
-}): Array<{ id: string; kind: string; label: string; amount: number; due_date: string; due_source?: 'end_date' }> {
-  const { total, downPct, downCount, monthlyCount } = opts;
-  const plan = opts.plan === 'monthly' ? 'monthly' : 'end_date';
-  if (!Number.isFinite(total) || total <= 0) return [];
-
-  const downTotal = +(total * (downPct / 100)).toFixed(2);
-  const balanceTotal = +(total - downTotal).toFixed(2);
-
-  const downAmount = downCount > 0 ? +(downTotal / downCount).toFixed(2) : 0;
-  const monthlyAmount = monthlyCount > 0 ? +(balanceTotal / monthlyCount).toFixed(2) : 0;
-
-  // Parse start_date (yyyy-mm-dd) or fall back to today.
-  let cursor: Date;
-  if (opts.startDate) {
-    const parsed = new Date(opts.startDate + 'T00:00:00');
-    cursor = isNaN(parsed.getTime()) ? new Date() : parsed;
-  } else {
-    cursor = new Date();
-  }
-
-  function isoDate(d: Date): string {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function addMonths(d: Date, n: number): Date {
-    const out = new Date(d);
-    out.setMonth(out.getMonth() + n);
-    return out;
-  }
-
-  const rows: Array<{ id: string; kind: string; label: string; amount: number; due_date: string; due_source?: 'end_date' }> = [];
-
-  // Down payments: monthly cadence starting at start_date.
-  let downSum = 0;
-  for (let i = 0; i < downCount; i++) {
-    const isLastDown = i === downCount - 1;
-    const amt = isLastDown ? +(downTotal - downSum).toFixed(2) : downAmount;
-    downSum += amt;
-    rows.push({
-      id: freshId('pay'),
-      kind: 'down',
-      label: downCount === 1 ? 'Down payment' : `Down payment ${i + 1} of ${downCount}`,
-      amount: amt,
-      due_date: isoDate(addMonths(cursor, i)),
-    });
-  }
-
-  if (plan === 'end_date') {
-    // Default plan: one balance payment due on the project end date,
-    // tagged so it stays synced to scheduled_end.
-    const endDate = (opts.endDate || '').trim();
-    rows.push({
-      id: freshId('pay'),
-      kind: 'final',
-      label: 'Balance on completion',
-      amount: balanceTotal,
-      due_date: endDate || isoDate(addMonths(cursor, Math.max(downCount, 1))),
-      due_source: 'end_date',
-    });
-  } else {
-    // Monthly payments: start the month AFTER the last down payment.
-    let monthlySum = 0;
-    for (let i = 0; i < monthlyCount; i++) {
-      const isLastMonthly = i === monthlyCount - 1;
-      const amt = isLastMonthly ? +(balanceTotal - monthlySum).toFixed(2) : monthlyAmount;
-      monthlySum += amt;
-      rows.push({
-        id: freshId('pay'),
-        kind: 'monthly',
-        label: `Payment ${i + 1} of ${monthlyCount}`,
-        amount: amt,
-        due_date: isoDate(addMonths(cursor, downCount + i)),
-      });
-    }
-  }
-
-  return rows;
-}
 
 export const POST: APIRoute = async ({ request, locals, params }) => {
   try {

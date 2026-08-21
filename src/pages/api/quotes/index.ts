@@ -6,6 +6,7 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../lib/adminAuth';
+import { propagateQuoteMoney } from '../../../lib/paymentSchedule';
 import { sendQuoteToCustomer, sendRenegotiatedQuoteToCustomer, type Quote as QuoteEmail, type RenegotiationData } from '../../../lib/quote-emails';
 import { findOrCreateContact, unlinkContact } from '../../../lib/contacts';
 import { getBrand } from '../../../lib/brand';
@@ -477,6 +478,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 
     // Recompute subtotal + total whenever the discount or template_sections
     // change. Total = sum of every scope's Subtotal items − discount.
+    let moneyChanged: { total: number; discount: number } | null = null;
     const templateSectionsChanged = body.template_sections !== undefined && !skipScopeWrite;
     if (body.discount !== undefined || templateSectionsChanged) {
       // Effective sections: the new payload if present, otherwise the
@@ -496,6 +498,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
       params.push(subtotal);
       updates.push('total = ?');
       params.push(total);
+      moneyChanged = { total, discount };
     }
 
     // Track if we're sending the quote (for email after update)
@@ -593,6 +596,18 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
     params.push(body.quote_id);
 
     await db.prepare(`UPDATE quotes SET ${updates.join(', ')} WHERE id = ?`).bind(...params).run();
+
+    // A discount/scope edit after promotion used to strand the project and
+    // its draft contract on the old figures (the "$8k after a $2,500
+    // discount" bug — same flaw existed in the VLH original). Push the new
+    // money down the chain; signed/sent contracts are never touched.
+    if (moneyChanged) {
+      try {
+        await propagateQuoteMoney(db, body.quote_id, moneyChanged.total, moneyChanged.discount);
+      } catch (propErr) {
+        console.error('[Quote] money propagation failed:', propErr);
+      }
+    }
 
     // Fetch updated quote
     const updated = await db.prepare('SELECT * FROM quotes WHERE id = ?').bind(body.quote_id).first();
