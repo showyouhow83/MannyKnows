@@ -2374,3 +2374,141 @@ input[type="datetime-local"] {
 .logo-gradient-wrapper[style]::after {
   font-size: 15px;
 }
+
+/* ============================================
+   Sidebar navigation (Aug 2026 — Manny: "nav to the side, and it can be
+   hidden"). Pages rendering <AdminNav> tag body.has-sidenav via its inline
+   script; pages without it (login, timeclock kiosk, annotate, migrate,
+   previews) keep their existing full-width layout untouched. Collapse state
+   persists in localStorage('admin-nav-collapsed'). Tablet/mobile (≤1024px)
+   keep the hamburger drawer — the rail is desktop-only.
+   ============================================ */
+.sidenav-toggle { display: none; }
+
+@media (min-width: 1025px) {
+  body.has-sidenav { --sidenav-w: 232px; }
+  body.has-sidenav.nav-collapsed { --sidenav-w: 0px; }
+
+  body.has-sidenav .admin-header,
+  body.has-sidenav .admin-main,
+  body.has-sidenav .admin-main-full,
+  body.has-sidenav .admin-main-3col,
+  body.has-sidenav .admin-main-gallery,
+  body.has-sidenav .admin-footer {
+    margin-left: var(--sidenav-w);
+    transition: margin-left 250ms var(--ease-smooth);
+  }
+
+  /* Centered layouts re-center inside the space right of the rail */
+  body.has-sidenav .admin-main-centered {
+    margin-left: calc(var(--sidenav-w) + max(24px, (100% - var(--sidenav-w) - 900px) / 2));
+    margin-right: 24px;
+    transition: margin-left 250ms var(--ease-smooth);
+  }
+
+  /* The wordmark moves to the rail; the slim top bar keeps the actions */
+  body.has-sidenav .admin-logo-link { display: none; }
+  body.has-sidenav .admin-header { justify-content: flex-end; }
+
+  body.has-sidenav .admin-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 232px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 16px 12px 20px;
+    background: var(--overlay);
+    border-right: 1px solid var(--separator);
+    overflow-y: auto;
+    z-index: 150;
+    transition: transform 250ms var(--ease-smooth);
+  }
+  body.has-sidenav.nav-collapsed .admin-nav { transform: translateX(-100%); }
+
+  body.has-sidenav .admin-nav::before {
+    content: "MK";
+    font-family: var(--font-family-heading);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    background: linear-gradient(90deg, #a78bfa, #e879f9, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    padding: 2px 12px 14px;
+    flex-shrink: 0;
+  }
+
+  body.has-sidenav .admin-nav .nav-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--field-radius);
+    font-size: 14px;
+  }
+
+  body.has-sidenav .nav-item {
+    display: block;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* Hover dropdowns become inline accordions in the rail */
+  body.has-sidenav .nav-dropdown {
+    position: static;
+    min-width: 0;
+    padding: 2px 0 6px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 1;
+    transform: none;
+    display: none;
+  }
+  body.has-sidenav .nav-item:hover .nav-dropdown,
+  body.has-sidenav .nav-item:focus-within .nav-dropdown {
+    display: block;
+    visibility: visible;
+    transform: none;
+  }
+  body.has-sidenav .nav-dropdown-link {
+    padding: 8px 12px 8px 26px;
+    border-radius: var(--radius);
+  }
+  body.has-sidenav .nav-dropdown-divider { margin: 4px 0 4px 26px; }
+
+  /* Floating collapse/expand chevron riding the rail's edge */
+  body.has-sidenav .sidenav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 18px;
+    left: calc(var(--sidenav-w) - 14px);
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: var(--overlay);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    z-index: 210;
+    transition: left 250ms var(--ease-smooth), background-color 100ms var(--ease-out), color 100ms var(--ease-out);
+  }
+  body.has-sidenav .sidenav-toggle:hover {
+    background: var(--default);
+    color: var(--foreground);
+  }
+  body.has-sidenav .sidenav-toggle svg {
+    transition: transform 250ms var(--ease-smooth);
+  }
+  body.has-sidenav.nav-collapsed .sidenav-toggle { left: 10px; }
+  body.has-sidenav.nav-collapsed .sidenav-toggle svg { transform: rotate(180deg); }
+}

@@ -89,6 +89,27 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   </a>
   <a href="/admin/web" class={`nav-link nav-link-special${active === 'web' ? ' active' : ''}`}>Web</a>
 </nav>
+<button class="sidenav-toggle" id="sidenavToggle" aria-label="Toggle navigation" title="Toggle navigation">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<script is:inline>
+  // Sidebar rail (desktop ≥1025px). Runs inline, before first paint of the
+  // main content, so the collapsed state never flashes. Pages without
+  // <AdminNav> never get body.has-sidenav and keep their full-width layout.
+  (function () {
+    document.body.classList.add('has-sidenav');
+    try {
+      if (localStorage.getItem('admin-nav-collapsed') === '1') {
+        document.body.classList.add('nav-collapsed');
+      }
+    } catch (e) {}
+    var btn = document.getElementById('sidenavToggle');
+    if (btn) btn.addEventListener('click', function () {
+      var collapsed = document.body.classList.toggle('nav-collapsed');
+      try { localStorage.setItem('admin-nav-collapsed', collapsed ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
 <style is:global>
   /* Build stamp rendered into the admin footer (below "by MK"). */
   .footer-version {

@@ -58,6 +58,21 @@ filled header row; badges are HeroUI soft chips; modals/menus/toasts sit on the
 opaque `--overlay` surface with HeroUI's dark inset-ring shadow; nav links are
 36px pills. Glass card language, brand gradient, wordmark, washes: kept.
 
+## Manny's design directives (Aug 21 2026 — apply during page passes)
+
+1. **Sidebar nav** — DONE at foundation level: collapsible left rail
+   (desktop ≥1025px), chevron toggle persists in localStorage, wordmark in
+   the rail, slim top bar keeps bell/theme/logout. Mobile keeps the drawer.
+2. **Leads/Quotes/Projects list columns**: the status groups ("Pending
+   confirmation", "Confirmed"…) become hard to follow past ~5 cards. During
+   those page passes: collapsible status sections with counts, denser list
+   cards, and the group headers sticky within the column.
+3. **Portfolios page**: not full width like other pages — make it match;
+   its "All / Manual / …" filter buttons don't match the admin style — use
+   the chip-filter pattern (see dashboard search filters); missing the
+   bottom copyright footer — add `.admin-footer`.
+4. **Contacts page**: same — full width + missing footer.
+
 ## Page inventory & status
 
 Statuses: `not started` → `in progress` → `migrated` → `verified` (checked
