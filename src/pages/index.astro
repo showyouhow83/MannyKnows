@@ -174,9 +174,11 @@ const NAVBAR_CONFIG = {
             <!-- Motion overlay: white-on-black footage blended over the whole
                  header (nav included), on top of the violet wash. Blend rules
                  live in the is:global block with the other #home-hero styles.
-                 Swap the footage by changing `name` (hero-snow and hero-shapes
-                 both live in /public/video). -->
-            <HeroVideoBackground name="hero-shapes" tone="color" warm class="hero-fx" />
+                 hero-starfield is procedural — regenerate with
+                 scripts/generate-starfield.py (perfect 20s loop, ~330KB).
+                 Swap the footage by changing `name` (hero-shapes also lives
+                 in /public/video as the stock-footage alternative). -->
+            <HeroVideoBackground name="hero-starfield" tone="color" warm class="hero-fx" />
             <!-- Navigation -->
             <NavBar
 				animationConfig={{

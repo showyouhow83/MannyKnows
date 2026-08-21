@@ -115,6 +115,13 @@ export default defineConfig({
     })
   ],
   vite: {
+    // Builds and the dev server share node_modules/.vite by default, and a
+    // build wipes the dev server's optimized-deps cache out from under it
+    // ("file does not exist at .vite/deps_ssr/..."). Separate cache dirs so
+    // `npm run build` / deploy.sh can run beside a live `npm run dev`.
+    cacheDir: process.argv.includes('build')
+      ? 'node_modules/.vite-build'
+      : 'node_modules/.vite',
     ssr: {
       external: ['node:fs/promises']
     },
