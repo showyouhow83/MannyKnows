@@ -222,7 +222,7 @@ const status = project?.status ? statusLabels[project.status] : { label: 'Schedu
     }
 
     .logo-svg {
-      width: 150px;
+      width: 200px;
       height: auto;
     }
     .portal-partner-logo {
@@ -749,10 +749,7 @@ const status = project?.status ? statusLabels[project.status] : { label: 'Schedu
             ? <img src={brand.logoUrl} alt={brand.name} class="portal-partner-logo" />
             : <span class="portal-partner-name">{brand.name}</span>
         ) : (
-        <svg class="logo-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows">
-          <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#ff781d" />
-          <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#ffffff" />
-        </svg>
+        <svg viewBox="0 0 250 48" class="logo-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows"><text x="0" y="35" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="31" font-weight="800" letter-spacing="-0.5" fill="#ffffff">MannyKnows</text></svg>
         )}
       </div>
       <div class="crew-badge">Crew Portal</div>

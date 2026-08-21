@@ -396,12 +396,8 @@ function fmtDate(s: string | null | undefined): string {
           )}
           {!brand.isPartner && (
           <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px;">
-            {/* VL mark — dark "L" variant so it prints on white letterhead */}
-            <svg viewBox="0 0 620 240" width="73" height="28" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-label="MannyKnows">
-              <path d="M0 0H85V226L211 0H290L160 240H0Z" fill="#0071e3"/>
-              <path d="M290 0L370 0L456.67 160L619 160L619 240L420 240Z" fill="#0f1219"/>
-            </svg>
-            <div style="font-size:21px; font-weight:800; color:#0f1219; letter-spacing:0.02em; line-height:1;">MANNYKNOWS</div>
+            {/* MannyKnows wordmark — solid ink so it prints on white letterhead */}
+            <svg viewBox="0 0 250 48" width="200" height="38" style="display:block;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MannyKnows"><text x="0" y="35" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="31" font-weight="800" letter-spacing="-0.5" fill="#0f1219">MannyKnows</text></svg>
           </div>
           )}
           <div class="subtitle">Quote{scopeFiltered ? ' — ' + scopeTitle : ''}</div>
