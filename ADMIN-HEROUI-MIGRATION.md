@@ -84,7 +84,7 @@ against main's behavior). Line counts = migration effort signal.
 | --- | --- | --- | --- |
 | Login | `admin/index.astro` | 229 | not started |
 | ~~Dashboard~~ | `admin/dashboard.astro` | 2,391 | ✅ **DONE** — verified by Manny Aug 21 (pilot; sets the pattern) |
-| Leads | `admin/leads.astro` | 2,748 | not started |
+| Leads | `admin/leads.astro` | 2,748 | migrated — Manny's asks done Aug 21 (sources, chip badge); awaiting verify |
 | Quotes | `admin/quotes.astro` | 6,436 | not started |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
 | Quote templates | `admin/quote-templates.astro` | 587 | not started |
@@ -166,3 +166,17 @@ strings.
   "View All …" first link and dividers hidden in the rail. Dashboard's five
   view-link buttons all removed (nav covers them). Mobile (<1025px) untouched:
   hamburger + drawer as on main; restyle during a later pass.
+- **2026-08-21 (late)** — Layout locked per Manny ("loving this new layout"):
+  footer removed on desktop, credit + build stamp in the rail bottom (mobile
+  keeps the page footer); width policy centralized in admin.css with
+  `!important` (Astro-scoped page styles outrank plain selectors) — all
+  management pages full width, document editors (te/ce 980, pce 1080, cs 720)
+  stay narrow. LEADS pass (Manny: "changes are minimal"): sources swapped to
+  MK's (phone/email/scanner/google/social/cold-outreach/referral/other; Angi
+  + Thumbtack removed from page, labels, and api validSources), status badge
+  restyled to HeroUI Chip soft anatomy (no border, 12px pill) — **apply the
+  same chip format to Quote statuses (Draft…) in the Quotes pass**. Seeded 14
+  starter quote templates from the catalog: `database/seeds/quote-templates.sql`
+  (generator kept in session scratchpad) — loaded into LOCAL D1 only; run
+  `npx wrangler d1 execute MK_APP_DB --remote --file database/seeds/quote-templates.sql`
+  to seed production when Manny approves.
