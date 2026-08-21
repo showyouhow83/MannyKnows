@@ -70,12 +70,15 @@
   // "images": { "binding": "IMAGES" },
 
   "routes": [
-    { "pattern": "mannyknows.com/*", "zone_name": "mannyknows.com" },
+    // The apex is a Worker CUSTOM DOMAIN — wrangler owns its DNS record.
+    // (It originally was too; adding images.* as the only custom_domain in
+    // this file made a deploy reconcile the apex domain away and drop its
+    // DNS record — the Aug 21 2026 outage. Every custom domain must stay
+    // declared here, always.)
+    { "pattern": "mannyknows.com", "custom_domain": true },
     { "pattern": "www.mannyknows.com/*", "zone_name": "mannyknows.com" },
     // Media host: middleware serves R2 objects (quote/project attachments,
-    // media pool) on this hostname via safeMediaHeaders. custom_domain
-    // auto-creates the DNS record on deploy — it did not exist before, which
-    // is why every images.mannyknows.com URL failed to resolve (Aug 2026).
+    // media pool) on this hostname via safeMediaHeaders.
     { "pattern": "images.mannyknows.com", "custom_domain": true }
   ],
 

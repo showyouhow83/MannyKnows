@@ -933,7 +933,7 @@ const status = project?.status ? statusLabels[project.status] : { label: 'Schedu
       <!-- Progress Upload Section -->
       <div class="upload-section">
         <div class="upload-title">Upload Progress Photos</div>
-        <div class="upload-subtitle">Document your work with photos (select multiple). Photos are reviewed by the office before the customer sees them.</div>
+        <div class="upload-subtitle">Document your work with photos (select multiple). They land on this project for the crew and the office; the office publishes the ones the customer sees.</div>
         <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)" />
         <button class="btn btn-primary" id="uploadBtn" onclick="document.getElementById('imageInput').click()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1125,10 +1125,10 @@ const status = project?.status ? statusLabels[project.status] : { label: 'Schedu
       if (uploadBtn) uploadBtn.disabled = false;
       if (progressDiv) progressDiv.style.display = 'none';
 
-      // Show result. Crew photos go to the office for review before the customer
-      // sees them, so word it as "sent" rather than "posted".
+      // Show result. Crew photos post to the project starred (crew/office
+      // only) — the office unstars the ones the customer should see.
       if (errorCount === 0) {
-        showToast(`${successCount} photo${successCount > 1 ? 's' : ''} sent to the office for review.`);
+        showToast(`${successCount} photo${successCount > 1 ? 's' : ''} added to the project.`);
         setTimeout(() => window.location.reload(), 1200);
       } else if (successCount > 0) {
         showToast(`${successCount} sent, ${errorCount} failed.`, true);

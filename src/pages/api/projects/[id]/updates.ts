@@ -134,24 +134,11 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       if (streamUid) posterUrl = streamThumb(streamUid);
     }
 
-    // Crew-portal IMAGE uploads go to the MEDIA POOL (tagged by project) for
-    // admin review — NOT straight to the client portal. The admin triages the
-    // pool and assigns the good ones to the project (which then become client-
-    // visible). Crew text notes still post as a normal update. If the project
-    // has no assigned crew lead (FK requirement), fall through to the old path.
-    if (postedBy === 'crew_lead' && body.image_url && project.crew_lead_id) {
-      const isVideo = /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(body.image_url);
-      await db.prepare(`
-        INSERT INTO media_pool (media_url, media_type, original_filename, note, uploaded_by_crew_id, project_id, source, stream_uid, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, 'crew-portal', ?, CURRENT_TIMESTAMP)
-      `).bind(body.image_url, isVideo ? 'video' : 'image', null, body.note || null, project.crew_lead_id, projectId, streamUid).run();
-      console.log(`[ProjectUpdate] Crew photo → media pool (project ${projectId}, crew ${project.crew_lead_id})`);
-      return new Response(JSON.stringify({
-        success: true,
-        pooled: true,
-        message: 'Uploaded for admin review',
-      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-    }
+    // Crew-portal IMAGE uploads post straight onto THEIR project's Reference
+    // Media (Manny, Aug 2026 — the pool detour is only for the timeclock
+    // page's untargeted uploads). Inserted STARRED (crew/admin-only), so
+    // nothing becomes client-visible until the admin unstars it.
+    const starForCrew = postedBy === 'crew_lead' && body.image_url ? 1 : 0;
 
     // De-dupe by ORIGINAL filename within the project. R2 prefixes a fresh
     // timestamp on every upload, so the URL differs each time — matching on the
@@ -182,10 +169,10 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       } else {
         result = await db.prepare(`
           INSERT INTO project_updates (
-            project_id, image_url, note, posted_by, posted_by_name, stream_uid, poster_url, created_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        `).bind(projectId, body.image_url, body.note || null, postedBy, postedByName, streamUid, posterUrl).run();
-        console.log(`[ProjectUpdate] Added update to project ${projectId}`);
+            project_id, image_url, note, posted_by, posted_by_name, stream_uid, poster_url, is_starred, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        `).bind(projectId, body.image_url, body.note || null, postedBy, postedByName, streamUid, posterUrl, starForCrew).run();
+        console.log(`[ProjectUpdate] Added update to project ${projectId}${starForCrew ? ' (starred, crew upload)' : ''}`);
       }
     } else {
       // Note-only update (no image)
