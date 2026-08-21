@@ -90,6 +90,10 @@ export default defineConfig({
   // themselves — and the webhook authenticates via the Twilio signature. So it's
   // safe to turn off here.
   security: { checkOrigin: false },
+  // Dev-only: hide Astro's floating toolbar in `npm run dev` (Manny's call,
+  // Aug 2026 — it sat over the admin's bottom-left corner). No production
+  // effect; the toolbar never ships in builds.
+  devToolbar: { enabled: false },
   adapter: cloudflare({
     imageService: 'compile', // Explicitly set image service for Cloudflare
     // v14 auto-enables Astro Sessions on a KV binding; point it at our existing

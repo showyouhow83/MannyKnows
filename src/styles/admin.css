@@ -2385,32 +2385,39 @@ input[type="datetime-local"] {
    ============================================ */
 .sidenav-toggle { display: none; }
 
+/* Sticky footer: on short pages the credit line floated mid-page. Nav pages
+   become a flex column and <main> grows, so the footer pins to the viewport
+   bottom while keeping its normal gap on long pages. All viewport sizes —
+   body.has-sidenav is set by AdminNav's script regardless of width. Pages
+   without <AdminNav> are untouched. */
+body.has-sidenav {
+  display: flex;
+  flex-direction: column;
+}
+body.has-sidenav main { flex: 1 0 auto; }
+
 @media (min-width: 1025px) {
-  body.has-sidenav { --sidenav-w: 232px; --header-h: 65px; }
+  /* The page shifts right via body padding (not per-main margins): centered
+     mains (`margin: 0 auto` + max-width — calendar, media pool, templates…)
+     then re-center in the remaining space for free, on every page. */
+  body.has-sidenav {
+    --sidenav-w: 232px;
+    --header-h: 65px;
+    padding-left: var(--sidenav-w);
+    transition: padding-left 250ms var(--ease-smooth);
+  }
   body.has-sidenav.nav-collapsed { --sidenav-w: 0px; }
 
-  body.has-sidenav .admin-main,
-  body.has-sidenav .admin-main-full,
-  body.has-sidenav .admin-main-3col,
-  body.has-sidenav .admin-main-gallery,
-  body.has-sidenav .admin-footer {
-    margin-left: var(--sidenav-w);
-    transition: margin-left 250ms var(--ease-smooth);
-  }
-
-  /* Centered layouts re-center inside the space right of the rail */
-  body.has-sidenav .admin-main-centered {
-    margin-left: calc(var(--sidenav-w) + max(24px, (100% - var(--sidenav-w) - 900px) / 2));
-    margin-right: 24px;
-    transition: margin-left 250ms var(--ease-smooth);
-  }
-
   /* The top bar spans full width (logo left, actions right — its normal
-     look); the rail hangs below it. backdrop-filter MUST stay off: it makes
-     the header the containing block for fixed descendants (the rail lives
-     inside the header markup), clipping the rail to the header box. The
-     header fill is 92% opaque, so losing the blur is invisible. */
+     look); the rail hangs below it. The negative margin cancels the body
+     padding so the bar reaches the viewport's left edge. backdrop-filter
+     MUST stay off: it makes the header the containing block for fixed
+     descendants (the rail lives inside the header markup), clipping the
+     rail to the header box. The header fill is 92% opaque, so losing the
+     blur is invisible. */
   body.has-sidenav .admin-header {
+    margin-left: calc(-1 * var(--sidenav-w));
+    transition: margin-left 250ms var(--ease-smooth);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
