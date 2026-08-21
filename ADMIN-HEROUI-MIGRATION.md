@@ -158,3 +158,11 @@ strings.
   dropdowns; 16px spacing rhythm; element IDs and JS-injected class names
   never change. Rollout order for next session (fresh Fable window): leads →
   contacts → crew → quotes → projects → remaining admin pages → portals.
+- **2026-08-21 (night)** — Sidebar shipped and revised per Manny (`a429d20`):
+  full-width top bar (logo left, bell/theme/logout right, no blur — blur made
+  the header the containing block and clipped the fixed rail); rail hangs
+  below it (`--header-h: 65px`), chevron collapse persists in localStorage;
+  sub-menus ALWAYS visible (Manny: no hover reveal) — the duplicate
+  "View All …" first link and dividers hidden in the rail. Dashboard's five
+  view-link buttons all removed (nav covers them). Mobile (<1025px) untouched:
+  hamburger + drawer as on main; restyle during a later pass.
