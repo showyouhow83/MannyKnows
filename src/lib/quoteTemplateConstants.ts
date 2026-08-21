@@ -9,8 +9,8 @@
 
 export const COMPANY_HEADER = {
   name: 'MannyKnows',
-  licenseLabel: 'MA HIC License',
-  // TODO(CONTENT_TODOS: company-license-number): real MannyKnows MA HIC
+  licenseLabel: 'Business Registration',
+  // Optional registration number; the header line renders only when set.
   // number goes here once Manny provides it. Leave '' until then — render sites
   // hide the license line when empty. Never invent a number.
   licenseNumber: '',

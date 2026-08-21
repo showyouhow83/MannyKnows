@@ -5,6 +5,8 @@
 // one pattern; the extra contract-only fields surface inside the detail page.
 import { env as cfEnv } from 'cloudflare:workers';
 import { AdminAuth } from '../../lib/adminAuth';
+import { SERVICE_TYPES_SHORT } from '../../data/serviceTypes';
+import { DEFAULT_CONTRACT_TEMPLATES } from '../../lib/contractTemplateConstants';
 import AdminNav from '../../components/AdminNav.astro';
 import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
 import ConfirmModal from '../../components/ConfirmModal.astro';
@@ -241,6 +243,7 @@ if (!session.isAuthenticated) {
         </div>
         <div class="ct-actions">
           <label><input type="checkbox" id="showArchived" onchange="loadTemplates()"> Show archived</label>
+          <button id="seedBtn" onclick="seedStarterTemplates()" title="Create one standard contract per product family">Add starter templates</button>
           <button class="primary" onclick="openNewModal()">+ New contract template</button>
         </div>
       </div>
@@ -259,19 +262,15 @@ if (!session.isAuthenticated) {
         <div class="ct-modal-body">
           <div class="ct-modal-field">
             <label for="newName">Name</label>
-            <input id="newName" type="text" placeholder="e.g. Interior: Standard Contract" />
+            <input id="newName" type="text" placeholder="e.g. Get Booked: Standard Contract" />
           </div>
           <div class="ct-modal-field">
             <label for="newType">Project type</label>
             <select id="newType">
-              <option value="interior">Interior</option>
-              <option value="exterior">Exterior</option>
-              <option value="cabinet">Cabinet</option>
-              <option value="deck">Deck</option>
-              <option value="other">Other</option>
+              {SERVICE_TYPES_SHORT.map((s) => <option value={s.value}>{s.label}</option>)}
             </select>
           </div>
-          <p style="font-size:12px;color:var(--color-text-secondary);margin:0;">A blank template will be created with default payment schedule (30% down × 3, 8 monthly) and one starter section.</p>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin:0;">A blank template will be created with the MannyKnows payment shape (setup fee at kickoff, then monthly) and one starter section.</p>
         </div>
         <div class="ct-modal-footer">
           <button class="cancel" onclick="closeNewModal()">Cancel</button>
@@ -283,6 +282,12 @@ if (!session.isAuthenticated) {
     <div class="toast" id="toast"></div>
 
     <ConfirmModal />
+
+    <!-- Service catalog (short labels, display order) + starter contract
+         templates, injected for the inline script. Content lives in
+         src/data/serviceTypes.ts and src/lib/contractTemplateConstants.ts. -->
+    <script type="application/json" id="serviceTypesData" set:html={JSON.stringify(SERVICE_TYPES_SHORT)}></script>
+    <script type="application/json" id="starterContractsData" set:html={JSON.stringify(DEFAULT_CONTRACT_TEMPLATES)}></script>
 
     <script is:inline>
       (function() {
@@ -323,12 +328,11 @@ if (!session.isAuthenticated) {
       mobileNavClose?.addEventListener('click', closeMobileNav);
       mobileNavOverlay?.addEventListener('click', closeMobileNav);
 
-      const TYPE_LABEL = {
-        'website-basic': 'Get Found', 'website-plus': 'Get Booked',
-        'website-smart': 'Get Growing', 'ecommerce': 'Sell Online',
-        'business-ads': 'Business Ads', 'multimedia-agency': 'Multimedia Agency',
-        'ai-team': 'AI Team', 'custom-app': 'Custom Web App', other: 'Other',
-      };
+      // Service labels + order come from the injected catalog (serviceTypes.ts)
+      // so this page can never drift from the quote/lead/project forms again.
+      const SERVICE_CATALOG = JSON.parse(document.getElementById('serviceTypesData').textContent || '[]');
+      const TYPE_LABEL = Object.fromEntries(SERVICE_CATALOG.map(s => [s.value, s.label]));
+      const TYPE_ORDER = SERVICE_CATALOG.map(s => s.value);
 
       function showToast(msg, type) {
         const el = document.getElementById('toast');
@@ -355,10 +359,9 @@ if (!session.isAuthenticated) {
             list.innerHTML = '<div class="ct-empty">No contract templates yet. Click <strong>+ New contract template</strong> to create one.</div>';
             return;
           }
-          const order = ['website-basic', 'website-plus', 'website-smart', 'ecommerce', 'business-ads', 'multimedia-agency', 'ai-team', 'custom-app', 'other'];
           const orderRank = (t) => {
             const k = (t.project_type || 'other').toLowerCase();
-            const i = order.indexOf(k);
+            const i = TYPE_ORDER.indexOf(k);
             return i === -1 ? 999 : i;
           };
           templates.sort((a, b) => {
@@ -397,7 +400,7 @@ if (!session.isAuthenticated) {
 
       function openNewModal() {
         document.getElementById('newName').value = '';
-        document.getElementById('newType').value = 'exterior';
+        document.getElementById('newType').value = TYPE_ORDER[0] || 'other';
         document.getElementById('newModal').classList.add('active');
         document.body.style.overflow = 'hidden';
       }
@@ -418,11 +421,11 @@ if (!session.isAuthenticated) {
           const sections = [
             { id: 's-' + Date.now(), title: 'Untitled Section', items: [] }
           ];
-          // Terms defaults match the seed template — admin tweaks them in
+          // Terms defaults match the starter templates — admin tweaks them in
           // the detail editor.
           const terms = {
-            marketing_release: { enabled: true, text: 'MannyKnows will be taking photos and videos of the project to promote our business on Google and social media.' },
-            reference_request: { enabled: true, text: 'Can we use you as a reference?' },
+            marketing_release: { enabled: true, text: 'MannyKnows may feature the finished work (screenshots, the live site, and campaign results) to promote our business on our website, Google, and social media. Client data and private business information are never shared.' },
+            reference_request: { enabled: true, text: 'Once the work is live, may we use you as a reference for prospective clients?' },
             custom_terms: [],
           };
           const res = await fetch('/api/admin/contract-templates/', {
@@ -471,6 +474,56 @@ if (!session.isAuthenticated) {
         });
       }
       window.hardDeleteTemplate = hardDeleteTemplate;
+
+      // Seed the MK starter contracts (one per product family). Skips any
+      // whose name already exists, so re-clicking is idempotent.
+      async function seedStarterTemplates() {
+        const btn = document.getElementById('seedBtn');
+        let starters = [];
+        try {
+          starters = JSON.parse(document.getElementById('starterContractsData').textContent || '[]');
+        } catch {}
+        if (!starters.length) { showToast('No starter data found', 'error'); return; }
+        btn.disabled = true; btn.textContent = 'Adding…';
+        try {
+          const res = await fetch('/api/admin/contract-templates/?archived=1', { credentials: 'include' });
+          const data = await res.json();
+          const existingNames = new Set((data.templates || []).map(t => String(t.name || '').toLowerCase()));
+          let created = 0, skipped = 0;
+          for (const t of starters) {
+            if (existingNames.has(String(t.name).toLowerCase())) { skipped++; continue; }
+            const postRes = await fetch('/api/admin/contract-templates/', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: t.name,
+                project_type: t.project_type,
+                sections: t.sections,
+                terms: t.terms,
+                is_default: t.is_default ? 1 : 0,
+                down_payment_percent: t.down_payment_percent,
+                down_payment_count: t.down_payment_count,
+                monthly_payment_count: t.monthly_payment_count,
+                cancellation_window_days: t.cancellation_window_days,
+                cancellation_fee_amount: t.cancellation_fee_amount,
+                late_fee_amount: t.late_fee_amount,
+                late_fee_grace_days: t.late_fee_grace_days,
+                warranty_months: t.warranty_months,
+              }),
+            });
+            const postData = await postRes.json();
+            if (postData.success) created++;
+          }
+          showToast(created ? `Added ${created} starter contract${created === 1 ? '' : 's'}${skipped ? ` (${skipped} already existed)` : ''}` : 'Starter contracts already exist', created ? 'success' : '');
+          loadTemplates();
+        } catch {
+          showToast('Failed to add starter contracts', 'error');
+        } finally {
+          btn.disabled = false; btn.textContent = 'Add starter templates';
+        }
+      }
+      window.seedStarterTemplates = seedStarterTemplates;
 
       loadTemplates();
     </script>

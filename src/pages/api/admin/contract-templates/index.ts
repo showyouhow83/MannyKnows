@@ -5,13 +5,13 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
+import { SERVICE_TYPES } from '../../../../data/serviceTypes';
 
 export const prerender = false;
 
-const VALID_TYPES = new Set([
-  'kitchen_remodel', 'bathroom_remodel', 'interior_painting',
-  'flooring', 'general_repairs', 'other',
-]);
+// The service catalog itself (src/data/serviceTypes.ts) is the validator —
+// a stale local copy of this list is what broke template creation (Aug 2026).
+const VALID_TYPES = new Set(SERVICE_TYPES.map((s) => s.value));
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -121,14 +121,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const isDefault = body.is_default === true || body.is_default === 1 ? 1 : 0;
 
     // Payment-schedule defaults — accept overrides but bounded.
-    const downPct = clampNumber(body.down_payment_percent, 0, 100) ?? 30;
-    const downCount = clampNumber(body.down_payment_count, 0, 12) ?? 3;
-    const monthlyCount = clampNumber(body.monthly_payment_count, 0, 60) ?? 8;
-    const cancelDays = clampNumber(body.cancellation_window_days, 0, 30) ?? 3;
-    const cancelFee = clampNumber(body.cancellation_fee_amount, 0, 100000) ?? 300;
-    const lateFee = clampNumber(body.late_fee_amount, 0, 10000) ?? 50;
-    const lateGrace = clampNumber(body.late_fee_grace_days, 0, 30) ?? 3;
-    const warrantyMonths = clampNumber(body.warranty_months, 0, 240) ?? 28;
+    // MannyKnows payment shape: the setup fee is the one payment at kickoff
+    // (waived on a prepaid year), then the monthly subscription. 5-business-day
+    // full-refund window, no cancellation fee, no contractor-style warranty.
+    const downPct = clampNumber(body.down_payment_percent, 0, 100) ?? 100;
+    const downCount = clampNumber(body.down_payment_count, 0, 12) ?? 1;
+    const monthlyCount = clampNumber(body.monthly_payment_count, 0, 60) ?? 12;
+    const cancelDays = clampNumber(body.cancellation_window_days, 0, 30) ?? 5;
+    const cancelFee = clampNumber(body.cancellation_fee_amount, 0, 100000) ?? 0;
+    const lateFee = clampNumber(body.late_fee_amount, 0, 10000) ?? 0;
+    const lateGrace = clampNumber(body.late_fee_grace_days, 0, 30) ?? 5;
+    const warrantyMonths = clampNumber(body.warranty_months, 0, 240) ?? 0;
 
     if (isDefault) {
       await db.prepare(

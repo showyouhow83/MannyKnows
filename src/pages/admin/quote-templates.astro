@@ -7,6 +7,7 @@ import AdminNav from '../../components/AdminNav.astro';
 import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
 import ConfirmModal from '../../components/ConfirmModal.astro';
 import { DEFAULT_QUOTE_TEMPLATES } from '../../lib/quoteTemplateConstants';
+import { SERVICE_TYPES_SHORT } from '../../data/serviceTypes';
 import '../../styles/admin.css';
 
 export const prerender = false;
@@ -288,12 +289,7 @@ if (!session.isAuthenticated) {
           <div class="qt-modal-field">
             <label for="newType">Project type</label>
             <select id="newType">
-              <option value="kitchen_remodel">Kitchen Remodeling</option>
-              <option value="bathroom_remodel">Bathroom Remodeling</option>
-              <option value="interior_painting">Interior Painting</option>
-              <option value="flooring">Flooring</option>
-              <option value="general_repairs">General Repairs & Handyman</option>
-              <option value="other">Other</option>
+              {SERVICE_TYPES_SHORT.map((s) => <option value={s.value}>{s.label}</option>)}
             </select>
           </div>
           <p style="font-size:12px;color:var(--color-text-secondary);margin:0;">A blank template will be created with one starter section, you'll add sections + items on the next page.</p>
@@ -312,6 +308,7 @@ if (!session.isAuthenticated) {
     <!-- Starter template payloads (one per MK service) — data lives in
          src/lib/quoteTemplateConstants.ts (DEFAULT_QUOTE_TEMPLATES). -->
     <script type="application/json" id="starterTemplatesData" set:html={JSON.stringify(DEFAULT_QUOTE_TEMPLATES)}></script>
+    <script type="application/json" id="serviceTypesData" set:html={JSON.stringify(SERVICE_TYPES_SHORT)}></script>
 
     <script is:inline>
       (function() {
@@ -352,14 +349,11 @@ if (!session.isAuthenticated) {
       mobileNavClose?.addEventListener('click', closeMobileNav);
       mobileNavOverlay?.addEventListener('click', closeMobileNav);
 
-      const TYPE_LABEL = {
-        kitchen_remodel: 'Kitchen Remodeling',
-        bathroom_remodel: 'Bathroom Remodeling',
-        interior_painting: 'Interior Painting',
-        flooring: 'Flooring',
-        general_repairs: 'General Repairs & Handyman',
-        other: 'Other',
-      };
+      // Labels + order come from the injected catalog (serviceTypes.ts) so this
+      // page can never drift from the quote/lead/project forms again.
+      const SERVICE_CATALOG = JSON.parse(document.getElementById('serviceTypesData').textContent || '[]');
+      const TYPE_LABEL = Object.fromEntries(SERVICE_CATALOG.map(s => [s.value, s.label]));
+      const TYPE_ORDER = SERVICE_CATALOG.map(s => s.value);
 
       function showToast(msg, type) {
         const el = document.getElementById('toast');
@@ -389,7 +383,7 @@ if (!session.isAuthenticated) {
           // One gallery grid — every template is a card. Project type renders
           // as a pill inside the card. Cards sort by project_type then name
           // so similar templates cluster visually.
-          const order = ['kitchen_remodel', 'bathroom_remodel', 'interior_painting', 'flooring', 'general_repairs', 'other'];
+          const order = TYPE_ORDER;
           const orderRank = (t) => {
             const k = (t.project_type || 'other').toLowerCase();
             const i = order.indexOf(k);
@@ -430,7 +424,7 @@ if (!session.isAuthenticated) {
 
       function openNewModal() {
         document.getElementById('newName').value = '';
-        document.getElementById('newType').value = 'kitchen_remodel';
+        document.getElementById('newType').value = TYPE_ORDER[0] || 'other';
         document.getElementById('newModal').classList.add('active');
         document.body.style.overflow = 'hidden';
       }

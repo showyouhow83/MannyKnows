@@ -71,7 +71,12 @@
 
   "routes": [
     { "pattern": "mannyknows.com/*", "zone_name": "mannyknows.com" },
-    { "pattern": "www.mannyknows.com/*", "zone_name": "mannyknows.com" }
+    { "pattern": "www.mannyknows.com/*", "zone_name": "mannyknows.com" },
+    // Media host: middleware serves R2 objects (quote/project attachments,
+    // media pool) on this hostname via safeMediaHeaders. custom_domain
+    // auto-creates the DNS record on deploy — it did not exist before, which
+    // is why every images.mannyknows.com URL failed to resolve (Aug 2026).
+    { "pattern": "images.mannyknows.com", "custom_domain": true }
   ],
 
   "observability": { "enabled": true }

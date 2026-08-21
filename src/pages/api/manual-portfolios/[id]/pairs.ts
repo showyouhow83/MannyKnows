@@ -14,7 +14,7 @@ async function generatePairMetadata(
   geminiApiKey: string
 ): Promise<{ title: string; description: string }> {
   try {
-    const prompt = `Analyze these before/after home-improvement photos and generate:
+    const prompt = `Analyze these before/after project photos and generate:
 1. A short title (2-3 words) describing the area or view shown. Examples: "Kitchen Sink Wall", "Shower Surround", "Living Room Floor", "Hallway Trim", "Vanity Corner"
 2. A brief description (under 10 words) of the transformation. Examples: "Dated cabinets replaced with shaker fronts", "New tile surround and fixtures installed"
 

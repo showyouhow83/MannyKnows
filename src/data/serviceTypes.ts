@@ -91,3 +91,18 @@ export function serviceLabel(value: string | null | undefined): string {
 export function isKnownService(value: string | null | undefined): boolean {
   return !!value && value !== 'other' && value in SERVICE_LABELS;
 }
+
+// Short display name for tight admin UI (dropdowns, type pills): the label
+// with its price tail and subtitle stripped — "Get Booked", "Remi AI",
+// "On the Map". Derived, so a label rewrite can't strand the admin pages.
+export function shortServiceLabel(value: string): string {
+  const label = SERVICE_LABELS[value];
+  if (!label) return value;
+  return label.split(' (')[0].split(' — ')[0].split(':')[0].split(',')[0].trim();
+}
+
+// [{value, label: short}] for admin selects; same order as SERVICE_TYPES.
+export const SERVICE_TYPES_SHORT: ServiceType[] = SERVICE_TYPES.map((s) => ({
+  value: s.value,
+  label: shortServiceLabel(s.value),
+}));

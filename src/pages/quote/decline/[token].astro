@@ -2,6 +2,7 @@
 // Quote Decline Feedback Page
 // Customer provides reason for declining
 import { env as cfEnv } from 'cloudflare:workers';
+import { isKnownService, shortServiceLabel } from '../../../data/serviceTypes';
 import type { APIContext } from 'astro';
 
 export const prerender = false;
@@ -49,21 +50,14 @@ function formatCurrency(amount?: number): string {
 
 // Format services
 function formatServices(servicesJson?: string): string {
-  if (!servicesJson) return 'Home Services';
+  if (!servicesJson) return 'MannyKnows Services';
   try {
     const services = JSON.parse(servicesJson);
-    // Mirrors src/data/serviceTypes.ts; custom "other" services pass through.
-    const labels: Record<string, string> = {
-      'kitchen_remodel': 'Kitchen Remodeling',
-      'bathroom_remodel': 'Bathroom Remodeling',
-      'interior_painting': 'Interior Painting',
-      'flooring': 'Flooring',
-      'general_repairs': 'General Repairs & Handyman'
-    };
-    // Handle both array of strings and array of objects with {type, scope}
+    // Labels come from the canonical catalog (src/data/serviceTypes.ts);
+    // custom "other" services and legacy slugs pass through as-is.
     return services.map((s: string | { type?: string }) => {
       const serviceKey = typeof s === 'string' ? s : (s.type || String(s));
-      return labels[serviceKey] || serviceKey;
+      return isKnownService(serviceKey) ? shortServiceLabel(serviceKey) : serviceKey;
     }).join(', ');
   } catch {
     return servicesJson;
@@ -526,7 +520,7 @@ const firstName = quote?.customer_name?.split(' ')[0] || 'there';
 
   <footer class="footer">
     <h3>MannyKnows</h3>
-    <p>Remodeling, Painting & Home Repairs: Springfield, MA</p>
+    <p>AI Agents, Websites, SEO & Apps: Springfield, MA</p>
     <div class="footer-links">
       <a href="https://mannyknows.com">mannyknows.com</a>
       <span>|</span>

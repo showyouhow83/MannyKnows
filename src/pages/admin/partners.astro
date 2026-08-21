@@ -303,7 +303,7 @@ if (session.role === 'viewer') return Astro.redirect('/admin/portfolios');
     function editJob(id){
       var j=jobs.find(function(x){return x.id===id;}); if(!j)return;
       var card=document.querySelector('.pt-job[data-job-id="'+id+'"]'); if(!card)return;
-      var WT=['','Kitchen Remodeling','Bathroom Remodeling','Interior Painting','Flooring','General Repairs','Other'];
+      var WT=['','Website','Online Store','AI Agent','Business App','Local SEO','Other'];
       card.innerHTML='<div class="pt-grid2">'
         +ptInput('Client name','j_client_'+id,j.client_name)
         +ptInput('Phone','j_phone_'+id,j.phone)

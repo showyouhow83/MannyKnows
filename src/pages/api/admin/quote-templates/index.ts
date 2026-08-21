@@ -2,15 +2,13 @@
 import { env as cfEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { AdminAuth } from '../../../../lib/adminAuth';
+import { SERVICE_TYPES } from '../../../../data/serviceTypes';
 
 export const prerender = false;
 
-// Mirrors the quote form's services dropdown (src/data/serviceTypes.ts) so a
-// template can exist for any service type the admin can pick in /admin/quotes.
-const VALID_TYPES = new Set([
-  'kitchen_remodel', 'bathroom_remodel', 'interior_painting',
-  'flooring', 'general_repairs', 'other',
-]);
+// The service catalog itself (src/data/serviceTypes.ts) is the validator —
+// a stale local copy of this list is what broke template creation (Aug 2026).
+const VALID_TYPES = new Set(SERVICE_TYPES.map((s) => s.value));
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {

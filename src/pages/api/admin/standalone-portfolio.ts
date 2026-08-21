@@ -10,7 +10,7 @@ import { AdminAuth, viewerGuard } from '../../../lib/adminAuth';
 interface StandalonePortfolioRequest {
   title: string;
   // Aligned with PORTFOLIO_TYPES in src/lib/portfolio-copy.ts / src/data/serviceTypes.ts
-  service_type: 'kitchen_remodel' | 'bathroom_remodel' | 'interior_painting' | 'flooring' | 'general_repairs' | 'other';
+  service_type: string;
   description?: string;
   location?: string;
   images: Array<{

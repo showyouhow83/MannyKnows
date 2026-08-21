@@ -1131,7 +1131,9 @@ const contractorDefaultName = savedContractor?.signer_name || '';
       function renderScopeTemplatePicker() {
         const picker = document.getElementById('scopeTemplatePicker');
         if (!picker) return;
-        const order = ['interior', 'exterior', 'cabinet', 'deck', 'trim', 'ceiling', 'powerwash', 'drywall', 'roof', 'other'];
+        // Display order mirrors src/data/serviceTypes.ts; legacy contractor
+        // types fall to the end via the -1 rank below.
+        const order = ['ai-website', 'website-basic', 'website-plus', 'website-smart', 'get-ahead', 'ecommerce', 'business-ads', 'multimedia-agency', 'remi-ai', 'ai-team', 'custom-app', 'app-scripts', 'app-integration', 'seo-on-the-map', 'seo-own-the-map', 'seo-own-the-market', 'seo-audit', 'seo-migration', 'virtual-tour', 'gbp-rescue', 'other'];
         const grouped = {};
         scopeTemplates.filter(t => !t.archived).forEach(t => {
           const k = t.project_type || 'other';

@@ -3,6 +3,7 @@
 
 import { Resend } from 'resend';
 import { quoteToScopes, renderScopesHtml } from './quoteTemplateConstants';
+import { SERVICE_TYPES, shortServiceLabel } from '../data/serviceTypes';
 import { type Brand, SL_BRAND, emailFrom } from './brand';
 
 export interface Quote {
@@ -104,16 +105,12 @@ export interface QuoteEmailEnv {
   NOTIFICATION_EMAIL: string;
 }
 
-// Service type labels — mirrors src/data/serviceTypes.ts (custom "other"
-// services store their typed text as the value and fall through as-is).
-const SERVICE_LABELS: Record<string, string> = {
-  'kitchen_remodel': 'Kitchen Remodeling',
-  'bathroom_remodel': 'Bathroom Remodeling',
-  'interior_painting': 'Interior Painting',
-  'flooring': 'Flooring',
-  'general_repairs': 'General Repairs & Handyman',
-  'other': 'Other Services'
-};
+// Service type labels come from the canonical catalog (src/data/serviceTypes.ts)
+// via shortServiceLabel — custom "other" services store their typed text as the
+// value and fall through as-is.
+const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
+  SERVICE_TYPES.map((s) => [s.value, shortServiceLabel(s.value)])
+);
 
 // Format services array to readable string
 function formatServices(servicesJson?: string): string {
@@ -275,7 +272,7 @@ export function emailFooter(options?: { showEli?: boolean }, brand: Brand = SL_B
       <img src="${MK_LOGO_URL}" alt="MannyKnows" width="129" height="50" style="display: inline-block; max-width: 129px; height: auto;" />
     </a>
     <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 13px;">
-      Remodeling, Painting &amp; Home Repairs &mdash; Springfield, MA
+      AI Agents, Websites, SEO &amp; Apps &mdash; Springfield, MA
     </p>
     <div style="margin: 12px 0;">
       <a href="https://mannyknows.com" style="color: #ff781d; font-size: 14px; text-decoration: none; font-weight: 600;">mannyknows.com</a>

@@ -41,11 +41,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     const prompt = type === 'subject'
-      ? `You are editing an email subject line for a home remodeling and repair company. Fix grammar and spelling only. Keep it concise: ideally under 10 words. Return ONLY the corrected subject line. No period at the end. No greeting, no full sentence structure unless the original uses one. Do NOT add or change specific dates or project numbers.
+      ? `You are editing an email subject line for a web design and AI agency. Fix grammar and spelling only. Keep it concise: ideally under 10 words. Return ONLY the corrected subject line. No period at the end. No greeting, no full sentence structure unless the original uses one. Do NOT add or change specific dates or project numbers.
 
 Subject to fix:
 ${message}`
-      : `You are an editor for a home remodeling and repair company. Rewrite the message below in clear, correct, professional English. If the message is written in Spanish, translate it to English. Fix grammar and spelling only: keep the exact same meaning, tone, and facts. Do NOT change the language to anything other than English. Do NOT add greetings, sign-offs, or commentary. Do NOT change, add, or guess specific dates: if the original says "Tuesday" without a date, keep it as "Tuesday". Today is ${today}. Return ONLY the corrected message text and nothing else.${firstName ? ` The customer's name is ${firstName}.` : ''}
+      : `You are an editor for a web design and AI agency. Rewrite the message below in clear, correct, professional English. If the message is written in Spanish, translate it to English. Fix grammar and spelling only: keep the exact same meaning, tone, and facts. Do NOT change the language to anything other than English. Do NOT add greetings, sign-offs, or commentary. Do NOT change, add, or guess specific dates: if the original says "Tuesday" without a date, keep it as "Tuesday". Today is ${today}. Return ONLY the corrected message text and nothing else.${firstName ? ` The customer's name is ${firstName}.` : ''}
 
 Message to fix:
 ${message}`;

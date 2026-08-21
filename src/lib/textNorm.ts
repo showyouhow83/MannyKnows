@@ -97,7 +97,7 @@ export async function geminiPolish(text: string, apiKey: string): Promise<string
   if (text.length < 15) return text;
 
   try {
-    const prompt = `You are a text corrector for a home remodeling and repair company. Fix ONLY spelling mistakes and grammar errors. Do NOT remove words, change meaning, rephrase, or add anything. The text describes remodeling/painting/flooring materials, labor, or project scope. Output ONLY the corrected text, nothing else.\n\nText: "${text}"`;
+    const prompt = `You are a text corrector for a web design and AI agency. Fix ONLY spelling mistakes and grammar errors. Do NOT remove words, change meaning, rephrase, or add anything. The text describes websites, AI agents, stores, apps, and SEO/flooring materials, labor, or project scope. Output ONLY the corrected text, nothing else.\n\nText: "${text}"`;
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,

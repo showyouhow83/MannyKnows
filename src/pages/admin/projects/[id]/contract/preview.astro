@@ -590,7 +590,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
                     </div>
                     <div style="flex:1; min-width:0;">
                       {rec.contractor_signature_data_url && (
-                        <img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />
+                        <img src={rec.contractor_signature_data_url} alt="MannyKnows signature" style="display:block; max-height:26px; max-width:100%;" />
                       )}
                       <div style="border-top:1px solid #a1a1aa; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
                     </div>
@@ -600,7 +600,7 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
                   </div>
                 </td>
               ) : (
-                <td style="font-size:10px; color:#a1a1aa;">Client _______ / Contractor _______</td>
+                <td style="font-size:10px; color:#a1a1aa;">Client _______ / MannyKnows _______</td>
               )}
             </tr>
             );
@@ -634,14 +634,16 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
 
       <h2 class="section-h">Terms</h2>
       <div class="term-block">
-        <strong>Cancellation:</strong> Customer has {row.cancellation_window_days} day{row.cancellation_window_days === 1 ? '' : 's'} to cancel for a full refund of the deposit. After that window, a {fmtMoney(row.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.
+        <strong>Cancellation:</strong> Client may cancel within {row.cancellation_window_days} business day{row.cancellation_window_days === 1 ? '' : 's'} of kickoff for a full refund of everything paid, the setup fee included. After that window, setup fees and prepaid annual fees are non-refundable{row.cancellation_fee_amount > 0 ? ` and a ${fmtMoney(row.cancellation_fee_amount)} cancellation fee applies` : ''}. On monthly billing there is no minimum term: cancel anytime, effective at the end of the billing month.
       </div>
       <div class="term-block">
-        <strong>Late payments:</strong> Any invoice or progress payment not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date will be considered late, and a late fee of {fmtMoney(row.late_fee_amount)} will be applied.
+        <strong>Late payments:</strong> Any invoice not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date is late{row.late_fee_amount > 0 ? ` and a ${fmtMoney(row.late_fee_amount)} late fee applies` : ''}; overdue amounts accrue interest at 1.5% per month (18% per year) or the maximum rate the law permits, whichever is lower.
       </div>
-      <div class="term-block">
-        <strong>Workmanship warranty:</strong> {row.warranty_months} months from the project completion date. Covers workmanship failures by our crew; excludes weather, homeowner-caused damage, structural issues, and pre-existing conditions.
-      </div>
+      {row.warranty_months > 0 && (
+        <div class="term-block">
+          <strong>Service guarantee:</strong> {row.warranty_months} months from delivery. Covers defects in the work we built; excludes third-party services, client-made changes, and issues outside our control.
+        </div>
+      )}
       {terms.marketing_release?.enabled && terms.marketing_release.text && (
         <div class="term-block">
           <strong>Marketing release:</strong> {terms.marketing_release.text}
@@ -675,12 +677,12 @@ const fullAddress = [row.customer_address, row.customer_city, [row.customer_stat
             {contractorSig ? (
               <>
                 <img src={contractorSig.signature_data_url} alt={`Signature by ${contractorSig.signer_name}`} style="display:block; max-height:80px; max-width:100%; margin-bottom: 4px;" />
-                <div class="sig-caption" style="border-top:1px solid #a1a1aa; padding-top:4px;">Contractor signature &mdash; {contractorSig.signer_name}</div>
+                <div class="sig-caption" style="border-top:1px solid #a1a1aa; padding-top:4px;">MannyKnows signature &mdash; {contractorSig.signer_name}</div>
               </>
             ) : (
               <>
                 <div class="sig-line"></div>
-                <div class="sig-caption">Contractor signature</div>
+                <div class="sig-caption">MannyKnows signature</div>
               </>
             )}
           </div>

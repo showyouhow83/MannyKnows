@@ -441,14 +441,14 @@ function fmtFullDateTime(s: string | null | undefined): string {
                               <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? `, ${rec.customer_name}` : ''}</div>
                             </div>
                             <div style="flex:1; min-width:0;">
-                              {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />)}
+                              {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="MannyKnows signature" style="display:block; max-height:26px; max-width:100%;" />)}
                               <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
                             </div>
                           </div>
                           <div style="margin-top:2px; color:#16a34a; font-weight:700;">PAID {rec.collected_at ? fmtDate(rec.collected_at) : ''}{rec.payment_method ? ` · ${rec.payment_method}` : ''}{rec.check_number ? ` #${rec.check_number}` : ''}</div>
                         </td>
                       ) : (
-                        <td style="font-size:10px; color:#94a3b8;">Client _______ / Contractor _______</td>
+                        <td style="font-size:10px; color:#94a3b8;">Client _______ / MannyKnows _______</td>
                       ))}
                     </tr>
                     );
@@ -465,13 +465,13 @@ function fmtFullDateTime(s: string | null | undefined): string {
 
           <h3 class="section-h">Terms</h3>
           <div class="term-block">
-            <strong>Cancellation:</strong> {row.cancellation_window_days} day{row.cancellation_window_days === 1 ? '' : 's'} for a full refund of the deposit. After that, a {fmtMoney(row.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.
+            <strong>Cancellation:</strong> Client may cancel within {row.cancellation_window_days} business day{row.cancellation_window_days === 1 ? '' : 's'} of kickoff for a full refund of everything paid, the setup fee included. After that window, setup fees and prepaid annual fees are non-refundable{row.cancellation_fee_amount > 0 ? ` and a ${fmtMoney(row.cancellation_fee_amount)} cancellation fee applies` : ''}. On monthly billing there is no minimum term: cancel anytime, effective at the end of the billing month.
           </div>
           <div class="term-block">
-            <strong>Late payments:</strong> Any payment more than {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} late incurs a {fmtMoney(row.late_fee_amount)} fee.
+            <strong>Late payments:</strong> Any invoice not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date is late{row.late_fee_amount > 0 ? ` and a ${fmtMoney(row.late_fee_amount)} late fee applies` : ''}; overdue amounts accrue interest at 1.5% per month (18% per year) or the maximum rate the law permits, whichever is lower.
           </div>
           <div class="term-block">
-            <strong>Workmanship warranty:</strong> {row.warranty_months} months from project completion.
+            <strong>Service guarantee:</strong> {row.warranty_months} months from delivery.
           </div>
           {terms.marketing_release?.enabled && terms.marketing_release.text && (
             <div class="term-block">
@@ -511,7 +511,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
                   <div style="font-size: 11px; color: #64748b;">Contractor · {fmtDate(contractorSignature.signed_at)}</div>
                 </>
               ) : (
-                <div style="color: #94a3b8; font-size: 12px; align-self: center; padding: 24px 0;">Contractor signature</div>
+                <div style="color: #94a3b8; font-size: 12px; align-self: center; padding: 24px 0;">MannyKnows signature</div>
               )}
             </div>
           </div>
@@ -614,14 +614,14 @@ function fmtFullDateTime(s: string | null | undefined): string {
                           <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Client{rec.customer_name ? `, ${rec.customer_name}` : ''}</div>
                         </div>
                         <div style="flex:1; min-width:0;">
-                          {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="Contractor signature" style="display:block; max-height:26px; max-width:100%;" />)}
+                          {rec.contractor_signature_data_url && (<img src={rec.contractor_signature_data_url} alt="MannyKnows signature" style="display:block; max-height:26px; max-width:100%;" />)}
                           <div style="border-top:1px solid #94a3b8; padding-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Contractor</div>
                         </div>
                       </div>
                       <div style="margin-top:2px; color:#16a34a; font-weight:700;">PAID {rec.collected_at ? fmtDate(rec.collected_at) : ''}{rec.payment_method ? ` · ${rec.payment_method}` : ''}{rec.check_number ? ` #${rec.check_number}` : ''}</div>
                     </td>
                   ) : (
-                    <td style="font-size:10px; color:#94a3b8;">Client _______ / Contractor _______</td>
+                    <td style="font-size:10px; color:#94a3b8;">Client _______ / MannyKnows _______</td>
                   ))}
                 </tr>
                 );
@@ -638,13 +638,13 @@ function fmtFullDateTime(s: string | null | undefined): string {
 
           <h3 class="section-h">Terms</h3>
           <div class="term-block">
-            <strong>Cancellation:</strong> You have {row.cancellation_window_days} day{row.cancellation_window_days === 1 ? '' : 's'} to cancel for a full refund of the deposit. After that window, a {fmtMoney(row.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.
+            <strong>Cancellation:</strong> Client may cancel within {row.cancellation_window_days} business day{row.cancellation_window_days === 1 ? '' : 's'} of kickoff for a full refund of everything paid, the setup fee included. After that window, setup fees and prepaid annual fees are non-refundable{row.cancellation_fee_amount > 0 ? ` and a ${fmtMoney(row.cancellation_fee_amount)} cancellation fee applies` : ''}. On monthly billing there is no minimum term: cancel anytime, effective at the end of the billing month.
           </div>
           <div class="term-block">
-            <strong>Late payments:</strong> Any invoice or progress payment not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date will be considered late, and a late fee of {fmtMoney(row.late_fee_amount)} will be applied.
+            <strong>Late payments:</strong> Any invoice not received within {row.late_fee_grace_days} business day{row.late_fee_grace_days === 1 ? '' : 's'} of the due date is late{row.late_fee_amount > 0 ? ` and a ${fmtMoney(row.late_fee_amount)} late fee applies` : ''}; overdue amounts accrue interest at 1.5% per month (18% per year) or the maximum rate the law permits, whichever is lower.
           </div>
           <div class="term-block">
-            <strong>Workmanship warranty:</strong> {row.warranty_months} months from the project completion date. Covers application failures by our workers; excludes weather, homeowner-caused damage, structural issues, and flaking of old paint.
+            <strong>Service guarantee:</strong> {row.warranty_months} months from delivery. Covers defects in the work we built; excludes third-party services, client-made changes, and issues outside our control.
           </div>
           {terms.marketing_release?.enabled && terms.marketing_release.text && (
             <div class="term-block">
@@ -746,7 +746,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
           ? <img src={brand.logoUrl} alt={brand.name} class="footer-logo partner-logo" />
           : <span class="header-logo-name" style="font-size:20px;">{brand.name}</span>}
     </a>
-    {!brand.isPartner && <p>Remodeling, Painting &amp; Home Repairs: Springfield, MA</p>}
+    {!brand.isPartner && <p>AI Agents, Websites, SEO &amp; Apps: Springfield, MA</p>}
     <div class="footer-links">
       {brand.websiteLabel && <a href={brand.websiteUrl}>{brand.websiteLabel}</a>}
       {brand.websiteLabel && brand.phoneDisplay && <span>|</span>}
@@ -754,7 +754,7 @@ function fmtFullDateTime(s: string | null | undefined): string {
     </div>
     {brand.isPartner
       ? (brand.addressLines.length > 0 && <p class="footer-certs">{brand.addressLines.join(', ')}</p>)
-      : (COMPANY_HEADER.licenseNumber && <p class="footer-certs">MA HIC License #{COMPANY_HEADER.licenseNumber}</p>)}
+      : (COMPANY_HEADER.licenseNumber && <p class="footer-certs">{COMPANY_HEADER.licenseLabel} #{COMPANY_HEADER.licenseNumber}</p>)}
   </footer>
 
   <script is:inline>

@@ -2516,7 +2516,7 @@ function timeAgo(dateStr: string): string {
         <!-- (Quote PDFs section moved to its own tab — see #tabPdfs below) -->
 
         <!-- Scopes & Pricing — combined card (Phase 5 final).
-             A quote owns N scopes (Kitchen, Bathroom, etc.). Each scope holds
+             A quote owns N scopes (Website, SEO, etc.). Each scope holds
              its own sections + items, and any "Subtotal" items inside any
              scope feed the Pricing summary at the bottom of this same card.
              Grand total = sum of all scope subtotals − discount. -->
@@ -2526,7 +2526,7 @@ function timeAgo(dateStr: string): string {
             <span id="scopeSaveStatus" style="font-size:12px; color:var(--color-text-secondary);"></span>
           </div>
           <p style="font-size:12px; color:var(--color-text-secondary); margin:4px 0 14px;">
-            Each scope is a distinct piece of work (e.g. Kitchen remodel, Interior repaint). Apply a template to seed a scope, edit its sections, and add <strong>Subtotal</strong> items inside each scope &mdash; those feed the Pricing summary below.
+            Each scope is a distinct piece of work (e.g. Website build, Local SEO setup). Apply a template to seed a scope, edit its sections, and add <strong>Subtotal</strong> items inside each scope &mdash; those feed the Pricing summary below.
           </p>
 
           <!-- Scope list — one card per scope. Rendered by renderScopes(). -->
@@ -2947,7 +2947,7 @@ function timeAgo(dateStr: string): string {
         <!-- Business — an agency quotes a business, not a job site. -->
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">Business name</label>
-          <input type="text" id="quoteCompanyName" name="company_name" class="form-input" placeholder="e.g. SL Painting, JK Daycare">
+          <input type="text" id="quoteCompanyName" name="company_name" class="form-input" placeholder="e.g. Bright Smiles Dental, JK Daycare">
         </div>
 
         <!-- Contact Info -->
@@ -5591,7 +5591,7 @@ function timeAgo(dateStr: string): string {
     //   • per-scope "Replace with template" selects (one per scope card)
     function buildTemplatePickerOptions(selectedId: number | null): string {
       const opts: string[] = ['<option value="">, Select template, </option>'];
-      const order = ['kitchen_remodel', 'bathroom_remodel', 'interior_painting', 'flooring', 'general_repairs', 'other'];
+      const order = SVC_TYPES.map((s) => s.value);
       const grouped = new Map<string, typeof scopeTemplates>();
       for (const t of scopeTemplates) {
         if (t.archived) continue;
@@ -5702,7 +5702,7 @@ function timeAgo(dateStr: string): string {
       ).join('');
       return `<div class="scope-card scope-section" style="background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:14px; margin-bottom:14px;" data-scope-id="${scopeEscape(scope.id)}">
         <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
-          <input type="text" class="form-input" value="${scopeEscape(scope.title)}" oninput="scopeUpdateScopeTitle('${scope.id}', this.value)" placeholder="Scope title (e.g. Kitchen Remodel)" style="flex:1; min-width:180px; font-weight:700; font-size:15px;">
+          <input type="text" class="form-input" value="${scopeEscape(scope.title)}" oninput="scopeUpdateScopeTitle('${scope.id}', this.value)" placeholder="Scope title (e.g. Website Build)" style="flex:1; min-width:180px; font-weight:700; font-size:15px;">
           <span style="font-size:13px; font-weight:700; color:#86efac; font-variant-numeric:tabular-nums; padding:6px 10px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); border-radius:var(--radius-sm); white-space:nowrap;">$${subtotal.toFixed(2)}</span>
           <div class="scope-section-actions" style="display:flex; gap:6px;">
             <button type="button" class="btn btn-secondary scope-polish-btn" data-polish-target="scope-title" data-scope-id="${scope.id}" onclick="scopePolishScopeTitle('${scope.id}', this)" style="padding:6px 8px;" title="Polish: fix typos + translate Spanish → English">✨</button>

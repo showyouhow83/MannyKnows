@@ -8,18 +8,30 @@
 // maps 1:1 onto its portfolio category.
 
 export const PORTFOLIO_TYPES = [
-  { value: 'kitchen_remodel', label: 'Kitchen Remodeling' },
-  { value: 'bathroom_remodel', label: 'Bathroom Remodeling' },
-  { value: 'interior_painting', label: 'Interior Painting' },
-  { value: 'flooring', label: 'Flooring' },
-  { value: 'general_repairs', label: 'General Repairs & Handyman' },
+  { value: 'website', label: 'Website' },
+  { value: 'ecommerce', label: 'Online Store' },
+  { value: 'ai-agent', label: 'AI Agent' },
+  { value: 'app', label: 'Business App' },
+  { value: 'seo', label: 'Local SEO' },
   { value: 'other', label: 'Other' },
 ] as const;
 
+// Legacy categories from the contractor-era port — rows saved under these
+// values still display with their old label; new entries use the list above.
+export const LEGACY_PORTFOLIO_LABELS: Record<string, string> = {
+  kitchen_remodel: 'Kitchen Remodeling',
+  bathroom_remodel: 'Bathroom Remodeling',
+  interior_painting: 'Interior Painting',
+  flooring: 'Flooring',
+  general_repairs: 'General Repairs & Handyman',
+};
+
 export const PORTFOLIO_TYPE_VALUES: string[] = PORTFOLIO_TYPES.map((t) => t.value);
 
-export const PORTFOLIO_TYPE_LABELS: Record<string, string> =
-  Object.fromEntries(PORTFOLIO_TYPES.map((t) => [t.value, t.label]));
+export const PORTFOLIO_TYPE_LABELS: Record<string, string> = {
+  ...LEGACY_PORTFOLIO_LABELS,
+  ...Object.fromEntries(PORTFOLIO_TYPES.map((t) => [t.value, t.label])),
+};
 
 // "Belchertown" → "Belchertown, MA". Normalises a spelled-out state to its code.
 export function formatCity(city: string | null | undefined): string {
@@ -45,7 +57,7 @@ export function normalizeTitle(t: string | null | undefined): string {
   return s;
 }
 
-const PROMPT_HEAD = `You are writing portfolio copy for MannyKnows, a residential home-improvement company serving Springfield, MA and the surrounding Western Massachusetts area. Services: kitchen remodeling, bathroom remodeling, interior painting, flooring (hardwood / tile / LVP), and general repairs & handyman work.
+const PROMPT_HEAD = `You are writing portfolio copy for MannyKnows, a web design and AI agency serving Springfield, MA and the surrounding Western Massachusetts area. Services: AI-powered websites, online stores, AI agents (chat and booking), business apps and integrations, and local SEO.
 
 Use the project CONTEXT below to generate ONE polished portfolio entry. Output STRICT JSON:
 {
@@ -56,9 +68,9 @@ Use the project CONTEXT below to generate ONE polished portfolio entry. Output S
 TITLE RULES
 - 3–7 words. Title Case.
 - State code MUST be uppercase: "MA", "CT", never "Ma"/"Ct", never spell out "Massachusetts".
-- Location goes LAST, never first. Format the geo as "<work> in <City>, MA": e.g. "Galley Kitchen Remodel in Springfield, MA", NOT "Springfield, MA Galley Kitchen Remodel".
+- Location goes LAST, never first. Format the geo as "<work> in <City>, MA": e.g. "Dental Practice Website in Springfield, MA", NOT "Springfield, MA Dental Practice Website".
 - Geo-anchor only when it strengthens the title; don't pad with city if the title already reads well.
-- Lead with the most distinctive detail you can: room, era, material, finish, color, layout change, anything in CONTEXT that sets this project apart.
+- Lead with the most distinctive detail you can: the industry, the feature built, the integration, the result, anything in CONTEXT that sets this project apart.
 
 DESCRIPTION RULES
 - 2–4 short sentences. No sign-off, no emojis, no superlatives.
@@ -68,22 +80,22 @@ DESCRIPTION RULES
   - "This project transformed…"
   - "Beautiful…", "Stunning…"
   - "We provided…", "We delivered…"
-- Lead with a CONCRETE detail from CONTEXT (material or product name, era of home, specific room or surface, prep or demo step, duration).
+- Lead with a CONCRETE detail from CONTEXT (the stack or platform, a feature shipped, an integration, a migration step, duration).
 - Each description must contain at least TWO specifics drawn from CONTEXT. If CONTEXT is thin, use whatever specifics are present: don't invent.
-- Plain, factual, craftsman tone. Read like the contractor explaining the work, not a marketing brochure.
-- Never invent square footage, prices, room counts, warranty terms, or details the context does not include.
-- Mention brand names (e.g. Sherwin-Williams, Benjamin Moore, a tile or flooring product line) ONLY when Materials or Preferred brand actually name them.
+- Plain, factual, builder tone. Read like the developer explaining the work, not a marketing brochure.
+- Never invent traffic numbers, prices, client results, or details the context does not include.
+- Mention platforms or products (e.g. Shopify, Twilio, a specific integration) ONLY when the context actually names them.
 - Customer first name is optional: use it sparingly for warmth, never invent a name, never use a last name.
 
 GOOD EXAMPLES (style reference: do NOT copy phrases verbatim)
-- Title: "Hall Bath Rebuild in Springfield, MA"
-  Description: "Gut-and-rebuild of a 1950s hall bath: new subfloor after the old tub came out, porcelain tile surround, and a single-vanity layout that opened up the doorway. Plumbing rough-in updated while the walls were open. Finished in eight days."
-- Title: "Oak Floor Refinish & Interior Repaint"
-  Description: "Red oak floors sanded back and sealed in a satin finish, then fresh wall and trim paint through the first floor. Stair treads patched where the old runner had worn them down. The homeowners stayed in the house the whole time."
+- Title: "Painting Contractor Website in Springfield, MA"
+  Description: "Full rebuild on a modern stack with an AI agent trained on the crew's services and prices. Quote requests land in the owner's admin with photos attached, and the old domain's rankings carried over through a redirect map. Live in twelve days."
+- Title: "Shopify Store & AI Shopping Assistant"
+  Description: "A 300-product catalog moved onto Shopify with SEO-written descriptions, and Remi AI answering sizing and shipping questions around the clock. Email flows for abandoned carts went live in week two."
 
 BAD EXAMPLES (do not produce or paraphrase)
-- "MannyKnows completed a kitchen remodeling project in Springfield."
-- "We refreshed the home's interior, providing a durable and attractive finish."
+- "MannyKnows completed a website project in Springfield."
+- "We refreshed the company's online presence, providing a modern and attractive site."
 
 CONTEXT
 `;

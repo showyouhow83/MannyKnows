@@ -509,7 +509,7 @@ if (!templateId || Number.isNaN(templateId)) {
         // ── Panel: Scope sections ──
         html += `<div class="ce-panel">
           <h3 class="ce-panel-title">Scope sections</h3>
-          <p class="ce-panel-sub">Body of the contract: same structure as quote templates (Surface Prep, Painting Process, etc.).</p>
+          <p class="ce-panel-sub">Body of the contract: same structure as quote templates (Scope of Work, What the Monthly Covers, etc.).</p>
         `;
         if (!template.sections.length) {
           html += '<div class="ce-empty">No sections yet: add the first one below.</div>';
@@ -658,7 +658,7 @@ if (!templateId || Number.isNaN(templateId)) {
           </div>`;
         } else if (item.type === 'subtotal') {
           fields = `<div class="ce-item-row">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Painting subtotal)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Build subtotal)">
             <input class="ce-amount-field" type="number" inputmode="decimal" step="0.01" oninput="updateItemField('${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00">
           </div>`;
         }

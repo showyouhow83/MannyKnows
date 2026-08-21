@@ -70,20 +70,14 @@ function formatCurrency(amount?: number): string {
 
 // Format services
 function formatServices(servicesJson?: string): string {
-  if (!servicesJson) return 'Home Services';
+  if (!servicesJson) return 'MannyKnows Services';
   try {
     const services = JSON.parse(servicesJson);
-    // Mirrors src/data/serviceTypes.ts; custom "other" services pass through.
-    const labels: Record<string, string> = {
-      'kitchen_remodel': 'Kitchen Remodeling',
-      'bathroom_remodel': 'Bathroom Remodeling',
-      'interior_painting': 'Interior Painting',
-      'flooring': 'Flooring',
-      'general_repairs': 'General Repairs & Handyman'
-    };
+    // Labels come from the canonical catalog (src/data/serviceTypes.ts);
+    // custom "other" services and legacy slugs pass through as-is.
     return services.map((s: any) => {
       const key = typeof s === 'string' ? s : (s.type || s.service || 'service');
-      return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+      return isKnownService(key) ? shortServiceLabel(key) : key.charAt(0).toUpperCase() + key.slice(1);
     }).join(', ');
   } catch {
     return servicesJson || 'Home Services';

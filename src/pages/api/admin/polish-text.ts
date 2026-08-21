@@ -46,7 +46,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Optional — falls back to a generic "field" framing.
     const kind = (body?.kind || 'field').toString().slice(0, 40);
 
-    const prompt = `You are polishing a single piece of text from a home remodeling and repair company's quote / contract document. The text type is "${kind}".
+    const prompt = `You are polishing a single piece of text from a web design and AI agency's quote / contract document. The text type is "${kind}".
 
 Rules: follow strictly:
 1. Fix obvious typos and grammar (e.g. "a cording" → "according", missing articles, run-on punctuation).

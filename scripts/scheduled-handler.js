@@ -93,16 +93,16 @@ async function cronSendFollowUp(q, fuNumber, isRenego, sentAt, expiryDays, resen
   const firstName = (q.customer_name || '').split(' ')[0] || 'there';
   const reviewUrl = 'https://mannyknows.com/quote/' + q.quote_token;
   const replyTo = 'reply+' + q.quote_token + '@reply.mannyknows.com';
-  const addressLine = q.full_address || [q.address, q.state, q.zip].filter(Boolean).join(', ') || 'your property';
+  const addressLine = q.full_address || [q.address, q.state, q.zip].filter(Boolean).join(', ') || 'your business';
 
   const expiryDate = new Date(sentAt);
   expiryDate.setDate(expiryDate.getDate() + expiryDays);
   const expiryStr = expiryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-  let services = 'painting services';
+  let services = 'your project';
   try {
     const parsed = JSON.parse(q.services || '[]');
-    const labels = { interior: 'Interior Painting', exterior: 'Exterior Painting', both: 'Interior & Exterior', cabinet: 'Cabinet Refinishing' };
+    const labels = { website: 'Website', ecommerce: 'Online Store', 'ai-agent': 'AI Agent', app: 'Business App', seo: 'Local SEO' };
     services = parsed.map(s => labels[typeof s === 'string' ? s : s.type] || s).join(' & ') || services;
   } catch {}
 

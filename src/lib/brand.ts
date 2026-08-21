@@ -64,7 +64,7 @@ export const MK_BRAND: Brand = {
   phoneTel: '4133618451',
   contactEmail: 'mm@mannyknows.com',
   addressLines: [],
-  tagline: 'Home Remodeling & Repairs in Springfield, MA',
+  tagline: 'AI Agents, Websites, SEO & Apps — Springfield, MA',
   certifications: '',
   showEli: true,
   headerStyle: 'gradient',

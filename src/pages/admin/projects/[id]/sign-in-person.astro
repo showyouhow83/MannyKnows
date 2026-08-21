@@ -467,9 +467,9 @@ const pageTitle = project ? `Sign in person: ${project.project_number}` : 'Sign 
         <details class="collapsible">
           <summary>Key terms</summary>
           <div class="collapse-body" style="font-size:13px; line-height:1.6; color:#1f2024;">
-            <p><strong>Cancellation:</strong> {contract.cancellation_window_days} day{contract.cancellation_window_days === 1 ? '' : 's'} for a full refund of the deposit. After that, a {fmtMoney(contract.cancellation_fee_amount)} cancellation fee applies. Once work starts, the deposit is non-refundable.</p>
+            <p><strong>Cancellation:</strong> Client may cancel within {contract.cancellation_window_days} business day{contract.cancellation_window_days === 1 ? '' : 's'} of kickoff for a full refund of everything paid, the setup fee included. After that window, setup fees and prepaid annual fees are non-refundable{contract.cancellation_fee_amount > 0 ? ` and a ${fmtMoney(contract.cancellation_fee_amount)} cancellation fee applies` : ''}. On monthly billing there is no minimum term.</p>
             <p><strong>Late fee:</strong> {fmtMoney(contract.late_fee_amount)} after {contract.late_fee_grace_days}-day grace period.</p>
-            <p><strong>Workmanship warranty:</strong> {contract.warranty_months} months from project completion.</p>
+            <p><strong>Service guarantee:</strong> {contract.warranty_months > 0 ? `${contract.warranty_months} months from delivery.` : 'Maintenance is included while the subscription is active.'}</p>
             {Array.isArray(terms.custom_terms) && terms.custom_terms.length > 0 && (
               terms.custom_terms.map((ct: any) => (
                 ct?.text ? <p>{ct.title ? <><strong>{ct.title}:</strong>{' '}</> : null}{ct.text}</p> : null

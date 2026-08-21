@@ -174,7 +174,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Aggregate the strongest signal for each field (portfolio → project → quote).
     const typeKey = (portfolio.project_type || '').toLowerCase();
-    const typeLabel = PORTFOLIO_TYPE_LABELS[typeKey] || 'Home improvement project';
+    const typeLabel = PORTFOLIO_TYPE_LABELS[typeKey] || 'Client project';
     const cityFormatted = formatCity(portfolio.client_city || project?.customer_city);
     const services = summariseServices(project?.services || quote?.services);
     const scope = (project?.scope_description || quote?.scope_description || '').trim();
