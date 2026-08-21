@@ -127,7 +127,7 @@ const adminAddress = 'Springfield, MA';
       padding: 16px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
     }
 
@@ -140,10 +140,10 @@ const adminAddress = 'Springfield, MA';
          on mobile. Allow it to shrink to the available width. */
       min-width: 0;
       max-width: 100%;
-      padding: 24px;
+      padding: 16px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
     }
 
@@ -213,8 +213,8 @@ const adminAddress = 'Springfield, MA';
     }
 
     .btn-sm {
-      padding: 4px 10px;
-      border-radius: 4px;
+      padding: 4px 12px;
+      border-radius: 9999px;
       font-size: 11px;
       font-weight: 500;
       cursor: pointer;
@@ -235,8 +235,8 @@ const adminAddress = 'Springfield, MA';
     .search-bar {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 10px 14px;
+      border-radius: var(--field-radius);
+      padding: 8px 12px;
       margin-bottom: 16px;
       display: flex;
       gap: 10px;
@@ -306,7 +306,7 @@ const adminAddress = 'Springfield, MA';
     }
 
     .new-lead-modal-title {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--color-text-primary);
       margin: 0;
@@ -476,8 +476,8 @@ const adminAddress = 'Springfield, MA';
     .lead-card {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
       margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -509,7 +509,7 @@ const adminAddress = 'Springfield, MA';
 
     .lead-name {
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
       margin-bottom: 4px;
       color: var(--color-text-primary);
     }
@@ -552,6 +552,7 @@ const adminAddress = 'Springfield, MA';
       height: 100%;
       color: var(--color-text-secondary);
       text-align: center;
+      font-size: 14px;
     }
 
     .detail-placeholder svg {
@@ -591,16 +592,17 @@ const adminAddress = 'Springfield, MA';
       display: inline-block;
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 13px;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      line-height: 20px;
       font-weight: 600;
       letter-spacing: 0.5px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .detail-name {
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 700;
       margin: 0;
       color: var(--color-text-primary);
@@ -610,11 +612,11 @@ const adminAddress = 'Springfield, MA';
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 6px 14px;
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 9999px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -639,11 +641,11 @@ const adminAddress = 'Springfield, MA';
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 6px 14px;
       background: rgba(239, 68, 68, 0.2);
       color: #f87171;
       border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 8px;
+      border-radius: 9999px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -661,29 +663,31 @@ const adminAddress = 'Springfield, MA';
     }
 
     .detail-contact-info {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--color-text-secondary);
     }
 
     .detail-section {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 20px;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
       backdrop-filter: blur(10px);
     }
 
     .detail-section-title {
-      font-size: 18px;
+      font-size: 12px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--color-primary);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
     .detail-row {
       display: flex;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid var(--glass-border);
     }
 
@@ -699,14 +703,14 @@ const adminAddress = 'Springfield, MA';
     .detail-label {
       width: 120px;
       color: var(--color-text-secondary);
-      font-size: 14px;
+      font-size: 13px;
       flex-shrink: 0;
     }
 
     .detail-value {
       color: var(--color-text-primary);
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
     }
 
     .detail-notes {
@@ -810,7 +814,7 @@ const adminAddress = 'Springfield, MA';
     }
 
     .confirm-modal-title {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--color-text-primary);
       margin: 0 0 8px;
@@ -999,11 +1003,11 @@ const adminAddress = 'Springfield, MA';
       align-items: center;
       gap: 6px;
       margin-left: 12px;
-      padding: 4px 10px;
+      padding: 3px 10px;
       background: linear-gradient(135deg, #10b981 0%, #047857 100%);
       color: white;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 9999px;
       font-size: 12px;
       font-weight: 500;
       transition: all 0.2s;
@@ -1135,7 +1139,7 @@ const adminAddress = 'Springfield, MA';
       }
 
       .detail-name {
-        font-size: 20px;
+        font-size: 18px;
       }
 
       .detail-header-main {
@@ -1378,7 +1382,7 @@ const adminAddress = 'Springfield, MA';
     }
 
     .mobile-nav-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--color-text-primary);
     }
