@@ -188,10 +188,12 @@ const { name = 'hero-waves', tone = 'mono', warm = false, mobile = false, class:
       // One src, chosen up front via canPlayType — never <source> children.
       // With both formats listed, Lighthouse recorded BOTH files downloading
       // in full (~5.5MB per video, Aug 2026); a single src makes a second
-      // fetch impossible.
+      // fetch impossible. Safari gets MP4 outright: iOS answers "probably"
+      // for VP9 WebM and then fails to decode it on real hardware.
+      const isSafari = /^((?!chrome|crios|android).)*safari/i.test(navigator.userAgent);
       const attach = () => {
         if (video.src) return;
-        const webm = video.dataset.webm && video.canPlayType('video/webm; codecs="vp9"') ? video.dataset.webm : '';
+        const webm = !isSafari && video.dataset.webm && video.canPlayType('video/webm; codecs="vp9"') ? video.dataset.webm : '';
         const src = webm || video.dataset.mp4 || video.dataset.webm;
         if (!src) return;
         video.src = src;
@@ -237,5 +239,15 @@ const { name = 'hero-waves', tone = 'mono', warm = false, mobile = false, class:
         else if (video.dataset.onscreen && video.src) video.play().catch(() => {});
       }
     });
+
+    // iOS Low Power Mode rejects programmatic autoplay but allows play()
+    // from a user gesture — retry stalled on-screen videos on first touch.
+    const nudge = () => {
+      for (const video of videos) {
+        if (video.dataset.onscreen && video.src && video.paused) video.play().catch(() => {});
+      }
+    };
+    addEventListener('touchstart', nudge, { passive: true, once: true });
+    addEventListener('scroll', nudge, { passive: true, once: true });
   })();
 </script>
