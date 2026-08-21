@@ -68,7 +68,7 @@ against main's behavior). Line counts = migration effort signal.
 | Page | File | Lines | Status |
 | --- | --- | --- | --- |
 | Login | `admin/index.astro` | 229 | not started |
-| Dashboard | `admin/dashboard.astro` | 2,391 | not started |
+| Dashboard | `admin/dashboard.astro` | 2,391 | **migrated** — awaiting Manny's verify (pilot page) |
 | Leads | `admin/leads.astro` | 2,748 | not started |
 | Quotes | `admin/quotes.astro` | 6,436 | not started |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
