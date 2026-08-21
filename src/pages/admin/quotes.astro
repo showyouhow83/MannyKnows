@@ -4663,7 +4663,11 @@ function timeAgo(dateStr: string): string {
         // could trip the renegotiation flag on a declined quote. Sending NO
         // status leaves it untouched — the projects POST flips it to 'project'
         // atomically on success, and on failure it stays exactly where it was.
-        if (pendingPromoteFromDraft) {
+        // ALSO pre-save when the promoted quote is the one open in the editor:
+        // the sidebar's Promote button used to snapshot stored data, silently
+        // dropping unsaved edits (a typed-but-unsaved discount vanished on
+        // promotion — Manny hit this on BXQZ, and before that on VLH).
+        if (pendingPromoteFromDraft || String(pendingPromoteQuoteId) === String(selectedQuoteId)) {
           const data = collectFormData() as any;
           delete data.status;
           delete data.promoted_by;
