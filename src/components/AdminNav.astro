@@ -88,6 +88,9 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
     Media Pool<span class="nav-badge" id="mediaPoolBadge" style="display:none;">0</span>
   </a>
   <a href="/admin/web" class={`nav-link nav-link-special${active === 'web' ? ' active' : ''}`}>Web</a>
+  <div class="sidenav-foot">
+    by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
+  </div>
 </nav>
 <button class="sidenav-toggle" id="sidenavToggle" aria-label="Toggle navigation" title="Toggle navigation">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -126,19 +129,21 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   .footer-version a:hover { text-decoration: underline; opacity: 1; }
 </style>
 <script define:vars={{ verText: `v${shortVersion} · ${buildInfo.commit}${builtLabel ? ` · ${builtLabel} ET` : ''}`, commitUrl, titleText: `Build ${buildInfo.commit} · deployed ${builtLabel} ET` }}>
-  // Append the build stamp below "by MK" in the admin footer. Done here (in
-  // the shared nav) so every admin page gets it from one source of truth.
+  // Append the build stamp below "by MK" — into the page footer (mobile) and
+  // the rail's credit block (desktop). Done here (in the shared nav) so every
+  // admin page gets it from one source of truth.
   (function stampFooter() {
     function inject() {
-      var footer = document.querySelector('.admin-footer');
-      if (!footer || footer.querySelector('.footer-version')) return;
-      var span = document.createElement('span');
-      span.className = 'footer-version';
-      var a = document.createElement('a');
-      a.href = commitUrl; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = verText; a.title = titleText;
-      span.appendChild(a);
-      footer.appendChild(span);
+      document.querySelectorAll('.admin-footer, .sidenav-foot').forEach(function (footer) {
+        if (footer.querySelector('.footer-version')) return;
+        var span = document.createElement('span');
+        span.className = 'footer-version';
+        var a = document.createElement('a');
+        a.href = commitUrl; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = verText; a.title = titleText;
+        span.appendChild(a);
+        footer.appendChild(span);
+      });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', inject);
     else inject();

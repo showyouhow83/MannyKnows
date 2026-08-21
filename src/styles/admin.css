@@ -2394,7 +2394,14 @@ body.has-sidenav {
   display: flex;
   flex-direction: column;
 }
-body.has-sidenav main { flex: 1 0 auto; }
+/* width: 100% matters: mains use `margin: 0 auto`, and on a flex item those
+   auto margins absorb the cross-axis free space — the page shrink-wrapped to
+   a centered strip without it. */
+body.has-sidenav main { flex: 1 0 auto; width: 100%; }
+
+/* Rail credit line ("by MK" + build stamp) — desktop only; mobile keeps the
+   page footer. */
+.sidenav-foot { display: none; }
 
 @media (min-width: 1025px) {
   /* The page shifts right via body padding (not per-main margins): centered
@@ -2439,6 +2446,20 @@ body.has-sidenav main { flex: 1 0 auto; }
     transition: transform 250ms var(--ease-smooth);
   }
   body.has-sidenav.nav-collapsed .admin-nav { transform: translateX(-100%); }
+
+  /* The credit/build info moves into the rail; the page footer goes away on
+     desktop (Manny: footer looked stranded under short content). */
+  body.has-sidenav .admin-footer { display: none; }
+  body.has-sidenav .sidenav-foot {
+    display: block;
+    margin-top: auto;
+    padding: 16px 12px 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  body.has-sidenav .sidenav-foot .footer-version { font-size: 10px; }
 
   body.has-sidenav .admin-nav .nav-link {
     display: flex;
