@@ -7,9 +7,15 @@ and production is exactly the pre-migration admin.
 
 ## Ground rules
 
-- HeroUI v3 = `@heroui/react` (React 19 + Tailwind CSS v4 + React Aria).
-  v3 patterns only: no `HeroUIProvider`, compound components
-  (`<Card.Header>`), `@heroui/styles` — see `.agents/skills/heroui-react/`.
+- **Approach (Manny, Aug 21 2026): "HeroUI look, keep engine."** No React, no
+  Tailwind v4, no `@heroui/react` runtime. The pages keep Astro + vanilla JS.
+  We rebuild `admin.css` (and `portal.css`) as a HeroUI-v3-styled design
+  system — HeroUI's real tokens, radii, shadows, focus rings, spacing scale,
+  and component anatomy (Button, Card, Table, Modal, Input, Tabs, Chip…),
+  translated to plain CSS classes, themed to the MK brand dark palette.
+  Fetch real HeroUI CSS/theme via `.agents/skills/heroui-react/scripts/`
+  (`get_theme.mjs`, `get_styles.mjs`, `get_component_docs.mjs`) — never
+  invent what HeroUI looks like.
 - The public site (Tailwind 3 via PostCSS) must not change visually or break.
   Admin styling stays self-contained, as admin.css is today.
 - Behavior parity is the acceptance bar: every page must do what it does on
@@ -21,15 +27,18 @@ and production is exactly the pre-migration admin.
 - Auth/session/middleware, API routes, and D1 queries are OUT of scope —
   frontend only. Frontmatter data fetching stays in Astro.
 
-## Architecture decisions
+## Architecture decisions (settled by Manny, Aug 21 2026)
 
-- **Component strategy:** PENDING Manny's answer (React islands vs CSS reskin).
-- **Scope:** PENDING (admin only vs also customer portal pages).
-- **Theme:** PENDING (brand dark palette on HeroUI tokens vs HeroUI default).
-- **Tailwind v4 coexistence:** to be spiked before any page migrates —
-  TW4 (admin, `@tailwindcss/vite` or scoped import) must build alongside TW3
-  (public, PostCSS) without touching public CSS output. Verify with a full
-  `npm run build` + byte-compare of public page CSS.
+- **Component strategy:** HeroUI look, keep engine (CSS design system, no
+  React). See Ground rules.
+- **Scope:** Admin pages AND customer portal pages (portals after admin).
+- **Theme:** Brand dark theme — `#0a0a14` canvas, violet/blue washes,
+  `#2563eb→#d946ef` button gradient, glass cards — expressed through HeroUI's
+  token structure and component anatomy.
+- **Redesign license:** the goal is organization, not a 1:1 repaint — layout
+  and grouping may improve within each page, but behavioral classes/ids and
+  the page JS contracts stay intact until deliberately refactored.
+- Tailwind v4 coexistence spike: NOT NEEDED (no Tailwind in this approach).
 
 ## Shared admin chrome (migrate once, reuse everywhere)
 
@@ -78,7 +87,7 @@ against main's behavior). Line counts = migration effort signal.
 | Wiki | `admin/web/wiki.astro` | 425 | not started |
 | Migrate runner | `admin/migrate.astro` | 96 | not started |
 
-### Customer portal pages (in scope ONLY if Manny says so)
+### Customer portal pages (IN SCOPE — phase 2, after admin is proven)
 
 | Page | File | Lines |
 | --- | --- | --- |
