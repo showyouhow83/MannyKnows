@@ -188,12 +188,16 @@ const { name = 'hero-waves', tone = 'mono', warm = false, mobile = false, class:
       // One src, chosen up front via canPlayType — never <source> children.
       // With both formats listed, Lighthouse recorded BOTH files downloading
       // in full (~5.5MB per video, Aug 2026); a single src makes a second
-      // fetch impossible. Safari gets MP4 outright: iOS answers "probably"
-      // for VP9 WebM and then fails to decode it on real hardware.
+      // fetch impossible. Safari AND every iOS browser get MP4 outright:
+      // iOS answers "probably" for VP9 WebM then fails to decode it on real
+      // hardware, and Chrome/Firefox/Edge on iOS are all WebKit underneath
+      // (Apple requires it), so the iOS check must be by device, not UA brand.
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS masquerades as Mac
       const isSafari = /^((?!chrome|crios|android).)*safari/i.test(navigator.userAgent);
       const attach = () => {
         if (video.src) return;
-        const webm = !isSafari && video.dataset.webm && video.canPlayType('video/webm; codecs="vp9"') ? video.dataset.webm : '';
+        const webm = !isIOS && !isSafari && video.dataset.webm && video.canPlayType('video/webm; codecs="vp9"') ? video.dataset.webm : '';
         const src = webm || video.dataset.mp4 || video.dataset.webm;
         if (!src) return;
         video.src = src;
