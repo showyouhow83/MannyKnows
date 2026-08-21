@@ -68,7 +68,7 @@ against main's behavior). Line counts = migration effort signal.
 | Page | File | Lines | Status |
 | --- | --- | --- | --- |
 | Login | `admin/index.astro` | 229 | not started |
-| Dashboard | `admin/dashboard.astro` | 2,391 | **migrated** — awaiting Manny's verify (pilot page) |
+| ~~Dashboard~~ | `admin/dashboard.astro` | 2,391 | ✅ **DONE** — verified by Manny Aug 21 (pilot; sets the pattern) |
 | Leads | `admin/leads.astro` | 2,748 | not started |
 | Quotes | `admin/quotes.astro` | 6,436 | not started |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
@@ -133,7 +133,13 @@ strings.
   v3.0.5 tokens/anatomy (fetched live via the skill scripts; component CSS
   cached in the session scratchpad). Selector/variable parity with `main`
   verified by diff; `npm run build` green; login page smoke-tested 200 on the
-  dev server. NEXT SESSION: Manny visually verifies all pages on `npm run
-  dev`; then per-page passes begin (each page's local `<style>` block moved
-  onto the tokens, layout tidy-ups) — suggested order: dashboard → leads →
-  contacts → crew → quotes → projects → the rest, portals last.
+  dev server. Manny verified the foundation locally (prod D1 snapshot
+  imported into local dev for realistic testing; local login = env bootstrap
+  creds in .dev.vars).
+- **2026-08-21 (evening)** — Dashboard pilot done and APPROVED by Manny
+  ("things look a bit tighter, which is great"). PATTERN LOCKED: page-local
+  styles onto tokens; one loud primary action per page, secondary actions as
+  soft accent pills; pill fields + chip filters; overlay surface for
+  dropdowns; 16px spacing rhythm; element IDs and JS-injected class names
+  never change. Rollout order for next session (fresh Fable window): leads →
+  contacts → crew → quotes → projects → remaining admin pages → portals.
