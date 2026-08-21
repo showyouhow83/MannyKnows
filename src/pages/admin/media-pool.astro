@@ -828,6 +828,20 @@ const STREAM_SUBDOMAIN = streamSubdomain(env);
         updateBulkBar();
       }
       window.clearSelection = clearSelection;
+      // define:vars scripts are closure-scoped by Astro — every onclick
+      // handler must be exported explicitly. The port missed these, so tabs,
+      // selection, delete, and the whole assign modal were dead (Aug 2026).
+      window.switchTab = switchTab;
+      window.toggleSelect = toggleSelect;
+      window.deleteOne = deleteOne;
+      window.bulkDelete = bulkDelete;
+      window.openAssignModal = openAssignModal;
+      window.closeAssignModal = closeAssignModal;
+      window.setTargetType = setTargetType;
+      window.selectResult = selectResult;
+      window.confirmAssign = confirmAssign;
+      window.toggleTheme = toggleTheme;
+      window.logout = logout;
 
       function updateBulkBar() {
         const count = selected.size;
