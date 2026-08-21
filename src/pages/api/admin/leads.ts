@@ -117,7 +117,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Validate source
-    const validSources = ['walk-in', 'phone', 'referral', 'angies-list', 'thumbtack', 'google', 'website', 'social', 'door-to-door', 'cold-outreach', 'email', 'other'];
+    const validSources = ['walk-in', 'phone', 'referral', 'google', 'website', 'scanner', 'social', 'cold-outreach', 'email', 'other'];
     if (!body.source || !validSources.includes(body.source)) {
       return new Response(JSON.stringify({
         success: false,
