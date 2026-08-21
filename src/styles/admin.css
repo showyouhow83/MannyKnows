@@ -2404,11 +2404,14 @@ body.has-sidenav main { flex: 1 0 auto; width: 100%; }
    per-page caps (1200/1280/1400) are overridden here so the policy lives in
    one place. Document-style editors keep a readable column on purpose: they
    compose the paper they output. */
-body.has-sidenav main { max-width: none; }
+/* !important is deliberate: pages with Astro-scoped <style> blocks compile
+   their caps to `.x-page[data-astro-cid-…]`, which outranks any plain
+   selector here — Web/Calendar/Crew/Contacts kept their caps without it. */
+body.has-sidenav main { max-width: none !important; }
 body.has-sidenav main.te-page,
-body.has-sidenav main.ce-page { max-width: 980px; }
-body.has-sidenav main.pce-page { max-width: 1080px; }
-body.has-sidenav main.cs-page { max-width: 720px; }
+body.has-sidenav main.ce-page { max-width: 980px !important; }
+body.has-sidenav main.pce-page { max-width: 1080px !important; }
+body.has-sidenav main.cs-page { max-width: 720px !important; }
 
 /* Rail credit line ("by MK" + build stamp) — desktop only; mobile keeps the
    page footer. */
