@@ -4028,15 +4028,23 @@ function formatCurrency(amount: number | null): string {
         // Save pricing + scope_description to quote (canonical source) and
         // sync the recomputed total back to the project below.
         if (currentProjectQuoteId && (pricing.materials.length > 0 || pricing.labor.length > 0 || scopeEl)) {
+          // Legacy materials/labor sync: ONLY send pricing fields when that
+          // retired UI actually has rows. On scope-priced projects it is
+          // always empty, and unconditionally sending discount: 0 here was
+          // silently wiping the quote's discount on every project save
+          // (which then propagated to the project + draft contract).
+          const legacyPricing = pricing.materials.length > 0 || pricing.labor.length > 0;
           const quoteRes = await fetch('/api/quotes/', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
               quote_id: currentProjectQuoteId,
-              materials: pricing.materials,
-              labor: pricing.labor,
-              discount: pricing.discount,
+              ...(legacyPricing ? {
+                materials: pricing.materials,
+                labor: pricing.labor,
+                discount: pricing.discount,
+              } : {}),
               scope_description: scopeEl ? (scopeEl.value || null) : undefined
             })
           });
