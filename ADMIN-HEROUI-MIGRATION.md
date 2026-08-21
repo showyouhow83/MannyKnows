@@ -44,10 +44,19 @@ and production is exactly the pre-migration admin.
 
 | Piece | File | Status |
 | --- | --- | --- |
-| Nav sidebar | `src/components/AdminNav.astro` | not started |
-| Mobile drawer | `src/components/AdminMobileDrawer.astro` | not started |
-| Presence | `src/components/AdminPresence.astro` | not started |
-| Stylesheet | `src/styles/admin.css` (2,257 lines) | not started |
+| Nav sidebar | `src/components/AdminNav.astro` | restyled via admin.css (markup untouched) |
+| Mobile drawer | `src/components/AdminMobileDrawer.astro` | restyled via admin.css (markup untouched) |
+| Presence | `src/components/AdminPresence.astro` | restyled via admin.css (markup untouched) |
+| Stylesheet | `src/styles/admin.css` | **migrated** — awaiting Manny's visual verify |
+
+admin.css compatibility contract (verified by selector + variable diff against
+`main`): every selector and every CSS variable from the old file still exists.
+New HeroUI semantic tokens added on top. What changed visually: buttons are
+height-based pills with press-scale and focus rings (gradient primary kept);
+fields are HeroUI-compact (10px/14px padding, accent focus ring); tables get a
+filled header row; badges are HeroUI soft chips; modals/menus/toasts sit on the
+opaque `--overlay` surface with HeroUI's dark inset-ring shadow; nav links are
+36px pills. Glass card language, brand gradient, wordmark, washes: kept.
 
 ## Page inventory & status
 
@@ -120,3 +129,11 @@ strings.
   verified green). HeroUI skills installed (`.agents/skills/`), MCP registered
   (`.mcp.json` — needs an agent restart to load). Inventory built. Awaiting
   Manny's architecture/scope/theme decisions.
+- **2026-08-21 (later)** — FOUNDATION SHIPPED: admin.css rebuilt on HeroUI
+  v3.0.5 tokens/anatomy (fetched live via the skill scripts; component CSS
+  cached in the session scratchpad). Selector/variable parity with `main`
+  verified by diff; `npm run build` green; login page smoke-tested 200 on the
+  dev server. NEXT SESSION: Manny visually verifies all pages on `npm run
+  dev`; then per-page passes begin (each page's local `<style>` block moved
+  onto the tokens, layout tidy-ups) — suggested order: dashboard → leads →
+  contacts → crew → quotes → projects → the rest, portals last.
