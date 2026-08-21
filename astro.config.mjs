@@ -119,11 +119,21 @@ export default defineConfig({
       external: ['node:fs/promises']
     },
     build: {
-      cssCodeSplit: true
+      cssCodeSplit: true,
+      // Governs which stylesheets inlineStylesheets:"auto" inlines. Default is
+      // 4KB; page-level sheets (index.css ~7.5KB) sat just above it and stayed
+      // render-blocking. CSS under 16KB inlines; everything else (and every
+      // non-CSS asset) keeps the default so images never become data URIs.
+      assetsInlineLimit: (filePath, content) =>
+        filePath.endsWith('.css') ? content.length < 16384 : undefined
     }
   },
   build: {
-    inlineStylesheets: "never"
+    // "auto" inlines small per-page stylesheets into the HTML (killing their
+    // render-blocking request) while big shared sheets stay external and
+    // browser-cached across pages. Was "never" — Lighthouse flagged the two
+    // small sheets as render-blocking (Aug 2026).
+    inlineStylesheets: "auto"
   },
   compressHTML: true
 });

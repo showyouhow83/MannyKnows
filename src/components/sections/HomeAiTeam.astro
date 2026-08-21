@@ -43,7 +43,7 @@ const specialty: Record<string, string> = {
       <div class="w-40 sm:w-48 aspect-square rounded-3xl bg-gradient-to-br from-primary-blue/[0.10] via-transparent to-primary-pink/[0.10] ring-1 ring-primary-blue/20 group-hover:from-primary-blue/[0.18] group-hover:to-primary-pink/[0.18] transition-colors duration-300 overflow-hidden">
         <!-- Manny AI in the suit, waist up, wave intact — the astronaut
              used sitewide, identified (same art as the /ai-team hero). -->
-        <img src="/mascot/astro-manny-ai-bust.webp" alt="Manny AI waving in a MannyKnows astronaut suit" aria-hidden="true" width="384" height="379" loading="lazy" decoding="async" class="w-full h-full object-contain pointer-events-none" />
+        <img src="/mascot/astro-manny-ai-bust.webp" srcset="/mascot/astro-manny-ai-bust-1x.webp 1x, /mascot/astro-manny-ai-bust.webp 2x" alt="Manny AI waving in a MannyKnows astronaut suit" aria-hidden="true" width="384" height="379" loading="lazy" decoding="async" class="w-full h-full object-contain pointer-events-none" />
       </div>
       <span class="text-base sm:text-lg font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{manager.name}</span>
       <span class="text-xs text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[manager.id] ?? manager.role}</span>
@@ -58,7 +58,7 @@ const specialty: Record<string, string> = {
           aria-label={`${a.name}: ${specialty[a.id] ?? a.role}. Read what ${a.name} does on the AI Agents Team page.`}
         >
           <div class="w-full max-w-[68px] sm:max-w-[84px] mx-auto aspect-square rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] group-hover:from-primary-blue/[0.14] group-hover:to-primary-pink/[0.14] transition-colors duration-300">
-          <AgentAvatar agent={a.id} class="w-full h-full" />
+          <AgentAvatar agent={a.id} class="w-full h-full" sizes="(min-width: 640px) 84px, 68px" />
           </div>
           <span class="text-xs font-bold text-text-light-primary dark:text-text-dark-primary leading-tight group-hover:text-primary-blue dark:group-hover:text-blue-300 transition-colors">{a.name}</span>
           <span class="text-[11px] text-text-light-tertiary dark:text-text-dark-tertiary text-center leading-tight">{specialty[a.id] ?? a.role}</span>

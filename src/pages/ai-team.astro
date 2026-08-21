@@ -192,7 +192,7 @@ const pageJsonLd = {
                 <div class="relative rounded-2xl border border-light-tertiary dark:border-dark-accent bg-white dark:bg-dark-secondary p-6">
                   {pl.avatar && (
                     <div class="absolute -top-7 right-4 w-16 h-16 pointer-events-none">
-                      <AgentAvatar agent={pl.avatar} class="w-full h-full" />
+                      <AgentAvatar agent={pl.avatar} class="w-full h-full" sizes="64px" />
                     </div>
                   )}
                   <div class="flex items-center gap-3 mb-2">
@@ -249,7 +249,7 @@ const pageJsonLd = {
         <div id={`agent-${manager.name.toLowerCase().replace(/\s+/g, '-')}`} class="scroll-mt-24 mb-8 max-w-6xl mx-auto rounded-3xl border border-primary-blue/40 ring-1 ring-primary-blue/20 bg-gradient-to-br from-primary-blue/[0.06] via-transparent to-primary-pink/[0.06] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
           <div class="w-36 h-36 flex-shrink-0 rounded-2xl bg-gradient-to-br from-primary-blue/[0.07] via-transparent to-primary-pink/[0.07] overflow-hidden">
             <!-- Same waist-up suit art as the homepage roster card. -->
-            <img src="/mascot/astro-manny-ai-bust.webp" alt={`${manager.name}, ${manager.role}`} width="384" height="379" loading="lazy" decoding="async" class="w-full h-full object-contain pointer-events-none" />
+            <img src="/mascot/astro-manny-ai-bust.webp" srcset="/mascot/astro-manny-ai-bust-1x.webp 1x, /mascot/astro-manny-ai-bust.webp 2x" alt={`${manager.name}, ${manager.role}`} width="384" height="379" loading="lazy" decoding="async" class="w-full h-full object-contain pointer-events-none" />
           </div>
           <div class="flex-1 text-center sm:text-left">
             {/* Name on its own line, the role badge beneath it. */}

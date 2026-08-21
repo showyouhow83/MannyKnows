@@ -13,8 +13,12 @@ interface Props {
    *  agent's "portrait" (richer, geo-aware alt); everywhere else the default
    *  short label keeps screen readers noise-free. */
   alt?: string;
+  /** Rendered CSS size for srcset selection ("84px"). Default matches the
+   *  larger placements (/ai-team cards, the banner); tighter grids pass their
+   *  own so retina screens fetch the 168 variant instead of the 256. */
+  sizes?: string;
 }
-const { agent, class: className = '', alt } = Astro.props;
+const { agent, class: className = '', alt, sizes = '96px' } = Astro.props;
 
 // Specialty emblems, drawn centered on the origin (fits within ~r9), placed
 // inside a white badge at the bottom-right of the head.
@@ -85,7 +89,7 @@ const HAS_IMAGE = ['manny', 'desi', 'eve', 'elly', 'eny', 'mimi', 'essie', 'bap'
 ---
 
 {HAS_IMAGE.includes(agent) ? (
-  <img src={`/team/${agent}.webp`} width="256" height="256" alt={a11yLabel} loading="lazy" decoding="async" class={`object-contain ${className}`} />
+  <img src={`/team/${agent}.webp`} srcset={`/team/${agent}-168.webp 168w, /team/${agent}.webp 256w`} sizes={sizes} width="256" height="256" alt={a11yLabel} loading="lazy" decoding="async" class={`object-contain ${className}`} />
 ) : (
   <div class={className} set:html={svg} />
 )}

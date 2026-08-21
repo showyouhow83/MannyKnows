@@ -25,7 +25,7 @@ const { items = realTestimonials, heading = 'Customer Reviews', size = 'section'
     <!-- Telescope astronaut observing the reviews from the right corner.
          30 KB transparent WebP (2x): tweak size/offsets on the img classes. -->
     <img
-      src="/mascot/astronaut-telescope.webp"
+      src="/mascot/astronaut-telescope-300.webp"
       alt="Astronaut mascot looking through a telescope"
       aria-hidden="true"
       width="838"
@@ -88,11 +88,10 @@ const { items = realTestimonials, heading = 'Customer Reviews', size = 'section'
             }
           }, { rootMargin: '600px' });
           io.observe(el);
-          // fallback: fetch at idle after load so deep-linked or non-scrolling
-          // visitors still get a working carousel
-          addEventListener('load', function () {
-            (window.requestIdleCallback || function (fn) { setTimeout(fn, 2000); })(loadSwiper);
-          }, { once: true });
+          // No idle-time fallback: the observer covers deep links too (landing
+          // at the section fires it immediately), so visitors who never come
+          // within 600px of the reviews never download Swiper at all — the
+          // fallback was the only reason Lighthouse saw the bundle (Aug 2026).
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch);
         else watch();
