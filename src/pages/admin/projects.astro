@@ -166,19 +166,19 @@ const completedProjects = allProjects.filter(p => p.status === 'completed');
 const portfolioProjects = allProjects.filter(p => p.status === 'portfolio');
 
 // Recurring money from work currently on the board (Ready to Start +
-// In Progress). Read from the contract's own scopes when there is one, else
-// the originating quote's — both carry the billing cadence on each price
-// line, so a setup fee never lands in these numbers.
+// In Progress) — one number, what these projects bill every month. A prepaid
+// year counts at a twelfth of its price so both billing modes land in the
+// same figure. Read from the contract's own scopes when there is one, else
+// the originating quote's; setup fees never land here.
 const onTheBoard = [...needsCrewProjects, ...inProgressProjects];
 const recurring = onTheBoard.reduce(
   (acc, p) => {
     const raw = (p.contract_scopes as string | null) || (p.quote_sections as string | null);
     const t = sumSubtotalsByBilling(parseScopes(raw));
-    acc.monthly += t.monthly;
-    acc.yearly += t.yearly;
+    acc.monthly += t.monthly + t.yearly / 12;
     return acc;
   },
-  { monthly: 0, yearly: 0 }
+  { monthly: 0 }
 );
 
 // Compact money for list + stat cards: $3k, $1.5k, $950, $1.2M. Full amounts
@@ -2623,12 +2623,9 @@ function formatCurrency(amount: number | null): string {
       </div>
       <div class="project-stat recurring">
         <div class="project-stat-num accent">
-          {recurring.monthly > 0 ? `${compactMoney(recurring.monthly)}/mo` : '—'}
+          {recurring.monthly > 0 ? compactMoney(recurring.monthly) : '—'}
         </div>
-        <div class="project-stat-label">Recurring</div>
-        {recurring.yearly > 0 && (
-          <div class="project-stat-sub">{compactMoney(recurring.yearly)} prepaid for the year</div>
-        )}
+        <div class="project-stat-label">Recurring / mo</div>
       </div>
     </div>
 

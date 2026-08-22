@@ -6,6 +6,7 @@ import AdminNav from '../../components/AdminNav.astro';
 import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
 import AdminPresence from '../../components/AdminPresence.astro';
 import { SERVICE_TYPES, SERVICE_LABELS } from '../../data/serviceTypes';
+import { parseScopes, sumSubtotalsByBilling } from '../../lib/quoteTemplateConstants';
 import '../../styles/admin.css';
 
 const env = cfEnv;
@@ -52,13 +53,22 @@ const declinedQuotes = allQuotes.filter(q => q.status === 'declined');
 const acceptedQuotes = allQuotes.filter(q => q.status === 'accepted');
 const coldQuotes = allQuotes.filter(q => q.status === 'cold');
 
-// Mini-dashboard stats: open pipeline = money on the table (draft + awaiting
-// customer response, including renegotiations). Accepted quotes are counted
-// separately — they're won, just not promoted yet.
-const openPipeline = allQuotes
+// Mini-dashboard stats: what's in talks. Every open quote (draft + awaiting
+// a customer response, renegotiations included) contributes its recurring
+// price lines — monthly to one card, yearly to the other. Accepted quotes are
+// counted separately; they're won, just not promoted yet.
+const inTalks = allQuotes
   .filter(q => q.status === 'draft' || q.status === 'sent')
-  .reduce((sum, q) => sum + (Number(q.total) || 0), 0);
-const pipelineLabel = '$' + openPipeline.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  .reduce(
+    (acc, q) => {
+      const t = sumSubtotalsByBilling(parseScopes(q.template_sections as string | null));
+      acc.monthly += t.monthly;
+      acc.yearly += t.yearly;
+      return acc;
+    },
+    { monthly: 0, yearly: 0 }
+  );
+const money0 = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
 // Service labels
 const serviceLabels: Record<string, string> = SERVICE_LABELS;
@@ -213,7 +223,7 @@ function timeAgo(dateStr: string): string {
     /* Stat cards */
     .quote-stats {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
@@ -1366,7 +1376,6 @@ function timeAgo(dateStr: string): string {
       }
 
       .quote-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .quote-stat.pipeline { grid-column: span 2; }
 
       .page-topbar .search-bar { order: 3; flex-basis: 100%; max-width: none; }
 
@@ -2619,9 +2628,13 @@ function timeAgo(dateStr: string): string {
         <div class="quote-stat-num accepted">{acceptedQuotes.length}</div>
         <div class="quote-stat-label">Ready to Promote</div>
       </div>
-      <div class="quote-stat pipeline">
-        <div class="quote-stat-num accent">{pipelineLabel}</div>
-        <div class="quote-stat-label">Open Pipeline</div>
+      <div class="quote-stat">
+        <div class="quote-stat-num accent">{inTalks.monthly > 0 ? money0(inTalks.monthly) : '—'}</div>
+        <div class="quote-stat-label">Monthly in Talks</div>
+      </div>
+      <div class="quote-stat">
+        <div class="quote-stat-num accent">{inTalks.yearly > 0 ? money0(inTalks.yearly) : '—'}</div>
+        <div class="quote-stat-label">Yearly in Talks</div>
       </div>
     </div>
 
