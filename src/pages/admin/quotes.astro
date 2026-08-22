@@ -49,6 +49,14 @@ const declinedQuotes = allQuotes.filter(q => q.status === 'declined');
 const acceptedQuotes = allQuotes.filter(q => q.status === 'accepted');
 const coldQuotes = allQuotes.filter(q => q.status === 'cold');
 
+// Mini-dashboard stats: open pipeline = money on the table (draft + awaiting
+// customer response, including renegotiations). Accepted quotes are counted
+// separately — they're won, just not promoted yet.
+const openPipeline = allQuotes
+  .filter(q => q.status === 'draft' || q.status === 'sent')
+  .reduce((sum, q) => sum + (Number(q.total) || 0), 0);
+const pipelineLabel = '$' + openPipeline.toLocaleString('en-US', { maximumFractionDigits: 0 });
+
 // Service labels
 const serviceLabels: Record<string, string> = SERVICE_LABELS;
 
@@ -111,8 +119,8 @@ function timeAgo(dateStr: string): string {
     .search-bar {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 10px 14px;
+      border-radius: var(--field-radius);
+      padding: 8px 12px;
       margin-bottom: 16px;
       display: flex;
       gap: 10px;
@@ -155,12 +163,84 @@ function timeAgo(dateStr: string): string {
       display: block;
     }
 
-    /* Main content - 3-column layout with rounded cards */
+    /* Main content — mini-dashboard layout (pattern locked on Leads) */
     .admin-main {
+      min-height: calc(100vh - 65px);
+      padding: 16px;
+    }
+
+    /* Mini-dashboard header: title left, search + the one primary action
+       right — nothing redundant inside the list column anymore. */
+    .page-topbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .page-topbar-heading { margin-right: auto; }
+
+    .page-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a78bfa, #e879f9, #f472b6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .page-subtitle {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .page-topbar .search-bar {
+      flex: 1;
+      min-width: 220px;
+      max-width: 400px;
+      margin-bottom: 0;
+    }
+
+    .page-topbar .new-record-btn { width: auto; margin-bottom: 0; padding: 0 18px; }
+
+    /* Stat cards */
+    .quote-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .quote-stat {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .quote-stat-num { font-size: 22px; font-weight: 700; color: var(--color-text-primary); }
+    .quote-stat-num.pending { color: var(--warning-soft-foreground); }
+    .quote-stat-num.declined { color: var(--danger-soft-foreground); }
+    .quote-stat-num.accepted { color: var(--success-soft-foreground); }
+    .quote-stat-num.accent { color: var(--accent-soft-foreground); }
+
+    .quote-stat-label {
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+    }
+
+    .quotes-columns {
       display: flex;
       align-items: flex-start;
-      min-height: calc(100vh - 65px - 60px);
-      padding: 16px;
       gap: 16px;
     }
 
@@ -173,12 +253,12 @@ function timeAgo(dateStr: string): string {
       position: sticky;
       top: 16px;
       align-self: flex-start;
-      max-height: calc(100vh - 65px - 60px - 16px);
+      max-height: calc(100vh - 65px - 32px);
       overflow-y: auto;
       padding: 16px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
     }
 
@@ -191,10 +271,10 @@ function timeAgo(dateStr: string): string {
          on mobile. Allow it to shrink to the available width. */
       min-width: 0;
       max-width: 100%;
-      padding: 24px;
+      padding: 16px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
     }
 
@@ -216,23 +296,24 @@ function timeAgo(dateStr: string): string {
       display: none;
     }
 
-    /* Status pills on cards */
+    /* Status pills on cards — HeroUI soft chip anatomy: small pill, 12px
+       text, soft background, no border (same format as Leads' Confirmed). */
     .status-pill {
-      font-size: 9px;
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-left: 6px;
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
     }
 
     .status-pill.draft { background: rgba(148, 163, 184, 0.15); color: #a1a1aa; }
-    .status-pill.sent { background: rgba(251, 191, 36, 0.15); color: #f59e0b; }
-    .status-pill.declined { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .status-pill.accepted { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-    .status-pill.cold { background: rgba(100, 116, 139, 0.15); color: #64748b; }
-    .status-pill.renego { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+    .status-pill.sent { background: var(--warning-soft); color: var(--warning-soft-foreground); }
+    .status-pill.declined { background: var(--danger-soft); color: var(--danger-soft-foreground); }
+    .status-pill.accepted { background: var(--success-soft); color: var(--success-soft-foreground); }
+    .status-pill.cold { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
+    .status-pill.renego { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
 
     .quote-reason {
       font-size: 11px;
@@ -361,13 +442,14 @@ function timeAgo(dateStr: string): string {
 
     .renegotiation-badge {
       display: inline-block;
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 9px;
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      line-height: 18px;
       font-weight: 600;
-      margin-left: 6px;
+      letter-spacing: 0.3px;
     }
 
     /* Status box cards (right column) */
@@ -436,8 +518,8 @@ function timeAgo(dateStr: string): string {
     }
 
     .btn-sm {
-      padding: 4px 10px;
-      border-radius: 4px;
+      padding: 4px 12px;
+      border-radius: 9999px;
       font-size: 11px;
       font-weight: 500;
       cursor: pointer;
@@ -477,9 +559,10 @@ function timeAgo(dateStr: string): string {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
+      min-height: 320px;
       color: var(--color-text-secondary);
       text-align: center;
+      font-size: 14px;
     }
 
     .content-placeholder svg {
@@ -602,19 +685,22 @@ function timeAgo(dateStr: string): string {
       flex: 1;
     }
 
+    /* Code badge = chip (same metrics as Leads' .detail-code) */
     .form-quote-number {
       display: inline-block;
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
+      padding: 3px 12px;
+      border-radius: 9999px;
       font-size: 12px;
+      line-height: 20px;
       font-weight: 600;
+      letter-spacing: 0.5px;
       margin-bottom: 8px;
     }
 
     .form-customer-name {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
       margin: 0;
       color: var(--color-text-primary);
@@ -627,8 +713,8 @@ function timeAgo(dateStr: string): string {
     }
 
     .btn {
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
+      padding: 8px 16px;
+      border-radius: 9999px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -702,48 +788,49 @@ function timeAgo(dateStr: string): string {
       to { transform: rotate(360deg); }
     }
 
+    /* Detail-header status — HeroUI soft chip (no border) */
     .pending-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
-      background: rgba(251, 191, 36, 0.15);
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      color: #fbbf24;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 3px 12px;
+      background: var(--warning-soft);
+      color: var(--warning-soft-foreground);
+      border-radius: 9999px;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
     }
 
     .quote-status-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
     }
 
     .quote-status-badge.draft {
-      background: rgba(156,163,175,.15); color: #9ca3af; border-color: rgba(156,163,175,.3);
+      background: rgba(156,163,175,.15); color: #a1a1aa;
     }
 
     .quote-status-badge.sent {
-      background: rgba(251,191,36,.15); color: #fbbf24; border-color: rgba(251,191,36,.3);
+      background: var(--warning-soft); color: var(--warning-soft-foreground);
     }
 
     .quote-status-badge.declined {
-      background: rgba(239,68,68,.15); color: #f87171; border-color: rgba(239,68,68,.3);
+      background: var(--danger-soft); color: var(--danger-soft-foreground);
     }
 
     .quote-status-badge.accepted {
-      background: rgba(34,197,94,.15); color: #22c55e; border-color: rgba(34,197,94,.3);
+      background: var(--success-soft); color: var(--success-soft-foreground);
     }
 
     .quote-status-badge.project {
-      background: rgba(168,85,247,.15); color: #a855f7; border-color: rgba(168,85,247,.3);
+      background: rgba(168,85,247,.15); color: #c084fc;
     }
 
     .btn-promote {
@@ -765,13 +852,13 @@ function timeAgo(dateStr: string): string {
       background: rgba(239, 68, 68, 0.3);
     }
 
-    /* Form section */
+    /* Form section — inner card metrics from the locked pattern */
     .form-section {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 16px;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
       backdrop-filter: blur(10px);
     }
 
@@ -782,21 +869,24 @@ function timeAgo(dateStr: string): string {
        Stacks on mobile. The inner .form-section keeps its own margin-bottom
        so vertical rhythm stays consistent when wrapped. */
     .form-section-row { display: flex; flex-direction: column; gap: 0; }
-    .form-section-row .form-section { margin-bottom: 16px; }
+    .form-section-row .form-section { margin-bottom: 12px; }
     @media (min-width: 900px) {
       .form-section-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
       }
-      .form-section-row .form-section { margin-bottom: 16px; }
+      .form-section-row .form-section { margin-bottom: 12px; }
     }
 
+    /* Section titles: 12px uppercase accent (locked pattern) */
     .form-section-title {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--color-primary);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .form-row {
@@ -925,14 +1015,17 @@ function timeAgo(dateStr: string): string {
     .management-section {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg, 12px);
-      padding: 24px;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
     }
 
     .management-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
       margin: 0 0 6px 0;
     }
 
@@ -1034,7 +1127,7 @@ function timeAgo(dateStr: string): string {
     }
 
     .modal-title {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
       margin: 0 0 8px;
       color: var(--color-text-primary);
@@ -1206,16 +1299,23 @@ function timeAgo(dateStr: string): string {
       color: var(--color-text-primary); cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,0.3);
     }
-    .admin-main.list-collapsed > .quotes-list { display: none; }
+    .admin-main.list-collapsed .quotes-list { display: none; }
 
     @media (max-width: 768px) {
-      .admin-main {
+      .admin-main { padding: 12px; }
+
+      .quotes-columns {
         flex-direction: column;
-        height: auto;
+        gap: 20px;
         /* Stretch children to full width: base align-items:flex-start would
            otherwise size the detail card to its content instead of the screen. */
         align-items: stretch;
       }
+
+      .quote-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quote-stat.pipeline { grid-column: span 2; }
+
+      .page-topbar .search-bar { order: 3; flex-basis: 100%; max-width: none; }
 
       .quotes-list {
         width: 100% !important;
@@ -1260,9 +1360,8 @@ function timeAgo(dateStr: string): string {
       }
 
       .form-quote-number {
-        padding: 4px 10px;
+        padding: 2px 10px;
         font-size: 11px;
-        border-radius: 14px;
         margin-bottom: 6px;
       }
 
@@ -1302,7 +1401,7 @@ function timeAgo(dateStr: string): string {
       }
 
       .form-section-title {
-        font-size: 13px;
+        font-size: 12px;
         margin-bottom: 8px;
       }
 
@@ -1402,10 +1501,10 @@ function timeAgo(dateStr: string): string {
       .btn-danger,
       .btn-success,
       .btn-promote {
-        padding: 6px 10px !important;
+        padding: 6px 12px !important;
         font-size: 11px !important;
         gap: 4px !important;
-        border-radius: 8px !important;
+        border-radius: 9999px !important;
       }
 
       .btn svg,
@@ -1419,12 +1518,6 @@ function timeAgo(dateStr: string): string {
       }
 
       /* Compact pricing table moved to global style block */
-
-      /* Compact status badge */
-      .status-badge {
-        padding: 3px 8px;
-        font-size: 10px;
-      }
 
       /* New Quote Modal - Full screen on mobile */
       .modal {
@@ -1526,7 +1619,7 @@ function timeAgo(dateStr: string): string {
       .modal-content > div:last-child .btn {
         padding: 10px 16px !important;
         font-size: 13px !important;
-        border-radius: 8px !important;
+        border-radius: 9999px !important;
         flex: 1;
       }
     }
@@ -1616,7 +1709,7 @@ function timeAgo(dateStr: string): string {
     }
 
     .mobile-nav-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--color-text-primary);
     }
@@ -2144,16 +2237,12 @@ function timeAgo(dateStr: string): string {
 
   <button class="list-toggle-btn" id="listToggleBtn" title="Show / hide list" aria-label="Toggle list">‹</button>
   <main class="admin-main">
-    <!-- Left: Draft Quotes List -->
-    <div class="quotes-list">
-      {error && <div class="error-message">{error}</div>}
-
-      <button type="button" class="new-record-btn" onclick="showNewQuoteModal()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-        New Quote
-      </button>
-
-      <!-- Search Bar -->
+    <!-- Mini-dashboard topbar: title + search + the one primary action -->
+    <div class="page-topbar">
+      <div class="page-topbar-heading">
+        <h1 class="page-title">Quotes</h1>
+        <p class="page-subtitle">Draft, send, and promote into projects</p>
+      </div>
       <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
@@ -2166,6 +2255,40 @@ function timeAgo(dateStr: string): string {
           placeholder="Search quotes..."
         >
       </div>
+      <button type="button" class="new-record-btn" onclick="showNewQuoteModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        New Quote
+      </button>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="quote-stats">
+      <div class="quote-stat">
+        <div class="quote-stat-num">{allQuotes.length}</div>
+        <div class="quote-stat-label">Total Quotes</div>
+      </div>
+      <div class="quote-stat">
+        <div class="quote-stat-num pending">{sentQuotes.length + renegoQuotes.length}</div>
+        <div class="quote-stat-label">Pending Approval</div>
+      </div>
+      <div class="quote-stat">
+        <div class="quote-stat-num declined">{declinedQuotes.length}</div>
+        <div class="quote-stat-label">Needs Review</div>
+      </div>
+      <div class="quote-stat">
+        <div class="quote-stat-num accepted">{acceptedQuotes.length}</div>
+        <div class="quote-stat-label">Ready to Promote</div>
+      </div>
+      <div class="quote-stat pipeline">
+        <div class="quote-stat-num accent">{pipelineLabel}</div>
+        <div class="quote-stat-label">Open Pipeline</div>
+      </div>
+    </div>
+
+    <div class="quotes-columns">
+    <!-- Left: Draft Quotes List -->
+    <div class="quotes-list">
+      {error && <div class="error-message">{error}</div>}
 
       <div class="no-results" id="noResults">
         No quotes match your search
@@ -2816,6 +2939,7 @@ function timeAgo(dateStr: string): string {
         </div>
       </div>
     </div>
+    </div><!-- /.quotes-columns -->
 
   </main>
 
