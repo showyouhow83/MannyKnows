@@ -3268,11 +3268,16 @@ function timeAgo(dateStr: string): string {
       });
     });
 
-    // Close detail — back to the index/placeholder without touching the nav
+    // Close detail — back to the index/placeholder without touching the nav.
+    // Opening a card auto-collapses the list, so closing must expand it back
+    // or the page is left showing only the empty placeholder.
     document.getElementById('btnCloseDetail')?.addEventListener('click', () => {
       allCards.forEach(c => c.classList.remove('selected'));
       if (quoteForm) quoteForm.classList.remove('visible');
       if (contentPlaceholder) contentPlaceholder.style.display = '';
+      document.querySelector('.admin-main')?.classList.remove('list-collapsed');
+      const listToggle = document.getElementById('listToggleBtn');
+      if (listToggle) listToggle.textContent = '‹';
       hideMobileDetail();
     });
 

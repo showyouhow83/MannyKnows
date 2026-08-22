@@ -2266,6 +2266,11 @@ const adminAddress = 'Springfield, MA';
       selectedLeadId = null;
       if (detailContent) detailContent.classList.remove('visible');
       if (detailPlaceholder) detailPlaceholder.style.display = '';
+      // Opening a card auto-collapses the list; closing must expand it back.
+      var mainEl = document.querySelector('.admin-main');
+      if (mainEl) mainEl.classList.remove('list-collapsed');
+      var listToggle = document.getElementById('listToggleBtn');
+      if (listToggle) listToggle.textContent = '‹';
       hideMobileDetail();
     });
 

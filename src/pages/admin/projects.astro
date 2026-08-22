@@ -5031,6 +5031,11 @@ function formatCurrency(amount: number | null): string {
           <p>Select a project to view details</p>
         </div>`;
       }
+      // Opening a card auto-collapses the list; closing must expand it back.
+      const mainEl = document.querySelector('.admin-main');
+      if (mainEl) mainEl.classList.remove('list-collapsed');
+      const listToggle = document.getElementById('listToggleBtn');
+      if (listToggle) listToggle.textContent = '‹';
       hideMobileDetail();
     }
     window.closeProjectDetail = closeProjectDetail;
