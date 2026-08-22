@@ -379,6 +379,27 @@ h1, h2, h3 {
 /* .nav-link-special is kept on the Web element but no longer restyles it;
    base .nav-link + .nav-link.active rules apply. */
 
+/* Detail close — returns a list-detail page (Leads/Quotes/Projects) to its
+   index state without touching the nav. Shared so all three pages match. */
+.btn-close-detail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-out), color 100ms var(--ease-out);
+}
+.btn-close-detail:hover { background: var(--default); color: var(--foreground); }
+/* Float variant for JS-rendered detail panes (Projects): pin to the panel
+   corner — the host panel must be position: relative. */
+.detail-close-float { position: absolute; top: 14px; right: 14px; z-index: 5; }
+
 /* Group label (Settings) — looks like a nav link but isn't a destination:
    its icon sits inline, and it doesn't invite a click. */
 .nav-link .nav-icon { margin-right: 8px; flex-shrink: 0; }

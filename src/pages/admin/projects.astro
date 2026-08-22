@@ -382,6 +382,8 @@ function formatCurrency(amount: number | null): string {
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       backdrop-filter: blur(10px);
+      /* Anchor for the floating .detail-close-float close button */
+      position: relative;
     }
 
     /* Project sections (collapsible on mobile) */
@@ -3131,7 +3133,7 @@ function formatCurrency(amount: number | null): string {
         return;
       }
 
-      // Render detail (include mobile back button at top)
+      // Render detail (include mobile back button + close button at top)
       const content = document.getElementById('projectContent');
       const backBtn = `<button class="mobile-back-btn" onclick="hideMobileDetail()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3139,7 +3141,10 @@ function formatCurrency(amount: number | null): string {
         </svg>
         Back to list
       </button>`;
-      content.innerHTML = backBtn + renderProjectDetail(project);
+      const closeBtn = `<button class="btn-close-detail detail-close-float" onclick="closeProjectDetail()" title="Close" aria-label="Close project">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>`;
+      content.innerHTML = backBtn + closeBtn + renderProjectDetail(project);
 
       // Self-heal the recurring "Signed quote PDF missing" case: the customer
       // signed but the accept-time (customer-browser) PDF generation didn't
@@ -5012,6 +5017,23 @@ function formatCurrency(amount: number | null): string {
       main?.classList.remove('detail-active');
     }
     window.hideMobileDetail = hideMobileDetail;
+
+    // Close detail — deselect and restore the placeholder without touching
+    // the nav. The detail pane is JS-rendered, so the placeholder markup is
+    // re-injected here (keep it in sync with the static one in the page).
+    function closeProjectDetail() {
+      selectedProjectId = null;
+      document.querySelectorAll('.project-card, .status-card').forEach(card => card.classList.remove('selected'));
+      const content = document.getElementById('projectContent');
+      if (content) {
+        content.innerHTML = `<div class="content-placeholder">
+          <div class="placeholder-icon">📋</div>
+          <p>Select a project to view details</p>
+        </div>`;
+      }
+      hideMobileDetail();
+    }
+    window.closeProjectDetail = closeProjectDetail;
 
     // Logout function
     async function logout() {
