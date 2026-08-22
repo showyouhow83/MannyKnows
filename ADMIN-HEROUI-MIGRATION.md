@@ -229,3 +229,55 @@ strings.
   the Settings group's first real link). Mobile drawer: same three links now
   live under its existing Settings section. All five settings pages pass
   `active="settings"`.
+- **2026-08-22 — Quote detail: tabs, flat scope editor, BILLING CADENCE.**
+  Manny's three asks in one pass.
+  1. **Tabs** (Details/Messages/Documents/Management) are now the HeroUI
+     segmented control: 4px-padded `--default` track, `--radius-md`, pill
+     tabs, active tab on `--accent-soft`. Tab bodies moved onto tokens —
+     compose + history panels get `.form-section` chrome, message bubbles
+     are accent-soft (us) vs default (customer), attachment rows and the
+     acceptance record are soft chips on `--surface`. Use this tabs anatomy
+     on Projects.
+  2. **Scope editor flattened** (Manny: "cards within cards within cards").
+     ONE bordered box per scope. Inside it: ghost inputs (border on
+     hover/focus), sections separated by a hairline instead of a card, one
+     line = one row (`.scope-item`: 52px type chip · fields · icon actions
+     revealed on hover/focus), dashed ghost chips for + Bullet/Note/Price/
+     Choice/Fill-in, and a collapse caret per scope (`scopeCollapsed` Set;
+     collapsed header shows "3 sections · 12 lines" + the totals chip).
+     Textareas start one line tall and auto-grow. All JS contracts kept
+     (`.scope-card[data-scope-id]`, `.scope-section`, `.scope-item`,
+     `.scope-section-actions`, `.scope-item-actions`, the per-scope
+     `scopeTemplatePicker-<id>` select); the fragile
+     `:scope > div > span:nth-child(2)` badge selector became
+     `.scope-total-chip`.
+  3. **Billing cadence on every price line** (`billing: once|monthly|yearly`
+     on subtotal items; absent = once, so old rows are unchanged). Buckets
+     are summed SEPARATELY and never added: setup $1,195 + plan $545/mo is
+     never "$1,740". `sumSubtotalsByBilling()` + `renderQuoteTotalsHtml()` +
+     `billingSummaryLine()` in quoteTemplateConstants.ts drive the print
+     preview, the customer quote page, and the quote email (HTML + text);
+     the editor's Pricing summary shows per-line cadence chips, "Due at
+     signing", and a recurring chip. NOTE (open, Manny's call): the stored
+     `quotes.total` column still equals every subtotal minus discount, so
+     the pipeline stat and any promoted project still add one month to the
+     setup fee. Fixing that means a `recurring_total` column + a pass over
+     projects/contracts/payment schedules.
+  4. **Templates carry both options.** `scripts/gen-quote-template-seed.mjs`
+     rewrites `database/seeds/quote-templates.sql`: every plan template now
+     has "Investment — month to month" AND "Investment — prepay the year
+     (two months free)" (10× monthly, setup waived), Remi AI + AI Agents
+     Team gained the monthly line their tier ladder implied. Re-run the seed
+     to apply (deletes by name → template ids renumber). Quotes already built
+     from a template keep their old sections until the scope is re-applied.
+  5. **Paint/stain purged from the item types** (Manny: "that's for painting
+     companies not us"). `fillable` is now a plain Fill-in line (label +
+     value) in all four editors (quotes, quote templates, contract templates,
+     project contract) and in the shared renderer; `paint_line` is retired —
+     no editor creates one, saved rows render as a labeled line. The portal
+     colors feature (`api/portal/colors.ts`, project portal color cards) is
+     the remaining painting leftover, untouched this pass.
+  6. **"Promoted to Project" list section** added — quotes with status
+     `project` were counted in the Total stat but had no section, so the
+     stat said 3 while the list showed 2. Collapsed by default; toggles on
+     desktop like Cold.
