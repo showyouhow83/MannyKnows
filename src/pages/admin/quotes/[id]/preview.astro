@@ -10,7 +10,8 @@ import {
   WARRANTY_TERMS,
   quoteToScopes,
   renderScopesHtml,
-  sumScopeSubtotals,
+  sumSubtotalsByBilling,
+  renderQuoteTotalsHtml,
 } from '../../../../lib/quoteTemplateConstants';
 import { getBrand, SL_BRAND, type Brand } from '../../../../lib/brand';
 
@@ -96,13 +97,14 @@ const bodyHtml = sectionsHtml;
 // hides it — including discount on one of N scopes would be misleading.
 // Combined preview: totals come from the saved quote.total (which already
 // auto-sums across every scope's subtotals + applies the quote-level discount).
-const grandTotal = scopeFiltered
-  ? sumScopeSubtotals(activeScope!)
-  : Number(quote.total || 0);
+// Totals are bucketed by billing cadence (one-time / monthly / yearly) and
+// rendered as separate lines — a setup fee and a monthly plan never add into
+// one number. Per-scope previews drop the discount for the reason above.
 const discount = scopeFiltered ? 0 : Number(quote.discount || 0);
-const subtotal = scopeFiltered
-  ? grandTotal
-  : Number(quote.subtotal || (grandTotal + discount));
+const billingTotals = sumSubtotalsByBilling(
+  scopeFiltered ? [activeScope!] : scopes
+);
+const totalsHtml = renderQuoteTotalsHtml(billingTotals, discount);
 // Title shown in the toolbar + saved-PDF attachment label.
 const scopeTitle = scopeFiltered ? (activeScope!.title || 'Scope') : '';
 
@@ -321,17 +323,16 @@ function fmtDate(s: string | null | undefined): string {
       }
       .info-row .value { color: #111827; }
 
-      .grand-total-row {
-        display: flex; justify-content: space-between; align-items: baseline;
-        padding: 14px 0;
-        border-top: 2px solid #0a0b0d;
-        border-bottom: 2px solid #0a0b0d;
+      /* Totals — rendered by renderQuoteTotalsHtml() so the print PDF, the
+         customer page, and the email state the money identically. One-time,
+         monthly, and yearly are separate rows and never add together. */
+      .totals-block {
         margin: 24px 0;
-        font-size: 16px; font-weight: 700;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #0a0b0d;
+        page-break-inside: avoid;
       }
-      .grand-total-row .amount {
-        font-size: 22px; color: #0a0b0d;
-      }
+      .totals-block table { border-top-color: #0a0b0d !important; }
 
       .warranty-block {
         font-size: 12px;
@@ -468,16 +469,7 @@ function fmtDate(s: string | null | undefined): string {
       {/* Sections (or legacy materials/labor) */}
       <div set:html={bodyHtml}></div>
 
-      <div class="grand-total-row">
-        <span>Total cost: labor and materials</span>
-        <span class="amount">${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-      </div>
-
-      {discount > 0 && (
-        <div style="font-size:12px; color:#71717a; text-align:right; margin-top:-18px; margin-bottom:18px;">
-          Subtotal ${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Discount −${discount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </div>
-      )}
+      {totalsHtml && <div class="totals-block" set:html={totalsHtml}></div>}
 
       {referencePhotos.length > 0 && (
         <section style="margin: 24px 0 0 0;">

@@ -104,7 +104,13 @@ const firstName = quote?.customer_name?.split(' ')[0] || 'there';
 // Quote-template scopes (v64 / Phase 5). Each scope renders as a distinct
 // titled block followed by its sections. quoteToScopes() also synthesizes a
 // scope from legacy materials/labor for pre-Phase-5 quotes.
-import { quoteToScopes, renderScopesHtml, sumScopeSubtotals } from '../../lib/quoteTemplateConstants';
+import {
+  quoteToScopes,
+  renderScopesHtml,
+  sumScopeSubtotals,
+  sumSubtotalsByBilling,
+  renderQuoteTotalsHtml,
+} from '../../lib/quoteTemplateConstants';
 const templateScopes = quote ? quoteToScopes(quote as any) : [];
 const templateSectionsHtml = renderScopesHtml(templateScopes);
 // Per-scope subtotal rows in the Pricing summary (only meaningful when there
@@ -113,6 +119,11 @@ const templateSectionsHtml = renderScopesHtml(templateScopes);
 const scopeSubtotalRows = templateScopes
   .map(sc => ({ title: sc.title || 'Scope', amount: sumScopeSubtotals(sc) }))
   .filter(r => r.amount > 0);
+// Totals by billing cadence — same renderer the PDF preview and the quote
+// email use, so the customer sees one consistent statement of the money.
+const quoteTotalsHtml = quote
+  ? renderQuoteTotalsHtml(sumSubtotalsByBilling(templateScopes), Number(quote.discount) || 0)
+  : '';
 ---
 
 <!DOCTYPE html>
@@ -573,22 +584,10 @@ const scopeSubtotalRows = templateScopes
                 <span>{formatCurrency(row.amount)}</span>
               </div>
             ))}
-            {quote.subtotal && (
-              <div class="total-row">
-                <span>Subtotal</span>
-                <span>{formatCurrency(quote.subtotal)}</span>
-              </div>
-            )}
-            {quote.discount > 0 && (
-              <div class="total-row" style="color: #22c55e;">
-                <span>Discount</span>
-                <span>-{formatCurrency(quote.discount)}</span>
-              </div>
-            )}
-            <div class="total-row grand">
-              <span>Total</span>
-              <span>{formatCurrency(quote.total)}</span>
-            </div>
+            {/* Money reads from the scopes themselves, split by billing
+                cadence, so a setup fee and a monthly plan stay separate
+                lines instead of one meaningless sum. */}
+            <div set:html={quoteTotalsHtml}></div>
           </div>
         </div>
 

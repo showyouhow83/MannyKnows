@@ -48,6 +48,8 @@ const renegoQuotes = allQuotes.filter(q => q.status === 'sent' && q.is_renegotia
 const declinedQuotes = allQuotes.filter(q => q.status === 'declined');
 const acceptedQuotes = allQuotes.filter(q => q.status === 'accepted');
 const coldQuotes = allQuotes.filter(q => q.status === 'cold');
+// Already promoted — the quote lives on, the work moved to Projects.
+const projectQuotes = allQuotes.filter(q => q.status === 'project');
 
 // Mini-dashboard stats: open pipeline = money on the table (draft + awaiting
 // customer response, including renegotiations). Accepted quotes are counted
@@ -314,6 +316,7 @@ function timeAgo(dateStr: string): string {
     .status-pill.accepted { background: var(--success-soft); color: var(--success-soft-foreground); }
     .status-pill.cold { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
     .status-pill.renego { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+    .status-pill.project { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
 
     .quote-reason {
       font-size: 11px;
@@ -383,6 +386,11 @@ function timeAgo(dateStr: string): string {
     .section-count.cold {
       background: rgba(100, 116, 139, 0.2);
       color: #a1a1aa;
+    }
+
+    .section-count.project {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
     }
 
     /* Collapsed state (desktop: used for Cold section default) */
@@ -601,12 +609,19 @@ function timeAgo(dateStr: string): string {
       max-width: 100%;
     }
 
-    /* Tab Navigation */
+    /* Tab navigation — HeroUI segmented control: a glass track holding pill
+       tabs, active tab on the soft accent. Same chip language as the status
+       pills so the detail pane reads as one system. */
     .form-tabs {
       display: flex;
-      gap: 0;
-      border-bottom: 2px solid var(--color-border, #e5e7eb);
-      margin-bottom: 24px;
+      gap: 4px;
+      padding: 4px;
+      background: var(--default);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      width: fit-content;
+      max-width: 100%;
+      margin-bottom: 20px;
       /* Scroll the tab row within the viewport on narrow screens instead of
          letting 4 tabs expand the panel (which pushed all content sideways
          and required scrolling left to read it). */
@@ -622,36 +637,37 @@ function timeAgo(dateStr: string): string {
     .form-tab { flex-shrink: 0; white-space: nowrap; }
 
     .form-tab {
-      padding: 10px 20px;
+      padding: 7px 14px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--color-text-secondary, #6b7280);
-      background: none;
+      color: var(--muted);
+      background: transparent;
       border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
+      border-radius: 9999px;
       cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
+      transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .form-tab:hover {
-      color: var(--color-text-primary, #1a1a2e);
+      color: var(--foreground);
+      background: var(--default-hover);
     }
 
     .form-tab.active {
-      color: var(--color-primary, #0071e3);
-      border-bottom-color: var(--color-primary, #0071e3);
+      color: var(--accent-soft-foreground);
+      background: var(--accent-soft);
     }
 
     .form-tab .tab-badge {
-      background: var(--color-primary, #0071e3);
-      color: white;
+      background: var(--warning-soft);
+      color: var(--warning-soft-foreground);
       font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 10px;
+      line-height: 16px;
+      padding: 0 6px;
+      border-radius: 9999px;
       font-weight: 700;
     }
 
@@ -663,16 +679,23 @@ function timeAgo(dateStr: string): string {
       display: block;
     }
 
-    /* Messages Tab */
+    /* Messages tab — compose panel + history panel share the .form-section
+       chrome (radius-md, 16px, hairline) used across the detail pane. */
     .messages-compose {
-      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
     }
 
     .messages-compose label {
       display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text-secondary, #6b7280);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
       margin-bottom: 6px;
     }
 
@@ -682,10 +705,13 @@ function timeAgo(dateStr: string): string {
 
     .messages-compose .compose-actions {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
+      align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
     }
 
     /* Message styles moved to is:global block for dynamically created elements */
@@ -1836,23 +1862,116 @@ function timeAgo(dateStr: string): string {
     }
   </style>
   <style is:global>
-    /* Scope editor: section/item action buttons (↑ ↓ ✕, Preview PDF) only
-       show while the user is actively interacting with the parent. Hover
-       alone no longer reveals them (was creating visual noise on the form);
-       the user must focus an input or button inside the section/item to
-       expose its actions. Tap on touch / click on desktop both set focus,
-       so the same rule works everywhere. JS-rendered HTML doesn't carry
-       Astro's scoped attribute, so this lives in the global block. */
+    /* ── Scope editor (flat outline, Aug 2026) ────────────────────────────
+       One bordered box per SCOPE. Sections and lines inside it are flat rows
+       separated by hairlines — no cards inside cards inside cards. Inputs are
+       ghosts until hovered or focused, so a scope reads as the document it
+       produces rather than as a form. JS-rendered HTML carries no Astro scope
+       attribute, so all of it lives in this global block. */
+    .scope-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .scope-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      min-width: 0;
+    }
+    .scope-card:not(.is-collapsed) .scope-head {
+      border-bottom: 1px solid var(--border);
+    }
+    .scope-caret {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+      transition: transform 200ms var(--ease-out), color 160ms var(--ease-out);
+    }
+    .scope-caret:hover { color: var(--foreground); background: var(--default); }
+    .scope-card.is-collapsed .scope-caret { transform: rotate(-90deg); }
+    .scope-card.is-collapsed .scope-body { display: none; }
+
+    /* Ghost inputs — border only on hover/focus. */
+    .scope-title-input,
+    .scope-sec-title {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--foreground);
+      font-family: inherit;
+      padding: 5px 8px;
+      transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out);
+    }
+    .scope-title-input { font-size: 15px; font-weight: 700; }
+    .scope-sec-title { font-size: 13px; font-weight: 700; }
+    .scope-title-input:hover,
+    .scope-sec-title:hover { background: var(--default); }
+    .scope-title-input:focus,
+    .scope-sec-title:focus {
+      outline: none;
+      background: var(--default);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+    }
+    .scope-title-input::placeholder,
+    .scope-sec-title::placeholder { color: var(--muted); opacity: 0.7; font-weight: 500; }
+
+    .scope-meta-count {
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .scope-card:not(.is-collapsed) .scope-meta-count { display: none; }
+    .scope-total-chip {
+      flex-shrink: 0;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      background: var(--success-soft);
+      color: var(--success-soft-foreground);
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Icon actions — one 26px row, revealed on hover of the row or when
+       anything inside it has focus (tap on touch counts). */
+    .scope-icon-btn {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 160ms var(--ease-out), color 160ms var(--ease-out);
+    }
+    .scope-icon-btn:hover:not(:disabled) { background: var(--default-hover); color: var(--foreground); }
+    .scope-icon-btn.danger:hover:not(:disabled) { background: var(--danger-soft); color: var(--danger-soft-foreground); }
+    .scope-icon-btn:disabled { opacity: 0.25; cursor: default; }
     .scope-section-actions,
     .scope-item-actions {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.15s ease;
     }
-    /* Scope-card and section actions live in the FIRST child div of the
-       parent (the title row). Using `> div:focus-within > .scope-section-actions`
-       scopes the reveal to focus in THAT title row, not a deeper item. */
-    .scope-section > div:focus-within > .scope-section-actions,
+    .scope-head:hover .scope-head-actions,
+    .scope-head:focus-within .scope-head-actions,
+    .scope-sec-head:hover .scope-section-actions,
+    .scope-sec-head:focus-within .scope-section-actions,
+    .scope-item:hover .scope-item-actions,
     .scope-item:focus-within .scope-item-actions {
       opacity: 1;
       pointer-events: auto;
@@ -1865,6 +1984,196 @@ function timeAgo(dateStr: string): string {
         opacity: 1 !important;
         pointer-events: auto !important;
       }
+    }
+
+    .scope-body { padding: 4px 12px 12px; }
+    .scope-section { padding: 8px 0 4px; }
+    .scope-section + .scope-section { border-top: 1px solid var(--border); }
+    .scope-sec-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    /* One line = one row: type chip, fields, actions. */
+    .scope-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 3px 6px 3px 4px;
+      margin: 2px 0;
+      border-radius: var(--radius-sm);
+      transition: background 160ms var(--ease-out);
+    }
+    .scope-item:hover { background: var(--default); }
+    .scope-item-type {
+      flex-shrink: 0;
+      width: 52px;
+      padding-top: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      text-align: right;
+    }
+    .scope-item[data-item-type="subtotal"] .scope-item-type { color: var(--success-soft-foreground); }
+    .scope-item-fields { flex: 1; min-width: 0; }
+    .scope-item-actions { padding-top: 3px; }
+    /* Compact fields inside a line row — the canonical .form-input padding
+       (10px 14px) is too tall for a one-line outline. Doubled class to
+       outrank the canonical rule in admin.css. */
+    .scope-item .form-input.form-input,
+    .scope-item .form-select.form-select {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+    .scope-item textarea.form-input.form-input {
+      min-height: 34px;
+      overflow: hidden;
+    }
+    .scope-billing-select { font-size: 12px; }
+
+    /* Add-line bar: ghost chips, only as loud as they need to be. */
+    .scope-addbar {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 4px 0 4px 56px;
+    }
+    .scope-addbar button {
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out), background 160ms var(--ease-out);
+    }
+    .scope-addbar button:hover {
+      color: var(--accent-soft-foreground);
+      border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+      border-style: solid;
+      background: var(--accent-soft);
+    }
+
+    .scope-foot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      margin-top: 6px;
+      border-top: 1px solid var(--border);
+    }
+    .scope-foot-spacer { flex: 1; min-width: 0; }
+    .scope-add-section {
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-soft-foreground);
+      background: var(--accent-soft);
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .scope-add-section:hover { background: var(--accent-soft-hover); }
+    .scope-foot-select {
+      max-width: 220px;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--default);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      font-family: inherit;
+    }
+    .scope-foot-btn {
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--default);
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .scope-foot-btn:hover { background: var(--default-hover); color: var(--foreground); }
+
+    .scope-empty {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+    }
+    .scope-addscope-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding: 10px 2px;
+    }
+    .scope-addscope-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Pricing summary */
+    #pricingScope {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .pricing-summary-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-soft-foreground);
+      margin-bottom: 10px;
+    }
+    #pricingScopeSubtotals { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+    .pricing-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-line-label { flex: 1; min-width: 0; color: var(--muted); }
+    .pricing-line-cadence {
+      flex-shrink: 0;
+      padding: 1px 8px;
+      border-radius: 9999px;
+      background: var(--default);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .pricing-line-amount { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pricing-line-empty { padding: 6px 0; font-size: 12px; color: var(--muted); font-style: italic; }
+    .pricing-recurring-chip {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      background: var(--accent-soft);
+      color: var(--accent-soft-foreground);
+      font-size: 12px;
+      font-weight: 600;
     }
 
     /* Image gallery (dynamically rendered, needs global scope) */
@@ -1964,19 +2273,22 @@ function timeAgo(dateStr: string): string {
 
     /* Global styles for dynamically created message elements */
     .messages-log {
-      margin-top: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
     }
 
     .messages-log-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-soft-foreground);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
     }
 
     /* Chat-style message thread */
@@ -1993,28 +2305,28 @@ function timeAgo(dateStr: string): string {
       transition: background 0.2s;
     }
 
-    /* Admin messages: right-aligned */
+    /* Admin messages: right-aligned, on our accent */
     .message-item.admin-msg {
       align-self: flex-end;
-      background: rgba(74, 222, 128, 0.1);
-      border: 1px solid rgba(74, 222, 128, 0.2);
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
       border-bottom-right-radius: 4px;
     }
 
     .message-item.admin-msg:hover {
-      background: rgba(74, 222, 128, 0.15);
+      background: var(--accent-soft-hover);
     }
 
-    /* Customer messages: left-aligned */
+    /* Customer messages: left-aligned, neutral */
     .message-item.customer-reply {
       align-self: flex-start;
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.25);
+      background: var(--default);
+      border: 1px solid var(--border);
       border-bottom-left-radius: 4px;
     }
 
     .message-item.customer-reply:hover {
-      background: rgba(59, 130, 246, 0.15);
+      background: var(--default-hover);
     }
 
     .message-item .msg-header {
@@ -2028,19 +2340,20 @@ function timeAgo(dateStr: string): string {
     .message-item .msg-subject {
       font-size: 12px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--muted);
       flex: 1;
     }
 
     .message-item .msg-date {
       font-size: 10px;
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--muted);
+      opacity: 0.75;
       white-space: nowrap;
     }
 
     .message-item .msg-body {
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--foreground);
       line-height: 1.5;
       white-space: pre-wrap;
     }
@@ -2054,42 +2367,42 @@ function timeAgo(dateStr: string): string {
     }
 
     .message-item .msg-status.sent {
-      color: rgba(74, 222, 128, 0.6);
+      color: var(--success-soft-foreground);
     }
 
     .message-item .msg-status.failed {
-      color: #f87171;
+      color: var(--danger-soft-foreground);
     }
 
     .message-item .msg-status.received {
-      color: rgba(96, 165, 250, 0.6);
+      color: var(--accent-soft-foreground);
     }
 
     .message-item .msg-sender-badge {
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
       padding: 2px 8px;
-      border-radius: 10px;
+      border-radius: 9999px;
       display: inline-block;
       margin-bottom: 4px;
     }
 
     .message-item .msg-sender-badge.admin {
-      background: rgba(74, 222, 128, 0.15);
-      color: #4ade80;
+      background: var(--accent-soft);
+      color: var(--accent-soft-foreground);
     }
 
     .message-item .msg-sender-badge.customer {
-      background: rgba(96, 165, 250, 0.15);
-      color: #60a5fa;
+      background: var(--default);
+      color: var(--muted);
     }
 
     .messages-empty {
       text-align: center;
-      padding: 40px 20px;
-      color: rgba(255, 255, 255, 0.4);
+      padding: 32px 20px;
+      color: var(--muted);
       font-size: 13px;
     }
 
@@ -2488,6 +2801,34 @@ function timeAgo(dateStr: string): string {
           )}
         </div>
       </div>
+
+      {/* Promoted (status 'project'). These are still quotes and still count
+          in the Total stat, so they need a home in the list — without this
+          section the stat said 3 while the list showed 2. Collapsed by
+          default: the live work lives on the Projects page. */}
+      <div class="quote-section">
+        <div class="section-header section-toggle collapsed" data-section="project">
+          <h2 class="section-title">Promoted to Project</h2>
+          <span class="section-count project">{projectQuotes.length}</span>
+          <svg class="section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="section-body collapsed-mobile collapsed" id="sectionProject">
+          {projectQuotes.length === 0 ? (
+            <div class="empty-state">No promoted quotes</div>
+          ) : (
+            projectQuotes.map((quote) => (
+              <div class="quote-card" data-quote-id={quote.id} data-quote={JSON.stringify(quote)} data-search={`${quote.quote_number} ${quote.customer_name} ${quote.customer_email || ''} ${quote.customer_phone || ''} ${quote.city || ''}`.toLowerCase()}>
+                <div class="quote-card-row">
+                  <span class="quote-shortcode" title={quote.quote_number}>#{(quote.quote_number || '').slice(-4)}</span>
+                  <span class="status-pill project">Project</span>
+                  <span class="quote-name">{quote.customer_name}</span>
+                  <span class="quote-time">{timeAgo(quote.updated_at)}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
 
     <!-- Middle: Quote Content/Edit Form -->
@@ -2557,7 +2898,7 @@ function timeAgo(dateStr: string): string {
         <div class="form-section" id="quoteReviewSection" style="display:none;">
           <h3 class="form-section-title">Customer Quote Link</h3>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <a id="quoteReviewUrl" href="#" target="_blank" style="font-size:13px; color:var(--color-primary); text-decoration:none; word-break:break-all;">
+            <a id="quoteReviewUrl" href="#" target="_blank" style="font-size:13px; color:var(--accent-soft-foreground); font-weight:600; text-decoration:none; word-break:break-all;">
             </a>
             <button class="btn btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="navigator.clipboard.writeText(document.getElementById('quoteReviewUrl').href); this.textContent='Copied!'; setTimeout(()=>this.textContent='Copy Link',1500);">Copy Link</button>
           </div>
@@ -2626,13 +2967,13 @@ function timeAgo(dateStr: string): string {
              when they open a quote, with the date/time selector below. -->
         <div class="form-section">
           <h3 class="form-section-title">Interested in Service</h3>
-          <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">What the customer asked for. Add a row per service type: each holds its own scope description.</p>
+          <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">What the customer asked for. Add a row per service type, each with its own scope description.</p>
           <div id="servicesList"></div>
           <button type="button" class="btn-add-row" id="btnAddService" style="margin-top:8px;">+ Add Service</button>
 
-          <div style="margin-top:22px; padding-top:16px; border-top:1px solid var(--glass-border);">
-            <h4 style="font-size:14px; font-weight:700; color:var(--color-text-primary); margin:0 0 4px 0;">Appointment Scheduler</h4>
-            <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">Schedule a call or visit with the customer. Pre-filled from lead if available.</p>
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+            <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent-soft-foreground); margin:0 0 4px 0;">Appointment Scheduler</h4>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Schedule a call or visit with the customer. Pre-filled from the lead when available.</p>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Date</label>
@@ -2674,8 +3015,8 @@ function timeAgo(dateStr: string): string {
             <h3 class="form-section-title" style="margin:0;">Scopes &amp; Pricing</h3>
             <span id="scopeSaveStatus" style="font-size:12px; color:var(--color-text-secondary);"></span>
           </div>
-          <p style="font-size:12px; color:var(--color-text-secondary); margin:4px 0 14px;">
-            Each scope is a distinct piece of work (e.g. Website build, Local SEO setup). Apply a template to seed a scope, edit its sections, and add <strong>Subtotal</strong> items inside each scope &mdash; those feed the Pricing summary below.
+          <p style="font-size:13px; color:var(--muted); margin:4px 0 14px;">
+            Each scope is a distinct piece of work (e.g. Website build, Local SEO setup). Apply a template to seed a scope, then edit its sections. <strong>Price</strong> lines feed the summary at the bottom, and each one is billed one-time, per month, or per year.
           </p>
 
           <!-- Scope list — one card per scope. Rendered by renderScopes(). -->
@@ -2684,23 +3025,25 @@ function timeAgo(dateStr: string): string {
           <!-- Add Scope — slim row at the end of the list (no panel chrome
                so it doesn't compete visually with the actual scope cards
                above). Single-line on desktop, wraps on mobile. -->
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; padding:10px 4px;">
-            <span style="font-size:13px; font-weight:600; color:var(--color-text-secondary); white-space:nowrap;">
+          <div class="scope-addscope-row">
+            <span class="scope-addscope-label">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Add another scope
             </span>
             <select id="scopeAddTemplatePicker" class="form-input" style="flex:1; min-width:180px; max-width:340px;"></select>
-            <button type="button" id="scopeAddFromTemplateBtn" class="btn btn-primary" style="padding:8px 14px; font-size:13px;">Add from template</button>
-            <button type="button" id="scopeAddEmptyBtn" class="btn-link-secondary" style="background:transparent; border:none; color:var(--color-text-secondary); font-size:12px; cursor:pointer; padding:6px 4px; text-decoration:underline; text-underline-offset:3px;">or add empty scope</button>
+            <button type="button" id="scopeAddFromTemplateBtn" class="btn btn-primary" style="padding:8px 16px; font-size:13px;">Add from template</button>
+            <button type="button" id="scopeAddEmptyBtn" class="scope-foot-btn">or empty scope</button>
           </div>
 
-          <!-- Pricing summary — sums every Subtotal item across every scope. -->
-          <div id="pricingScope" style="margin-top:18px; padding:14px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md);">
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; color:var(--color-text-secondary); margin-bottom:8px;">Pricing Summary</div>
-            <div id="pricingScopeSubtotals" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+          <!-- Pricing summary — every price line, then what the customer
+               actually pays: money due at signing, and any recurring plan on
+               its own row. The two are never added together. -->
+          <div id="pricingScope">
+            <div class="pricing-summary-title">Pricing summary</div>
+            <div id="pricingScopeSubtotals"></div>
             <div class="totals-section" style="margin-top:0;">
               <div class="total-row">
-                <span>Subtotals:</span>
+                <span>All price lines:</span>
                 <span id="pricingScopeSubtotal">$0.00</span>
               </div>
               <div class="total-row">
@@ -2708,19 +3051,20 @@ function timeAgo(dateStr: string): string {
                 <input type="number" class="form-input" id="inputDiscount" style="width: 100px; padding: 4px 8px; text-align: right;" value="0" />
               </div>
               <div class="total-row grand-total">
-                <span>Total:</span>
+                <span id="pricingScopeGrandLabel">Total:</span>
                 <span id="pricingScopeGrand">$0.00</span>
               </div>
             </div>
+            <div id="pricingScopeRecurring"></div>
           </div>
 
           <!-- Acceptance mode — Simple (one Accept button) vs Advanced (drawn
                signature, ESIGN/UETA). Default Simple. Saves with the main Save. -->
-          <div id="acceptModeBox" style="margin-top:14px; padding:14px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md); display:flex; gap:12px; align-items:flex-start;">
+          <div id="acceptModeBox" style="margin-top:12px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); display:flex; gap:12px; align-items:flex-start;">
             <input type="checkbox" id="inputRequireSig" style="margin-top:3px; width:18px; height:18px; cursor:pointer;" />
             <label for="inputRequireSig" style="cursor:pointer; flex:1;">
-              <span style="font-weight:700; font-size:14px; color:var(--color-text-primary);">Require a signature to accept</span>
-              <span style="display:block; font-size:12px; color:var(--color-text-secondary); margin-top:3px;">
+              <span style="font-weight:600; font-size:14px; color:var(--foreground);">Require a signature to accept</span>
+              <span style="display:block; font-size:13px; color:var(--muted); margin-top:3px;">
                 Off (default): customer accepts with one <strong>Accept</strong> button. On: customer must draw a legal e-signature.
               </span>
             </label>
@@ -2729,8 +3073,8 @@ function timeAgo(dateStr: string): string {
           <!-- Scopes persist with the quote's main Save button (top-right) —
                no separate save here. Just a clear-all action. -->
           <div style="margin-top:14px; display:flex; gap:8px; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-            <button type="button" id="scopeClearAllBtn" class="btn btn-danger" style="padding:10px 18px;">Clear all scopes</button>
-            <span style="font-size:12px; color:var(--color-text-secondary);">Scope changes save with the <strong>Save</strong> button at the top.</span>
+            <button type="button" id="scopeClearAllBtn" class="btn btn-danger" style="padding:8px 16px;">Clear all scopes</button>
+            <span style="font-size:12px; color:var(--muted);">Scope changes save with the <strong>Save</strong> button at the bottom.</span>
           </div>
         </div>
 
@@ -2758,11 +3102,11 @@ function timeAgo(dateStr: string): string {
               <div class="upload-progress-fill" id="uploadProgressFill"></div>
             </div>
           </div>
-          <div id="qrefBulkBar" style="display:none; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; padding:8px 12px; background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.35); border-radius:var(--radius-md);">
-            <span id="qrefBulkCount" style="font-size:13px; font-weight:700; color:#c7d2fe;">0 selected</span>
+          <div id="qrefBulkBar" style="display:none; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; padding:8px 12px; background:var(--accent-soft); border:1px solid color-mix(in oklab, var(--accent) 30%, transparent); border-radius:var(--radius-md);">
+            <span id="qrefBulkCount" style="font-size:13px; font-weight:700; color:var(--accent-soft-foreground);">0 selected</span>
             <span style="flex:1; min-width:8px;"></span>
-            <button type="button" onclick="qrefBulkDelete()" style="padding:6px 12px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.45); border-radius:var(--radius-md); color:#fca5a5; font-size:12px; font-weight:600; cursor:pointer;">Delete</button>
-            <button type="button" onclick="qrefClearSelect()" style="padding:6px 12px; background:rgba(148,163,184,0.12); border:1px solid rgba(148,163,184,0.35); border-radius:var(--radius-md); color:#cbd5e1; font-size:12px; font-weight:600; cursor:pointer;">Clear</button>
+            <button type="button" onclick="qrefBulkDelete()" style="padding:4px 14px; background:var(--danger-soft); border:none; border-radius:9999px; color:var(--danger-soft-foreground); font-size:12px; font-weight:600; cursor:pointer;">Delete</button>
+            <button type="button" onclick="qrefClearSelect()" style="padding:4px 14px; background:var(--default); border:none; border-radius:9999px; color:var(--muted); font-size:12px; font-weight:600; cursor:pointer;">Clear</button>
           </div>
           <div class="images-grid" id="imagesGrid">
             <!-- Media items rendered here -->
@@ -2841,7 +3185,7 @@ function timeAgo(dateStr: string): string {
         <div class="tab-content" id="tabPdfs">
           <div class="form-section">
             <h3 class="form-section-title">Documents</h3>
-            <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">Attach one or more PDFs (your estimate, supplier estimates, scope drawings, etc.). All attached PDFs are included when the quote is sent to the client.</p>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Attach one or more PDFs (your estimate, supplier estimates, scope drawings). Every attached PDF goes out when the quote is sent to the client.</p>
             <div id="attachmentsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;"></div>
             <input type="file" id="attachmentInput" accept="application/pdf" hidden />
             <button type="button" class="btn-sm btn-secondary" id="btnAddAttachment">
@@ -2874,7 +3218,7 @@ function timeAgo(dateStr: string): string {
                 <option value="">MannyKnows (internal)</option>
                 {partnersList.map((pt) => (<option value={pt.id}>{pt.name}</option>))}
               </select>
-              <span id="quotePartnerBadge" style="font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px; background:rgba(148,163,184,0.15); color:#a1a1aa;">Internal (MannyKnows)</span>
+              <span id="quotePartnerBadge" style="font-size:12px; font-weight:500; padding:2px 10px; border-radius:9999px; background:var(--default); color:var(--muted);">Internal (MannyKnows)</span>
             </div>
           </div>
           <div class="management-section">
@@ -2883,13 +3227,13 @@ function timeAgo(dateStr: string): string {
 
             <div class="management-cards">
             <!-- Promote to Project (manual promotion — customer approved offline) -->
-            <div id="promoteSection" style="padding:16px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md);">
-              <h4 style="font-size:14px; font-weight:600; color:var(--color-text-primary); margin-bottom:8px;">Promote to Project</h4>
-              <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:12px;">Convert this quote into a project now, use when the customer approved offline (phone, in person, email) instead of accepting online.</p>
+            <div id="promoteSection" style="padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);">
+              <h4 style="font-size:15px; font-weight:600; color:var(--foreground); margin-bottom:6px;">Promote to Project</h4>
+              <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">Convert this quote into a project now, use when the customer approved offline (phone, in person, email) instead of accepting online.</p>
               <div style="margin-bottom:12px;">
-                <label style="font-size:12px; font-weight:600; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Notes (optional)</label>
+                <label style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px;">Notes (optional)</label>
                 <textarea id="promoteNotes" class="form-input form-textarea" rows="2" placeholder="e.g., Customer approved over the phone on 6/12; agreed to start next week."></textarea>
-                <div style="font-size:11px; color:var(--color-text-secondary); margin-top:4px;">Saved to the quote's internal notes.</div>
+                <div style="font-size:12px; color:var(--muted); margin-top:6px;">Saved to the quote's internal notes.</div>
               </div>
               <button class="btn btn-promote" id="btnPromoteSection" style="padding:10px 20px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -2898,11 +3242,11 @@ function timeAgo(dateStr: string): string {
             </div>
 
             <!-- Mark as Declined (for sent/cold quotes where customer said no via message) -->
-            <div id="declineSection" style="display:none; padding:16px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md);">
-              <h4 style="font-size:14px; font-weight:600; color:var(--color-text-primary); margin-bottom:8px;">Mark as Declined</h4>
-              <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:12px;">Use when the customer declined via message, phone, or email instead of clicking the decline button.</p>
+            <div id="declineSection" style="display:none; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);">
+              <h4 style="font-size:15px; font-weight:600; color:var(--foreground); margin-bottom:6px;">Mark as Declined</h4>
+              <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">Use when the customer declined via message, phone, or email instead of clicking the decline button.</p>
               <div style="margin-bottom:12px;">
-                <label style="font-size:12px; font-weight:600; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Reason (optional)</label>
+                <label style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px;">Reason (optional)</label>
                 <select id="declineReasonSelect" class="form-select">
                   <option value="">Select a reason...</option>
                   <option value="Hired another company">Hired another company</option>
@@ -2914,7 +3258,7 @@ function timeAgo(dateStr: string): string {
                 </select>
               </div>
               <div style="margin-bottom:12px;">
-                <label style="font-size:12px; font-weight:600; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Notes</label>
+                <label style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:6px;">Notes</label>
                 <input type="text" id="declineNotes" class="form-input" placeholder="e.g., Customer replied by email saying they went with another company">
               </div>
               <button class="btn btn-danger" id="btnMarkDeclined" style="padding:10px 20px;">Mark as Declined</button>
@@ -2959,9 +3303,9 @@ function timeAgo(dateStr: string): string {
         </div>
 
         <!-- Follow-Up History (shown when follow_up_count > 0 or status=cold) -->
-        <div id="followUpHistory" style="display:none; margin-top: 16px; padding: 14px 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md);">
-          <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Follow-Up History</div>
-          <div id="followUpHistoryContent" style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.8;"></div>
+        <div id="followUpHistory" style="display:none; margin-top: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+          <div style="font-size: 12px; font-weight: 700; color: var(--accent-soft-foreground); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Follow-Up History</div>
+          <div id="followUpHistoryContent" style="font-size: 13px; color: var(--muted); line-height: 1.8;"></div>
         </div>
       </div>
     </div>
@@ -3319,9 +3663,10 @@ function timeAgo(dateStr: string): string {
         const body = document.getElementById('section' + sectionName!.charAt(0).toUpperCase() + sectionName!.slice(1));
         if (!body) return;
 
-        // Desktop: only allow toggling the Cold section
+        // Desktop: only the archive-ish sections toggle (Cold, Promoted) —
+        // the live pipeline sections stay open.
         if (window.innerWidth > 768) {
-          if (sectionName === 'cold') {
+          if (sectionName === 'cold' || sectionName === 'project') {
             body.classList.toggle('collapsed');
             header.classList.toggle('collapsed');
           }
@@ -3556,10 +3901,10 @@ function timeAgo(dateStr: string): string {
       const custom = s.type && !isKnownSvc(s.type) && s.type !== 'other';
       const selectValue = custom ? 'other' : s.type;
       return `
-        <div class="service-row" style="display:flex; gap:10px; align-items:flex-start; padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md); margin-bottom:10px;">
+        <div class="service-row" style="display:flex; gap:10px; align-items:flex-start; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:10px;">
           <div style="flex:1; display:flex; flex-direction:column; gap:8px; min-width:0;">
             <div>
-              <label class="form-label" style="display:block; margin-bottom:4px; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Service Type</label>
+              <label class="form-label" style="display:block; margin-bottom:4px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted);">Service Type</label>
               <select class="form-input" data-field="type" onchange="toggleRowCustomService(this)">
                 <option value="">Select service...</option>
                 ${getServiceOptionsHTML(selectValue)}
@@ -3567,7 +3912,7 @@ function timeAgo(dateStr: string): string {
               <input type="text" class="form-input service-custom-input" data-field="type_custom" placeholder="Enter custom service" style="display:${custom ? 'block' : 'none'}; margin-top:8px;" value="${custom ? escapeHtml(s.type) : ''}" />
             </div>
             <div>
-              <label class="form-label" style="display:block; margin-bottom:4px; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Scope Description</label>
+              <label class="form-label" style="display:block; margin-bottom:4px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted);">Scope Description</label>
               <textarea class="form-input" data-field="scope" placeholder="Describe the work scope..." rows="3" style="resize:vertical;">${escapeHtml(s.scope || '')}</textarea>
             </div>
           </div>
@@ -4020,16 +4365,16 @@ function timeAgo(dateStr: string): string {
         list.innerHTML = '<div style="font-size:12px; color:var(--color-text-secondary); padding:8px 0;">No PDFs attached yet.</div>';
       } else {
         list.innerHTML = currentAttachments.map(a => `
-          <div class="contract-file-card" data-attachment-id="${a.id}" style="display:flex; align-items:center; gap:12px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" style="flex-shrink:0;">
+          <div class="contract-file-card" data-attachment-id="${a.id}" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger-soft-foreground)" stroke-width="2" style="flex-shrink:0;">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
             <input type="text" value="${escAttr(a.label)}" data-attachment-label="${a.id}"
-              style="flex:1; padding:6px 10px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:6px; color:var(--color-text-primary); font-size:13px;" />
-            <button type="button" data-attachment-internal="${a.id}" data-internal="${a.is_internal ? '1' : '0'}" class="btn-sm" title="${a.is_internal ? 'Internal only: hidden from the customer accept page. Click to show to customer.' : 'Shown to the customer on the accept page. Click to make it internal/reference only.'}" style="white-space:nowrap; padding:4px 10px; font-size:11px; cursor:pointer; border-radius:4px; border:1px solid ${a.is_internal ? 'rgba(245,158,11,0.5)' : 'rgba(34,197,94,0.5)'}; background:${a.is_internal ? 'rgba(245,158,11,0.12)' : 'rgba(34,197,94,0.12)'}; color:${a.is_internal ? '#fcd34d' : '#86efac'};">${a.is_internal ? 'Internal' : 'Customer'}</button>
-            <a href="${escAttr(a.file_url)}" target="_blank" rel="noopener" style="color:var(--color-primary); font-size:12px; text-decoration:none; white-space:nowrap;">View PDF</a>
-            <button type="button" data-attachment-remove="${a.id}" class="btn-sm" style="background: none; border: 1px solid #dc2626; color: #dc2626; padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 4px;">Remove</button>
+              style="flex:1; min-width:160px; padding:6px 10px; background:var(--default); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--foreground); font-size:13px;" />
+            <button type="button" data-attachment-internal="${a.id}" data-internal="${a.is_internal ? '1' : '0'}" class="btn-sm" title="${a.is_internal ? 'Internal only: hidden from the customer accept page. Click to show to customer.' : 'Shown to the customer on the accept page. Click to make it internal/reference only.'}" style="white-space:nowrap; padding:3px 12px; font-size:12px; font-weight:500; cursor:pointer; border-radius:9999px; border:none; background:${a.is_internal ? 'var(--warning-soft)' : 'var(--success-soft)'}; color:${a.is_internal ? 'var(--warning-soft-foreground)' : 'var(--success-soft-foreground)'};">${a.is_internal ? 'Internal' : 'Customer'}</button>
+            <a href="${escAttr(a.file_url)}" target="_blank" rel="noopener" style="color:var(--accent-soft-foreground); font-size:12px; font-weight:600; text-decoration:none; white-space:nowrap;">View PDF</a>
+            <button type="button" data-attachment-remove="${a.id}" class="btn-sm" style="background:var(--danger-soft); border:none; color:var(--danger-soft-foreground); padding:4px 12px; font-size:12px; cursor:pointer; border-radius:9999px;">Remove</button>
           </div>
         `).join('');
       }
@@ -4080,19 +4425,19 @@ function timeAgo(dateStr: string): string {
         ['Device', a.user_agent ? deviceFromUA(a.user_agent) : 'Not recorded'],
       ];
       const rowsHtml = rows.map(([k, v]) => `
-        <div style="display:flex; gap:10px; font-size:12px; line-height:1.5;">
-          <span style="min-width:96px; color:#86efac; font-weight:600;">${k}</span>
-          <span style="color:#dcfce7;">${escAttr(v)}</span>
+        <div style="display:flex; gap:10px; font-size:13px; line-height:1.6;">
+          <span style="min-width:104px; color:var(--success-soft-foreground); font-weight:600;">${k}</span>
+          <span style="color:var(--foreground);">${escAttr(v)}</span>
         </div>`).join('');
       box.style.display = 'block';
       box.innerHTML = `
-        <div style="padding:12px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:var(--radius-md);">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <strong style="font-size:13px; color:#bbf7d0;">Acceptance record</strong>
+        <div style="padding:16px; background:var(--success-soft); border:1px solid color-mix(in oklab, #22c55e 25%, transparent); border-radius:var(--radius-md);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success-soft-foreground)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <strong style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--success-soft-foreground);">Acceptance record</strong>
           </div>
           ${rowsHtml}
-          ${a.consent_text ? `<div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(34,197,94,0.2); font-size:11px; color:#a7f3d0; font-style:italic;">${escAttr(a.consent_text)}</div>` : ''}
+          ${a.consent_text ? `<div style="margin-top:10px; padding-top:10px; border-top:1px solid color-mix(in oklab, #22c55e 20%, transparent); font-size:12px; color:var(--muted); font-style:italic;">${escAttr(a.consent_text)}</div>` : ''}
         </div>`;
     }
 
@@ -5825,18 +6170,42 @@ function timeAgo(dateStr: string): string {
 
     // Sum every subtotal item in one scope.
     function sumScopeSubtotalsLocal(scope: any): number {
-      let total = 0;
-      if (!scope || !Array.isArray(scope.sections)) return 0;
+      const b = scopeBillingTotals(scope);
+      return b.once + b.monthly + b.yearly;
+    }
+
+    // Billing cadence of a subtotal item. Anything unrecognized (including
+    // every row saved before Aug 2026) reads as one-time.
+    function itemBillingLocal(it: any): 'once' | 'monthly' | 'yearly' {
+      return it?.billing === 'monthly' || it?.billing === 'yearly' ? it.billing : 'once';
+    }
+
+    // Subtotals of one scope, kept in separate buckets. One-time money and a
+    // monthly plan are never added together — see the same split in
+    // lib/quoteTemplateConstants.ts, which drives the customer documents.
+    function scopeBillingTotals(scope: any): { once: number; monthly: number; yearly: number } {
+      const out = { once: 0, monthly: 0, yearly: 0 };
+      if (!scope || !Array.isArray(scope.sections)) return out;
       for (const sec of scope.sections) {
         if (!Array.isArray(sec?.items)) continue;
         for (const it of sec.items) {
-          if (it && it.type === 'subtotal') {
-            const amt = Number(it.amount) || 0;
-            total += amt;
-          }
+          if (it && it.type === 'subtotal') out[itemBillingLocal(it)] += Number(it.amount) || 0;
         }
       }
-      return total;
+      return out;
+    }
+
+    function money(n: number): string {
+      return '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Compact "$1,195.00 + $545.00/mo" for the scope header chip.
+    function billingChipText(b: { once: number; monthly: number; yearly: number }): string {
+      const parts: string[] = [];
+      if (b.once > 0 || (b.monthly <= 0 && b.yearly <= 0)) parts.push(money(b.once));
+      if (b.monthly > 0) parts.push(money(b.monthly) + '/mo');
+      if (b.yearly > 0) parts.push(money(b.yearly) + '/yr');
+      return parts.join(' + ');
     }
 
     // Top-level renderer — one card per scope, then a sentinel when empty.
@@ -5844,9 +6213,12 @@ function timeAgo(dateStr: string): string {
       const container = document.getElementById('scopesList');
       if (!container) return;
       if (!scopesState.length) {
-        container.innerHTML = '<div style="padding:24px; text-align:center; color:var(--color-text-secondary); border:1.5px dashed var(--glass-border); border-radius:var(--radius-md); font-size:13px;">No scopes yet. Use the buttons below to add a scope from a template, or add an empty scope to build one by hand.</div>';
+        container.innerHTML = '<div class="scope-empty">No scopes yet. Add one from a template below, or start an empty scope and build it by hand.</div>';
       } else {
         container.innerHTML = scopesState.map((sc, idx) => renderScopeCard(sc, idx)).join('');
+        // Size every textarea to its content — rows="1" keeps short bullets
+        // on one line, long notes grow.
+        container.querySelectorAll('textarea').forEach(t => (window as any).scopeAutoGrow(t));
       }
       updateSendButtonState();
       // After re-render, re-populate every per-scope template picker (selects
@@ -5858,64 +6230,97 @@ function timeAgo(dateStr: string): string {
       renderPricingMode();
     }
 
-    // One scope card. Layout:
-    //   Header: title input | subtotal badge | actions (↑↓✕ Preview) | collapse toggle
-    //   Body  : per-scope template picker + Apply | sections list | + Add section
+    // Icon button used by every scope/section/item action row. Icon-only,
+    // 26px, revealed on hover or focus of its row (see the global CSS).
+    function scopeIconBtn(icon: string, title: string, onclick: string, opts?: { disabled?: boolean; danger?: boolean }): string {
+      return `<button type="button" class="scope-icon-btn${opts?.danger ? ' danger' : ''}" ${opts?.disabled ? 'disabled' : ''} onclick="${onclick}" title="${title}" aria-label="${title}">${icon}</button>`;
+    }
+
+    const SCOPE_ICONS = {
+      up: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>',
+      down: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>',
+      del: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+      pdf: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+      polish: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.09 5.26L20 8.27l-4 3.87.94 5.86L12 15.27 7.06 18l.94-5.86-4-3.87 5.91-1.01z"/></svg>',
+    };
+
+    // Which scopes are collapsed, by id. Collapsing is the answer to a long
+    // quote: one line per scope until you open the one you're editing.
+    const scopeCollapsed = new Set<string>();
+    (window as any).scopeToggleCollapse = (scopeId: string) => {
+      if (scopeCollapsed.has(scopeId)) scopeCollapsed.delete(scopeId);
+      else scopeCollapsed.add(scopeId);
+      renderScopes();
+    };
+
+    // One scope card — the ONLY bordered box in the editor. Sections and
+    // items inside it are flat rows separated by hairlines, so a long quote
+    // reads as an outline instead of cards inside cards inside cards.
+    //   Header: caret | title | totals chip | actions
+    //   Body  : sections (flat) | add-section + template row
     function renderScopeCard(scope: any, scopeIdx: number): string {
       const last = scopesState.length - 1;
-      const subtotal = sumScopeSubtotalsLocal(scope);
+      const totals = scopeBillingTotals(scope);
+      const collapsed = scopeCollapsed.has(scope.id);
+      const secCount = Array.isArray(scope.sections) ? scope.sections.length : 0;
+      const itemCount = (scope.sections || []).reduce((n: number, s: any) => n + (Array.isArray(s?.items) ? s.items.length : 0), 0);
       const sectionsHtml = (scope.sections || []).map((sec: any, i: number) =>
         renderScopeSectionInCard(scope.id, sec, i, scope.sections.length)
       ).join('');
-      return `<div class="scope-card scope-section" style="background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:14px; margin-bottom:14px;" data-scope-id="${scopeEscape(scope.id)}">
-        <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
-          <input type="text" class="form-input" value="${scopeEscape(scope.title)}" oninput="scopeUpdateScopeTitle('${scope.id}', this.value)" placeholder="Scope title (e.g. Website Build)" style="flex:1; min-width:180px; font-weight:700; font-size:15px;">
-          <span style="font-size:13px; font-weight:700; color:#86efac; font-variant-numeric:tabular-nums; padding:6px 10px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); border-radius:var(--radius-sm); white-space:nowrap;">$${subtotal.toFixed(2)}</span>
-          <div class="scope-section-actions" style="display:flex; gap:6px;">
-            <button type="button" class="btn btn-secondary scope-polish-btn" data-polish-target="scope-title" data-scope-id="${scope.id}" onclick="scopePolishScopeTitle('${scope.id}', this)" style="padding:6px 8px;" title="Polish: fix typos + translate Spanish → English">✨</button>
-            <button type="button" class="btn btn-secondary" onclick="scopePreviewPdf('${scope.id}')" style="padding:6px 10px; font-size:12px;" title="Preview just this scope as a PDF">Preview PDF</button>
-            <button type="button" class="btn btn-secondary" ${scopeIdx === 0 ? 'disabled' : ''} onclick="scopeMoveScope('${scope.id}', -1)" style="padding:6px 10px;" title="Move up">↑</button>
-            <button type="button" class="btn btn-secondary" ${scopeIdx === last ? 'disabled' : ''} onclick="scopeMoveScope('${scope.id}', 1)" style="padding:6px 10px;" title="Move down">↓</button>
-            <button type="button" class="btn btn-secondary" onclick="scopeDeleteScope('${scope.id}')" style="padding:6px 10px; color:#fca5a5;" title="Delete this scope">✕</button>
+      return `<div class="scope-card${collapsed ? ' is-collapsed' : ''}" data-scope-id="${scopeEscape(scope.id)}">
+        <div class="scope-head">
+          <button type="button" class="scope-caret" onclick="scopeToggleCollapse('${scope.id}')" title="${collapsed ? 'Expand scope' : 'Collapse scope'}" aria-expanded="${collapsed ? 'false' : 'true'}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <input type="text" class="scope-title-input" value="${scopeEscape(scope.title)}" oninput="scopeUpdateScopeTitle('${scope.id}', this.value)" placeholder="Scope title (e.g. Website build)">
+          <span class="scope-meta-count">${secCount} section${secCount === 1 ? '' : 's'} · ${itemCount} line${itemCount === 1 ? '' : 's'}</span>
+          <span class="scope-total-chip">${billingChipText(totals)}</span>
+          <div class="scope-section-actions scope-head-actions">
+            ${scopeIconBtn(SCOPE_ICONS.polish, 'Polish: fix typos, translate Spanish → English', `scopePolishScopeTitle('${scope.id}', this)`)}
+            ${scopeIconBtn(SCOPE_ICONS.pdf, 'Preview just this scope as a PDF', `scopePreviewPdf('${scope.id}')`)}
+            ${scopeIconBtn(SCOPE_ICONS.up, 'Move scope up', `scopeMoveScope('${scope.id}', -1)`, { disabled: scopeIdx === 0 })}
+            ${scopeIconBtn(SCOPE_ICONS.down, 'Move scope down', `scopeMoveScope('${scope.id}', 1)`, { disabled: scopeIdx === last })}
+            ${scopeIconBtn(SCOPE_ICONS.del, 'Delete this scope', `scopeDeleteScope('${scope.id}')`, { danger: true })}
           </div>
         </div>
 
-        <div style="display:flex; gap:8px; align-items:end; flex-wrap:wrap; margin-bottom:12px;">
-          <div style="flex:1; min-width:180px;">
-            <label class="form-label" style="display:block; margin-bottom:4px; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary);">Replace with template</label>
-            <select id="scopeTemplatePicker-${scope.id}" class="form-input"></select>
-          </div>
-          <button type="button" class="btn btn-secondary" onclick="scopeApplyTemplateToScope('${scope.id}')" style="padding:9px 14px;">Apply</button>
-        </div>
+        <div class="scope-body">
+          ${sectionsHtml || '<div class="scope-empty">No sections yet. Add one below, or replace this scope with a template.</div>'}
 
-        <div style="margin-bottom:8px; font-size:11px; font-weight:700; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Sections</div>
-        ${sectionsHtml || '<div style="padding:14px; text-align:center; color:var(--color-text-secondary); border:1px dashed var(--glass-border); border-radius:var(--radius-sm); font-size:12px;">No sections in this scope yet.</div>'}
-        <button type="button" onclick="scopeAddSection('${scope.id}')" style="display:block; width:100%; padding:10px; background:rgba(255,255,255,0.02); border:1.5px dashed var(--glass-border); color:var(--color-text-secondary); border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer; margin-top:8px;">+ Add section</button>
+          <div class="scope-foot">
+            <button type="button" class="scope-add-section" onclick="scopeAddSection('${scope.id}')">+ Add section</button>
+            <span class="scope-foot-spacer"></span>
+            <select id="scopeTemplatePicker-${scope.id}" class="scope-foot-select" aria-label="Replace this scope with a template"></select>
+            <button type="button" class="scope-foot-btn" onclick="scopeApplyTemplateToScope('${scope.id}')" title="Replace this scope's sections with the chosen template">Replace</button>
+          </div>
+        </div>
       </div>`;
     }
 
+    // A section: title row + its item rows. No box of its own — a hairline
+    // above it is the only separator.
     function renderScopeSectionInCard(scopeId: string, section: any, sIdx: number, totalSections: number): string {
       const last = totalSections - 1;
       const items = (section.items || []).map((it: any, iIdx: number) =>
         renderScopeItemInCard(scopeId, section.id, it, iIdx, section.items.length)
       ).join('');
-      return `<div class="scope-section" style="background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:12px; margin-bottom:10px;" data-section-id="${scopeEscape(section.id)}">
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
-          <input type="text" class="form-input" value="${scopeEscape(section.title)}" oninput="scopeUpdateSectionTitle('${scopeId}', '${section.id}', this.value)" placeholder="Section title" style="flex:1; font-weight:700;">
-          <div class="scope-section-actions" style="display:flex; gap:6px;">
-            <button type="button" class="btn btn-secondary scope-polish-btn" onclick="scopePolishSectionTitle('${scopeId}', '${section.id}', this)" style="padding:6px 8px;" title="Polish: fix typos + translate Spanish → English">✨</button>
-            <button type="button" class="btn btn-secondary" ${sIdx === 0 ? 'disabled' : ''} onclick="scopeMoveSection('${scopeId}', '${section.id}', -1)" style="padding:6px 10px;">↑</button>
-            <button type="button" class="btn btn-secondary" ${sIdx === last ? 'disabled' : ''} onclick="scopeMoveSection('${scopeId}', '${section.id}', 1)" style="padding:6px 10px;">↓</button>
-            <button type="button" class="btn btn-secondary" onclick="scopeDeleteSection('${scopeId}', '${section.id}')" style="padding:6px 10px; color:#fca5a5;">✕</button>
+      return `<div class="scope-section" data-section-id="${scopeEscape(section.id)}">
+        <div class="scope-sec-head">
+          <input type="text" class="scope-sec-title" value="${scopeEscape(section.title)}" oninput="scopeUpdateSectionTitle('${scopeId}', '${section.id}', this.value)" placeholder="Section title">
+          <div class="scope-section-actions">
+            ${scopeIconBtn(SCOPE_ICONS.polish, 'Polish: fix typos, translate Spanish → English', `scopePolishSectionTitle('${scopeId}', '${section.id}', this)`)}
+            ${scopeIconBtn(SCOPE_ICONS.up, 'Move section up', `scopeMoveSection('${scopeId}', '${section.id}', -1)`, { disabled: sIdx === 0 })}
+            ${scopeIconBtn(SCOPE_ICONS.down, 'Move section down', `scopeMoveSection('${scopeId}', '${section.id}', 1)`, { disabled: sIdx === last })}
+            ${scopeIconBtn(SCOPE_ICONS.del, 'Delete section', `scopeDeleteSection('${scopeId}', '${section.id}')`, { danger: true })}
           </div>
         </div>
         ${items}
-        <div style="display:flex; gap:6px; flex-wrap:wrap; padding-top:8px; border-top:1px dashed var(--glass-border); margin-top:8px;">
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'bullet')" style="padding:5px 10px; font-size:12px;">+ Bullet</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'fillable')" style="padding:5px 10px; font-size:12px;">+ Color line</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'choice')" style="padding:5px 10px; font-size:12px;" title="Labeled dropdown: admin defines the options">+ Choice</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'subtotal')" style="padding:5px 10px; font-size:12px;">+ Subtotal</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeAddItem('${scopeId}', '${section.id}', 'note')" style="padding:5px 10px; font-size:12px;">+ Note</button>
+        <div class="scope-addbar">
+          <button type="button" onclick="scopeAddItem('${scopeId}', '${section.id}', 'bullet')">+ Bullet</button>
+          <button type="button" onclick="scopeAddItem('${scopeId}', '${section.id}', 'note')">+ Note</button>
+          <button type="button" onclick="scopeAddItem('${scopeId}', '${section.id}', 'subtotal')">+ Price</button>
+          <button type="button" onclick="scopeAddItem('${scopeId}', '${section.id}', 'choice')" title="Labeled dropdown, you define the options">+ Choice</button>
+          <button type="button" onclick="scopeAddItem('${scopeId}', '${section.id}', 'fillable')" title="Labeled line the customer reads as Label: value — for details you type per quote">+ Fill-in</button>
         </div>
       </div>`;
     }
@@ -5923,33 +6328,21 @@ function timeAgo(dateStr: string): string {
     function renderScopeItemInCard(scopeId: string, sectionId: string, item: any, iIdx: number, itemsLen: number): string {
       const last = itemsLen - 1;
       const label = item.type === 'bullet' ? 'BULLET'
-        : item.type === 'fillable' ? 'COLOR'
+        : item.type === 'fillable' ? 'FILL-IN'
         : item.type === 'choice' ? 'CHOICE'
-        : item.type === 'paint_line' ? 'PAINT/STAIN'
-        : item.type === 'subtotal' ? 'SUBTOTAL'
+        : item.type === 'paint_line' ? 'FILL-IN'
+        : item.type === 'subtotal' ? 'PRICE'
         : 'NOTE';
       let fields = '';
       if (item.type === 'bullet' || item.type === 'note') {
-        fields = `<textarea class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'text', this.value)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}" style="min-height:48px; line-height:1.4; resize:vertical;">${scopeEscape(item.text || '')}</textarea>`;
+        fields = `<textarea class="form-input" rows="1" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'text', this.value); scopeAutoGrow(this);" onfocus="scopeAutoGrow(this)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}" style="min-height:34px; line-height:1.45; resize:vertical;">${scopeEscape(item.text || '')}</textarea>`;
       } else if (item.type === 'fillable') {
-        // Color line — matches the customer portal card: code/name value +
-        // Paint/Stain type + Finish. All optional; flows to the portal + contract.
-        const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
-        const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
+        // Fill-in line: "Label: value". For details you type per quote —
+        // business name, domain, target start date. Use Choice instead when
+        // the value should come from a fixed option list.
         fields = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. Wall color: living room)" style="flex:1; min-width:140px;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Color name or code" style="flex:1; min-width:140px;">
-        </div>
-        <div style="display:flex; gap:6px; margin-top:6px;">
-          <select class="form-input" onchange="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)" style="flex:1;">
-            <option value=""${!pt ? ' selected' : ''}>Paint or stain?</option>
-            <option value="paint"${pt === 'paint' ? ' selected' : ''}>Paint</option>
-            <option value="stain"${pt === 'stain' ? ' selected' : ''}>Stain</option>
-          </select>
-          <select class="form-input" onchange="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'finish', this.value)" style="flex:1;">
-            <option value=""${!item.finish ? ' selected' : ''}>Finish (optional)</option>
-            ${finishes.map(f => `<option value="${f}"${item.finish === f ? ' selected' : ''}>${f}</option>`).join('')}
-          </select>
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. Website domain)" style="flex:1; min-width:140px;">
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Value (blank prints a fill-in line)" style="flex:1; min-width:140px;">
         </div>`;
       } else if (item.type === 'choice') {
         // Three fields: label, comma-separated options, and a value
@@ -5972,34 +6365,48 @@ function timeAgo(dateStr: string): string {
         </div>
         <input type="text" class="form-input" onchange="scopeUpdateChoiceOptions('${scopeId}', '${sectionId}', '${item.id}', this.value)" value="${scopeEscape(optionsStr)}" placeholder="Options (comma-separated, e.g. Granite, Quartz, Butcher block)" title="Type the choices, separated by commas. The dropdown updates when you click away." style="margin-top:6px; font-size:12px;">`;
       } else if (item.type === 'paint_line') {
-        // Legacy — kept editable so already-saved rows still work. New
-        // items go through the generic Choice flow above.
-        const productType = item.product_type === 'stain' ? 'stain' : 'paint';
+        // Retired type (a painting-contractor leftover). No new ones can be
+        // created; already-saved rows stay editable as a plain label/value
+        // pair so nothing is stranded.
         fields = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. Body color)" style="flex:1; min-width:140px;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Color / product" style="flex:1; min-width:140px;">
-          <select class="form-input" onchange="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)" style="width:120px;">
-            <option value="paint"${productType === 'paint' ? ' selected' : ''}>Paint</option>
-            <option value="stain"${productType === 'stain' ? ' selected' : ''}>Stain</option>
-          </select>
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label" style="flex:1; min-width:140px;">
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${scopeEscape(item.value || '')}" placeholder="Value" style="flex:1; min-width:140px;">
         </div>`;
       } else if (item.type === 'subtotal') {
-        fields = `<div style="display:flex; gap:6px;">
-          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label" style="flex:1;">
-          <input type="number" inputmode="decimal" step="0.01" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00" style="width:140px;">
+        // Price row: label · amount · how it's billed. The cadence is what
+        // makes a monthly quote read as a monthly quote everywhere else —
+        // the summary, the PDF, the customer page, and the email all split
+        // one-time from recurring money.
+        const cad = itemBillingLocal(item);
+        fields = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <input type="text" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${scopeEscape(item.label || '')}" placeholder="Label (e.g. One-time setup)" style="flex:1; min-width:140px;">
+          <input type="number" inputmode="decimal" step="0.01" class="form-input" oninput="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00" style="width:110px; text-align:right;">
+          <select class="form-input scope-billing-select" onchange="scopeUpdateItemField('${scopeId}', '${sectionId}', '${item.id}', 'billing', this.value)" title="How this amount is charged" style="width:132px;">
+            <option value="once"${cad === 'once' ? ' selected' : ''}>one-time</option>
+            <option value="monthly"${cad === 'monthly' ? ' selected' : ''}>per month</option>
+            <option value="yearly"${cad === 'yearly' ? ' selected' : ''}>per year</option>
+          </select>
         </div>`;
       }
-      return `<div class="scope-item" style="display:flex; gap:8px; align-items:flex-start; padding:8px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); border-radius:var(--radius-sm); margin-bottom:6px;">
-        <div style="flex-shrink:0; width:68px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-text-secondary); padding:6px 0; text-align:center; background:rgba(255,255,255,0.03); border-radius:4px;">${label}</div>
-        <div style="flex:1; min-width:0;">${fields}</div>
-        <div class="scope-item-actions" style="display:flex; flex-direction:column; gap:4px;">
-          <button type="button" class="btn btn-secondary scope-polish-btn" onclick="scopePolishItem('${scopeId}', '${sectionId}', '${item.id}', this)" style="padding:4px 8px; font-size:11px;" title="Polish: fix typos + translate Spanish → English">✨</button>
-          <button type="button" class="btn btn-secondary" ${iIdx === 0 ? 'disabled' : ''} onclick="scopeMoveItem('${scopeId}', '${sectionId}', '${item.id}', -1)" style="padding:4px 8px; font-size:11px;">↑</button>
-          <button type="button" class="btn btn-secondary" ${iIdx === last ? 'disabled' : ''} onclick="scopeMoveItem('${scopeId}', '${sectionId}', '${item.id}', 1)" style="padding:4px 8px; font-size:11px;">↓</button>
-          <button type="button" class="btn btn-secondary" onclick="scopeDeleteItem('${scopeId}', '${sectionId}', '${item.id}')" style="padding:4px 8px; font-size:11px; color:#fca5a5;">✕</button>
+      return `<div class="scope-item" data-item-type="${item.type}">
+        <span class="scope-item-type">${label}</span>
+        <div class="scope-item-fields">${fields}</div>
+        <div class="scope-item-actions">
+          ${scopeIconBtn(SCOPE_ICONS.polish, 'Polish: fix typos, translate Spanish → English', `scopePolishItem('${scopeId}', '${sectionId}', '${item.id}', this)`)}
+          ${scopeIconBtn(SCOPE_ICONS.up, 'Move up', `scopeMoveItem('${scopeId}', '${sectionId}', '${item.id}', -1)`, { disabled: iIdx === 0 })}
+          ${scopeIconBtn(SCOPE_ICONS.down, 'Move down', `scopeMoveItem('${scopeId}', '${sectionId}', '${item.id}', 1)`, { disabled: iIdx === last })}
+          ${scopeIconBtn(SCOPE_ICONS.del, 'Delete line', `scopeDeleteItem('${scopeId}', '${sectionId}', '${item.id}')`, { danger: true })}
         </div>
       </div>`;
     }
+
+    // Textareas in the flat editor start one line tall and grow with content
+    // so a section of short bullets stays short.
+    (window as any).scopeAutoGrow = (el: HTMLTextAreaElement) => {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight + 2, 320) + 'px';
+    };
 
     // Pricing summary inside the Scopes &amp; Pricing card — sums every Subtotal
     // item across every scope, then subtracts the discount. Always visible
@@ -6008,9 +6415,11 @@ function timeAgo(dateStr: string): string {
       const list = document.getElementById('pricingScopeSubtotals');
       if (!list) return;
 
-      // Build a flat list of subtotal items annotated with their scope title
-      // so the Pricing summary reads as "Interior — Total: $X / Deck — Total: $Y".
-      const rows: Array<{ label: string; amount: number }> = [];
+      // Build a flat list of price rows annotated with their scope title and
+      // billing cadence, so the summary reads as "Interior — Total: $X" and
+      // recurring lines carry /mo or /yr.
+      const rows: Array<{ label: string; amount: number; billing: 'once' | 'monthly' | 'yearly' }> = [];
+      const totals = { once: 0, monthly: 0, yearly: 0 };
       for (const sc of scopesState) {
         if (!Array.isArray(sc?.sections)) continue;
         for (const sec of sc.sections) {
@@ -6018,29 +6427,52 @@ function timeAgo(dateStr: string): string {
           for (const it of sec.items) {
             if (it && it.type === 'subtotal') {
               const amt = Number(it.amount) || 0;
+              const billing = itemBillingLocal(it);
               const label = scopesState.length > 1
                 ? `${sc.title || 'Scope'}: ${it.label || 'Subtotal'}`
                 : (it.label || 'Subtotal');
-              rows.push({ label, amount: amt });
+              rows.push({ label, amount: amt, billing });
+              totals[billing] += amt;
             }
           }
         }
       }
+      const suffix = { once: '', monthly: '/mo', yearly: '/yr' };
       list.innerHTML = rows.length
         ? rows.map(r => `
-            <div style="display:flex; justify-content:space-between; gap:10px; padding:6px 10px; background:rgba(255,255,255,0.02); border:1px solid var(--glass-border); border-radius:var(--radius-sm); font-size:13px;">
-              <span style="color:var(--color-text-secondary);">${(r.label || '').replace(/[<>&]/g, '')}</span>
-              <span style="font-weight:600; font-variant-numeric:tabular-nums;">$${r.amount.toFixed(2)}</span>
+            <div class="pricing-line">
+              <span class="pricing-line-label">${(r.label || '').replace(/[<>&]/g, '')}</span>
+              ${r.billing === 'once' ? '' : `<span class="pricing-line-cadence">${r.billing === 'monthly' ? 'monthly' : 'yearly'}</span>`}
+              <span class="pricing-line-amount">${money(r.amount)}${suffix[r.billing]}</span>
             </div>
           `).join('')
-        : `<div style="padding:8px 10px; font-size:12px; color:var(--color-text-secondary); font-style:italic;">No Subtotal items yet, add one inside a scope section to set pricing.</div>`;
-      const sum = rows.reduce((s, r) => s + r.amount, 0);
+        : `<div class="pricing-line-empty">No price lines yet, add one inside a scope section to set pricing.</div>`;
+
       const discountEl = document.getElementById('inputDiscount') as HTMLInputElement | null;
       const discount = discountEl ? (parseFloat(discountEl.value) || 0) : 0;
+      // Discount comes off the money due at signing when there is any,
+      // otherwise off the recurring line — same rule as the customer document.
+      const target: 'once' | 'monthly' | 'yearly' = totals.once > 0 ? 'once' : (totals.monthly > 0 ? 'monthly' : 'yearly');
+      const net = { ...totals };
+      net[target] = Math.max(0, net[target] - discount);
+
       const subtotalEl = document.getElementById('pricingScopeSubtotal');
       const grandEl = document.getElementById('pricingScopeGrand');
-      if (subtotalEl) subtotalEl.textContent = `$${sum.toFixed(2)}`;
-      if (grandEl) grandEl.textContent = `$${(sum - discount).toFixed(2)}`;
+      const grandLabelEl = document.getElementById('pricingScopeGrandLabel');
+      const recurringEl = document.getElementById('pricingScopeRecurring');
+      if (subtotalEl) subtotalEl.textContent = money(totals.once + totals.monthly + totals.yearly);
+      // Grand row = money due at signing. Recurring gets its own row so a
+      // setup fee and a monthly plan never add into one meaningless number.
+      if (grandLabelEl) grandLabelEl.textContent = (net.monthly > 0 || net.yearly > 0) ? 'Due at signing:' : 'Total:';
+      if (grandEl) grandEl.textContent = money(net.once);
+      if (recurringEl) {
+        const parts: string[] = [];
+        if (net.monthly > 0) parts.push(`then ${money(net.monthly)} every month`);
+        if (net.yearly > 0) parts.push(`${net.monthly > 0 ? 'or ' : ''}${money(net.yearly)} prepaid for the year`);
+        recurringEl.innerHTML = parts.length
+          ? `<span class="pricing-recurring-chip">${parts.join(' · ')}</span>`
+          : '';
+      }
     }
 
     // Preview PDF button in the bottom action bar — opens the printable
@@ -6257,8 +6689,8 @@ function timeAgo(dateStr: string): string {
         const sc = findScope(scopeId);
         const card = document.querySelector(`.scope-card[data-scope-id="${scopeId}"]`);
         if (sc && card) {
-          const subtotalBadge = card.querySelector(':scope > div > span:nth-child(2)') as HTMLSpanElement | null;
-          if (subtotalBadge) subtotalBadge.textContent = `$${sumScopeSubtotalsLocal(sc).toFixed(2)}`;
+          const subtotalBadge = card.querySelector('.scope-total-chip') as HTMLSpanElement | null;
+          if (subtotalBadge) subtotalBadge.textContent = billingChipText(scopeBillingTotals(sc));
         }
         renderPricingMode();
       }
@@ -6306,8 +6738,7 @@ function timeAgo(dateStr: string): string {
         base.value = '';
         base.options = [];
       }
-      else if (type === 'paint_line') { base.label = ''; base.value = ''; base.product_type = 'paint'; }
-      else if (type === 'subtotal') { base.label = ''; base.amount = 0; }
+      else if (type === 'subtotal') { base.label = ''; base.amount = 0; base.billing = 'once'; }
       sec.items = sec.items || [];
       sec.items.push(base);
       setScopeDirty(true);
@@ -6425,16 +6856,12 @@ function timeAgo(dateStr: string): string {
           if (polished != null) { it.text = polished; changed = true; }
         } else if (it.type === 'fillable' || it.type === 'paint_line' || it.type === 'choice') {
           if ((it.label || '').trim()) {
-            const kind = it.type === 'paint_line' ? 'paint/stain row label'
-              : it.type === 'choice' ? 'dropdown field label'
-              : 'fillable field label';
+            const kind = it.type === 'choice' ? 'dropdown field label' : 'fill-in field label';
             const p1 = await polishOneString(it.label, kind);
             if (p1 != null) { it.label = p1; changed = true; }
           }
           if ((it.value || '').trim()) {
-            const kind = it.type === 'paint_line' ? 'paint/stain color or product name'
-              : it.type === 'choice' ? 'dropdown selected value'
-              : 'fillable field value';
+            const kind = it.type === 'choice' ? 'dropdown selected value' : 'fill-in field value';
             const p2 = await polishOneString(it.value, kind);
             if (p2 != null) { it.value = p2; changed = true; }
           }

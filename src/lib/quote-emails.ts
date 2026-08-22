@@ -2,7 +2,13 @@
 // Sends branded emails for quote workflow using Resend API
 
 import { Resend } from 'resend';
-import { quoteToScopes, renderScopesHtml } from './quoteTemplateConstants';
+import {
+  quoteToScopes,
+  renderScopesHtml,
+  sumSubtotalsByBilling,
+  renderQuoteTotalsHtml,
+  billingSummaryLine,
+} from './quoteTemplateConstants';
 import { SERVICE_TYPES, shortServiceLabel } from '../data/serviceTypes';
 import { type Brand, SL_BRAND, emailFrom } from './brand';
 
@@ -44,36 +50,13 @@ function buildTemplateSectionsHtml(quote: Quote): string {
   if (!scopes.length) return '';
   const heading = scopes.length > 1 ? 'Scopes of Work' : 'Scope of Work';
 
-  // Grand total. This used to live in the (now-removed) Quote Summary card —
-  // render it at the foot of the Scope card so the customer still sees the
-  // labor + materials total. Shows a discount line when one applies.
-  const sub = Number(quote.subtotal) || 0;
-  const disc = Number(quote.discount) || 0;
-  const total = Number(quote.total) || 0;
-  let totalBlock = '';
-  if (total > 0) {
-    const rows = disc > 0
-      ? `<tr>
-           <td style="padding:8px 0; text-align:left; color:#475569;">Total cost, labor and materials</td>
-           <td style="padding:8px 0; text-align:right; font-weight:600; color:#1e293b; white-space:nowrap;">${formatCurrency(sub || total)}</td>
-         </tr>
-         <tr>
-           <td style="padding:8px 0; text-align:left; color:#10b981;">Discount</td>
-           <td style="padding:8px 0; text-align:right; color:#10b981; white-space:nowrap;">-${formatCurrency(disc)}</td>
-         </tr>
-         <tr>
-           <td style="padding:12px 0 0; text-align:left; font-size:18px; font-weight:700; color:#1e293b; border-top:1px solid #cbd5e1;">Total</td>
-           <td style="padding:12px 0 0; text-align:right; font-size:20px; font-weight:700; color:#ff781d; white-space:nowrap; border-top:1px solid #cbd5e1;">${formatCurrency(total)}</td>
-         </tr>`
-      : `<tr>
-           <td style="padding:8px 0; text-align:left; font-size:17px; font-weight:700; color:#1e293b;">Total cost, labor and materials</td>
-           <td style="padding:8px 0; text-align:right; font-size:20px; font-weight:700; color:#ff781d; white-space:nowrap;">${formatCurrency(total)}</td>
-         </tr>`;
-    totalBlock = `
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; margin-top:18px; padding-top:8px; border-top:2px solid #cbd5e1;">
-        ${rows}
-      </table>`;
-  }
+  // Totals, split by billing cadence. One-time money, a monthly plan, and a
+  // prepaid year each get their own line — the shared renderer keeps this
+  // email, the customer quote page, and the PDF saying the same thing.
+  const totalBlock = renderQuoteTotalsHtml(
+    sumSubtotalsByBilling(scopes),
+    Number(quote.discount) || 0
+  );
 
   return `
     <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;">
@@ -439,7 +422,7 @@ LOCATION: ${fullAddress}
 ${quote.estimated_duration ? `TIMELINE: ${quote.estimated_duration}` : ''}
 ${quote.estimated_start ? `START DATE: ${formatDate(quote.estimated_start)}` : ''}
 
-TOTAL: ${formatCurrency(quote.total)}
+${billingSummaryLine(sumSubtotalsByBilling(quoteToScopes(quote)), Number(quote.discount) || 0) || `TOTAL: ${formatCurrency(quote.total)}`}
 ${renderAttachmentsText(quote)}
 Review and respond on our website:
 To accept: ${acceptUrl}

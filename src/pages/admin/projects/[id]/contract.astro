@@ -934,7 +934,7 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         });
         html += `<div class="pce-add-row">
           <button onclick="addItem('${scopeId}', '${section.id}', 'bullet')">+ Bullet</button>
-          <button onclick="addItem('${scopeId}', '${section.id}', 'fillable')">+ Color line</button>
+          <button onclick="addItem('${scopeId}', '${section.id}', 'fillable')" title="Labeled line the reader sees as Label: value">+ Fill-in</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'choice')" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'subtotal')">+ Subtotal</button>
           <button onclick="addItem('${scopeId}', '${section.id}', 'note')">+ Note</button>
@@ -948,32 +948,18 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         const label = item.type === 'bullet' ? 'BULLET'
           : item.type === 'fillable' ? 'COLOR'
           : item.type === 'choice' ? 'CHOICE'
-          : item.type === 'paint_line' ? 'PAINT/STAIN'
+          : item.type === 'paint_line' ? 'FIELD'
           : item.type === 'subtotal' ? 'SUBTOTAL'
           : 'NOTE';
         let fields = '';
         if (item.type === 'bullet' || item.type === 'note') {
           fields = `<textarea oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'text', this.value)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}">${escapeHtml(item.text || '')}</textarea>`;
         } else if (item.type === 'fillable') {
-          // Color line — matches the rich card in the quote editor: code/name
-          // value + Paint/Stain type + Finish. All optional; flows to the
-          // signed contract + portal.
-          const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
-          const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
+          // Fill-in line: "Label: value", typed per contract. Use Choice when
+          // the value should come from a fixed option list.
           fields = `<div class="pce-item-row">
-            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Color for living room)">
-            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Color code or name (e.g. SW 7672)">
-          </div>
-          <div class="pce-item-row" style="margin-top:6px;">
-            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)">
-              <option value=""${!pt ? ' selected' : ''}>Paint or stain?</option>
-              <option value="paint"${pt === 'paint' ? ' selected' : ''}>Paint</option>
-              <option value="stain"${pt === 'stain' ? ' selected' : ''}>Stain</option>
-            </select>
-            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'finish', this.value)">
-              <option value=""${!item.finish ? ' selected' : ''}>Finish (optional)</option>
-              ${finishes.map(f => `<option value="${f}"${item.finish === f ? ' selected' : ''}>${f}</option>`).join('')}
-            </select>
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Website domain)">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Value (blank prints a fill-in line)">
           </div>`;
         } else if (item.type === 'choice') {
           // Generic admin-defined dropdown. Options comma-separated; value
@@ -993,15 +979,11 @@ const contractorDefaultName = savedContractor?.signer_name || '';
           </div>
           <input type="text" oninput="updateChoiceOptions('${scopeId}', '${sectionId}', '${item.id}', this.value)" onchange="updateChoiceOptions('${scopeId}', '${sectionId}', '${item.id}', this.value, true)" value="${escapeAttr(optionsStr)}" placeholder="Options (comma-separated, e.g. Paint, Stain, Sealer)" style="margin-top:6px; font-size:12px;">`;
         } else if (item.type === 'paint_line') {
-          // Legacy — kept editable for any already-saved rows.
-          const productType = item.product_type === 'stain' ? 'stain' : 'paint';
+          // Retired type (painting-contractor leftover). No new ones can be
+          // created; saved rows stay editable as a plain label/value pair.
           fields = `<div class="pce-item-row" style="flex-wrap:wrap;">
-            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label (e.g. Body color)">
-            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Color / product (e.g. SW 7029)">
-            <select onchange="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'product_type', this.value)" style="flex:0 0 100px;">
-              <option value="paint"${productType === 'paint' ? ' selected' : ''}>Paint</option>
-              <option value="stain"${productType === 'stain' ? ' selected' : ''}>Stain</option>
-            </select>
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'label', this.value)" value="${escapeAttr(item.label || '')}" placeholder="Label">
+            <input type="text" oninput="updateItemField('${scopeId}', '${sectionId}', '${item.id}', 'value', this.value)" value="${escapeAttr(item.value || '')}" placeholder="Value (optional)">
           </div>`;
         } else if (item.type === 'subtotal') {
           fields = `<div class="pce-item-row">
@@ -1258,7 +1240,6 @@ const contractorDefaultName = savedContractor?.signer_name || '';
         if (type === 'bullet' || type === 'note') base.text = '';
         else if (type === 'fillable') { base.label = ''; base.value = ''; }
         else if (type === 'choice') { base.label = ''; base.value = ''; base.options = ['Paint', 'Stain']; }
-        else if (type === 'paint_line') { base.label = ''; base.value = ''; base.product_type = 'paint'; }
         else if (type === 'subtotal') { base.label = ''; base.amount = 0; }
         sec.items = sec.items || [];
         sec.items.push(base);
@@ -1360,16 +1341,12 @@ const contractorDefaultName = savedContractor?.signer_name || '';
             if (polished != null) { it.text = polished; changed = true; }
           } else if (it.type === 'fillable' || it.type === 'paint_line' || it.type === 'choice') {
             if ((it.label || '').trim()) {
-              const kind = it.type === 'paint_line' ? 'paint/stain row label'
-                : it.type === 'choice' ? 'dropdown field label'
-                : 'fillable field label';
+              const kind = it.type === 'choice' ? 'dropdown field label' : 'fill-in field label';
               const p1 = await polishOneString(it.label, kind);
               if (p1 != null) { it.label = p1; changed = true; }
             }
             if ((it.value || '').trim()) {
-              const kind = it.type === 'paint_line' ? 'paint/stain color or product name'
-                : it.type === 'choice' ? 'dropdown selected value'
-                : 'fillable field value';
+              const kind = it.type === 'choice' ? 'dropdown selected value' : 'fill-in field value';
               const p2 = await polishOneString(it.value, kind);
               if (p2 != null) { it.value = p2; changed = true; }
             }

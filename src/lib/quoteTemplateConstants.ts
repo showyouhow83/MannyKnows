@@ -33,19 +33,41 @@ export const WARRANTY_TERMS =
 // the type without importing from each other).
 // ─────────────────────────────────────────────────────────────────────────────
 
-// `choice` is a generic admin-defined dropdown: admin chooses the label
-// (e.g. "Sheen", "Paint type", "Brand"), the option list (e.g.
-// ["Matte", "Eggshell", "Semi-gloss"]), and the currently-selected value.
-// `paint_line` is the legacy hardcoded paint/stain variant — kept in the
-// type union for backwards-compat with already-saved data; new items
-// should use `choice`.
+// `fillable` is a fill-in line ("Website domain: example.com") the admin
+// types per quote. `choice` is a generic admin-defined dropdown: admin sets
+// the label (e.g. "Plan", "Turnaround"), the option list, and the selected
+// value — use it whenever the value comes from a fixed set.
+// `paint_line` is a retired painting-contractor type, kept in the union only
+// so already-saved rows still parse and render; no editor creates one.
+// Every `subtotal` item carries a billing cadence. `once` (the default when
+// the field is absent, which is every pre-Aug-2026 row) is money due at
+// signing; `monthly` and `yearly` are recurring. They are summed into
+// SEPARATE buckets and never added together — a $1,195 setup fee plus a
+// $545/mo plan is not "$1,740", and a quote that shows both a monthly option
+// and a prepaid-year option is an either/or, not a sum.
+export type BillingCadence = 'once' | 'monthly' | 'yearly';
+
 export type SectionItem =
   | { id: string; type: 'bullet'; text: string }
   | { id: string; type: 'note'; text: string }
-  | { id: string; type: 'fillable'; label: string; value: string; product_type?: 'paint' | 'stain'; finish?: string }
-  | { id: string; type: 'subtotal'; label: string; amount: number }
+  | { id: string; type: 'fillable'; label: string; value: string }
+  | { id: string; type: 'subtotal'; label: string; amount: number; billing?: BillingCadence }
   | { id: string; type: 'choice'; label: string; value: string; options: string[] }
-  | { id: string; type: 'paint_line'; label: string; value: string; product_type?: 'paint' | 'stain' };
+  | { id: string; type: 'paint_line'; label: string; value: string };
+
+// Read an item's cadence defensively — anything unrecognized reads as 'once'
+// so old data and hand-edited JSON keep their current meaning.
+export function itemBilling(item: any): BillingCadence {
+  const b = item?.billing;
+  return b === 'monthly' || b === 'yearly' ? b : 'once';
+}
+
+// Suffix shown next to a recurring amount, in the document and the editor.
+export const BILLING_SUFFIX: Record<BillingCadence, string> = {
+  once: '',
+  monthly: '/month',
+  yearly: '/year',
+};
 
 export interface QuoteSection {
   id: string;
@@ -210,6 +232,40 @@ export function sumScopeSubtotals(scope: QuoteScope | null | undefined): number 
   return sumSubtotals(scope.sections);
 }
 
+export interface QuoteTotals {
+  once: number;     // due at signing
+  monthly: number;  // charged every month
+  yearly: number;   // charged once a year (prepaid-year option)
+}
+
+// Same walk as sumSubtotals(), but keeps each billing cadence in its own
+// bucket. Callers render the buckets as separate lines.
+export function sumSubtotalsByBilling(
+  input: QuoteSection[] | QuoteScope[] | null | undefined
+): QuoteTotals {
+  const out: QuoteTotals = { once: 0, monthly: 0, yearly: 0 };
+  if (!Array.isArray(input) || input.length === 0) return out;
+  const sections: QuoteSection[] = isScopeShape(input as any[])
+    ? (input as QuoteScope[]).flatMap(s => Array.isArray(s.sections) ? s.sections : [])
+    : (input as QuoteSection[]);
+  for (const s of sections) {
+    if (!Array.isArray(s?.items)) continue;
+    for (const it of s.items) {
+      if (!it || (it as any).type !== 'subtotal') continue;
+      const amt = Number((it as any).amount);
+      if (!Number.isFinite(amt)) continue;
+      out[itemBilling(it)] += amt;
+    }
+  }
+  return out;
+}
+
+// True when a quote prices anything recurring — the trigger for the split
+// totals block. Purely one-time quotes keep the single "Total" row.
+export function hasRecurring(totals: QuoteTotals): boolean {
+  return totals.monthly > 0 || totals.yearly > 0;
+}
+
 // HTML-escape — same shape as the helper used elsewhere in the codebase.
 function escapeHtml(s: unknown): string {
   return String(s == null ? '' : s)
@@ -234,23 +290,13 @@ export function renderItemHtml(item: SectionItem): string {
     return `<p style="margin:0 0 10px 0; line-height:1.55; color:#1f2937;">${escapeHtml(item.text)}</p>`;
   }
   if (item.type === 'fillable') {
+    // Fill-in line: "Label: value", or an underline when the value is blank.
+    // (The Paint/Stain + Finish chips this used to render were a painting-
+    // contractor leftover, removed Aug 2026 — MannyKnows doesn't sell paint.)
     const val = item.value && item.value.trim()
       ? `<span style="font-weight:600; color:#111827;">${escapeHtml(item.value)}</span>`
       : `<span style="display:inline-block; min-width:120px; border-bottom:1px solid #94a3b8;">&nbsp;</span>`;
-    // Optional Paint/Stain chip + finish — mirrors the editor's color card so
-    // the admin's type/finish choices surface on the customer document.
-    let extra = '';
-    if (item.product_type === 'paint' || item.product_type === 'stain') {
-      const productType = item.product_type === 'stain' ? 'Stain' : 'Paint';
-      const chipColor = item.product_type === 'stain' ? '#9a3412' : '#1d4ed8';
-      const chipBg = item.product_type === 'stain' ? '#fff7ed' : '#eff6ff';
-      const chipBorder = item.product_type === 'stain' ? '#fdba74' : '#bfdbfe';
-      extra += `<span style="display:inline-block; margin-left:8px; padding:1px 8px; font-size:11px; font-weight:700; color:${chipColor}; background:${chipBg}; border:1px solid ${chipBorder}; border-radius:999px; vertical-align:middle;">${productType}</span>`;
-    }
-    if (item.finish && item.finish.trim()) {
-      extra += `<span style="margin-left:6px; font-size:12px; color:#6b7280;">${escapeHtml(item.finish)}</span>`;
-    }
-    return `<li style="margin:0 0 6px 0; line-height:1.5;"><span>${escapeHtml(item.label)}:</span> ${val}${extra}</li>`;
+    return `<li style="margin:0 0 6px 0; line-height:1.5;"><span>${escapeHtml(item.label)}:</span> ${val}</li>`;
   }
   if (item.type === 'choice') {
     // Admin-defined dropdown. Renders as "Label: SelectedValue" — same
@@ -264,20 +310,19 @@ export function renderItemHtml(item: SectionItem): string {
     return `<li style="margin:0 0 6px 0; line-height:1.5;"><span>${escapeHtml(item.label)}:</span> ${val}</li>`;
   }
   if (item.type === 'paint_line') {
-    // Legacy — paint/stain chip variant kept so already-saved rows render
-    // correctly. New items use `choice` instead.
+    // Retired type. Already-saved rows render as a plain labeled line; no new
+    // ones can be created from any editor.
     const val = item.value && item.value.trim()
       ? `<span style="font-weight:600; color:#111827;">${escapeHtml(item.value)}</span>`
       : `<span style="display:inline-block; min-width:120px; border-bottom:1px solid #94a3b8;">&nbsp;</span>`;
-    const productType = item.product_type === 'stain' ? 'Stain' : 'Paint';
-    const chipColor = item.product_type === 'stain' ? '#9a3412' : '#1d4ed8';
-    const chipBg = item.product_type === 'stain' ? '#fff7ed' : '#eff6ff';
-    const chipBorder = item.product_type === 'stain' ? '#fdba74' : '#bfdbfe';
-    const chip = `<span style="display:inline-block; margin-left:8px; padding:1px 8px; font-size:11px; font-weight:700; color:${chipColor}; background:${chipBg}; border:1px solid ${chipBorder}; border-radius:999px; vertical-align:middle;">${productType}</span>`;
-    return `<li style="margin:0 0 6px 0; line-height:1.5;"><span>${escapeHtml(item.label)}:</span> ${val}${chip}</li>`;
+    return `<li style="margin:0 0 6px 0; line-height:1.5;"><span>${escapeHtml(item.label)}:</span> ${val}</li>`;
   }
   if (item.type === 'subtotal') {
-    const amt = formatMoney(item.amount);
+    const cadence = itemBilling(item);
+    const suffix = BILLING_SUFFIX[cadence];
+    const amt = (formatMoney(item.amount) || '$0.00') + (suffix
+      ? `<span style="font-size:13px; font-weight:600; color:#4b5563;">${suffix}</span>`
+      : '');
     // Use a table for the subtotal row instead of flexbox — Outlook + several
     // older mail clients silently drop `display:flex` which used to collapse
     // the label and amount into one run ("Labor total$1,000.00"). A 100%-width
@@ -286,11 +331,98 @@ export function renderItemHtml(item: SectionItem): string {
     return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; margin-top:6px; border-top:1px solid #cbd5e1;">
       <tr>
         <td style="padding:8px 0; font-weight:700; text-align:left;">${escapeHtml(item.label)}</td>
-        <td style="padding:8px 0; font-weight:700; font-size:16px; text-align:right; white-space:nowrap;">${amt || '$0.00'}</td>
+        <td style="padding:8px 0; font-weight:700; font-size:16px; text-align:right; white-space:nowrap;">${amt}</td>
       </tr>
     </table>`;
   }
   return '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Totals block — the one place that decides how a quote's money reads.
+// Shared by the print preview, the customer quote page, and the quote email
+// so all three say the same thing.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Which bucket a quote-level discount comes off. Discounts are a whole-job
+// concept; take them off the money due at signing when there is any, and off
+// the recurring line when the quote is subscription-only.
+function discountTarget(totals: QuoteTotals): keyof QuoteTotals {
+  if (totals.once > 0) return 'once';
+  if (totals.monthly > 0) return 'monthly';
+  return 'yearly';
+}
+
+// One-sentence plain statement of what the customer pays and when. This is
+// what makes a monthly quote unmistakably a monthly quote.
+export function billingSummaryLine(totals: QuoteTotals, discount = 0): string {
+  const t = discountTarget(totals);
+  const net = { ...totals };
+  net[t] = Math.max(0, net[t] - (Number(discount) || 0));
+  const money = (n: number) => formatMoney(n);
+  const parts: string[] = [];
+  if (net.monthly > 0) {
+    parts.push(net.once > 0
+      ? `${money(net.once)} due at signing, then ${money(net.monthly)} every month`
+      : `${money(net.monthly)} every month`);
+  } else if (net.once > 0) {
+    parts.push(`${money(net.once)} due at signing`);
+  }
+  if (net.yearly > 0) {
+    parts.push(parts.length
+      ? `or ${money(net.yearly)} prepaid for the year`
+      : `${money(net.yearly)} prepaid for the year`);
+  }
+  if (!parts.length) return '';
+  return parts.join(', ') + '.';
+}
+
+// Full totals block. Purely one-time quotes render the single Total row they
+// always did; anything recurring gets its own line and is never folded into
+// another number.
+export function renderQuoteTotalsHtml(
+  totals: QuoteTotals,
+  discount = 0,
+  opts?: { accent?: string }
+): string {
+  const accent = opts?.accent || '#111827';
+  const disc = Math.max(0, Number(discount) || 0);
+  const t = discountTarget(totals);
+  const net = { ...totals };
+  net[t] = Math.max(0, net[t] - disc);
+  if (net.once <= 0 && net.monthly <= 0 && net.yearly <= 0) return '';
+
+  const row = (label: string, amount: string, opt?: { strong?: boolean; muted?: boolean }) => `
+    <tr>
+      <td style="padding:9px 0; text-align:left; font-size:${opt?.strong ? '15px' : '13px'}; font-weight:${opt?.strong ? '700' : '500'}; color:${opt?.muted ? '#6b7280' : '#1f2937'};">${label}</td>
+      <td style="padding:9px 0; text-align:right; white-space:nowrap; font-size:${opt?.strong ? '20px' : '15px'}; font-weight:700; color:${opt?.muted ? '#6b7280' : accent};">${amount}</td>
+    </tr>`;
+
+  const rows: string[] = [];
+  if (disc > 0) {
+    const label = t === 'once' ? 'Subtotal' : t === 'monthly' ? 'Monthly before discount' : 'Year before discount';
+    rows.push(row(label, formatMoney(totals[t]), { muted: true }));
+    rows.push(row('Discount', `−${formatMoney(disc)}`, { muted: true }));
+  }
+  if (net.once > 0) {
+    rows.push(row('Due at signing (one-time)', formatMoney(net.once), { strong: net.monthly <= 0 && net.yearly <= 0 }));
+  }
+  if (net.monthly > 0) {
+    rows.push(row('Then, every month', `${formatMoney(net.monthly)}<span style="font-size:13px; font-weight:600; color:#4b5563;">/month</span>`, { strong: true }));
+  }
+  if (net.yearly > 0) {
+    rows.push(row(
+      net.monthly > 0 ? 'Or prepay the year' : 'Prepaid year',
+      `${formatMoney(net.yearly)}<span style="font-size:13px; font-weight:600; color:#4b5563;">/year</span>`,
+      { strong: true }
+    ));
+  }
+
+  const summary = billingSummaryLine(totals, disc);
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse; margin-top:18px; border-top:2px solid #cbd5e1;">
+      ${rows.join('')}
+    </table>
+    ${summary ? `<p style="margin:8px 0 0; font-size:12px; line-height:1.5; color:#6b7280; text-align:right;">${escapeHtml(summary)}</p>` : ''}`;
 }
 
 // Render a single section block. Bullets + fillables wrap in a <ul>;

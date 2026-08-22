@@ -452,7 +452,7 @@ if (!templateId || Number.isNaN(templateId)) {
 
         html += `<div class="te-add-row">
           <button onclick="addItem('${section.id}', 'bullet')">+ Bullet</button>
-          <button onclick="addItem('${section.id}', 'fillable')">+ Color line</button>
+          <button onclick="addItem('${section.id}', 'fillable')" title="Labeled line the customer reads as Label: value">+ Fill-in</button>
           <button onclick="addItem('${section.id}', 'choice')" title="Labeled dropdown: admin defines the options">+ Choice</button>
           <button onclick="addItem('${section.id}', 'subtotal')">+ Subtotal</button>
           <button onclick="addItem('${section.id}', 'note')">+ Note</button>
@@ -466,7 +466,7 @@ if (!templateId || Number.isNaN(templateId)) {
         const typeLabel = item.type === 'bullet' ? 'BULLET'
           : item.type === 'fillable' ? 'COLOR'
           : item.type === 'choice' ? 'CHOICE'
-          : item.type === 'paint_line' ? 'PAINT/STAIN'
+          : item.type === 'paint_line' ? 'FIELD'
           : item.type === 'subtotal' ? 'SUBTOTAL'
           : 'NOTE';
 
@@ -474,25 +474,12 @@ if (!templateId || Number.isNaN(templateId)) {
         if (item.type === 'bullet' || item.type === 'note') {
           fields = `<textarea oninput="updateItemField('${sectionId}', '${item.id}', 'text', this.value)" placeholder="${item.type === 'bullet' ? 'Bullet text' : 'Paragraph text'}">${escapeHtml(item.text || '')}</textarea>`;
         } else if (item.type === 'fillable') {
-          // Color line — matches the rich card in the quote editor: code/name
-          // value + Paint/Stain type + Finish. All optional; flows to the
-          // portal + contract.
-          const pt = item.product_type === 'paint' || item.product_type === 'stain' ? item.product_type : '';
-          const finishes = ['Flat', 'Matte', 'Eggshell', 'Satin', 'Semi-gloss', 'Gloss'];
+          // Fill-in line: "Label: value", typed per quote (business name,
+          // domain, target start date). Use Choice when the value should come
+          // from a fixed option list.
           fields = `<div class="te-item-row">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Wall color: living room)">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Color name or code">
-          </div>
-          <div class="te-item-row" style="margin-top:6px;">
-            <select onchange="updateItemField('${sectionId}', '${item.id}', 'product_type', this.value)">
-              <option value=""${!pt ? ' selected' : ''}>Paint or stain?</option>
-              <option value="paint"${pt === 'paint' ? ' selected' : ''}>Paint</option>
-              <option value="stain"${pt === 'stain' ? ' selected' : ''}>Stain</option>
-            </select>
-            <select onchange="updateItemField('${sectionId}', '${item.id}', 'finish', this.value)">
-              <option value=""${!item.finish ? ' selected' : ''}>Finish (optional)</option>
-              ${finishes.map(f => `<option value="${f}"${item.finish === f ? ' selected' : ''}>${f}</option>`).join('')}
-            </select>
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Website domain)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Value (blank prints a fill-in line)">
           </div>`;
         } else if (item.type === 'choice') {
           // Generic admin-defined dropdown. The options input is a
@@ -514,20 +501,26 @@ if (!templateId || Number.isNaN(templateId)) {
           </div>
           <input type="text" oninput="updateChoiceOptions('${sectionId}', '${item.id}', this.value)" onchange="updateChoiceOptions('${sectionId}', '${item.id}', this.value, true)" value="${escapeHtml(optionsStr)}" placeholder="Options (comma-separated, e.g. Granite, Quartz, Butcher block)" style="margin-top:6px; font-size:12px;">`;
         } else if (item.type === 'paint_line') {
-          // Legacy paint_line — kept editable for already-saved rows.
-          const productType = item.product_type === 'stain' ? 'stain' : 'paint';
+          // Retired type (painting-contractor leftover). No new ones can be
+          // created; saved rows stay editable as a plain label/value pair.
           fields = `<div class="te-item-row" style="flex-wrap:wrap;">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Body color)">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Default color / product (optional)">
-            <select onchange="updateItemField('${sectionId}', '${item.id}', 'product_type', this.value)" style="flex:0 0 110px;">
-              <option value="paint"${productType === 'paint' ? ' selected' : ''}>Paint</option>
-              <option value="stain"${productType === 'stain' ? ' selected' : ''}>Stain</option>
-            </select>
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'value', this.value)" value="${escapeHtml(item.value || '')}" placeholder="Value (optional)">
           </div>`;
         } else if (item.type === 'subtotal') {
+          // Billing cadence rides with the price line. It is what makes a
+          // monthly plan read as a monthly plan on the quote, the PDF, the
+          // customer page, and the email — one-time money and recurring
+          // money are summed separately everywhere.
+          const cad = item.billing === 'monthly' || item.billing === 'yearly' ? item.billing : 'once';
           fields = `<div class="te-item-row">
-            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. Total: labor and materials)">
+            <input type="text" oninput="updateItemField('${sectionId}', '${item.id}', 'label', this.value)" value="${escapeHtml(item.label || '')}" placeholder="Label (e.g. One-time setup)">
             <input class="te-amount-field" type="number" inputmode="decimal" step="0.01" oninput="updateItemField('${sectionId}', '${item.id}', 'amount', this.value)" value="${item.amount != null ? item.amount : ''}" placeholder="0.00">
+            <select onchange="updateItemField('${sectionId}', '${item.id}', 'billing', this.value)" title="How this amount is charged" style="flex:0 0 130px;">
+              <option value="once"${cad === 'once' ? ' selected' : ''}>one-time</option>
+              <option value="monthly"${cad === 'monthly' ? ' selected' : ''}>per month</option>
+              <option value="yearly"${cad === 'yearly' ? ' selected' : ''}>per year</option>
+            </select>
           </div>`;
         }
 
@@ -630,8 +623,7 @@ if (!templateId || Number.isNaN(templateId)) {
         if (type === 'bullet' || type === 'note') base.text = '';
         else if (type === 'fillable') { base.label = ''; base.value = ''; }
         else if (type === 'choice') { base.label = ''; base.value = ''; base.options = []; }
-        else if (type === 'paint_line') { base.label = ''; base.value = ''; base.product_type = 'paint'; }
-        else if (type === 'subtotal') { base.label = ''; base.amount = 0; }
+        else if (type === 'subtotal') { base.label = ''; base.amount = 0; base.billing = 'once'; }
         s.items.push(base);
         setDirty(true);
         render();
