@@ -84,7 +84,7 @@ against main's behavior). Line counts = migration effort signal.
 | --- | --- | --- | --- |
 | Login | `admin/index.astro` | 229 | not started |
 | ~~Dashboard~~ | `admin/dashboard.astro` | 2,391 | ✅ **DONE** — verified by Manny Aug 21 (pilot; sets the pattern) |
-| Leads | `admin/leads.astro` | 2,748 | migrated — Manny's asks done Aug 21 (sources, chip badge); awaiting verify |
+| Leads | `admin/leads.astro` | 2,748 | ✅ **DONE** — mini-dashboard layout approved by Manny Aug 21 ("I'm loving it!"); sets the pattern for Quotes + Projects |
 | Quotes | `admin/quotes.astro` | 6,436 | not started |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
 | Quote templates | `admin/quote-templates.astro` | 587 | not started |
@@ -180,3 +180,15 @@ strings.
   (generator kept in session scratchpad) — loaded into LOCAL D1 only; run
   `npx wrangler d1 execute MK_APP_DB --remote --file database/seeds/quote-templates.sql`
   to seed production when Manny approves.
+- **2026-08-21 (night 2) — MINI-DASHBOARD PATTERN LOCKED (Leads approved).**
+  Every list-detail page (Quotes, Projects next) gets: (1) page-topbar —
+  gradient page title + one-line subtitle left, search field middle
+  (max-w 400), ONE primary `new-record-btn` right; nothing redundant inside
+  the list column; (2) a stat-card row (glass, radius-md, 22px number /
+  11px uppercase label; status colors via *-soft-foreground tokens);
+  (3) `.leads-columns`-style flex wrapper for list + detail. HeroUI metrics
+  pass also approved: panels radius-lg 16, inner cards radius-md 12 +
+  10-12px padding, detail name 20px, section titles 12px uppercase accent,
+  rows 13px, all buttons pills, code badge = chip. Status chips = HeroUI
+  soft chip (no border). JS contracts untouched (search/#noResults ids,
+  list-collapsed on .admin-main, section toggles).
