@@ -77,12 +77,13 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
     Media Pool<span class="nav-badge" id="mediaPoolBadge" style="display:none;">0</span>
   </a>
   <a href="/admin/web" class={`nav-link nav-link-special${active === 'web' ? ' active' : ''}`}>Web</a>
-  <div class="nav-item">
-    <span class={`nav-link nav-label${active === 'settings' ? ' active' : ''}`}>
+  <div class="nav-item nav-item-settings" id="navSettings">
+    <button type="button" class={`nav-link nav-label nav-settings-toggle${active === 'settings' ? ' active' : ''}`} id="navSettingsToggle" aria-expanded="false" aria-controls="navSettingsMenu">
       <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
       Settings
-    </span>
-    <div class="nav-dropdown">
+      <svg class="nav-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="nav-dropdown" id="navSettingsMenu">
       <a href="/admin/quote-templates" class="nav-dropdown-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg>
         Quote Templates
@@ -120,6 +121,22 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
       var collapsed = document.body.classList.toggle('nav-collapsed');
       try { localStorage.setItem('admin-nav-collapsed', collapsed ? '1' : '0'); } catch (e) {}
     });
+
+    // Settings group: sub-links stay hidden until Settings is clicked.
+    // State persists across pages; a settings page always opens its group.
+    var settingsToggle = document.getElementById('navSettingsToggle');
+    var settingsItem = document.getElementById('navSettings');
+    if (settingsToggle && settingsItem) {
+      var settingsOpen = settingsToggle.classList.contains('active');
+      try { settingsOpen = settingsOpen || localStorage.getItem('admin-settings-open') === '1'; } catch (e) {}
+      settingsItem.classList.toggle('open', settingsOpen);
+      settingsToggle.setAttribute('aria-expanded', settingsOpen ? 'true' : 'false');
+      settingsToggle.addEventListener('click', function () {
+        var open = settingsItem.classList.toggle('open');
+        settingsToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        try { localStorage.setItem('admin-settings-open', open ? '1' : '0'); } catch (e) {}
+      });
+    }
   })();
 </script>
 <style is:global>
