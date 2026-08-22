@@ -1107,23 +1107,25 @@ function timeAgo(dateStr: string): string {
       display: flex;
     }
 
+    /* HeroUI dialog spec — matches admin.css .modal normalization (Aug 22) */
     .modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: var(--backdrop);
       backdrop-filter: blur(8px);
     }
 
     .modal-content {
       position: relative;
-      background: linear-gradient(135deg, rgba(18, 18, 31, 0.95), rgba(10, 10, 20, 0.98));
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 32px;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       max-width: 400px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--overlay-shadow);
+      animation: modalSlideIn 0.2s var(--ease-out);
     }
 
     .modal-icon {
@@ -1558,7 +1560,7 @@ function timeAgo(dateStr: string): string {
         position: sticky;
         top: 0;
         z-index: 10;
-        background: linear-gradient(135deg, rgba(18, 18, 31, 0.98), rgba(10, 10, 20, 0.99));
+        background: var(--overlay);
         padding: 12px 16px !important;
         margin-bottom: 0 !important;
         border-bottom: 1px solid var(--glass-border);
@@ -1625,7 +1627,7 @@ function timeAgo(dateStr: string): string {
       .modal-content > div:last-child {
         position: sticky;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(18, 18, 31, 0.98), rgba(10, 10, 20, 0.99));
+        background: var(--overlay);
         margin: 0;
         padding: 12px 16px;
         border-top: 1px solid var(--glass-border);

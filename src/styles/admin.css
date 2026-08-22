@@ -400,6 +400,11 @@ h1, h2, h3 {
    corner — the host panel must be position: relative. */
 .detail-close-float { position: absolute; top: 14px; right: 14px; z-index: 5; }
 
+/* Hover "+" on Leads/Quotes/Projects rows — replaces the always-open
+   New Lead/Quote/Project sub-links (Manny, Aug 22). Rail-only; the mobile
+   drawer keeps its "+ New …" links since touch has no hover. */
+.nav-plus { display: none; }
+
 /* Group toggle (Settings) — looks like a nav link, acts as a disclosure:
    click reveals its sub-links (Manny, Aug 22: hidden until clicked). */
 .nav-link .nav-icon { margin-right: 8px; flex-shrink: 0; }
@@ -1469,9 +1474,14 @@ select:focus,
   display: flex;
 }
 
+/* HeroUI dialog spec (normalized Aug 22 — every admin modal matches):
+   backdrop var(--backdrop) + blur(8px); surface var(--overlay) + 1px
+   var(--border) + radius-lg + var(--overlay-shadow); title 16/600;
+   body text 14 muted. Page-local modal families (quotes/leads/projects)
+   carry the same values. */
 .modal {
   background: var(--overlay);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--overlay-shadow);
   max-width: 500px;
@@ -1498,8 +1508,8 @@ select:focus,
 }
 
 .modal-title {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--foreground);
 }
 
@@ -2550,13 +2560,37 @@ body.has-sidenav main.cs-page { max-width: 720px !important; }
     visibility: visible;
     pointer-events: auto;
   }
-  body.has-sidenav .nav-dropdown-link.view-all { display: none; }
   body.has-sidenav .nav-dropdown-divider { display: none; }
   /* Settings is the exception to always-visible sub-menus: its links stay
      hidden until the Settings toggle is clicked (.open). Must outrank the
      `body.has-sidenav .nav-dropdown { display: block }` rule above. */
   body.has-sidenav .nav-item-settings .nav-dropdown { display: none; }
   body.has-sidenav .nav-item-settings.open .nav-dropdown { display: block; }
+
+  /* Hover "+" quick-create riding each pipeline row's right edge */
+  body.has-sidenav .nav-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    color: var(--accent-soft-foreground);
+    text-decoration: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 100ms var(--ease-out), background-color 100ms var(--ease-out);
+  }
+  body.has-sidenav .nav-item:hover .nav-plus,
+  body.has-sidenav .nav-plus:focus-visible { opacity: 1; pointer-events: auto; }
+  body.has-sidenav .nav-plus:hover { background: var(--accent-soft); }
+  /* On the active (gradient) row the accent blue vanishes — go white */
+  body.has-sidenav .nav-link.active ~ .nav-plus { color: #fff; }
+  body.has-sidenav .nav-link.active ~ .nav-plus:hover { background: rgba(255, 255, 255, 0.2); }
   body.has-sidenav .nav-dropdown-link {
     padding: 7px 12px 7px 26px;
     border-radius: var(--radius);

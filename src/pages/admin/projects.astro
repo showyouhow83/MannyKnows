@@ -1138,7 +1138,7 @@ function formatCurrency(amount: number | null): string {
     /* New Project modal form: matched to the New Lead modal styling. */
     /* `.modal-content.np-modal` (not just `.np-modal`) so this beats the later
        `.modal-content { max-width: 420px }` rule that was forcing it narrow. */
-    .modal-content.np-modal { text-align: left; max-width: 700px; width: calc(100vw - 32px); max-height: 90vh; overflow-y: auto; background: linear-gradient(135deg, rgba(21, 22, 25, 0.98), rgba(10, 11, 13, 0.99)); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    .modal-content.np-modal { text-align: left; max-width: 700px; width: calc(100vw - 32px); max-height: 90vh; overflow-y: auto; background: var(--overlay); box-shadow: var(--overlay-shadow); }
     .np-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
     .np-modal-close { background: none; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 8px; border-radius: 8px; display: inline-flex; line-height: 0; transition: all 0.2s; }
     .np-modal-close:hover { background: rgba(255,255,255,0.1); color: var(--color-text-primary); }
@@ -1269,23 +1269,25 @@ function formatCurrency(amount: number | null): string {
       display: flex;
     }
 
+    /* HeroUI dialog spec — matches admin.css .modal normalization (Aug 22) */
     .modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
+      background: var(--backdrop);
+      backdrop-filter: blur(8px);
     }
 
     .modal-content {
       position: relative;
-      background: var(--color-background-light, #12121f);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 32px;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       max-width: 420px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      box-shadow: var(--overlay-shadow);
+      animation: modalSlideIn 0.2s var(--ease-out);
     }
 
     .modal-icon {
@@ -1324,7 +1326,7 @@ function formatCurrency(amount: number | null): string {
     }
 
     .modal-title {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
       margin: 0 0 8px;
       color: var(--color-text-primary);
@@ -2037,7 +2039,7 @@ function formatCurrency(amount: number | null): string {
       .modal-actions {
         position: sticky;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(21, 22, 25, 0.98), rgba(10, 11, 13, 0.99));
+        background: var(--overlay);
         margin-top: auto;
         padding: 12px 16px !important;
         border-top: 1px solid var(--glass-border);

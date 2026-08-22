@@ -28,45 +28,21 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   <a href="/admin/dashboard" class={cls('dashboard')}>Dashboard</a>
   <div class="nav-item">
     <a href="/admin/leads" class={cls('leads')}>Leads</a>
-    <div class="nav-dropdown">
-      <a href="/admin/leads" class="nav-dropdown-link view-all">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        View All Leads
-      </a>
-      <div class="nav-dropdown-divider"></div>
-      <a href="/admin/leads?new=1" class="nav-dropdown-link action">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        New Lead
-      </a>
-    </div>
+    <a href="/admin/leads?new=1" class="nav-plus" data-modal-fn="showNewLeadModal" title="New Lead" aria-label="New Lead">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+    </a>
   </div>
   <div class="nav-item">
     <a href="/admin/quotes" class={cls('quotes')}>Quotes</a>
-    <div class="nav-dropdown">
-      <a href="/admin/quotes" class="nav-dropdown-link view-all">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        View All Quotes
-      </a>
-      <div class="nav-dropdown-divider"></div>
-      <a href="/admin/quotes?new=1" class="nav-dropdown-link action">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        New Quote
-      </a>
-    </div>
+    <a href="/admin/quotes?new=1" class="nav-plus" data-modal-fn="showNewQuoteModal" title="New Quote" aria-label="New Quote">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+    </a>
   </div>
   <div class="nav-item">
     <a href="/admin/projects" class={cls('projects')}>Projects</a>
-    <div class="nav-dropdown">
-      <a href="/admin/projects" class="nav-dropdown-link view-all">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        View All Projects
-      </a>
-      <div class="nav-dropdown-divider"></div>
-      <a href="/admin/projects/?new=1" class="nav-dropdown-link action">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        New Project
-      </a>
-    </div>
+    <a href="/admin/projects/?new=1" class="nav-plus" data-modal-fn="openNewProjectModal" title="New Project" aria-label="New Project">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+    </a>
   </div>
   <a href="/admin/portfolios" class={cls('portfolios')}>Portfolios</a>
   <a href="/admin/contacts" class={cls('contacts')}>Contacts</a>
@@ -137,6 +113,16 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
         try { localStorage.setItem('admin-settings-open', open ? '1' : '0'); } catch (e) {}
       });
     }
+
+    // Hover "+" on Leads/Quotes/Projects: when the page's creation modal is
+    // present, open it in place; anywhere else the ?new=1 href navigates and
+    // the target page auto-opens it.
+    document.querySelectorAll('.nav-plus').forEach(function (plus) {
+      plus.addEventListener('click', function (e) {
+        var fn = plus.dataset.modalFn && window[plus.dataset.modalFn];
+        if (typeof fn === 'function') { e.preventDefault(); fn(); }
+      });
+    });
   })();
 </script>
 <style is:global>

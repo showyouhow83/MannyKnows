@@ -352,25 +352,26 @@ const adminAddress = 'Springfield, MA';
       display: flex;
     }
 
+    /* HeroUI dialog spec — matches admin.css .modal normalization (Aug 22) */
     .new-lead-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: var(--backdrop);
       backdrop-filter: blur(8px);
     }
 
     .new-lead-modal-content {
       position: relative;
-      background: linear-gradient(135deg, rgba(18, 18, 31, 0.98), rgba(10, 10, 20, 0.99));
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 32px;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       max-width: 700px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: modalSlideIn 0.2s ease-out;
+      box-shadow: var(--overlay-shadow);
+      animation: modalSlideIn 0.2s var(--ease-out);
     }
 
     .new-lead-modal-header {
@@ -851,21 +852,21 @@ const adminAddress = 'Springfield, MA';
     .confirm-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: var(--backdrop);
       backdrop-filter: blur(8px);
     }
 
     .confirm-modal-content {
       position: relative;
-      background: linear-gradient(135deg, rgba(18, 18, 31, 0.95), rgba(10, 10, 20, 0.98));
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 32px;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       max-width: 400px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: modalSlideIn 0.2s ease-out;
+      box-shadow: var(--overlay-shadow);
+      animation: modalSlideIn 0.2s var(--ease-out);
     }
 
     @keyframes modalSlideIn {
@@ -1311,7 +1312,7 @@ const adminAddress = 'Springfield, MA';
         position: sticky;
         top: 0;
         z-index: 10;
-        background: linear-gradient(135deg, rgba(18, 18, 31, 0.98), rgba(10, 10, 20, 0.99));
+        background: var(--overlay);
         padding: 12px 16px;
         margin-bottom: 0;
         border-bottom: 1px solid var(--glass-border);
@@ -1367,7 +1368,7 @@ const adminAddress = 'Springfield, MA';
       .new-lead-modal-actions {
         position: sticky;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(18, 18, 31, 0.98), rgba(10, 10, 20, 0.99));
+        background: var(--overlay);
         margin: 0;
         padding: 12px 16px;
         border-top: 1px solid var(--glass-border);
