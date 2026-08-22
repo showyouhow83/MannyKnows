@@ -70,13 +70,18 @@ function transform(name, sections) {
   }
 
   // 2. Split the section that carries a monthly plan into two options.
+  // Idempotence: the prepay option is its OWN section, so checking only the
+  // monthly section for a yearly line would append a second Option B on every
+  // re-run. Check the whole template.
+  const templateHasYearly = sections.some((sec) =>
+    (sec.items || []).some((i) => i.type === 'subtotal' && i.billing === 'yearly')
+  );
   const out = [];
   for (const sec of sections) {
     out.push(sec);
     const subs = (sec.items || []).filter((i) => i.type === 'subtotal');
     const monthly = subs.find((i) => i.billing === 'monthly');
-    const alreadySplit = subs.some((i) => i.billing === 'yearly');
-    if (!monthly || alreadySplit) continue;
+    if (!monthly || templateHasYearly) continue;
     const setup = subs.find((i) => i.billing === 'once' && isSetup(i.label));
 
     // Option A keeps the original items; its trailing prepay note becomes a
