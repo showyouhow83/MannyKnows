@@ -205,6 +205,12 @@ strings.
   quote-number chip = detail-code metrics, all `.btn`/`.btn-sm` pills
   (mobile !important overrides updated too), modal titles 16px. JS contracts
   untouched. Awaiting Manny verify.
+  Refinement (same night): quote list cards are now SINGLE-LINE (code ·
+  chip · name ellipsis · time right; extras stack below only when a status
+  has them — follow-up meta, decline reason + actions, approval badge +
+  Promote). Shared `.btn-close-detail` (admin.css, + `.detail-close-float`
+  for JS-rendered panes) closes the open record back to the placeholder on
+  Leads, Quotes, AND Projects — carry it into every list-detail page pass.
 - **2026-08-21 (night 2, cont.) — SETTINGS nav group** (Manny's ask): Quote
   Templates, Contract Templates, My Signature moved out of the
   Quotes/Projects dropdowns into a new Settings group (gear icon, non-link
