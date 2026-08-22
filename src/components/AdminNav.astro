@@ -4,7 +4,8 @@
 //   <AdminNav active="dashboard" />
 type ActiveKey =
   | 'dashboard' | 'leads' | 'quotes' | 'projects'
-  | 'calendar' | 'portfolios' | 'crew' | 'partners' | 'contacts' | 'media-pool' | 'web';
+  | 'calendar' | 'portfolios' | 'crew' | 'partners' | 'contacts' | 'media-pool' | 'web'
+  | 'settings';
 interface Props { active?: ActiveKey }
 const { active } = Astro.props;
 const cls = (key: ActiveKey) => `nav-link${active === key ? ' active' : ''}`;
@@ -28,7 +29,7 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   <div class="nav-item">
     <a href="/admin/leads" class={cls('leads')}>Leads</a>
     <div class="nav-dropdown">
-      <a href="/admin/leads" class="nav-dropdown-link">
+      <a href="/admin/leads" class="nav-dropdown-link view-all">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         View All Leads
       </a>
@@ -42,13 +43,9 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   <div class="nav-item">
     <a href="/admin/quotes" class={cls('quotes')}>Quotes</a>
     <div class="nav-dropdown">
-      <a href="/admin/quotes" class="nav-dropdown-link">
+      <a href="/admin/quotes" class="nav-dropdown-link view-all">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         View All Quotes
-      </a>
-      <a href="/admin/quote-templates" class="nav-dropdown-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg>
-        Quote Templates
       </a>
       <div class="nav-dropdown-divider"></div>
       <a href="/admin/quotes?new=1" class="nav-dropdown-link action">
@@ -60,17 +57,9 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   <div class="nav-item">
     <a href="/admin/projects" class={cls('projects')}>Projects</a>
     <div class="nav-dropdown">
-      <a href="/admin/projects" class="nav-dropdown-link">
+      <a href="/admin/projects" class="nav-dropdown-link view-all">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         View All Projects
-      </a>
-      <a href="/admin/contract-templates" class="nav-dropdown-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg>
-        Contract Templates
-      </a>
-      <a href="/admin/contractor-signature" class="nav-dropdown-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h18M5 13l4-8 4 8M10 13h6"/></svg>
-        My Signature
       </a>
       <div class="nav-dropdown-divider"></div>
       <a href="/admin/projects/?new=1" class="nav-dropdown-link action">
@@ -88,6 +77,26 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
     Media Pool<span class="nav-badge" id="mediaPoolBadge" style="display:none;">0</span>
   </a>
   <a href="/admin/web" class={`nav-link nav-link-special${active === 'web' ? ' active' : ''}`}>Web</a>
+  <div class="nav-item">
+    <span class={`nav-link nav-label${active === 'settings' ? ' active' : ''}`}>
+      <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      Settings
+    </span>
+    <div class="nav-dropdown">
+      <a href="/admin/quote-templates" class="nav-dropdown-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg>
+        Quote Templates
+      </a>
+      <a href="/admin/contract-templates" class="nav-dropdown-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg>
+        Contract Templates
+      </a>
+      <a href="/admin/contractor-signature" class="nav-dropdown-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h18M5 13l4-8 4 8M10 13h6"/></svg>
+        My Signature
+      </a>
+    </div>
+  </div>
   <div class="sidenav-foot">
     by <a href="https://mannyknows.com" class="footer-link" target="_blank" rel="noopener">MK <span class="rocket-emoji">🚀</span></a>
   </div>

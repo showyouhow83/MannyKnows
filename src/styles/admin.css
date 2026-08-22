@@ -379,6 +379,13 @@ h1, h2, h3 {
 /* .nav-link-special is kept on the Web element but no longer restyles it;
    base .nav-link + .nav-link.active rules apply. */
 
+/* Group label (Settings) — looks like a nav link but isn't a destination:
+   its icon sits inline, and it doesn't invite a click. */
+.nav-link .nav-icon { margin-right: 8px; flex-shrink: 0; }
+.nav-link.nav-label { cursor: default; }
+.nav-link.nav-label:hover { background: transparent; color: var(--muted); }
+.nav-link.nav-label.active:hover { background: var(--brand-gradient); color: #fff; }
+
 /* Nav Dropdown — HeroUI menu anatomy: overlay bg, 12px radius, inset ring. */
 .nav-item {
   position: relative;
@@ -2492,8 +2499,9 @@ body.has-sidenav main.cs-page { max-width: 720px !important; }
   }
 
   /* Sub-menus render inline and stay visible (Manny: no hover reveal).
-     The first link in each dropdown ("View All …") duplicates its parent
-     link's destination, so it's hidden in the rail; dividers go too. */
+     Links marked .view-all duplicate their parent link's destination, so
+     they're hidden in the rail; dividers go too. (Marker class, not
+     :first-child — the Settings group's first link is a real destination.) */
   body.has-sidenav .nav-dropdown {
     position: static;
     min-width: 0;
@@ -2508,7 +2516,7 @@ body.has-sidenav main.cs-page { max-width: 720px !important; }
     visibility: visible;
     pointer-events: auto;
   }
-  body.has-sidenav .nav-dropdown > .nav-dropdown-link:first-child { display: none; }
+  body.has-sidenav .nav-dropdown-link.view-all { display: none; }
   body.has-sidenav .nav-dropdown-divider { display: none; }
   body.has-sidenav .nav-dropdown-link {
     padding: 7px 12px 7px 26px;
