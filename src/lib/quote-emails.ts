@@ -607,19 +607,10 @@ ${emailOpen()}
         ` : ''}
       </table>
 
-      <!-- Pricing Summary. Single discount row when present; revised total always. -->
-      <table style="width: 100%; border-collapse: collapse; margin-top: 24px; padding-top: 16px; border-top: 2px solid #e2e8f0;">
-        ${quote.discount && quote.discount > 0 ? `
-        <tr>
-          <td style="padding: 8px 0; color: #10b981; font-size: 14px; text-align: left;">Discount</td>
-          <td style="padding: 8px 0; color: #10b981; font-size: 14px; text-align: right;">-${formatCurrency(quote.discount)}</td>
-        </tr>
-        ` : ''}
-        <tr>
-          <td style="padding: 16px 0 0 0; border-top: 1px solid #e2e8f0; color: #1e293b; font-size: 20px; font-weight: 700; text-align: left;">Revised Total</td>
-          <td style="padding: 16px 0 0 0; border-top: 1px solid #e2e8f0; color: #16a34a; font-size: 24px; font-weight: 700; text-align: right;">${formatCurrency(quote.total)}</td>
-        </tr>
-      </table>
+      <!-- Revised pricing. Rendered by the shared totals renderer so one-time
+           money, a monthly plan, and a prepaid year each get their own line —
+           quote.total adds them together and must never be printed. -->
+      ${renderQuoteTotalsHtml(sumSubtotalsByBilling(quoteToScopes(quote)), Number(quote.discount) || 0)}
     </div>
 
     ${sectionsHtml}
@@ -656,7 +647,7 @@ Location: ${fullAddress}
 ${quote.estimated_duration ? `Timeline: ${quote.estimated_duration}` : ''}
 ${quote.estimated_start ? `Start Date: ${formatDate(quote.estimated_start)}` : ''}
 
-REVISED TOTAL: ${formatCurrency(quote.total)}
+${billingSummaryLine(sumSubtotalsByBilling(quoteToScopes(quote)), Number(quote.discount) || 0) || `REVISED TOTAL: ${formatCurrency(quote.total)}`}
 
 Review and respond on our website:
 To accept: ${acceptUrl}
@@ -707,10 +698,13 @@ export async function sendQuoteAcceptanceToCustomer(
   const resend = new Resend(env.RESEND_API_KEY);
   const baseUrl = getBaseUrl(isLocalhost);
   const firstName = (quote.customer_name || '').split(' ')[0] || 'there';
-  const totalNum = Number((quote as any).total);
-  const totalStr = Number.isFinite(totalNum) && totalNum > 0
-    ? `$${totalNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    : '';
+  // What they actually agreed to pay, split by cadence. quote.total sums
+  // one-time + monthly + yearly into a figure nobody is ever charged, so it
+  // is never printed to a customer.
+  const totalStr = billingSummaryLine(
+    sumSubtotalsByBilling(quoteToScopes(quote)),
+    Number(quote.discount) || 0
+  ).replace(/\.$/, '');
   // After acceptance the quote becomes a project, so the quote review URL no
   // longer applies — link to the customer's project portal when we have it.
   const hasPortal = !!portalUrl;

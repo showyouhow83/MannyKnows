@@ -107,23 +107,32 @@ const firstName = quote?.customer_name?.split(' ')[0] || 'there';
 import {
   quoteToScopes,
   renderScopesHtml,
-  sumScopeSubtotals,
   sumSubtotalsByBilling,
   renderQuoteTotalsHtml,
 } from '../../lib/quoteTemplateConstants';
 const templateScopes = quote ? quoteToScopes(quote as any) : [];
 const templateSectionsHtml = renderScopesHtml(templateScopes);
-// Per-scope subtotal rows in the Pricing summary (only meaningful when there
-// are 2+ scopes; for a single scope we still fall through to the quote-level
-// subtotal/discount/total trio).
-const scopeSubtotalRows = templateScopes
-  .map(sc => ({ title: sc.title || 'Scope', amount: sumScopeSubtotals(sc) }))
-  .filter(r => r.amount > 0);
+const billingTotals = sumSubtotalsByBilling(templateScopes);
+// Per-scope rows in the Pricing summary, only meaningful when there are 2+
+// scopes. Each row is labelled by cadence and rows are NEVER added together:
+// a scope's one-time money and its monthly plan are separate lines, because a
+// single "$7,190" for "$1,195 + $545/mo" is a number nobody is ever charged.
+const scopeSubtotalRows = templateScopes.flatMap(sc => {
+  const t = sumSubtotalsByBilling(sc.sections || []);
+  const title = sc.title || 'Scope';
+  return [
+    t.once > 0 ? { title, amount: t.once, suffix: '' } : null,
+    t.monthly > 0 ? { title, amount: t.monthly, suffix: '/month' } : null,
+    t.yearly > 0 ? { title, amount: t.yearly, suffix: '/year' } : null,
+  ].filter(Boolean) as Array<{ title: string; amount: number; suffix: string }>;
+});
 // Totals by billing cadence — same renderer the PDF preview and the quote
 // email use, so the customer sees one consistent statement of the money.
 const quoteTotalsHtml = quote
-  ? renderQuoteTotalsHtml(sumSubtotalsByBilling(templateScopes), Number(quote.discount) || 0)
+  ? renderQuoteTotalsHtml(billingTotals, Number(quote.discount) || 0)
   : '';
+// With one scope the per-scope rows just repeat the totals block below them.
+const showScopeRows = templateScopes.length > 1;
 ---
 
 <!DOCTYPE html>
@@ -578,10 +587,10 @@ const quoteTotalsHtml = quote
         <div class="section">
           <div class="section-title">Pricing Details</div>
           <div class="totals">
-            {scopeSubtotalRows.length > 1 && scopeSubtotalRows.map((row) => (
+            {showScopeRows && scopeSubtotalRows.map((row) => (
               <div class="total-row" style="color:#475569;">
                 <span>{row.title}</span>
-                <span>{formatCurrency(row.amount)}</span>
+                <span>{formatCurrency(row.amount)}{row.suffix}</span>
               </div>
             ))}
             {/* Money reads from the scopes themselves, split by billing

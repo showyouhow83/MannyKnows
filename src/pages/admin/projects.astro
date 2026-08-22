@@ -6421,11 +6421,13 @@ function formatCurrency(amount: number | null): string {
     // Signature / Contract Not Sent) so a contract sent/signed elsewhere shows
     // here without a full page reload.
     (function() {
+      // Must emit the SAME markup the server renders into a card, or the
+      // 20-second poller quietly reverts the list to the old badge style.
       function cardBadgeHtml(p) {
-        if (p.contract_status === 'sent') return '<span class="warning-badge" style="background: rgba(234,179,8,0.15); color: #eab308;">Awaiting Signature</span>';
-        if (p.contract_status === 'draft') return '<span class="warning-badge" style="background: rgba(239,68,68,0.15); color: #ef4444;">Contract Not Sent</span>';
-        if (!p.crew_lead_id) return '<span class="warning-badge">Needs Crew</span>';
-        return '<span class="crew-badge">Ready</span>';
+        if (p.contract_status === 'sent') return '<span class="status-pill warn">Awaiting Signature</span>';
+        if (p.contract_status === 'draft') return '<span class="status-pill danger">Contract Not Sent</span>';
+        if (!p.crew_lead_id) return '<span class="status-pill warn">Needs Crew</span>';
+        return '<span class="status-pill ok">Ready</span>';
       }
       async function refreshCardStatuses() {
         try {
