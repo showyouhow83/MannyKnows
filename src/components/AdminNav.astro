@@ -44,7 +44,12 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
     </a>
   </div>
-  <a href="/admin/portfolios" class={cls('portfolios')}>Portfolios</a>
+  <div class="nav-item">
+    <a href="/admin/portfolios" class={cls('portfolios')}>Portfolios</a>
+    <a href="/admin/portfolios?new=1" class="nav-plus" data-modal-fn="openCreateModal" title="New Portfolio" aria-label="New Portfolio">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+    </a>
+  </div>
   <a href="/admin/contacts" class={cls('contacts')}>Contacts</a>
   <a href="/admin/partners" class={cls('partners')}>Partners</a>
   <a href="/admin/crew" class={cls('crew')}>Crew</a>

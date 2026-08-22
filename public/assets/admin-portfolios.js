@@ -2352,5 +2352,12 @@
       const openId = params.get('open');
       if (openId && /^\d+$/.test(openId)) {
         window.location.replace('/admin/portfolios/' + openId + '/');
+        return;
+      }
+      // ?new=1 opens the create modal — the nav's "+" uses it when you're
+      // coming from another page. Same contract as leads/quotes/projects.
+      if (params.get('new') === '1') {
+        openCreateModal();
+        history.replaceState({}, '', window.location.pathname);
       }
     })();
