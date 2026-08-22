@@ -140,10 +140,11 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
   }
   .footer-version a:hover { text-decoration: underline; opacity: 1; }
 </style>
-<script define:vars={{ verText: `v${shortVersion} · ${buildInfo.commit}${builtLabel ? ` · ${builtLabel} ET` : ''}`, commitUrl, titleText: `Build ${buildInfo.commit} · deployed ${builtLabel} ET` }}>
+<script define:vars={{ verText: `v${shortVersion} · ${buildInfo.commit}`, dateText: builtLabel ? `${builtLabel} ET` : '', commitUrl, titleText: `Build ${buildInfo.commit} · deployed ${builtLabel} ET` }}>
   // Append the build stamp below "by MK" — into the page footer (mobile) and
   // the rail's credit block (desktop). Done here (in the shared nav) so every
-  // admin page gets it from one source of truth.
+  // admin page gets it from one source of truth. Version and date sit on
+  // their own centered lines.
   (function stampFooter() {
     function inject() {
       document.querySelectorAll('.admin-footer, .sidenav-foot').forEach(function (footer) {
@@ -152,7 +153,17 @@ const commitUrl = `https://github.com/MannyKnows/MannyKnows/commit/${buildInfo.c
         span.className = 'footer-version';
         var a = document.createElement('a');
         a.href = commitUrl; a.target = '_blank'; a.rel = 'noopener';
-        a.textContent = verText; a.title = titleText;
+        a.title = titleText;
+        var l1 = document.createElement('span');
+        l1.className = 'footer-version-line';
+        l1.textContent = verText;
+        a.appendChild(l1);
+        if (dateText) {
+          var l2 = document.createElement('span');
+          l2.className = 'footer-version-line';
+          l2.textContent = dateText;
+          a.appendChild(l2);
+        }
         span.appendChild(a);
         footer.appendChild(span);
       });

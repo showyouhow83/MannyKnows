@@ -2465,8 +2465,12 @@ body.has-sidenav main.pce-page { max-width: 1080px !important; }
 body.has-sidenav main.cs-page { max-width: 720px !important; }
 
 /* Rail credit line ("by MK" + build stamp) — desktop only; mobile keeps the
-   page footer. */
+   page footer. The stamp reads on two centered lines: version · commit,
+   then the deploy time. */
 .sidenav-foot { display: none; }
+
+.footer-version { display: inline-block; }
+.footer-version .footer-version-line { display: block; line-height: 1.4; }
 
 @media (min-width: 1025px) {
   /* The page shifts right via body padding (not per-main margins): centered
@@ -2524,7 +2528,11 @@ body.has-sidenav main.cs-page { max-width: 720px !important; }
     color: var(--muted);
     flex-shrink: 0;
   }
-  body.has-sidenav .sidenav-foot .footer-version { font-size: 10px; }
+  body.has-sidenav .sidenav-foot .footer-version {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+  }
 
   body.has-sidenav .admin-nav .nav-link {
     display: flex;

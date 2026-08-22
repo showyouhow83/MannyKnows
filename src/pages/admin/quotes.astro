@@ -27,9 +27,12 @@ let error = '';
 
 if (db) {
   try {
+    // A promoted quote is a PROJECT, not a quote: once it's promoted (client
+    // accepted, or we promoted it) it leaves this page entirely and stops
+    // counting in the stats. It lives on /admin/projects from then on.
     const result = await db.prepare(
-      'SELECT * FROM quotes WHERE status != ? ORDER BY updated_at DESC'
-    ).bind('failed').all();
+      "SELECT * FROM quotes WHERE status NOT IN ('failed', 'project') ORDER BY updated_at DESC"
+    ).all();
     allQuotes = result.results || [];
     const partnersRes = await db.prepare('SELECT id, name FROM partners WHERE archived = 0 ORDER BY name ASC').all();
     partnersList = partnersRes.results || [];
@@ -48,8 +51,6 @@ const renegoQuotes = allQuotes.filter(q => q.status === 'sent' && q.is_renegotia
 const declinedQuotes = allQuotes.filter(q => q.status === 'declined');
 const acceptedQuotes = allQuotes.filter(q => q.status === 'accepted');
 const coldQuotes = allQuotes.filter(q => q.status === 'cold');
-// Already promoted — the quote lives on, the work moved to Projects.
-const projectQuotes = allQuotes.filter(q => q.status === 'project');
 
 // Mini-dashboard stats: open pipeline = money on the table (draft + awaiting
 // customer response, including renegotiations). Accepted quotes are counted
@@ -316,7 +317,6 @@ function timeAgo(dateStr: string): string {
     .status-pill.accepted { background: var(--success-soft); color: var(--success-soft-foreground); }
     .status-pill.cold { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
     .status-pill.renego { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
-    .status-pill.project { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
 
     .quote-reason {
       font-size: 11px;
@@ -388,10 +388,6 @@ function timeAgo(dateStr: string): string {
       color: #a1a1aa;
     }
 
-    .section-count.project {
-      background: rgba(168, 85, 247, 0.15);
-      color: #c084fc;
-    }
 
     /* Collapsed state (desktop: used for Cold section default) */
     .section-body.collapsed {
@@ -1031,17 +1027,28 @@ function timeAgo(dateStr: string): string {
     .total-row {
       display: flex;
       justify-content: space-between;
-      width: 200px;
+      align-items: baseline;
+      gap: 12px;
+      width: 240px;
       font-size: 14px;
       color: var(--color-text-primary);
     }
 
+    /* Grand row: the LABEL stays the same size and weight as the rows above
+       it, only the amount is emphasized. */
     .total-row.grand-total {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--color-primary);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-primary);
       padding-top: 8px;
       border-top: 2px solid var(--glass-border);
+    }
+
+    .total-row.grand-total #pricingScopeGrand {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-soft-foreground);
+      white-space: nowrap;
     }
 
     /* Bottom action bar (Save, Send, Promote) */
@@ -2802,33 +2809,6 @@ function timeAgo(dateStr: string): string {
         </div>
       </div>
 
-      {/* Promoted (status 'project'). These are still quotes and still count
-          in the Total stat, so they need a home in the list — without this
-          section the stat said 3 while the list showed 2. Collapsed by
-          default: the live work lives on the Projects page. */}
-      <div class="quote-section">
-        <div class="section-header section-toggle collapsed" data-section="project">
-          <h2 class="section-title">Promoted to Project</h2>
-          <span class="section-count project">{projectQuotes.length}</span>
-          <svg class="section-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-        <div class="section-body collapsed-mobile collapsed" id="sectionProject">
-          {projectQuotes.length === 0 ? (
-            <div class="empty-state">No promoted quotes</div>
-          ) : (
-            projectQuotes.map((quote) => (
-              <div class="quote-card" data-quote-id={quote.id} data-quote={JSON.stringify(quote)} data-search={`${quote.quote_number} ${quote.customer_name} ${quote.customer_email || ''} ${quote.customer_phone || ''} ${quote.city || ''}`.toLowerCase()}>
-                <div class="quote-card-row">
-                  <span class="quote-shortcode" title={quote.quote_number}>#{(quote.quote_number || '').slice(-4)}</span>
-                  <span class="status-pill project">Project</span>
-                  <span class="quote-name">{quote.customer_name}</span>
-                  <span class="quote-time">{timeAgo(quote.updated_at)}</span>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
     </div>
 
     <!-- Middle: Quote Content/Edit Form -->
@@ -3663,10 +3643,9 @@ function timeAgo(dateStr: string): string {
         const body = document.getElementById('section' + sectionName!.charAt(0).toUpperCase() + sectionName!.slice(1));
         if (!body) return;
 
-        // Desktop: only the archive-ish sections toggle (Cold, Promoted) —
-        // the live pipeline sections stay open.
+        // Desktop: only allow toggling the Cold section
         if (window.innerWidth > 768) {
-          if (sectionName === 'cold' || sectionName === 'project') {
+          if (sectionName === 'cold') {
             body.classList.toggle('collapsed');
             header.classList.toggle('collapsed');
           }
