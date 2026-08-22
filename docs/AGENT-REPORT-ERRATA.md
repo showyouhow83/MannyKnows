@@ -1,5 +1,10 @@
 # OpsCloud AI Team — rev 3 review (round 2)
 
+_Point-in-time record (Aug 2026) of an external system — the opscloud.us AI
+team prompts. Not a description of this repo. Kept for history; nothing here
+is maintained._
+
+
 Review of the updated Prompt & Orchestration Atlas ("rev 3 — team wiring",
 Aug 4 deploy), verified against the actual prompt text, not the changelog.
 Round 1 (the five annotated reports and the original 14 patches) lives in git

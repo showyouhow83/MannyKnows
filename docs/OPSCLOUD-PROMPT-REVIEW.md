@@ -1,5 +1,10 @@
 # OpsCloud AI Team — prompt review & patches
 
+_Point-in-time record (Aug 2026) of an external system — the opscloud.us AI
+team prompts. Not a description of this repo. Kept for history; nothing here
+is maintained._
+
+
 Review of the Prompt & Orchestration Atlas (Aug 4 deploy) against the failure
 evidence in AGENT-REPORT-ERRATA.md. Verdict up front: **the architecture is
 genuinely good** — deterministic DATA blocks, draft-is-read-only, the publish

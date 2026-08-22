@@ -1,209 +1,133 @@
-# AI Agent Onboarding Guide - MannyKnows Project
+# Onboarding — MannyKnows
 
-## Project Overview
+_Rewritten Aug 22 2026. The previous version described the January 2026
+chatbot-era app (endpoints, folders, and a leaked admin key that no longer
+match reality). If something here disagrees with `CLAUDE.md`,
+`package.json`, or `wrangler.jsonc`, those win — fix this file._
 
-**MannyKnows** is an AI-powered business automation platform built with Astro.js and deployed on Cloudflare Workers.
+## What this repo is
 
-### Core Services
-- **AI Sales Agents** - Lead generation, follow-up, appointment booking
-- **AI Customer Support** - 24/7 service, voice assistants, multilingual support
-- **eCommerce Solutions** - Web scraping, smart forms, dynamic pricing
-- **Workflow Automation** - Data entry, invoice processing, CRM automation
-- **Creative Services** - Photography, 360 services
-- **Business Analytics** - AI web intelligence, competitor analysis
-- **Training & Consulting** - AI training, consulting
+The marketing/business site for MannyKnows (custom apps, websites, and AI
+automation for small businesses in Western Massachusetts), plus a full
+admin/CRM at `/admin` and the customer-facing pages it drives.
 
-## Tech Stack
+Read `CLAUDE.md` first. It carries the rules that matter: copy style, the
+pricing canon, the UI primitives, and the security posture. This file is the
+map; that file is the law.
+
+## Stack
 
 | Layer | Technology |
-|-------|------------|
-| Framework | Astro 7.x (SSR, @astrojs/cloudflare 14 — deployed as a Worker) |
-| Styling | Tailwind CSS 3.4 |
-| Runtime | Cloudflare Workers |
-| Database | Cloudflare KV |
-| Storage | Cloudflare R2 |
-| Email | Resend API |
-| Analytics | Google Analytics |
+| --- | --- |
+| Framework | Astro 7 (`output: 'server'`, SSR) |
+| Adapter | `@astrojs/cloudflare` 14 — deployed as a **Worker**, not Pages |
+| Styling (public) | Tailwind 3 via PostCSS (no Astro integration) |
+| Styling (admin) | `src/styles/admin.css` — plain CSS, no Tailwind |
+| Sliders | Swiper |
+| Data | KV (6 namespaces), D1 (`MK_APP_DB`), R2 (`MK_MEDIA_BUCKET`) |
+| Email | Resend, sending from `send.mannyknows.com` |
+| Node | ≥ 22.12 |
 
-## Project Structure
+## Layout
 
 ```
-MannyKnows/
-├── src/
-│   ├── components/          # UI components (41 files)
-│   │   ├── analytics/       # GA tracking
-│   │   ├── content/         # Content components
-│   │   ├── footer/          # Footer sections
-│   │   ├── layout/          # Layout components
-│   │   ├── navigation/      # NavBar, DockMenu
-│   │   ├── sections/        # Page sections
-│   │   └── ui/              # Base UI (ChatBox, Button, etc.)
-│   ├── config/chatbot/      # Chatbot configs
-│   ├── layouts/             # BaseLayout.astro
-│   ├── lib/
-│   │   ├── chatbot/         # Chatbot logic
-│   │   ├── security/        # Security utilities
-│   │   ├── services/        # Business logic
-│   │   └── user/            # User management
-│   ├── pages/
-│   │   ├── api/             # API routes
-│   │   ├── admin.astro      # Admin dashboard
-│   │   ├── index.astro      # Homepage
-│   │   └── unsubscribe.astro
-│   └── utils/               # Utilities
-├── docs/                    # Documentation
-├── scripts/                 # Build scripts
-├── wrangler.jsonc           # Cloudflare config
-└── package.json
+src/
+├── components/          # public UI + admin chrome (AdminNav, AdminMobileDrawer…)
+│   ├── ui/              # the primitives: Button, Breadcrumb, SectionHeader, Faq…
+│   ├── portal/          # customer portal pieces
+│   ├── pricing/         # PricingCards and friends
+│   └── sections/        # homepage/section blocks
+├── content/portfolio/   # case studies → /work/<slug>
+├── data/                # pricing canon: plans.ts, remi.ts, aiTeam.ts, localSeo.ts, apps.ts
+├── layouts/BaseLayout.astro
+├── lib/                 # server helpers (adminAuth, quote-emails, site-analyzer, security/)
+├── middleware.ts        # admin + portal auth, CSRF, media host, HSTS
+├── pages/
+│   ├── admin/           # the CRM
+│   ├── api/             # public + admin API routes
+│   ├── quote/ project/ confirm/   # customer-facing token pages
+│   └── *.astro          # public marketing pages
+├── styles/admin.css     # admin design system
+└── utils/               # debug, image, token helpers
+database/migrations/     # D1 schema, applied via /admin/migrate/
+database/seeds/          # quote-template seed
+scripts/                 # build/ops scripts (image gen, indexnow, seed generator)
 ```
 
-## Cloudflare Bindings
+## Bindings
 
-### KV Namespaces (MK_KV_* pattern)
+Authoritative list: `wrangler.jsonc`. Summary:
 
-| Binding | ID | Purpose |
-|---------|----|---------|
-| `MK_KV_CHATBOT` | ed368c98eef342b79e8f7c4b96b3fb62 | Chat sessions, admin sessions, newsletter |
-| `MK_KV_PROFILES` | 901abbf5b0484165a8eaa35a035f1ba8 | User profiles |
-| `MK_KV_SESSIONS` | 4c1513b546c040678d266ba4f103a057 | User sessions |
-| `MK_KV_SERVICES` | 13e95a5db28a4a9da5f517fe0a1e4250 | Service configs |
-| `MK_KV_PRODUCTS` | d5cc59ddbef24b8db748c977aee91bb0 | Product data |
-| `MK_KV_SCHEDULER` | 22c4ca99de924d07996d6b44d538602a | Discovery calls |
+| Type | Binding | Purpose |
+| --- | --- | --- |
+| KV | `MK_KV_CHATBOT` | scanner leads/quota/cache, first-party metrics, newsletter |
+| KV | `MK_KV_PROFILES` | profiles |
+| KV | `MK_KV_SESSIONS` | Astro Sessions + admin login rate limits |
+| KV | `MK_KV_SERVICES` / `MK_KV_PRODUCTS` / `MK_KV_SCHEDULER` | service/product/scheduling data |
+| D1 | `MK_APP_DB` | the admin CRM (`mannyknows-db`) |
+| R2 | `MK_MEDIA_BUCKET` | media pool, quote/project uploads, contract PDFs |
+| Assets | `ASSETS` | static files from `dist/client` |
 
-### R2 Bucket
+Not bound yet: `MK_ADMIN_KV` (limiters fall back to `MK_KV_SESSIONS`) and
+`IMAGES`.
 
-| Binding | Bucket Name | Purpose |
-|---------|-------------|---------|
-| `MK_R2` | mannyknows-website-analysis | File storage |
+**Astro 7 rule:** read env and bindings through
+`import { env } from 'cloudflare:workers'`. `locals.runtime.env` throws in
+this adapter — never reintroduce it.
 
-### Data Patterns
+**wrangler gotcha:** `wrangler kv key …` against these namespaces needs
+`--preview false`, or writes silently target nothing.
 
-```typescript
-// Newsletter (MK_KV_CHATBOT)
-Key: "newsletter:{email}"
-Value: { email, status, subscribedAt, unsubscribeToken }
+## Secrets
 
-// Discovery calls (MK_KV_SCHEDULER)
-Key: "meetreq:{id}"
-Value: { id, name, email, phone, project_details, status, createdAt, adminNotes }
+Never in the repo. Set with `npx wrangler secret put <NAME>`; local values go
+in `.dev.vars` (gitignored). The ones in use: `SESSION_SECRET`,
+`ADMIN_USERNAME`/`ADMIN_PASSWORD` (bootstrap login), `ADMIN_KEY` /
+`ADMIN_API_KEY` (metric reads), `RESEND_API_KEY`, `SCAN_OWNER_EMAILS`,
+`CRON_SECRET`, `GEMINI_API_KEY`, and the optional Twilio/R2/Images/Stream
+set (see `SETUP-ADMIN.md`).
 
-// Admin sessions (MK_KV_CHATBOT)
-Key: "admin_session:{token}"
-Value: { email, createdAt, expiresAt }
-```
+## APIs
 
-## API Endpoints
+`docs/API.md` is the reference. Shape: public endpoints under `/api/*`
+(contact, newsletter, analyze-site, metric, quote-upload) and the admin CRM
+under `/api/admin/*` behind the HMAC `mk_admin_session` cookie enforced by
+`src/middleware.ts`. The chatbot-era debug endpoints were deleted in Aug 2026
+— if you find a reference to `kv-analysis`, `services-analysis`,
+`security-status`, or `verify-meeting-action`, it's stale documentation.
 
-### Core APIs
-
-| Endpoint | Methods | Purpose |
-|----------|---------|---------|
-| `/api/chat` | GET, POST | Chat & scheduling |
-| `/api/contact` | GET, POST | Contact form |
-| `/api/newsletter` | GET, POST | Newsletter signup |
-| `/api/admin-login` | GET, POST | Admin auth |
-| `/api/newsletter-admin` | GET | Newsletter management |
-| `/api/meetings-admin` | GET, POST | Discovery calls |
-| `/api/verify-meeting-action` | GET | Meeting verification |
-| `/api/kv-analysis` | GET | KV data analysis |
-| `/api/services-analysis` | GET | Services analytics |
-| `/api/security-status` | GET, POST | Security monitoring |
-
-### Authentication
-
-```typescript
-// Chat API - CSRF token
-headers: { 'X-CSRF-Token': csrfToken }
-
-// Admin APIs - Session token
-/api/meetings-admin?session=${sessionToken}
-```
-
-## Security
-
-### Security Modules (`src/lib/security/`)
-
-| File | Purpose |
-|------|---------|
-| `adminAuthenticator.ts` | Admin login/sessions |
-| `adminRateLimiter.ts` | Rate limiting |
-| `csrfProtection.ts` | CSRF tokens |
-| `domainValidator.ts` | Domain whitelist |
-| `inputValidator.ts` | Input sanitization |
-| `kvEncryption.ts` | KV encryption |
-| `rateLimiter.ts` | General rate limiting |
-
-### Admin Credentials
+## Commands
 
 ```bash
-ADMIN_KEY: "mk_admin_merh3t5d_c37019aff77f4677_637b7da191124a68"
-ADMIN_EMAIL: "mk@mannyknows.com"
+npm run dev        # localhost:4321
+npm run build      # dist/client (assets) + dist/server (worker)
+npm run preview    # preview the built output
+./deploy.sh        # manual deploy: build, clean ._* files, deploy, verify
 ```
 
-## Development
+Push to `main` auto-deploys through GitHub Actions (~10 min). `./deploy.sh`
+is the fast path (~10s) for iterating. Always deploy from
+`dist/server/wrangler.json` — the root `wrangler.jsonc` no longer carries
+`main`.
 
-### Commands
+## Local admin data
 
 ```bash
-npm run dev          # Start dev server (localhost:4321)
-npm run build        # Build for production
-npx wrangler deploy -c dist/server/wrangler.json  # always the emitted config
+npx wrangler d1 execute MK_APP_DB --local --file database/migrations/002-full-admin.sql
+npx wrangler d1 execute MK_APP_DB --local --file database/seeds/quote-templates.sql
 ```
 
-### Environment Files
-
-| File | Purpose |
-|------|---------|
-| `.dev.vars` | Local secrets (not in git) |
-| `wrangler.jsonc` | Production config |
-
-### Important: Always build before deploy
-
-```bash
-./deploy.sh   # or push to main (GitHub Actions)
-```
-
-## Key Files
-
-```bash
-# Core
-src/pages/admin.astro           # Admin dashboard
-src/pages/api/chat.ts           # Main chat API
-src/pages/api/meetings-admin.ts # Meeting management
-src/pages/index.astro           # Homepage
-
-# Security
-src/lib/security/inputValidator.ts
-src/lib/security/adminAuthenticator.ts
-
-# Services
-src/lib/services/ServiceArchitecture.ts
-src/lib/services/components/
-
-# Config
-wrangler.jsonc
-astro.config.mjs
-```
+Log in at `http://localhost:4321/admin/` with the `.dev.vars` credentials.
+`--local` is miniflare's sqlite under `.wrangler/state`; `--remote` is
+production — know which one you're typing.
 
 ## Troubleshooting
 
-### Common Issues
-
-| Problem | Solution |
-|---------|----------|
-| Changes not in production | Run `npm run build` before deploy |
-| Admin login failing | Check ADMIN_KEY and ADMIN_EMAIL in wrangler.jsonc |
-| KV data not loading | Verify correct binding name (MK_KV_*) |
-| Email not sending | Check RESEND_API_KEY in secrets |
-
-### Debug Logging
-
-```typescript
-import { devLog, errorLog } from '../../utils/debug';
-devLog('Debug message');  // Dev only
-errorLog('Error');        // All environments
-```
-
----
-
-*Last updated: January 2026*
+| Problem | Cause / fix |
+| --- | --- |
+| `/api/*` returns 500 after an edit | `locals.runtime.env` crept in — use `cloudflare:workers` `env` |
+| KV write appears to do nothing | missing `--preview false` |
+| Admin page 503s | `MK_APP_DB` unbound (the admin ships dark without it) |
+| Deploy looks stale for a few seconds | edge propagation lag — retest before diagnosing |
+| `._*` files everywhere | exFAT volume; `node scripts/cleanup-mac-files.js` |
+| Email not sending | `RESEND_API_KEY` missing, or `send.mannyknows.com` unverified in Resend |

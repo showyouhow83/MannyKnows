@@ -1,75 +1,21 @@
-# Service Component Registry
+# Service Component Registry — RETIRED
 
-Components available for building services dynamically via Google Sheets.
+This file documented a "service components" system (`fetch_website`,
+`seo_analysis`, `ai_readiness_analysis`, …) that was assembled dynamically
+from a Google Sheet through `src/lib/services/`.
 
-## Website Analysis Components
+**That code was deleted in the Aug 2026 unused-code audit** — it had zero
+references anywhere in the repo. `src/lib/chatbot/`, `src/config/chatbot/`,
+`src/lib/user/`, and the chatbot-era debug endpoints went with it (see the
+"Legacy / debug" section of [API.md](API.md)).
 
-### `fetch_website`
-- **Purpose**: Fetches website content and basic metrics
-- **Inputs**: `url` (string)
-- **Outputs**: `html`, `statusCode`, `headers`, `responseTime`, `url`, `success`
+Where the equivalents live now:
 
-### `seo_analysis`
-- **Purpose**: Analyzes SEO elements (title, meta tags, headings)
-- **Inputs**: `fetch_website` output
-- **Outputs**: SEO score, title analysis, meta descriptions, heading structure
+| You're looking for | Real location |
+| --- | --- |
+| Website analysis | `src/lib/site-analyzer.ts` + `src/pages/api/analyze-site.ts` — one server-side fetch, regex heuristics, report emailed via Resend |
+| UI components | `src/components/ui/` — `Button`, `Breadcrumb`, `SectionHeader`, `Faq`, `PricingCards`. The rules for using them are in `CLAUDE.md` under "UI primitives" |
+| Pricing data | `src/data/*.ts` (`plans.ts`, `remi.ts`, `aiTeam.ts`, `aiWebsite.ts`, `localSeo.ts`, `apps.ts`) with card builders in `src/lib/pricingCards.ts` |
 
-### `performance_analysis`
-- **Purpose**: Checks website performance metrics
-- **Inputs**: `fetch_website` output
-- **Outputs**: Performance score, load time analysis, optimization suggestions
-
-### `security_analysis`
-- **Purpose**: Scans for security issues and headers
-- **Inputs**: `fetch_website` output
-- **Outputs**: Security score, HTTPS check, header analysis
-
-### `opportunity_detection`
-- **Purpose**: Identifies business growth opportunities
-- **Inputs**: Previous component outputs
-- **Outputs**: Opportunity list, revenue potential, improvement areas
-
-### `ai_readiness_analysis`
-- **Purpose**: Assesses AI automation potential
-- **Inputs**: All previous outputs
-- **Outputs**: AI readiness score, automation opportunities, implementation steps
-
-## AI Service Components
-
-### `email_verification_ai`
-- **Purpose**: Handles email verification workflows
-
-### `session_management_ai`
-- **Purpose**: Manages user session data
-
-## Google Sheets Usage
-
-Add a `components` column with a JSON array:
-
-```json
-["fetch_website", "seo_analysis", "performance_analysis"]
-```
-
-### Service Examples
-
-**Quick SEO Check** (~30 seconds):
-```json
-["fetch_website", "seo_analysis"]
-```
-
-**Full Website Audit** (~2-3 minutes):
-```json
-["fetch_website", "seo_analysis", "performance_analysis", "security_analysis", "opportunity_detection"]
-```
-
-**AI Readiness Assessment** (~1-2 minutes):
-```json
-["fetch_website", "seo_analysis", "performance_analysis", "ai_readiness_analysis"]
-```
-
-## Adding New Components
-
-1. Create component in `/src/lib/services/components/`
-2. Export in the appropriate file
-3. Add to `COMPONENT_REGISTRY` in `dynamicServiceExecutor.ts`
-4. Update this documentation
+Kept as a tombstone so nobody rebuilds against a registry that no longer
+exists.

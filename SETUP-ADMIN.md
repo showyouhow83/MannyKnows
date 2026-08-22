@@ -13,7 +13,21 @@ unaffected and `/admin` simply explains it isn't set up yet (503). Nothing on
 the public site changes. That means this branch is safe to merge whenever —
 the admin activates only as you complete the steps below.
 
-Everything below is one-time, in order of what unlocks what.
+## Status (Aug 22 2026)
+
+| Step | State |
+| --- | --- |
+| Login secrets (`SESSION_SECRET`, bootstrap creds) | **done** |
+| D1 `MK_APP_DB` (`mannyknows-db`) | **done** — bound in `wrangler.jsonc`, live |
+| Migrations 002–005 | **applied in production** |
+| R2 `MK_MEDIA_BUCKET` (`mannyknows-media`) | **done** — bound, live |
+| `MK_ADMIN_KV` | not created (limiters fall back to `MK_KV_SESSIONS`) |
+| `IMAGES` binding | not enabled |
+| Quote-template seed | **not applied in production** (0 rows) — see §2b |
+| Daily cron trigger | not wired (see §7) |
+
+Everything below is one-time, in order of what unlocks what. Steps marked
+done above are kept for the record and for rebuilding from scratch.
 
 ## 1. Log-in credentials (1 minute — unlocks the login)
 
@@ -32,23 +46,42 @@ These env credentials are the bootstrap login. Once the database exists you
 can create real users (with viewer/admin roles) in D1 `admin_users`, managed
 at `/api/admin/users`.
 
-## 2. The database (10 minutes — unlocks everything)
+## 2. The database — DONE
 
 ```bash
-npx wrangler d1 create mannyknows-db
+npx wrangler d1 create mannyknows-db     # already done; id is in wrangler.jsonc
 ```
 
-Copy the printed `database_id`, then in `wrangler.jsonc` uncomment the
-`d1_databases` block and paste the id. Commit + push (CI deploys), then:
+The `d1_databases` block in `wrangler.jsonc` carries the real id, so the
+admin runs in production today. Migrations are applied through the one-click
+runner at `https://mannyknows.com/admin/migrate/` (it exists because the D1
+dashboard console rejects large multi-statement pastes). Files live in
+`database/migrations/` and must be registered in
+`src/pages/api/admin/run-migration.ts` (bundled with `?raw`) to appear there:
 
-1. Go to `https://mannyknows.com/admin/` and log in.
-2. Open `https://mannyknows.com/admin/migrate/` and run
-   `002-full-admin.sql` (39 tables, includes starter quote/contract
-   templates). The one-click runner exists because the D1 dashboard console
-   rejects large multi-statement pastes.
+| File | What it does |
+| --- | --- |
+| `001-core.sql` | earliest core tables (not registered in the runner) |
+| `002-full-admin.sql` | the CRM schema — 39 tables + starter templates |
+| `003-mannyknows-catalog.sql` | MannyKnows service catalog |
+| `004-plan-rename-get-ahead.sql` | plan rename |
+| `005-pricing-reset.sql` | pricing reset |
 
-The admin is now fully usable: leads, quotes, projects, contracts, contacts,
-calendar, crew, partners.
+## 2b. Quote templates (seed) — NOT applied in production
+
+`database/seeds/quote-templates.sql` holds the 14 product templates, each
+pricing BOTH billing options (month to month, and prepay the year). Generate
+it from the catalog with `node scripts/gen-quote-template-seed.mjs`, then:
+
+```bash
+npx wrangler d1 execute MK_APP_DB --local  --file database/seeds/quote-templates.sql
+npx wrangler d1 execute MK_APP_DB --remote --file database/seeds/quote-templates.sql
+```
+
+The seed deletes by template name before inserting, so re-running replaces
+cleanly — it also discards template edits made in the admin and renumbers
+template ids. A quote already built from a template keeps its own copy of the
+sections; re-apply the template on the scope to pick up changes.
 
 ## 3. Admin app KV (2 minutes — wiki, presence, small caches)
 
@@ -74,13 +107,13 @@ namespace — nothing to create for that.)
   The Email Routing worker handler exists at `scripts/email-handler.js` but is
   **not wired into the build yet** (see §7).
 
-## 5. Media pipeline (optional — Media Pool, photo/video uploads, contract PDFs)
+## 5. Media pipeline — bucket DONE, extras optional
 
 ```bash
-npx wrangler r2 bucket create mannyknows-media
+npx wrangler r2 bucket create mannyknows-media   # already done; block is live
 ```
 
-Uncomment the `r2_buckets` block. For direct-from-browser uploads and
+The `r2_buckets` block is uncommented and bound. For direct-from-browser uploads and
 Images/Stream integration, also set the ones of these you use:
 
 ```bash
@@ -132,13 +165,15 @@ Actions `schedule:`, cron-job.org) can hit it daily.
 
 ```bash
 cp .dev.vars.example .dev.vars                      # then edit the values
-# temporarily uncomment MK_APP_DB in wrangler.jsonc with any dummy id
 npx wrangler d1 execute MK_APP_DB --local --file database/migrations/002-full-admin.sql
+npx wrangler d1 execute MK_APP_DB --local --file database/seeds/quote-templates.sql
 npm run dev                                         # local D1/KV via miniflare
 ```
 
+The bindings are live in `wrangler.jsonc`, so nothing needs uncommenting.
 Log in at `http://localhost:4321/admin/` with your `.dev.vars` credentials.
-(Revert the wrangler.jsonc uncomment before committing.)
+To test against real data, export production D1 and import it locally rather
+than pointing dev at `--remote`.
 
 ## What was verified in the port smoke test (local miniflare, 2026-07-27)
 
