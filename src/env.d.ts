@@ -1,5 +1,13 @@
 type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
 
+// `cloudflare:workers` is a virtual module the Workers runtime provides —
+// the editor's TS server can't resolve it, so every admin file (148 of them)
+// flagged TS2307. Declaring it here, typed to our Env, clears the error and
+// makes `env.MK_APP_DB` etc. type-checked at the import site.
+declare module "cloudflare:workers" {
+  export const env: Env;
+}
+
 declare namespace App {
   interface Locals extends Runtime {}
 }
