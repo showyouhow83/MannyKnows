@@ -85,11 +85,11 @@ against main's behavior). Line counts = migration effort signal.
 | Login | `admin/index.astro` | 229 | not started |
 | ~~Dashboard~~ | `admin/dashboard.astro` | 2,391 | ✅ **DONE** — verified by Manny Aug 21 (pilot; sets the pattern) |
 | Leads | `admin/leads.astro` | 2,748 | ✅ **DONE** — mini-dashboard layout approved by Manny Aug 21 ("I'm loving it!"); sets the pattern for Quotes + Projects |
-| Quotes | `admin/quotes.astro` | 6,436 | **migrated** — mini-dashboard pattern applied Aug 21; awaiting Manny's visual verify |
+| Quotes | `admin/quotes.astro` | 6,599 | ✅ **DONE** — mini-dashboard + flat scope editor + billing cadence; Manny reviewed Aug 22 |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
 | Quote templates | `admin/quote-templates.astro` | 587 | not started |
 | Quote template editor | `admin/quote-templates/[id].astro` | 792 | not started |
-| Projects | `admin/projects.astro` | 6,240 | not started |
+| Projects | `admin/projects.astro` | 6,300 | **migrated** Aug 22 — topbar, 5 stat cards, single-line cards, segmented tabs; awaiting Manny's visual verify |
 | Project contract | `admin/projects/[id]/contract.astro` | 1,816 | not started |
 | Contract preview | `admin/projects/[id]/contract/preview.astro` | 855 | not started |
 | Sign in person | `admin/projects/[id]/sign-in-person.astro` | 768 | not started |
@@ -102,7 +102,7 @@ against main's behavior). Line counts = migration effort signal.
 | Timeclock kiosk | `admin/timeclock.astro` | 1,164 | not started |
 | Calendar | `admin/calendar.astro` | 617 | not started |
 | Partners | `admin/partners.astro` | 373 | not started |
-| Portfolios | `admin/portfolios.astro` | 466 | not started |
+| Portfolios | `admin/portfolios.astro` | 466 | not started — nav "+" quick-create added Aug 22; publishing gap specced in `docs/PORTFOLIO-TO-WORK-HANDOFF.md` |
 | Portfolio editor | `admin/portfolios/[id].astro` | 236 | not started |
 | Media pool | `admin/media-pool.astro` | 993 | not started |
 | Annotate | `admin/annotate.astro` | 459 | not started |
@@ -281,3 +281,30 @@ strings.
      `project` were counted in the Total stat but had no section, so the
      stat said 3 while the list showed 2. Collapsed by default; toggles on
      desktop like Cold.
+- **2026-08-22 (later) — PROJECTS pass + Portfolios "+" + docs sweep.**
+  Projects on the locked pattern: `.page-topbar` (gradient title, subtitle,
+  search moved out of the list column, one New Project pill), five stat cards
+  (Total · Ready to Start · In Progress · Completed · Recurring/mo, the last
+  computed from `project_contracts.scopes` falling back to the quote's
+  sections, prepaid years counted at a twelfth), `.projects-columns` wrapper
+  (`.admin-main` is now `display:block`; the `list-collapsed` rule went from
+  child to descendant), single-line `.project-card-row` (#code · soft chip ·
+  customer · compact money) with a second line only for the crew lead, tabs
+  on the segmented control, `.detail-section` at radius-md/16px, section
+  titles 12px/700 accent. `compactMoney()` renders $3k/$1.5k/$950 on cards
+  only — full amounts stay in the detail pane and on documents.
+  Quotes stats changed too: **Open Pipeline is gone** (it summed
+  `quotes.total`, which adds a setup fee to one month of plan) — replaced by
+  **Monthly in Talks** + **Yearly in Talks**, summed from the recurring price
+  lines of every open quote. Caveat to remember: templates now price both
+  billing options, so those two numbers describe the same deals two ways
+  until the customer picks one.
+  Nav: Portfolios joined Leads/Quotes/Projects with a hover "+"
+  (`openCreateModal`, `?new=1` handled in `public/assets/admin-portfolios.js`).
+  Crew Portal Access is hidden in the project detail (Manny: crew assignment
+  yes, portal no) — token, route, and upload path untouched.
+  Docs swept: ONBOARDING.md rewritten (was Jan 2026, and carried a live
+  ADMIN_KEY — removed, rotate it), COMPONENTS.md is a tombstone, README.md
+  bindings fixed, SETUP-ADMIN.md opens with a status table + the seed step,
+  CLAUDE.md records the scope item model, the billing cadence, and the open
+  gaps. New: `docs/PORTFOLIO-TO-WORK-HANDOFF.md`.
