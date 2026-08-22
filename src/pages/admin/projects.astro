@@ -7,6 +7,7 @@ import AdminMobileDrawer from '../../components/AdminMobileDrawer.astro';
 import AdminPresence from '../../components/AdminPresence.astro';
 import { SERVICE_TYPES, SERVICE_LABELS } from '../../data/serviceTypes';
 import { streamSubdomain } from '../../lib/stream';
+import { parseScopes, sumSubtotalsByBilling } from '../../lib/quoteTemplateConstants';
 import '../../styles/admin.css';
 
 const env = cfEnv;
@@ -58,7 +59,9 @@ if (db) {
         pc.status as contract_real_status,
         pc.id as contract_row_id,
         pc.total as contract_total,
+        pc.scopes as contract_scopes,
         q.total as quote_total,
+        q.template_sections as quote_sections,
         pt.name as partner_name
       FROM projects p
       LEFT JOIN crew_leads cl ON p.crew_lead_id = cl.id
@@ -161,6 +164,32 @@ const needsCrewProjects = allProjects.filter(p => p.status === 'needs_crew');
 const inProgressProjects = allProjects.filter(p => p.status === 'in_progress');
 const completedProjects = allProjects.filter(p => p.status === 'completed');
 const portfolioProjects = allProjects.filter(p => p.status === 'portfolio');
+
+// Recurring money from work currently on the board (Ready to Start +
+// In Progress). Read from the contract's own scopes when there is one, else
+// the originating quote's — both carry the billing cadence on each price
+// line, so a setup fee never lands in these numbers.
+const onTheBoard = [...needsCrewProjects, ...inProgressProjects];
+const recurring = onTheBoard.reduce(
+  (acc, p) => {
+    const raw = (p.contract_scopes as string | null) || (p.quote_sections as string | null);
+    const t = sumSubtotalsByBilling(parseScopes(raw));
+    acc.monthly += t.monthly;
+    acc.yearly += t.yearly;
+    return acc;
+  },
+  { monthly: 0, yearly: 0 }
+);
+
+// Compact money for list + stat cards: $3k, $1.5k, $950, $1.2M. Full amounts
+// stay in the detail pane and on documents.
+function compactMoney(amount: number | string | null | undefined): string {
+  const n = Number(amount) || 0;
+  const abs = Math.abs(n);
+  if (abs >= 1_000_000) return `$${(n / 1_000_000).toFixed(abs % 1_000_000 === 0 ? 0 : 1)}M`;
+  if (abs >= 1_000) return `$${(n / 1_000).toFixed(abs % 1_000 === 0 ? 0 : 1)}k`;
+  return `$${Math.round(n)}`;
+}
 
 // Service labels
 const serviceLabels: Record<string, string> = SERVICE_LABELS;
@@ -330,13 +359,89 @@ function formatCurrency(amount: number | null): string {
 
     /* Page-specific styles - extends admin.css */
 
-    /* Main content - 3-column layout with rounded cards */
+    /* Page shell: topbar + stat cards stack above the list/detail columns —
+       the same mini-dashboard shape as Leads and Quotes. */
     .admin-main {
-      display: flex;
-      align-items: flex-start;
+      display: block;
       min-height: calc(100vh - 65px - 60px);
       padding: 16px;
+    }
+
+    .projects-columns {
+      display: flex;
+      align-items: flex-start;
       gap: 16px;
+    }
+
+    .page-topbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .page-topbar-heading { margin-right: auto; }
+
+    .page-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a78bfa, #e879f9, #f472b6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .page-subtitle {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .page-topbar .search-bar {
+      flex: 1;
+      min-width: 220px;
+      max-width: 400px;
+      margin-bottom: 0;
+    }
+
+    /* Stat cards */
+    .project-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .project-stat {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .project-stat-num { font-size: 22px; font-weight: 700; color: var(--color-text-primary); }
+    .project-stat-num.ready { color: var(--warning-soft-foreground); }
+    .project-stat-num.progress { color: var(--accent-soft-foreground); }
+    .project-stat-num.done { color: var(--success-soft-foreground); }
+    .project-stat-num.accent { color: var(--accent-soft-foreground); }
+
+    .project-stat-label {
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+    }
+
+    .project-stat-sub {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
     }
 
     /* List collapse toggle: available on desktop + tablet. Selecting a card
@@ -350,7 +455,7 @@ function formatCurrency(amount: number | null): string {
       color: var(--color-text-primary); cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,0.3);
     }
-    .admin-main.list-collapsed > .projects-list { display: none; }
+    .admin-main.list-collapsed .projects-list { display: none; }
 
     /* Left column - Projects list. Sticky sidebar so it stays in view while the
        page (and the detail card) scroll as one, no second scrollbar on the
@@ -419,37 +524,68 @@ function formatCurrency(amount: number | null): string {
 
     .section-count {
       padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 9999px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .section-count.needs-crew {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
+      background: var(--warning-soft);
+      color: var(--warning-soft-foreground);
     }
 
     .section-count.in-progress {
-      background: rgba(0, 113, 227, 0.2);
-      color: #60a5fa;
+      background: var(--accent-soft);
+      color: var(--accent-soft-foreground);
     }
 
     .section-count.completed {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
+      background: var(--success-soft);
+      color: var(--success-soft-foreground);
     }
 
-    /* Project card */
+    /* Project card — one line: code · status chip · customer · money. A
+       second line appears only when there's something to say (crew lead). */
     .project-card {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      padding: 12px;
-      margin-bottom: 8px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
       cursor: pointer;
       transition: all 0.2s;
       backdrop-filter: blur(10px);
     }
+
+    .project-card-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .project-money {
+      font-size: 12px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    /* Soft status chips — same language as the Quotes list. */
+    .status-pill {
+      flex-shrink: 0;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .status-pill.warn { background: var(--warning-soft); color: var(--warning-soft-foreground); }
+    .status-pill.danger { background: var(--danger-soft); color: var(--danger-soft-foreground); }
+    .status-pill.ok { background: var(--success-soft); color: var(--success-soft-foreground); }
+    .status-pill.progress { background: var(--accent-soft); color: var(--accent-soft-foreground); }
 
     .project-card:hover {
       border-color: var(--color-primary);
@@ -467,16 +603,19 @@ function formatCurrency(amount: number | null): string {
       margin-bottom: 4px;
     }
     .proj-shortcode {
-      font-size: 14px;
+      flex-shrink: 0;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
       font-weight: 800;
-      color: var(--color-primary);
+      color: var(--accent-soft-foreground);
       letter-spacing: 0.3px;
     }
 
     .project-name {
+      flex: 1;
+      min-width: 0;
       font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 4px;
+      font-size: 13px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -484,6 +623,7 @@ function formatCurrency(amount: number | null): string {
     }
 
     .project-meta {
+      margin-top: 4px;
       font-size: 11px;
       color: var(--color-text-secondary);
     }
@@ -708,13 +848,14 @@ function formatCurrency(amount: number | null): string {
       color: #818cf8;
     }
 
+    /* Inner panels sit one step tighter than the pane that holds them:
+       radius-md, 16px, 12px apart (matches Quotes). */
     .detail-section {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(10px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
     }
 
     /* Customer & Project merged card: 3-column grid on wide screens so
@@ -745,12 +886,14 @@ function formatCurrency(amount: number | null): string {
       }
     }
 
+    /* Section titles inside the detail pane — same metric as Quotes:
+       12px/700 uppercase on the soft accent. */
     .detail-section-title {
       font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text-secondary);
+      font-weight: 700;
+      color: var(--accent-soft-foreground);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
       margin-bottom: 12px;
     }
 
@@ -1126,10 +1269,12 @@ function formatCurrency(amount: number | null): string {
     }
 
     /* Search bar */
+    /* Primary action, now in the topbar (was a full-width button above the
+       list). Pill, brand gradient — matches Leads and Quotes. */
     .new-project-btn {
       display: flex; align-items: center; justify-content: center; gap: 7px;
-      width: 100%; margin-bottom: 12px; padding: 11px 14px;
-      border: none; border-radius: var(--radius-lg); cursor: pointer;
+      height: 44px; padding: 0 18px;
+      border: none; border-radius: 9999px; cursor: pointer;
       font-size: 14px; font-weight: 700; color: #fff;
       background: linear-gradient(135deg, #2563eb 0%, #d946ef 100%);
       box-shadow: 0 2px 8px rgba(0, 113, 227,0.25);
@@ -1792,7 +1937,10 @@ function formatCurrency(amount: number | null): string {
          must be STRETCH here: the desktop base sets flex-start (for the sticky
          list), but once the container is column that makes children shrink to
          content width and overflow the viewport. */
-      .admin-main { flex-direction: column; height: auto; align-items: stretch; }
+      .projects-columns { flex-direction: column; align-items: stretch; }
+      .project-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .project-stat.recurring { grid-column: span 2; }
+      .page-topbar .search-bar { order: 3; flex-basis: 100%; max-width: none; }
       .projects-list {
         width: 100% !important; min-width: 100% !important; max-width: 100% !important;
         max-height: 45vh;
@@ -1817,10 +1965,8 @@ function formatCurrency(amount: number | null): string {
 
       /* Tablet (incl. iPad): keep the 2-column layout (detail beside the list),
          just narrow the list. Collapse it via the toggle for more room. */
-      .admin-main {
-        padding: 12px;
-        gap: 12px;
-      }
+      .admin-main { padding: 12px; }
+      .projects-columns { gap: 12px; }
 
       .projects-list {
         width: 248px;
@@ -1836,7 +1982,7 @@ function formatCurrency(amount: number | null): string {
         color: var(--color-text-primary); cursor: pointer;
         box-shadow: 0 4px 14px rgba(0,0,0,0.3);
       }
-      .admin-main.list-collapsed > .projects-list { display: none; }
+      .admin-main.list-collapsed .projects-list { display: none; }
 
       .project-content {
         min-height: 250px;
@@ -2079,10 +2225,17 @@ function formatCurrency(amount: number | null): string {
     }
 
     /* Project Tabs */
+    /* HeroUI segmented control: glass track, pill tabs, active tab on the
+       soft accent. Same anatomy as the Quotes detail. */
     .project-tabs {
       display: flex;
-      gap: 0;
-      border-bottom: 2px solid var(--color-border, #e5e7eb);
+      gap: 4px;
+      padding: 4px;
+      background: var(--default);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      width: fit-content;
+      max-width: 100%;
       margin-bottom: 20px;
       /* Tabs scroll horizontally instead of overflowing the panel on mobile. */
       overflow-x: auto;
@@ -2096,16 +2249,15 @@ function formatCurrency(amount: number | null): string {
     .project-tabs::-webkit-scrollbar { display: none; } /* Safari/Chrome */
 
     .project-tab {
-      padding: 10px 20px;
+      padding: 7px 14px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--color-text-secondary, #6b7280);
-      background: none;
+      color: var(--muted);
+      background: transparent;
       border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
+      border-radius: 9999px;
       cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
+      transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -2119,20 +2271,22 @@ function formatCurrency(amount: number | null): string {
     }
 
     .project-tab:hover {
-      color: var(--color-text-primary, #1a1a2e);
+      color: var(--foreground);
+      background: var(--default-hover);
     }
 
     .project-tab.active {
-      color: var(--color-primary, #0071e3);
-      border-bottom-color: var(--color-primary, #0071e3);
+      color: var(--accent-soft-foreground);
+      background: var(--accent-soft);
     }
 
     .project-tab .tab-badge {
-      background: var(--color-primary, #0071e3);
-      color: white;
+      background: var(--warning-soft);
+      color: var(--warning-soft-foreground);
       font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 10px;
+      line-height: 16px;
+      padding: 0 6px;
+      border-radius: 9999px;
       font-weight: 700;
     }
 
@@ -2421,12 +2575,13 @@ function formatCurrency(amount: number | null): string {
 
   <button class="list-toggle-btn" id="listToggleBtn" title="Show / hide list" aria-label="Toggle list">‹</button>
   <main class="admin-main">
-    <!-- Left Column: All Projects List with Search -->
-    <aside class="projects-list">
-      <button type="button" class="new-project-btn" onclick="openNewProjectModal()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-        New Project
-      </button>
+    <!-- Page topbar: title, search, one primary action (same shape as Leads
+         and Quotes). -->
+    <div class="page-topbar">
+      <div class="page-topbar-heading">
+        <h1 class="page-title">Projects</h1>
+        <p class="page-subtitle">Schedule, staff, and deliver the work you've won</p>
+      </div>
       <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
@@ -2440,7 +2595,46 @@ function formatCurrency(amount: number | null): string {
           oninput="filterProjects()"
         />
       </div>
+      <button type="button" class="new-project-btn" onclick="openNewProjectModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        New Project
+      </button>
+    </div>
 
+    <!-- Stat cards. "Recurring" is the money the work on the board bills every
+         month (and any prepaid years), read from each project's contract
+         scopes or its originating quote. -->
+    <div class="project-stats">
+      <div class="project-stat">
+        <div class="project-stat-num">{activeProjects.length}</div>
+        <div class="project-stat-label">Total Projects</div>
+      </div>
+      <div class="project-stat">
+        <div class="project-stat-num ready">{needsCrewProjects.length}</div>
+        <div class="project-stat-label">Ready to Start</div>
+      </div>
+      <div class="project-stat">
+        <div class="project-stat-num progress">{inProgressProjects.length}</div>
+        <div class="project-stat-label">In Progress</div>
+      </div>
+      <div class="project-stat">
+        <div class="project-stat-num done">{completedProjects.length}</div>
+        <div class="project-stat-label">Completed</div>
+      </div>
+      <div class="project-stat recurring">
+        <div class="project-stat-num accent">
+          {recurring.monthly > 0 ? `${compactMoney(recurring.monthly)}/mo` : '—'}
+        </div>
+        <div class="project-stat-label">Recurring</div>
+        {recurring.yearly > 0 && (
+          <div class="project-stat-sub">{compactMoney(recurring.yearly)} prepaid for the year</div>
+        )}
+      </div>
+    </div>
+
+    <div class="projects-columns">
+    <!-- Left Column: All Projects List with Search -->
+    <aside class="projects-list">
       <div id="projectsList">
         <!-- Needs Crew / Ready to Start -->
         <div class="project-section">
@@ -2455,19 +2649,19 @@ function formatCurrency(amount: number | null): string {
             ) : (
               needsCrewProjects.map((project) => (
                 <div class="project-card" data-id={project.id} data-status={project.status} data-search={`${project.project_number} ${project.customer_name} ${project.customer_email || ''} ${project.customer_phone || ''}`.toLowerCase()} onclick={`selectProject(${project.id})`}>
-                  <div class="project-number" title={project.project_number}><span class="proj-shortcode">#{(project.project_number || '').slice(-4)}</span></div>
-                  <div class="project-name">{project.customer_name}</div>
-                  <div class="project-meta">
+                  <div class="project-card-row">
+                    <span class="proj-shortcode" title={project.project_number}>#{(project.project_number || '').slice(-4)}</span>
                     <span class="card-status-slot">
                     {project.contract_real_status === 'sent'
-                      ? <span class="warning-badge" style="background: rgba(234,179,8,0.15); color: #eab308;">Awaiting Signature</span>
+                      ? <span class="status-pill warn">Awaiting Signature</span>
                       : project.contract_real_status === 'draft'
-                      ? <span class="warning-badge" style="background: rgba(239,68,68,0.15); color: #ef4444;">Contract Not Sent</span>
-                      : (!project.crew_lead_id ? <span class="warning-badge">Needs Crew</span> : <span class="crew-badge">Ready</span>)}
+                      ? <span class="status-pill danger">Contract Not Sent</span>
+                      : (!project.crew_lead_id ? <span class="status-pill warn">Needs Crew</span> : <span class="status-pill ok">Ready</span>)}
                     </span>
-                    {project.crew_lead_name && <span style="margin-left: 4px; color: #4ade80;">✓ {project.crew_lead_name}</span>}
+                    <span class="project-name">{project.customer_name}</span>
+                    <span class="project-money">{compactMoney(project.effective_total)}</span>
                   </div>
-                  <div class="project-meta" style="margin-top: 4px;">{formatCurrency(project.effective_total)}</div>
+                  {project.crew_lead_name && <div class="project-meta">✓ {project.crew_lead_name}</div>}
                 </div>
               ))
             )}
@@ -2487,12 +2681,13 @@ function formatCurrency(amount: number | null): string {
             ) : (
               inProgressProjects.map((project) => (
                 <div class="project-card" data-id={project.id} data-status={project.status} data-search={`${project.project_number} ${project.customer_name} ${project.customer_email || ''} ${project.customer_phone || ''}`.toLowerCase()} onclick={`selectProject(${project.id})`}>
-                  <div class="project-number" title={project.project_number}><span class="proj-shortcode">#{(project.project_number || '').slice(-4)}</span></div>
-                  <div class="project-name">{project.customer_name}</div>
-                  <div class="project-meta">
-                    {project.crew_lead_name && <span class="crew-badge">{project.crew_lead_name}</span>}
+                  <div class="project-card-row">
+                    <span class="proj-shortcode" title={project.project_number}>#{(project.project_number || '').slice(-4)}</span>
+                    <span class="status-pill progress">In Progress</span>
+                    <span class="project-name">{project.customer_name}</span>
+                    <span class="project-money">{compactMoney(project.effective_total)}</span>
                   </div>
-                  <div class="project-meta" style="margin-top: 4px;">{formatCurrency(project.effective_total)}</div>
+                  {project.crew_lead_name && <div class="project-meta">✓ {project.crew_lead_name}</div>}
                 </div>
               ))
             )}
@@ -2512,10 +2707,12 @@ function formatCurrency(amount: number | null): string {
             ) : (
               completedProjects.map((project) => (
                 <div class="project-card" data-id={project.id} data-status={project.status} data-search={`${project.project_number} ${project.customer_name} ${project.customer_email || ''} ${project.customer_phone || ''}`.toLowerCase()} onclick={`selectProject(${project.id})`}>
-                  <div class="project-number" title={project.project_number}><span class="proj-shortcode">#{(project.project_number || '').slice(-4)}</span></div>
-                  <div class="project-name">{project.customer_name}</div>
-                  <div class="project-meta"><span class="crew-badge">Completed</span></div>
-                  <div class="project-meta" style="margin-top: 4px;">{formatCurrency(project.effective_total)}</div>
+                  <div class="project-card-row">
+                    <span class="proj-shortcode" title={project.project_number}>#{(project.project_number || '').slice(-4)}</span>
+                    <span class="status-pill ok">Completed</span>
+                    <span class="project-name">{project.customer_name}</span>
+                    <span class="project-money">{compactMoney(project.effective_total)}</span>
+                  </div>
                 </div>
               ))
             )}
@@ -2531,6 +2728,7 @@ function formatCurrency(amount: number | null): string {
         <p>Select a project to view details</p>
       </div>
     </section>
+    </div><!-- /.projects-columns -->
 
   </main>
 
@@ -3704,21 +3902,12 @@ function formatCurrency(amount: number | null): string {
                 </div>
               </div>
 
-              <!-- Crew Portal Access -->
-              ${project.crew_token ? `
-              <div class="detail-section crew-tab-col">
-                <div class="detail-section-title">Crew Portal Access</div>
-                <div class="client-link" style="background: rgba(139, 92, 246, 0.1);">
-                  <a href="${location.origin}/project/crew/${project.crew_token}" target="_blank" style="color: #8b5cf6;">
-                    ${location.origin.replace(/^https?:\/\//, '')}/project/crew/${project.crew_token}
-                  </a>
-                  <button class="btn-copy" onclick="copyLink('crew', '${project.crew_token}')" style="background: #8b5cf6;">Copy</button>
-                </div>
-                <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 8px;">
-                  Share this link with the assigned crew lead. They can view job details and upload progress photos.
-                </p>
-              </div>
-              ` : ''}
+              <!-- Crew Portal Access: hidden Aug 22 2026 (Manny: crew
+                   assignment yes, crew portal no). The token, the
+                   /project/crew/[token] route, and the crew upload path are
+                   all still live — only this link block is out of the UI, so
+                   bringing it back when there's a crew lead to hand it to is
+                   a one-block restore. -->
             </div>
           </div>
 
