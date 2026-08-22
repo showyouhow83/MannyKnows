@@ -85,7 +85,7 @@ against main's behavior). Line counts = migration effort signal.
 | Login | `admin/index.astro` | 229 | not started |
 | ~~Dashboard~~ | `admin/dashboard.astro` | 2,391 | ✅ **DONE** — verified by Manny Aug 21 (pilot; sets the pattern) |
 | Leads | `admin/leads.astro` | 2,748 | ✅ **DONE** — mini-dashboard layout approved by Manny Aug 21 ("I'm loving it!"); sets the pattern for Quotes + Projects |
-| Quotes | `admin/quotes.astro` | 6,436 | not started |
+| Quotes | `admin/quotes.astro` | 6,436 | **migrated** — mini-dashboard pattern applied Aug 21; awaiting Manny's visual verify |
 | Quote preview | `admin/quotes/[id]/preview.astro` | 798 | not started |
 | Quote templates | `admin/quote-templates.astro` | 587 | not started |
 | Quote template editor | `admin/quote-templates/[id].astro` | 792 | not started |
@@ -192,3 +192,24 @@ strings.
   rows 13px, all buttons pills, code badge = chip. Status chips = HeroUI
   soft chip (no border). JS contracts untouched (search/#noResults ids,
   list-collapsed on .admin-main, section toggles).
+- **2026-08-21 (night 2, cont.) — QUOTES migrated** (same pattern): topbar
+  (title "Quotes" + search + New Quote), 5 stat cards (Total · Pending
+  Approval · Needs Review · Ready to Promote · **Open Pipeline $** = sum of
+  draft+sent totals; on mobile the pipeline card spans 2 cols),
+  `.quotes-columns` wrapper (list-collapsed selector switched to descendant).
+  All status surfaces now HeroUI soft chips, no border: `.status-pill`
+  (Draft/Pending/Declined/Accepted/Cold/Revised), detail-header
+  `.quote-status-badge` + `.pending-badge`, RENEGO badge (violet soft pill).
+  Metrics: panels radius-lg/16, form-sections + management-sections
+  radius-md/16, section titles 12px uppercase accent, customer name 20px,
+  quote-number chip = detail-code metrics, all `.btn`/`.btn-sm` pills
+  (mobile !important overrides updated too), modal titles 16px. JS contracts
+  untouched. Awaiting Manny verify.
+- **2026-08-21 (night 2, cont.) — SETTINGS nav group** (Manny's ask): Quote
+  Templates, Contract Templates, My Signature moved out of the
+  Quotes/Projects dropdowns into a new Settings group (gear icon, non-link
+  `.nav-label` parent) at the rail bottom; the rail's hide-first-link rule
+  became a `.view-all` marker class (a `:first-child` rule would have eaten
+  the Settings group's first real link). Mobile drawer: same three links now
+  live under its existing Settings section. All five settings pages pass
+  `active="settings"`.
